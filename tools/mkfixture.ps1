@@ -6280,11 +6280,12 @@ window.__REGRESS=[
        try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'35.77',what:'hot-ground kills pay 1.05x after the streak, with a hot popup, in career and demo on the host and partner',
+  {v:'35.77',what:'hot-ground kills pay 1.05x after the streak, the kill line marked hot (no float: cw-clockcard), in career and demo on the host and partner',
    run:function(){
      var g, p, c0=CAREER_ON, d0=DMUL_ON, saved={}, nk=['on','role','seat','upSeed','entMap','entDead'], i, mode, q, before, n, x, y, hot, last;
      var fs=[flowKill,styleKill,pwrKill,teamKill,arcadeKillPerks,arcadeScSend];
-     function reset(){ if(g.cs) g.cs.streak=null; ARCADE.streak=null; g.labels.length=0; }
+     var kl=null;
+     function reset(){ if(g.cs) g.cs.streak=null; ARCADE.streak=null; g.labels.length=0; g.fd=null; kl=null; }
      function score(){ return g.arcade?ARCADE.mine:g.cs.s; }
      function kill(){ return g.arcade?arcadeKill('sentry',0,0,x,y):careerKill('sentry',0,0,x,y); }
      function sample(want,tag,join){
@@ -6294,10 +6295,11 @@ window.__REGRESS=[
          NET.entMap={991:{kind:'sentry',x:x,y:y,hp:0}}; NET.entDead={};
          if(netKillTake({state:'in'},{seat:1,k:'sentry',id:991})!=='kill') throw Error(tag+' partner credit rejected');
          n=score()-before;
-       }else{ NET.on=false; NET.role='host'; n=kill(); }
+       }else{ NET.on=false; NET.role='host'; kl=feedKillLine('YOU',true,false,'SENTRY',HUDC.danger,''); n=kill(); }
        if(n!==want||score()-before!==want) throw Error(tag+' paid '+n+' / '+(score()-before)+', wanted '+want);
-       last=g.labels[g.labels.length-1];
-       if(!last||last.txt!=='+'+arcadeCr(want)+(want===105?' hot':'')) throw Error(tag+' popup '+(last&&last.txt));
+       // cw-clockcard, HIS ORDER (2026-10-28): "it should NOT pop on the screen (like looting does) every time sp is earned"; the kill lines keep their sp ("sp can stay"), so the figure and the hot mark ride on his own kill line
+       for(last=0;last<g.labels.length;last++) if(/\bSP\b/i.test(String(g.labels[last].txt))) throw Error(tag+' floats '+g.labels[last].txt);
+       if(!join){ if(!kl) throw Error(tag+' no kill line'); if(kl.money!=='+'+arcadeCr(want)+(want===105?' hot':'')) throw Error(tag+' kill line '+kl.money); }
      }
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
