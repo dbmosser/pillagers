@@ -3171,32 +3171,32 @@
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The raid HUD has a clear ammo hero and a sensible hotbar, but the corners disagree on panel style, a capital letter shows on screen, and the p2 banner, stamina/hp bars and controls hint all look off-system.",
+  "verdict": "The HUD parts are better organised, but the screen still has three loose edge treatments, a capital 'I' on screen, and thin hp and stamina bars. The pillagers list and the hotbar still look unpolished.",
   "findings": [
-   "P0 run info collapsed bar under minimap: Render the label as 'run info'. Use the same --ui-panel fill, 1px --ui-line-hi border and 4px radius as the pillagers list, with a 16px label.",
-   "P1 hp and stamina bars, bottom left: Make both bars the same 16px-high track on --ui-panel with a 1px border. Use --ok for the hp fill and --extract for stamina. Set the labels at 16px f-cond 600 in --tx-1, aligned left with 8px padding. Make hp the only bold element, with the number at 20px.",
-   "P1 p2 pad lost banner, top centre-left: Move the banner to top-centre under the extract chip (y≈110, centred on x=960). Set the text at 20px, put the gamepad glyph in a 24px box, and use the --ui-panel fill, 4px radius and a 3px --warn bar.",
-   "P1 hotbar slots 4-0 and the hint row: Either hide empty slots 4-0, or draw them as 48px frames with a 1px --ui-line border and a 16px --tx-2 number. Keep the lime border only on the selected slot.",
-   "P1 current pillagers list, top left: Set rows at 16px with a 24px pitch. Use --tx-1 for names and --tx-2 for the header. Use only --acc, amber or cyan for the 'you' row. Drop the pink. Inset the panel 48px from the left edge and 24px from the top."
+   "P1 run info bar under the minimap: Set the text to 'run info'. Leave an 8px gap between the map and the bar. Use --ui-panel with a 1px --ui-line-hi border and a 4px radius. Use the same chevron glyph and size (16px, --tx-2) as the pillagers header.",
+   "P1 stamina and hp bars, bottom left: Draw both bars as 16px-high tracks on --ui-panel with a 1px --ui-line-hi border and an 8px gap between them. Fill hp with --ok and stamina with --extract. Inset them 48px from the left and 48px from the bottom. Set the labels at 16px f-cond 600 in --tx-1, with 'hp' at 16px and '100' at 20px, sitting to the left of the track and not inside it.",
+   "P1 current pillagers panel, top left: Inset the panel 48px from the left and 24px from the top. Use an opaque --ui-panel fill and a 1px --ui-line-hi border with a 4px radius. Set rows at 16px with a 24px pitch and 16px padding. Colour only the 'you' row in --acc, and make the pink row --tx-1. Set the amounts in --tx-2 and right-align them.",
+   "P1 hotbar, slots 4 to 0: Hide empty slots, or draw them as 72px frames with a 1px --ui-line border at 40 percent opacity and a 16px --tx-2 number. Keep the lime border on the selected slot only. Use the same 8px gap and baseline as slots 1 to 3, and align the row's bottom with the stamina bar.",
+   "P2 ammo card, bottom right: Set '10' at 56px f-cond 800 in --tx-1, and set '/ 36' at 20px in --tx-2. Set the weapon name at 20px f-cond 600. Set 'b / i backpack' at 16px in --tx-2 with a key glyph. Inset the card 48px from the right and 48px from the bottom, and keep its 4px radius."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-05-120d2-fire-ends-sprint-recipes-1/120d2-host-shot-ends-sprint-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-05-120d2-fire-ends-sprint-recipes-3/120d2-host-shot-ends-sprint-1080.jpg",
   "task": "o-05-120d2-fire-ends-sprint",
-  "when": "2026-10-28T17:25"
+  "when": "2026-10-28T17:38"
  },
  "d2-p2-shot-ends-sprint": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "A readable raid HUD with a good ammo hero number and a clear selected slot, but it has a capital letter, stray text clutter, inconsistent type sizes and a dim, crowded bottom edge.",
+  "verdict": "The HUD is better organised than before, with a clear roster, a hero ammo card and an uncluttered slot row. It still has a capital letter on screen, several slightly different panel styles and bars that sit directly on the world with no panel.",
   "findings": [
-   "P1 top-right, 'run Info' header: Change it to 'run info'. Give it the same --ui-panel fill, 1px --ui-line-hi border and 4px radius as the other HUD panels, with a 32px row height and 16px label type.",
-   "P1 bottom-centre, slot row and number strip behind it: Remove the loose 4 to 0 labels and ghost icons. Either draw only the filled slots, or draw the empty slots as 64px outlined tiles at --ui-line with 8px gaps.",
-   "P1 bottom-left, stamina and hp bars: Put the pair in one --ui-panel at 85% opacity with a 1px --ui-line-hi border. Use a 16px label at the left, a 20px value in --tx-1, and bars of equal height (16px) with dark track fills. Colour the hp bar --ok and the stamina bar a neutral tone.",
-   "P1 top-left, 'current pillagers 7' roster: Use a 20px row pitch, 16px minimum text, --tx-2 at 4.5:1 or better for the header, and 16px of inner padding. Colour a name differently only for a clear reason, such as player colours (amber for P1, cyan for P2).",
-   "P2 bottom-right weapon card: Raise 'view backpack' to 16px in --tx-2 and prefix it with a key chip. Keep the 8 in --tx-1 and switch it to --danger only at 25% of the magazine or below."
+   "P1 top-right, 'run Info' header under the minimap: Change the text to 'run info'. Use 16px f-cond 600, a 32px row, a --ui-panel fill, a 1px --ui-line-hi border and a 4px radius. Make the width exactly match the minimap.",
+   "P1 bottom-left, stamina and hp bars: Put both bars in one --ui-panel at 85% opacity with a 1px --ui-line-hi border and 16px padding. Make the bars 16px tall on --ui-void tracks. Use a 16px --tx-2 label on the left and a 20px --tx-1 value on the right, outside the fill. Colour hp --ok, switching to --danger below 30%. Make stamina neutral teal-grey.",
+   "P1 bottom-centre, slot row (slots 4 to 0): Remove the ghost icons and the 4 to 0 labels. Draw only the filled slots, or draw empty ones as outlined 100px tiles at --ui-line with 8px gaps. Make the numerals 16px. Keep the lime outline on the selected slot only.",
+   "P1 top-left, 'current pillagers 7' roster: Use 16px text on a 22px row pitch with 16px padding and a 32px header row with a 1px --ui-line divider. Make all names --tx-1 and tint only the 'you' row amber. Remove the purple unless it carries a meaning.",
+   "P1 bottom-right, weapon card: Set 'view backpack' to 16px --tx-2 with a [tab] key chip. Align the card to the 5% safe margin and to the same bottom line as the slots. Switch the 56px hero number to --danger at 25% of the magazine."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-05-120d2-fire-ends-sprint-recipes-1/120d2-p2-shot-ends-sprint-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-05-120d2-fire-ends-sprint-recipes-3/120d2-p2-shot-ends-sprint-1080.jpg",
   "task": "o-05-120d2-fire-ends-sprint",
-  "when": "2026-10-28T17:25"
+  "when": "2026-10-28T17:38"
  }
 }

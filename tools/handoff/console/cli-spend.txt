@@ -1546,3 +1546,9 @@
 2026-10-28 0.0825 critic-o-05-120d2-fire-ends-sprint
 2026-10-28 0.0824 critic-o-05-120d2-fire-ends-sprint
 2026-10-28 0.0000 o-05-120d2-fire-ends-sprint
+2026-10-28 0.0836 critic-o-05-120d2-fire-ends-sprint
+2026-10-28 0.0838 critic-o-05-120d2-fire-ends-sprint
+2026-10-28 0.0000 o-05-120d2-fire-ends-sprint
+2026-10-28 0.0860 critic-o-05-120d2-fire-ends-sprint
+2026-10-28 0.0848 critic-o-05-120d2-fire-ends-sprint
+2026-10-28 0.0000 o-05-120d2-fire-ends-sprint

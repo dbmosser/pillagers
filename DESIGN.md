@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.89 - THE PAUSE BOX LISTS THE RAID CONDITIONS THAT PAY SP
+
+Co-op hunt while he was away. his order 10-28 for the pause box was every modifier that changes sp. cw-pausesp listed the settings; the conditions (night, hard weather, signed terms, x1.05 each since cw-cx-condition-sp the same day) were missing and the headline left them out. They are rows now, a clear day shows one muted conditions none row, and the headline is settings times conditions.
+
+MEASURED. Check 35.89 passes, and fails on v35.88.
 ## v35.88 - MAINFRAME MONEY IN DOLLARS AND A LOCK ICON ON LOCKED ACHIEVEMENTS
 
 Co-op hunt while he was away. menus master pass of 10-28 over every station window: the Mainframe contract card paid its money as 320 c (his rule: $ for money), and the achievements list glued the word LOCKED to each locked name (locked first out) with earned and locked rows in one colour. The reward reads $320, a locked row gets a lock icon, an earned row reads in the emblem gold.

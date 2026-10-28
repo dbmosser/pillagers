@@ -1,0 +1,7 @@
+v35.89: the pause box lists the raid conditions that pay sp
+
+the pause box also lists night, weather and terms in the score panel
+
+Check 35.89. Fails on v35.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

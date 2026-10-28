@@ -1,0 +1,5 @@
+## v35.89 - THE PAUSE BOX LISTS THE RAID CONDITIONS THAT PAY SP
+
+Co-op hunt while he was away. his order 10-28 for the pause box was every modifier that changes sp. cw-pausesp listed the settings; the conditions (night, hard weather, signed terms, x1.05 each since cw-cx-condition-sp the same day) were missing and the headline left them out. They are rows now, a clear day shows one muted conditions none row, and the headline is settings times conditions.
+
+MEASURED. Check 35.89 passes, and fails on v35.88.
