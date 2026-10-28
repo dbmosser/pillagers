@@ -1,0 +1,5 @@
+## v35.51 - pad trigger keeps steady spread without focus aim
+
+Co-op hunt while he was away. RT used the focus aim flag to steady shots, so it also cut sprint, slowed walking and pulsed a scope. Keep the existing pad spread and settle time separately. Playtest watch: on a pad, RT no longer cuts the sprint or pulses a scoped view; LT still aims. Pad players move at full speed while shooting; check a pad fight still feels fair.
+
+MEASURED. Check 35.51 passes, and fails on v35.50.

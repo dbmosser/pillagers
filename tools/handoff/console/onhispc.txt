@@ -16,3 +16,4 @@
 10-27 23:42 v35.45 cw-spmoney on his pc after 1s (8802 serves 35.47) week 72%
 10-27 23:52 v35.48 cloud-p2-easy-card on his pc after 80s (8802 serves 35.48) week 72%
 10-27 23:56 v35.49 cw-hudstates on his pc after 65s (8802 serves 35.49) week 72%
+10-28 00:03 v35.50 cw-extpill on his pc after 65s (8802 serves 35.50) week 72%

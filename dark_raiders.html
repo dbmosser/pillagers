@@ -3730,8 +3730,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.50';
-var VER_AT='2026-10-28 00:02';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.51';
+var VER_AT='2026-10-28 00:09';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19715,7 +19715,7 @@ function padAxis(v){ return padStick(v,0).x; }
 // every exit out of pollPad and from the disconnect event.
 function padRelease(){
   // v28.xx (cw-cx-triggerhyst): forget trigger travel when a menu or pad loss releases owned inputs.
-  PAD.rtHeld=false; PAD.ltHeld=false;
+  PAD.rtHeld=false; PAD.ltHeld=false; PAD.adsT=0; // v28.xx (cw-cx-rtsteady): a released pad cannot leave a spread bonus behind.
   // v17.00, co-op hunt 2026-09-28: AND THE X PRESS LATCH. PAD.xWas was written only in the raid branch, so a menu, another
   // screen or the stall between two X presses left it set, the next X was not seen as a new press, and the choice of the X
   // before (reload) was held again beside a box, which was then never searched until X was let go and pressed once more.
@@ -20128,7 +20128,8 @@ function pollPad(){
   if(pressed(11)&&!PAD.prev[11]&&_rsLive) meleeStrike();
   PAD.adsTog=false;
   PAD.adsAim=!!(PAD.ltHeld&&!G.over&&!G.paused); // v28.xx (cw-cx-triggerhyst): focus uses the same hysteresis as fire.
-  if(PAD.adsT>0||PAD.adsAim){ G.player.ads=true; PAD.adsing=1; }
+  // v28.xx (cw-cx-rtsteady): his 10-20 aim order names right mouse and LT; RT settles spread only.
+  if(PAD.adsAim){ G.player.ads=true; PAD.adsing=1; }
   else if(PAD.adsing){ G.player.ads=false; PAD.adsing=0; }
 
   // With the bag open the dpad browses it, the same doubling the arrow keys
@@ -24957,6 +24958,8 @@ function bloomResetTick(p){
   return true;
 }
 function blmOf(w){ return (w&&w.id&&BLM[gunBase(w.id)])||null; }
+// v28.xx (cw-cx-rtsteady): the existing 0.35 second pad settle changes accuracy without entering focus aim.
+function shotSteady(p){ return !!(p&&(p.ads||(G&&p===G.player&&PAD.on&&PAD.adsT>0))); }
 function bloomTick(p,dt){
   var sp, base, tgt, b0, t;
   if(!G||G.sim||!p) return 0;
@@ -24965,7 +24968,7 @@ function bloomTick(p,dt){
   p.blmX=p.x; p.blmY=p.y;
   base=(sp<12)?0:((G.sprinting||p.roll>0)?0.9:0.45);
   if(G.pCrouch) base=(sp<12)?-0.3:0.1;
-  if(p.ads) base*=0.4;
+  if(shotSteady(p)) base*=0.4; // v28.xx (cw-cx-rtsteady): retain the movement bloom bonus on RT.
   t=blmOf(p.wep)||BLM.pistol;
   if(p.bloomPend>0){ p.bloomK=Math.min(1,(p.bloomK||0)+p.bloomPend); p.bloomPend=0; p.bloomQ=0; if(p.bloomK>=0.25) p.bloomArm=1; if(p.bloomK>(p.bloomPk||0)) p.bloomPk=p.bloomK; }   // the rounds since the last step open the bloom (and arm the reset flash)
   p.bloomQ=((p.bloomQ===undefined)?9:p.bloomQ)+dt;
@@ -24988,7 +24991,7 @@ function bloomCone(p,w){
   var t;
   if(!G||G.sim||!p) return 0;
   t=blmOf(w); if(!t) return 0;
-  return t.cone*Math.max(0,Math.min(1,p.bloomK||0))*(p.ads?0.5:1);
+  return t.cone*Math.max(0,Math.min(1,p.bloomK||0))*(shotSteady(p)?0.5:1); // v28.xx (cw-cx-rtsteady): RT retains the same bloom cone.
 }
 function bloomMul(p){ return (G&&!G.sim&&p)?(1+BLOOM_SPREAD*Math.max(-0.3,Math.min(2.0,p.bloom||0))):1; }
 function bloomPx(p){ return Math.max(-0.3,Math.min(2.0,(p&&p.bloom)||0))*BLOOM_PX; }
@@ -25017,7 +25020,7 @@ function fireWeapon(sh,wep,tx,ty,fromPlayer){
   if(G&&!G.sim){
     // v8.52, audit: two more combatT stamps for the deleted radio. See damagePlayer.
   }
-var spx=wep.spread*(((fromPlayer&&G.player.ads)||(!fromPlayer&&sh&&sh.steady))?0.4:1)*(fromPlayer?bloomMul(G.player):1)+(fromPlayer?bloomCone(G.player,wep):0);   // v26.xx (feel19): and it is true, the spread follows the ring
+var spx=wep.spread*(((fromPlayer&&shotSteady(G.player))||(!fromPlayer&&sh&&sh.steady))?0.4:1)*(fromPlayer?bloomMul(G.player):1)+(fromPlayer?bloomCone(G.player,wep):0);   // v26.xx (feel19): and it is true, the spread follows the ring
   if(!fromPlayer&&sh&&isFinite(tx)&&isFinite(ty)){ var _afd=Math.hypot(tx-sh.x,ty-sh.y); if(_afd>ACC_NEAR) spx*=1+Math.min(ACC_FALL,(_afd-ACC_NEAR)/ACC_SPAN); }   // 2026-10-12 (accfall): wider at long range
   // v4.38 HIS ANSWER 7: the Compact SMG climbs on a held trigger. Short taps
   // stay accurate; spraying the whole magazine is a choice with a cost.
@@ -55332,7 +55335,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.50: the extract pill turns amber and counts down when your exit is closing; an exit off screen is an edge arrow with its letter and distance; the sky is an icon by the clock Check 35.50 fails on v35.49',
+  now:'v35.51: pad trigger fire keeps its steady spread without cutting sprint or pulsing a scoped view. lt and right mouse still aim. Check 35.51 fails on v35.50',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

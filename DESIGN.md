@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.51 - pad trigger keeps steady spread without focus aim
+
+Co-op hunt while he was away. RT used the focus aim flag to steady shots, so it also cut sprint, slowed walking and pulsed a scope. Keep the existing pad spread and settle time separately. Playtest watch: on a pad, RT no longer cuts the sprint or pulses a scoped view; LT still aims. Pad players move at full speed while shooting; check a pad fight still feels fair.
+
+MEASURED. Check 35.51 passes, and fails on v35.50.
 ## v35.50 - EXTRACTION ON THE PILL
 
 Co-op hunt while he was away. his ask 10-27 ~21:40: the hud messaging is a clusterfuck, make it AAA (report reports/Player alerts and HUD messaging.md, job 6). The extract pill under the clock carries the state of its exit: teal open, amber in the two minute warning with a countdown in the last minute, red once shut, one pulse on each change. An open exit just off the screen is an edge arrow with its letter and distance (c 152m), slid along an oval inside the edges until it is clear of the corner panels and the pickup stack column; the extraction c available line under the pill is gone. The sky (weather, else the time of day) is a small icon beside the clock. Looting is untouched.

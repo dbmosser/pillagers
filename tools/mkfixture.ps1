@@ -6168,6 +6168,70 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'35.51',what:'RT keeps pad spread without aim, scope or walk slowdown; held and toggled LS sprint survive; LT still aims and cuts sprint in both pad windows',
+   run:function(){
+     var bad=[], ng=navigator.getGamepads, own=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'),
+         pk=Object.assign({},PAD), nk=Object.assign({},NET), rk=Object.assign({},RUMBLE), kk=keys, mm=Object.assign({},mouse),
+         nf=netPadFocused, np=netSamePost, rn=rnd, cp=Object.assign({},CFG), g, p, pads, side, ix, q, mode, bounds;
+     function pad(i){var b=[],j;for(j=0;j<17;j++)b.push({pressed:false,value:0});return {connected:true,id:'Xbox Wireless Controller',index:i,mapping:'standard',axes:[1,0,1,0],buttons:b,timestamp:1};}
+     function poll(down){var j,b;for(j=0;j<17;j++){b=pads[ix].buttons[j];b.pressed=down.indexOf(j)>=0;b.value=b.pressed?1:0;}pads[ix].timestamp++;pollPad();}
+     function step(down){poll(down);updatePlayer(0.016);}
+     function spread(){bounds=null;rnd=function(a,b){if(!bounds)bounds=[a,b];return (a+b)/2;};try{fireWeapon(p,p.wep,p.x+300,p.y,true);}finally{rnd=rn;}return bounds?bounds[1]:NaN;}
+     function near(a,b){return isFinite(a)&&isFinite(b)&&Math.abs(a-b)<0.000001;}
+     function bloom(aim,t){p.ads=aim;PAD.adsT=t;p.bloom=0;p.bloomK=0.4;p.bloomPend=0;p.bloomQ=0;p.blmX=p.x-2;p.blmY=p.y;g.sprinting=false;g.pCrouch=false;bloomTick(p,0.016);return [p.bloom,bloomCone(p,p.wep),spread()];}
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['gun_sniper'],safe:null,mapIx:0,seed:4242});
+       g=__state();p=g&&g.player;if(!p||g.over) return 'no live raid';
+       g.ents=[];g.bagOpen=false;g.mapOpen=false;g.mapFirst=0;g.paused=false;g.trade=null;g.forgeUI=null;
+       p.wep=cloneObj(WEAPONS.sniper);p.hand=null;p.downed=false;p.roll=0;p.iv=999;p.ammo=50;p.reserve=50;p.drawT=0;p.reloading=0;p.jam=0;
+       if(!(p.wep.optic>1))return 'scoped rifle staging has no optic';
+       CFG.xfPix=0;P.padmap=null;P.padSticks='';
+       netPadFocused=function(){return true;};netSamePost=function(){return true;};NET.on=false;
+       pads=[pad(0),pad(1)];navigator.getGamepads=function(){return pads;};
+       for(side=0;side<2;side++){
+         NET.same=side?'p2':'host';NET.pair='cx-rtsteady';NET.padIx=-1;NET.padOther=-1;NET.padWas={pair:NET.pair,host:1,p2:0};NET.padFwd=null;
+         ix=side?0:1;padRelease();PAD.prev=[];PAD.prevMap=null;PAD.mSpent=[];PAD.held={};PAD.focus=null;PAD.announced=true;PAD.lossRaid=null;PAD.lossIx=-1;PAD.lost=null;PAD.adsT=0;PAD.adsing=0;
+         keys={};p.ads=false;poll([]);
+         if(PAD.ix!==ix)bad.push(NET.same+': wrong pad slot');
+         for(mode=0;mode<2;mode++){
+           CFG.sprintTgl=mode;g.sprintOn=false;g.shWas=false;p.stam=100;p.stamLock=false;p.stamRelease=0;p.ads=false;g.crouchTog=false;
+           step([]);step([10]);if(mode)step([]);
+           if(!g.sprinting)bad.push(NET.same+': LS did not start '+mode+' sprint');
+           for(q=0;q<3;q++){
+             step(mode?[7]:[7,10]);
+             if(!mouse.down||!PAD.firing)bad.push(NET.same+': RT did not fire');
+             if(p.ads||opticMag()!==1)bad.push(NET.same+': RT entered aim or scope');
+             if(!g.sprinting||(mode&&!g.sprintOn))bad.push(NET.same+': RT cut '+mode+' sprint');
+             step(mode?[]:[10]);
+             if(p.ads||opticMag()!==1||!g.sprinting)bad.push(NET.same+': RT settle changed sprint or scope');
+           }
+           step(mode?[6]:[6,10]);
+           if(!p.ads||opticMag()!==p.wep.optic||g.sprinting||(mode&&g.sprintOn))bad.push(NET.same+': LT did not aim and cut sprint');
+           step(mode?[]:[10]);
+           if(p.ads||opticMag()!==1||(!mode&&!g.sprinting))bad.push(NET.same+': LT release did not restore held sprint');
+           step([]);
+         }
+         CFG.sprintTgl=0;g.sprintOn=false;g.shWas=false;p.stam=100;
+         poll([]);var x=p.x,y=p.y;updatePlayer(0.016);var walk=Math.hypot(p.x-x,p.y-y);
+         p.x=x;p.y=y;poll([7]);updatePlayer(0.016);var shooting=Math.hypot(p.x-x,p.y-y);
+         if(!(walk>0)||!near(shooting,walk))bad.push(NET.same+': RT changed walk speed '+walk+'/'+shooting);
+         poll([7]);var rt=bloom(false,0.35),lt=bloom(true,0),hip=bloom(false,0);
+         for(q=0;q<3;q++)if(!near(rt[q],lt[q]))bad.push(NET.same+': RT lost steady spread component '+q);
+         if(!(rt[2]<hip[2])||!(rt[1]<hip[1])||!(rt[0]<hip[0]))bad.push(NET.same+': RT has hip spread');
+         p.ads=false;PAD.adsT=0.35;padRelease();
+         if(PAD.adsT>0)bad.push(NET.same+': released pad kept its settle');
+       }
+       return bad.length?bad.join('; '):null;
+     }finally{
+       rnd=rn;netPadFocused=nf;netSamePost=np;
+       try{padRelease();NET.on=false;NET.same='';__endRaid('abandon');}catch(e){}__topClear();
+       if(own)navigator.getGamepads=ng;else delete navigator.getGamepads;
+       Object.keys(PAD).forEach(function(k){delete PAD[k];});Object.assign(PAD,pk);
+       Object.keys(NET).forEach(function(k){delete NET[k];});Object.assign(NET,nk);
+       Object.assign(RUMBLE,rk);Object.assign(CFG,cp);keys=kk;Object.assign(mouse,mm);
+     }
+   }},
   {v:'35.50',what:'cw-extpill, his ask 2026-10-27 (the hud messaging is a clusterfuck, make it AAA), the research rule for the top centre: the extract pill under the clock carries the state of its exit, teal while open, amber inside the two minute warning with a countdown in its last minute, red once shut, and one pulse on each change; an open exit just off the screen draws an edge arrow with its letter and distance (c 152m) clear of the corner panels and the pickup stack column, and no longer the line under the pill; the sky (weather, else time of day) is a small icon beside the clock',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
