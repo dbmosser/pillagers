@@ -9,3 +9,8 @@ The quiet hud (v35.30 to v35.37) changed these on purpose, so each check now tes
 - 25.66: the boss-spotted alert replaces the location tag (one alert at a time at top centre); confirm with a probe first.
 - 15.79: after an extraction out word a late position word no longer redraws the teammate (v35.37 cw-xsink, job 189).
 TASK DONE when all 12 pass on the current build and their known-red lines are gone, or PARTIAL naming any that should be retired instead.
+ADDED 10-28 02:00 (CEO; sorted from run corpus-1027-2310 by commit 35fcbf4d8), 5 more to retarget the same way:
+- 16.43 and 16.46: they look for pinging only through NET.on, but pings work solo since v35.41 (task 139).
+- 23.02: the ping label is a lower case plate since v35.43 (cw-cx-pingread); the check wants CRIER in capitals.
+- 23.10: a finished goal now waits 4 s without a shot (v35.44 cw-msgroute); one line shows at once, the second 2.5 s later.
+- 32.69: the stash item line is a fixed 160px box that always shows, since v35.42 (his stash hover order).
