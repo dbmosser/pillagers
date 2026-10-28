@@ -14,3 +14,5 @@ to come only from the camera staging, fix the staging AND say so plainly in the 
 Check (must FAIL on v34.78): with that recipe staged, only one text element or draw names the cash figure in the top right box.
 Player text rules hold (all lower case, $ for money).
 TASK DONE when it shipped with pictures; TASK PARTIAL with what is left.
+
+NOTE 10-27 21:30 (job 186b, v35.36): the wallet rows are no longer drawn in a raid at all (his quiet hud order, change 2), and the page copy stays clipped there. Re-check in a raid and in the Undercroft whether any double text still shows before working this; in a raid it should be gone.
