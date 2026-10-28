@@ -8924,8 +8924,8 @@ window.__REGRESS=[
        if(foot!==1) bad.push('the footer line is drawn '+foot+' times, not once');
        if(!L||!(L.w>0)) bad.push('no list box');
        else {
-         if(L.y<H/2) bad.push('the list box starts above the lower half: y '+Math.round(L.y)+' h '+Math.round(L.h)+' bottom '+Math.round(L.y+L.h)+' of '+H+' zoom '+HUDZ.legend);
-         if(fb&&fb.on&&hitR(L,fb)) bad.push('the opened list overlaps the left log');
+         if(L.y+L.h<H/2) bad.push('the list box ends above the lower half: y '+Math.round(L.y)+' h '+Math.round(L.h)+' bottom '+Math.round(L.y+L.h)+' of '+H+' zoom '+HUDZ.legend);
+         if(fb&&(fb.rows||[]).some(function(q){ return hitR(L,q); })) bad.push('a left log line is under the opened list');   /* retarget (cw-f1left, his order of 2026-10-27 "should be over on the left, not the middle of the screen"): the list stands in the feed zone and its lines step right of it; its bottom, not its top, is in the lower half */
          if(hitR(L,hb)) bad.push('the opened list overlaps the vitals');
          if(hitR(L,rb)) bad.push('the opened list overlaps the bot list');
        }
@@ -9388,12 +9388,12 @@ window.__REGRESS=[
        }
        g.legendOn=1; for(i=0;i<12;i++) __frame();
        lb=HUDBOX.legend;
-       if(inLL(lb,'the opened list')) bad.push(inLL(lb,'the opened list'));
+       if(!lb||!(lb.w>0)||lb.x+lb.w>W/2||lb.y+lb.h<H/2) bad.push('the opened list is not low on the left: '+(lb?Math.round(lb.x)+','+Math.round(lb.y)+' '+Math.round(lb.w)+'x'+Math.round(lb.h):'no box'));   /* retarget (cw-f1left, his order of 2026-10-27 "should be over on the left, not the middle of the screen"): the list stands at the left edge in the feed place, so its top may sit just over the middle; it is in the left half with its bottom in the lower half */
        else {
-         if(hit(lb,fb)) bad.push('the opened list overlaps the feed');
+         if((fb.rows||[]).some(function(q){ return hit(lb,q); })) bad.push('a feed line is under the opened list');   /* retarget (cw-f1left, his order of 2026-10-27 "should be over on the left, not the middle of the screen"): the list stands in the feed zone and the feed lines step right of it, so the test is the lines, not the zone */
          hb2=vit(); if(!hb2.length) bad.push('no vitals were drawn with the list open'); if(hitV(lb,hb2)) bad.push('the opened list overlaps the vitals (bars or posture tag as drawn)');
          if(hh&&lb.y+lb.h>hh.y+hh.h+2) bad.push('the opened list does not end where the folded line ends');
-         if(hh&&(lb.x<hh.x-2||lb.x>hh.x+hh.w)) bad.push('the opened list does not start on the folded chip: '+Math.round(lb.x)+' vs '+Math.round(hh.x)+' to '+Math.round(hh.x+hh.w));   // retarget (cw-hudcorner, his note of 2026-10-25): the list grows up from the chip with its left edge on it, moved right only as far as the feed needs (was one left edge within LH(14))
+         /* retarget (cw-f1left, his order of 2026-10-27 "should be over on the left, not the middle of the screen"): the opened list no longer grows from the folded chip on the belt; it stands at the left edge, which check cw-f1left tests */   // retarget (cw-hudcorner, his note of 2026-10-25): the list grows up from the chip with its left edge on it, moved right only as far as the feed needs (was one left edge within LH(14))
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say=oSay; P.runs=r0; try{ if(G&&!G.over) __endRaid('abandon'); __topClear(); }catch(_c){} }
@@ -14288,7 +14288,7 @@ window.__REGRESS=[
          if(hit(lb,hb)) bad.push(t+'the controls list (x '+Math.round(lb.x)+' to '+Math.round(lb.x+lb.w)+', y '+Math.round(lb.y)+' to '+Math.round(lb.y+lb.h)+') covers the item-in-hand panel (x '+hb.x+' to '+(hb.x+hb.w)+', y '+hb.y+' to '+(hb.y+hb.h)+')');
          p.hand=null; g.legendOn=1; for(i=0;i<3;i++) __frame(0.016);
          lb=HUDBOX.legend;
-         var _lc=(typeof legChipSpot==='function')?legChipSpot():null, _ab=(_lc&&lb&&typeof legDock==='function')?legDock(_lc).b:null;   /* retarget (cw-hudcorner, his note of 2026-10-25): docked on the belt, the list rests where legDock puts it (the folded chip row, or over the use bar or the vitals it must clear), not on the vitals */ if(lb&&_ab!==null&&Math.abs((lb.y+lb.h)-_ab)>LH(4)+2) bad.push(t+'with the item put away the list does not stand back on its dock (bottom '+Math.round(lb.y+lb.h)+', dock '+Math.round(_ab)+')'); else if(lb&&_ab===null&&HUDBOX.body&&Math.abs((lb.y+lb.h)-(HUDBOX.body.y-LH(8)))>LH(4)+2) bad.push(t+'with the item put away the list does not stand back on the vitals (bottom '+Math.round(lb.y+lb.h)+', vitals top '+Math.round(HUDBOX.body.y)+')');
+         var _lc=(typeof legChipSpot==='function')?legChipSpot():null, _ab=(lb&&typeof legLeftDock==='function'&&legLeftDock())?legLeftDock().b:(_lc&&lb&&typeof legDock==='function')?legDock(_lc).b:null;   /* retarget (cw-f1left, his order of 2026-10-27 "should be over on the left, not the middle of the screen"): the list rests on legLeftDock, at the left edge, where it exists */   /* retarget (cw-hudcorner, his note of 2026-10-25): docked on the belt, the list rests where legDock puts it (the folded chip row, or over the use bar or the vitals it must clear), not on the vitals */ if(lb&&_ab!==null&&Math.abs((lb.y+lb.h)-_ab)>LH(4)+2) bad.push(t+'with the item put away the list does not stand back on its dock (bottom '+Math.round(lb.y+lb.h)+', dock '+Math.round(_ab)+')'); else if(lb&&_ab===null&&HUDBOX.body&&Math.abs((lb.y+lb.h)-(HUDBOX.body.y-LH(8)))>LH(4)+2) bad.push(t+'with the item put away the list does not stand back on the vitals (bottom '+Math.round(lb.y+lb.h)+', vitals top '+Math.round(HUDBOX.body.y)+')');
        }
      }
      try{
@@ -34742,8 +34742,8 @@ window.__REGRESS=[
        L=HUDBOX.legend; F=FEEDBOX; Bd=HUDBOX.body; Rd=HUDBOX.raiders;
        if(!L||!(L.w>0)) return 'SKIP: no controls list drawn';
        if(!F.on) return 'the feed zone is not laid out';
-       if(hit(L,F)) bad.push('the controls list ('+r(L)+') is on the feed ('+r(F)+')');
-       if(L.x<F.x+F.w-0.5) bad.push('the controls list does not stand right of the feed');
+       if((F.rows||[]).some(function(q){ return hit(L,q); })) bad.push('a feed line is under the controls list ('+r(L)+')');   /* retarget (cw-f1left, his order of 2026-10-27 "should be over on the left, not the middle of the screen"): the list stands at the left edge in the feed zone, and the feed lines step right of it */
+       /* retarget (cw-f1left, his order of 2026-10-27 "should be over on the left, not the middle of the screen"): it no longer stands right of the feed */
        if(Bd&&L.y+L.h>Bd.y+0.5) bad.push('the controls list runs into the vitals');
        if(L.x+L.w>W*0.5) bad.push('the controls list reaches '+Math.round(L.x+L.w)+' of '+W);
        if(Rd&&hit(L,Rd)) bad.push('the controls list ('+r(L)+') is over the pillagers board ('+r(Rd)+')');
@@ -103813,7 +103813,7 @@ window.__REGRESS=[
      for(var i=0;i<tr.length;i++){
        var d=tr[i];
        if(String(d.t).toUpperCase()==='RMB') sawRmb=true;
-       if(d.y<box.y||d.y>box.y+box.h||d.x<box.x-1) continue;
+       if(d.y<box.y||d.y>box.y+box.h||d.x<box.x-1||d.x>=box.x+box.w) continue;   /* retarget (cw-f1left, his order of 2026-10-27 "should be over on the left, not the middle of the screen"): the feed lines now stand beside the list at its height; text that starts right of the panel is not its row */
        if(d.align==='right') continue;
        if(d.x+d.w>box.x+box.w+0.5) rowsOut.push(d.t+' ends '+Math.round(d.x+d.w-(box.x+box.w))+' past the panel edge');
      }
@@ -104548,7 +104548,7 @@ window.__REGRESS=[
      // health bar, and this build moves the drag OUT of the panel and on top of
      // that anchor. If the anchor broke, the fix traded one fault for a worse one.
      var body=__hudBox().body;
-     var _ld=(typeof legDock==='function'&&typeof legChipSpot==='function')?legDock(legChipSpot()):null; if(_ld) body={y:_ld.b};   /* retarget (cw-hudcorner, his note of 2026-10-25): docked on the belt, the list anchors where legDock puts it (the folded chip row, or over the use bar or the vitals it must clear), not on the vitals top */ if(body&&Math.abs((b0.y+b0.h)-body.y)>26)
+     var _ld=(typeof legLeftDock==='function'&&legLeftDock())?legLeftDock():(typeof legDock==='function'&&typeof legChipSpot==='function')?legDock(legChipSpot()):null; if(_ld) body={y:_ld.b};   /* retarget (cw-f1left, his order of 2026-10-27 "should be over on the left, not the middle of the screen"): the list anchors on legLeftDock, at the left edge, where it exists */   /* retarget (cw-hudcorner, his note of 2026-10-25): docked on the belt, the list anchors where legDock puts it (the folded chip row, or over the use bar or the vitals it must clear), not on the vitals top */ if(body&&Math.abs((b0.y+b0.h)-body.y)>26)
        bad.push('with no drag the legend bottom sits at '+Math.round(b0.y+b0.h)+
                 ' against the vitals top at '+Math.round(body.y)+', so the anchor is broken');
      // THE FINDING. Measured on v9.82: a drag of 80 right and 150 up moved the
