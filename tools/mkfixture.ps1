@@ -6508,7 +6508,8 @@ window.__REGRESS=[
        feedTick(2.6);
        if(feedHas('ZQ TWO RECEIVED')!==1) bad.push('the second line did not follow 2.5 s later');
        say('HEALTH FULL');
-       if(feedHas('HEALTH FULL')!==1) bad.push('the answer HEALTH FULL waits behind another line');
+       if(typeof ansSay==='function'){ if(!(g.ans&&g.ans.m==='HEALTH FULL')||feedHas('HEALTH FULL')) bad.push('the answer HEALTH FULL does not show at once on the answer line under the character'); }   // cw-answerline retarget (his ask 10-27, report job 7): an answer shows at once under the feet, not in the feed
+       else if(feedHas('HEALTH FULL')!==1) bad.push('the answer HEALTH FULL waits behind another line');
        say('CONTRACT ITEM NEARBY','obj',{sub:'GOLD GLOW MARKS THE BOX',key:'needhint'});   // as the contract item hint says it
        if(feedHas('CONTRACT ITEM NEARBY')!==1) bad.push('contract item nearby no longer shows at once');
        clr(); say('ZQ A RECEIVED','info'); say('ZQ B RECEIVED','info'); say('ZQ C RECEIVED','info');
