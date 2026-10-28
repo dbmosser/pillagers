@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.47 - NEW SAVES COUNT EACH KILL ONCE
+
+Co-op hunt while he was away. Found in the cloud audit of 2026-10-28 (lint class C, now that it runs). A new save is not born with achScan, the stamp of the one-time scan that credits runs from before live counting. Live runs already add their kills (achRun with live true), so the first time a new save opens its stats page the scan adds every logged run a second time. Proven in headless Chromium on v35.38: two runs of 7 pillager kills read 14, then 28 after the first look at the stats page, and the 25 kill medal unlocked; machines went 60 to 120. Fix: the born profile carries achScan:1 like mig739 and dayMigrated. Old saves are untouched (a loaded save replaces the literal whole), so a save from before live counting still gets its one scan.
+
+MEASURED. Check 35.47 passes, and fails on v35.46.
 ## v35.46 - PAGE WALLET STAYS HIDDEN IN THE NEW HUD FRAME
 
 Co-op hunt while he was away. His wallet collision was fixed in v35.01. Verification found one remaining timing gap: after a slow frame the loop could unclip the page wallet before the HUD refreshed its stamp. The corner draw now clips the page wallet immediately, including when the quiet HUD has no wallet rows.

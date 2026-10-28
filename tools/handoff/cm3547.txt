@@ -1,0 +1,7 @@
+v35.47: new saves count each kill once
+
+new saves count each kill once for medals
+
+Check 35.47. Fails on v35.46.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

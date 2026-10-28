@@ -1,1 +1,1 @@
-10-27 23:36 gate: shipping cw-cx-walletframe (o-120c-wallet-double-text, codex)
+10-27 23:40 waiting for RAM: 2 GB free, need 3 (o-120c-wallet-double-text)
