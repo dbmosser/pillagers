@@ -1,0 +1,7 @@
+v35.81: condition reward readability
+
+Terms use 20px bonuses, 88px rows, a 32px aligned title and a visible check on signed conditions. Descriptions are short and call humans pillagers. Pre-raid pack space collapses when empty, condition labels grow to 18px, and selection uses one check with a separate focus ring. Map names grow and avoid rooms; the owner chosen blue map and its width remain. The career result uses one 56px SP hero, neutral money at 32px, four 16px-label stats, a named item tile and quiet medal outlines. Kill count moves into its score row. Feedback stays available as a text control. Watch: check the largest condition stacks at 1080p for scrolling or clipping; signed Terms, pad focus, score and money must stay easy to tell apart.
+
+Check 35.81. Fails on v35.80.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

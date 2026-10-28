@@ -1,0 +1,92 @@
+{
+    "title":  "CONDITION REWARD READABILITY",
+    "why":  "The critic found undersized rewards, empty pack space, no Terms header and competing result totals.",
+    "now":  "Terms use 20px bonuses, 88px rows, a 32px aligned title and a visible check on signed conditions. Descriptions are short and call humans pillagers. Pre-raid pack space collapses when empty, condition labels grow to 18px, and selection uses one check with a separate focus ring. Map names grow and avoid rooms; the owner chosen blue map and its width remain. The career result uses one 56px SP hero, neutral money at 32px, four 16px-label stats, a named item tile and quiet medal outlines. Kill count moves into its score row. Feedback stays available as a text control. Watch: check the largest condition stacks at 1080p for scrolling or clipping; signed Terms, pad focus, score and money must stay easy to tell apart.",
+    "edits":  [
+                  {
+                      "anchor":  "\u003ctitle\u003ePillagers\u003c/title\u003e",
+                      "replacement":  "\u003ctitle\u003ePillagers\u003c/title\u003e\n\u003cstyle id=\"cx-condition-ui\"\u003e\n/* v28.xx (cw-cx-condition-ui): critic round 1, readable condition rewards and one result hero. His chosen blue map and map-first proportions stay. */\n#root #sectormodal #srkitcol{gap:24px}\n#root #sectormodal #sectorpack{flex:0 1 auto;min-height:0;padding:16px 0;border-top:1px solid var(--ui-line);border-bottom:1px solid var(--ui-line)}\n#root #sectormodal .srplist:empty{display:none}\n#root #sectormodal #sectorkit{margin-top:auto!important}\n#root #sectormodal .srcap{font-size:18px;letter-spacing:.04em}\n#root #sectormodal .srchip em{font-size:18px}\n#root #sectormodal .srstack{padding-bottom:10px;border-bottom:1px solid var(--ui-line)}\n#root #sectormodal .srchip.on,#root #sectormodal .kitb.on{box-shadow:none}\n#root #sectormodal .srchip:focus-visible,#root #sectormodal .kitb:focus-visible,#root #sectormodal .padfocus{outline:2px solid var(--acc)!important;outline-offset:2px}\n#root #sectormodal .kitb .kd{font-size:16px;line-height:1.25}\n#root #sectormodal .pkb{font-size:16px;background:transparent}\n#root #sectormodal .srcore{font-size:16px}\n#root #sectormodal .srcore .cb{width:32px;height:32px;flex:none}\n#root #sectormodal .srcore.on .cb::after{left:10px;top:5px}\n#root #termsmodal{justify-content:flex-start!important;padding-top:112px!important;padding-bottom:112px!important;gap:0}\n#root #termsmodal h3{width:100%;max-width:1400px!important;align-self:center;text-align:left;font:700 32px/56px var(--f-cond)!important;margin:0 0 24px!important;padding:0 0 8px;border-bottom:1px solid var(--ui-line)}\n#root #termsmodal #termslist{border-color:var(--ui-line-hi)!important}\n#root #termsmodal #termslist .row{min-height:88px;padding:16px 24px;gap:16px;background:var(--ui-panel);border-color:var(--ui-line)}\n#root #termsmodal #termslist .row.signed{background:var(--ui-raised)}\n#root #termsmodal #termslist .nm{font-size:20px}\n#root #termsmodal #termslist .nm div{font-size:16px!important;color:var(--tx-2)!important}\n#root #termsmodal #termslist .vl{font:600 20px var(--f-cond)!important;color:var(--tx-2)!important;min-width:90px}\n#root #termsmodal #termslist .row.signed .vl{color:var(--acc)!important}\n#root #termsmodal #termslist button{width:120px;min-width:104px;min-height:48px;color:var(--tx-1)!important;background:transparent;border:1px solid var(--ui-line-hi)!important}\n#root #termsmodal #termslist button[aria-pressed=\"true\"]{color:var(--acc-ink)!important;background:var(--acc);border-color:var(--acc)!important}\n#root #termsmodal #termslist .row:focus-within{box-shadow:inset 3px 0 var(--acc);background:var(--ui-raised)}\n#root #termsmodal button:focus-visible,#root #termsmodal .padfocus{outline:2px solid var(--acc)!important;outline-offset:3px}\n#root #termsmodal #termstotal{margin-top:24px!important;min-height:24px;text-align:right;font:600 20px var(--f-cond)}\n#root #termsmodal #termstotal span{color:var(--acc)!important}\n#root #termsmodal .ui-foot{margin-top:auto!important;min-height:72px;align-items:center}\n#root .ocwin.condition-ui{padding:24px 32px 0;max-height:calc(100vh - 64px);overflow-y:auto}\n#root .ocwin.condition-ui #oc_sub{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}\n#root .ocwin.condition-ui #oc_manifest{margin:16px 0;font-size:16px;line-height:1.4;color:var(--tx-1)}\n#root .lg{width:100%;max-width:none;margin:0;letter-spacing:.04em}\n#root .lg .lgcols{gap:16px}\n#root .lg .lgp{--lgc:var(--tx-1);padding:16px;background:var(--ui-panel);border:1px solid var(--ui-line-hi);border-top:1px solid var(--ui-line-hi);border-radius:4px}\n#root .lg .lgh{font-size:16px;letter-spacing:.04em;color:var(--tx-2);gap:8px;flex-wrap:wrap;height:auto;min-height:24px}\n#root .lg .lgh .lgpb{font-size:16px;letter-spacing:.02em;background:none;color:var(--tx-1);clip-path:none;padding:0;border-bottom:3px solid var(--r-gold,#ffc72e)}\n#root .lg .lgp .lgr{font-size:16px;padding:4px 0;letter-spacing:.02em}\n#root .lg .lgp .lgr .lgl{color:var(--tx-2);font-weight:600}\n#root .lg .lgp .lgr b{font-size:20px;color:var(--tx-1);font-weight:700}\n#root .lg .lgp .lgr.sc,#root .lg .lgp .lgr.tot{border-top:1px solid var(--ui-line-hi);margin-top:8px;padding-top:12px;color:var(--tx-1)}\n#root .lg .lgps .lgr.sc{display:flex;flex-wrap:wrap;gap:4px;justify-content:space-between}\n#root .lg .lgps .lgr.sc b{font:800 56px/1.1 var(--f-cond);letter-spacing:0;color:var(--acc);white-space:nowrap}\n#root .lg .lgpm .lgr.tot b{font:700 32px/1.2 var(--f-cond);letter-spacing:0;color:var(--tx-1)}\n#root .lg .lgstrip{margin:16px 0}\n#root .lg .lgitemlabel{display:block;font-size:16px;color:var(--tx-2);margin:8px 0 0;text-align:center}\n#root .lg .lgst{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:16px 0}\n#root .lg .lgti{padding:8px 4px;background:var(--ui-panel);border:1px solid var(--ui-line);border-radius:4px}\n#root .lg .lgti b{font-size:24px;color:var(--tx-1)}\n#root .lg .lgti span{font-size:16px;letter-spacing:.04em;color:var(--tx-2)}\n#root .lg .lgem{gap:16px;margin:16px 0}\n#root .lg .lgeb{border-bottom:3px solid var(--r-gold,#ffc72e);padding-bottom:4px}\n#root .lg .lgeb svg{width:40px;height:40px;filter:none}\n#root .lg .lgeb svg polygon{fill:var(--ui-panel);stroke:var(--ui-line-hi)}\n#root .lg .lgeb svg g path{stroke:var(--tx-1)}\n#root .lg .lgeb i{font:600 16px var(--f-cond);letter-spacing:.04em;color:var(--tx-1)}\n#root .ocwin.condition-ui #oc_manifest\u003espan:not(.ocsr){font-size:16px!important;color:var(--tx-1)!important}\n#root .ocwin.condition-ui .fbhead{font:600 16px var(--f-cond);min-height:48px!important;padding:0 8px;margin-top:0;border:0;background:none;color:var(--tx-2)}\n#root .ocwin.condition-ui #oc_btn{margin-top:16px}\n\u003c/style\u003e"
+                  },
+                  {
+                      "anchor":  "    var on=hasTerm(T.id);\n    var row=document.createElement(\u0027div\u0027); row.className=\u0027row\u0027;",
+                      "replacement":  "    var on=hasTerm(T.id);\n    var row=document.createElement(\u0027div\u0027); row.className=on?\u0027row signed\u0027:\u0027row\u0027;"
+                  },
+                  {
+                      "anchor":  "  try{ var _fbw=document.querySelector(\u0027#outcome .ocwin\u0027); if(_fbw) _fbw.classList.remove(\u0027fbopen\u0027); }catch(_fbo){}   // v27.xx (uic2): every card comes up with the tags shut",
+                      "replacement":  "  // v28.xx (cw-cx-condition-ui): set a direct style class once per card, rather than matching descendants during every layout.\n  try{ var _fbw=document.querySelector(\u0027#outcome .ocwin\u0027); if(_fbw){ _fbw.classList.remove(\u0027fbopen\u0027); _fbw.classList.toggle(\u0027condition-ui\u0027,!!(G\u0026\u0026G.career\u0026\u0026!G.sim\u0026\u0026G.cs)); } }catch(_fbo){}"
+                  },
+                  {
+                      "anchor":  "    b.onclick=function(){ toggleTerm(T.id); renderTerms(); renderHub(); };",
+                      "replacement":  "    b.onclick=function(){ toggleTerm(T.id); renderTerms(); renderHub(); };\n    // v28.xx (cw-cx-condition-ui): selection is explicit and exposed to keyboard/pad and assistive readers.\n    b.setAttribute(\u0027aria-pressed\u0027,on?\u0027true\u0027:\u0027false\u0027);"
+                  },
+                  {
+                      "anchor":  "    b.textContent=on?\u0027Signed\u0027:\u0027Sign\u0027;",
+                      "replacement":  "    b.textContent=on?\u0027\\u2713 signed\u0027:\u0027sign\u0027;   // v28.xx (cw-cx-condition-ui): a check distinguishes the signed state"
+                  },
+                  {
+                      "anchor":  "40% more machines, pillager bots and criers.",
+                      "replacement":  "40% more machines, pillagers and criers."
+                  },
+                  {
+                      "anchor":  "\u003cspan class=\"held\"\u003eBURNS ON ASCENT\u003c/span\u003e",
+                      "replacement":  "\u003cspan class=\"held\"\u003eburn for intel\u003c/span\u003e"
+                  },
+                  {
+                      "anchor":  "Every pillager bot is hostile and already searching for you.",
+                      "replacement":  "all pillagers hostile and searching"
+                  },
+                  {
+                      "anchor":  "desc:\u0027Every lamp on the map stays dark.\u0027",
+                      "replacement":  "desc:\u0027all lamps off\u0027"
+                  },
+                  {
+                      "anchor":  "desc:\u0027One extra Listener. All Listeners hear 50% farther.\u0027",
+                      "replacement":  "desc:\u0027+1 listener. hearing +50%\u0027"
+                  },
+                  {
+                      "anchor":  "     return \u0027The whole raid clock is cut by a third: about \u0027+Math.round(full*0.66)+\n            \u0027 seconds instead of \u0027+full+\u0027.\u0027;",
+                      "replacement":  "     return \u0027raid clock -33%: \u0027+Math.round(full*0.66)+\u0027s\u0027;   // v28.xx (cw-cx-condition-ui): short, computed condition summary"
+                  },
+                  {
+                      "anchor":  "parts=[[\u0027COMBAT\u0027,\u0027KILLS\u0027,b.kill|0]",
+                      "replacement":  "parts=[[\u0027COMBAT\u0027,\u0027KILLS (\u0027+((c.k||0)|0)+\u0027)\u0027,b.kill|0]"
+                  },
+                  {
+                      "anchor":  "tiles=[[kn,\u0027KILLS\u0027],[(x.acc|0)+\u0027%\u0027,\u0027ACCURACY\u0027],[T.containers|0,\u0027CONTAINERS\u0027],[fmtClock(x.sec|0),\u0027TIME\u0027],[ex?(x.hp|0):0,\u0027HEALTH\u0027]];",
+                      "replacement":  "tiles=[[(x.acc|0)+\u0027%\u0027,\u0027ACCURACY\u0027],[T.containers|0,\u0027CONTAINERS\u0027],[fmtClock(x.sec|0),\u0027TIME\u0027],[ex?(x.hp|0):0,\u0027HEALTH\u0027]];   // v28.xx (cw-cx-condition-ui): kill count is on its combat row; four guide-sized stats"
+                  },
+                  {
+                      "anchor":  "  if(ex\u0026\u0026strip){ h+=\u0027\u003cdiv class=\"lgstrip\" style=\"--i:\u0027+idx+\u0027\"\u003e\u0027+strip+\u0027\u003c/div\u003e\u0027; idx++; }",
+                      "replacement":  "  // v28.xx (cw-cx-condition-ui): name the secured item below its tile instead of leaving an unexplained icon.\n  if(ex\u0026\u0026strip){\n    var ik=G.bag\u0026\u0026G.bag[0], itemName=(ik\u0026\u0026ITEMS[ik])?ITEMS[ik].name:\u0027secured loot\u0027;\n    if(G.bag\u0026\u0026G.bag.length\u003e1) itemName+=\u0027 +\u0027+(G.bag.length-1);\n    h+=\u0027\u003cdiv class=\"lgstrip\" style=\"--i:\u0027+idx+\u0027\"\u003e\u0027+strip+\u0027\u003cspan class=\"lgitemlabel\"\u003e\u0027+escHtml(itemName)+\u0027\u003c/span\u003e\u003c/div\u003e\u0027; idx++;\n  }"
+                  },
+                  {
+                      "anchor":  "  function put(s,x,y){ var tw=c.measureText(String(s)).width, tx=(c.textAlign===\u0027right\u0027)?x-tw:((c.textAlign===\u0027center\u0027)?x-tw/2:x), fh=parseInt((c.font.match(/(\\d+)px/)||[0,16])[1],10), f0=c.fillStyle; c.fillStyle=\u0027rgba(11,12,13,.78)\u0027; c.fillRect(tx-5,y-fh+2,tw+10,fh+5); c.fillStyle=f0; c.fillText(s,x,y); }",
+                      "replacement":  "  // v28.xx (cw-cx-condition-ui): a narrow halo keeps map names readable without black label plates.\n  function put(s,x,y){ var os=c.strokeStyle, ow=c.lineWidth; c.strokeStyle=\u0027#0b0c0d\u0027; c.lineWidth=3; c.strokeText(s,x,y); c.fillText(s,x,y); c.strokeStyle=os; c.lineWidth=ow; }"
+                  },
+                  {
+                      "anchor":  "c.font=\u0027600 18px \u0027+FF; c.textAlign=\u0027right\u0027;",
+                      "replacement":  "c.font=\u0027600 22px \u0027+FF; c.textAlign=\u0027right\u0027;"
+                  },
+                  {
+                      "anchor":  "var zw=Math.max(10,z.w*sc-6), fs=20,",
+                      "replacement":  "var zw=Math.max(10,z.w*sc-6), fs=24,"
+                  },
+                  {
+                      "anchor":  "while(fs\u003e14\u0026\u0026c.measureText(nm).width\u003ezw)",
+                      "replacement":  "while(fs\u003e20\u0026\u0026c.measureText(nm).width\u003ezw)"
+                  },
+                  {
+                      "anchor":  "c.font=\u0027600 18px \u0027+FF; c.textAlign=\u0027center\u0027; c.fillStyle=\u0027#47d8c6\u0027;",
+                      "replacement":  "c.font=\u0027600 22px \u0027+FF; c.textAlign=\u0027center\u0027; c.fillStyle=\u0027#47d8c6\u0027;"
+                  },
+                  {
+                      "anchor":  "      function hits(y,hh,hw){ var j,e2,rx,ry,r2,nx,ny; if(!EX) return false; for(j=0;j\u003cEX.length;j++){ e2=EX[j]; if(!e2) continue; rx=ox+e2.x*sc; ry=oy+e2.y*sc; r2=R+2; nx=Math.max(cx-hw,Math.min(rx,cx+hw)); ny=Math.max(y-hh,Math.min(ry,y+hh)); if((nx-rx)*(nx-rx)+(ny-ry)*(ny-ry)\u003cr2*r2) return true; } return false; }",
+                      "replacement":  "      // v28.xx (cw-cx-condition-ui): cache room and label bounds once per name; candidate positions only compare rectangles.\n      var labelObstacles=null;\n      function hits(y,hh,hw){\n        var j,e2,rx,ry,r2,nx,ny,O,ob,left,top,right,bottom;\n        if(EX) for(j=0;j\u003cEX.length;j++){ e2=EX[j]; if(!e2) continue; rx=ox+e2.x*sc; ry=oy+e2.y*sc; r2=R+2; nx=Math.max(cx-hw,Math.min(rx,cx+hw)); ny=Math.max(y-hh,Math.min(ry,y+hh)); if((nx-rx)*(nx-rx)+(ny-ry)*(ny-ry)\u003cr2*r2) return true; }\n        if(!labelObstacles){\n          labelObstacles=[];O=(M.buildings||[]).concat(M.locked||[]);\n          for(j=0;j\u003cO.length;j++){ob=O[j];left=ox+ob.x*sc-8;top=oy+ob.y*sc-8;labelObstacles.push([left,top,left+ob.w*sc+16,top+ob.h*sc+16]);}\n          O=M.locked||[];for(j=0;j\u003cO.length;j++){ob=O[j];right=ox+ob.x*sc-8;left=right-c.measureText(TX(String(ob.name||\u0027\u0027))).width-8;top=oy+(ob.y+ob.h/2)*sc-24;labelObstacles.push([left,top,right,top+36]);}\n        }\n        for(j=0;j\u003clabelObstacles.length;j++){ob=labelObstacles[j];if(cx+hw\u003eob[0]\u0026\u0026cx-hw\u003cob[2]\u0026\u0026y+hh\u003eob[1]\u0026\u0026y-hh\u003cob[3])return true;}\n        return false;\n      }"
+                  },
+                  {
+                      "anchor":  "cand=[cy], j, e2, ry, r2, k, y, best=null;",
+                      "replacement":  "cand=[cy,top,bot,cy-hh*2-8,cy+hh*2+8], j, e2, ry, r2, k, y, best=null;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027condition reward screens use readable typography, explicit selection and one SP result hero\u0027,\n   run:function(){\n     var g, tm=document.getElementById(\u0027termsmodal\u0027), bad=[];\n     try{\n       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();\n       P.terms=[\u0027known\u0027];renderTerms();\n       var bonus=tm.querySelector(\u0027.vl\u0027), signed=tm.querySelector(\u0027button[aria-pressed=\"true\"]\u0027);\n       if(!bonus||parseFloat(getComputedStyle(bonus).fontSize)!==20)bad.push(\u0027Terms bonuses are not 20px\u0027);\n       if(!signed||!/signed/i.test(signed.textContent))bad.push(\u0027signed condition has no selected state\u0027);\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});g=__state();g.career=1;g.cs={s:1000,k:4,b:{kill:1000}};g.bag=[\u0027core\u0027];g.carriedIn=0;g.player.downed=false;\n       __endRaid(\u0027extract\u0027);\n       var lg=document.querySelector(\u0027#oc_manifest .lg\u0027), hero=lg\u0026\u0026lg.querySelector(\u0027.lgps .sc b\u0027), label=lg\u0026\u0026lg.querySelector(\u0027.lgitemlabel\u0027);\n       if(!hero||parseFloat(getComputedStyle(hero).fontSize)!==56)bad.push(\u0027SP total is not the 56px hero\u0027);\n       if(!label||!label.textContent.length)bad.push(\u0027secured tile has no item name\u0027);\n       if(!lg||lg.querySelectorAll(\u0027.lgti\u0027).length!==4)bad.push(\u0027result does not have four secondary stats\u0027);\n       var small=lg\u0026\u0026lg.querySelectorAll(\u0027.lgti span,.lgeb i,.lgh\u0027);\n       for(var i=0;small\u0026\u0026i\u003csmall.length;i++)if(parseFloat(getComputedStyle(small[i]).fontSize)\u003c16)bad.push(\u0027a result label is under 16px\u0027);\n       return bad.length?bad.join(\u0027; \u0027):null;\n     }finally{try{if(g\u0026\u0026!g.over){g.player.downed=false;__endRaid(\u0027abandon\u0027);}}catch(e){}__topClear();__resetCfg();__cleanProfile();}\n   }},"
+}

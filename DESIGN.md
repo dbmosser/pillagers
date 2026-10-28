@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v35.81 - CONDITION REWARD READABILITY
+
+Co-op hunt while he was away. The critic found undersized rewards, empty pack space, no Terms header and competing result totals.
+
+MEASURED. Check 35.81 passes, and fails on v35.80.
 ## v35.80 - CLOCK OVER SCORE, ARROW TO THE NEAREST EXIT
 
 Co-op hunt while he was away. his HUD orders of 10-28 morning, with pictures: the clock in its own bigger card above the score card; the extraction arrow always to the nearest exit; score only in its card (no sp floats; kill lines keep their +sp); the band above the belt (exit inbound, in progress) only within 250 m; the gun card without the item count and value; the run info panel in the top right corner with no contracts count; the board reads current pillagers and value at risk; the air strike meter on top of the gun card; the downed card lifted off the player

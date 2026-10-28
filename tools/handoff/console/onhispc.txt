@@ -46,3 +46,4 @@
 10-28 09:37 v35.77 cw-cx-hotkill on his pc after 33s (8802 serves 35.77) week 79%
 10-28 10:05 v35.78 cw-skybolt on his pc after 49s (8802 serves 35.78) week 79%
 10-28 10:23 v35.79 cw-cx-condition-sp on his pc after 34s (8802 serves 35.79) week 80%
+10-28 10:46 v35.80 cw-clockcard on his pc after 49s (8802 serves 35.80) week 80%

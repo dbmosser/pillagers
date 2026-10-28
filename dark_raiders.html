@@ -1,6 +1,69 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Pillagers</title>
+<style id="cx-condition-ui">
+/* v28.xx (cw-cx-condition-ui): critic round 1, readable condition rewards and one result hero. His chosen blue map and map-first proportions stay. */
+#root #sectormodal #srkitcol{gap:24px}
+#root #sectormodal #sectorpack{flex:0 1 auto;min-height:0;padding:16px 0;border-top:1px solid var(--ui-line);border-bottom:1px solid var(--ui-line)}
+#root #sectormodal .srplist:empty{display:none}
+#root #sectormodal #sectorkit{margin-top:auto!important}
+#root #sectormodal .srcap{font-size:18px;letter-spacing:.04em}
+#root #sectormodal .srchip em{font-size:18px}
+#root #sectormodal .srstack{padding-bottom:10px;border-bottom:1px solid var(--ui-line)}
+#root #sectormodal .srchip.on,#root #sectormodal .kitb.on{box-shadow:none}
+#root #sectormodal .srchip:focus-visible,#root #sectormodal .kitb:focus-visible,#root #sectormodal .padfocus{outline:2px solid var(--acc)!important;outline-offset:2px}
+#root #sectormodal .kitb .kd{font-size:16px;line-height:1.25}
+#root #sectormodal .pkb{font-size:16px;background:transparent}
+#root #sectormodal .srcore{font-size:16px}
+#root #sectormodal .srcore .cb{width:32px;height:32px;flex:none}
+#root #sectormodal .srcore.on .cb::after{left:10px;top:5px}
+#root #termsmodal{justify-content:flex-start!important;padding-top:112px!important;padding-bottom:112px!important;gap:0}
+#root #termsmodal h3{width:100%;max-width:1400px!important;align-self:center;text-align:left;font:700 32px/56px var(--f-cond)!important;margin:0 0 24px!important;padding:0 0 8px;border-bottom:1px solid var(--ui-line)}
+#root #termsmodal #termslist{border-color:var(--ui-line-hi)!important}
+#root #termsmodal #termslist .row{min-height:88px;padding:16px 24px;gap:16px;background:var(--ui-panel);border-color:var(--ui-line)}
+#root #termsmodal #termslist .row.signed{background:var(--ui-raised)}
+#root #termsmodal #termslist .nm{font-size:20px}
+#root #termsmodal #termslist .nm div{font-size:16px!important;color:var(--tx-2)!important}
+#root #termsmodal #termslist .vl{font:600 20px var(--f-cond)!important;color:var(--tx-2)!important;min-width:90px}
+#root #termsmodal #termslist .row.signed .vl{color:var(--acc)!important}
+#root #termsmodal #termslist button{width:120px;min-width:104px;min-height:48px;color:var(--tx-1)!important;background:transparent;border:1px solid var(--ui-line-hi)!important}
+#root #termsmodal #termslist button[aria-pressed="true"]{color:var(--acc-ink)!important;background:var(--acc);border-color:var(--acc)!important}
+#root #termsmodal #termslist .row:focus-within{box-shadow:inset 3px 0 var(--acc);background:var(--ui-raised)}
+#root #termsmodal button:focus-visible,#root #termsmodal .padfocus{outline:2px solid var(--acc)!important;outline-offset:3px}
+#root #termsmodal #termstotal{margin-top:24px!important;min-height:24px;text-align:right;font:600 20px var(--f-cond)}
+#root #termsmodal #termstotal span{color:var(--acc)!important}
+#root #termsmodal .ui-foot{margin-top:auto!important;min-height:72px;align-items:center}
+#root .ocwin.condition-ui{padding:24px 32px 0;max-height:calc(100vh - 64px);overflow-y:auto}
+#root .ocwin.condition-ui #oc_sub{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+#root .ocwin.condition-ui #oc_manifest{margin:16px 0;font-size:16px;line-height:1.4;color:var(--tx-1)}
+#root .lg{width:100%;max-width:none;margin:0;letter-spacing:.04em}
+#root .lg .lgcols{gap:16px}
+#root .lg .lgp{--lgc:var(--tx-1);padding:16px;background:var(--ui-panel);border:1px solid var(--ui-line-hi);border-top:1px solid var(--ui-line-hi);border-radius:4px}
+#root .lg .lgh{font-size:16px;letter-spacing:.04em;color:var(--tx-2);gap:8px;flex-wrap:wrap;height:auto;min-height:24px}
+#root .lg .lgh .lgpb{font-size:16px;letter-spacing:.02em;background:none;color:var(--tx-1);clip-path:none;padding:0;border-bottom:3px solid var(--r-gold,#ffc72e)}
+#root .lg .lgp .lgr{font-size:16px;padding:4px 0;letter-spacing:.02em}
+#root .lg .lgp .lgr .lgl{color:var(--tx-2);font-weight:600}
+#root .lg .lgp .lgr b{font-size:20px;color:var(--tx-1);font-weight:700}
+#root .lg .lgp .lgr.sc,#root .lg .lgp .lgr.tot{border-top:1px solid var(--ui-line-hi);margin-top:8px;padding-top:12px;color:var(--tx-1)}
+#root .lg .lgps .lgr.sc{display:flex;flex-wrap:wrap;gap:4px;justify-content:space-between}
+#root .lg .lgps .lgr.sc b{font:800 56px/1.1 var(--f-cond);letter-spacing:0;color:var(--acc);white-space:nowrap}
+#root .lg .lgpm .lgr.tot b{font:700 32px/1.2 var(--f-cond);letter-spacing:0;color:var(--tx-1)}
+#root .lg .lgstrip{margin:16px 0}
+#root .lg .lgitemlabel{display:block;font-size:16px;color:var(--tx-2);margin:8px 0 0;text-align:center}
+#root .lg .lgst{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:16px 0}
+#root .lg .lgti{padding:8px 4px;background:var(--ui-panel);border:1px solid var(--ui-line);border-radius:4px}
+#root .lg .lgti b{font-size:24px;color:var(--tx-1)}
+#root .lg .lgti span{font-size:16px;letter-spacing:.04em;color:var(--tx-2)}
+#root .lg .lgem{gap:16px;margin:16px 0}
+#root .lg .lgeb{border-bottom:3px solid var(--r-gold,#ffc72e);padding-bottom:4px}
+#root .lg .lgeb svg{width:40px;height:40px;filter:none}
+#root .lg .lgeb svg polygon{fill:var(--ui-panel);stroke:var(--ui-line-hi)}
+#root .lg .lgeb svg g path{stroke:var(--tx-1)}
+#root .lg .lgeb i{font:600 16px var(--f-cond);letter-spacing:.04em;color:var(--tx-1)}
+#root .ocwin.condition-ui #oc_manifest>span:not(.ocsr){font-size:16px!important;color:var(--tx-1)!important}
+#root .ocwin.condition-ui .fbhead{font:600 16px var(--f-cond);min-height:48px!important;padding:0 8px;margin-top:0;border:0;background:none;color:var(--tx-2)}
+#root .ocwin.condition-ui #oc_btn{margin-top:16px}
+</style>
 <div id="root">
 <style>
 /* v28.xx (cw-nocaps-net), HIS HARD RULE (2026-10-18): never any all-caps text. The words themselves are fixed in TX (ncFix). */
@@ -3744,8 +3807,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.80';
-var VER_AT='2026-10-28 10:45';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.81';
+var VER_AT='2026-10-28 11:09';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -34100,9 +34163,9 @@ function commitRun(rec){
 // dying under them is just a worse day, which is what makes it a bet.
 var TERMS=[
   {id:'blackout',name:'BLACKOUT PROTOCOL',pay:0.05,
-   desc:'Every lamp on the map stays dark.'},
+   desc:'all lamps off'},
   {id:'patrols', name:'HEAVY PATROLS',pay:0.05,
-   desc:'40% more machines, pillager bots and criers.'},
+   desc:'40% more machines, pillagers and criers.'},
   // v8.19, audit: computed, not quoted. The old line named 400 and 600 seconds
   // from a raid clock retired at cfgv 15; the real pair is ~356 and 540, and a
   // hand-typed number here has now been wrong for six versions.
@@ -34113,17 +34176,16 @@ var TERMS=[
      // on a raid with no clock at all.
      var full=(CFG&&typeof CFG.raidSec==='number')?CFG.raidSec:DEF.raidSec;
      if(full<=0) return 'No effect: the raid clock is off.';
-     return 'The whole raid clock is cut by a third: about '+Math.round(full*0.66)+
-            ' seconds instead of '+full+'.';
+     return 'raid clock -33%: '+Math.round(full*0.66)+'s';   // v28.xx (cw-cx-condition-ui): short, computed condition summary
    }},
   // NO SAFE POCKET was removed at v5.57. Its only effect was to zero safeSlots,
   // and safeSlots has been zero for everyone since v5.32, so it paid 35 percent
   // for no change at all. If safeSlots ever goes back to 1, this term comes back
   // with it.
   {id:'known',   name:'THEY KNOW YOU',pay:0.05,
-   desc:'Every pillager bot is hostile and already searching for you.'},
+   desc:'all pillagers hostile and searching'},
   {id:'silence', name:'SILENT RUNNING',pay:0.05,
-   desc:'One extra Listener. All Listeners hear 50% farther.'}
+   desc:'+1 listener. hearing +50%'}
 ];
 // v20.31, from the whole-game bug hunt of 2026-10-08 (H27): THE TERMS OF THE RAID YOU ARE IN. A co-op guest's raid is built with
 // the host's Terms (netUpStart), but everything after the build read the guest's own signed list: its hazard pay, its XP, its
@@ -35464,7 +35526,8 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
    try{ netScoreDraw(); }catch(_nsd){}   // v17.39: the PARTY block under the manifest
   DEATH_FEED_HTML='';
   selTags=[]; buildTags();
-  try{ var _fbw=document.querySelector('#outcome .ocwin'); if(_fbw) _fbw.classList.remove('fbopen'); }catch(_fbo){}   // v27.xx (uic2): every card comes up with the tags shut
+  // v28.xx (cw-cx-condition-ui): set a direct style class once per card, rather than matching descendants during every layout.
+  try{ var _fbw=document.querySelector('#outcome .ocwin'); if(_fbw){ _fbw.classList.remove('fbopen'); _fbw.classList.toggle('condition-ui',!!(G&&G.career&&!G.sim&&G.cs)); } }catch(_fbo){}
   document.getElementById('oc_note').value='';
   if(NET.on&&!G.sim){ try{ netSumSend(how,(how==='extract')?haul:0); }catch(_ns){} }   // v16.40: the party summary
   document.getElementById('outcome').classList.add('on');
@@ -35646,7 +35709,7 @@ function ocLedger(how,lines,x){
     if((m=/^(<span style="color:var\(--amber\)">\+[\d,]+ XP)(?: (\((\d+)% penalty [^)]*\)))?(  &middot;  [\d,]+(?: of [\d,]+| XP in all))(<\/span>)(.*)$/.exec(ln))){ rest.push(m[1]+(m[3]?'  &middot;  '+m[3]+'% penalty':'')+'<span class="ocsr">'+(m[2]?' '+m[2]:'')+m[4]+(m[6]||'')+'</span>'+m[5]); continue; }   // v35.73 (cw-xpbreak), his picture 2026-10-28 ("+2,386 xpthe seal on cold storage is broken..."): the hidden part sits inside the xp span, so the line no longer ends on an ocsr span and the .ocsr + br rule no longer eats the break after it
     rest.push(ln);
   }
-  parts=[['COMBAT','KILLS',b.kill|0],['COMBAT','MEDALS',b.style|0],['OBJECTIVES','GOALS',b.goal|0],['OBJECTIVES','BOUNTY',b.bounty|0],['OBJECTIVES','STRONGHOLDS',b.strong|0],['OBJECTIVES','VAULTS',b.vault|0],['FORGE','UPGRADES',b.forge|0]];
+  parts=[['COMBAT','KILLS ('+((c.k||0)|0)+')',b.kill|0],['COMBAT','MEDALS',b.style|0],['OBJECTIVES','GOALS',b.goal|0],['OBJECTIVES','BOUNTY',b.bounty|0],['OBJECTIVES','STRONGHOLDS',b.strong|0],['OBJECTIVES','VAULTS',b.vault|0],['FORGE','UPGRADES',b.forge|0]];
   for(i=0;i<parts.length;i++) sum+=parts[i][2];
   if(s-sum!==0) parts.push(['OTHER','BONUSES',s-sum]);
   // v35.45 (cw-spmoney), HIS ORDER (2026-10-28), on a picture of this card: "this extracted screen is an absolute mess -- money versus raid score/sp should never be
@@ -35679,9 +35742,14 @@ function ocLedger(how,lines,x){
   mh+=row('tot'+(ex?'':' lost'),'<span class="lgl">TOTAL</span>'+((tot>0)?cnt(tot,'',1):('<b>'+arcadeMoney(0)+'</b>')));
   h+='<div class="lgcols"><div class="lgp lgps"><div class="lgh">RAID SCORE'+((R&&R.best)?' <em class="lgpb">PERSONAL BEST</em>':'')+'</div>'+sh+'</div>'+
      '<div class="lgp lgpm"><div class="lgh">MONEY</div>'+mh+'</div></div>';
-  if(ex&&strip){ h+='<div class="lgstrip" style="--i:'+idx+'">'+strip+'</div>'; idx++; }
+  // v28.xx (cw-cx-condition-ui): name the secured item below its tile instead of leaving an unexplained icon.
+  if(ex&&strip){
+    var ik=G.bag&&G.bag[0], itemName=(ik&&ITEMS[ik])?ITEMS[ik].name:'secured loot';
+    if(G.bag&&G.bag.length>1) itemName+=' +'+(G.bag.length-1);
+    h+='<div class="lgstrip" style="--i:'+idx+'">'+strip+'<span class="lgitemlabel">'+escHtml(itemName)+'</span></div>'; idx++;
+  }
   for(kk in (T.kills||{})) kn+=(T.kills[kk]||0);
-  tiles=[[kn,'KILLS'],[(x.acc|0)+'%','ACCURACY'],[T.containers|0,'CONTAINERS'],[fmtClock(x.sec|0),'TIME'],[ex?(x.hp|0):0,'HEALTH']];
+  tiles=[[(x.acc|0)+'%','ACCURACY'],[T.containers|0,'CONTAINERS'],[fmtClock(x.sec|0),'TIME'],[ex?(x.hp|0):0,'HEALTH']];   // v28.xx (cw-cx-condition-ui): kill count is on its combat row; four guide-sized stats
   h+='<div class="lgst" style="--i:'+idx+'">';
   for(i=0;i<tiles.length;i++) h+='<div class="lgti"><b>'+tiles[i][0]+'</b><span>'+tiles[i][1]+'</span></div>';
   h+='</div>'; idx++;
@@ -55625,7 +55693,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.80: clock card over the score card; arrow to the nearest exit; no sp pop-ups; far exits stay quiet; tidier gun card, goals panel and board; air strike over the gun card; downed card above you Check 35.80 fails on v35.79',
+  now:'v35.81: Terms use 20px bonuses, 88px rows, a 32px aligned title and a visible check on signed conditions. Descriptions are short and call humans pillagers. Pre-raid pack space collapses when empty, condition labels grow to 18px, and selection uses one check with a separate focus ring. Map names grow and avoid rooms; the owner chosen blue map and its width remain. The career result uses one 56px SP hero, neutral money at 32px, four 16px-label stats, a named item tile and quiet medal outlines. Kill count moves into its score row. Feedback stays available as a text control. Watch: check the largest condition stacks at 1080p for scrolling or clipping; signed Terms, pad focus, score and money must stay easy to tell apart. Check 35.81 fails on v35.80',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -56039,7 +56107,7 @@ function renderTerms(){
   var el=document.getElementById('termslist'); el.innerHTML='';
   TERMS.forEach(function(T){
     var on=hasTerm(T.id);
-    var row=document.createElement('div'); row.className='row';
+    var row=document.createElement('div'); row.className=on?'row signed':'row';
     var nm=document.createElement('div'); nm.className='nm';
     nm.innerHTML='<b style="font-weight:700;letter-spacing:.03em">'+T.name+'</b><div style="font-size:14px;color:var(--ash);font-weight:400">'+   // v20.19, seen on the 4K TERMS screenshot (2026-10-08): the name in bold over its line, so the list scans
       ((typeof T.desc==='function')?T.desc():T.desc)+'</div>';
@@ -56048,9 +56116,11 @@ function renderTerms(){
     vl.textContent='+5% sp';   // v28.xx (cw-cx-condition-sp): every signed condition is 1.05x SP
     vl.style.color=on?'#ffc04a':'var(--ash)';
     var b=document.createElement('button');
-    b.textContent=on?'Signed':'Sign';
+    b.textContent=on?'\u2713 signed':'sign';   // v28.xx (cw-cx-condition-ui): a check distinguishes the signed state
     if(on){ b.style.borderColor='#ffc04a'; b.style.color='#ffc04a'; }
     b.onclick=function(){ toggleTerm(T.id); renderTerms(); renderHub(); };
+    // v28.xx (cw-cx-condition-ui): selection is explicit and exposed to keyboard/pad and assistive readers.
+    b.setAttribute('aria-pressed',on?'true':'false');
     row.appendChild(nm); row.appendChild(vl); row.appendChild(b);
     el.appendChild(row);
   });
@@ -71413,7 +71483,8 @@ function sectorPreviewDraw(cv,M){
   var EX=(M.extracts&&M.buildings)?extractsOutside(M.extracts,M.buildings,M.w,M.h):(M.extracts||null);   // v22.16 (K27): the rings where the raid puts them
   c.setTransform(1,0,0,1,0,0); c.clearRect(0,0,cv.width,cv.height);
   if(_sk) c.setTransform(cv.width/W0,0,0,cv.height/H0,0,0);
-  function put(s,x,y){ var tw=c.measureText(String(s)).width, tx=(c.textAlign==='right')?x-tw:((c.textAlign==='center')?x-tw/2:x), fh=parseInt((c.font.match(/(\d+)px/)||[0,16])[1],10), f0=c.fillStyle; c.fillStyle='rgba(11,12,13,.78)'; c.fillRect(tx-5,y-fh+2,tw+10,fh+5); c.fillStyle=f0; c.fillText(s,x,y); }
+  // v28.xx (cw-cx-condition-ui): a narrow halo keeps map names readable without black label plates.
+  function put(s,x,y){ var os=c.strokeStyle, ow=c.lineWidth; c.strokeStyle='#0b0c0d'; c.lineWidth=3; c.strokeText(s,x,y); c.fillText(s,x,y); c.strokeStyle=os; c.lineWidth=ow; }
   c.fillStyle='#0c1a28'; c.fillRect(ox,oy,M.w*sc,M.h*sc);
   c.strokeStyle='#2f5e86'; c.lineWidth=2; c.setLineDash([12,7]); c.strokeRect(ox+4,oy+4,M.w*sc-8,M.h*sc-8); c.setLineDash([]);
   if(M.zones) for(i=0;i<M.zones.length;i++){ z=M.zones[i]; if(typeof z.x!=='number') continue;
@@ -71424,16 +71495,28 @@ function sectorPreviewDraw(cv,M){
   if(M.locked) for(i=0;i<M.locked.length;i++){ b=M.locked[i]; if(!b||typeof b.x!=='number'||!b.w) continue;
     c.fillStyle='#1a1228'; c.fillRect(ox+b.x*sc,oy+b.y*sc,b.w*sc,b.h*sc);
     c.strokeStyle='#a866e0'; c.lineWidth=2; c.setLineDash([7,4]); c.strokeRect(ox+b.x*sc+1,oy+b.y*sc+1,b.w*sc-2,b.h*sc-2); c.setLineDash([]);
-    c.font='600 18px '+FF; c.textAlign='right'; c.fillStyle='#e6f1fb'; put(TX(String(b.name||'')),ox+b.x*sc-8,oy+(b.y+b.h/2)*sc+5); n++; }
+    c.font='600 22px '+FF; c.textAlign='right'; c.fillStyle='#e6f1fb'; put(TX(String(b.name||'')),ox+b.x*sc-8,oy+(b.y+b.h/2)*sc+5); n++; }
   if(M.zones) for(i=0;i<M.zones.length;i++){ z=M.zones[i]; if(typeof z.x!=='number'||!z.name) continue;
     // v18.69: a name shrinks to fit its zone and breaks onto two lines at a space; v19.97: and keeps clear of an extraction ring
     (function(){
-      var zw=Math.max(10,z.w*sc-6), fs=20, cx=ox+(z.x+z.w/2)*sc, cy=oy+(z.y+z.h/2)*sc, nm=TX(String(z.name)), ws, k, a1, a2, best=-1, bw=1e9, w1, w2;
+      var zw=Math.max(10,z.w*sc-6), fs=24, cx=ox+(z.x+z.w/2)*sc, cy=oy+(z.y+z.h/2)*sc, nm=TX(String(z.name)), ws, k, a1, a2, best=-1, bw=1e9, w1, w2;
       c.fillStyle='#e6f1fb'; c.textAlign='center';
-      function hits(y,hh,hw){ var j,e2,rx,ry,r2,nx,ny; if(!EX) return false; for(j=0;j<EX.length;j++){ e2=EX[j]; if(!e2) continue; rx=ox+e2.x*sc; ry=oy+e2.y*sc; r2=R+2; nx=Math.max(cx-hw,Math.min(rx,cx+hw)); ny=Math.max(y-hh,Math.min(ry,y+hh)); if((nx-rx)*(nx-rx)+(ny-ry)*(ny-ry)<r2*r2) return true; } return false; }
-      function place(hh,hw){ var top=oy+z.y*sc+hh+1, bot=oy+(z.y+z.h)*sc-hh-1, cand=[cy], j, e2, ry, r2, k, y, best=null; if(EX) for(j=0;j<EX.length;j++){ e2=EX[j]; if(!e2) continue; ry=oy+e2.y*sc; r2=R+2; cand.push(ry-r2-hh-1,ry+r2+hh+1); } for(k=0;k<cand.length;k++){ y=cand[k]; if(y<top||y>bot||hits(y,hh,hw)) continue; if(best===null||Math.abs(y-cy)<Math.abs(best-cy)) best=y; } return best===null?cy:best; }
+      // v28.xx (cw-cx-condition-ui): cache room and label bounds once per name; candidate positions only compare rectangles.
+      var labelObstacles=null;
+      function hits(y,hh,hw){
+        var j,e2,rx,ry,r2,nx,ny,O,ob,left,top,right,bottom;
+        if(EX) for(j=0;j<EX.length;j++){ e2=EX[j]; if(!e2) continue; rx=ox+e2.x*sc; ry=oy+e2.y*sc; r2=R+2; nx=Math.max(cx-hw,Math.min(rx,cx+hw)); ny=Math.max(y-hh,Math.min(ry,y+hh)); if((nx-rx)*(nx-rx)+(ny-ry)*(ny-ry)<r2*r2) return true; }
+        if(!labelObstacles){
+          labelObstacles=[];O=(M.buildings||[]).concat(M.locked||[]);
+          for(j=0;j<O.length;j++){ob=O[j];left=ox+ob.x*sc-8;top=oy+ob.y*sc-8;labelObstacles.push([left,top,left+ob.w*sc+16,top+ob.h*sc+16]);}
+          O=M.locked||[];for(j=0;j<O.length;j++){ob=O[j];right=ox+ob.x*sc-8;left=right-c.measureText(TX(String(ob.name||''))).width-8;top=oy+(ob.y+ob.h/2)*sc-24;labelObstacles.push([left,top,right,top+36]);}
+        }
+        for(j=0;j<labelObstacles.length;j++){ob=labelObstacles[j];if(cx+hw>ob[0]&&cx-hw<ob[2]&&y+hh>ob[1]&&y-hh<ob[3])return true;}
+        return false;
+      }
+      function place(hh,hw){ var top=oy+z.y*sc+hh+1, bot=oy+(z.y+z.h)*sc-hh-1, cand=[cy,top,bot,cy-hh*2-8,cy+hh*2+8], j, e2, ry, r2, k, y, best=null; if(EX) for(j=0;j<EX.length;j++){ e2=EX[j]; if(!e2) continue; ry=oy+e2.y*sc; r2=R+2; cand.push(ry-r2-hh-1,ry+r2+hh+1); } for(k=0;k<cand.length;k++){ y=cand[k]; if(y<top||y>bot||hits(y,hh,hw)) continue; if(best===null||Math.abs(y-cy)<Math.abs(best-cy)) best=y; } return best===null?cy:best; }
       c.font='bold '+fs+'px '+FF;
-      while(fs>14&&c.measureText(nm).width>zw){ fs--; c.font='bold '+fs+'px '+FF; }
+      while(fs>20&&c.measureText(nm).width>zw){ fs--; c.font='bold '+fs+'px '+FF; }
       if(c.measureText(nm).width>zw&&nm.indexOf(' ')>0){
         ws=nm.split(' ');
         for(k=1;k<ws.length;k++){ w1=txRawW(c,ws.slice(0,k).join(' ')); w2=txRawW(c,ws.slice(k).join(' ')); if(Math.max(w1,w2)<bw){ bw=Math.max(w1,w2); best=k; } }
@@ -71447,7 +71530,7 @@ function sectorPreviewDraw(cv,M){
     c.strokeStyle='rgba(71,216,198,.3)'; c.lineWidth=2; c.setLineDash([3,5]); c.beginPath(); c.arc(ox+e.x*sc,oy+e.y*sc,R+7,0,6.2832); c.stroke(); c.setLineDash([]);
     c.strokeStyle='#47d8c6'; c.lineWidth=3; c.beginPath(); c.arc(ox+e.x*sc,oy+e.y*sc,R,0,6.2832); c.stroke();
     c.fillStyle='#47d8c6'; c.beginPath(); c.arc(ox+e.x*sc,oy+e.y*sc,6,0,6.2832); c.fill();
-    c.font='600 18px '+FF; c.textAlign='center'; c.fillStyle='#47d8c6'; put(TX('exit '+String.fromCharCode(97+i)),ox+e.x*sc,oy+e.y*sc+R+22); n++; }
+    c.font='600 22px '+FF; c.textAlign='center'; c.fillStyle='#47d8c6'; put(TX('exit '+String.fromCharCode(97+i)),ox+e.x*sc,oy+e.y*sc+R+22); n++; }
   c.textAlign='left';
   c.setTransform(1,0,0,1,0,0);
   return n;
@@ -71645,7 +71728,7 @@ function syncSectorPack(){
   }
   nc=heldCount('core');
   h+='<button class="srprow srcore'+(P.intel?' on':'')+'" data-core="1" title="burns 1 data core on ascent: elites and keys show live on your map" data-pan="p"'+((!P.intel&&!nc)?' disabled':'')+'><svg viewBox="0 0 24 24">'+SR_IC.core+'</svg><span class="nm" style="color:inherit">'+
-     (P.intel?'DATA CORE SLOTTED':(nc?('SLOT DATA CORE ('+nc+')'):'NO DATA CORE'))+'</span><span class="held">BURNS ON ASCENT</span><i class="cb"></i></button></div>';
+     (P.intel?'DATA CORE SLOTTED':(nc?('SLOT DATA CORE ('+nc+')'):'NO DATA CORE'))+'</span><span class="held">burn for intel</span><i class="cb"></i></button></div>';
   // cw-hubfix, his note 10-27: packing an item rebuilt the list and threw it back to the top; the scroll is kept across the rebuild
   var _sk=[], _so=host.querySelector('.srplist'), _sl=_so?_so.scrollTop:0, _sa=host;
   while(_sa&&_sa!==document.body&&_sa.id!=='sectormodal'){ _sk.push([_sa,_sa.scrollTop]); _sa=_sa.parentElement; }
