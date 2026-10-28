@@ -41,3 +41,5 @@ ADDED 10-28 14:01 (sorted from run corpus-1028-1057 on v35.80; rerun alone on v3
 - 18.17: same TEAM row read; it returns there, so retarget the row key to keyName(keysOf('KeyZ')) and the rest of the check (pad row, stash key bar, Party window, compact legend) already passes.
 - 17.55: the party backpack line on keys says V drop for teammate. Match keyName(keysOf('KeyZ'))+' drop' instead of Z drop.
 - 15.59: the raid backpack gun hint reads V drop one. Build the needle ZN from keyName(keysOf('KeyZ'))+' drop'+' one'; the raidKey('KeyZ') drop and the floor parts already pass.
+
+ADDED 10-28 (CEO): v26.72 is a flake, not out of date: its first part rolls elite affixes before it resets the settings, so a demo raid started by 26.74 or 26.73 just before it (demo has elite affixes off since v35.72) leaves them off. Cure: __resetCfg(); xfSnap(); before the affix rolls (passes twice alone and after a demo start). Then remove its known-red line.
