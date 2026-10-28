@@ -3326,5 +3326,21 @@
   "pic": "tools/handoff/console/notes/shots/o-07-161-throws-bounce-once-recipes-4/161-p2-grenade-bounce-aim-1080.jpg",
   "task": "o-07-161-throws-bounce-once",
   "when": "2026-10-28T18:36"
+ },
+ "o09b-feed-after-escape": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The in-raid HUD is readable and mostly lower case, but the edge-hugging panels, the unpanelled hp bar and the doubled extraction cues are the same problems as last review, and none of them has been fixed.",
+  "findings": [
+   "P1 hp bar, bottom left (x24, y1035): Put hp in a --ui-panel card (1px --ui-line-hi, 4px radius, 16px padding) inset 48px from the left and bottom. Use a 16px 'hp' label and a 32px --tx-1 number. Make the bar 12px high with a muted fill, turning --danger below 30%. Match the ammo card's height.",
+   "P1 scoreboard panel, top left (8,143 to 367,260): Inset the panel 48px. Use 16px rows with 8px row padding and 16px side padding. Show 'you' in --tx-1 weight 700 and the others in --tx-2. Colour 'dead' --danger. Delete the footer counts.",
+   "P1 extraction cues, top centre (960,60) and right edge (1823,487): Keep one top-centre 'extract 152m' pill in --extract. Delete the right-edge text pill and keep only a bare teal arrow on the screen edge, with no text.",
+   "P1 'the long dock cache' label, top right (1648,150): Draw it in --tx-1 at 20px f-cond 600 on a scrim backing (rgba(6,7,8,.8), 8px 16px padding, 4px radius). Right-align it to 48px from the screen edge, or fold it into the run info header.",
+   "P2 run info bar, top right (1603,18 to 1902,54): Inset it 48px from the top and right. Use the shared panel token (--ui-panel, 1px --ui-line-hi, 4px radius) with a 16px --tx-1 label and a 32px height. Make the left and right cards the same width."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09b-red-35.53-35.44-feed-hidden-after-abandon-ask-recipes-3/o09b-feed-after-escape-1080.jpg",
+  "task": "o-09b-red-35.53-35.44-feed-hidden-after-abandon-ask",
+  "when": "2026-10-28T21:29"
  }
 }

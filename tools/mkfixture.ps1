@@ -6171,6 +6171,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'36.03',what:'the what is new card is stamped with this build or later and still shows the three short lowercase real notes',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnList!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>36.03+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), lines=wnList(), i;
+     if(!(parseFloat(WHATSNEW_VER)>=36.03-0.001)) bad.push('the card is stamped v'+WHATSNEW_VER+', before v36.03');
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(lines.length!==3) bad.push('the card shows '+lines.length+' notes, not three');
+     for(i=0;i<lines.length;i++){ if(String(lines[i])!==String(lines[i]).toLowerCase()||String(lines[i]).length>48) bad.push('note '+i+' is not short lowercase text'); }
+     if(/\balpha\b|polish pass/i.test(WHATSNEW.join('|'))) bad.push('the news has filler copy');
+     return bad.length?bad.join('; '):null; }},
   {v:'36.02',what:'closing the abandon question by Escape, direct close or the x cancels it and restores a drawn feed line; 9.37 then 35.53 and 35.44 pass in the same tab',
    run:function(){
      var bad=[], g=null, pb=document.getElementById('pausebox'), ab=document.getElementById('abandonbtn'), ca=document.getElementById('confirmabandon');

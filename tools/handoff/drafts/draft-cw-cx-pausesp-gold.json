@@ -1,0 +1,32 @@
+{
+    "title":  "PAUSE SP GOLD TOKEN",
+    "why":  "Two pause score rules and three newer run-over rules introduced raw colours into ui-shared and stopped check 29.33 before its menu assertions.",
+    "now":  "Pause score gold and run-over seat colours use root tokens; the overlay uses the existing identical scrim token. All colours stay the same and the full shared-look check runs again.",
+    "edits":  [
+                  {
+                      "anchor":  "    --r-common:#9da3a8; --r-uncommon:#5fbf6a; --r-rare:#3f9de9; --r-elite:#a866e0; --r-gold:#ffc72e;",
+                      "replacement":  "    --r-common:#9da3a8; --r-uncommon:#5fbf6a; --r-rare:#3f9de9; --r-elite:#a866e0; --r-gold:#ffc72e;\n    --score-gold:#ffc04a; --seat-one:#ffb454; --seat-two:#53d9e8; /* v28.xx (cw-cx-pausesp-gold): preserve the pause sp and run-over seat colours as root tokens. */"
+                  },
+                  {
+                      "anchor":  "#root #pausebox #pausesp .psph b{ font:700 var(--fs-title)/1 var(--f-cond); color:#ffc04a; font-variant-numeric:tabular-nums; }",
+                      "replacement":  "#root #pausebox #pausesp .psph b{ font:700 var(--fs-title)/1 var(--f-cond); color:var(--score-gold); font-variant-numeric:tabular-nums; }"
+                  },
+                  {
+                      "anchor":  "#root #pausebox #pausesp .psprow b, #root #pausebox #pausesp .psprule b{ text-align:right; color:#ffc04a; font-variant-numeric:tabular-nums; }",
+                      "replacement":  "#root #pausebox #pausesp .psprow b, #root #pausebox #pausesp .psprule b{ text-align:right; color:var(--score-gold); font-variant-numeric:tabular-nums; }"
+                  },
+                  {
+                      "anchor":  "html body #attract[style*=\"block\"]:has(.arcover[style*=\"block\"]){background:rgba(6,7,8,.80);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}",
+                      "replacement":  "html body #attract[style*=\"block\"]:has(.arcover[style*=\"block\"]){background:var(--scrim);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}"
+                  },
+                  {
+                      "anchor":  "html body #attract .arcover .aosn[data-seat=\"1\"], html body #attract .arcover .aowho[data-seat=\"p1\"]{color:#ffb454;}",
+                      "replacement":  "html body #attract .arcover .aosn[data-seat=\"1\"], html body #attract .arcover .aowho[data-seat=\"p1\"]{color:var(--seat-one);}"
+                  },
+                  {
+                      "anchor":  "html body #attract .arcover .aosn[data-seat=\"2\"], html body #attract .arcover .aowho[data-seat=\"p2\"]{color:#53d9e8;}",
+                      "replacement":  "html body #attract .arcover .aosn[data-seat=\"2\"], html body #attract .arcover .aowho[data-seat=\"p2\"]{color:var(--seat-two);}"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027pause sp keeps its exact gold through the score-gold root token, with no raw gold in ui-shared, and the full shared-look check 29.33 passes\u0027,\n   run:function(){\n     var st=document.getElementById(\u0027ui-shared\u0027), cs=getComputedStyle(document.documentElement), i, r, oldCheck=null;\n     if(!st) return \u0027no shared style block\u0027;\n     if(/#ffc04a/i.test(st.textContent.replace(/\\/\\*[\\s\\S]*?\\*\\//g,\u0027\u0027))) return \u0027ui-shared still contains raw pause sp gold\u0027;\n     if(cs.getPropertyValue(\u0027--score-gold\u0027).trim().toLowerCase()!==\u0027#ffc04a\u0027) return \u0027score-gold is not the original #ffc04a\u0027;\n     if(cs.getPropertyValue(\u0027--seat-one\u0027).trim().toLowerCase()!==\u0027#ffb454\u0027||cs.getPropertyValue(\u0027--seat-two\u0027).trim().toLowerCase()!==\u0027#53d9e8\u0027) return \u0027run-over seat colours changed\u0027;\n     for(i=0;i\u003c__REGRESS.length;i++) if(__REGRESS[i].v===\u002729.33\u0027){ oldCheck=__REGRESS[i]; break; }\n     if(!oldCheck) return \u0027shared-look check 29.33 is missing\u0027;\n     r=oldCheck.run(); if(r) return \u002729.33: \u0027+r;\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026window.__P\u0026\u0026window.__applyLoaded)) return \u0027cannot stage the pause score panel\u0027;\n     var g, el, hd, row, rule, snap=null, c0=CAREER_ON, d0=DMUL_ON, n0=CFG.nRaider, pb=false, bad=[];\n     try{\n       snap=JSON.parse(JSON.stringify(__P()));\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       CAREER_ON=1; DMUL_ON=1; CFG.nRaider=15;\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over) return \u0027cannot stage a live raid\u0027;\n       g.player.iv=99; togglePauseBox(true); pb=true;\n       el=document.getElementById(\u0027pausesp\u0027);\n       if(!el||!el.offsetHeight) return \u0027pause sp panel is missing or hidden\u0027;\n       hd=el.querySelector(\u0027.psph b\u0027); row=el.querySelector(\u0027.psprow:not(.z) b\u0027); rule=el.querySelector(\u0027.psprule b\u0027);\n       if(!hd||getComputedStyle(hd).color!==\u0027rgb(255, 192, 74)\u0027) bad.push(\u0027headline gold changed\u0027);\n       if(!row||getComputedStyle(row).color!==\u0027rgb(255, 192, 74)\u0027) bad.push(\u0027setting factor gold changed\u0027);\n       if(!rule||getComputedStyle(rule).color!==\u0027rgb(255, 192, 74)\u0027) bad.push(\u0027end rule gold changed\u0027);\n       return bad.length?bad.join(\u0027; \u0027):null;\n     }finally{\n       try{ if(pb) togglePauseBox(false); }catch(_p){}\n       try{ CAREER_ON=c0; DMUL_ON=d0; CFG.nRaider=n0; }catch(_r){}\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       try{ if(snap) __applyLoaded(snap); }catch(_s){}\n       __topClear();\n     }\n   }},"
+}

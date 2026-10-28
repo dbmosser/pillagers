@@ -1,0 +1,4 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  o09b-feed-after-escape                 staged       7.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"open":false,"asking":false,"waiting":false,"rows":1}
+== 4k : window 3876x2265, viewport 3840x2160
+  o09b-feed-after-escape                 staged       7.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"open":false,"asking":false,"waiting":false,"rows":1}

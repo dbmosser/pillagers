@@ -516,3 +516,4 @@
 
 2026-10-28 | o-09b-red-35.53-35.44-feed-hidden-after-abandon-ask | raid feed after Abandon + Escape | closing the pause box now clears the hidden question so the feed returns; no wording or layout changes | before: reproduced by regression on old build; after: lane camera recipe o09b-feed-after-escape-1080.jpg (pending)
 
+2026-10-28 | o-09b-red-35.53-35.44-feed-hidden-after-abandon-ask | raid feed after Abandon + Escape | v36.02 clears the question on close; restored bandage feed visible, staged at 1080p and 4k | before: old-build regression; after: C:/claudecode/dark raiders/tools/handoff/console/notes/shots/o-09b-red-35.53-35.44-feed-hidden-after-abandon-ask-recipes-3/o09b-feed-after-escape-1080.jpg

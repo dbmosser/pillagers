@@ -1,1 +1,1 @@
-10-28 17:19 gate: shipping cw-cx-abandonfeed (o-09b-red-35.53-35.44-feed-hidden-after-abandon-ask, codex)
+10-28 17:34 gate: the what is new card is stale, shipping a card refresh first (cw-cx-pausesp-gold, o-09c-red-29.33-pause-sp-gold-token)
