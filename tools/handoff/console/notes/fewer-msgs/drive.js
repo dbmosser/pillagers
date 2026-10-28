@@ -2,7 +2,9 @@
 // Loot (search boxes), wade, fight, then call extraction and stand in the ring. Counts every line that reaches the screen:
 // a new feed line, a new top banner (alert), a new pickup row. Run inside the game scope (window.__gx).
 (function(){
-  var SECS=window.__ZQSECS||180, FPS=60, out={feed:0,alert:0,pick:0,txt:[],phase:{},end:'',secs:0};
+  var SECS=window.__ZQSECS||180, FPS=60, out={feed:0,alert:0,pick:0,txt:[],phase:{},end:'',secs:0,said:{}};
+  var oSay=say;   // every line said, drawn or not, counted by its words (the how often column of raid-messages.md)
+  say=function(m){ try{ var k=String(m); out.said[k]=(out.said[k]||0)+1; }catch(_c){} return oSay.apply(this,arguments); };
   var g, p, t0, f=0, ph='land', phT=0, tgt=null, opened=0, lastAlert=null, seq0=0, seenPick=[], i;
   function now(){ return f/FPS; }
   function setPhase(n){ ph=n; phT=now(); tgt=null; keys={}; mouse.down=false; }
@@ -55,7 +57,7 @@
       g=__state(); p=g.player; g.mapFirst=false; g.mapOpen=false; keys={};
       seq0=(g.fd&&g.fd.seq)||0; lastAlert=g.alert;
       t0=Math.max(performance.now(),(typeof lastTs==='number'&&isFinite(lastTs))?lastTs:0);
-    }catch(e){ res('setup threw '+e); return; }
+    }catch(e){ say=oSay; res('setup threw '+e); return; }
     function chunk(){
       var ok=true, n;
       try{ for(n=0;n<240&&ok&&now()<SECS;n++) ok=step(); }catch(e){ out.end='threw '+e; ok=false; }
@@ -63,6 +65,7 @@
       out.secs=Math.round(now()); out.end=out.end||(g&&g.over?'raid over':'time'); out.opened=opened;
       out.total=out.feed+out.alert+out.pick; out.perMin=Math.round(out.total/(Math.max(1,now())/60)*10)/10;
       keys={}; mouse.down=false;
+      say=oSay;
       try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
       try{ __topClear(); }catch(_t){}
       res(JSON.stringify(out));

@@ -1,0 +1,7 @@
+v35.41: solo pings in all three views
+
+Solo mouse, N and pad pings show in the world, minimap and full map and follow an enemy for 10 seconds.
+
+Check 35.41. Fails on v35.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

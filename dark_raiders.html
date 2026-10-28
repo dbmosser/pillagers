@@ -3724,8 +3724,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='35.40';
-var VER_AT='2026-10-27 22:34';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='35.41';
+var VER_AT='2026-10-27 22:37';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17932,6 +17932,7 @@ function startRaid(){
   G.carriedIn=bagValue();
   if(G&&!G.sim) G.rise={t0:G.t||0,dur:RISE_SEC};   // v28.xx (cw-ascent), his pick 77: he comes up from underground
   G.carriedKit=(G.bag||[]).slice();   // v13.55: WHICH items came up, so an item contract counts only what was found   // v10.27: what the lift carried in, valued as the haul is
+  NET.wps={}; NET.pings=[]; NET.pingAt=0; NET.pingLast=null; NET.pingTarget=null;   // v28.xx (cw-cx-solopings): no marks or double-tap state from the previous raid.
   if(NET.on&&NET.role==='host'&&!G.sim) netUpAnnounce(G);   // v15.79: the party is told to ascend into this world (the net section)
   // v17.21, co-op hunt 2026-09-28: THE HIRE IS SPENT AT THE LIFT, as the Data Core below is. It was spent only in endRaid, so a
   // raid that ended by the page going away (F5, a closed tab, a crash) left him hired in the save and the next ascent dropped him
@@ -18242,12 +18243,12 @@ function raidKey(code,repeat,ev){
   if(pauseOpen&&code!=='KeyP'&&code!=='Escape'&&code!=='Tab'){ if(ev) ev.preventDefault(); if(!repeat){ keys[code]=false; pauseKeyNav(code); } return; }   // v24.15 (his #39): arrows and ENTER work the box
   if(mapFirstKey(code,repeat,ev)) return;   // cw-mapfirst: while the raid waits on its map every key is held back and E, Space, Enter, Esc, Tab and M start it
   // v25.xx (mmbping), HIS ORDER 2026-10-13 ("middle mouse: yes"; then "get rid of" the emotes, v25.xx noemotes): MIDDLE MOUSE IS THE PING, rebindable.
-  // With a party it marks what is under the cursor for them (netPingMake, the N key, and on the open map your marker). Alone there is nobody to
-  // ping and it does nothing. It latches no key.
+  // v28.xx (cw-cx-solopings), his pick 46: "middle mouse pinging doesn't even work in 1 player". Use the same ping alone and in a party.
+  // On the open map it still places your waypoint. It latches no key.
   if(code==='Mouse1'){
     keys[code]=false; if(ev) ev.preventDefault();
     if(repeat||!G||G.over) return;
-    if(NET.on) netPingMake();
+    netPingMake();
     return;
   }
     // v26.xx (forgest2): THE OPEN FORGE PANEL OWNS THE KEYS. 1 to 4 picks and buys, E or ENTER buys the marked choice (not in its first
@@ -18388,7 +18389,7 @@ function raidKey(code,repeat,ev){
   // (U, J and G: see above)
   if(code==='KeyT'&&G&&!G.over&&!G.paused&&!G.trade&&!repeat&&NET.on&&typeof netGiftKey==='function'&&netGiftKey()){}   // v17.44: his pick 4, T offers the selected backpack item or takes an offer; v18.22: not behind the stall
   else if(code==='KeyT'&&G&&!G.over&&!G.paused&&!G.trade&&!G.bagOpen&&!repeat&&NET.on&&typeof netAidHold==='function') netAidHold();   // v16.84, his ask: T patches up a teammate in reach with your Bandage or Medkit, the pad Y; v18.22: never with the backpack open (that T is the trade key) and never behind the stall
-  if(code==='KeyN'&&G&&!G.over&&!repeat&&NET.on) netPingMake();   // v16.43: ping for the party
+  if(code==='KeyN'&&G&&!G.over&&!repeat) netPingMake();   // v28.xx (cw-cx-solopings): N also works alone.
   // (U, J and G: see above)
   // ORDERS, v3.73, partner-merc line two. One key, three states, and the words
   // are the feedback: LOOT is the freelancer he has always been, FOLLOW keeps
@@ -20202,7 +20203,7 @@ function pollPad(){
   }
   // v6.41: the map is a toggle now, so the dpad flips it on the press rather than
   // holding it. PAD.prev is stamped further down, which is what makes this an edge.
-  // v16.46, HIS ORDER: PING ON D-PAD UP. A tap pings for the party (in solo it opens and shuts the map as before); a hold of 0.4 s
+  // v28.xx (cw-cx-solopings), his pick 46: a tap pings alone or in a party; a hold of 0.4 s
   // opens or shuts the map; a tap with the map open shuts it.
   (function(){
     var du=pressed(12)&&!bagNav&&G&&!G.over, now=netPadNow();
@@ -20210,7 +20211,7 @@ function pollPad(){
     if(du&&PAD.duAt!=null&&!PAD.duHeld&&now-PAD.duAt>=0.4){ PAD.duHeld=1; G.mapOpen=!G.mapOpen; }
     if(!du&&PAD.prev[12]&&PAD.duAt!=null&&!PAD.duHeld&&G&&!G.over){
       var _mcT=!!(G.mapOpen&&G.mapCur);
-      if(G.mapOpen&&G.mapCur) netWpFromMap(); else if(G.mapOpen) G.mapOpen=false; else if(NET.on&&NET.upSeed) netPingMake(); else G.mapOpen=true;   // v16.47: with the map cursor moved, a tap places the marker
+      if(G.mapOpen&&G.mapCur) netWpFromMap(); else if(G.mapOpen) G.mapOpen=false; else netPingMake();   // v28.xx (cw-cx-solopings): solo uses the same tap; hold still toggles the map.
       // v16.49 stability, his rule of v16.46 (a tap with the map open shuts it): the tap that places the marker shuts the map too.
       // Before, once the right stick had touched the map cursor every tap placed a marker and the map stayed up, with the gun
       // dead under it, until a 0.4 s hold; a child on a controller could not get out.
@@ -43488,8 +43489,9 @@ function mmMarks(r,sc,R){
     else { forgeAnvil(ctx,s.x,s.y,6.5*R,FORGE_GOLD,INK); MMAP.ops+=2; got.forge='in'; }   // v26.xx (forgest1): the anvil, not a dot
   }
   try{ flowMm(at,R,sc); }catch(_fmm){}   // v26.xx (flow4): the raid flow marks (fires now, the events and strongholds after)
-  // the party's marks and pings, then your waypoint
+  // v28.xx (cw-cx-solopings): the same live pings in solo and in a party, then your waypoint.
   if(typeof NET==='object'&&NET){
+    netPingUpdate();
     if(NET.wps) for(var _ws in NET.wps){
       if(!Object.prototype.hasOwnProperty.call(NET.wps,_ws)) continue;
       q=NET.wps[_ws]; if(!q||!isFinite(q.x)) continue; s=at(q.x,q.y);
@@ -44937,7 +44939,7 @@ if(p.armor>0){
   try{ NETTEAMBOX.n=0; }catch(_ntb){}   // v19.07: no rows unless drawn this frame, so a party that ended never moves the status column
   try{ if(NET.on) netTeamHud(by); }catch(_nth){}   // v16.26: your teammates, their health and armour
   EDGEBOX.feed=null; try{ if(NET.on) netFeedDraw(); }catch(_nfd){}   // v16.42: the kill feed
-  try{ if(NET.on) netPingDraw(); }catch(_npd){}   // v16.43: the party pings
+  try{ netPingDraw(); }catch(_npd){}   // v28.xx (cw-cx-solopings): your ping is visible in solo too.
   try{ if(NET.same) netPadHud(); }catch(_nph){}   // v16.78: the controller paused word, in the window whose pad went quiet
   var _boG=hudOff('gear');
   ctx.save(); ctx.translate(_boG.dx,_boG.dy);
@@ -49494,7 +49496,7 @@ function drawMapOverlayRaw(){
   // THE WAYPOINT, v3.02. Drawn before the player marker so his own dot always
   // sits on top of it, and drawn as a ring plus crosshair rather than a filled
   // dot so it cannot be mistaken for an extract or for himself.
-  try{ if(NET.on) netWpMapDraw(ox,oy,sc); }catch(_wm){}   // v16.46: the party's map markers on the map
+  try{ netWpMapDraw(ox,oy,sc); }catch(_wm){}   // v28.xx (cw-cx-solopings): solo pings on the full map.
   if(G.waypoint){
     var wpx=ox+G.waypoint.x*sc, wpy=oy+G.waypoint.y*sc; mapIcon(wpx,wpy,12*_MZ);   // v21.41 (W-D4): the waypoint at the map zoom
     ctx.strokeStyle=UIC.tx_1; ctx.lineWidth=2*_MZ;
@@ -54978,7 +54980,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v35.40: no cream rank bars under item pictures on the raid belt, hand, wheel, backpack, stash, hotbar, pre-raid pack, extracted card, KIA card and the rest of the menus; loot rows keep theirs; the rarity colour borders and the ammo bar stay Check 35.40 fails on v35.39',
+  now:'v35.41: Solo mouse, N and pad pings show in the world, minimap and full map and follow an enemy for 10 seconds. Check 35.41 fails on v35.40',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61925,6 +61927,7 @@ function netWpDraw(){
   return n;
 }
 function netWpMapDraw(ox,oy,sc){
+  netPingUpdate();   // v28.xx (cw-cx-solopings): opening the map must not freeze a target or extend its ping.
   var s, w, px, py, n=0, i, p;
   if(NET.wps) for(s in NET.wps){
     if(!Object.prototype.hasOwnProperty.call(NET.wps,s)) continue;
@@ -62117,23 +62120,25 @@ var NET_PING_T=10, NET_PING_SNAP=70;   // v16.46: 10 s, the length Fortnite give
 // only), any other body by its kind. The ping said WARDEN on the boss.
 function netPingName(hit){ return ((hit.kind==='raider'||hit.boss||hit.name===BOSS_NAME)&&hit.name)?netClean(hit.name,24):kindWord(hit.kind); }   /* v22.xx (R49): CRIER, PILLBOX, SURVIVOR, THE PEDDLER, never the internal kind */ function netPingMake(){
   var w, i, e, bd=NET_PING_SNAP, d, hit=null, m;
-  if(typeof G==='undefined'||!G||G.over||!G.player||!NET.on||!NET.upSeed) return null;
+  // v28.xx (cw-cx-solopings): only a party needs a shared raid seed. No ping behind a panel, while down, or on the Undercroft floor.
+  if(typeof G==='undefined'||!G||G.over||!G.player||G.hubFloor||G.sim||G.paused||G.bagOpen||G.trade||G.forgeUI||G.player.downed||G.player.dying||(NET.on&&!NET.upSeed)) return null;
   // v16.61, stability (co-op review): the double press is read BEFORE the 0.5 s limit. That limit stood first and answered
   // every press inside 0.5 s with nothing, so the 0.4 s double press the controls legend promises (twice: danger) never came.
   if(!G.mapOpen&&NET.pingAt&&Date.now()-NET.pingAt<400){   // v16.46: pressed twice, the last ping becomes DANGER
-    if(NET.pingLast&&!NET.pingLast.dg){ NET.pingLast.dg=1; netBroadcast(NET.pingLast); netPingPush(NET.seat,NET.pingLast); }
+    if(NET.pingLast&&!NET.pingLast.dg){ NET.pingLast.dg=1; if(NET.on) netBroadcast(NET.pingLast); netPingPush(NET.seat,NET.pingLast,NET.pingTarget); }
     return NET.pingLast||null;
   }
   if(NET.pingAt&&Date.now()-NET.pingAt<500) return null;
   if(G.mapOpen) return netWpFromMap();   // v16.46: a ping on the open map is your map marker, as in Fortnite
   NET.pingAt=Date.now();
   w=mouseWorld();
-  for(i=0;i<G.ents.length;i++){ e=G.ents[i]; if(!e.nid||e.hp<=0||e.merc) continue; d=dist(e,w); if(d<bd){ bd=d; hit=e; } }
+  for(i=0;i<G.ents.length;i++){ e=G.ents[i]; if((NET.on&&!e.nid)||e.hp<=0||e.merc) continue; d=dist(e,w); if(d<bd){ bd=d; hit=e; } }
   m={t:'png',x:Math.round(hit?hit.x:w.x),y:Math.round(hit?hit.y:w.y),w:hit?netPingName(hit):''};   // v17.57: the boss by its name
   if(hit) m.id=hit.nid;
-  netBroadcast(m);
+  if(NET.on) netBroadcast(m);
   NET.pingLast=m;
-  netPingPush(NET.seat,m);
+  NET.pingTarget=NET.on?null:hit;   // v28.xx (cw-cx-solopings): solo targets have no network id; keep the local body out of the wire word.
+  netPingPush(NET.seat,m,NET.pingTarget);
   return m;
 }
 function netPingTake(peer,m){
@@ -62148,10 +62153,10 @@ function netPingTake(peer,m){
   netPingPush(s,o);
   return 'png';
 }
-function netPingPush(s,o){
+function netPingPush(s,o,target){
   if(!NET.pings) NET.pings=[];
   if(o.dg){ var _pi; for(_pi=NET.pings.length-1;_pi>=0;_pi--) if(NET.pings[_pi].s===s&&Math.abs(NET.pings[_pi].x-o.x)<2&&Math.abs(NET.pings[_pi].y-o.y)<2) NET.pings.splice(_pi,1); }
-  NET.pings.push({s:s,x:o.x,y:o.y,w:o.w||'',id:o.id,dg:o.dg?1:0,pl:o.pl?1:0,at:Date.now()});
+  NET.pings.push({s:s,x:o.x,y:o.y,w:o.w||'',id:o.id,dg:o.dg?1:0,pl:o.pl?1:0,at:Date.now(),target:target||null});
   if(NET.pings.length>6) NET.pings.shift();
   try{ if(typeof G!=='undefined'&&G&&!G.sim) blip('pick'); }catch(_bp){}
   return NET.pings.length;
@@ -62186,16 +62191,27 @@ function netPilePrune(){
   }
   return NET.pings.length;
 }
+// v28.xx (cw-cx-solopings): update before each drawing pass, including the paused map, so all three views follow and expire together.
+function netPingUpdate(){
+  var i, p, e, now=Date.now();
+  if(!NET.pings) return 0;
+  for(i=NET.pings.length-1;i>=0;i--){
+    p=NET.pings[i];
+    if((now-p.at)/1000>NET_PING_T){ NET.pings.splice(i,1); continue; }
+    e=p.target||(p.id&&NET.entMap?NET.entMap[p.id]:null);
+    if(e&&e.hp>0&&G&&G.ents.indexOf(e)>=0){ p.x=e.x; p.y=e.y; }
+  }
+  return NET.pings.length;
+}
 function netPingDraw(){
+  netPingUpdate();
   netPilePrune();   // v32.xx (cw-droppings)
   var r=Math.max(1,(typeof hudRes==='function')?hudRes():1), i, p, now=Date.now(), s, M=LH(30)*r, e, nm, lbl, x, y, n=0, c;
   netWpDraw();   // v16.46: the party's map markers, in the world
   if(!NET.pings||!NET.pings.length) return 0;
   for(i=NET.pings.length-1;i>=0;i--){
     p=NET.pings[i];
-    if((now-p.at)/1000>NET_PING_T){ NET.pings.splice(i,1); continue; }
-    e=(p.id&&NET.entMap)?NET.entMap[p.id]:null;
-    if(e&&e.hp>0){ p.x=e.x; p.y=e.y; }   // a pinged enemy is followed while it lives
+
     s=w2s(p.x,0,p.y); if(!s) continue;
     x=clamp(s.x,M,W-M); y=clamp(s.y,M,H-M);
     c=p.dg?'#ff4a3a':(p.w?'#ff8a3c':((p.s===NET.seat)?HUDC.warn:HUDC.ally));   // v22.70 (R27): a teammate ping in the teammate colour, your own in amber like your Waypoint
