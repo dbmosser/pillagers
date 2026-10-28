@@ -1,4 +1,0 @@
-{"generated":"2026-10-28T14:47:55","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":26,"screens":[
-{"name":"04-stash-terminal","screen":"THE STASH: stash grid, loadout backpack, tactical belt, sell row, freebie kit","4k":{"staged":true,"note":"","viewport":"3840x2160","shot":"04-stash-terminal-4k.jpg","lint":""}},
-{"name":"11-wirt-gambler","screen":"Wirt the Gambler modal","4k":{"staged":true,"note":"gamblemodal","viewport":"3840x2160","shot":"11-wirt-gambler-4k.jpg","lint":""}}
-]}

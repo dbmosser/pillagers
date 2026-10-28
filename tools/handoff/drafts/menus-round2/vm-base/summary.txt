@@ -1,3 +1,0 @@
-== 4k : window 3876x2265, viewport 3840x2160
-  04-stash-terminal                      staged       7.6s  
-  11-wirt-gambler                        staged       7.2s    | gamblemodal
