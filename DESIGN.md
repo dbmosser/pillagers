@@ -40034,6 +40034,8 @@ MEASURED. Check 36.06 passes, and fails on v36.05.
 Co-op hunt while he was away. v35.81 clipped pack names and replaced the chosen map sizes. The ledger still has its SP value under the new counted kills label.
 
 MEASURED. Check 36.05 passes, and fails on v36.04.
+
+Compared 20 px and 24 px pre-raid zone names at 1080p and 4K. Keep his chosen 20 px start: the 24 px long dock label overlaps a room outline, while 20 px fits the clear strip above. Restore the 14 px shrink floor and 18 px exit/keyed-room labels. Pictures: tools/handoff/console/notes/shots/o-09d-red-35.81-preraid-names-and-ledger-recipes-2/preraid-zones-20-1080.jpg, preraid-zones-24-1080.jpg, preraid-zones-20-4k.jpg, preraid-zones-24-4k.jpg. Final v36.06 pictures: the recipes-4 folder of the same job, preraid-whole-names-1080.jpg and preraid-whole-names-4k.jpg (zero lint, 1080p critic 3).
 ## v36.04 - PAUSE SP GOLD TOKEN
 
 Co-op hunt while he was away. Two pause score rules and three newer run-over rules introduced raw colours into ui-shared and stopped check 29.33 before its menu assertions.
