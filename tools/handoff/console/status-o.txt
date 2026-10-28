@@ -1,1 +1,1 @@
-10-27 22:01 gate: shipping cw-cx-combatvoices (o-131-gun-impact-sound-caps, codex)
+10-27 22:26 gate: the what is new card is stale, shipping a card refresh first (cw-cx-solopings, o-139-solo-pings)

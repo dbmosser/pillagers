@@ -9,3 +9,8 @@ Rules: the seed 4242 fingerprint (ents 85/374, containers 165/593) must hold unl
 TASK DONE when it shipped; TASK PARTIAL with what is left.
 
 HIS PRIORITY 10-27 (priorities page, r-voicebudget): LOW
+
+Lane note 2026-10-27 22:12: shipped cw-cx-combatvoices and parked: only lane-side steps are left. Codex's last words:
+v35.38 shipped and is confirmed ON HIS PC. Fixture checks passed; seed counts stayed unchanged. The report now includes the shipping evidence.
+
+TASK PARTIAL: coordinator must publish notes/131-sound-caps.md and verify two connected windows.

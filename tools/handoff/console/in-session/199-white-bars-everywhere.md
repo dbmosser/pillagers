@@ -14,3 +14,6 @@ Check (must FAIL on the current build): on every screen above, no item cell draw
 Pictures at 1080 of the stash, the raid backpack, the pre-raid screen and the extracted card, before and after; look at them.
 Ship through preflight + shipq. TASK DONE only with the ON HIS PC line; then move this file to console/done/ with one result line, and mark
 the order SHIPPED in console/open-orders.md (line "White bars gone everywhere").
+
+HIS NOTE 10-27 ~22:25 in the orders chat, with a picture of the raid belt (verbatim): "the higher white bars need to be removed as they are not helpful".
+What he means (read in the code and his picture): on each belt slot the UPPER bars are the cream rarity pips in a black box beside the ammo count (rarityPips(), drawn by drawItemIcon and itemIconURL without np). Those go, on the belt too. The LOWER thin bar along the bottom of each belt slot (white or amber, partly filled) is a different thing: keep it exactly as it is. The slot border colour (purple, gold) stays as the rarity cue.

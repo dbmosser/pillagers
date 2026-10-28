@@ -1,17 +1,14 @@
-Latest stable: v35.18 (2026-10-27 21:44)
-Checked: 2026-10-27 21:44
+Latest stable: v35.28 (2026-10-27 22:16)
+Checked: 2026-10-27 22:16
 Play address: http://localhost:8802/stable.html
-Result: PROMOTED v35.18 (was v34.53); play address http://localhost:8802/stable.html
+Result: PROMOTED v35.28 (was v35.18); play address http://localhost:8802/stable.html
 
 Newest test runs, newest first:
+  corpus-1027-2024  v35.28  failing 18, new 0  robots 57 min/0 problems  -> QUALIFIES
   corpus-1027-1900  v35.19  failing 20, new 1  robots 115 min/1 problems  -> 1 check(s) newly failing, e.g. v25.41 his order (add minimap): the minimap marks extraction
-  corpus-1027-1843  v35.18  failing 13, new 0  robots 76 min/0 problems  -> QUALIFIES
+  corpus-1027-1843  v35.18  failing 13, new 0  robots 76 min/0 problems  -> this is the current stable
   corpus-1027-1635  v35.11  failing 18, new 3  robots 111 min/0 problems  -> 3 check(s) newly failing, e.g. v8.85 a pillager footprint does not draw through a wall, and | v27.24 his order: one persistent feed at the bottom left tak
-  corpus-1027-1326  v35.09  failing 16, new 0  robots 90 min/0 problems  -> QUALIFIES
+  corpus-1027-1326  v35.09  failing 16, new 0  robots 90 min/0 problems  -> older than the current stable
   corpus-1027-1146  v35.06  failing 8, new 1  robots 126 min/1 problems  -> 1 check(s) newly failing, e.g. v10.38 the WHAT IS NEW card is current, opens with a note, a
-  corpus-1027-1017  v35.05  failing 10, new 2  robots 82 min/9 problems  -> 2 check(s) newly failing, e.g. v33.60 cw-cx-pixground (86b): THE PIXEL GROUND. With the pix | v30.17 the Settings detail pane and its focus look name the 
-  corpus-1027-0855  v35.01  failing 9, new 1  robots 114 min/1 problems  -> 1 check(s) newly failing, e.g. v30.17 the Settings detail pane and its focus look name the 
-  corpus-1027-0705  v34.96  failing 11, new 1  robots 874 min/76 problems  -> 1 check(s) newly failing, e.g. v30.17 the Settings detail pane and its focus look name the 
-
-Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
-  v25.41 his order (add minimap): the minimap marks extractions in their state, th
+  corpus-1027-1017  v35.05  failing 10, new 1  robots 82 min/9 problems  -> 1 check(s) newly failing, e.g. v33.60 cw-cx-pixground (86b): THE PIXEL GROUND. With the pix
+  corpus-1027-0855  v35.01  failing 9, new 0  robots 114 min/1 problems  -> robots hit 1 problem(s) on it

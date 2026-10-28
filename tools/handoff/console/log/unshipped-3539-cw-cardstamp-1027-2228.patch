@@ -1,0 +1,83 @@
+diff --git a/AUDIT.md b/AUDIT.md
+index df430e961..1123d5bbb 100644
+--- a/AUDIT.md
++++ b/AUDIT.md
+@@ -3852,6 +3852,7 @@ AND THE SECOND HALF OF THE STRETCH:
+ | QUIET HUD PANELS | v35.36 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 35.36 passes, fails on v35.35 |
+ | NO POP UP AFTER THE EXTRACTION SINK | v35.37 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 35.37 passes, fails on v35.36 |
+ | COMBAT SOUND VOICE CAPS | v35.38 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 35.38 passes, fails on v35.37 |
++| THE WHAT IS NEW STAMP KEEPS UP | v35.39 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 35.39 passes, fails on v35.38 |
+ | THE v11.24 FEUD CHECK MEASURED THE BULWARK, NOT FEUDS | v11.41 | harness repair, shipped with v11.41 because it blocked the corpus and the contract change cannot touch it. The v11.24 check parks pillagers at the COLD STORAGE centre at peace with the machines, counts hits on pillagers, calls them feud hits, and asserts raiderFeud 0 drops them to a third. PROVEN the hits are the BULWARK'S: with nBulwark 0 the only thing that can hit a pillager is another pillager, and the centre seat then shows ZERO pillager-on-pillager combat whether feuds are on or off (on 0, off 0; the raw count was 41 on, 42 off, all Bulwark). Fails identically on the v11.40 control and on a v11.36 fixture built before the v11.37 provoke change, so not a regression and not caused by anything this session; its earlier greens were contamination. FIX: the check isolates the Bulwark out, passes only on real isolable feud combat, and otherwise skips with both hit counts named. FOR HIS RULING: whether the rival-crew feud fires at all in real play, which the sim cannot see |
+ | HIS TWO REAL RUNS, 2026-09-04, AUTHENTICATED AND CONSUMED | v10.98 | Run #1 v10.96 COLD STORAGE, fog at dawn, 59s, EXTRACT 2,685c from ONE container, 6 items, 18 shots at 67 percent, 4 crawlers killed, 1 down, revived twice by raiders and three revives total, 2 walls down, 1 story read, contracts haul and kill-crawler, moved 7,594, sprint 14s, crouch 0s, closest extract 1m, ents 105. Run #2 v10.96 COLD STORAGE, clear noon, 13s, ABANDON carrying 460c and 3 items, no shot fired, moved 1,181, closest extract 96m. Both real: real durations, real distance, a named weapon, no fixture signature. Profile after: 2 runs, 1 extracted, 0 died, credits 395,700 which is the cheat box, XP 343, stash 4. HIS 13 SECOND ABANDON IS UNEXPLAINED and is a question for him, not a defect I can measure |
+ | TWO CHECKS DISAGREED ABOUT THE SERVO | v10.97 | Caught by the full corpus. v9.43 requires the servo to be SELLABLE because there is no repair to keep it for; v10.97 requires it KEPT because the contract board asks for it by name. Both right about their own premise. v9.43's real subject is the REASON and not the shelf, which its own message says: it was written when a dead repair economy was the only thing keeping the servo. It asks about the reason now and fails if the servo's KEEP line mentions repairs while the wear table has one band. Its sibling assertion, that the servo is not a crafting part, and every control around it, are untouched and still pass. No dial moves |
+diff --git a/DESIGN.md b/DESIGN.md
+index 4993b77c1..65159ac1c 100644
+--- a/DESIGN.md
++++ b/DESIGN.md
+@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
+ one he named; touchdown, inbound, lastcall and board are untouched, so the family
+ may now be led by a sound three times the length of its siblings.
+ 
++## v35.39 - THE WHAT IS NEW STAMP KEEPS UP
++
++Co-op hunt while he was away. The card was stamped v35.23 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
++
++MEASURED. Check 35.39 passes, and fails on v35.38.
+ ## v35.38 - COMBAT SOUND VOICE CAPS
+ 
+ Co-op hunt while he was away. Q27: stutter or harsh sound in a two player fight. Cap complete cues at 6 guns, 8 impacts, 3 explosions and 12 active combat voices per window. Replace the oldest cue first with a 4 ms fade and stop all its sources, including delayed pumps and tails. At most two retiring fades can overlap the active budget. An isolated shot retains every original layer, pitch, timing and level. Playtest watch: both windows firing the LMG and shotgun near metal impacts and explosions should stay clear; listen for clicks, lost nearby shots or missing shotgun pumps under pressure.
+diff --git a/dark_raiders.html b/dark_raiders.html
+index e8ea739ee..df3cb47e7 100644
+--- a/dark_raiders.html
++++ b/dark_raiders.html
+@@ -3724,8 +3724,8 @@ var cv=document.getElementById('cv');
+ var hcv=document.getElementById('hcv');
+ 
+ // ================================================================ config
+-var VER='35.38';
+-var VER_AT='2026-10-27 22:03';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
++var VER='35.39';
++var VER_AT='2026-10-27 22:27';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+ // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
+ // and thirty builds have landed since; nothing in the game says so, and finding
+ // out that heals take time by dying mid-heal is the wrong way to learn it. This
+@@ -3736,7 +3736,7 @@ var VER_AT='2026-10-27 22:03';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "
+ // including measurement-only ones, so keying the card on it would re-show the
+ // same unchanged list every session, and a card that nags is a card that gets
+ // walked through unread. WHATSNEW_VER moves only when the list itself changes.
+-var WHATSNEW_VER='35.23';
++var WHATSNEW_VER='35.39';
+ // v17.77, THE VISUAL PASS (2026-10-02): THE NEW-IN CARD IS A CARD, NOT A WALL. It drew every note in full, six paragraphs over the
+ // whole floor. It now shows the newest WN_SHOW notes, each as its headline sentence and the start of what follows. The notes
+ // themselves are unchanged.
+@@ -54978,7 +54978,7 @@ var ROADMAP=[
+ // v7.63: parsecheck now FAILS the build when this field does not name the
+ // current VER, so it cannot silently rot a third time.
+ var DEVNOW={
+-  now:'v35.38: Gunfire, impacts and explosions have bounded overlap; oldest sounds yield during heavy fights. Check 35.38 fails on v35.37',
++  now:'v35.39: The what is new stamp keeps up with the build; the three notes are unchanged. Check 35.39 fails on v35.38',
+   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
+ };
+ // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
+diff --git a/tools/mkfixture.ps1 b/tools/mkfixture.ps1
+index 41036328c..182fe3555 100644
+--- a/tools/mkfixture.ps1
++++ b/tools/mkfixture.ps1
+@@ -6170,6 +6170,17 @@ window.__REGRESS=[
+      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+      finally{ say2=_s2; __topClear(); __cleanProfile(); }
+      return bad.length?bad.join('; '):null; }},
++  {v:'35.39',what:'the what is new card is stamped with this build or later and still shows the three short lowercase real notes',
++   run:function(){
++     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnList!=='function') return 'SKIP: this build has no what is new card';
++     if(parseFloat(WHATSNEW_VER)>35.39+0.001) return 'SKIP: the card has moved on, a later card check covers it';
++     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), lines=wnList(), i;
++     if(!(parseFloat(WHATSNEW_VER)>=35.39-0.001)) bad.push('the card is stamped v'+WHATSNEW_VER+', before v35.39');
++     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
++     if(lines.length!==3) bad.push('the card shows '+lines.length+' notes, not three');
++     for(i=0;i<lines.length;i++){ if(String(lines[i])!==String(lines[i]).toLowerCase()||String(lines[i]).length>48) bad.push('note '+i+' is not short lowercase text'); }
++     if(/\balpha\b|polish pass/i.test(WHATSNEW.join('|'))) bad.push('the news has filler copy');
++     return bad.length?bad.join('; '):null; }},
+   {v:'35.38',what:'combat voices: each player role hears at most 6 guns, 8 impacts, 3 explosions and 12 active cues; oldest complete cue yields, sources stop, natural ends and muted cues release slots',
+    run:function(){
+      var hasCap=typeof sndVoiceOpen==='function';

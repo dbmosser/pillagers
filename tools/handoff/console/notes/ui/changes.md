@@ -419,3 +419,5 @@
 
 2026-10-27 | o-93-fps-counter-screen-rate | fps counter, v35.16 | adds lower case "screen 60" when the settled screen rate is more than 5 below the cap; 60 cap control has no callout | before: custom recipe unavailable; after: tools/handoff/console/notes/shots/o-93-fps-counter-screen-rate-recipes-2/fps-screen-rate-1080.jpg and tools/handoff/console/notes/shots/o-93-fps-counter-screen-rate-recipes-2/fps-screen-rate-control-1080.jpg | critic 3 each, both pass.
 
+2026-10-27 | o-139-solo-pings | solo raid world, minimap and full map | existing party ping marker now appears in solo, follows its enemy and clears after 10 seconds; same sound and shapes; pad tap pings and hold keeps the map | before: v35.38 party-only behavior | after: camera-recipes.json solo-ping-world, solo-ping-minimap, solo-ping-map (lane picture paths pending)
+
