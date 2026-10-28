@@ -1,0 +1,7 @@
+v36.07: one growing damage number and your hurt in red
+
+Hits on the same target and in the same colour grow one number within half a second. Your own hurt shows red above you in solo and co-op, with the health bar feedback kept. Watch: one climbing number should read cleaner in shotgun, LMG and SMG fights; check a weak point still stands out in its own colour, two players on one enemy stay readable, and your red numbers do not crowd your body or reticle.
+
+Check 36.07. Fails on v36.06.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

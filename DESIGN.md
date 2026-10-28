@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.07 - ONE GROWING DAMAGE NUMBER AND YOUR HURT IN RED
+
+Co-op hunt while he was away. His g-84 and g-85 answers on 10-25: Yes, one growing number; Yes, red numbers. Shotgun pellets and rapid bursts crowded the fight, and solo hurt had no number over you. Watch: one climbing number should read cleaner in shotgun, LMG and SMG fights; check a weak point still stands out in its own colour, two players on one enemy stay readable, and your red numbers do not crowd your body or reticle.
+
+MEASURED. Check 36.07 passes, and fails on v36.06.
 ## v36.06 - PRE RAID PACK SCROLL SPACE
 
 Co-op hunt while he was away. The 4K picture showed the belt consuming the pack minimum, viewport margins growing twice under menu zoom, and a dim unaffordable price at 2.45 to 1 contrast.

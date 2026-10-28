@@ -1,0 +1,4 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  preraid-whole-names                    staged      10.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"checks":{"33.48":null,"32.53":null,"17.82":null,"28.71":null},"names":[{"name":"medkit","width":163,"scroll":163,"ellipsis":"clip"},{"name":"bandage","width":163,"scroll":163,"ellipsis":"clip"},{"name":"smoke canister","width":163,"scroll":163,"ellipsis":"clip"},{"name":"frag charge","width":163,"
+== 4k : window 3876x2265, viewport 3840x2160
+  preraid-whole-names                    staged      10.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"checks":{"33.48":null,"32.53":null,"17.82":null,"28.71":null},"names":[{"name":"medkit","width":136,"scroll":136,"ellipsis":"clip"},{"name":"bandage","width":136,"scroll":136,"ellipsis":"clip"},{"name":"smoke canister","width":136,"scroll":136,"ellipsis":"clip"},{"name":"frag charge","width":136,"

@@ -15,3 +15,8 @@ Zone names (32.53, 17.82): 20 px start was his pick (design A, 10-20, check 32.4
 Check (must FAIL on v35.89): on the pre-raid screen at 1080p every pack name in the kit column is shown whole (scrollWidth <= clientWidth and no ellipsis), and the CAREER extraction ledger KILLS row reads 600 SP for g.cs.b.kill 600. Then run 33.48, 32.53, 17.82 and 28.71 alone: all pass.
 Rules: menu styling only; the v35.81 readability gains (Terms header, larger rewards) stay unless they cause the cut; no storage key change; seed 4242 fingerprint unchanged; looting and pickup rows are never touched.
 TASK DONE when the four checks pass, pictures are taken and looked at, and it is ON HIS PC.
+
+Lane note 2026-10-28 18:12: shipped cw-cx-preraid-names cw-cx-preraid-scroll and parked: only lane-side steps are left. Codex's last words:
+v36.06 is ON HIS PC. All four checks pass at 1080p and 4K; pictures reviewed, zero UI lint, critic score 3.
+
+TASK PARTIAL: coordinator must append the prepared comparison paragraph and picture paths to DESIGN.md

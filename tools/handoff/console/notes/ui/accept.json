@@ -3379,16 +3379,16 @@
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "The screen is coherent and lower case, and the lime 'ascend' button reads clearly as the primary action. But the map is a flat grid of empty dark boxes that fills the largest area, and the three columns are crowded with small, low-contrast text and uneven type sizes.",
+  "verdict": "The pre-raid card has a clear hierarchy, with the lime ascend button as the main action. The map is still a big empty blueprint with clashing labels, and the right column is crowded and uses too many small sizes.",
   "findings": [
-   "P1 map panel (left, about 65% of the card): Put loot, spawn and tier markers or room fills on the map. Otherwise shrink the map to about 50% of the card width and give the freed space to conditions and kit. Cut the rectangle outline opacity by about 40% so the exit markers and zone names carry the map.",
-   "P1 map zone labels (the long dock, foreman office, blast freezer, chill row, scrap line): Set labels in f-cond 600 at 16px with a 4px padding plate, fill --ui-panel at 80%. Keep at least 8px clear of every box edge and marker, and stop using the outline stroke.",
-   "P1 pack list (right column): Use a fixed 5-column grid: name, cap, stepper, price. Right-align every price at 16px, and show '$0' or a dash when there is no price. Give the stepper buttons 32px hit targets, raise the '/1' to --tx-2 at 16px, and add 8px padding before the scrollbar.",
-   "P1 type scale across the card: Give all section labels one style: f-cond 700 at 16px, +.04em, --tx-2. Make 'conditions' a header and drop 'surface' to a plain sub-label. Raise the belt numerals and the warning text to 16px minimum, and the esc/click keycaps to 16px.",
-   "P2 header row and footer: Make 'pre-raid' 32px f-cond 700 and 'cold storage' 20px with --tx-1. Raise the footer legend to 16px and align it to the 24px inner margin. Reduce the bottom empty band."
+   "P1 map panel (left, about 65% of the card): Cut the outline opacity by about 40%, or put real content in the rooms (loot tiers, spawns). If not, shrink the map to about 50% of the card width and give the freed 15% to the conditions and kit columns.",
+   "P1 map zone labels (the long dock, foreman office, blast freezer, packing floor, chill row, the sump, scrap line): Use f-cond 600 at 16px in --tx-1 on a plate with 4px padding and --ui-panel at 80% fill. Keep 8px clear of every edge and marker, and anchor all labels the same way (centred in the room). Remove the text stroke.",
+   "P1 pack list (right column): Use one price style: right-aligned, 16px f-cond 600. Use --tx-1 when affordable and --danger text with no box when not. Show '$0' or a dash in a fixed-width cell. Raise '/1' to 16px in --tx-2. Make the stepper buttons 32px and leave 12px before the scrollbar.",
+   "P1 type scale across the card (section labels, belt, warning, keycaps): Set all section labels to f-cond 700 at 16px, +.04em, --tx-2. Set the belt numerals, the warning text and the keycaps to 16px minimum. Raise belt slot borders to --ui-line-hi and size the slots to 40px.",
+   "P2 header row (pre-raid, cold storage, ascending here chip, stats line): Set 'pre-raid' to 32px f-cond 700 and 'cold storage' to 20px. Right-align the stats line at 16px in --tx-2 with a 24px inner margin. Turn the chip into plain text with a check glyph, or drop the check."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-09d-red-35.81-preraid-names-and-ledger-recipes-3/preraid-whole-names-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-09d-red-35.81-preraid-names-and-ledger-recipes-4/preraid-whole-names-1080.jpg",
   "task": "o-09d-red-35.81-preraid-names-and-ledger",
-  "when": "2026-10-28T22:01"
+  "when": "2026-10-28T22:10"
  }
 }

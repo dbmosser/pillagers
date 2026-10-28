@@ -1,0 +1,12 @@
+
+--- codex run 2026-10-28 18:19 ---
+2026-10-28: Prepared cw-cx-dmgmerge for g-84 and g-85. Thirteen anchored edits merge damage by target and exact colour for 0.5 seconds, retain kill styling, reset motion, grow the font by 6 percent per added hit up to 50 percent, and ease the 25 percent pop over 0.12 seconds. Rifle rounds, crowbar blows and both shock paths supply their entity. Party damage words append the optional enemy id; received words use p plus that id, while older words remain separate. Local incoming damage uses the self key and the existing red, without removing the health-bar amount or ghost. All new movement draws use fxn, and simulation skips the new effects. The setting blocks new numbers and hides the floating draw pass.
+
+Read the binding g-84/g-85 answers at answers-100-1025.md lines 105-106. Inspected existing colour, projectile and elemental fixture checks for staging. The new live-raid check fires three real Auto Rifle rounds across 0.1 second ticks, checks their sum and hit count, another target, the 0.7 second gap, separate colours, kill life, pop and drawn font size, unkeyed calls, solo self damage and its burst, the setting, transmitted target id, merged received words and older packet compatibility. No fixture retarget is expected: existing colour checks clear their numbers between shots.
+
+Sandbox validation: mk script prints written; all 13 anchors match once; patched game scripts and new fixture check parse; a Node smoke check passes merge, target and colour separation, timeout, kill life, setting and drawn scaling. The full browser check, lint, seed fingerprint, preflight and shipping require the lane. No tracked game or fixture file was edited.
+
+Handed over six camera recipes for shotgun, LMG and incoming bursts, each photographed from p1 and p2 in a real linked demo pair, smooth look. They reuse the successful o-132 real-window setup and freeze only the camera simulation after linking. They land real shots and assert the merged effect in the other window as well as the shooter. Incoming scenes damage the selected window and check its self burst and the partner red feedback. Camera defaults should cover both 1080p and 4K. Each recipe reports both windows, smooth state and number totals, colours and hit counts. No camera has run in the sandbox.
+
+The draft why and now include the requested DESIGN playtest watch line. Await lane preflight and ship results, ON HIS PC confirmation, and pictures with critic results before marking complete.
+

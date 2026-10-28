@@ -1630,3 +1630,6 @@
 2026-10-28 0.0000 o-09d-red-35.81-preraid-names-and-ledger
 2026-10-28 0.0822 critic-o-09d-red-35.81-preraid-names-and-ledger
 2026-10-28 0.0000 o-09d-red-35.81-preraid-names-and-ledger
+2026-10-28 0.0835 critic-o-09d-red-35.81-preraid-names-and-ledger
+2026-10-28 0.0000 o-09d-red-35.81-preraid-names-and-ledger
+2026-10-28 0.0000 o-09e-damage-numbers-merge-and-yours-red

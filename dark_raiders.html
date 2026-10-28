@@ -3865,8 +3865,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.06';
-var VER_AT='2026-10-28 18:07';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.07';
+var VER_AT='2026-10-28 18:22';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22102,7 +22102,7 @@ function brlArcs(s,x,y,p){
       elemProvoke(best,(s===0)?p.x:x,(s===0)?p.y:y,s>0?s:0);
       if(best.hp>0) elemStun(best,1);
       elemArcFx(cur.x,cur.y,best.x,best.y,1);
-      if(!G.sim&&CFG.dmgNumbers!==0) dmgNum(best.x,best.y-Math.round(best.r*1.1),Math.max(1,Math.round(a)),ELEM.shock.c,best.hp<=0);
+      if(!G.sim&&CFG.dmgNumbers!==0) dmgNum(best.x,best.y-Math.round(best.r*1.1),Math.max(1,Math.round(a)),ELEM.shock.c,best.hp<=0,best);   // v28.xx (cw-cx-dmgmerge): shock keeps its target key
       cur=best;
     }
   }
@@ -24020,27 +24020,42 @@ function dmgNumCol(wk,el,soak,back){
   if(soak) return DMGC_SOAK;
   return back?'#ffc04a':'#FFF6DC';
 }
-function dmgNum(x,y,amount,col,kill){
-  if(!G||G.sim) return;
+// v28.xx (cw-cx-dmgmerge), v34.xx (cw-dmgmerge): his g-84 answer, "Yes, one growing number". Target and colour stay separate; only fxn moves the number.
+function dmgNum(x,y,amount,col,kill,key){
+  if(!G||G.sim||CFG.dmgNumbers===0) return;
   G.dmgN=G.dmgN||[];
-  if(G.dmgN.length>40) G.dmgN.shift();
-  G.dmgN.push({x:x,y:y,t:0,life:kill?1.05:0.72,n:amount,c:col||'#FFF6DC',kill:!!kill,
-               vx:fxn(-9,9),vy:-26-fxn(0,10)});
+  col=col||'#FFF6DC';
+  if(key!==undefined&&key!==null){
+    for(var i=G.dmgN.length-1;i>=0;i--){
+      var d=G.dmgN[i];
+      if(d.key===key&&d.c===col&&d.t<d.life&&G.t-d.last<=0.5){
+        d.n+=amount; d.kill=d.kill||!!kill; if(d.kill) d.life=1.05;
+        d.t=0; d.last=G.t; d.hits++; d.x=x; d.y=y;
+        d.vx=fxn(-9,9); d.vy=-26-fxn(0,10); d.pop=0.12;
+        return;
+      }
+    }
+  }
+  if(G.dmgN.length>=40) G.dmgN.shift();
+  G.dmgN.push({x:x,y:y,t:0,life:kill?1.05:0.72,n:amount,c:col,kill:!!kill,
+               vx:fxn(-9,9),vy:-26-fxn(0,10),key:key,last:G.t,hits:1,pop:0});
 }
 function tickDmgNums(dt){
   if(!G||!G.dmgN) return;
   for(var i=G.dmgN.length-1;i>=0;i--){
-    var d=G.dmgN[i]; d.t+=dt;
+    var d=G.dmgN[i]; d.t+=dt; d.pop=Math.max(0,(d.pop||0)-dt);   // v28.xx (cw-cx-dmgmerge): the added-hit pop settles in 0.12 seconds
     if(d.t>=d.life){ G.dmgN.splice(i,1); continue; }
     d.x+=d.vx*dt; d.y+=d.vy*dt; d.vy+=34*dt;
   }
 }
 function drawDmgNums(){
-  if(!G||!G.dmgN||!G.dmgN.length) return;
+  if(!G||CFG.dmgNumbers===0||!G.dmgN||!G.dmgN.length) return;
   for(var i=0;i<G.dmgN.length;i++){
     var d=G.dmgN[i],k=1-d.t/d.life;
     wc.globalAlpha=Math.min(1,k*1.8);
-    wc.font=FS(d.kill?TYPE.head:TYPE.label);
+    // v28.xx (cw-cx-dmgmerge): six percent per added hit, capped at half again, with a brief quarter-size pop on each add.
+    var _dns=(1+Math.min(0.5,0.06*((d.hits||1)-1)))*(1+0.25*Math.min(1,(d.pop||0)/0.12));
+    wc.font=FS(d.kill?TYPE.head:TYPE.label).replace(/([\d.]+)px/,function(m,n){ return (parseFloat(n)*_dns).toFixed(1)+'px'; });
     wc.textAlign='center';
     var _dlw=wc.lineWidth, _dlj=wc.lineJoin; wc.lineJoin='round'; wc.lineWidth=3; wc.strokeStyle=INK; wc.strokeText(d.kill?(d.n+'!'):String(d.n),d.x,d.y); wc.lineWidth=_dlw; wc.lineJoin=_dlj;   // v27.xx (feel2f): an ink outline, so every colour reads on every floor
     wc.fillStyle=INK;   wc.fillText(d.kill?(d.n+'!'):String(d.n),d.x+1,d.y+1);
@@ -24309,6 +24324,8 @@ function damagePlayer(amt,src,srcName,sx,sy){
   var _pre=p.hp;
   p.hp-=amt;
   if(amt>0) arcadeBmHealth(p); // v28.xx (cw-cx-overmoments): a fatal or downing blow is never a survived health value.
+  // v28.xx (cw-cx-dmgmerge), v34.xx (cw-selfdmg): his g-85 answer, "Yes, red numbers". Each window sees its own hurt; the bar and ghost still show it too.
+  if(!G.sim&&amt>0.5&&CFG.dmgNumbers!==0) dmgNum(p.x+fxn(-5,5),p.y-26,Math.round(amt),'#ff5a4a',p.hp<=0,'self');
   if(NET.on&&!G.sim&&amt>0.5&&CFG.dmgNumbers!==0){ try{ netFxDmg(p.x,p.y-26,Math.round(amt),'#ff5a4a',p.hp<=0); }catch(_nfd){} }   // v16.25, his note: your teammate sees the damage you take, in red, over you
   // v9.20: now that both numbers are true, this is the row. amt is what got
   // through the multiplier and the plate, and p.hp is what he has left.
@@ -25154,7 +25171,7 @@ function crowbarFeel(e,dmg,p){
   kill=hitKills(e,dmg); n=Math.max(1,Math.round(dmg)); top=e.y-Math.round((e.r||12)*1.1); col=dmgNumCol(null,'',false,false);
   if(!(NET.on&&netEntsPeer())) hitStopOn(e,HITSTOP_DMG);
   G.hitMark={t:0,life:kill?.2:.15,kill:kill,weak:false};
-  if(CFG.dmgNumbers!==0){ dmgNum(e.x+fxn(-5,5),top,n,col,kill); if(NET.on) netFxDmg(e.x,top,n,col,kill); }
+  if(CFG.dmgNumbers!==0){ dmgNum(e.x+fxn(-5,5),top,n,col,kill,e); if(NET.on) netFxDmg(e.x,top,n,col,kill,e.nid); }   // v28.xx (cw-cx-dmgmerge): the crowbar shares the target id
   if(e.kind==='raider') bloodFx(e.x,e.y-14,p.x,p.y,kill?40:Math.min(30,n));
   if(kill){ G.shake=Math.max(G.shake||0,CROWBAR_KILL_SHAKE); spark(e.x,e.y,'#ffffff',10,360); meleeFoley('kill',e.x,e.y); }
   return kill;
@@ -31652,7 +31669,7 @@ function elemArc(e,d,seat,sx,sy){
   elemProvoke(best,sx,sy,seat);
   elemCredit(best,seat);
   elemArcFx(e.x,e.y,best.x,best.y,1);   // v23.xx (forge8): the arc line, on every window
-  if(!G.sim&&CFG.dmgNumbers!==0) dmgNum(best.x,best.y-Math.round(best.r*1.1),Math.max(1,Math.round(a)),ELEM.shock.c,best.hp<=0);
+  if(!G.sim&&CFG.dmgNumbers!==0) dmgNum(best.x,best.y-Math.round(best.r*1.1),Math.max(1,Math.round(a)),ELEM.shock.c,best.hp<=0,best);   // v28.xx (cw-cx-dmgmerge): shock keeps its target key
   return best;
 }
 function elemTick(dt){
@@ -34030,8 +34047,8 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               if(!G.sim&&CFG.dmgNumbers!==0){
                 var _dn=Math.max(1,Math.round(edmg));
                 var _dc=dmgNumCol(WK,b.el,_soak||(NET.on&&netEntsPeer()&&en.armor>0&&!WK),edmg>0&&_backShot);   // v27.xx (feel2f): the weak point's own colour, the element, grey for armour, white; was one orange for every weak point
-                dmgNum(en.x+fxn(-5,5),en.y-Math.round(en.r*(WK?2.7:1.1)),_dn,_dc,hitKills(en,edmg));   // v8.35; v23.18: the kill style on player 2 too   // v27.xx (feel2f): a weak point number starts above its label
-                if(NET.on) netFxDmg(en.x,en.y-Math.round(en.r*(WK?2.7:1.1)),_dn,_dc,hitKills(en,edmg));   // v16.22: the party sees your numbers
+                dmgNum(en.x+fxn(-5,5),en.y-Math.round(en.r*(WK?2.7:1.1)),_dn,_dc,hitKills(en,edmg),en);   // v8.35; v23.18: the kill style on player 2 too   // v27.xx (feel2f): a weak point number starts above its label   // v28.xx (cw-cx-dmgmerge): one growing number per target and colour
+                if(NET.on) netFxDmg(en.x,en.y-Math.round(en.r*(WK?2.7:1.1)),_dn,_dc,hitKills(en,edmg),en.nid);   // v16.22: the party sees your numbers   // v28.xx (cw-cx-dmgmerge): the teammate merges by target id too
               }
               // v3.94: he has just been shot at by YOU, and a person answers
               // that by getting off the line. Perpendicular to the incoming
@@ -55917,7 +55934,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.06: The pack reserves 120 px for scrolling rows above the belt. The pre-raid card keeps its chosen 5 percent physical margins at 4K. Prices use primary text with a danger border when unaffordable; unsold slots show a dash. Scrollbars have 8 px clearance and the condition list scrolls inside its panel. Map type, Terms and rewards stay as chosen. Watch: at 4K scroll the pack and condition column, and reach ascend in the right column. Check 36.06 fails on v36.05',
+  now:'v36.07: Hits on the same target and in the same colour grow one number within half a second. Your own hurt shows red above you in solo and co-op, with the health bar feedback kept. Watch: one climbing number should read cleaner in shotgun, LMG and SMG fights; check a weak point still stands out in its own colour, two players on one enemy stay readable, and your red numbers do not crowd your body or reticle. Check 36.07 fails on v36.06',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -62256,10 +62273,11 @@ function netFxShot(b,sh,wep,ang){ var mz=null;   // v28.xx (cw-muzzlenet), CLOUD
 }
 // v16.22, HIS NOTE: HE SHOULD SEE THE DAMAGE NUMBERS WHEN THE OTHER PLAYER DOES DAMAGE. Every number a player's round puts up is sent
 // to the party (fast channel, the host passes it on) and drawn there with the same colour and the same kill mark.
-function netFxDmg(x,y,n,c,dead){
+function netFxDmg(x,y,n,c,dead,nid){   // v28.xx (cw-cx-dmgmerge): optional sixth field; older words still draw without merging
   var i, m;
   if(!netUpShared()) return false;
   m={t:'fx',k:'d',s:NET.seat,d:[Math.round(x),Math.round(y),n|0,String(c||'#FFF6DC').slice(0,9),dead?1:0]};
+  if(typeof nid==='number'&&isFinite(nid)&&nid>0) m.d.push(nid);
   for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSendFast(NET.peers[i],m);
   return true;
 }
@@ -62357,7 +62375,7 @@ function netFxTake(peer,m){
     return 'fx:a';
   }
   if(m.k==='d'&&m.d&&m.d.length>=4){   // v16.22: a damage number one of the party put up
-    a=m.d; try{ if(!G.sim&&CFG.dmgNumbers!==0) dmgNum(+a[0]||0,+a[1]||0,Math.max(1,a[2]|0),(/^#[0-9a-fA-F]{3,8}$/).test(a[3])?a[3]:'#FFF6DC',!!a[4]); }catch(_dn){}
+    a=m.d; try{ if(!G.sim&&CFG.dmgNumbers!==0) dmgNum(+a[0]||0,+a[1]||0,Math.max(1,a[2]|0),(/^#[0-9a-fA-F]{3,8}$/).test(a[3])?a[3]:'#FFF6DC',!!a[4],typeof a[5]==='number'&&isFinite(a[5])&&a[5]>0?'p'+a[5]:undefined); }catch(_dn){}   // v28.xx (cw-cx-dmgmerge): no id means no merge
     return 'fx:d';
   }
   if(m.k==='n'&&m.n&&m.n.length){
