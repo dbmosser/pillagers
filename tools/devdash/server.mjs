@@ -5,7 +5,7 @@
 import http from 'http';
 import os from 'os';
 import { readFileSync, statSync, existsSync, readdirSync, writeFileSync, appendFileSync } from 'fs';
-import { execFileSync, execFile } from 'child_process';
+import { execFileSync, execFile, spawn } from 'child_process';
 const R = 'C:/claudecode/dark raiders', C = R + '/tools/handoff/console', N = R + '/tools/handoff/nightly';
 const S = 'C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad';
 const rd = (p, d = '') => { try { return readFileSync(p, 'utf8'); } catch { return d; } };
@@ -193,7 +193,7 @@ function data() {
     ai: ai(), nightly: tail(N + '/nightly.log', 60).filter(l => /^(\d\d-\d\d )?\d\d:\d\d /.test(l)).slice(-8), fuzz: tail(R + '/tools/handoff/fuzz/fuzz.log', 4), review: tail(C + '/review/review.log', 3), commits };
 }
 const PAGE = () => rd("C:/claudecode/dark raiders/tools/devdash/index.html");   // read per request, so edits show at once
-http.createServer((q, s) => {
+const srv = http.createServer((q, s) => {
   if (q.url.startsWith('/api')) { s.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' }); s.end(JSON.stringify(data())); return; }
   // 10-18: /report is the newest morning/evening report; /reports/NAME.html is a named one (names checked, nothing else is served)
   if (q.url === '/report' || q.url.startsWith('/reports/')) {
@@ -257,6 +257,20 @@ function pushMem() {
   execFile(process.execPath, [R + '/tools/bridge/hostctl.mjs', 'share-put', 'name=' + MEM_NAME, '--file', MEM_TMP], { timeout: 20000, windowsHide: true }, () => { memBusy = false; });
 }
 setTimeout(pushMem, 5000); setInterval(pushMem, 30000);
+// 10-27 (Dashboard Correspondent): a change to this file takes effect by itself. Every 30 s the server looks at its own file; when it
+// changed and the new copy passes node --check, it lets go of 8820, starts the new copy and exits (a broken copy is left alone, so the
+// page stays up on the old code). index.html needs none of this: it is read on every request.
+const SELF = R + '/tools/devdash/server.mjs', selfM = (() => { try { return statSync(SELF).mtimeMs; } catch { return 0; } })();
+let selfBusy = false;
+setInterval(() => {
+  let m = 0; try { m = statSync(SELF).mtimeMs; } catch { return; }
+  if (selfBusy || !m || m === selfM || Date.now() - m < 5000) return; selfBusy = true;   // 5 s: let an editor finish writing
+  execFile(process.execPath, ['--check', SELF], { timeout: 20000, windowsHide: true }, err => {
+    if (err) { selfBusy = false; try { appendFileSync(os.tmpdir() + '/pillagers-dashboard-crash.log', new Date().toISOString() + ' new server.mjs fails node --check; staying on the old copy\n'); } catch {} return; }
+    srv.close(); try { srv.closeAllConnections(); } catch {}   // the listening socket goes at once; open page connections are cut
+    setTimeout(() => { spawn(process.execPath, ['server.mjs'], { cwd: R + '/tools/devdash', detached: true, stdio: 'ignore', windowsHide: true }).unref(); process.exit(0); }, 500);
+  });
+}, 30000);
 // 10-27: found dead at 19:27 with no trace, and his desktop copy stood still for over an hour. The runner (tools/nightly.sh step 10) starts
 // it again within 5 minutes; a crash now leaves its reason in pillagers-dashboard-crash.log (TEMP) first.
 process.on('uncaughtException', (e) => {
