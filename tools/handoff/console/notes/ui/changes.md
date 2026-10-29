@@ -574,3 +574,4 @@
 
 2026-10-28 | o-00c2-reload-chain-breaks-on-switch | raid status, both windows | switching the held gun removes that player's active reload status immediately; the next active reload begins at x1 | before: existing behavior recorded in task | after: lane camera-recipes.json scenes reload-switch-p1-view-p1, reload-switch-p1-view-p2, reload-switch-p2-view-p1, reload-switch-p2-view-p2; picture paths pending lane capture
 
+2026-10-28 | o-00c2-reload-chain-breaks-on-switch | raid status, both real linked windows | v36.23 switching guns immediately ends only that player's active reload chain and removes its status | after pictures: tools/handoff/console/notes/shots/o-00c2-reload-chain-breaks-on-switch-recipes-1/reload-switch-p1-view-p1-1080.jpg, reload-switch-p1-view-p2-1080.jpg, reload-switch-p2-view-p1-1080.jpg, reload-switch-p2-view-p2-1080.jpg | critic: whole raid 2/5; inherited HUD findings handed to coordinator

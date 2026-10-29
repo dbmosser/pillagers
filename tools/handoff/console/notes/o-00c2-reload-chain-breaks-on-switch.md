@@ -10,3 +10,10 @@ Local validation: mk printed written; all 13 anchors matched once; the drafted g
 
 Handed over four camera recipes using the already working real linked-window setup from the reload-status task. Both windows start at x2; player 1 switches, then player 2 switches in separate scenes, with a picture from each window. Each scene asserts the switching seat has no chain/status and the other seat retains x2/+25%. Needs lane preflight, ship, ON HIS PC, pictures and critic. DESIGN watch text is in the draft's why field: switching guns ends the active reload chain.
 
+
+--- codex run 2026-10-28 22:06 ---
+2026-10-28 completion: cw-cx-reloadswitch shipped as v36.23 (5732eb62d). Lane confirmed ON HIS PC v36.23: his 8802 serves 36.23, 65 seconds after shipping. The owner reloads to play it. DESIGN.md contains the requested watch line and records check 36.23 passing on the new build and failing on v36.22.
+
+Reviewed all four attached 1080p pictures from recipes round 1. In reload-switch-p1-view-p1 the held weapon is auto rifle and the active reload status is absent; reload-switch-p1-view-p2 retains active reload x2 / +25% damage with the scav pistol. The reciprocal pair shows player 1 retaining x2 / +25% while player 2 holds the rifle with no active reload status. Camera assertions also confirm both windows are real linked host/join windows and only the switching seat resets.
+
+The critic gave all four whole-raid pictures 2/5, citing existing HUD layout, hp size, list type, ammo alignment, hints and panel styles. This change adds no UI styling or text; it removes the existing status when the chain ends. The screenshots show the requested reset and partner independence. Logged the broader HUD findings for the coordinator instead of expanding this urgent gun-switch fix into a raid HUD redesign. No critic score of 4 is claimed. Functional task is shipped and ON HIS PC; no further code changes required for the requested chain behavior.

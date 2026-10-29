@@ -1728,3 +1728,9 @@
 2026-10-28 0.0882 critic-o-00c-active-reload-status
 2026-10-28 0.0000 o-00c-active-reload-status
 2026-10-28 0.0000 o-00c2-reload-chain-breaks-on-switch
+2026-10-28 0.0824 critic-o-00c2-reload-chain-breaks-on-switch
+2026-10-28 0.0852 critic-o-00c2-reload-chain-breaks-on-switch
+2026-10-28 0.0855 critic-o-00c2-reload-chain-breaks-on-switch
+2026-10-28 0.0819 critic-o-00c2-reload-chain-breaks-on-switch
+2026-10-28 0.0000 o-00c2-reload-chain-breaks-on-switch
+2026-10-28 0.0000 o-00d-extract-quiet-middle

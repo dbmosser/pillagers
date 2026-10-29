@@ -3870,5 +3870,69 @@
   "pic": "tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-3/reload-status-p2-x3-1080.jpg",
   "task": "o-00c-active-reload-status",
   "when": "2026-10-29T01:49"
+ },
+ "p1-view-p1": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The in-raid HUD is functional but scattered: it uses several panel styles, mixed type sizes and a capital letter, the hp bar dominates the screen, and the small corner widgets are hard to read.",
+  "findings": [
+   "P1 top-right 'run info' bar: Render 'run info' fully lower case. Restyle the bar as --ui-panel with a 1px --ui-line-hi border and a 4px radius, and drop its width from about 300px to about 200px. Give the cache tag 16px of clearance from the bar.",
+   "P1 bottom-left hp bar ('hp 100'): Reduce the bar to about 240px by 20px. Set the hp number in 20px f-cond. Use --ok for the fill with a --ui-panel track. Align its left edge to the 5% margin (96px) and its baseline to the weapon-slot row.",
+   "P1 top-left 'current pillagers' panel: Use 16px type with --tx-2 for the header and --tx-1 for rows. Mark the 'you' row with an amber 3px left bar and a --ui-raised fill. Match the border and radius of the ammo panel (1px --ui-line-hi, 4px). Add 8px row padding.",
+   "P1 bottom-right ammo block: Raise 'b / i backpack' to 16px in --tx-2. Left-align both text lines to the same inset (16px). Keep the 56px hero number. Move the panel to the 5% margin, about 48px from the bottom and right edges.",
+   "P2 weapon slot row (1–0): Set the selected border to --acc, 2px. Make slot numerals 16px at --tx-2 or brighter. Remove the ghost icons, or dim the empty slots to 30% opacity on a --ui-panel fill. Move the toast to the left feed zone."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00c2-reload-chain-breaks-on-switch-recipes-1/reload-switch-p1-view-p1-1080.jpg",
+  "task": "o-00c2-reload-chain-breaks-on-switch",
+  "when": "2026-10-29T02:04"
+ },
+ "p1-view-p2": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The in-raid HUD has the right pieces but they are scattered, use mismatched type sizes, and the left side is crowded. Several panels fight for attention, the ammo number is the only clear hero, and the hp bar is oversized and clipped at the bottom-left.",
+  "findings": [
+   "P1 bottom-left hp bar: Inset it to 5% margins (48px from the left, 32px from the bottom). Reduce it to 14px tall inside a 4px-radius --ui-panel box with a 1px --ui-line-hi border. Show 'hp 100' at 20px f-cond 600 in --tx-1, and use --ok for the fill.",
+   "P1 left column: 'current pillagers' list, 'pillager' bar, 'active reload x2' chip: Stack them in one 8px-grid column at x=48 with a shared width (about 320px), 8px gaps, and --ui-panel fill with a 1px --ui-line-hi border and 4px radius. Set the list rows to 16px minimum with 8px row padding. Give the 'pillager' bar the same panel as the others.",
+   "P1 hierarchy overall: Keep one hero (ammo) at --fs-hero. Drop the timer to 32px. Make the party toast and controls chip --tx-2 at 16px with no border so they recede. Give the active reload chip a 16px label and no glow.",
+   "P1 top-right 'run info' dropdown and 'the long dock cache' label: Shrink 'run info' to a fit-content pill, 40px tall, with 16px text in the shared panel style. Attach the location name as a second line inside the same panel, or move it into the top-centre banner. Align the right edge to x=1872 (48px margin).",
+   "P2 bottom-centre quick slots: Draw all ten slots as 64px cells with --ui-panel fill and a 1px --ui-line border. Use a 2px --acc border for the selected slot only, 16px --tx-2 numerals inside the cell, and the same ammo count position in every filled cell."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00c2-reload-chain-breaks-on-switch-recipes-1/reload-switch-p1-view-p2-1080.jpg",
+  "task": "o-00c2-reload-chain-breaks-on-switch",
+  "when": "2026-10-29T02:04"
+ },
+ "p2-view-p1": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The raid HUD has working pieces, but it is scattered and its type sizes, panel styles and colours are inconsistent. Several lines compete with each other, and the lower-left and top-right corners look unresolved.",
+  "findings": [
+   "P1 whole HUD, panel language: Use one panel: #16191b fill, 1px #4a5257 border, 4px radius, 8px padding. Apply it to the pillagers list, run info, active reload, toast, ammo and controls chip. Drop the extra white and teal outlines.",
+   "P1 top-left 'current pillagers' list: Set rows to 20px f-cond 600 with a 32px row height and 1px #2e3337 dividers. Set the header to 16px tx-2. Add 16px padding. Give 'you' an amber (P1) tag or bar. Show only the other pillagers' $ value in tx-1.",
+   "P1 duplicate and redundant messages: Cut the 'gold glow marks the box' explanation to 'contract item nearby'. Remove the duplicate 'c 152m' marker or turn it into a bare arrow. Merge the hints into the single f1 controls line at the mid-bottom left, set at 16px with the pad focus style. Remove 'b / i backpack' or set it at 14px in the card footer.",
+   "P1 hp bar, bottom-left: Put hp in a panel at the 5% safe margin (54px left, 54px bottom). Use a 12px tall bar and a 32px number with an 'hp' label at 16px. Align it with the weapon slots. Label or group the two status icons into one 40px chip row. Remove the second HP plate or fold it into the list.",
+   "P1 weapon slots, bottom-centre: Use a uniform 96x96 slot with a 4px radius and the panel fill. Draw the selected slot with a 2px #e6ff3d border. Set the key number at 16px tx-2 in the same top-left corner for every slot. Hide empty slots or draw them at 30% opacity inside their own panel. Set ammo at 16px bold."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00c2-reload-chain-breaks-on-switch-recipes-1/reload-switch-p2-view-p1-1080.jpg",
+  "task": "o-00c2-reload-chain-breaks-on-switch",
+  "when": "2026-10-29T02:05"
+ },
+ "p2-view-p2": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The in-raid HUD reads clearly and keeps to lower case, but it is a pile of mismatched widgets: five different panel styles, four competing readouts in the bottom-left, and no clear hero element.",
+  "findings": [
+   "P1 bottom-left hp bar: Rebuild it as a 16px-tall bar with a 1px --ui-line-hi border on a --ui-panel fill, using --ok for the fill. Put the hp value at 20px f-cond 700, inset 24px from the left and bottom. Keep it clear of the slot row, with at least 16px between them.",
+   "P1 ammo card, bottom-right: Set the number to --fs-hero 56px f-cond 800, with '/ 50' at 32px in --tx-2 on the same baseline. Right-align every line in the card. Add a 3px --acc underline or low-ammo state. Inset the card 48px from the edges.",
+   "P1 top-left 'current pillagers' list, 'pillager' bar and top-right 'run info': Give all three the same chrome: --ui-panel at 90% alpha, 1px --ui-line-hi border, 4px radius, 16px padding. Set row text at 16px minimum. Put 'value at risk' in --tx-2. Make the list's row height 24px, and align the three panels to one 48px left or right margin.",
+   "P2 weapon slot bar: Draw all 10 slots as 56px tiles on --ui-panel with a 1px --ui-line border. Draw the selected tile with a 2px --acc border, not amber. Set the ammo count at 16px f-cond 600 and the key hints at 14px.",
+   "P2 top-centre timer, extract chip and compass: Put the timer on a --ui-panel plate at 32px f-cond 700. Show the extract distance once, either in the teal chip or the edge arrow. Tie the cache label to its object or remove it."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00c2-reload-chain-breaks-on-switch-recipes-1/reload-switch-p2-view-p2-1080.jpg",
+  "task": "o-00c2-reload-chain-breaks-on-switch",
+  "when": "2026-10-29T02:05"
  }
 }

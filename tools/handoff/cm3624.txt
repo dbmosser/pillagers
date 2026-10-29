@@ -1,0 +1,7 @@
+v36.24: extract quiet middle
+
+Extract siren and sonar sound only in the first and last 3 seconds of the wait. Enemy attraction stays continuous in both windows.
+
+Check 36.24. Fails on v36.23.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

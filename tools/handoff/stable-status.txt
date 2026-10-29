@@ -1,9 +1,10 @@
 Latest stable: v35.28 (2026-10-27 22:16)
-Checked: 2026-10-28 21:14
+Checked: 2026-10-28 22:15
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
+  corpus-1028-1954  v36.11  failing 69, new 6  robots 110 min/0 problems  -> 6 check(s) newly failing, e.g. v8.85 a pillager footprint does not draw through a wall, and | v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right
   corpus-1028-1659  v35.98  failing 69, new 5  robots 115 min/0 problems  -> 5 check(s) newly failing, e.g. v33.48 the pre-raid pack names are shown whole beside the bu | v32.53 the pre-raid map draws its zone names at 20 px, shrin
   corpus-1028-1510  v35.93  failing 70, new 5  robots 51 min/0 problems  -> 5 check(s) newly failing, e.g. v33.48 the pre-raid pack names are shown whole beside the bu | v32.53 the pre-raid map draws its zone names at 20 px, shrin
   corpus-1028-1346  v35.89  failing 69, new 5  robots 114 min/1 problems  -> 5 check(s) newly failing, e.g. v33.48 the pre-raid pack names are shown whole beside the bu | v32.53 the pre-raid map draws its zone names at 20 px, shrin
@@ -11,11 +12,11 @@ Newest test runs, newest first:
   corpus-1028-1057  v35.80  failing 66, new 1  robots 57 min/1 problems  -> 1 check(s) newly failing, e.g. v29.33 the title and mode menu run on the shared look: token
   corpus-1028-0934  v35.76  failing 72, new 7  robots 114 min/0 problems  -> 7 check(s) newly failing, e.g. v35.36 cw-quiethud (his order of 10-27, build the quiet hud, | v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right
   corpus-1028-0755  v35.66  failing 46, new 1  robots 58 min/0 problems  -> 1 check(s) newly failing, e.g. v23.74 gfx2, his order 2026-10-12 (the graphics program): th
-  corpus-1028-0722  v35.65  failing 45, new 3  robots 240 min/44 problems  -> 3 check(s) newly failing, e.g. v28.92 cloud-coop-p2-hit-stop-rule: the host holds a body fo | v26.55 feel10, his order: a heavy round (40 or more) stops t
 
 Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
-  v29.33 the title and mode menu run on the shared look: tokens in the CSS equal U
-  v33.48 the pre-raid pack names are shown whole beside the buy slot (the kit colu
-  v32.53 the pre-raid map draws its zone names at 20 px, shrinking to no less than
-  v28.71 his order 2026-10-15 (score as SP): every score figure reads N SP and nev
-  v17.82 each sector row on the sector page is tall enough to hold its map (the ma
+  v8.85 a pillager footprint does not draw through a wall, and a visible one still
+  v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right hand lower corner m
+  v33.60 cw-cx-pixground (86b): THE PIXEL GROUND. With the pixel look on, the same
+  v31.77 the run over card: the score word is a 16px label over the 56px figure, a
+  v29.47 the run over card is Panel P on the shared look: 1px panel, 32px Run over
+  v23.87 his #29 and answer 33: the KIA card says KILLED BY who WITH what, and the

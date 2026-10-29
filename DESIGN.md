@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.24 - EXTRACT QUIET MIDDLE
+
+Co-op hunt while he was away. His 10-28 order: audible only for the first 3 and last 3 seconds while attracting enemies throughout. The inbound sonar bypassed the existing siren windows. Watch: the extract is quiet in the middle of the wait but still pulls enemies
+
+MEASURED. Check 36.24 passes, and fails on v36.23.
 ## v36.23 - RELOAD CHAIN ENDS ON GUN SWITCH
 
 Co-op hunt while he was away. His 10-28 order: active reload chain should also break if player switches guns. Watch: switching guns ends the active reload chain
