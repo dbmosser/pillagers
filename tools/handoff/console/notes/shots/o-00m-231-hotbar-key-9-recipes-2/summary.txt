@@ -1,0 +1,18 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  hotbar9-raid-p1                        staged      11.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"place":"raid","seat":1,"bothLinked":true,"ten":true}
+  hotbar9-raid-p2                        staged       6.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"place":"raid","seat":2,"bothLinked":true,"ten":true}
+  hotbar9-hub-p1                         staged       5.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"place":"hub","seat":1,"bothLinked":true,"ten":true}
+  hotbar9-hub-p2                         staged       6.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"place":"hub","seat":2,"bothLinked":true,"ten":true}
+  hotbar9-stash-p1                       NOT STAGED   7.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: stash did not show ten keys on its keys tab
+    at stageHotbarPair (<anonymous>:114:372)
+    at async <anonymous>:120:8
+    at async <anonymous>:1:21
+== 4k : window 3876x2265, viewport 3840x2160
+  hotbar9-raid-p1                        staged      10.5s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"place":"raid","seat":1,"bothLinked":true,"ten":true}
+  hotbar9-raid-p2                        staged       6.9s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"place":"raid","seat":2,"bothLinked":true,"ten":true}
+  hotbar9-hub-p1                         staged       6.3s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"place":"hub","seat":1,"bothLinked":true,"ten":true}
+  hotbar9-hub-p2                         staged       6.9s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"place":"hub","seat":2,"bothLinked":true,"ten":true}
+  hotbar9-stash-p1                       NOT STAGED   8.0s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: stash did not show ten keys on its keys tab
+    at stageHotbarPair (<anonymous>:114:372)
+    at async <anonymous>:120:8
+    at async <anonymous>:1:21

@@ -1,0 +1,7 @@
+v36.38: one rarity per gun
+
+Each gun has one rarity; guns that had two are always the better one.
+
+Check 36.38. Fails on v36.37.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

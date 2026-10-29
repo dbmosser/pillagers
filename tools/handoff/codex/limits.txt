@@ -170,3 +170,5 @@
 2026-10-29 02:58 week=60.0% 5h=93.0% week_resets=2026-11-04 01:35 job=o-00m-231-hotbar-key-9
 2026-10-29 02:58 week=60.0% 5h=95.0% week_resets=2026-11-04 01:35 job=o-00m-231-hotbar-key-9
 2026-10-29 03:01 week=60.0% 5h=97.0% week_resets=2026-11-04 01:35 job=o-00m-231-hotbar-key-9
+2026-10-29 04:03 week=62.0% 5h=4.0% week_resets=2026-11-04 01:35 job=o-00m-231-hotbar-key-9
+2026-10-29 04:22 week=63.0% 5h=13.0% week_resets=2026-11-04 01:35 job=o-00n-232-one-rarity-per-gun

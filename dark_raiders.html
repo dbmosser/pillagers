@@ -3885,8 +3885,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.37';
-var VER_AT='2026-10-29 03:04';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.38';
+var VER_AT='2026-10-29 04:26';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4798,39 +4798,57 @@ stim:{name:'Stim Injector',val:180,wt:1,r:'uncommon',c:'#7fe0d0',use:'stim'},
 // set now: common grey, uncommon green, rare blue, elite purple, gold gold, the same five in this table, in UIC and in the stylesheet.
 // Gold stays #ffc72e, the gold every gun of tier 5 has worn since v7.99.
 var RCOL={common:'#9da3a8',uncommon:'#5fbf6a',rare:'#3f9de9',elite:'#a866e0',gold:'#ffc72e'};
-// v26.26 (rarvar1), HIS ORDER (2026-10-14): "all the green guns should also have blue variants. The current blue guns should have purple
-// variants. The current purple guns should also have gold variants. Increase in rarity should only lead to slight damage increase, maybe
-// 1.2-1.4? Don't change reload times, fire rates, other gun characteristics etc due to rarity". THE RARITY VARIANTS. A gun the game shows
-// as green, blue or purple (the rank table WTIER, which gunRarity reads: green is tier 2, blue 3, purple 4, gold 5) has a twin one rarity
-// up under the id <gun>_v: the Compact SMG is also found blue; the Magnum, Burst Carbine, Riot Scattergun and Auto Rifle also purple; the
-// Support MG, Marksman Rifle and Whisper also gold. The twin is a gun of its own everywhere an id is a key (its item gun_<id>_v, the
-// backpack, the stash, the armoury, a pile, a trade, the party), so it cannot lose its rarity on the way anywhere. It is the plain gun
-// with ONE number changed: damage times VARIANT_DMG (1.25, his 1.2 to 1.4), so a Forge MK stacks on top of it. Reload, rate of fire,
-// magazine, spread, range, noise, pellets, burst and scope are the model's. Its rank (WTIER) is the model's too, so the belt and the stat
-// card still rank by tier and then the damage a second, and it is worth VARIANT_VAL (1.5) times the model: in the stall, in loot and in
-// the arcade. RV_PCT percent of the finds come one up. No new number is drawn: rollFieldGun reuses the 0 to 100 roll it always made.
-// The Scav Pistol (common) and the Longshot and the Meridian Lance (gold) have no twin, and a twin has none of its own.
+// v28.xx (cw-cx-onerarity), HIS ORDER (2026-10-29): "get rid of the lower-rarity of any weapons".
+// Upgrade the original id in place to its former higher copy. Every source, including a direct WEAPONS clone,
+// now gets that damage, value and colour. No roll, weight, pickup, sound or loot-row code changes.
+// Keep the old map names for callers; there are no longer two live ids for a model.
 var RV_PCT=20, VARIANT_DMG=1.25, VARIANT_VAL=1.5;
-var RV_OF={}, RV_BASE={};
-function gunBase(id){ return RV_BASE[id]||id; }
-function rvGun(gk,f){ return (RV_OF[gk]&&f<RV_PCT/100)?RV_OF[gk]:gk; }
-function rvKey(key,f){ var it=ITEMS[key]; return (it&&it.use==='gun'&&it.gk&&RV_OF[it.gk]&&f<RV_PCT/100)?('gun_'+RV_OF[it.gk]):key; }
+var RV_OF={}, RV_BASE={}, SINGLE_GUNS={}, SINGLE_GUN_LEGACY={};
+function gunBase(id){ return Object.prototype.hasOwnProperty.call(SINGLE_GUN_LEGACY,id)?SINGLE_GUN_LEGACY[id]:id; }
+function rvGun(gk,f){ return gunBase(gk); }
+function rvKey(key,f){
+  if(typeof key!=='string'||key.indexOf('gun_')!==0) return key;
+  var gk=gunBase(key.slice(4));
+  return ITEMS['gun_'+gk]?'gun_'+gk:key;
+}
 (function(){
-  var RN=['common','uncommon','rare','elite','gold'], ids=[], gk, i, b, w, it, k, t, vid;
+  var RN=['common','uncommon','rare','elite','gold'], gk, b, it, t;
   for(gk in WEAPONS){
-    t=WTIER[gk];
-    if(gk!=='fists'&&t>=2&&t<=4&&WEAPONS[gk].mag>0&&ITEMS['gun_'+gk]&&ITEMS['gun_'+gk].gk===gk) ids.push(gk);
-  }
-  for(i=0;i<ids.length;i++){
-    gk=ids[i]; b=WEAPONS[gk]; t=WTIER[gk]; vid=gk+'_v'; w={};
-    for(k in b) w[k]=b[k];
-    w.id=vid; w.dmg=b.dmg*VARIANT_DMG; w.rv=1;
-    WEAPONS[vid]=w; WTIER[vid]=t;
-    it={}; for(k in ITEMS['gun_'+gk]) it[k]=ITEMS['gun_'+gk][k];
-    it.gk=vid; it.rv=1; it.val=Math.round(it.val*VARIANT_VAL); it.r=(RN[t]==='gold')?'elite':RN[t];   // the item row keeps to the four loot ranks; the shown rarity is gunRarity
-    ITEMS['gun_'+vid]=it; RV_OF[gk]=vid; RV_BASE[vid]=gk;
+    t=WTIER[gk]; b=WEAPONS[gk]; it=ITEMS['gun_'+gk];
+    if(gk==='fists'||!(t>=2&&t<=4)||!(b.mag>0)||!it||it.gk!==gk) continue;
+    SINGLE_GUNS[gk]={dmg:b.dmg,val:it.val,tier:t}; SINGLE_GUN_LEGACY[gk+'_v']=gk;
+    b.dmg*=VARIANT_DMG; WTIER[gk]=t+1;
+    it.val=Math.round(it.val*VARIANT_VAL); it.r=(RN[t]==='gold')?'elite':RN[t];
   }
 })();
+// v28.xx (cw-cx-onerarity): lower copies already have the permanent id, so every cell and record stays put.
+// Fold old higher ids back into it before any loader filters. Never rewrite names, prose or history.
+function oneGunProfile(p){
+  if(!p||typeof p!=='object') return;
+  function token(s){ return (typeof s==='string'&&s.indexOf('gun_')===0)?rvKey(s,0):gunBase(s); }
+  function walk(x,sum){
+    var i, k, n, v, old;
+    if(typeof x==='string') return token(x);
+    if(!x||typeof x!=='object') return x;
+    if(Array.isArray(x)){ for(i=0;i<x.length;i++) x[i]=walk(x[i],sum); return x; }
+    for(k in x) if(Object.prototype.hasOwnProperty.call(x,k)){
+      n=token(k); v=walk(x[k],sum);
+      if(n===k){ x[k]=v; continue; }
+      old=x[n];
+      if(old===undefined) x[n]=v;
+      else if(typeof old==='number'&&typeof v==='number') x[n]=sum?old+v:Math.max(old,v);
+      else if(v&&old&&typeof v==='object'&&typeof old==='object'&&(v.fk|0)>(old.fk|0)) x[n]=v;
+      delete x[k];
+    }
+    return x;
+  }
+  ['stash','weapons','equipped','equippedSec','kit','dropKit','hotAssign','keep','wear','forged','kitSaved',
+   'kitBeforeFree','hotBeforeFree','gunBeforeFree','raidSpliced','gunPiled','floorDrops','gambleLog','codex','ghost',
+   'gunKills','s','g','gk','kp','gh'].forEach(function(f){
+    if(p[f]!==undefined) p[f]=walk(p[f],f==='gunKills'||f==='s'||f==='gk');
+  });
+  if(Array.isArray(p.weapons)) p.weapons=p.weapons.filter(function(k,i,a){ return a.indexOf(k)===i; });
+}
 // v7.99, his order: a gun ALWAYS shows its rarity, and the truth is the tier
 // table, not the item row (which feeds prices and stays put). Tier 5 wears
 // gold, matching the in-raid receiver edge from v7.77.
@@ -6174,7 +6192,7 @@ function applyLoadedProfile(r){
       if(r&&r.value){ var _rdOk=false; try{ var _rd0=JSON.parse(r.value); _rdOk=!!(_rd0&&typeof _rd0.credits==='number'); }catch(_rpe){}
         if(!_rdOk){ try{ localStorage.setItem(SKEY+':unreadable',String(r.value)); }catch(_rue){} } }
       if(r&&r.value){ var d=JSON.parse(r.value);
-        if(d&&typeof d.credits==='number'){ P=d; keysMig(P); /* v35.xx (cw-meleez), his order 10-28 "can we move melee to z as default?": a save from before the Z melee swap keeps any key it moved; the save key is unchanged */ try{ if(typeof KEYS==='object'&&KEYS) KEYS.inv=null; }catch(_kv){}   // v25.xx (keyremap): the key translation is rebuilt from the loaded map, and a map from before the swap is dropped once
+        if(d&&typeof d.credits==='number'){ P=d; oneGunProfile(P); keysMig(P); /* v28.xx (cw-cx-onerarity): migrate before item, belt and Forge validation; keep the profile key */ /* v35.xx (cw-meleez), his order 10-28 "can we move melee to z as default?": a save from before the Z melee swap keeps any key it moved; the save key is unchanged */ try{ if(typeof KEYS==='object'&&KEYS) KEYS.inv=null; }catch(_kv){}   // v25.xx (keyremap): the key translation is rebuilt from the loaded map, and a map from before the swap is dropped once
 if(!P.log)P.log=[]; if(!P.contracts)P.contracts=[]; if(!P.pack)P.pack=0; if(!P.hotAssign)P.hotAssign={};
 padPresetLoad(); // v28.xx (cw-cx-padpresets): legacy profiles keep their button map, with standard sticks.
 // v28.xx (cw-cx-flashdefault): existing saves keep their choice, including the old implicit off. Profile fields only; the save key stays the same.
@@ -56204,7 +56222,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.37: the hotbar has a 9 key Check 36.37 fails on v36.36',
+  now:'v36.38: Each gun has one rarity; guns that had two are always the better one. Check 36.38 fails on v36.37',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -59064,6 +59082,7 @@ function restoreRead(code){
 var RESTORE_RELOAD=0, RESTORE_TIMER=null;
 function restoreApply(o){
   if(!o||typeof o.c!=='number') return false;
+  oneGunProfile(o); // v28.xx (cw-cx-onerarity): old restore codes keep their guns, locks and records too.
   P.pname=String(o.n||'PILLAGER').slice(0,16);
   P.credits=o.c|0; P.xp=o.x|0; P.xpLevel=o.l||1;
   P.runs=o.r|0; P.ext=o.e|0; P.died=o.d|0; P.best=o.b|0; P.notoriety=o.no|0;

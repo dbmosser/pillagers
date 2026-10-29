@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.38 - ONE RARITY PER GUN
+
+Co-op hunt while he was away. His order 10-29: get rid of the lower rarity of any weapons. The six affected guns retain only their former higher colour, 1.25 times damage and 1.5 times value under the original permanent id. Old higher ids migrate before validation; stash cells, locks, kit picks, wear and Forge marks survive. Watch: each gun has one rarity; the guns that had two are always the better one. These guns now always hit 25 percent harder than their old common find, including guns carried by pillagers. Watch both windows for matching gun colours and saved loadouts. Pickup code, loot sounds and loot rows are untouched.
+
+MEASURED. Check 36.38 passes, and fails on v36.37.
 ## v36.37 - the hotbar has a 9 key
 
 Co-op hunt while he was away. His order 10-28: add key 9 between 8 and 0, keeping the rocket launcher on 0 and old saved assignments on their keys.

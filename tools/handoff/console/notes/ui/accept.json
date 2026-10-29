@@ -4334,5 +4334,85 @@
   "pic": "tools/handoff/console/notes/shots/o-00l-230-undercroft-no-hint-bars-recipes-1/230-hub-midroom-pad-1080.jpg",
   "task": "o-00l-230-undercroft-no-hint-bars",
   "when": "2026-10-29T06:37"
+ },
+ "r9-hub-p1": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "This is the in-world hub, not the title menu I reviewed before. The lime 'enter raid!' sign is a strong hero, but the amber 'pillager' tag, the asterisk warning, the toast and the tiny top-right readouts all compete with it and collide with other labels.",
+  "findings": [
+   "P1 'pillager' name tag over the fashion station (bottom left): Set the tag to 16px f-cond 600 tx-1 on a 4px-radius --ui-panel chip. Float it 8px above the head and shift it away from station labels. Amber is for the P1 ring only.",
+   "P1 top-right readouts: '$900 0 xp' and 'stash $365 bag $0': Build one 1 by 1 list on a --ui-panel card at 96px from the right edge. Use 20px tx-1 values with 16px tx-2 labels, all the same size. Show $900 as the single 20px value, keep stash and bag on a 16px tx-2 line, and use the 'xp' unit only if it is a real stat.",
+   "P1 '***experimental feature may glitch***' under 'the last pour': Delete the sentence and the asterisks. Put a 16px '--warn' 'beta' tag inside the 'the last pour' chip, or show the warning only when the player approaches.",
+   "P2 hotbar, bottom centre: Use one focus style: a --ui-raised fill with a 3px lime bottom bar for the selected slot only. Drop empty and unavailable slots to 40% opacity with no border. Make the number labels 16px tx-2. Move the bar to 24px from the bottom edge.",
+   "P2 'pillager joined' toast and 'keyboard' chip: Give every notice one chip style: --ui-panel fill, 1px --ui-line-hi border, 4px radius, 16px tx-1. Put the toast in the left feed. Show the 'keyboard' chip as a 16px tx-2 hint, not a green box, or remove it."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00m-231-hotbar-key-9-recipes-2/hotbar9-hub-p1-1080.jpg",
+  "task": "o-00m-231-hotbar-key-9",
+  "when": "2026-10-29T08:06"
+ },
+ "r9-hub-p2": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "This is a different screen from the earlier title column (it's the in-world hub with a hotbar). It reads as a crowded prototype: the lime 'enter raid!' sign shouts over everything, there are three unrelated label styles, a debug-looking warning, and the rim/HUD margins are unaligned.",
+  "findings": [
+   "P0 '***experimental feature may glitch***' under 'the last pour': Delete the sentence. If a flag is needed, show a 16px '--warn' #f5b73b word 'beta' with no asterisks, set inside the tag as a small chip. The tag keeps the same 4px radius and fill as its neighbours.",
+   "P1 'enter raid!' sign, top-centre: Use a 'enter raid' label (no '!') in f-cond 800 at 40px, --acc-ink on a flat --acc fill, 56px high, 4px radius, 24px side padding. Keep the lime fill and drop the glow and shadow. Show the pad/key prompt next to it at 16px. Move it clear of the pillar, centred on the portal.",
+   "P1 All station tags: 'wirt the gambler', 'the mainframe', 'shop, craft, and hire', 'settings', 'the stash', 'fashion', 'the last pour', 'in pillager's party': One tag spec: --ui-panel #16191b fill, 1px --ui-line-hi border, 4px radius, 20px f-cond 600 in --tx-1, 8px/16px padding. Centre each tag 24px above its pad. Drop the circle fills to 8% opacity, or use only the 2px ring. Fix the double circle on the mainframe.",
+   "P1 Top-right HUD: '$900', '0 xp', 'stash $365 bag $0': Put these in one 1×1 list as the cw-trcol job does: every row 20px f-cond 600, labels at 16px in --tx-2, values in --tx-1, 48px from the right and top. Use '$' for money only. Remove the 'xp' size change.",
+   "P1 Hotbar, bottom centre: One state only: selected gets a 2px --acc border and a --ui-raised fill. All the rest get a 1px --ui-line-hi border. Draw the numerals at 16px in --tx-2 and the empty icons at 40% opacity or more. Keep a 8px gap and the same slot size of 90px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00m-231-hotbar-key-9-recipes-2/hotbar9-hub-p2-1080.jpg",
+  "task": "o-00m-231-hotbar-key-9",
+  "when": "2026-10-29T08:06"
+ },
+ "r9-raid-p1": {
+  "score": 3,
+  "pass": false,
+  "need": 4,
+  "verdict": "The raid HUD is clean and readable, with a good hero ammo number. But it repeats the extract distance, stacks small chips unevenly along the bottom, and doesn't follow the one-place-per-line rule or the single-accent rule.",
+  "findings": [
+   "P1 Top-centre 'extract 152m' chip and right-edge 'c 152m' marker: Keep the top-centre banner and drop the edge text, or keep only the arrow with no text. If an edge marker stays, spell it 'extract' and set it at 16px with the teal --extract colour.",
+   "P1 Bottom-left status row (concealed, in cover, f1 controls) and the hp bar: Put both status chips on one 40px-high row aligned to the 96px margin, with the same --ui-panel fill, 1px --ui-line-hi border and 4px radius. Make 'concealed' warn amber and 'in cover' extract teal, both as small glyph-plus-word at 16px. Place 'f1 controls' on the same baseline as a 16px --tx-2 key hint. Set the hp number at 20px f-cond 700 inside a 32px bar with 8px padding.",
+   "P1 Hotbar (slots 1-8 and 9/0): Draw every slot as a 64×64 --ui-panel tile with a 1px --ui-line-hi border. Mark the selected slot with a 3px --acc bar and a --ui-raised fill. Put the slot numbers at 16px in --tx-2 (#aaa498). Close the gap by grouping 1-8 and 9-0 with an even 8px spacing and a single 24px divider.",
+   "P2 Top-right 'run Info' dropdown: Render it as 'run info' in lower case. Use a 40px-high --ui-panel bar with a 1px --ui-line-hi border and a 16px label, and keep it collapsed to roughly 160px wide.",
+   "P2 Top-left 'current pillagers 3' panel and the 'pillager' bar below it: Add 8px of row padding and 1px --ui-line dividers. Make the header 16px --tx-2 and the rows 16px --tx-1, with the values right-aligned in tabular numerals. Leave a 24px gap before the 'pillager' bar, and use the same bar style and green as the bottom hp bar."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00m-231-hotbar-key-9-recipes-2/hotbar9-raid-p1-1080.jpg",
+  "task": "o-00m-231-hotbar-key-9",
+  "when": "2026-10-29T08:06"
+ },
+ "r9-raid-p2": {
+  "score": 2,
+  "pass": false,
+  "need": 4,
+  "verdict": "The overlapping bandage card is gone, but the HUD is still a pile of mismatched chips and panels, with a capital I in 'run info', a full-bleed hp bar, and tiny text.",
+  "findings": [
+   "P1 top-right 'run info' dropdown: Render it as 'run info' with no capitals. Make it one chip: --ui-panel at 90%, 1px --ui-line-hi border, 4px radius, 16px f-cond 600, 8px/16px padding. Hug the text and push the chevron to the right padding. Sit it 32px from the top and right screen edges.",
+   "P1 bottom-left hp bar: Put it in a --ui-panel plate with a 1px --ui-line-hi border, 4px radius and a 32px inset from the bottom and left edges. Make the label 20px f-cond 700, and the fill 16px tall in --ok. Keep the 56px hero size for ammo.",
+   "P1 top-left 'current pillagers' panel and 'pillager' plate: Set all text to 16px, with 32px rows. Give the 'you' row a 3px --acc bar and tx-1. Set values in tabular f-cond tx-2 and the header in tx-2 at 16px. Use one --ui-panel fill, 1px --ui-line-hi border, 4px radius and 16px padding. Move the caret to 16px from the right. Dock the 'pillager' hp plate to the panel, or move it to the hp corner.",
+   "P1 bottom centre 'in pillager's party' tag and 'f1 controls' chip: Use one chip style for every tag. Put the party tag in the left feed, or at top-centre under the extract chip. Set 'f1 controls' at 16px with a 1px --ui-line-hi key chip, mid-bottom-left at 32px from the edge, 24px clear of slot 1.",
+   "P1 hotbar, slots 1-8 with 9 and 0: Draw all 10 slots at 72px square with 8px gaps, each in --ui-panel with a 1px --ui-line. Numerals 16px tx-2. Keep slot 1 selected with a 3px --acc border. Centre the whole row on the screen and align its bottom with the ammo card at 32px from the edge."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00m-231-hotbar-key-9-recipes-2/hotbar9-raid-p2-1080.jpg",
+  "task": "o-00m-231-hotbar-key-9",
+  "when": "2026-10-29T08:07"
+ },
+ "r9-stash-p1": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "This is a competent dark stash window with a clear lime 'take' action, but it is crowded: the tab row carries too many controls, the keys pane is a dense grid of small tiles, and about two thirds of the stash pane is empty. The previous review was of a different screen (the title screen), so this is a fresh read.",
+  "findings": [
+   "P1 Left stash pane, below the 4 items: Draw the full grid of empty slots (for example 6 columns by 5 rows of 152px tiles with a 1px --ui-line border at 40% opacity) so capacity reads like the Diablo IV inventory. Or add a 20px tx-2 'nothing else stashed' line, centred in the pane.",
+   "P1 Tab row (all, guns, consumables, parts, salvage, keycards, valuables, locked, search, sort, armory, trophies): Dim the zero-count tabs to tx-2 at 60% opacity, or hide them. Move 'armory 3/16' and 'trophies 0/8' to the header row, or draw them as outlined 40px-tall buttons. Shrink the search field to a 240px icon field, and keep 'sort' as a quiet 16px dropdown.",
+   "P1 Keys pane: gun keys and item wheel tiles: Make the tiles 128×88 with 32px icons. Place the key number in a 20×20 chip at the top-left with 8px padding. Drop empty tiles to 40% opacity with a dashed border. Give the item wheel a 24px gap from the gun keys and make the wheel tile a circle or a centre marker.",
+   "P2 Header row, right side ($900, 0 xp, stash $365 bag $0): Keep $900 at 32px tx-1 as the only large number. Set '0 xp' and the stash/bag value at 16px tx-2, with 24px between them. Remove the duplicate '$365 going up' or the header copy. Align the group's baseline to the 'stash' title.",
+   "P2 Footer key legend (drag, right click, shift, ctrl, alt, 1-9,0): Set the legend text to 16px at #aaa498 or brighter with +.04em tracking, not +.15em. Add 16px of padding between the legend and the 'freebie kit' row. Put a 1px --ui-line divider between them."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00m-231-hotbar-key-9-recipes-2/hotbar9-stash-p1-1080.jpg",
+  "task": "o-00m-231-hotbar-key-9",
+  "when": "2026-10-29T08:07"
  }
 }

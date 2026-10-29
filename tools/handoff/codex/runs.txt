@@ -530,3 +530,6 @@
 2026-10-29 02:58 o-00m-231-hotbar-key-9 123s ok PARTIAL in=7593865 out=34750 run=2
 2026-10-29 02:58 o-00m-231-hotbar-key-9 33s ok PARTIAL in=8540538 out=36031 run=3
 2026-10-29 03:01 o-00m-231-hotbar-key-9 120s ok PARTIAL in=9930521 out=40732 run=4
+2026-10-29 03:13 o-00m-231-hotbar-key-9 151s usage-limit (not counted) back 2026-10-29 03:58
+2026-10-29 04:03 o-00m-231-hotbar-key-9 297s ok PARTIAL in=1198294 out=9271 run=5
+2026-10-29 04:22 o-00n-232-one-rarity-per-gun 930s ok PARTIAL in=3343622 out=27241 run=1
