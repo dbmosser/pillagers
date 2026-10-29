@@ -18958,7 +18958,7 @@ class Audio {
        try{if(g){g.mapFirst=0;g.mapOpen=false;}__endRaid('abandon');}catch(e){}__topClear();__resetCfg();__cleanProfile();
      }
    }},
-  {v:'33.54',what:'cw-cx-mapstart-clear: raid-start map keeps every cache location with compact icons, no loot words, 16px labels and clear 20px rewards; m map unchanged',
+  {v:'33.54',what:'cw-cx-mapstart-clear: raid-start map keeps strongbox icons, no loot words, 16px labels and clear 20px rewards; cache marks superseded by his 10-29 order',
    run:function(){
      var g, ow=W, oh=H, os=MAPFIRST.skip, oldC=P.contracts, PR=CanvasRenderingContext2D.prototype, oa=PR.arc, ot=PR.fillText, arcs=[], texts=[], c, revealed, bad=[];
      function grab(){
@@ -18978,7 +18978,7 @@ class Audio {
        P.contracts=[{type:'kill',tgt:'crawler',n:5,prog:0,reward:450,desc:'x',tier:'std'}];
        [[1920,1080],[3840,2160]].forEach(function(wh){
          W=wh[0];H=wh[1];var z=Math.max(1,hudRes());g.mapFirst=1;grab();
-         g.containers.filter(function(v){return v.cache&&!v.strong;}).forEach(function(v){if(!at(v,4*z))bad.push('cache has no compact ring at '+H);});
+         // v28.xx (cw-cx-mapnocaches): his 10-29 order removes cache icons; the new ship check owns their absence and the Stray ring. Keep the shared objective and type checks here.
          g.containers.filter(function(v){return v.strong&&!v.opened;}).forEach(function(v){if(!at(v,10*z))bad.push('strongbox icon lost at '+H);});
          if(texts.some(function(t){return /^(cache|looted|strongbox)$/i.test(t.s);})) bad.push('loot word at '+H);
          if(texts.filter(function(t){return /^extract [abc]$/i.test(t.s);}).length!==3) bad.push('extract labels lost at '+H);
@@ -18988,7 +18988,7 @@ class Audio {
          if(texts.some(function(t){return t.x>=box.ox&&t.x<=box.ox+WORLD_W*box.sc&&t.y>=box.oy&&t.y<=box.oy+WORLD_H*box.sc&&size(t)<16*z-0.1;})) bad.push('map text below 16px at '+H);
          g.mapFirst=0;grab();
          if(!texts.some(function(t){return /^(cache|strongbox)$/i.test(t.s);})) bad.push('m map lost loot words');
-         if(!arcs.some(function(a){var m=mapProj();return Math.abs(a.x-(m.ox+c.x*m.sc))<0.1&&Math.abs(a.y-(m.oy+c.y*m.sc))<0.1&&a.r>=6.5*z&&a.r<=8*z;})) bad.push('m map cache ring changed');
+         // v28.xx (cw-cx-mapnocaches): the m map cache ring requirement is superseded by his 10-29 order; the strongbox word above remains required on both builds.
        });
        return bad.length?bad.join('; '):null;
      }finally{
@@ -19321,7 +19321,7 @@ class Audio {
        if(btn&&oldText!==undefined) btn.textContent=oldText; if(ta&&oldValue!==undefined) ta.value=oldValue;
        try{ __endRaid('abandon'); }catch(_e){} __topClear();
      } }},
-  {v:'33.42',what:'cw-nocachelbl, his order (2026-10-20) map on this second preraid screen should not have caches labelled: the raid start map draws no cache, looted or strongbox word, keeps the extract words, and the m key map still has them',
+  {v:'33.42',what:'cw-nocachelbl: raid start map keeps extract words without loot words; m map keeps its named strongbox objective; his 10-29 order supersedes cache words',
    run:function(){
      var bad=[], g, proto, oFt, rec, cs=[], sb=null, i, c, keep=[], mf0;
      function grab(){
@@ -19344,7 +19344,7 @@ class Audio {
        if(cs.length<2||!sb) return 'SKIP: too few closed containers';
        mf0=g.mapFirst; g.mapOpen=true;
        g.mapFirst=0; var open=grab();
-       if(cnt(open,/^(cache|strongbox)$/i)<3) bad.push('CONTROL: the m key map drew only '+cnt(open,/^(cache|strongbox)$/i)+' cache and strongbox words, so the arm cannot see the difference');
+       if(cnt(open,/^strongbox$/i)<1) bad.push('the m key map lost its named strongbox objective');   // v28.xx (cw-cx-mapnocaches): caches may still draw on the old build while the new build hides them.
        g.mapFirst=1; var first=grab();
        if(cnt(first,/^(cache|looted|strongbox)$/i)) bad.push('the raid start map still draws '+cnt(first,/^(cache|looted|strongbox)$/i)+' cache, looted or strongbox words');
        if(cnt(first,/extract/i)<1) bad.push('the raid start map lost its extract words');
@@ -22885,7 +22885,7 @@ class Audio {
        for(pass=0;pass<2;pass++){
          W=pass?3840:1920;H=pass?2160:1080;cd=mapCard();z=cd.z;tags=[];all=[];icons=[];tracks=[];statuses=[];__drawHUD();
          expected=g.containers.filter(function(c){return !!c.cache;}).length+g.containers.filter(function(c){return c.strong&&!c.opened;}).length;
-         if(tags.length!==expected)bad.push('lost individual loot labels at '+H+'p');
+         if(tags.length!==expected&&tags.length!==g.containers.filter(function(c){return c.strong&&!c.opened;}).length)bad.push('lost individual strongbox labels at '+H+'p');   // v28.xx (cw-cx-mapnocaches): accept old cache tags or the new strongbox-only map; preserve typography, spacing and contract checks.
          tags.forEach(function(T){
            if(T.c!==String(UIC.tx_2).toLowerCase()||!/^500 /.test(T.f))bad.push('loot tag is not medium tx-2');
            if(+((/([\d.]+)px/.exec(T.f)||[0,0])[1])<15.9*z)bad.push('loot tag below 16px floor');
@@ -22940,7 +22940,7 @@ class Audio {
        if(!l[0]||l[0].e!==1) return 'load drops the tag';
        return null;
      } finally { if(k0==null) localStorage.removeItem(ARCADE_BOARD_KEY); else localStorage.setItem(ARCADE_BOARD_KEY,k0); } }},
-  {v:'32.30',what:'cw-cx-mapspace-o03: every cache and strongbox retains an individual tag with 12px label clearance and its own leader, while contract tracks align',
+  {v:'32.30',what:'cw-cx-mapspace-o03: strongbox tags retain 12px label clearance and their own leaders while contract tracks align; accepts prior cache tags until his 10-29 removal ships',
    run:function(){
      var bad=[], g, ow=W, oh=H, os=MAPFIRST.skip, op=mapPlaceLabels, oi=mapIcon, PR=CanvasRenderingContext2D.prototype, of=PR.fillText, ofr=PR.fillRect, ost=PR.stroke, om=PR.moveTo, ol=PR.lineTo,
          tags=[], all=[], icons=[], strokes=[], points=[], tracks=[], col=null, z=1, i, j, pass, oldC=P.contracts, oldUS=P.uiScale, hadUS=Object.prototype.hasOwnProperty.call(P,'uiScale');
@@ -22973,7 +22973,7 @@ class Audio {
          W=pass?3840:1920; H=pass?2160:1080; var cd=mapCard(); z=cd.z; col=cd.col; tags=[]; all=[]; icons=[]; strokes=[]; tracks=[];
          __drawHUD();
          var expected=g.containers.filter(function(c){ return !!c.cache; }).length+g.containers.filter(function(c){ return c.strong&&!c.opened; }).length;
-         if(tags.length!==expected) bad.push('lost loot tags at '+H+'p: '+tags.length+'/'+expected);
+         if(tags.length!==expected&&tags.length!==g.containers.filter(function(c){return c.strong&&!c.opened;}).length) bad.push('lost strongbox tags at '+H+'p: '+tags.length);   // v28.xx (cw-cx-mapnocaches): accept old cache tags or the new strongbox-only map, retaining leader and clearance checks.
          tags.forEach(function(T){
            all.forEach(function(B){ if(B===T.box) return; if(T.box.l<B.r+11.5*z&&B.l<T.box.r+11.5*z&&T.box.t<B.b+11.5*z&&B.t<T.box.b+11.5*z) bad.push('less than 12px label clearance at '+H+'p: '+T.text); });
            var L=T.source; if(!L||!L.mark){ bad.push('loot tag has no own anchor'); return; }
@@ -23079,7 +23079,7 @@ class Audio {
          W=n?3840:1920; H=n?2160:1080; labels=[]; markerRects=[]; icons=[];
          __drawHUD();
          j=g.containers.filter(function(c){ return !!c.cache; }).length+g.containers.filter(function(c){ return c.strong&&!c.opened; }).length;
-         if(labels.length!==j) bad.push('not every cache/strongbox has its own label at '+H+'p ('+labels.length+'/'+j+')');
+         if(labels.length!==j&&labels.length!==g.containers.filter(function(c){return c.strong&&!c.opened;}).length) bad.push('not every strongbox has its own label at '+H+'p');   // v28.xx (cw-cx-mapnocaches): his 10-29 cache removal accepts either build; popup hold, seat colours and remaining label clearance still run.
          for(i=0;i<labels.length;i++) for(j=i+1;j<labels.length;j++) if(overlaps(labels[i],labels[j])) bad.push('loot labels overlap at '+H+'p');
          var cd=mapCard(), distant=[];
          markerRects.forEach(function(rec){ var B=rec.box, best=Infinity, nearest=null; icons.forEach(function(I){ var dx=Math.max(0,I.l-B.r,B.l-I.r), dy=Math.max(0,I.t-B.b,B.t-I.b), d=Math.sqrt(dx*dx+dy*dy); if(d<best){ best=d; nearest=I; } }); if(best>(/^(cache|looted|strongbox)$/i.test(String(rec.t))?100:12)*cd.z) distant.push({t:rec.t,gap:Math.round(best*10)/10,box:B,nearest:nearest}); });
