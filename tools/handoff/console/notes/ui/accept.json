@@ -4051,96 +4051,96 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The old scoreboard and controls panels are now folded to single chips, which fixes the worst clutter, but the HUD still mixes three chip styles and the hp bar, key badges and weapon row remain rough.",
+  "verdict": "The HUD parts are readable, but they still sit at different insets and sizes with no shared grid. The hp bar is cramped into the corner, the selected slot is amber (not lime) and has an empty icon, and the ghost slots 4-0 are barely legible.",
   "findings": [
-   "P1 hp bar, bottom-left (x24-430, y1035-1068): Inset it to 48px from the left and 40px from the bottom. Make it 24px tall with a 1px --ui-line-hi border and a --ui-panel backing. Set the label to 20px f-cond 700 in --acc-ink on --ok #76b97c, vertically centred. Use 16px for 'hp' and 20px for the number.",
-   "P1 weapon slots 1-3 (x555-880, y955-1060): Make the slot 2 border 2px --acc #e6ff3d, and use --ui-raised #1e2225 for its fill. Raise the icon contrast to 100% for the selected slot and 60% for idle slots. Set the key numerals to 16px f-cond 600 in --tx-2. Remove the 'f' badge or move it into the controls chip.",
-   "P1 ghost slots 4-0 (x890-1520, y960-1030): Either drop slots 4-0 until the weapons are owned, or give each a 4px-radius --ui-panel frame at 40% opacity, 56x56 like slots 1-3, with 16px digits. Keep the row on the 8px grid.",
-   "P1 top-left and top-right chips (x8-367 y143-168, x1603-1900 y20-54): Make both chips 36px high, with a 4px radius, a --ui-panel fill and a 1px --ui-line-hi border. Anchor them to the same 48px inset. Use 16px f-cond 600 text in --tx-1, a 16px chevron, and the same width of 320px.",
-   "P2 ammo card, bottom-right (x1668-1910, y903-1052): Move the card to a 48px inset. Align 'auto rifle' (16px --tx-2) left with the hero number, and set '/ 60' at 32px --tx-2. Make the hint 16px --tx-2 on the same left edge."
+   "P1 hp bar, bottom-left (x24-430, y1035-1068): Inset it to 48px from the left and 40px from the bottom. Make it 24px tall with a --ui-panel track and a 1px --ui-line-hi border. Set the 'hp' label to 16px --tx-2 and the number to 20px f-cond 700 --tx-1, placed above the bar or inside it with 8px padding. Reserve the 56px hero size for the ammo count only.",
+   "P1 weapon slot 2, selected (x666-768, y957-1059): Use a 2px --acc #e6ff3d border and a --ui-raised #1e2225 fill. Draw the icon at 100% opacity in --tx-1 (it is dim now). Draw idle slots at 60%.",
+   "P1 ghost slots 4-0 (x890-1520, y960-1030): Either hide slots 4-0 until the weapons are owned, or give each a 4px-radius --ui-panel frame at 40% opacity, 100x100 like slots 1-3, with 16px --tx-2 digits. Match the 8px gap.",
+   "P1 top-left chip 'current pillagers 0' and top-right 'run info' (x8-367 y143-168, x1603-1900 y20-54): Make both chips 36px high, 4px radius, --ui-panel fill, 1px --ui-line-hi border, 16px f-cond 600 text. Anchor both at a 48px inset from their edges and make them the same width (about 320px). Align them to the same row, y=48.",
+   "P1 ammo card, bottom-right (x1668-1910, y903-1052): Inset the card to 48px right and 40px bottom. Set '/ 60' to 32px --tx-2 at weight 600, keep the 56px 800 hero '25' in --tx-1, and left-align 'auto rifle' and the hint to the same edge at 16px --tx-2."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-2/01-ads-hip-player1-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-3/01-ads-hip-player1-1080.jpg",
   "task": "o-00h-225-ads-zoom-toward-the-aim",
-  "when": "2026-10-29T04:25"
+  "when": "2026-10-29T04:39"
  },
  "02-ads-unscoped-player1": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The controls list is now folded to one line and the 'run info' and scoreboard bars are quieter, but the world is washed out by an overlay. The hp bar is still crude, the minimap is gone, and labels still clip at the screen edge.",
+  "verdict": "The ads view still looks like unfinished debug UI: a pale wedge washes out the scene, the hud sits in several different styles, and the ammo panel, hp bar and hotbar are the same as in my last review.",
   "findings": [
-   "P0 right edge, 'the for' label at y≈817: Clamp every world label to at least 24px inside the viewport and flip it to the left of its object near an edge. Set tx-1 text at 16px on a --scrim plate at 80% with 4px radius and 8px padding.",
-   "P0 bottom-left hp bar, 'hp 100': Place it 24px from the left and bottom edges at 280x8px. Use a --ui-panel track with a 1px --ui-line-hi border. Put the label in 20px f-cond 600 above the bar and the number in tx-1. Use --ok for the fill and switch to --danger below 30%.",
-   "P1 center scene, large pale wedge/circle overlay: Cut the wedge to about 12% alpha with a 1px edge, or cap it at the weapon range. Darken the area outside it with a --scrim at 35% so the ads view reads as focus, not fog.",
-   "P1 bottom-right ammo panel ('scav pistol [ads]', '12 / 60', 'b / i backpack'): Make the panel opaque (--ui-panel at 94%) with a 1px --ui-line-hi border. Show the name at 16px --tx-2, 12 at 56px lime (hero), and '/ 60' at 32px --tx-2. Show 'ads' as a 16px tag. Move the hint to 16px and drop 'backpack' from it.",
-   "P1 hotbar slots 1-3 and empty 4-0: Give every slot an 80x80px --ui-panel cell with a 1px --ui-line-hi border and 4px radius. Use a 2px --acc border plus a 3px --acc bar on the selected slot. Show empty slots at 40% opacity in the same cell. Use 16px numbers in --tx-2."
+   "P0 bottom-left hp bar 'hp 100': Make the bar 280x8px at 24px from the left and bottom edges. Use a --ui-panel track with a 1px --ui-line-hi border and an --ok fill, switching to --danger below 30%. Put 'hp' at 16px --tx-2 above the bar and '100' at 20px f-cond 600 --tx-1.",
+   "P0 centre, pale wedge and circle aim overlay: Cut the wedge fill to about 10% alpha and give it a 1px --tx-1 edge at 30%. Cap it at the weapon range. Dim the area outside it with a --scrim at 30%. Remove the circle, or draw it as a 1px ring.",
+   "P1 bottom-right ammo panel: Make the panel opaque (--ui-panel at 94%) with a 1px --ui-line-hi border and 4px radius. Set the name to 16px --tx-2 and show 'ads' as a separate 16px tag. Show '12' at 56px in --acc and '/ 60' at 32px --tx-2. Make the hint 16px --tx-2 and drop 'backpack' from it. Keep 24px from the edges.",
+   "P1 hotbar, slots 1-3 and empty 4-0: Give all 10 slots an 80x80px --ui-panel cell with a 1px --ui-line-hi border and 4px radius. Draw empty slots at 40% opacity in the same cell. Mark the selected slot with a 2px --acc border and a 3px --acc bar, not amber. Set the numbers and counts to 16px f-cond 600 --tx-2. Keep a 8px gap between cells.",
+   "P1 world labels: 'the seal 0%', 'the forge', 'sentry r-46', 'packing floor': Use one world-label style: 16px f-cond 600 --tx-1 on a --scrim plate at 80% with 4px radius and 8px padding. Use colour only for a 3px left bar. Keep labels at least 24px inside the viewport and flip them to the left of the object near an edge. Give the zone name 'packing floor' the same plate."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-2/02-ads-unscoped-player1-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-3/02-ads-unscoped-player1-1080.jpg",
   "task": "o-00h-225-ads-zoom-toward-the-aim",
-  "when": "2026-10-29T04:25"
+  "when": "2026-10-29T04:40"
  },
  "03-ads-4x-player1": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The HUD is much calmer than before: the controls panel is folded to one line, the leaderboard is a collapsed bar, and the weapon card has a clear hero ammo number. The ADS state itself is still weak, with no vignette or zoom feedback, and some HUD text is mixed in size and too small.",
+  "verdict": "The scope view reads clearly, but the earlier fixes for the HUD margins, vignette and reticle were mostly not applied, and the corner widgets still look like unstyled browser dropdowns.",
   "findings": [
-   "P1 whole view / ads 4x state: Add a vignette of about 35% black from 60% radius outward. Draw the reticle as a 2px lime #e6ff3d cross with a 24px gap and a 1px ring. Fade the laser to 40% opacity. Put a '4x' tag 16px beside the reticle.",
-   "P1 top-left 'current pillagers 0' bar (8,142 to 368,170): Move it to x=48, y=48. Use a #16191b fill, a 1px #4a5257 border and a 4px radius. Set the label to 16px tx-2 and the count to 20px tx-1. Hide the bar when the count is 0.",
-   "P1 top-right 'run info' dropdown (1602,18 to 1900,54): Make both bars 36px tall with the same radius and border. Align the right one to x=1872 (48px margin) and the left to x=48. Cut the width to what the label needs, about 200px.",
-   "P1 hp bar bottom-left (24,1034 to 430,1068): Move the bar to x=48. Make it 16px tall with a 2px #2e3337 track and a 4px radius. Put '100' at 20px f-cond 700 right-aligned inside. Keep 24px or more of clearance from the controls chip. Use --ok #76b97c, not a bright green.",
-   "P2 bottom-right weapon card (1668,902 to 1910,1052): Shift the card left to end at x=1872. Set the hint to 16px tx-2 (#aaa498). Pull '4x' out as a lime 16px tag in the top-right corner. Match the 4px radius and #4a5257 border."
+   "P1 top-left 'current pillagers 0' dropdown (8,142 to 368,170) and top-right 'run info' (1602,18 to 1900,54): Make both 36px tall with a #16191b fill, a 1px #4a5257 border and a 4px radius. Put them at x=48 and right edge x=1872, with the same top y=48. Set the label to 16px tx-2 and the count to 20px tx-1. Make the chevron 12px in tx-2. Hide the pillagers bar while the count is 0. Cut the width to about 200px.",
+   "P1 whole view, ADS 4x state: Add a vignette of about 35% black, starting at 60% radius. Drop the laser to 40% opacity and 1px. Dim the light disc around the player by 30%.",
+   "P1 reticle (1196,512 to 1340,656): Draw a 2px #e6ff3d cross with a 24px gap and arms 12px long. Add a 1px ring at 60% opacity. Add a 1px black outline behind it, and a '4x' tag in 16px lime 16px to the right.",
+   "P2 bottom-right weapon card (1668,902 to 1910,1052): End the card at x=1872 and y=1032. Name the weapon at 20px tx-1 and move '4x' to a 16px lime tag in the top-right corner. Set the hint to 16px #aaa498. Use a 4px radius and a 1px #4a5257 border. Keep the 56px ammo number as the hero.",
+   "P2 hp bar bottom-left (24,1034 to 430,1068): Move it to x=48 and bottom 48px. Make it 16px tall with a #2e3337 track and a 4px radius, filled with --ok #76b97c. Put '100' at 20px f-cond 700 tx-1, right-aligned inside the bar."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-2/03-ads-4x-player1-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-3/03-ads-4x-player1-1080.jpg",
   "task": "o-00h-225-ads-zoom-toward-the-aim",
-  "when": "2026-10-29T04:26"
+  "when": "2026-10-29T04:40"
  },
  "04-ads-pad-player1": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The controls list is gone and the HUD is much calmer, but the type is still too small and the style is inconsistent: the hp bar is cramped in the corner, the selected ring is amber instead of lime, and the extract timer carries no weight.",
+  "verdict": "The hud is readable and fairly clean, but the earlier fixes were not applied: the hp bar still hugs the corner, the sentry label still clips the robot, the timer is still small and the left and right panels are mismatched.",
   "findings": [
-   "P1 hp bar, bottom-left (x24-430, y1035-1068): Inset the bar to 48px from the left and bottom edges. Use a --ui-panel track with a 1px --ui-line-hi border and a --ok fill. Set the label to 20px f-cond 600 with a 16px left pad. Drop the 'hp' word or set it at 16px --tx-2.",
-   "P1 hotbar selected slot (x666-769, y957-1058): Make the selected ring 2px --acc #e6ff3d. Give every slot a 72x72px cell with a 1px --ui-line border and --ui-panel fill. Set the number labels to 16px --tx-2. Keep the ammo counts at 16px.",
-   "P1 hierarchy, top-centre (x905-1030, y10-75): Make the extract timer the hero: 32px f-cond 800 --extract, with the clock at 20px --tx-2 beside or above it. Attach the arrow to the chip with 8px of spacing, or drop it.",
-   "P1 sentry label (x1247-1409, y380-431): Set the label to 20px f-cond 600 --tx-1 on a --scrim chip with a 4px radius and 8px padding. Put it 8px above the robot's head so it doesn't clip.",
-   "P1 ammo card, bottom-right (x1668-1910, y902-1052): Set the weapon name to 20px f-cond 600 --tx-2. Raise 'view backpack' to 16px --tx-2. Inset the card 48px from the right and bottom edges. Use a 1px --ui-line-hi border and 16px padding."
+   "P1 hp bar, bottom-left (x24-430, y1035-1068): Inset it to 48px left and 48px bottom, and make it 360x24. Use a --ui-panel track with a 1px --ui-line-hi border and an --ok fill. Set the label to 20px f-cond 600, with the 'hp' word at 16px --tx-2 and the 100 at 20px --tx-1, with 16px left padding.",
+   "P1 sentry label (x1247-1409, y380-431): Use a --scrim chip with a 4px radius and 8px/16px padding, text at 20px f-cond 600 --tx-1. Anchor it 8px above the sprite's head (bottom edge near y360) so it doesn't touch the robot. Match the 'packing floor' label to the same style.",
+   "P1 top-centre timer (x905-1030, y10-95): Make 'extract 63m' 32px f-cond 800 --extract, with 9:00 at 20px --tx-2 above it. Remove the detached arrow, or attach it 8px below the chip as a 16px triangle. Give the chip an 8px pad and a 4px radius.",
+   "P1 ammo card, bottom-right (x1668-1910, y902-1052): Inset the card 48px from the right and bottom. Set the weapon name to 20px f-cond 600 --tx-2. Keep 5 / 60 at 56px 800. Set 'view backpack' to 16px --tx-2 with a key chip. Use a 1px --ui-line-hi border and 16px padding.",
+   "P2 hotbar (x555-1540, y957-1058): Give all slots a 72x72 --ui-panel cell with a 1px --ui-line border, and dim the empty ones to 40% opacity. Use a 2px --acc ring for the selected slot. Set the number labels to 16px --tx-2 and the 'rb' chip to 16px with 8px padding."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-2/04-ads-pad-player1-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-3/04-ads-pad-player1-1080.jpg",
   "task": "o-00h-225-ads-zoom-toward-the-aim",
-  "when": "2026-10-29T04:26"
+  "when": "2026-10-29T04:40"
  },
  "05-ads-2x-player2": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The controls list is now a single line and the HUD is calmer, but the 'the seal' label still clips off the right edge, the hotbar is ragged, and the run info/pillagers bars are bare dropdowns that don't match the other panels.",
+  "verdict": "Gameplay reads fine, but the HUD is still a mix of unrelated widgets: the previous edge, hotbar, hp and chip fixes were not applied, and a capital 'I' is still on screen.",
   "findings": [
-   "P0 right edge, 'the seal 0' label (x1812-1920, y472): Clamp every world label to a 48px safe margin (x <= 1872). Flip the text to the left of its anchor when it would cross. Give it a 1px --ui-line-hi chip on --scrim like the 'sentry r-46' tag.",
-   "P1 hotbar, bottom-centre (x555-1500, y955-1060): Draw all 10 slots as 88px tiles on an 8px gap, each with a 1px --ui-line-hi border on --ui-panel at 80%. Select a slot with a 2px --acc border only. Leave empty slots as the same frame at 40% opacity. Put the digits at the top-left in 16px --tx-2.",
-   "P1 top-right 'run info' bar (x1603-1902, y18-55) and top-left 'current pillagers 0' bar (x8-367, y143-170): Fix 'run info' to lower case. Restyle both as --ui-panel chips with a 4px radius and a 1px --ui-line-hi border, 16px f-cond --tx-1 text, 8px/16px padding, and a chevron in --tx-2. Inset both to a 48px margin. Align the tops of the two chips.",
-   "P1 hp bar, bottom-left (x24-430, y1035-1068): Make the bar 8px tall in --ok on a --ui-line track, with '100' at 32px f-cond 700 above it. Place it at x 96, y 1000, matching the 5% margin. Only turn it --danger below 30%.",
-   "P1 ammo card, bottom-right (x1668-1910, y902-1052): Inset the card to a right margin of 48px and align it with the 'run info' chip. Set '25' at 56px in --tx-1 and '/ 60' at 20px in --tx-2. Raise 'b / i backpack' to 16px --tx-2. Give the card a 1px --ui-line-hi border and a 4px radius."
+   "P0 top-right 'run Info' chip (x1603-1902, y18-55): Render 'run info' in lower case. Style it as a --ui-panel chip with a 4px radius, a 1px --ui-line-hi border, 16px f-cond --tx-1 text and a --tx-2 chevron. Inset it to a 48px margin.",
+   "P0 'the seal 0%' label (x1760-1892, y458-490): Use the same chip as the sentry tag at 16px f-cond: --scrim fill, 1px --ui-line-hi border, --tx-1 text. Give the '0%' --extract colour. Keep the chip at x <= 1872.",
+   "P1 hotbar (x555-1500, y955-1060): Draw all 10 slots as 88px tiles on an 8px gap. Give each a 1px --ui-line-hi border on --ui-panel at 80%, with empty slots at 40% opacity. Mark the selected slot with a 2px --acc border only. Put the digits at the top-left in 16px --tx-2. Lift the bar so its bottom edge is 48px from the screen bottom.",
+   "P1 hp bar, bottom-left (x24-430, y1035-1068): Place it at x 48 and bottom 48. Draw an 8px tall --ok bar on a --ui-line track. Put '100' at 32px f-cond 700 --tx-1 above it with 'hp' at 16px --tx-2. Turn the bar --danger below 30%.",
+   "P1 'current pillagers 0' chip (x8-367, y143-170): Use the same chip style as 'run info'. Inset it to x 48 and match its top and height (36px) to the 'run info' chip at y 48. Add 8px/16px padding."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-2/05-ads-2x-player2-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-3/05-ads-2x-player2-1080.jpg",
   "task": "o-00h-225-ads-zoom-toward-the-aim",
-  "when": "2026-10-29T04:26"
+  "when": "2026-10-29T04:41"
  },
  "06-ads-hip-player2": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The controls card is now one folded 'f1 controls' line and the leaderboard is a single collapsed row, so the screen is far calmer; what remains is mismatched panel styles, small low-contrast text, and a hp bar that dominates.",
+  "verdict": "The reduced HUD mostly follows the style guide, but the panels still have inconsistent fills, borders and margins, the hp bar is still huge and the 'keyboard' tag is still too small.",
   "findings": [
-   "P1 hp bar, bottom-left (x24-430, y1035-1068): Shrink the bar to 240x16px with a 1px #4a5257 border on a #16191b track. Use 20px f-cond 600 tx-1 for 'hp 100', and fill the bar with tx-1 or --ok at 70%. Keep the bar and the weapon bar on the same 48px margin.",
-   "P1 hud panels overall: 'run info', 'current pillagers 0', 'keyboard', 'f1 controls', ammo card, extract pill: Give every box --ui-panel #16191b, a 1px #4a5257 border and a 4px radius, with 8px/16px padding. Use 16px f-cond 600 for labels, with the caret on the right in tx-2. Make the 'keyboard' tag the same panel at 16px.",
-   "P1 top-centre timer and extract pill (x905-1015, y12-75): Make the clock 40px f-cond 800 tx-1 and the pill 16px tx-1 on #16191b, with the teal used only as a 3px left bar or a small glyph. Remove the arrow under the pill, or make it a 12px glyph with 8px of space.",
-   "P1 ammo card, bottom-right (x1668-1910, y903-1052): Inset the card to a 48px margin (right edge x1872). Set 'auto rifle' to 16px tx-2 and 'b / i backpack' to 16px tx-2, with 16px padding. Keep the 56px hero number.",
-   "P2 contract notice, left (x14-410, y777-802): Cut it to 'contract item nearby' at 16px tx-1, with a warn amber glyph and no lime or gold bar. Align it to x48 in the left feed."
+   "P1 hp bar, bottom-left (x24-430, y1035-1068): Make the bar 240x16px on a #16191b track with a 1px #4a5257 border. Set its left edge at x48 and its bottom edge at y1032. Put 'hp 100' above it at 20px f-cond 600 tx-1.",
+   "P1 ammo card, bottom-right (x1668-1910, y903-1052): Move the right edge to x1872 and the bottom to y1032. Set both labels to 16px tx-2 with 16px padding, and keep the 56px hero number.",
+   "P1 top-left and top-right panels: 'keyboard', 'current pillagers 0', 'run info': Give all three a #16191b fill, a 1px #4a5257 border, a 4px radius and 8/16px padding. Set their text to 16px f-cond 600 tx-1 and align them to x48 and y24. Make 'keyboard' a plain 16px tx-2 tag in the same panel style.",
+   "P1 top-centre clock and extract pill (x905-1030, y12-75): Set the clock to 40px f-cond 800 tx-1 over a #16191b panel. Set the pill to 16px tx-1 on #16191b with a 3px teal left bar, and delete the arrow.",
+   "P2 'f1 controls' hint (x440-540, y930-952): Use a #16191b panel with a 1px #4a5257 border, 16px text and an 8px key cap, at x48 and y984. Keep it clear of the hp bar."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-2/06-ads-hip-player2-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-3/06-ads-hip-player2-1080.jpg",
   "task": "o-00h-225-ads-zoom-toward-the-aim",
-  "when": "2026-10-29T04:27"
+  "when": "2026-10-29T04:41"
  }
 }

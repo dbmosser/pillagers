@@ -1,0 +1,5 @@
+## v36.31 - timelord mode
+
+Co-op hunt while he was away. His order of 2026-10-29: rename superhot mode to timelord mode. This changes live words and their callout filters while keeping saved settings and the party word intact. Watch: superhot mode is now timelord mode
+
+MEASURED. Check 36.31 passes, and fails on v36.30.

@@ -593,3 +593,7 @@
 
 2026-10-29 | o-00h-225-ads-zoom-toward-the-aim | forge/seal world labels during camera motion | existing station names gain the shared backing and 24px viewport margin, preserving wording and offscreen culling | before: tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-2/02-ads-unscoped-player1-1080.jpg and 05-ads-2x-player2-1080.jpg | after: pending camera round 3
 
+2026-10-29 | o-00h-225-ads-zoom-toward-the-aim | forge/seal world labels, v36.30 | shipped whole labels with shared backing and 24px margins; ON HIS PC, pictures inspected | before: tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-2/02-ads-unscoped-player1-1080.jpg and 05-ads-2x-player2-1080.jpg | after: tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-3/02-ads-unscoped-player1-1080.jpg and 05-ads-2x-player2-1080.jpg
+
+2026-10-29 | o-00i-226-timelord-mode | settings, controls, change keys and callouts | renamed live superhot wording to timelord, with saved keys intact; no layout change | before: none for focused camera recipes | after: lane camera-recipes.json screens timelord-settings, timelord-controls, timelord-toggle; actual paths pending lane capture
+

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.31 - timelord mode
+
+Co-op hunt while he was away. His order of 2026-10-29: rename superhot mode to timelord mode. This changes live words and their callout filters while keeping saved settings and the party word intact. Watch: superhot mode is now timelord mode
+
+MEASURED. Check 36.31 passes, and fails on v36.30.
 ## v36.30 - ADS STATION LABELS STAY WHOLE
 
 Co-op hunt while he was away. The ADS picture reviews found forge and seal names cut off at the viewport edge. Their existing world labels now use the same 24px margin and shared backing as cache names. Camera feel, station behavior and seeded streams are unchanged.

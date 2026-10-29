@@ -1,0 +1,7 @@
+v36.31: timelord mode
+
+timelord mode in settings, controls and callouts.
+
+Check 36.31. Fails on v36.30.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -511,3 +511,6 @@
 2026-10-29 00:10 o-00h-225-ads-zoom-toward-the-aim 871s ok PARTIAL in=1710012 out=26765 run=1
 2026-10-29 00:23 o-00h-225-ads-zoom-toward-the-aim 223s ok PARTIAL in=2592917 out=32852 run=2
 2026-10-29 00:33 o-00h-225-ads-zoom-toward-the-aim 366s ok PARTIAL in=4676928 out=44865 run=3
+2026-10-29 00:43 o-00h-225-ads-zoom-toward-the-aim 123s ok DONE in=5790900 out=48716 run=4
+2026-10-29 00:48 o-00i-226-timelord-mode 278s ok PARTIAL in=1016930 out=12319 run=1
+2026-10-29 00:51 o-00i-226-timelord-mode 162s ok PARTIAL in=1869307 out=18583 run=2

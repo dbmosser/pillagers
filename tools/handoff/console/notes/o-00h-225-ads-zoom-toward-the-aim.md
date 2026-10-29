@@ -46,3 +46,26 @@ One compatible fixture retarget is supplied for 36.13. That existing cache-label
 The remaining critic suggestions are broad existing HUD redesign (HP bar, hotbar, panel margins, labels and ammo hints) or adding a new scope overlay/reticle readout. These have already been handed to the coordinator; no camera feel numbers were changed in response. The minimap remains at its existing default OFF, despite the critic calling its absence a defect. The exact scope rating remains on the existing weapon card. Neither new HUD features nor unrelated raid restyling were added.
 
 Next lane work: apply the compatible 36.13 retarget under the lock, preflight/ship cw-cx-adsstationtags, confirm ON HIS PC, and capture camera round 3. Compare the unscoped/right-edge forge name and player-2/right-edge seal name with round 2. Existing best camera pictures so far: tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-2/03-ads-4x-player1-1080.jpg and 04-ads-pad-player1-1080.jpg, both critic 3. Round-1 versions remain in the parallel recipes-1 folder.
+
+--- codex run 2026-10-29 00:43 ---
+2026-10-29, final review, v36.30.
+
+BOTH KEYS SHIPPED. cw-cx-aimfocus shipped v36.29 and was ON HIS PC after 50s. cw-cx-adsstationtags shipped v36.30 (66025f772), ON HIS PC v36.30 after 33s. The compatible cache check retarget is committed as 500a3d29c; the lane first ran 36.13 successfully on a trial v36.29 build. All requested code is in keys.txt and shipped. No game file was edited directly.
+
+Opened the round-3 unscoped, mouse-4x, pad-4x and player-2 pictures in the image viewer and reviewed all six attachments. Forge and seal names now stay whole with their backing. The pillager remains visible in each view, including the left side of the 4x mouse/pad views. All six camera stages passed at 1080p and 4K. Mouse target drift remains below 0.001px; pad target drift is zero. Hip framing is retained. The real browser checks and ship gates passed; the camera code does not touch AI, LOS, streams, networking or loot. Separate fixture pages exercise the local host and join window roles; this was not a live linked network session.
+
+Critic scores, pictures 01-06:
+- Round 1, v36.29: 3,2,2,2,2,2.
+- Follow-up 1, round 2, v36.29: 3,2,3,3,2,3 (corrected camera staging).
+- Follow-up 2, round 3, v36.30: 3,2,3,3,2,3 (station label fix).
+The overall best score remains 3 after two follow-ups; the latest verdicts all say same. The raid score-4 finish line was NOT reached. Stop further camera-job polish under the two-follow-up stalled-review rule. The remaining findings are existing HUD design and have an explicit owner in open task 186f-hud-panel-consistency, including the CEO handoff commit 6b8d279e3. That task covers health label size, hotbar, panel insets, timer hierarchy and ammo padding. This task is complete as a shipped camera improvement, not a claim that the whole raid HUD passed visual review.
+
+The critic P0 for capital I in run info is unsupported: NCLOWER=1 at dark_raiders.html:5309 and ncFix lowers all player words; the actual chip reads run info. The requested 48px edge margin differs from the established 24px world-label margin, which the station-label fix now uses. The seal label is whole and backed in the new image. The critic also requests new scope framing/readout and changes to the sight-light art; these were not added to a camera-motion task. Keep the minimap default OFF and keep the owner-prescribed contract notice wording; 186f explicitly preserves both despite critic requests.
+
+Retained two best reviewed versions, with full six-picture sets and both local window roles:
+1. v36.29, round 2, scores 3,2,3,3,2,3. tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-2/ . Representative mouse/pad views: 03-ads-4x-player1-1080.jpg and 04-ads-pad-player1-1080.jpg. This has the correct camera and quiet fixture state but still clips station names.
+2. v36.30, round 3, scores 3,2,3,3,2,3. tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-3/ . Representative fix views: 02-ads-unscoped-player1-1080.jpg and 05-ads-2x-player2-1080.jpg; scoped/pad views are 03-ads-4x-player1-1080.jpg and 04-ads-pad-player1-1080.jpg. This is the shipped choice because the camera remains correct and station names are whole.
+
+DESIGN.md includes the exact watch line: aiming zooms toward the crosshair; watch that it never feels seasick and your pillager never leaves the screen. Main practical limit remains documented: the existing 80-world-unit outside-map camera padding can take priority over the approximate 12 percent player margin at extreme map edges. Camera safety keeps the pillager onscreen.
+
+TASK DONE. No unshipped key and no further camera round requested.
