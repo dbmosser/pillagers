@@ -3880,8 +3880,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.24';
-var VER_AT='2026-10-28 22:15';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.25';
+var VER_AT='2026-10-28 22:30';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -3933,7 +3933,7 @@ var WHATSNEW=[
   'PARTY MODE. Style medals and a combo ring, timed power-ups from kills, a TEAM combo for two, and NEW PARTY locks one seed for the night.',
   'RAID EVENTS. One or two a raid, with a ring and a countdown: falling debris, a convoy, a bounty hunter, coolant fog, an Overseer rampage.',
   'RAID FLOW. Waves rise and fall with the fight. Deal damage to charge an air strike, G to aim, click to call. Three run goals a raid, each paying a chip.',
-  'COMBAT FEEL. Heavy rounds stop what they hit and the Lance kicks. R again in the bright part of the reload ring finishes it, +15% damage. The Support MG spins up.',
+  'COMBAT FEEL. Heavy rounds stop what they hit and the Lance kicks. R again in the bright part of the reload ring finishes it, +5% damage a stack, +15% max. The Support MG spins up.',
   'SETTINGS. Now in sections. New: UI and footsteps volume, mono, hold or toggle for aim, crouch and sprint, mouse sensitivity.',
   'GUN KEYS. Every kind of gun has its own key: 1 pistol, 2 SMG, 3 rifle, 4 carbine, 5 LMG, 6 shotgun, 7 marksman, 8 sniper, 9 energy. Set them in the stash.',
   'THE WHEEL AND THE FORGE. Hold Q for the item wheel, pick one, pull the trigger. The Forge upgrades your gun, and guns drop one rarity up.',
@@ -26236,12 +26236,12 @@ function rlfxStop(){
 // rounds do AR_BONUS times their damage, and a ping and a green spark say so. Press outside it and nothing happens: the reload goes on at its
 // normal speed, with no jam and no penalty. The bonus ends when the magazine runs dry, at the next reload or when you change gun. Live play only
 // (G.sim never runs it), and nothing here draws from the seeded stream.
-var AR_A=0.42, AR_B=0.60, AR_BONUS=1.15;
-// v35.xx (cw-reloadstack), HIS ORDER (2026-10-27): "make the active reload stack but it gets harder each time". THE ACTIVE RELOAD STACKS. Each active reload in a row adds AR_STEP
-// to the bonus of the next magazine (x1.15, x1.25, x1.35, x1.45, then x1.55 from AR_STK_MAX on), and each one narrows the next sweet spot around its middle by AR_NARROW (18, 13.5,
-// 10.1, 7.6, then 5.7 percent of the reload). A press outside the sweet spot, or a reload left to run out on its own, starts the chain over and the spot is wide again.
+var AR_A=0.42, AR_B=0.60, AR_BONUS=1.05;
+// v28.xx (cw-cx-reload5pct), HIS WORDS (2026-10-29): "active reload should only give an extra 5% of damage per stack for a total of 15%".
+// v28.xx (cw-cx-reload5pct): successive magazines pay x1.05, x1.10, then x1.15 at the three-stack cap. AR_NARROW still narrows the sweet spot
+// around its middle (18, 13.5, then 10.1 percent of the reload); it stops narrowing at the third stack. A miss or a reload left to run out resets the chain.
 // v28.xx (cw-cx-reloadswitch): changing the held gun also ends the chain, including a swap that cuts a reload short. Each pillager owns their own chain.
-var AR_STEP=0.10, AR_STK_MAX=5, AR_NARROW=0.75;
+var AR_STEP=0.05, AR_STK_MAX=3, AR_NARROW=0.75;
 function arLo(p){ var k=Math.min((p&&p.arStk)||0,AR_STK_MAX-1); return (k>0)?(AR_A+AR_B)/2-(AR_B-AR_A)/2*Math.pow(AR_NARROW,k):AR_A; }
 function arHi(p){ var k=Math.min((p&&p.arStk)||0,AR_STK_MAX-1); return (k>0)?(AR_A+AR_B)/2+(AR_B-AR_A)/2*Math.pow(AR_NARROW,k):AR_B; }
 // v28.xx (cw-cx-reloadswitch), HIS WORDS (2026-10-28): "Active reload chain should also break if player switches guns".
@@ -56077,7 +56077,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.24: Extract siren and sonar sound only in the first and last 3 seconds of the wait. Enemy attraction stays continuous in both windows. Check 36.24 fails on v36.23',
+  now:'v36.25: active reload adds 5% a stack, 15% at most Check 36.25 fails on v36.24',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

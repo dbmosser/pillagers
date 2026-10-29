@@ -491,3 +491,7 @@
 2026-10-28 21:57 o-00c2-reload-chain-breaks-on-switch 352s ok PARTIAL in=1080704 out=11918 run=1
 2026-10-28 22:06 o-00c2-reload-chain-breaks-on-switch 80s ok DONE in=1470278 out=13875 run=2
 2026-10-28 22:12 o-00d-extract-quiet-middle 345s ok PARTIAL in=1713017 out=16682 run=1
+2026-10-28 22:18 o-00d-extract-quiet-middle 37s ok DONE in=2142121 out=17724 run=2
+2026-10-28 22:24 o-00e-222-active-reload-5pct-steps 393s ok PARTIAL in=1111883 out=13126 run=1
+2026-10-28 22:26 o-00e-222-active-reload-5pct-steps 78s ok PARTIAL in=1524729 out=15300 run=2
+2026-10-28 22:27 o-00e-222-active-reload-5pct-steps 97s ok PARTIAL in=1978691 out=17786 run=3

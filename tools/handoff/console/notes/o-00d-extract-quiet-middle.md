@@ -25,3 +25,7 @@ Regression handed to the lane: exercise each seat (p1/host and p2/join), with ex
 No fixture retarget needed: 33.35 accepts the narrower opening/final windows; 27.90 still gets two early siren throbs in five seconds.
 DESIGN watch line is included verbatim in the draft why text, which the queue writes to DESIGN.md: the extract is quiet in the middle of the wait but still pulls enemies
 Still required from lane: browser preflight, ship, unchanged seed 4242 fingerprint and ON HIS PC line. A real paired-window listen and pictures from both windows remain the acceptance evidence requested by his two-player rule; this sandbox cannot launch those windows. No player-visible layout/text changed, so no UI critic or camera restyle is needed.
+
+--- codex run 2026-10-28 22:18 ---
+2026-10-28 - Completion
+Lane confirmed cw-cx-extractquiet SHIPPED as v36.24, commit 63203dacf, and ON HIS PC v36.24 after 62 seconds. Confirmed the refreshed master contains the 3-second gate, regression check 36.24, and the exact DESIGN watch line. The shipped regression covers both seat roles, mute, a mid-wait player-2 snapshot and continuous enemy pull. No further code is needed. The paired-window listening/picture handoff from the previous run remains a coordinator playtest watch; this run makes no claim to have opened or listened to either window. Delivery finish line (shipped and ON HIS PC) is met.

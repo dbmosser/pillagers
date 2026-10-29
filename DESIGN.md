@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.25 - ACTIVE RELOAD: 5% A STACK, 15% AT MOST
+
+Co-op hunt while he was away. His order 2026-10-29: active reload should only give an extra 5% of damage per stack for a total of 15%. Keep the narrowing sweet spot and the chain break rules. Watch: active reload adds 5% a stack, 15% at most
+
+MEASURED. Check 36.25 passes, and fails on v36.24.
 ## v36.24 - EXTRACT QUIET MIDDLE
 
 Co-op hunt while he was away. His 10-28 order: audible only for the first 3 and last 3 seconds while attracting enemies throughout. The inbound sonar bypassed the existing siren windows. Watch: the extract is quiet in the middle of the wait but still pulls enemies

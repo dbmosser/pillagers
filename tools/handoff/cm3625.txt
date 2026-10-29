@@ -1,0 +1,7 @@
+v36.25: active reload: 5% a stack, 15% at most
+
+active reload adds 5% a stack, 15% at most
+
+Check 36.25. Fails on v36.24.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
