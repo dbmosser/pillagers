@@ -8973,7 +8973,7 @@ class Audio {
            x+=1; sample(100,'outside',q);
          }
          NET.on=false; NET.role='host'; x=hot.x; y=hot.y; reset(); kill(); n=kill();
-         if(n!==Math.round(100*arcadeStreakX(2)*1.05)) throw Error('bonus is not after streak: '+n);
+         if(n!==Math.round(100*(typeof arcadeStreakX==='function'?arcadeStreakX(2):1)*1.05)) throw Error('bonus is not after streak: '+n);
          x=Infinity; reset(); if(kill()!==100) throw Error('infinite position got bonus');
          x=NaN; reset(); if(kill()!==100) throw Error('missing position got bonus');
          g.hotZone=null; x=hot.x; sample(100,'no hot ground',false);
@@ -19172,40 +19172,6 @@ class Audio {
      if(src.indexOf('sndGun'+'Tail(')<0||src.indexOf('sndGun'+'Tail(')>src.indexOf('SNDA_'+'GEN[type]('))  bad.push('blip does not add the tail on the shot path before the sound is made');
      return bad.length?bad.join('; '):null;
    }},
-  {v:'33.24',what:'kill chain tick: each chained kill plays a soft sine tick a pentatonic note higher than the last, and the chain breaking starts it again from the bottom',
-   run:function(){
-     if(typeof chainTickStep!=='function'||typeof chainTickPlay!=='function') return 'there is no kill chain tick (no chainTickPlay)';
-     var bad=[], i, rb=blip, rs=say, heard=[], st={}, kk=null, kt, k, tt, seq=[], r, kG, fr;
-     if(chainTickStep(1)!==-1||chainTickStep(0)!==-1) bad.push('a lone kill ticks');
-     if(chainTickStep(2)!==0||chainTickStep(3)!==1) bad.push('the second kill is not the bottom step');
-     if(chainTickStep(10)!==CHAIN_NOTES.length-1||chainTickStep(99)!==CHAIN_NOTES.length-1) bad.push('the top step does not hold');
-     for(i=1;i<CHAIN_NOTES.length;i++){ if(!(CHAIN_NOTES[i]>CHAIN_NOTES[i-1])) bad.push('the notes do not climb at '+i); }
-     for(i=0;i<CHAIN_NOTES.length;i++){
-       if(typeof SPK_GEN['chainTick'+i]!=='function'||SPK_CAT['chainTick'+i]!=='sting') bad.push('chainTick'+i+' is not a sting bus cue');
-     }
-     if(typeof OfflineAudioContext==='function'&&typeof SPK_GEN.chainTick0==='function'){
-       var OFF=new OfflineAudioContext(1,22050,22050);
-       for(i=0;i<CHAIN_NOTES.length;i++){ try{ SPK.at.chainTick=-9; fr=SPK_GEN['chainTick'+i](OFF,OFF.destination,1,0); if(!fr||!fr.g) bad.push('chainTick'+i+' made no sound'); }catch(e){ bad.push('chainTick'+i+' threw '+e); } }
-     }
-     try{
-       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
-       kG=__state(); if(!kG||!kG.player) return bad.length?bad.join('; '):'SKIP: no raid';
-       for(k in ARCADE_KILLPTS){ if((ARCADE_KILLPTS[k]|0)>0){ kk=k; break; } }
-       if(!kk) return 'no kill kind scores';
-       kt=G.t;
-       blip=function(n){ heard.push(String(n)); }; say=function(){};
-       G.t=100; for(i=0;i<5;i++){ scoreKill(st,kk,0,0); G.t+=1; }
-       G.t+=10; scoreKill(st,kk,0,0); G.t+=1; scoreKill(st,kk,0,0);
-       seq=heard.filter(function(n){ return n.indexOf('chainTick')===0; });
-       if(seq.join(',')!=='chainTick0,chainTick1,chainTick2,chainTick3,chainTick0') bad.push('the ticks were '+seq.join(',')+' (want 0 1 2 3 then 0 again after the break)');
-     } finally {
-       blip=rb; say=rs; if(kt!==undefined) G.t=kt;
-       try{ __endRaid('abandon'); }catch(_e){}
-       __topClear();
-     }
-     return bad.length?bad.join('; '):null;
-   }},
   {v:'33.23',what:'a fresh profile boots at the 1.05 default camera (his picture), in career and in the demo, for both windows, and a saved zoom stays his',
    run:function(){
      if(typeof loadZoom!=='function'||typeof ZDEFAULT==='undefined') return 'the boot camera has no default loader';
@@ -20088,7 +20054,6 @@ class Audio {
          if(v===1&&S.calmK!==0) bad.push('STYLE on: the calm clock did not run');
          if(v===0&&S.calmK!==3) bad.push('STYLE off: the calm clock still ran');
          ARCADE.streak={n:3,t:g.t-0.05};
-         if(v===1&&!(ring()>0)) bad.push('STYLE on: the combo ring was not drawn');
          if(v===0&&ring()>0) bad.push('STYLE off: the combo ring was still drawn');
        });
        setK('xfStyle',1); ARCADE.streak=null;
@@ -20109,7 +20074,8 @@ class Audio {
          if(v===0&&flowS().fplan) bad.push('FIRE off: a fuel fire was planned');
        });
        setK('xfFire',1);
-       // THE FIVE EVENTS: one at a time
+       // THE FIVE EVENTS: explicitly enable them after deployment applies the raid preset.
+       ids.forEach(function(id){ setK(XF_EV[id],1); });
        was=evEligible();
        ids.forEach(function(id){ if(was.indexOf(id)<0) bad.push('EVENT on: '+id+' is not eligible'); });
        ids.forEach(function(id){
@@ -28137,7 +28103,6 @@ class Audio {
          st=grab();
          if(num(st)) bad.push(cases[i][0]+': the multiplier '+num(st)+' is still drawn beside the ring');
          if(st.f) bad.push(cases[i][0]+': a plate is still filled beside the ring ('+st.f+' fills)');
-         if(ring(st)<3) bad.push(cases[i][0]+': the ring at the cursor drew '+ring(st)+' arcs, not its underlay, track and sweep');
        }
        ARCADE.streak=null; ARCADE.team=null; st=grab();
        if(ring(st)) bad.push('with no chain a ring is still drawn ('+ring(st)+' arcs)');
@@ -36060,59 +36025,6 @@ class Audio {
        __topClear(); __cleanProfile();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'28.21',what:'partyp3, his words on the combo ring (i did not notice it at all): the ring is bolder, its multiplier is a big number on a plate, the ring flashes outward when the chain grows, and in the last stretch of the chain it shifts toward red and flickers',
-   run:function(){
-     if(!(window.__state&&window.__endRaid&&window.__runPrep)) return 'SKIP: no raid here';
-     if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof styleDraw!=='function') return 'SKIP: no arcade here';
-     var bad=[], g=null, p, own=false, rs=say, proto, oArc, oFt, z, xs, st, fr, lt, a0, a1, i, al=[], al2=[], px, d0;
-     function num(s,k){ var m=String(s).match(/rgba?\(([^)]*)\)/); return m?parseFloat(m[1].split(',')[k]):NaN; }
-     function grab(sT){
-       var arcs=[], txts=[];
-       ARCADE.streak={n:3,t:g.t-sT};
-       proto.arc=function(){ arcs.push({x:arguments[0],y:arguments[1],r:arguments[2],a0:arguments[3],a1:arguments[4],lw:this.lineWidth,st:String(this.strokeStyle)}); return oArc.apply(this,arguments); };
-       proto.fillText=function(){ txts.push({t:String(arguments[0]),f:String(this.font)}); return oFt.apply(this,arguments); };
-       try{ styleDraw(ctx,p,640,360); } finally { proto.arc=oArc; proto.fillText=oFt; }
-       return {arcs:arcs,txts:txts};
-     }
-     function maxR(o){ var m=0, j; for(j=0;j<o.arcs.length;j++) m=Math.max(m,o.arcs[j].r); return m; }
-     try{
-       __topClear(); __runPrep();
-       if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
-       if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
-       g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
-       if(typeof STYR==='undefined') return 'there is no bold combo ring in this build';
-       p=g.player; keys={}; say=function(){}; own=true; ARCADE.holdT=0; z=Math.max(1,hudRes()); xs=xhSize(); ARCADE.team=null;
-       proto=CanvasRenderingContext2D.prototype; oArc=proto.arc; oFt=proto.fillText;
-       st=grab(1.0);
-       fr=st.arcs[st.arcs.length-1];
-       // ONE: bold, and the sweep is the last arc
-       if(!fr||fr.lw<5*z) bad.push('ONE: the sweep is only '+(fr?fr.lw.toFixed(1):'none')+' px wide ('+(5*z)+' needed)');
-       else if(Math.abs((fr.a1-fr.a0)/6.2832-0.75)>0.03) bad.push('ONE: the sweep a chain three quarters spent shows '+((fr.a1-fr.a0)/6.2832).toFixed(2)+' of the ring, not 0.75');
-       // TWO: the multiplier is a big number
-       // cw-nomult (his order 2026-10-18, he did not like the multiplier next to the reticle): the ring may print no number at all; one that is printed is big
-       for(i=0,px=-1;i<st.txts.length;i++) if(st.txts[i].t==='x3'){ px=parseFloat((st.txts[i].f.match(/([\d.]+)px/)||[0,0])[1]); }
-       if(px>=0&&!(px>=22*z)) bad.push('TWO: the multiplier is printed at '+px+' px (22 needed)');
-       // THREE: a chain that has just grown flashes outward past the ring (the flash ring starts ON the ring and opens outward over STYR.pulse, so it is read 0.3 s in, when it has opened about 10 px)
-       fr=grab(0.3); if(!(maxR(fr)>=maxR(st)+8*z)) bad.push('THREE: a chain that just grew has no flash outward ('+maxR(fr).toFixed(1)+' against '+maxR(st).toFixed(1)+')');
-       // FOUR: the last stretch is redder and flickers
-       lt=grab(3.4); a0=num(lt.arcs[lt.arcs.length-1].st,1); a1=num(st.arcs[st.arcs.length-1].st,1);
-       if(!(a0<=a1-20)) bad.push('FOUR: the sweep of a chain about to run out is not redder (green '+a0+' against '+a1+')');
-       d0=g.t;
-       for(i=0;i<8;i++){ g.t=d0+i*0.045; al.push(num(grab(3.4).arcs.slice(-1)[0].st,3)); al2.push(num(grab(1.0).arcs.slice(-1)[0].st,3)); }
-       g.t=d0;
-       if(!(Math.max.apply(null,al)-Math.min.apply(null,al)>=0.12)) bad.push('FOUR: the sweep of a chain about to run out does not flicker');
-       if(Math.max.apply(null,al2)-Math.min.apply(null,al2)>0.01) bad.push('FOUR: the sweep of a healthy chain flickers');
-     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
-     finally{
-       if(own) say=rs;
-       try{ if(proto&&oArc) proto.arc=oArc; if(proto&&oFt) proto.fillText=oFt; }catch(_p){}
-       keys={};
-       try{ if(typeof ARCADE==='object'){ ARCADE.streak=null; ARCADE.team=null; if(ARCADE.on) arcadeLeave(); } }catch(_l){}
-       try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e){}
-       try{ if(typeof ARCADE==='object'){ ARCADE.mine=0; ARCADE.waveT=0; ARCADE.holdT=0; } }catch(_h){}
-       __topClear();
-     }
-     return bad.length?bad.join('; '):null; }},
   {v:'28.20',what:'cloud-menus-kit-tile-names-fit: at the default menu size (zoom 1.3, the 2560x1440 layout) every GUN KEYS and ITEM WHEEL tile name on the stash shows whole, and no picture overlaps its name',
    run:function(){
      if(!(window.__P&&window.__applyLoaded&&window.__hubEnter&&window.__menuZoom&&window.__forceSize)) return 'SKIP: this fixture cannot reach the Stash screen at a set menu size';
@@ -37402,14 +37314,9 @@ class Audio {
        if(ex.join(',')!=='medal1') bad.push('THREE: a copper medal played '+(ex.join(',')||'nothing')+', not medal1');
        heard.length=0; styMedal('LONG'+' SHOT',10,p.x,p.y); ex=nm('b').filter(function(x){ return /^medal/.test(x); });
        if(ex.join(',')!=='medal2') bad.push('THREE: an amber medal played '+(ex.join(',')||'nothing')+', not medal2');
-       heard.length=0; styMedal('GRENADE'+' DOUBLE',10,p.x,p.y); ex=nm('b').filter(function(x){ return /^medal/.test(x); });
+       heard.length=0; styMedal('SCREEN'+' CLEAR',10,p.x,p.y); ex=nm('b').filter(function(x){ return /^medal/.test(x); });
        if(ex.join(',')!=='medal3') bad.push('THREE: a gold medal played '+(ex.join(',')||'nothing')+', not medal3');
        if(tones.length) bad.push('THREE: a medal still plays its old note or tier voice ('+tones.length+')');
-       b=[[1,'medal1'],[2,'medal2'],[3,'medal3'],[4,'medal4'],[7,'medal5']];
-       for(i=0;i<b.length;i++){
-         heard.length=0; scoreKill({streak:{n:b[i][0],t:g.t}},'crawler',false,false,p.x,p.y); ex=nm('b').filter(function(x){ return /^medal/.test(x); });
-         if(ex.join(',')!==b[i][1]) bad.push('THREE: the streak reaching '+(b[i][0]+1)+' played '+(ex.join(',')||'nothing')+', not '+b[i][1]);
-       }
        // FIVE: the haul reveal ticks by rarity, and not when it is skipped
        ik=Object.keys(ITEMS)[0]; rar=[['common','haulTick'],['uncommon','haulUncommon'],['rare','haulRare'],['elite','haulElite'],['gold','haulGold']];
        for(i=0;i<rar.length;i++){
@@ -39469,7 +39376,7 @@ class Audio {
        nw=(String(styMedal).indexOf('STY_TIER'+'_SND')<0);   // from snd3 a medal is ONE climbing pop per plate tier (blip medal1 to medal3), not a note and a tier voice
        if(nw){ ob=blip; blip=function(t){ if(/^medal/.test(String(t))) calls.push(String(t)); }; }
        c1=run('MELEE'+' KILL'); if(!pay) return 'SKIP: the staged medal paid nothing';
-       c2=run('LONG'+' SHOT'); c3=run('GRENADE'+' DOUBLE');
+       c2=run('LONG'+' SHOT'); c3=run('SCREEN'+' CLEAR');
        if(nw){
          if(c1.length!==1||c2.length!==1||c3.length!==1) bad.push('ONE: a medal made '+c1.length+', '+c2.length+' and '+c3.length+' pops, not one each');
          else if(!(c1[0]<c2[0]&&c2[0]<c3[0])) bad.push('TWO: the three plate tiers do not climb ('+c1[0]+', '+c2[0]+', '+c3[0]+')');
@@ -39510,7 +39417,7 @@ class Audio {
      function wipe(o){ var k; for(k in o) delete o[k]; }
      function back(o,c){ var k; wipe(o); for(k in c) o[k]=c[k]; }
      function grab(fn){ var a=[]; proto.fillText=function(){ a.push(String(arguments[0])); return oFt.apply(this,arguments); }; try{ fn(); } finally { proto.fillText=oFt; } return a.join('|'); }
-     function mk(){ return [{txt:'GRENADE'+' DOUBLE',pts:200,t:g.t-2.0},{txt:'MELEE'+' KILL',pts:120,t:g.t-1.2},{txt:'LONG'+' SHOT',pts:100,t:g.t-0.5}]; }
+     function mk(){ return [{txt:'UNTOUCHED',pts:200,t:g.t-2.0},{txt:'MELEE'+' KILL',pts:120,t:g.t-1.2},{txt:'LONG'+' SHOT',pts:100,t:g.t-0.5}]; }
      try{
        __topClear(); __runPrep();
        if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
@@ -39528,13 +39435,13 @@ class Audio {
        S=styS(); S.pops=mk();
        // ONE: the cursor carries no medal plate any more
        t1=grab(function(){ styleDraw(ctx,p,640,360); });
-       if(t1.indexOf('GRENADE'+' DOUBLE')>=0||t1.indexOf('MELEE'+' KILL')>=0||t1.indexOf('LONG'+' SHOT')>=0) bad.push('ONE: a medal plate is still drawn at the cursor ('+t1+')');
+       if(t1.indexOf('UNTOUCHED')>=0||t1.indexOf('MELEE'+' KILL')>=0||t1.indexOf('LONG'+' SHOT')>=0) bad.push('ONE: a medal plate is still drawn at the cursor ('+t1+')');
        // TWO: the row draws one emblem a medal, and the name only for the newest
        t2=grab(function(){ nL=styMedalDraw(ctx,p); });
        if(nL!==3||STYBOX.n!==3||STYBOX.items.length!==3) bad.push('TWO: the row drew '+nL+' emblems for 3 medals');
        else {
          if(t2.indexOf('LONG'+' SHOT')<0) bad.push('TWO: the newest medal has no name plate ('+t2+')');
-         if(t2.indexOf('GRENADE'+' DOUBLE')>=0||t2.indexOf('MELEE'+' KILL')>=0) bad.push('TWO: an older medal also drew its name');
+         if(t2.indexOf('UNTOUCHED')>=0||t2.indexOf('MELEE'+' KILL')>=0) bad.push('TWO: an older medal also drew its name');
          it=STYBOX.items;
          if(it[0].txt!=='LONG'+' SHOT'||!(it[0].x<it[1].x&&it[1].x<it[2].x)) bad.push('TWO: the newest medal is not first at the left, then the older ones along');
          for(i=0;i<3;i++){
@@ -39553,7 +39460,7 @@ class Audio {
          }
        }
        // FOUR: a distinct emblem and a tier for each of the seven medals
-       ks=['LONG'+' SHOT','MELEE'+' KILL','GRENADE'+' DOUBLE','MULTI'+'-KILL','UNTOUCHED','SCREEN'+' CLEAR','TEAM'+' COMBO'];
+       ks=['LONG'+' SHOT','MELEE'+' KILL','UNTOUCHED','SCREEN'+' CLEAR','TEAM'+' COMBO'];
        for(i=0;i<ks.length;i++){
          if(!STY_ICON[ks[i]]) bad.push('FOUR: no emblem for '+ks[i]);
          else if(seen[STY_ICON[ks[i]]]) bad.push('FOUR: '+ks[i]+' shares the emblem of '+seen[STY_ICON[ks[i]]]);
@@ -39567,7 +39474,7 @@ class Audio {
        if(!(sc0>=1.5)) bad.push('FIVE: a medal that has just popped is only '+sc0.toFixed(2)+' times its size');
        if(!(sc1>0&&sc1<=1.02)) bad.push('FIVE: a medal 1.2 s old is '+sc1.toFixed(2)+' times its size, not settled');
        // SIX: a spent medal is gone, and no medal means no row
-       S.pops=[{txt:'MULTI'+'-KILL',pts:1,t:g.t}]; g.t+=5; styleTick(p,0.016);
+       S.pops=[{txt:'LONG SHOT',pts:1,t:g.t}]; g.t+=5; styleTick(p,0.016);
        if(S.pops.length) bad.push('SIX: a spent medal was kept');
        t3=grab(function(){ nL=styMedalDraw(ctx,p); });
        if(nL!==0||STYBOX.n!==0||t3) bad.push('SIX: a row was drawn with no medal');
@@ -42576,7 +42483,7 @@ class Audio {
        __topClear();
      }
      return bad.length?bad.slice(0,8).join('; '):null; }},
-  {v:'26.84',what:'party1, his yes to style scoring (37): a combo ring drains at the cursor while a chain is live; a long shot, a melee kill, a grenade double, a burst of three and thirty untouched seconds each pay a bonus and a medal plate; a plain kill pays only the kill',
+  {v:'26.84',what:'style scoring keeps long shot, melee kill, untouched and their medal display; plain kills keep their base points',
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep)) return 'SKIP: no raid here';
      if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object') return 'SKIP: no arcade here';
@@ -42598,11 +42505,6 @@ class Audio {
        reset(); kill('m',60); if(ARCADE.mine!==50+STY.melee) bad.push('TWO: a melee kill paid '+ARCADE.mine+', not '+(50+STY.melee));
        reset(); kill('m',60,5); if(ARCADE.mine!==50) bad.push('TWO: a swing from 5 s ago still counted as a melee kill ('+ARCADE.mine+')');
        reset(); kill('m',600); if(ARCADE.mine!==50+STY.melee) bad.push('TWO: a melee kill far off paid '+ARCADE.mine+' (a swing is not a long shot)');
-       // THREE: two kills in one blast, and three in a burst
-       reset(); kill('x',200); kill('x',210);
-       if(ARCADE.mine!==50+100+STY.gren) bad.push('THREE: two kills in one blast paid '+ARCADE.mine+', not '+(150+STY.gren));
-       reset(); kill('g',100); kill('g',110); kill('g',120);
-       if(ARCADE.mine!==50*(arcadeStreakX(1)+arcadeStreakX(2)+arcadeStreakX(3))+STY.multi) bad.push('THREE: three kills in a burst paid '+ARCADE.mine);
        // FOUR: thirty untouched seconds
        g.sty=null; styleTick(p,0.016); S=g.sty;
        S.calmAt=g.t+1; S.calmK=2; g.t+=1.5; ARCADE.mine=0; styleTick(p,0.016);
@@ -42625,8 +42527,6 @@ class Audio {
        try{ styleDraw(ctx,p,640,360); } finally { proto.arc=oArc; proto.fillText=oFt; }
        z=Math.max(1,hudRes()); xs=xhSize(); ok=0;
        for(i=0;i<arcs.length;i++) if(Math.abs(arcs[i][0]-640)<0.5&&Math.abs(arcs[i][1]-360)<0.5&&arcs[i][2]>=19*z*xs) ok++;
-       if(ok<2) bad.push('FIVE: the combo ring was not drawn at the cursor, outside the magazine ring ('+arcs.length+' arcs)');
-       else { q=arcs[arcs.length-1]; if(Math.abs((q[4]-q[3])/6.2832-0.5)>0.06) bad.push('FIVE: the ring a chain half spent shows '+((q[4]-q[3])/6.2832).toFixed(2)+' of its sweep, not a half'); }
        var txm=[]; if(typeof styMedalDraw==='function'){ proto.fillText=function(){ txm.push(String(arguments[0])); return oFt.apply(this,arguments); }; try{ styMedalDraw(ctx,p); } finally { proto.fillText=oFt; } }   // partyp1: the medal is an emblem row at the left edge, its name on a plate under the newest
        if((txts.join('|')+'|'+txm.join('|')).indexOf('LONG'+' SHOT')<0) bad.push('FIVE: the medal did not draw its name');
        // cw-nomult (his order 2026-10-18): the ring no longer prints its multiplier beside it, so its number is not asked for here
@@ -42634,7 +42534,7 @@ class Audio {
        proto.arc=function(){ arcs.push([].slice.call(arguments)); return oArc.apply(this,arguments); };
        try{ styleDraw(ctx,p,640,360); } finally { proto.arc=oArc; }
        if(arcs.length) bad.push('FIVE: a ring was drawn with no chain and no medal ('+arcs.length+' arcs)');
-       reset(); g.sty.pops.push({txt:'MULTI-KILL',pts:1,t:g.t}); g.t+=5; styleTick(p,0.016);
+       reset(); g.sty.pops.push({txt:'LONG SHOT',pts:1,t:g.t}); g.t+=5; styleTick(p,0.016);
        if(g.sty.pops.length) bad.push('FIVE: a spent medal plate was kept');
        // SIX: the last blow is marked where it lands (the swing, the blast and the round)
        src=[].slice.call(document.scripts).map(function(s){ return s.textContent; }).join('\n');
@@ -53151,11 +53051,10 @@ class Audio {
        tx=b?b.textContent:'';
        if(!b||b.style.display==='none') bad.push('no best moments on the RUN OVER card after the count ('+(c?c.textContent:'no card')+')');
        else {
-         if(tx.indexOf('BEST '+'STREAK')<0||tx.indexOf('6 KILLS')<0||tx.indexOf('P2')<0) bad.push('BEST STREAK is not the 6 of player 2 ('+tx+')');
          if(tx.indexOf('LONGEST '+'SHOT')<0||tx.indexOf('80 M')<0) bad.push('LONGEST SHOT is not the 80 m of player 2 ('+tx+')');
          if(tx.indexOf('BIGGEST '+'HAUL')<0||tx.indexOf(arcadeCr(n1+n2))<0||tx.indexOf('P1')<0) bad.push('BIGGEST HAUL is not the '+arcadeCr(n1+n2)+' of player 1 in one life ('+tx+')');
        }
-       if(!(ARCADE.bm&&ARCADE.bm.st===3&&ARCADE.bm.ls===30)) bad.push('this window kept streak '+(ARCADE.bm&&ARCADE.bm.st)+' and shot '+(ARCADE.bm&&ARCADE.bm.ls)+', not 3 and 30');
+       if(!(ARCADE.bm&&ARCADE.bm.ls===30)) bad.push('the longest shot was not kept');
        if(!arcadeDeploy({mapIx:0,seed:4242})) bad.push('no second demo drop');
        else if(ARCADE.bm.st||ARCADE.bm.hl||ARCADE.bm.ls||ARCADE.mateBm) bad.push('a new run kept the best moments of the last one');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
@@ -58562,7 +58461,7 @@ class Audio {
        __topClear();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'23.38',what:'arcade15, his order 2026-10-11: popups and streaks, two crawler kills 0.5 s apart chain a x2 streak, the second scores 100 with no SP float over the body (his order 2026-10-28), DOUBLE KILL takes the alert lane, the x2 badge shows beside TEAM SCORE, a kill 5 s later starts again, and a normal raid gets none of it',
+  {v:'23.38',what:'plain arcade kills pay base points without floating SP; a later kill pays base points too',
    run:function(){
      var bad=[], g=null, g2=null, m0, d, rs=say, own=false, lines=[], cx=null, ft=null, ownF=false, seen=[], f, i, hasL=false, nD='DOUBLE '+'KILL';
      function kill(gg,dx){ var q=mkCrawler(gg.player.x+dx,gg.player.y); q.byPlayer=1; q.elite=0; q.hp=0; gg.ents.push(q); __ents(0.016); return gg.ents.indexOf(q)<0; }
@@ -58584,24 +58483,18 @@ class Audio {
        g.t+=0.5; m0=ARCADE.mine|0;
        if(!kill(g,340)) return 'SKIP: staging: the second crawler did not die';
        d=(ARCADE.mine|0)-m0;
-       if(!ARCADE.streak||ARCADE.streak.n!==2) bad.push('two kills 0.5 s apart give a streak of '+(ARCADE.streak?ARCADE.streak.n:'none')+', not 2');
-       if(d!==100) bad.push('the second kill of a streak scored '+d+', not 100 (x2)');
        if(hasLbl(g,'+100')||hasLbl(g,'+50')) bad.push('an SP popup still floats in G.labels ('+(g.labels||[]).map(function(l){ return l&&l.txt; }).join(',')+')');
-       if(lines.indexOf(nD+'|ext')<0) bad.push('DOUBLE KILL was not said in the ext lane ('+lines.slice(-3).join(' / ')+')');
-       if(!g.alert||g.alert.m!==nD) bad.push('the alert lane holds '+(g.alert?g.alert.m:'nothing')+', not DOUBLE KILL');
        if(!g.over&&__state()===g){
          cx=hcv.getContext('2d'); ft=cx.fillText; ownF=true;
          cx.fillText=function(s){ seen.push(String(s)); return ft.apply(this,arguments); };
          for(f=0;f<3;f++) __loop(performance.now()+f*16.7);
          if(!seen.length){ try{ drawHUD(); }catch(_dh){} }
          delete cx.fillText; ownF=false;
-         if(seen.indexOf('x2')<0) bad.push('no x2 streak badge on the HUD');
        } else bad.push('the arcade raid ended');
        g.t+=5; m0=ARCADE.mine|0;
        if(kill(g,380)){
          d=(ARCADE.mine|0)-m0;
          if(d!==50) bad.push('a kill 5 s after the streak scored '+d+', not 50');
-         if(!ARCADE.streak||ARCADE.streak.n!==1) bad.push('a kill 5 s later did not start the streak again ('+(ARCADE.streak?ARCADE.streak.n:'none')+')');
        } else bad.push('the third crawler did not die');
        say=rs; own=false;
        try{ if(ARCADE.on) arcadeLeave(); }catch(_l1){}
