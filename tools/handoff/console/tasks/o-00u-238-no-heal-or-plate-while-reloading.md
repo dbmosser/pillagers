@@ -5,7 +5,7 @@ What is on HEAD (v36.26), dark_raiders.html:
 - The wheel path is already right: handTake (~24963) takes the item out and sets p.reloading=0, and R (~29982) and the empty-trigger auto reload (~29986) refuse while p.hand.
 - The gap is the other doors: the belt INSTANT keys (beltEquip ~24805 / beltInstant, his v26.02 "leave the gun equipped and instantly use the item"), quick heal H (quickHeal ~24830, useBeltHeal ~24754), quick plate (quickPlate ~24843, useArmor ~28363), and the pad; they start a heal wind-up (p.healQ, tickHeal ~26379) or a plate while p.reloading runs, and R can start a reload during a heal wind-up or plate.
 Build (one rule for every door: belt keys 5-9 and 0, H, the plate key, the wheel, the pad, player 2):
-1. Starting a bandage or medkit wind-up, or slotting a plate, CANCELS a reload in progress (the reload clock is lost; the reload sound is cut like a swap, rlfxStop). It does not count as a missed active reload: the reload chain is kept.
+1. Starting a bandage or medkit wind-up, or slotting a plate, CANCELS a reload in progress (the reload clock is lost; the reload sound is cut like a swap, rlfxStop). It ENDS the active reload chain (his correction 10-28 ~23:30: "no a reload cancel kills the reload streak"): p.arStk=0, p.arBonus=0, as a miss does.
 2. While a bandage/medkit wind-up or a plate is in progress, R and the empty-trigger auto reload do nothing (the reload starts once it is done, if he presses again or holds the trigger).
 3. Stims and grenades are not part of this order: leave them.
 Check (must FAIL on the current build): reload the rifle, press the bandage belt key mid-reload: p.reloading becomes 0 and the heal starts; during the bandage wind-up press R: no reload starts; same two with a plate.
