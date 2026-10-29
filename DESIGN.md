@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.16 - BREACH LABEL CLEARS THE PLAYERS
+
+Co-op hunt while he was away. The gate critic found the outside breach label overlapping the players and nearby HUD. Keep its binding-aware text and put it inside the doorway, opposite the players holding search. Watch: the breach gate says which key to hold
+
+MEASURED. Check 36.16 passes, and fails on v36.15.
 ## v36.15 - BREACH GATE NAMES THE HOLD KEY
 
 Co-op hunt while he was away. His 10-28 order: hold to breach should say hold e to breach. The hold reads the search action, so the label uses its local keyboard or pad binding. Watch: the breach gate says which key to hold

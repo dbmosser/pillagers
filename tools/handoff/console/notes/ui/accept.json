@@ -3742,5 +3742,69 @@
   "pic": "tools/handoff/console/notes/shots/o-09h-name-tags-overlap-recipes-4/tags-smooth-1080.jpg",
   "task": "o-09h-name-tags-overlap",
   "when": "2026-10-29T00:34"
+ },
+ "p1-idle": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The run-info clutter, the right-edge extract pill and the open controls list are gone, but the HUD still looks like loose, undersized, inconsistent boxes sitting in the corners with no shared margin, type scale or panel style.",
+  "findings": [
+   "P1 top-right goals panel (x1603-1901, y18-243): Show only the 3 active goals at 16px, with the labels in --tx-2 and the content in --tx-1. Use 32px row height with 1px --ui-line dividers. Put sp rewards right-aligned in tabular numerals. Collapse the rest behind the chevron by default. Inset the panel to the 96px / 48px margin. Use 16px padding and a 4px radius.",
+   "P1 top-centre stack: timer 9:59, score box, extract 170m, hold e to breach (x860-1160, y18-215): Make the timer the single 56px hero with the score as a 20px line beneath it, in one 240px-wide panel. Move the extract banner to its own row 16px below, on the same centre axis. Move the 'hold e to breach' prompt to 48px above the player so it no longer collides with the pillager tag.",
+   "P1 hotbar (x553-1465, y955-1055): Draw all 10 slots at 64px with 8px gaps, a --ui-panel fill, a 1px --ui-line border and a 4px radius. Put the number at 16px in --tx-2. Make the selected slot a 3px --acc top bar. Dim empty slots to 40% opacity. Centre the bar at x=960.",
+   "P1 bottom-left hp bar (x24-430, y1035-1070) and 'f1 controls' chip (x437-537, y928-952): Put hp in a 64px-high --ui-panel bar at x=96, y=968 with a 1px --ui-line-hi border and a 4px radius. Set the 'hp 100' label to 20px f-cond 600 and keep the green fill (--ok) to 8px high. Dock 'f1 controls' on the same left edge at 16px --tx-2, 8px above the bar.",
+   "P2 top-left scoreboard (x8-367, y143-242): Move it to x=96, y=48. Use 16px text, 32px rows, 1px --ui-line dividers and 16px padding. Give 'you' a 3px amber left bar and a --ui-raised fill. Align the '$' values right in tabular numerals. Move the 'keyboard' chip into the same 96px margin or drop it."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00b-hold-e-to-breach-recipes-3/breach-p1-idle-1080.jpg",
+  "task": "o-00b-hold-e-to-breach",
+  "when": "2026-10-29T00:59"
+ },
+ "p1-progress": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The controls list now folds to one line, the edge marker is gone and the clutter is down, but the HUD is still a pile of mismatched boxes with tiny text, and the unfinished hotbar and weak alert hierarchy keep it at a 3.",
+  "findings": [
+   "P1 Hotbar, bottom centre (x 555-1465, y 955-1055): Draw all 9 slots as 56px cells with --ui-panel at 90% and a 1px --ui-line border at 4px radius. Put the number at 16px in --tx-2 inside each cell. Dim empty cells to 50% opacity. Keep the lime border on the selected slot only (it is amber now, so change it to --acc). Space the cells 8px apart.",
+   "P1 Top-right goals panel (x 1603-1900, y 18-243): Make the header 20px --tx-1 and the section labels 16px --tx-2. Set the items at 16px --tx-1 with the reward right-aligned in --tx-2 and a 28px row pitch. Move 'dawn clear' into the timer cluster. Use 24px padding, a --ui-line divider between sections, and a 3px --acc bar at the left of the header only.",
+   "P1 Top-centre cluster: timer, score, extract, breaching (x 860-1160, y 18-225): Use one panel style for the timer and score, with 16px between them. Move the extract chip to the same 20px style, centred 16px below the score. Move the breach readout to a 20px --warn label, anchored 24px above the ring and not over the sprites. Hide the 'pillager' nameplate while the breach label shows.",
+   "P1 Ammo card, bottom-right (x 1668-1910, y 902-1052): Set every HUD panel to a 24px inset from the screen edge (5% margin is the guide, 48px at minimum for safe areas). Move the card in so its right and bottom edges are 24px from the edge. Raise 'b / i backpack' to 16px --tx-2.",
+   "P2 Top-left pillagers panel (x 8-367, y 143-242) and 'keyboard' chip (x 10-105, y 8-30): Use a 24px inset, 16px text and a 28px row pitch. Give your own row --tx-1 plus a 3px amber (P1) left bar, and make the other rows --tx-2. Right-align the $ amounts in a tabular face. Restyle the chip with the shared panel fill and 16px --tx-2 text."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00b-hold-e-to-breach-recipes-3/breach-p1-progress-1080.jpg",
+  "task": "o-00b-hold-e-to-breach",
+  "when": "2026-10-29T01:00"
+ },
+ "p2-idle": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The controls list is now folded to one line and the disconnect banner and right-edge marker are gone, but the hud still has too many separately boxed readouts of different sizes with no shared margin or hierarchy.",
+  "findings": [
+   "P1 top-right goals panel (x1603-1901, y20-243): Collapse it to a header row ('goals 0/3') plus the 3 active goals at 16px --tx-1. Render section labels at 14px --tx-2. Move the rest behind the chevron, folded by default. Inset the panel 48px from the top and right edges.",
+   "P1 hp bar, bottom-left (x24-430, y1035-1068): Make the bar 360x24 on a --ui-panel track with a 1px --ui-line border and an --ok fill. Put 'hp' at 16px --tx-2 and '100' at 20px --tx-1 above it or to its left, not on the fill. Inset it 48px from the left and bottom edges.",
+   "P1 stacked top-centre group: timer (x891-1029), score (x861-1059, y97-187), extract chip (y196-222), party toast (x885-1035, y893-930): Use one top-centre column centred on x=960 with 8px gaps: the timer (hero 56px), then one 480px score and extract strip at 20px. Fix the toast at y=860, centred, 20px on --ui-panel. Give all of them the same 4px radius and a 1px --ui-line border.",
+   "P2 hotbar (x553-1500, y955-1060): Draw all ten slots as 64x64 --ui-panel tiles with a 1px --ui-line border, with numbers at 14px --tx-2. Give the selected slot a 2px --acc border.",
+   "P2 'f1 controls' chip (x435-538, y928-952): Set the chip at x=48, y=972 in 16px --tx-2, aligned to the same left edge as the hp bar. Use a --ui-panel fill with a 1px --ui-line border and 8px padding."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00b-hold-e-to-breach-recipes-3/breach-p2-idle-1080.jpg",
+  "task": "o-00b-hold-e-to-breach",
+  "when": "2026-10-29T01:00"
+ },
+ "p2-progress": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "This is an in-raid HUD, not the p2-progress menu I reviewed before, so none of the earlier advice (wordmark, player 2 button, saves block) was applied or could be checked. As a HUD it is a cluster of small, unevenly sized dark boxes: the timer, score and breach label overlap, the corner margins are far below 5%, and the text is cramped and hard to read.",
+  "findings": [
+   "P0 Top-centre cluster: timer 9:59, score box, 'breaching 42%' label, 'extract 170m' chip, 'pillager' tag: Move the score into the left feed or the top-right list. Keep only the timer at top centre (56px hero). Place the breach label 24px above the progress ring, centred on it, with a --ui-panel fill and 8px padding so it clears the pillager tag. Allow 16px minimum between any two HUD boxes.",
+   "P1 Top-right goals panel (x1603-1901, y18-243): Use 20px --tx-1 for task names and 16px --tx-2 for labels. Put the rewards right-aligned in --acc or --tx-2 in a column. Add a 1px --ui-line divider between 'contracts' and 'run goals', and 16px padding. Fold the section down to the open goals only, and fix the l/I glyph ambiguity (use a font with a slashed or serif I, or check that the string says 'air strike').",
+   "P1 Left 'current pillagers 3 / value at risk' panel and the 'pillager' bar below it: Use one panel style for all three side panels: --ui-panel fill, 1px --ui-line-hi border, 4px radius. Set the rows at 16px with 24px height and make the rows for other players --tx-2. Shade the player's own row (you) with --acc text, or put an amber (P1) / cyan (P2) 3px bar on the left of the row.",
+   "P1 Bottom edge: hp bar (x24-430, y1035-1068), hotbar, 'fl controls' chip: Lift the hp bar to y≥1026 (54px from the bottom), height 24px, with a 1px dark border. Put 'hp' at 16px --tx-2 on the left and '100' at 20px in the bar. Give hotbar slots a --ui-panel fill and numbers in 16px --tx-1. Write the key as 'f1' in a 1px-bordered chip, aligned to the hotbar's left edge.",
+   "P2 'in pillager's party' tooltip at bottom centre (x885-1035, y893-928): Delete it, or show 'party' as a 16px --tx-2 tag on the player's name row in the left panel. If it stays, 16px text, 4px radius, 24px above the hotbar."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00b-hold-e-to-breach-recipes-4/breach-p2-progress-1080.jpg",
+  "task": "o-00b-hold-e-to-breach",
+  "when": "2026-10-29T01:04"
  }
 }

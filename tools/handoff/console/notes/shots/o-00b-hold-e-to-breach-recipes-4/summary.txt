@@ -1,0 +1,4 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  breach-p2-progress                     staged      12.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"phase":"progress","seat":2,"labels":[["breaching 42%"],["breaching 42%"]],"progress":0.42,"realPair":[{"role":"host","seat":0,"pair":"cxbreach202","roster":[{"seat":0,"pid":"3af2cb68","name":"PILLAGER","host":true},{"seat":1,"pid":"dd6a081b","name":"PILLAGER","host":false}],"linked":1},{"role":"jo
+== 4k : window 3876x2265, viewport 3840x2160
+  breach-p2-progress                     staged      14.8s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"phase":"progress","seat":2,"labels":[["breaching 42%"],["breaching 42%"]],"progress":0.42,"realPair":[{"role":"host","seat":0,"pair":"cxbreach202","roster":[{"seat":0,"pid":"2a1b0b97","name":"PILLAGER","host":true},{"seat":1,"pid":"801031c5","name":"PILLAGER","host":false}],"linked":1},{"role":"jo

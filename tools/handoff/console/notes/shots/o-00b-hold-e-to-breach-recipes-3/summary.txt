@@ -1,0 +1,16 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  breach-p1-idle                         staged      11.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"phase":"idle","seat":1,"labels":[["hold e to breach"],["hold k to breach"]],"progress":0,"realPair":[{"role":"host","seat":0,"pair":"cxpadlost0700","roster":[{"seat":0,"pid":"1762d564","name":"PILLAGER","host":true},{"seat":1,"pid":"2a29181c","name":"PILLAGER","host":false}],"linked":1},{"role":"j
+  breach-p1-progress                     staged       7.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"phase":"progress","seat":1,"labels":[["breaching 42%"],["breaching 42%"]],"progress":0.42,"realPair":[{"role":"host","seat":0,"pair":"cxpadlost0700","roster":[{"seat":0,"pid":"44f4a8a1","name":"PILLAGER","host":true},{"seat":1,"pid":"11ff90d7","name":"PILLAGER","host":false}],"linked":1},{"role":"
+  breach-p2-idle                         staged       8.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"phase":"idle","seat":2,"labels":[["hold e to breach"],["hold k to breach"]],"progress":0,"realPair":[{"role":"host","seat":0,"pair":"cxbreach201","roster":[{"seat":0,"pid":"1d586e2c","name":"PILLAGER","host":true},{"seat":1,"pid":"cb217158","name":"PILLAGER","host":false}],"linked":1},{"role":"joi
+  breach-p2-progress                     NOT STAGED  41.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link
+    at stageGatePair (<anonymous>:110:34)
+    at async <anonymous>:113:8
+    at async <anonymous>:1:21
+== 4k : window 3876x2265, viewport 3840x2160
+  breach-p1-idle                         staged      11.9s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"phase":"idle","seat":1,"labels":[["hold e to breach"],["hold k to breach"]],"progress":0,"realPair":[{"role":"host","seat":0,"pair":"cxpadlost0700","roster":[{"seat":0,"pid":"82b5dfa2","name":"PILLAGER","host":true},{"seat":1,"pid":"9f3c7597","name":"PILLAGER","host":false}],"linked":1},{"role":"j
+  breach-p1-progress                     staged       8.1s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"phase":"progress","seat":1,"labels":[["breaching 42%"],["breaching 42%"]],"progress":0.42,"realPair":[{"role":"host","seat":0,"pair":"cxpadlost0700","roster":[{"seat":0,"pid":"93ede7b5","name":"PILLAGER","host":true},{"seat":1,"pid":"38c8e34a","name":"PILLAGER","host":false}],"linked":1},{"role":"
+  breach-p2-idle                         staged       8.5s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"phase":"idle","seat":2,"labels":[["hold e to breach"],["hold k to breach"]],"progress":0,"realPair":[{"role":"host","seat":0,"pair":"cxbreach201","roster":[{"seat":0,"pid":"3802ceb1","name":"PILLAGER","host":true},{"seat":1,"pid":"5e778706","name":"PILLAGER","host":false}],"linked":1},{"role":"joi
+  breach-p2-progress                     NOT STAGED  15.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not link the existing p2 window: p2raid
+    at stageGatePair (<anonymous>:110:34)
+    at async <anonymous>:113:8
+    at async <anonymous>:1:21

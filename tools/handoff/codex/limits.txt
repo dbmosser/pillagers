@@ -120,3 +120,7 @@
 2026-10-28 20:27 week=38.0% 5h=53.0% week_resets=2026-11-04 01:35 job=o-09h-name-tags-overlap
 2026-10-28 20:35 week=38.0% 5h=54.0% week_resets=2026-11-04 01:35 job=o-09h-name-tags-overlap
 2026-10-28 20:40 week=39.0% 5h=58.0% week_resets=2026-11-04 01:35 job=o-00b-hold-e-to-breach
+2026-10-28 20:48 week=39.0% 5h=60.0% week_resets=2026-11-04 01:35 job=o-00b-hold-e-to-breach
+2026-10-28 20:57 week=39.0% 5h=62.0% week_resets=2026-11-04 01:35 job=o-00b-hold-e-to-breach
+2026-10-28 21:03 week=40.0% 5h=64.0% week_resets=2026-11-04 01:35 job=o-00b-hold-e-to-breach
+2026-10-28 21:06 week=40.0% 5h=65.0% week_resets=2026-11-04 01:35 job=o-00b-hold-e-to-breach

@@ -479,3 +479,7 @@
 2026-10-28 20:27 o-09h-name-tags-overlap 165s ok PARTIAL in=4943153 out=34345 run=4
 2026-10-28 20:36 o-09h-name-tags-overlap 82s ok DONE in=5528686 out=37044 run=5
 2026-10-28 20:40 o-00b-hold-e-to-breach 267s ok PARTIAL in=708735 out=10540 run=1
+2026-10-28 20:48 o-00b-hold-e-to-breach 122s ok PARTIAL in=1662759 out=14241 run=2
+2026-10-28 20:57 o-00b-hold-e-to-breach 118s ok PARTIAL in=2704403 out=17463 run=3
+2026-10-28 21:03 o-00b-hold-e-to-breach 163s ok PARTIAL in=3702100 out=22152 run=4
+2026-10-28 21:06 o-00b-hold-e-to-breach 133s ok PARTIAL in=4328399 out=26623 run=5

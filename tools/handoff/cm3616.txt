@@ -1,0 +1,7 @@
+v36.16: breach label clears the players
+
+the breach gate says which key to hold, clear of the players
+
+Check 36.16. Fails on v36.15.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

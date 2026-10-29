@@ -1,0 +1,34 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  breach-p1-idle                         NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: Cannot read properties of undefined (reading 'pick')
+    at stageGatePair (<anonymous>:102:34)
+    at <anonymous>:105:14
+    at async <anonymous>:1:21
+  breach-p1-progress                     NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: Cannot read properties of undefined (reading 'pick')
+    at stageGatePair (<anonymous>:102:34)
+    at <anonymous>:105:14
+    at async <anonymous>:1:21
+  breach-p2-idle                         NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host popup blocked
+    at stageGatePair (<anonymous>:102:34)
+    at <anonymous>:105:14
+    at async <anonymous>:1:21
+  breach-p2-progress                     NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host popup blocked
+    at stageGatePair (<anonymous>:102:34)
+    at <anonymous>:105:14
+    at async <anonymous>:1:21
+== 4k : window 3876x2265, viewport 3840x2160
+  breach-p1-idle                         NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: Cannot read properties of undefined (reading 'pick')
+    at stageGatePair (<anonymous>:102:34)
+    at <anonymous>:105:14
+    at async <anonymous>:1:21
+  breach-p1-progress                     NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: Cannot read properties of undefined (reading 'pick')
+    at stageGatePair (<anonymous>:102:34)
+    at <anonymous>:105:14
+    at async <anonymous>:1:21
+  breach-p2-idle                         NOT STAGED   4.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host popup blocked
+    at stageGatePair (<anonymous>:102:34)
+    at <anonymous>:105:14
+    at async <anonymous>:1:21
+  breach-p2-progress                     NOT STAGED   5.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host popup blocked
+    at stageGatePair (<anonymous>:102:34)
+    at <anonymous>:105:14
+    at async <anonymous>:1:21
