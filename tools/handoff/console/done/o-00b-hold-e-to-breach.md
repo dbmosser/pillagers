@@ -8,3 +8,5 @@ Check (must FAIL on the current build): the idle gate label contains the bound k
 Rules: the seed 4242 fingerprint (ents 85/374, containers 165/593) must hold; both windows; never touch the pickup stack, loot sounds or loot rows. DESIGN.md watch line: "the breach gate says which key to hold".
 Pictures at 1080 and 4K of the gate before and while breaching.
 TASK DONE when it shipped and is ON HIS PC.
+
+CLOSED by the CEO 10-28 21:30: shipped v36.15 (label) and v36.16 (label clears the players), both ON HIS PC. Independent review on v36.16, 8 pictures PASS at 1080 and 4K: notes/shots/o-00b-hold-e-to-breach-review/. Minor, left for HUD work: the progress ring top edge touches the players feet.
