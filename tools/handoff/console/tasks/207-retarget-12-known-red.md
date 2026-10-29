@@ -52,3 +52,8 @@ ADDED 10-28 15:35 (JTPC Correspondent; red in every spare PC full run since v35.
 
 ADDED 10-28 21:40 (JTPC Correspondent; spare PC run corpus-1028-1954 on v36.11), 1 more to retarget the same way. Not in the baseline, so it blocks stable until retargeted or parked in known-red:
 - 23.18: a source read that wants hitKills(en,edmg)) in both the damage number and the party copy; v36.07 (cw-cx-dmgmerge) added a target argument (dmgNum(...,hitKills(en,edmg),en) and netFxDmg(...,hitKills(en,edmg),en.nid)), and both lines still ask hitKills, so player 2 still sees the kill number. Loosen the match to hitKills(en,edmg) followed by any further arguments.
+
+ADDED 10-28 23:40 (JTPC Correspondent; spare PC run corpus-1028-2206 on v36.23), 5 more, all out of date by his 10-28 orders; parked in known-red, retarget the same way:
+- 26.37, 26.42, 32.89: the GUN KEYS and WHEEL tiles sit on the keys tab of the stash loadout column since v36.21 (his pick, option a); on the default backpack tab they measure 0 px. Open the keys tab first, then keep every assert (pad reaches the 17 tiles, names whole, gun key tile wider than a wheel tile, nothing sticks out, zoom 1 and 1.3).
+- 27.21: the stash tab is KEYCARDS since v36.18 (his order: in-game keys are keycards). Expect KEYCARDS where it wants KEYS; keep the one filter row and the tab order.
+- 27.46: part FOUR wants HOLD TO BREACH; since v36.15 (his order) the gate reads HOLD E TO BREACH from the search key binding. Expect 'HOLD '+keyName(the search key)+' TO BREACH'.

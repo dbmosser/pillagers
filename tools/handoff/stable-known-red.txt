@@ -94,3 +94,9 @@ v23.18   # source read wants hitKills(en,edmg)) closing both calls; v36.07 cw-cx
 # flake: corpus-only (red in the full run corpus-1028-1954 on v36.11, green in 1028-1659 on v35.98; no ship v36.12 to v36.27 touched either; sorted by check-in 10-28 from the fail text, not rerun alone)
 v8.85    # flake: fails "the renderer is not deterministic at dt 0, this check cannot measure anything", the same corpus-only message as v8.89 (see the note above) and v9.07 in the same chunk; two redraws of the frozen frame differ in a long full run, the footprint-through-wall measure itself never ran
 v33.60   # flake: wall-clock bound "one chunk step took 13.0 ms (over 4)" with the texture phase at 12.9 ms and every other phase near 0, a single spike of the pixel-look ground bake on the loaded spare PC; the pixel look is off by default (smooth look, v34.81); a real slowdown would repeat in 1028-1659 and earlier runs, which were green
+# his 10-28 orders, sorted by the JTPC Correspondent 23:40 from spare run corpus-1028-2206 on v36.23; retarget in job 207
+v26.37   # GUN KEYS tiles are on the keys tab since v36.21 (his pick, option a); on the backpack tab the pad reaches 0 of 17
+v26.42   # same keys tab: tiles measure 0 px on the backpack tab
+v32.89   # same keys tab: all 17 names read hidden on the backpack tab
+v27.21   # the stash tab is KEYCARDS since v36.18 (his order); the check wants KEYS
+v27.46   # the breach gate reads HOLD E TO BREACH since v36.15 (his order); the check wants HOLD TO BREACH
