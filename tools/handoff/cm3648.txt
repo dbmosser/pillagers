@@ -1,0 +1,7 @@
+v36.48: raid backpack in groups: guns, usables, crafting
+
+the raid backpack groups guns, then usables, then crafting and salvage on smaller tiles
+
+Check 36.48. Fails on v36.47.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

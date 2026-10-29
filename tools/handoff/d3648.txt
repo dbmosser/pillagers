@@ -1,0 +1,5 @@
+## v36.48 - RAID BACKPACK IN GROUPS: GUNS, USABLES, CRAFTING
+
+Co-op hunt while he was away. His order 10-29: the raid backpack showed every part and piece of junk as a full tile mixed in with guns and usables. It now shows guns, then usables, then crafting and salvage, each under its own heading, with the crafting tiles smaller.
+
+MEASURED. Check 36.48 passes, and fails on v36.47.

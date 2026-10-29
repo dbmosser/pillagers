@@ -27,18 +27,22 @@
        // The panel as drawn.
        ownFill=Object.prototype.hasOwnProperty.call(cx,'fillText'); realFill=cx.fillText;
        cx.fillText=function(t){ seen.push(String(t)); return realFill.apply(cx,arguments); };
-       seen=[]; drawBag();
-       var hg=seen.indexOf('guns'), hu=seen.indexOf('usables'), hc=seen.indexOf('crafting + salvage');
-       if(hg<0||hu<0||hc<0) bad.push('the panel does not draw the three group headings (guns '+hg+', usables '+hu+', crafting + salvage '+hc+')');
-       else if(!(hg<hu&&hu<hc)) bad.push('the group headings are drawn out of order');
-       var cS=cellOf('gun_smg'), cG=cellOf('gun_shotgun'), cM=cellOf('medkit'), cK=cellOf('keycard'), cR=cellOf('reactor'), cW=cellOf('scrap');
-       if(!cS||!cG||!cM||!cK||!cR||!cW) bad.push('a stack has no tile on the panel');
-       else {
-         var gunBot=Math.max(cS.y,cG.y), useTop=Math.min(cM.y,cK.y);
-         if(!(useTop>gunBot+1)) bad.push('the usables do not start a row of their own under the guns (first usable top '+Math.round(useTop)+', last gun top '+Math.round(gunBot)+')');
-         if(!(Math.min(cR.y,cW.y)>Math.max(cM.y,cK.y)+1)) bad.push('crafting and salvage do not start a row of their own under the usables');
-         if(!(cW.w<cS.w*0.85)) bad.push('a crafting tile is '+Math.round(cW.w)+' px wide against a gun tile of '+Math.round(cS.w)+', not smaller');
+       // Each group drawn with its own first stack selected (the grid window follows the selection, so a small screen still shows that group):
+       // its heading is drawn and its tile is there; a crafting tile is smaller than a gun tile; with the top selected, the headings in view run in order.
+       var HN=['guns','usables','crafting + salvage'], first=[-1,-1,-1], wd=[0,0,0], k2, c0, hs;
+       for(i=0;i<S.length;i++) if(first[grp(S[i].key)]<0) first[grp(S[i].key)]=i;
+       for(k2=0;k2<3;k2++){
+         g.bagSel=first[k2]; seen=[]; drawBag(); c0=cellOf(S[first[k2]].key);
+         if(seen.indexOf(HN[k2])<0) bad.push('with '+S[first[k2]].key+' selected the panel does not draw the heading '+HN[k2]);
+         if(!c0) bad.push('with '+S[first[k2]].key+' selected it has no tile on the panel'); else wd[k2]=c0.w;
        }
+       if(wd[0]&&wd[2]&&!(wd[2]<wd[0]*0.85)) bad.push('a crafting tile is '+Math.round(wd[2])+' px wide against a gun tile of '+Math.round(wd[0])+', not smaller');
+       g.bagSel=0; seen=[]; drawBag(); hs=seen.filter(function(t){ return HN.indexOf(t)>=0; }).map(function(t){ return HN.indexOf(t); });
+       for(i=1;i<hs.length;i++) if(hs[i]<=hs[i-1]) bad.push('the group headings are drawn out of order ('+seen.filter(function(t){ return HN.indexOf(t)>=0; }).join(', ')+')');
+       // Each group starts a row of its own: no drawn row mixes two groups.
+       if(typeof bagRowsOf!=='function') bad.push('the backpack has no rows by group');
+       else { var RR=bagRowsOf(bagStacks()), r3, j3;
+         for(r3=0;r3<RR.length;r3++) for(j3=RR[r3].a;j3<RR[r3].a+RR[r3].n;j3++) if(grp(S[j3].key)!==grp(S[RR[r3].a].key)) bad.push('row '+(r3+1)+' mixes '+S[RR[r3].a].key+' and '+S[j3].key); }
        // The wheel over the open backpack walks its rows (a group below the fold is in reach of the mouse) and does not zoom the world.
        S=bagStacks();
        if(g.bagPanel&&typeof cv!=='undefined'&&cv&&typeof mouse!=='undefined'){
