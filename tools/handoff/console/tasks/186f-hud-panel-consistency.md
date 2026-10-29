@@ -42,3 +42,5 @@ Pictures: tools/handoff/console/notes/shots/o-132-hit-jolt-from-the-bullet-recip
 Before building, read tools/handoff/console/notes/hud-critic-inbox.md, fold any new line into 186g, 186f or 186d, and mark it FOLDED.
 
 ALSO (CEO 10-29 00:30, from the o-00h critic on v36.29): forge and seal world labels clip at the right screen edge (cache names were fixed in v36.13, these were not); oversized hp label; faint empty hotbar slots. Pictures: tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-1/.
+
+ALSO (CEO 10-29 06:55, from the o-00t critic on v36.43): P0 ammo panel contrast; P1 run info wrapping, extract banner hierarchy, contract hint wording, pickup pill consistency. Pictures: tools/handoff/console/notes/shots/o-00t-237-extract-wait-20s-recipes-1/. (Pickup pills: style only if he allows; his 10-27 order bans touching the pickup stack and loot rows.)
