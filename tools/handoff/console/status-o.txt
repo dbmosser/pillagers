@@ -1,1 +1,1 @@
-10-29 07:04 gate: shipping cw-cx-statuswrap (o-00u-238-status-type-regression, codex)
+10-29 07:17 gate: shipping cw-cx-statuspanels (o-00u-238-status-type-regression, codex)

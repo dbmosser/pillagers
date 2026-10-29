@@ -1,0 +1,7 @@
+v36.45: combat status rows share one width
+
+The status stack has one aligned right edge, enough padding for both text lines and consistent eight-pixel gaps. Font floors remain 20px and 16px. HUD rendering only. LOCAL: no linked review.
+
+Check 36.45. Fails on v36.44.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1827,33 +1827,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "A readable in-raid HUD with a strong ammo hero number, but the top-centre timer is clipped under the banner, there are typos and capitals on screen, and the left side is cluttered with competing panels.",
+  "verdict": "The easy-mode prompt reads clearly, but the HUD around it is still cluttered and inconsistent: the timer is still not the hero, the panels use mixed styles, and text overlaps in several places.",
   "findings": [
-   "P0 Top-centre extraction timer x925-995 y15-35 under the 'extraction a available / extract 74m' banner x855-1015 y30-72: Move the timer to y48 (5% margin) at 56px hero f-cond 800 in --tx-1, or in --extract teal when extraction is open. Put the banner 16px below it, with no overlap. Fix the copy to 'extraction available'. Drop the 'the sump' map label while the banner is showing.",
-   "P1 Left stack x8-368 y143-260 (current pillagers), x15-170 y323-358 (pillager bar), x15-410 y775-802 (contract toast): Use one --ui-panel (#16191b) fill at 80% alpha, 4px radius and 1px --ui-line-hi border for every left-side box. Use 16px f-cond 600 for rows, with 24px gaps between boxes, and left-align them all to the 48px margin. Collapse the roster to a single line, 'value at risk $567', until it is expanded.",
-   "P1 Contract toast x15-410 y775-802 and 'pillager joined' toast x894-1025 y893-929: Use one feed component: --ui-panel fill, 3px left status bar (--warn for contract, --ok for joined), 16px tx-1 text. Delete 'gold glow marks the box'. Per the 186a order, send both to the left feed only, stacked 8px apart above the controls hint.",
-   "P1 Top-right 'run info' dropdown x1603-1898 y18-54: Write 'run info' in lower case. Shrink it to a 160px-wide, 48px-tall --ui-panel chip at y48, right edge x1872. Use the same chevron style as the roster, and match the roster's border.",
-   "P2 Bottom-left x22-430 y995-1070 stamina and hp bars: Make both bars 16px tall with a 4px radius on the same --ui-line track. Put the 'hp 100' label at 20px f-cond 700 and the 'stamina' label at 16px tx-2. Keep hp at --ok. Align the left edge to x48 and the bottom to y1032."
+   "P1 Modal 'want easy mode?' x648-1272 y262-472: Use one --ui-panel card with a 1px --ui-line-hi border and a 4px radius. Put a 32px f-cond 700 title at 24px padding. Put the countdown in a 16px tx-2 chip at the top-right. Add a --scrim at 80% behind the card. Make the button labels 20px f-cond 700 in --acc-ink on the yes button and tx-1 on the no button, and draw the y/n key hints as 16px chips set apart from the label. Make both buttons 56px tall with a 16px gap.",
+   "P1 Top-centre cluster x855-1060 y15-215 (clock, team score, extract banner): Align all three boxes to one width of 220px, centred, with 8px gaps. Set 'extract 141m' at 20px f-cond 700 in --extract, with the arrow to its left rather than overlapping it. Set the 'you/p2' scores at 16px, in amber for P1 and cyan for P2 per the player-colour rule. Make 'team score' 16px tx-2.",
+   "P1 Left buff stack x10-215 y432-700 and player-2 bar x10-172 y323-358: Make every row a fixed 220px by 56px --ui-panel at 80% alpha with a 4px radius. Use a 20px name and a 16px tx-2 sub-label, with 8px gaps. Align the stack to x48. Restyle the player-2 bar as the same panel at 220px wide with a 16px label.",
+   "P1 Bottom-centre 'pillagers joined' toast x895-1020 y893-930, overlapping the players: Move it to the left feed, per the 186a order. Give it a --ui-panel fill, a 3px --ok left bar and 16px tx-1 text, and keep it out of the play area.",
+   "P1 Bottom-left armour/hp bars x15-430 y962-1068, and 'f1 controls' x438-537 y943-967: Make both bars 24px tall with a 4px radius on a --ui-line track, aligned to x48 and ending at y1032, with an 8px gap between them. Set the labels at 20px f-cond 700 on the left of the bar. Put 'f1 controls' on the left, mid-bottom, as one folded line, 16px, 24px above the bars."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00r-236-no-roll-in-water-recipes-2/water-roll-p1-1080.jpg",
-  "task": "o-00r-236-no-roll-in-water",
-  "when": "2026-10-29T10:33"
+  "pic": "tools/handoff/console/notes/shots/o-00u-238-status-type-regression-recipes-1/status-type-demo-p1-1080.jpg",
+  "task": "o-00u-238-status-type-regression",
+  "when": "2026-10-29T11:10"
  },
  "p2-1080": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "This is an in-raid HUD, not the title menu the earlier review covered, and it is cluttered: the extraction banner overprints the timer, the 'run info' dropdown has a capital 'I', and the HUD panels share no common styling.",
+  "verdict": "A bright lime 'want easy mode?' modal now dominates the screen, while the HUD underneath still has the crowded top-centre stack, the text-only goals dropdown and uneven panel styling that were flagged before.",
   "findings": [
-   "P0 Top-centre extraction banner x855-1035 y5-75: Put the timer in its own 56px hero row at y24-80. Move the banner to y96, fix the string to 'extraction available', and merge 'extract 76m' into the same pill. Use 16px f-cond 600 on a --ui-panel fill with a 1px --extract border, and keep the banner and the timer from overlapping.",
-   "P0 'run info' dropdown x1603-1900 y20-54: Change the string to 'run info'. Shrink it to a 160x40 chip with a 16px label and a 1px --ui-line-hi border on --ui-panel at 4px radius. Align its right edge to the 5% margin (x1824) and its top to y48.",
-   "P1 Left roster panel x8-367 y143-260: Use 20px names and 16px values, with 32px row height. Colour 'dead' --danger and 'you' --tx-1. Delete the footer line. Rename the header to 'pillagers' and drop the '0' after 'current pillagers'. Use 16px padding all round.",
-   "P1 Bottom-left vitals x22-430 y993-1068: Use equal 24px bars on a --ui-panel plate with 8px padding. Put 16px f-cond 600 labels at the left, tx-1, and the hero number in --fs-hero only for hp. Keep the stamina label off the fill.",
-   "P1 Ammo panel x1668-1910 y902-1052: Left-align the weapon name and the backpack hint on the same 16px baseline. Make '/ 24' 28px in tx-2. Use a 1px --ui-line-hi border and a 4px radius, the same as every other HUD panel."
+   "P0 Top-centre stack x855-1060 y15-230: timer, team score, 'extract 109m' pill and arrow: Make one column on a 16px grid. The timer goes in a 56px f-cond 800 hero row at y24-80. Put the team score below it in one --ui-panel box with 20px 'sp' and 16px per-player lines. Put 'extract 109m' in a 16px --extract pill at y+16 with the arrow outside it.",
+   "P0 Modal x648-1270 y260-470 ('want easy mode?'): Title 32px f-cond 700, tx-1, 24px padding. Make the countdown a 16px tx-2 label ('9s') right-aligned on the title baseline. Buttons are 56px high with a 4px radius. Yes is --acc fill with --acc-ink 20px text. No gets a 1px --ui-line-hi border and tx-1 text. Put key hints in a 16px tx-2 chip inside each button, and add a 2px --acc outline on the focused button. Give the card a 1px --ui-line-hi border.",
+   "P1 Goals dropdown x1651-1900 y15-52: Make it a 160x40 chip on --ui-panel with a 1px --ui-line-hi border and 16px f-cond 600 text. Align its right edge to x1824 and its top to y48. Enlarge the chevron to 16px.",
+   "P1 Left buff list x10-212 y432-700: Use a fixed 220px width and 48px row height with 8px gaps. Names are 20px f-cond 600 tx-1. Sub-labels are 16px tx-2. Put the timer right-aligned in a 16px --warn or tx-2 label, and the 30r value too. Icons are 32px with a consistent --ui-line-hi border.",
+   "P1 Bottom-left vitals x18-430 y963-1068: Put both bars on one --ui-panel plate with 8px padding and a 4px radius. Make both bars 24px high with 16px labels at the left. Use --ok for hp and a desaturated blue for armour. Make the 'hp 100' number the one hero at 56px. Align the plate left edge to x96 (5% margin)."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00r-236-no-roll-in-water-recipes-2/water-roll-p2-1080.jpg",
-  "task": "o-00r-236-no-roll-in-water",
-  "when": "2026-10-29T10:33"
+  "pic": "tools/handoff/console/notes/shots/o-00u-238-status-type-regression-recipes-1/status-type-demo-p2-1080.jpg",
+  "task": "o-00u-238-status-type-regression",
+  "when": "2026-10-29T11:10"
  },
  "pix86c-fashion": {
   "score": 3,
@@ -4606,5 +4606,37 @@
   "pic": "tools/handoff/console/notes/shots/o-00q-235-hud-fades-over-your-pillager-recipes-2/235-p2-under-score-1080.jpg",
   "task": "o-00q-235-hud-fades-over-your-pillager",
   "when": "2026-10-29T10:10"
+ },
+ "status-type-solo": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "the hud has the right ingredients (clock, extract chip, hp bar, weapon card) but the text is soft and cramped, the type sizes and panels disagree with each other, and the lime accent barely appears.",
+  "findings": [
+   "P0 top-left 'current pillagers' list: set rows to 32px with 16px f-cond 600 text. Put the name left and the value right in tx-1, with a tx-2 header at 16px. Give the panel 16px padding and a 1px --ui-line divider. Use amber for the P1 'you' row and cyan for P2. Keep the list to 4 rows.",
+   "P0 all hud text, especially 'hp 100', the buff names and the ammo '8 / 24': render at native resolution with f-cond. Set buff names to 20px tx-1 and the sub-lines to 16px tx-2 (#aaa498). Put hp in --ui-panel with a 4px green bar and a 20px tx-1 number outside the fill, or use --acc-ink on the green fill.",
+   "P1 hierarchy: ammo card, hp bar, clock: make the hp bar 12px tall and 320px wide, with the fill in --ok at 70% saturation. Make the ammo hero number 56px --tx-1 with a lime --acc underline or reserve bar. Give the clock a 32px title size, and make the icon tx-2 unless it is a real alert.",
+   "P1 buff stack, left side (stim, active reload, steady hand, beast mode, liquor): make every row a fixed 200x48 panel on a 16px left margin. Use a 32px icon in a --ui-line-hi ring, a 20px name and a 16px tx-2 timer right-aligned. Move the buff name and its '+15% damage' into one consistent pattern. Use one icon tint, with --warn for debuffs only.",
+   "P1 top-right 'run info' dropdown and 'the long dock cache' label: inset top-right to a 5% margin (96px at 1080 width) and use the same panel, 16px padding and 20px label as the player list. Anchor the cache tag to its world marker with a 4px line, or move it to the left feed. Align the two top panels on one baseline."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00u-238-status-type-regression-recipes-1/status-type-solo-1080.jpg",
+  "task": "o-00u-238-status-type-regression",
+  "when": "2026-10-29T11:10"
+ },
+ "status-type-solo-full-legend": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The full controls legend is a washed-out, near-unreadable wall of tiny text over the map, and the status stack beside it has cramped, overlapping text and an inconsistent type scale.",
+  "findings": [
+   "P0 controls legend panel, left side x10-375 y165-815: Raise the text to at least 16px at 1080 in --tx-2 #aaa498, or --tx-1 for keys. Put it on an opaque --ui-panel #16191b at 92% with a 1px --ui-line-hi border. Group the rows into 3 or 4 short blocks with a 16px header each, drop the full-height panel to about 360px wide, and trim the descriptions to 2-3 words.",
+   "P1 legend section headers (move, fight, gear, world, team, also): Make the headers 16px f-cond 700 in --tx-1 with 24px space above each, and keep lime for focus only. Add 1px --ui-line dividers between groups.",
+   "P1 buff stack (stim, active reload x3, steady hand, beast mode, liquor), x560-760 y430-700: Use a fixed 200px pill width, 56px row height and 8px gap. Set the title to 20px --tx-1 and the sub-label to 16px --tx-2, and fix the liquor clipping. Move the stack to the left feed or the bottom-left edge, away from the player.",
+   "P1 ammo and weapon block, bottom right x1703-1908 y922-1048: Add 16px padding inside the box, set the name to 16px --tx-2 with a 24px line height, and right-align it with the number. Raise the hint to 16px with a 4.5:1 contrast ratio, or drop it.",
+   "P1 hotbar, bottom centre x548-1500 y968-1060: Draw all 10 slots as 56px tiles with --ui-panel fill and a 1px --ui-line border, with the number at 16px in the top-left. Mark the selected slot with a --acc 2px border instead of amber."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00u-238-status-type-regression-recipes-1/status-type-solo-full-legend-1080.jpg",
+  "task": "o-00u-238-status-type-regression",
+  "when": "2026-10-29T11:11"
  }
 }

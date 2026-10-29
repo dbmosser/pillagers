@@ -3885,8 +3885,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.44';
-var VER_AT='2026-10-29 07:06';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.45';
+var VER_AT='2026-10-29 07:19';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44313,8 +44313,8 @@ function drawStatusIcons(){
   // v28.xx (cw-cx-statuswrap): crowding changes the rows and columns, never the shared 20px title and 16px detail floors.
   nf=FS(TYPE.head).replace(/([\d.]+)px/,function(m,n){ return Math.max(parseFloat(n),20*uiScale())+'px'; });
   vf=FS(TYPE.label).replace(/([\d.]+)px/,function(m,n){ return Math.max(parseFloat(n),16*uiScale())+'px'; });
-  hr=hudRes(); S=LH(26); g=LH(8); r=S/2;
-  ph=Math.max(S*1.12,parseFloat((/([\d.]+)px/).exec(nf)[1])+parseFloat((/([\d.]+)px/).exec(vf)[1])+LH(8));
+  hr=hudRes(); S=LH(26); g=Math.round(8*uiScale()); r=S/2;
+  ph=Math.max(48*uiScale(),parseFloat((/([\d.]+)px/).exec(nf)[1])+parseFloat((/([\d.]+)px/).exec(vf)[1])+LH(8));
   tw=0;
   ctx.save();
   try{
@@ -44325,7 +44325,7 @@ function drawStatusIcons(){
       tw=Math.max(tw,E.nw||0,E.vw||0);
     }
   } finally { ctx.restore(); }
-  wC=Math.ceil(ph+LH(6)+tw+LH(10)+g)*hr;   // v28.xx (cw-cx-statuswrap): each column clears the longest live title or detail and an eight-pixel gap.
+  wC=(Math.ceil(Math.max(220*uiScale(),ph+LH(6)+tw+LH(10)))+g)*hr;   // v28.xx (cw-cx-statuspanels): one measured panel width, at least 220px, with an eight-pixel column gap.
   ox=Math.round(9*hr);                       // the left edge the legend and the board already share
   oy=Math.round(H*0.40);                     // under the board, whose height is capped at 38 percent of the screen
   if(typeof NETTEAMBOX==='object'&&NETTEAMBOX&&NETTEAMBOX.n&&NETTEAMBOX.y+NETTEAMBOX.h+g*hr>oy) oy=Math.round(NETTEAMBOX.y+NETTEAMBOX.h+g*hr);   // v19.07: and below the teammate rows
@@ -44364,7 +44364,7 @@ function drawStatusIcons(){
       if(E.nf!==nf){ ctx.font=nf; E.nf=nf; E.nw=ctx.measureText(E.nm).width; }
       if(E.ws!==E.v||E.wf!==vf){ ctx.font=vf; E.ws=E.v; E.wf=vf; E.vw=ctx.measureText(E.v||'').width; }
       tw=Math.max(E.nw||0,E.vw||0);
-      ctx.fillStyle='rgba(22,25,27,.90)'; statusPill(cx-ph/2,cy,tx+tw+LH(10),ph);   // v28.xx (cw-cx-statusread): style-guide panel fill for every status.
+      ctx.fillStyle='rgba(22,25,27,.90)'; statusPill(cx-ph/2,cy,x+wC/hr-g,ph);   // v28.xx (cw-cx-statuspanels): all status rows share the measured right edge and enough padding for 20px/16px type.
       // the disc, or a hexagon with a red edge for a status working against you
       ctx.beginPath();
       if(E.bad){ ctx.moveTo(cx+STATUS_HEX[0]*hx,cy+STATUS_HEX[1]*hx); for(j=2;j<12;j+=2) ctx.lineTo(cx+STATUS_HEX[j]*hx,cy+STATUS_HEX[j+1]*hx); ctx.closePath(); }
@@ -56369,7 +56369,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.44: Combat status titles stay at least 20px and details at least 16px at the base HUD scale. Measured columns and taller rows make room without shrinking the words. HUD rendering only. LOCAL: no linked review. Check 36.44 fails on v36.43',
+  now:'v36.45: The status stack has one aligned right edge, enough padding for both text lines and consistent eight-pixel gaps. Font floors remain 20px and 16px. HUD rendering only. LOCAL: no linked review. Check 36.45 fails on v36.44',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

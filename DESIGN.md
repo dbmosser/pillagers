@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.45 - COMBAT STATUS ROWS SHARE ONE WIDTH
+
+Co-op hunt while he was away. The critic flagged ragged status rows and cramped details in the first v36.44 pictures. Keep the readable type and give every row a measured width of at least 220px, 48px height and 8px gaps. Watch: crowded statuses must clear the vitals and remain fully visible.
+
+MEASURED. Check 36.45 passes, and fails on v36.44.
 ## v36.44 - COMBAT STATUS TYPE KEEPS ITS FLOOR
 
 Co-op hunt while he was away. v36.27 added steady hand and beast mode to a column that scaled every panel down when crowded. Wrap the panels at full type size instead. Watch: with five combat statuses, check the extra column clears the vitals and no status is missing.

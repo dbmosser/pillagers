@@ -194,3 +194,4 @@
 2026-10-29 06:46 week=72.0% 5h=73.0% week_resets=2026-11-04 01:35 job=o-00t-237-extract-wait-20s
 2026-10-29 06:53 week=72.0% 5h=74.0% week_resets=2026-11-04 01:35 job=o-00t-237-extract-wait-20s
 2026-10-29 07:03 week=73.0% 5h=79.0% week_resets=2026-11-04 01:35 job=o-00u-238-status-type-regression
+2026-10-29 07:16 week=74.0% 5h=81.0% week_resets=2026-11-04 01:35 job=o-00u-238-status-type-regression

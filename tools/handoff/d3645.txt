@@ -1,0 +1,5 @@
+## v36.45 - COMBAT STATUS ROWS SHARE ONE WIDTH
+
+Co-op hunt while he was away. The critic flagged ragged status rows and cramped details in the first v36.44 pictures. Keep the readable type and give every row a measured width of at least 220px, 48px height and 8px gaps. Watch: crowded statuses must clear the vitals and remain fully visible.
+
+MEASURED. Check 36.45 passes, and fails on v36.44.

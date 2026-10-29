@@ -1904,3 +1904,8 @@
 2026-10-29 0.0954 critic-o-00t-237-extract-wait-20s
 2026-10-29 0.0000 o-00t-237-extract-wait-20s
 2026-10-29 0.0000 o-00u-238-status-type-regression
+2026-10-29 0.0895 critic-o-00u-238-status-type-regression
+2026-10-29 0.0895 critic-o-00u-238-status-type-regression
+2026-10-29 0.0853 critic-o-00u-238-status-type-regression
+2026-10-29 0.0827 critic-o-00u-238-status-type-regression
+2026-10-29 0.0000 o-00u-238-status-type-regression
