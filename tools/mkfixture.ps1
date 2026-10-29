@@ -32854,6 +32854,11 @@ class Audio {
      } }},
   {v:'29.02',what:'cw-roletwin: a pillager carrying a rarity twin gets the same role as one carrying its base gun, and the base guns keep their roles',
    run:function(){
+     if(typeof SINGLE_GUNS==='object'){
+       var roles={lmg:'supp',magnum:'mark',shotgun:'rush',carbine:'flank'}, id;
+       for(id in roles) if(raiderRole({kind:'raider',wep:WEAPONS[id],ident:'Base',rig:'std'})!==roles[id]) return id+' lost its role';
+       return null;
+     }
      if(typeof RV_BASE!=='object'||!RV_BASE||typeof raiderRole!=='function') return 'SKIP: no rarity twins here';
      var bad=[], id, b, i, r0, r1, n=0, exp={lmg:'supp',dmr:'mark',whisper:'mark',magnum:'mark',shotgun:'rush',carbine:'flank'};
      for(id in RV_BASE){
@@ -41526,13 +41531,13 @@ class Audio {
        if(codexNote('rifle')) bad.push('ONE: the rifle was filed twice');
        if(!codexHas('rifle')||codexHas('lmg')) bad.push('ONE: codexHas is wrong');
        // TWO: the stash scan files the armoury, the stash and the backpack
-       q.weapons=['pistol','smg']; q.stash=['gun_magnum','scrap']; q.kit=['gun_lmg_v'];
+       q.weapons=['pistol','smg']; q.stash=['gun_magnum','scrap']; q.kit=['gun_lmg'];
        codexScan();
-       if(!codexHas('pistol')||!codexHas('smg')||!codexHas('magnum')||!codexHas('lmg_v')) bad.push('TWO: the stash scan missed a gun ('+Object.keys(q.codex).join(',')+')');
+       if(!codexHas('pistol')||!codexHas('smg')||!codexHas('magnum')||!codexHas('lmg')) bad.push('TWO: the stash scan missed a gun ('+Object.keys(q.codex).join(',')+')');
        if(codexHas('scrap')) bad.push('TWO: scrap was filed');
        // THREE: the page lists every gun, found and not found
        L=codexGuns();
-       if(L.length<16) bad.push('THREE: the codex lists '+L.length+' guns, not every one');
+       if(L.length!==(typeof SINGLE_GUNS==='object'?10:16)) bad.push('THREE: the codex lists '+L.length+' guns, not every one');
        renderCodex();
        tiles=document.querySelectorAll('#codexgrid .cxt'); no=document.querySelectorAll('#codexgrid .cxt.no'); yes=document.querySelectorAll('#codexgrid .cxt.yes');
        if(tiles.length!==L.length) bad.push('THREE: '+tiles.length+' tiles for '+L.length+' guns');
@@ -45269,6 +45274,11 @@ class Audio {
      if(window.__vpAlive&&!__vpAlive()) return 'SKIP: the pane has no layout, so nothing can be drawn';
      if(typeof G!=='undefined'&&G&&(G.sim||!G.over)) return 'SKIP: a raid or a sim is live';
      if(typeof gunClassOf!=='function'||typeof gunClassPlace!=='function'||typeof gunKeyFor!=='function') return 'this build has no class keys';
+     if(typeof SINGLE_GUNS==='object'){
+       var classes={pistol:'pistol',magnum:'pistol',smg:'smg',rifle:'rifle',carbine:'carbine',lmg:'lmg',shotgun:'shotgun',sniper:'sniper',lance:'energy',rocket:'rocket'}, id;
+       for(id in classes) if(gunClassOf(id)!==classes[id]) return id+' lost its class key';
+       return null;
+     }
      if(!WEAPONS.smg_v||!WEAPONS.rifle_v||!ITEMS.gun_smg_v||!ITEMS.gun_rifle_v) return 'SKIP: no rarity twins here';
      var bad=[], g=null, p=null, had=(P.gunKeys!==undefined), keep=P.gunKeys, ar0, j, x, c0, c5, wk, TAB=[['magnum',0],['smg',1],['carbine',3],['lmg',4],['shotgun',5],['sniper',6],['lance',7]];   /* v30.xx (00-fix-new-reds): cw-gunkeys0 and cw-gunsgone (his orders 2026-10-18): no Marksman class or Rifle, Sniper 7, Lance 8 (the Rocket class is key 0) */
      function stage(w,wa,s,sa,bag){
@@ -45705,6 +45715,15 @@ class Audio {
      return bad.length?bad.join('; '):null; }},
   {v:'26.30',what:'his order (2026-10-14), the other ways a gun turns up: a pillager carries the twin one rarity up about one time in seven and his body drops it, an elite pillager about one in six, the Peddler stocks it at one stall in five, Wirt gamble gives it one gun in five, none of them draws a new number, and the stat card names the rarity (the same model at another rarity says which) and the hover damage row of a twin says its rarity and gain',
    run:function(){
+     // His 10-29 order makes every source carry the sole higher gun.
+     if(typeof SINGLE_GUNS==='object'){
+       var ids=['smg','magnum','carbine','shotgun','rifle','lmg'], rs=['rare','elite','elite','elite','elite','gold'];
+       for(var z=0;z<ids.length;z++) for(var f=0;f<=1;f+=0.25){
+         var k=rvKey('gun_'+ids[z],f);
+         if(k!=='gun_'+ids[z]||dispR(k)!==rs[z]||rvGun(ids[z],f)!==ids[z]) return 'lower source copy '+ids[z];
+       }
+       return null;
+     }
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile&&window.__applyLoaded)||typeof mkRaider!=='function'||typeof mkPeddler!=='function'||typeof gunCardDraw!=='function'||typeof gunCompare!=='function'||typeof itemRows!=='function'||typeof rollTable!=='function') return 'SKIP: this fixture cannot build a pillager, a stall or a gun card';
      if(typeof RV_OF==='undefined'||typeof RV_BASE==='undefined'||typeof rvKey!=='function'||typeof RT_FRAC==='undefined') return 'the other gun sources have no rarity variants (rvKey, RT_FRAC)';
      var bad=[], P2=__P(), i, j, cnt, n, r, w, e, a, b, st, rows, txt, rec, snap=null, s0=RNGS, r0=RSEED, pend0=pendSeed, pct0=RV_PCT, er0=CFG.eliteRate, oFT=null, oRG=renderGamble, oRH=renderHub, oSP=saveProfile, gp0=GAMBLE_POOL.slice(), cr0=P2.credits, stash0=P2.stash.slice(), gl0=P2.gambleLog, gb=document.getElementById('gamblebtn'), g, p;
@@ -45976,6 +45995,20 @@ class Audio {
      return bad.length?bad.join('; '):null; }},
   {v:'26.26',what:'his order (2026-10-14): a green, blue or purple gun is found one rarity up about one time in five (the Compact SMG as a blue one, the Magnum, Burst Carbine, Riot Scattergun and Auto Rifle as purple ones, the Support MG, Marksman Rifle and Whisper as gold ones) with 1.25 times the damage and nothing else changed, worth 1.5 times, never two steps up and never the Scav Pistol, Longshot or Lance; the twin stays itself through a pickup, a drop, the belt rank, an extraction and the next deploy, and a roll still draws exactly one number',
    run:function(){
+     // His 10-29 order removes the twin; retain the old test until the change ships.
+     if(typeof SINGLE_GUNS==='object'){
+       var ids=['smg','magnum','carbine','shotgun','rifle','lmg'], rs=['rare','elite','elite','elite','elite','gold'], ds=[15,77.5,21.25,20,28.75,20], vs=[1350,1500,1650,1950,2250,2850], z, w, seed=RNGS, rseed=RSEED, pend=pendSeed, next;
+       try{
+         for(z=0;z<ids.length;z++){
+           w=WEAPONS[ids[z]];
+           if(!w||w.dmg!==ds[z]||ITEMS['gun_'+ids[z]].val!==vs[z]||gunRarity(ids[z])!==rs[z]) return 'wrong sole gun '+ids[z];
+           if(WEAPONS[ids[z]+'_v']||ITEMS['gun_'+ids[z]+'_v']) return 'two live copies of '+ids[z];
+           for(var n=0;n<120;n++){ var got=rollFieldGun(ids[z]); if(got.id!==ids[z]||got.dmg!==ds[z]) return 'lower roll '+ids[z]; }
+         }
+         srand(73); rr(); next=RNGS; srand(73); rollFieldGun('rifle');
+         return RNGS===next?null:'a field gun roll changed its draw count';
+       }finally{ RNGS=seed; RSEED=rseed; pendSeed=pend; }
+     }
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__P&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile&&window.__applyLoaded)||typeof rollFieldGun!=='function'||typeof openContainer!=='function'||typeof dropItem!=='function'||typeof drawGun!=='function'||typeof gunCompare!=='function'||typeof beltGunLow!=='function') return 'SKIP: this fixture cannot deploy, roll, drop and equip a gun';
      if(typeof RV_OF==='undefined'||typeof VARIANT_DMG==='undefined'||typeof gunBase!=='function') return 'guns have no rarity variants (RV_OF, VARIANT_DMG, gunBase)';
      var bad=[], RN=['common','uncommon','rare','elite','gold'], SRC=['smg','magnum','carbine','shotgun','rifle','lmg'], NONE=['pistol','sniper','lance'];   /* v32.84 retarget (52-corpus-reds-a): the Marksman Rifle and Whisper are gone (cw-gunsgone, his Q69) */
