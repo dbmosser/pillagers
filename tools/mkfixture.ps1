@@ -9677,7 +9677,8 @@ window.__REGRESS=[
        if(!hub||!det||cells.length<6){ bad.push('staging: '+(cells?cells.length:0)+' cells on the stash screen'); }
        else {
          base=snap();
-         if(getComputedStyle(det).display==='none') bad.push('the item line is hidden while nothing is hovered, so it opens on the first hover and moves the grids');
+         // retargeted 10-28 (cw-stashtabs, HIS PICK a): the item line may be a floating card (position absolute), which moves nothing when it opens
+         if(getComputedStyle(det).position!=='absolute'&&getComputedStyle(det).display==='none') bad.push('the item line is hidden while nothing is hovered, so it opens on the first hover and moves the grids');
          for(i=0;i<cells.length&&picked<7;i++){
            c=cells[i]; c.dispatchEvent(new MouseEvent('mouseenter'));
            if(!String(det.textContent||'').length) continue;
