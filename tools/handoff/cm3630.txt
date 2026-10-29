@@ -1,0 +1,7 @@
+v36.30: ads station labels stay whole
+
+forge and seal names stay whole at the edge while aiming
+
+Check 36.30. Fails on v36.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

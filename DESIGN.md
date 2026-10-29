@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.30 - ADS STATION LABELS STAY WHOLE
+
+Co-op hunt while he was away. The ADS picture reviews found forge and seal names cut off at the viewport edge. Their existing world labels now use the same 24px margin and shared backing as cache names. Camera feel, station behavior and seeded streams are unchanged.
+
+MEASURED. Check 36.30 passes, and fails on v36.29.
 ## v36.29 - AIMING ZOOMS TOWARD THE CROSSHAIR
 
 Co-op hunt while he was away. His 10-29 request: ADS should zoom toward the scope instead of onto the pillager. The camera now follows a world focal point and preserves the aimed ground point through zoom.

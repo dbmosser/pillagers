@@ -95,3 +95,4 @@
 10-28 22:35 v36.26 cw-tagloop on his pc after 34s (8802 serves 36.26) week 85%
 10-28 23:09 v36.27 cw-cx-damagestreaks on his pc after 33s (8802 serves 36.27) week 86%
 10-28 23:52 v36.28 cw-cx-slowerswitch on his pc after 113s (8802 serves 36.28) week 86%
+10-29 00:15 v36.29 cw-cx-aimfocus on his pc after 50s (8802 serves 36.29) week 86%

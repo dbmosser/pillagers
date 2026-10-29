@@ -589,3 +589,7 @@
 
 2026-10-29 | o-00h-225-ads-zoom-toward-the-aim | raid camera, both local window roles | ADS focuses halfway toward aim (60 percent for long guns), retains the mouse target through zoom, and keeps the pillager inside a 12 percent edge margin where world bounds permit; hip framing retained | before: custom recipes have no before capture | after: pending lane camera-recipes.json captures
 
+2026-10-29 | o-00h-225-ads-zoom-toward-the-aim | raid ADS camera, v36.29 | shipped focus and cursor retention, ON HIS PC; hip/unscoped/4x/pad and player-2 views inspected | before: custom recipe has no before capture | after: tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-1/01-ads-hip-player1-1080.jpg through 06-ads-hip-player2-1080.jpg
+
+2026-10-29 | o-00h-225-ads-zoom-toward-the-aim | forge/seal world labels during camera motion | existing station names gain the shared backing and 24px viewport margin, preserving wording and offscreen culling | before: tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-2/02-ads-unscoped-player1-1080.jpg and 05-ads-2x-player2-1080.jpg | after: pending camera round 3
+

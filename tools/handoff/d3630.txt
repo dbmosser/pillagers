@@ -1,0 +1,5 @@
+## v36.30 - ADS STATION LABELS STAY WHOLE
+
+Co-op hunt while he was away. The ADS picture reviews found forge and seal names cut off at the viewport edge. Their existing world labels now use the same 24px margin and shared backing as cache names. Camera feel, station behavior and seeded streams are unchanged.
+
+MEASURED. Check 36.30 passes, and fails on v36.29.
