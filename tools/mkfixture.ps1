@@ -6184,7 +6184,7 @@ window.__REGRESS=[
        g.mapFirst=false;g.mapOpen=false;g.bagOpen=false;g.paused=false;g.rise=null;keys={};mouse.down=false;CFG.xfPix=0;
        netBroadcast=function(v){sent.push(v);};netSend=function(pe,v){sent.push(v);return true;};
        netPingLabel=function(t,x,y,r){world.push(t);return pl.apply(this,arguments);};
-       colourCueGlyph=function(c,k,x,y,s){shown.push(k);return cg.apply(this,arguments);};
+       colourCueGlyph=function(c,k,x,y,s){shown.push(k);arcs.push({x:x,y:y,r:0});return cg.apply(this,arguments);};
        ctx.arc=function(x,y,r){arcs.push({x:x,y:y,r:r});return arc.apply(this,arguments);};
        for(i=0;i<2;i++){
          NET.on=!!i;NET.role=i?'join':'host';NET.seat=i;NET.upSeed=g.seed;NET.pings=[];NET.wps={};NET.pingAt=0;NET.pingLast=null;g.waypoint=null;
