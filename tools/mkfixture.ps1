@@ -27364,7 +27364,7 @@ class Audio {
          txt=seen(function(){ frames(2); });
          if(!has(txt,/^(or )?click to start$/)) bad.push('SEVEN: the keyboard prompt on the map does not read or click to start ('+txt.filter(function(s){ return /start|click|waypoint/.test(s); }).join(' | ')+')');
          if(!has(txt,/^e$/)) bad.push('SEVEN: the keyboard prompt shows no E key');
-         if(has(txt,/click to set a waypoint/)) bad.push('SEVEN: the waypoint hint still shows on the opening map, where a click starts the raid');
+         if(has(txt,/click to set a (waypoint|mark)/)) bad.push('SEVEN: the mark hint still shows on the opening map, where a click starts the raid');
          if(has(txt,/drop in/)) bad.push('SEVEN: the opening map says drop in');
          padStub(); INDEV.dev='pad'; rearm();
          txt=seen(function(){ frames(2); });
@@ -27373,7 +27373,7 @@ class Audio {
          padOff(); INDEV.dev='kb';
          mapFirstEnd('test'); g.mapOpen=true; frames(1);
          txt=seen(function(){ frames(2); });
-         if(!has(txt,/click to set a waypoint/)) bad.push('SEVEN: the waypoint hint is gone from the map the player opens himself');
+         if(!has(txt,/click to set a (waypoint|mark)/)) bad.push('SEVEN: the mark hint is gone from the map the player opens himself');
          g.mapOpen=false;
        }
        where='six'; // SIX: a career raid never lets go of the map by itself (v32.xx cw-cx-demoplain: the demo auto start moved to that ship's own check)
@@ -60237,7 +60237,7 @@ class Audio {
        keys={}; p.autoJog=false;
        for(i=0;i<said.length;i++){
          var l=said[i], s=l.m+' '+l.sub;
-         if(l.m!==l.m.toUpperCase()||l.m.length>34||(/[.!?,;:]$/).test(l.m)) bad.push(JSON.stringify(l.m)+' is not a caps headline of at most 34');
+         if((l.m!==l.m.toUpperCase()&&!/^mark (set|cleared)$/.test(l.m))||l.m.length>34||(/[.!?,;:]$/).test(l.m)) bad.push(JSON.stringify(l.m)+' is not a caps headline of at most 34');
          if(l.sub.length>48) bad.push(JSON.stringify(l.m)+' has a detail of '+l.sub.length+' characters');
          if(s.indexOf(MK)>=0||s.toUpperCase().indexOf(MK.toUpperCase()+' ')>=0) bad.push(JSON.stringify(s)+' says Marker, not Waypoint');
          if(s.toLowerCase().indexOf(TM)>=0) bad.push(JSON.stringify(s)+' names the map as a place');
@@ -60650,7 +60650,7 @@ class Audio {
        NET.wps={1:{x:p.x+300,y:p.y+40}};
        tr=__textTrace(function(){ ctx.save(); try{ netWpDraw(); } finally { ctx.restore(); } });
        hit=null;
-       for(i=0;i<tr.length;i++){ if(tr[i].t.indexOf(MK)>=0) bad.push('the teammate mark reads '+JSON.stringify(tr[i].t)); if(tr[i].t.indexOf(KID+' WAY'+'POINT')===0&&/\d+m$/.test(tr[i].t)) hit=tr[i].t; }
+       for(i=0;i<tr.length;i++){ if(tr[i].t.indexOf(MK)>=0) bad.push('the teammate mark reads '+JSON.stringify(tr[i].t)); if(new RegExp('^'+KID+' (WAYPOINT|MARK)','i').test(tr[i].t)&&/\d+m$/.test(tr[i].t)) hit=tr[i].t; }
        if(!hit) bad.push('the teammate mark was not drawn as '+KID+' WAYPOINT with its distance');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
      finally{
@@ -64911,7 +64911,7 @@ class Audio {
        if(!txt.some(function(s){ return /R STICK/.test(s)&&/D-UP/.test(s); })) bad.push('on a controller the map header does not name R STICK and D-UP');
        txt=[]; arcs=[]; PAD.on=false; g.mapCur=null;
        drawMapOverlay();
-       if(!txt.some(function(s){ return /CLICK/.test(s)&&/waypoint/.test(s); })) bad.push('with the mouse the map header lost its CLICK line');
+       if(!txt.some(function(s){ return /click/i.test(s)&&/waypoint|mark/i.test(s); })) bad.push('with the mouse the map header lost its CLICK line');
        if(at()) bad.push('a cursor was drawn with no controller cursor set');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
@@ -79159,20 +79159,24 @@ class Audio {
        G.ents.splice(G.ents.indexOf(loc),1);
      } finally { try{ if(k0) keys=k0; if(G&&G.ents){ if(cp&&G.ents.indexOf(cp)>=0) G.ents.splice(G.ents.indexOf(cp),1); if(loc&&G.ents.indexOf(loc)>=0) G.ents.splice(G.ents.indexOf(loc),1); G.nearDown=null; } __endRaid('abandon'); __topClear(); }catch(e){} }
      return bad.length?bad.join('; '):null; }},
-  {v:'16.61',what:'pinging twice in quick succession marks the ping as danger, as the controls legend says, and a third press does nothing more',
+  {v:'16.61',what:'pinging an entity twice in quick succession marks the ping as danger, as the controls legend says, and a third press does nothing more',
    run:function(){
      if(typeof netPingMake!=='function'||!window.__deploy||!window.__endRaid) return 'SKIP: this build has no ping';
-     var keep={on:NET.on,upSeed:NET.upSeed,pingAt:NET.pingAt,pingLast:NET.pingLast,pings:NET.pings,seat:NET.seat}, oB=netBroadcast, bad=[], a, b, sent=0;
+     var keep={on:NET.on,upSeed:NET.upSeed,pingAt:NET.pingAt,pingLast:NET.pingLast,pings:NET.pings,seat:NET.seat}, oB=netBroadcast, oMW=mouseWorld, bad=[], a, b, sent=0;
      try{
        __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        netBroadcast=function(){ sent++; };
        NET.on=true; NET.upSeed=G.seed>>>0; NET.seat=0; NET.pingAt=0; NET.pingLast=null; NET.pings=[]; G.mapOpen=false;
+       G.mapFirst=false; G.paused=false;
+       var target=G.ents.filter(function(e){return e.hp>0&&!e.merc;})[0];
+       if(!target)return 'no target for danger ping'; target.nid=target.nid||98765;
+       mouseWorld=function(){return {x:target.x,y:target.y};};
        a=netPingMake();
        if(!a) return 'SKIP: staging: the first ping made nothing';
        b=netPingMake();
        if(!b||!b.dg) bad.push('a second ping at once did not mark danger ('+JSON.stringify(b)+')');
        if(sent!==2) bad.push('the party was told '+sent+' times, not twice, once for the ping and once for danger');
-     } finally { netBroadcast=oB; for(var k in keep) NET[k]=keep[k]; try{ __endRaid('abandon'); __topClear(); }catch(e){} }
+     } finally { netBroadcast=oB; mouseWorld=oMW; for(var k in keep) NET[k]=keep[k]; try{ __endRaid('abandon'); __topClear(); }catch(e){} }
      return bad.length?bad.join('; '):null; }},
   {v:'16.60',what:'every run report says which window it came from: player 1 or player 2, and its place in the party',
    run:function(){
