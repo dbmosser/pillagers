@@ -40031,7 +40031,7 @@ Co-op hunt while he was away. His 10-28 order: roll should not work in water. We
 MEASURED. Check 36.42 passes, and fails on v36.41.
 ## v36.41 - HUD CLEARS YOUR PILLAGER
 
-Co-op hunt while he was away. His 10-28 order: a HUD panel that obscures your pillager becomes 65 percent see-through until you step clear.
+Co-op hunt while he was away. His 10-28 order: a HUD panel that obscures your pillager becomes 65 percent see-through until you step clear. Watch: hud panels go see-through over your pillager
 
 MEASURED. Check 36.41 passes, and fails on v36.40.
 ## v36.40 - beast mode replaces kill streak rewards
