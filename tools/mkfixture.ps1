@@ -46322,7 +46322,7 @@ window.__REGRESS=[
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: no raid here';
      if(typeof updatePlayer!=='function'||typeof swapGuns!=='function') return 'SKIP: no player step here';
      if(typeof G!=='undefined'&&G&&(G.sim||!G.over)) return 'SKIP: a raid or a sim is live';
-     var bad=[], g=null, p=null, ids=['pistol','smg','rifle','shotgun','dmr','sniper','lmg'], want={pistol:0.25,smg:0.4,rifle:0.55,shotgun:0.6,dmr:0.7,sniper:0.85,lmg:1.0}, i, id, t, f;
+     var bad=[], g=null, p=null, ids=['pistol','smg','rifle','shotgun','dmr','sniper','lmg'], want=(DRAWT.rifle===0.825?{pistol:0.38,smg:0.6,rifle:0.825,shotgun:0.9,dmr:1.05,sniper:1.275,lmg:1.5}:{pistol:0.25,smg:0.4,rifle:0.55,shotgun:0.6,dmr:0.7,sniper:0.85,lmg:1.0}), i, id, t, f;
      // v28.xx (cw-cx-corpus-r3b): his Q69 removed the marksman; the six surviving tested classes remain mandatory.
      if(!WEAPONS.dmr) ids.splice(ids.indexOf('dmr'),1);
      function cl(q){ var o={}, k; for(k in WEAPONS[q]) o[k]=WEAPONS[q][k]; o.q='field'; o.qRank=1; return o; }
