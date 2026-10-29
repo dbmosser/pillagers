@@ -1,0 +1,1 @@
+| READABLE SHARED STATUS LABELS | v36.20 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 36.20 passes, fails on v36.19 |

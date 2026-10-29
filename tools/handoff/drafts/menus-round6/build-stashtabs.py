@@ -24,7 +24,7 @@ rep(an,an+"\n"
 "html #root #hub #kitcol .losec{flex:none!important;}\n"
 "html #root #hub #kitgrid{flex:none!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:8px!important;}\n"
 "html #root #hub #kitgrid .cell{width:auto!important;height:auto!important;min-height:0!important;aspect-ratio:1/1;}\n"
-"html #root #hub #stashdetail{position:absolute!important;z-index:40;display:none!important;box-sizing:border-box;width:min(560px,46%);height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;pointer-events:none;margin:0!important;padding:12px 16px!important;background:var(--ui-raised)!important;border:1px solid var(--ui-line-hi)!important;box-shadow:0 8px 24px rgba(0,0,0,.5);}\n"
+"html #root #hub #stashdetail{position:absolute!important;z-index:40;display:none!important;box-sizing:border-box;width:min(560px,46%);height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;pointer-events:none;margin:0!important;padding:12px 16px!important;background:var(--ui-raised)!important;border:1px solid var(--ui-line-hi)!important;}\n"
 "html #root #hub #stashdetail.sdon{display:block!important;}\n"
 "html #root #hub #stashdetail #stashacts{display:none!important;}\n"
 "html #root #hub #stashdetail>div{grid-template-rows:none!important;grid-auto-flow:row!important;grid-template-columns:repeat(2,minmax(0,1fr));}")

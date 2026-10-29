@@ -20,3 +20,9 @@ Critic suggestions to put the status beside ammo and make its ring lime conflict
 
 The new check captures actual status drawing for active reload and stim and requires both the larger title/detail sizes and matching neutral title ink, plus the shared panel border. It must fail v36.17 on the two old font sizes. Original v36.17 regression check continues to cover real reload hits, misses, ordinary reloads and per-player counts. Next lane pass must ship the follow-up, confirm ON HIS PC, and photograph/critic the four scenes again at both resolutions.
 
+
+--- codex run 2026-10-28 21:32 ---
+2026-10-28 preflight repair: master is now v36.18. cw-cx-statusread did not ship: the proposed check rejected both title measurements on the drafted build. Corrected only the fixture check, leaving the intended game edits unchanged. The check now pins P.uiScale=1, draws from a canonical HUD canvas transform, and divides by DPRH (the HUD pixel ratio), not DPR (the world render ratio). It allows 0.1 logical pixel of font rounding instead of 0.01 and reports the actual measured value on failure. It also rejects non-finite measurements. At the pinned scale, new title/detail sizes normalize to 15/12 logical px (19.5/15.6 source px); old sizes normalize to 12/10, so the current build still fails comfortably. Profile scale and canvas state are restored after the check.
+
+Original active reload status remains shipped and ON HIS PC as v36.17; this follow-up is still pending preflight, ship and new pictures/critic. No new feature or extra HUD work added.
+

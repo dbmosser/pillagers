@@ -1,0 +1,5 @@
+## v36.20 - READABLE SHARED STATUS LABELS
+
+Co-op hunt while he was away. The active reload critic found the status title and damage detail too small at 1080p. Keep every status consistent in the existing left column.
+
+MEASURED. Check 36.20 passes, and fails on v36.19.

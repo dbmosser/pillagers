@@ -3865,8 +3865,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.19';
-var VER_AT='2026-10-28 21:31';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.20';
+var VER_AT='2026-10-28 21:34';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -43970,14 +43970,14 @@ function statusLive(p){
     }
   }
 }
-// A dark tab with round ends from x0 to x1, h tall, centred on cy.
+// v28.xx (cw-cx-statusread): the shared status panel, four-pixel corners and one quiet border, at the existing size and anchor.
 function statusPill(x0,cy,x1,h){
-  var r=h/2;
+  var r=Math.min(LH(4),h/2), top=cy-h/2, bot=cy+h/2;
   if(x1<x0+h) x1=x0+h;
-  ctx.beginPath();
-  ctx.arc(x0+r,cy,r,Math.PI*0.5,Math.PI*1.5);
-  ctx.arc(x1-r,cy,r,-Math.PI*0.5,Math.PI*0.5);
-  ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(x0+r,top); ctx.lineTo(x1-r,top); ctx.quadraticCurveTo(x1,top,x1,top+r);
+  ctx.lineTo(x1,bot-r); ctx.quadraticCurveTo(x1,bot,x1-r,bot); ctx.lineTo(x0+r,bot); ctx.quadraticCurveTo(x0,bot,x0,bot-r);
+  ctx.lineTo(x0,top+r); ctx.quadraticCurveTo(x0,top,x0+r,top); ctx.closePath(); ctx.fill();
+  ctx.lineWidth=1; ctx.strokeStyle='#4a5257'; ctx.stroke();
 }
 // The glyphs about the icon centre, u half their size, with fill and stroke already set to col: a cross for healing, a syringe
 // for the stim, a heart for recovering, a struck double chevron for winded, two waves for wading, a bottle for liquor and a
@@ -44115,7 +44115,7 @@ function drawStatusIcons(){
   for(i=0;i<L.length;i++) if(L[i].on) n++;
   if(!n) return 0;
   hr=hudRes(); S=LH(26); g=LH(5); r=S/2;
-  wC=(S+LH(110))*hr;                         // one column, icon and words, on screen
+  wC=(S+LH(130))*hr;   // v28.xx (cw-cx-statusread): collision clearance includes the larger shared status labels.
   ox=Math.round(9*hr);                       // the left edge the legend and the board already share
   oy=Math.round(H*0.40);                     // under the board, whose height is capped at 38 percent of the screen
   if(typeof NETTEAMBOX==='object'&&NETTEAMBOX&&NETTEAMBOX.n&&NETTEAMBOX.y+NETTEAMBOX.h+g*hr>oy) oy=Math.round(NETTEAMBOX.y+NETTEAMBOX.h+g*hr);   // v19.07: and below the teammate rows
@@ -44141,8 +44141,8 @@ function drawStatusIcons(){
   // further status started a new column further right, out across the play area and off the screen. The column now shrinks to fit first
   // (down to 0.6), and never uses more than two columns; a status past those is left for the CONDITIONS panel, which lists the drinks too.
   var _sk=1; if(n>rows){ _sk=Math.max(0.6,Math.min(1,(yBot-oy+g*hr)/(n*(S+g)*hr))); rows=Math.max(1,Math.floor((yBot-oy+g*hr)/((S+g)*hr*_sk))); }
-  nf=FS(TYPE.label); vf=FS(TYPE.micro);
-  lw=Math.max(2,S*0.085); rr=r*0.8; u=S*0.24; hx=r*1.04; ph=S*0.86;
+  nf=FS(TYPE.head); vf=FS(TYPE.label);   // v28.xx (cw-cx-statusread): shared status type grows from about 16/13 to 20/16 px at 1080p.
+  lw=Math.max(2,S*0.085); rr=r*0.8; u=S*0.24; hx=r*1.04; ph=S*1.12;   // v28.xx (cw-cx-statusread): the two larger text lines fit inside the shared panel.
   ctx.save();
   try{
     ctx.translate(ox,oy); ctx.scale(hr*_sk,hr*_sk);
@@ -44150,14 +44150,14 @@ function drawStatusIcons(){
     for(i=0;i<L.length;i++){
       E=L[i]; if(!E.on) continue;
       if(s>=rows*2) break;   // v19.11: two columns at most
-      x=Math.floor(s/rows)*(S+LH(110)); y=(s%rows)*(S+g); s++;
+      x=Math.floor(s/rows)*(S+LH(130)); y=(s%rows)*(S+g); s++;   // v28.xx (cw-cx-statusread): the same width when a second column is needed.
       cx=x+r; cy=y+r; tx=x+S+LH(6);
       ctx.globalAlpha=(E.id==='stim'&&p.stimT<=3)?(0.6+0.4*Math.cos((G.t||0)*12)):1;   // the last three seconds of a stim blink
       // the words' widths, measured again only when the words or the text size change
       if(E.nf!==nf){ ctx.font=nf; E.nf=nf; E.nw=ctx.measureText(E.nm).width; }
       if(E.ws!==E.v||E.wf!==vf){ ctx.font=vf; E.ws=E.v; E.wf=vf; E.vw=ctx.measureText(E.v||'').width; }
       tw=Math.max(E.nw||0,E.vw||0);
-      ctx.fillStyle='rgba(6,9,13,.62)'; statusPill(cx-ph/2,cy,tx+tw+LH(10),ph);
+      ctx.fillStyle='rgba(22,25,27,.90)'; statusPill(cx-ph/2,cy,tx+tw+LH(10),ph);   // v28.xx (cw-cx-statusread): style-guide panel fill for every status.
       // the disc, or a hexagon with a red edge for a status working against you
       ctx.beginPath();
       if(E.bad){ ctx.moveTo(cx+STATUS_HEX[0]*hx,cy+STATUS_HEX[1]*hx); for(j=2;j<12;j+=2) ctx.lineTo(cx+STATUS_HEX[j]*hx,cy+STATUS_HEX[j+1]*hx); ctx.closePath(); }
@@ -44176,8 +44176,9 @@ function drawStatusIcons(){
         if(E.nk!==E.n){ E.nk=E.n; E.ns=String(E.n); }
         ctx.font=vf; ctx.textAlign='center'; ctx.fillStyle='#0b0f14'; ctx.fillText(E.ns,x+S*0.86,cy+r*0.72+LH(4)); ctx.textAlign='left';
       }
-      ctx.font=nf; ctx.fillStyle=E.col;     ctx.fillText(E.nm,tx,cy-LH(2));
-      ctx.font=vf; ctx.fillStyle='#cdd6dd'; ctx.fillText(E.v||'',tx,cy+LH(9));
+      // v28.xx (cw-cx-statusread): neutral readable type; the existing ring and glyph carry each status colour.
+      ctx.font=nf; ctx.fillStyle='#efe9dc'; ctx.fillText(E.nm,tx,cy-LH(2));
+      ctx.font=vf; ctx.fillStyle='#cdd6dd'; ctx.fillText(E.v||'',tx,cy+LH(11));
     }
   } finally { ctx.restore(); }
   return s;
@@ -56025,7 +56026,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.19: The what is new stamp keeps up with the build; the three notes are unchanged. Check 36.19 fails on v36.18',
+  now:'v36.20: Status names and values are larger in matching bordered panels; the active reload chain shows as a status with its count. Check 36.20 fails on v36.19',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

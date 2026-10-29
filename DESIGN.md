@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.20 - READABLE SHARED STATUS LABELS
+
+Co-op hunt while he was away. The active reload critic found the status title and damage detail too small at 1080p. Keep every status consistent in the existing left column.
+
+MEASURED. Check 36.20 passes, and fails on v36.19.
 ## v36.19 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v36.03 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.

@@ -1,0 +1,7 @@
+v36.20: readable shared status labels
+
+Status names and values are larger in matching bordered panels; the active reload chain shows as a status with its count.
+
+Check 36.20. Fails on v36.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
