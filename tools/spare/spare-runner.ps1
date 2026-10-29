@@ -410,12 +410,17 @@ function GameChrome(){ return ((ShareGaming) -match '(?m)^what=chrome\b') }
 # test Chromes are left out). No full-screen test: his "get rid of the whole fullscreen concept ... i fullscreen apps all the time".
 # LightOK: he may be at the PC and one light robot may run.
 $script:playWhy=''
+# 10-28 22:20 (Main PC Correspondent): the game in front counts for 15 minutes, like a pad. Before, a light robot started each time he
+# looked away from the game for a moment and was stopped a minute later (22:10 to 22:21: seven starts while he played, his game froze
+# twice, at 22:12 and 22:20, the second at 30 fps).
+$script:fgPlayT=(Get-Date).AddDays(-1)
 function Playing(){
   $script:playWhy=''
   if(((Get-Date)-$script:padUseT).TotalSeconds -lt 900){ $script:playWhy='a game pad'; return $true }
   if((ShareGaming) -match '(?m)^gaming=1'){ $script:playWhy='the main PC game check'; return $true }
   $t=''; try{ $t=[PillagersIdle.Fg]::Title() }catch{}
-  if($t -match '^(?i)pillagers(,| -|$)'){ $script:playWhy='the game in front'; return $true }
+  if($t -match '^(?i)pillagers(,| -|$)'){ $script:fgPlayT=Get-Date }
+  if(((Get-Date)-$script:fgPlayT).TotalSeconds -lt 900){ $script:playWhy='the game in front'; return $true }
   GpuGame
   if(((Get-Date)-$script:gpuT).TotalSeconds -lt 600){ $script:playWhy='a game on the graphics card'; return $true }
   return $false
