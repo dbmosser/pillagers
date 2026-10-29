@@ -40026,7 +40026,7 @@ may now be led by a sound three times the length of its siblings.
 
 ## v36.39 - MISSED EXTRACTION NOTICE
 
-Co-op hunt while he was away. His note 10-29: the call-again instruction makes no sense when the player is outside the circle.
+Co-op hunt while he was away. His note 10-29: the call-again instruction makes no sense when the player is outside the circle. Watch: missed extraction no longer says hold x to call again
 
 MEASURED. Check 36.39 passes, and fails on v36.38.
 ## v36.38 - ONE RARITY PER GUN
