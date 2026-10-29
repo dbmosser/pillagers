@@ -6,8 +6,8 @@ MAXRUNS=5
 RUN_MIN=45
 PREFLIGHT_MIN=25
 SHIP_RETRIES=3
-PIC_ROUNDS=3
-CAMERA_ROUNDS=4
+#PIC_ROUNDS=3 (was, 10-29)
+#CAMERA_ROUNDS=4 (was, 10-29)
 CRITIC_OK=4
 REST_DEFAULT_MIN=60
 # 10-20 00:20: 3, like the helpers (console caps.txt RAM_FLOOR_GB=2 starts them at 3): at 4 nothing of this lane ran while the corpus did
@@ -21,3 +21,11 @@ CX_FRESH_AT=3000000
 CX_PAUSE_AT=92
 CX_PAUSE_SEC_AT=97
 CX_ANY=0
+# 10-29 05:30 (Codex Correspondent, CEO's order): pace the week to last to Sat 10-31 22:00 with about 8 points kept for party night. Week 66% at Thu 05:20.
+# Line: 66% at 05:20, +0.40 points an hour (reaches 92% Sat 22:00). Over the line only his o-00* orders run; the rest rest (at most 90 min at a time). Remove PACE_PER_H to turn off.
+PACE_FROM_EPOCH=1793265600
+PACE_FROM_PCT=66
+PACE_PER_H=0.40
+# fewer camera and picture rounds per job (they cost the most): 2 instead of 4 and 3. Effort: CX_EFFORT_DEFAULT=medium (above) now applies to jobs that are not o-00* until run 3.
+CAMERA_ROUNDS=2
+PIC_ROUNDS=2

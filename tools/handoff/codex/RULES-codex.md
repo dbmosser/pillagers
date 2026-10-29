@@ -131,3 +131,6 @@ The lane empties notes-new.md, questions-new.md, alarms-new.md and changes-new.m
   task, its notes or your files change. So do not end with PARTIAL just to wait; hand over everything that is yours, then say in the
   last line what is left and whose it is.
 - Plain language in everything written for him. All in-game text lower case. Never start agents or sub-agents.
+
+## Week pace to the party (10-29, CEO order, set by the Codex Correspondent)
+Codex week use was 66% at Thu 10-29 05:20 and climbing about 3.2 points an hour; at that rate it ran dry about Thu 15:00, two days before the party (Sat 10-31 night) and six days before the reset (11-04 01:35). The lane now keeps a pace line (caps-codex.txt: PACE_FROM_EPOCH, PACE_FROM_PCT, PACE_PER_H=0.40, reaching about 92% at Sat 22:00, 8 points kept for party-night fixes). Over the line, the lane runs only his own o-00* orders and rests (up to 90 min at a time) before taking any other job. Camera rounds 2 and picture rounds 2 (were 4 and 3). Effort is CX_EFFORT_DEFAULT=medium for jobs that are not o-00*, high from run 3 and always high for o-00*. Remove PACE_PER_H to turn the pace off; re-anchor the three PACE_ keys if the week use drifts from the line.

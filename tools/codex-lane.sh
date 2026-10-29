@@ -149,6 +149,15 @@ if [ "$MODE" = run ]; then
       [ -f "$X/rest-why.txt" ] && why=$(cat "$X/rest-why.txt") || why="codex is resting"
       say "resting: $why, back about $(date -d "@$re" '+%a %H:%M')"; exit 0; fi
     rm -f "$X/rest-until.txt" "$X/rest-why.txt"; fi
+  # 10-29 (CEO + Codex Correspondent): pace the week so Codex lasts to the party. PACE_PER_H points an hour from PACE_FROM_EPOCH at PACE_FROM_PCT (caps-codex.txt);
+  # over that line, only his own o-00* orders run, the rest rest until the line catches up (at most 90 min, then it looks again). PACE_PER_H unset = off.
+  ph=$(cap PACE_PER_H ""); if [ -n "$ph" ] && ! ls "$C/tasks/"o-00*.md >/dev/null 2>&1; then
+    pf=$(cap PACE_FROM_EPOCH ""); pp=$(cap PACE_FROM_PCT ""); wk=$(tail -1 "$X/limits.txt" 2>/dev/null | grep -o 'week=[0-9.]*' | cut -d= -f2)
+    if [ -n "$pf" ] && [ -n "$pp" ] && [ -n "$wk" ]; then
+      lag=$(awk -v w="$wk" -v p="$pp" -v r="$ph" -v n="$now" -v f="$pf" 'BEGIN{l=p+r*(n-f)/3600; d=(w-l)/r; if(d>0){d=d*3600; if(d<600)d=600; if(d>5400)d=5400; printf "%d", d}}')
+      if [ -n "$lag" ]; then echo $((now+lag)) > "$X/rest-until.txt"; echo "week use $wk% is ahead of the pace line to the party" > "$X/rest-why.txt"; say "resting: week use $wk% is ahead of the pace line to the party, back about $(date -d "@$((now+lag))" '+%a %H:%M')"; exit 0; fi
+    fi
+  fi
   login_state; ls=$?
   [ $ls = 1 ] && { say "$NEEDS_SIGNIN"; exit 0; }
   [ $ls = 2 ] && { say "needs you: codex is signed in with an API key, which bills per token (run codex logout, then codex and choose Sign in with ChatGPT)"; exit 0; }
@@ -198,6 +207,8 @@ prompt_fresh(){  # $1 = lane message (may be empty)
   [ -n "$1" ] && { echo; echo "===== MESSAGE FROM THE LANE ====="; printf '%s\n' "$1"; }; }
 # cx_args MODE : fills CXA with the codex arguments (MODE = fresh | resume THREAD)
 cx_args(){
+  # 10-29: effort follows CX_EFFORT_DEFAULT (medium) for jobs that are not his o-00 orders, and steps up to CODEX_EFFORT from run CX_EFFORT_STEP_RUN on
+  EFFORT=$(cap CODEX_EFFORT high); case "$name" in o-00*) ;; *) [ $((n0+it)) -lt "$(cap CX_EFFORT_STEP_RUN 3)" ] && EFFORT=$(cap CX_EFFORT_DEFAULT "$EFFORT");; esac
   CXA=( --json --skip-git-repo-check --ignore-user-config --ignore-rules -m "$MODEL"
     -c 'approval_policy="never"' -c 'sandbox_mode="workspace-write"' -c 'windows.sandbox="mxc"'
     -c 'sandbox_workspace_write.network_access=false' -c 'shell_environment_policy.ignore_default_excludes=false'
