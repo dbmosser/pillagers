@@ -11,3 +11,5 @@ Check (must FAIL on v36.27): with active reload x3, stim, steady hand and beast 
 Rules: HUD rendering only, no simulation change; player text lower case; no storage key change; seed 4242 fingerprint unchanged.
 TASK DONE when shipped and ON HIS PC.
 Evidence (CEO check-in 10-29): v36.27 (1283480e5) added STATUSL rows 'sh' (steady hand) and 'bm' (beast mode) right after 'ar', so up to 5 pills (stim, active reload, steady hand, beast mode, more) can share the column and the fit step shrinks type: 14.4 px titles and 11.8 px labels at the same viewport where v36.23 held 20 and 16. Both checks were green on v36.23 and red on v36.27 and are not outdated: his readability floor still stands. Not added to stable-known-red.
+
+NOTE 10-29 02:25 (JTPC Correspondent): 36.20 and 36.22 PASSED in spare PC run corpus-1029-0048 on v36.30 (red on v36.27). Before working, rerun both alone on the current build with all five pills staged: if they stay green there, the 5 pill shrink may only show with a full column; prove it with the check below either way.
