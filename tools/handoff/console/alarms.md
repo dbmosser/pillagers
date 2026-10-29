@@ -480,3 +480,5 @@ Separate HUD follow-up from the final pictures: critic p1=3 and p2=2, with P0 ti
 
 2026-10-29 o-00t-237-extract-wait-20s: LINKED REVIEW NEEDED: synced. cw-cx-extractwait20 changes the default and saved party wait used by bcn calls and wd.z clocks. After shipment, verify career/demo ship calls start at 20 and land 20 s later in both actual linked windows; take a picture from each. Sandbox regression covers both roles, partner call acceptance, and timer reception; only the helper can run the actual linked windows.
 
+2026-10-29 o-00t-237-extract-wait-20s shipped v36.43 and ON HIS PC. Screen 37 critic round 1 scored 2, unchanged. Route existing P0 ammo-panel contrast and P1 run-info wrapping, extract-banner hierarchy, contract-hint wording, and pickup-pill consistency to their UI owners. This timing task forbids pickup-stack/loot-row work and must not mix feel and UI changes. After picture: tools/handoff/console/notes/shots/o-00t-237-extract-wait-20s-after/37-raid-extracting-countdown-1080.jpg. The screen is not visually accepted. Existing LINKED REVIEW NEEDED: synced handoff still applies; no actual linked-window review result was supplied.
+

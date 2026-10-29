@@ -10,3 +10,14 @@ Local validation passed: seven unique game anchors, one unique fixture anchor, g
 
 LINKED REVIEW NEEDED: synced. The bcn call, cfg field in the raid word, and wd.z beacon timer carry this rule between windows. The CEO helper must verify actual calls and landings in both linked windows, career and demo, with pictures from each. Pending lane preflight, ship, ON HIS PC, critic, and linked review.
 
+
+--- codex run 2026-10-29 06:53 ---
+2026-10-29 completion: cw-cx-extractwait20 shipped in v36.43, commit b7d33a9eb. Fixture retarget committed as b5ad5b6b1 after check 17.98 passed on v36.42. The lane confirmed ON HIS PC v36.43, 17 s after shipment. The new gate check is installed as 36.43. The task's required ship and ON HIS PC conditions are met.
+
+Reviewed the attached screen 37 after picture: the inbound band shows 9 s at the camera's staged point, consistent with changing its 0.6-times-default start from 18 to 12 s and then waiting 3 s. Critic round 1 scored 2, same as before. This is not a visual acceptance pass. Its P0/P1 findings concern the existing ammo panel, expanded run info, banner hierarchy, contract hint, and pickup pills; they were not introduced by the timer change. A UI redesign would mix layout work into this timing task, and its pickup-pill changes would directly violate the task's order never to touch the pickup stack or loot rows. No UI follow-up shipped. Those findings are handed to the coordinator, and the UI screen remains below its finish line.
+
+Before picture: C:/claudecode/dark raiders/tools/handoff/console/notes/shots/o-00t-237-extract-wait-20s-before/37-raid-extracting-countdown-1080.jpg
+After picture: C:/claudecode/dark raiders/tools/handoff/console/notes/shots/o-00t-237-extract-wait-20s-after/37-raid-extracting-countdown-1080.jpg
+
+LINKED REVIEW NEEDED: synced. The existing coordinator handoff remains: actual linked-window verification and pictures are not available in this sandbox. The shipped regression exercises career/demo calls in both roles, host acceptance of partner calls, peer receipt of the world timer, and exact 20 s landing. Do not treat that as an actual two-window review.
+

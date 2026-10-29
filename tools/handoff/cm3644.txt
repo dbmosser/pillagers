@@ -1,0 +1,7 @@
+v36.44: combat status type keeps its floor
+
+Combat status titles stay at least 20px and details at least 16px at the base HUD scale. Measured columns and taller rows make room without shrinking the words. HUD rendering only. LOCAL: no linked review.
+
+Check 36.44. Fails on v36.43.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

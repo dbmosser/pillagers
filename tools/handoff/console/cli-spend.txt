@@ -1901,3 +1901,6 @@
 2026-10-29 0.0000 o-00s-235-hud-fades-over-your-pillager
 2026-10-29 0.0000 o-00s-235-hud-fades-over-your-pillager
 2026-10-29 0.0000 o-00t-237-extract-wait-20s
+2026-10-29 0.0954 critic-o-00t-237-extract-wait-20s
+2026-10-29 0.0000 o-00t-237-extract-wait-20s
+2026-10-29 0.0000 o-00u-238-status-type-regression

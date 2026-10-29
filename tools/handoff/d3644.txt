@@ -1,0 +1,5 @@
+## v36.44 - COMBAT STATUS TYPE KEEPS ITS FLOOR
+
+Co-op hunt while he was away. v36.27 added steady hand and beast mode to a column that scaled every panel down when crowded. Wrap the panels at full type size instead. Watch: with five combat statuses, check the extra column clears the vitals and no status is missing.
+
+MEASURED. Check 36.44 passes, and fails on v36.43.

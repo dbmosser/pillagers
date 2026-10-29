@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.44 - COMBAT STATUS TYPE KEEPS ITS FLOOR
+
+Co-op hunt while he was away. v36.27 added steady hand and beast mode to a column that scaled every panel down when crowded. Wrap the panels at full type size instead. Watch: with five combat statuses, check the extra column clears the vitals and no status is missing.
+
+MEASURED. Check 36.44 passes, and fails on v36.43.
 ## v36.43 - EXTRACTION INBOUND 20 SECONDS
 
 Co-op hunt while he was away. His 10-28 order: change inbound pre-extraction time from 30 secs to 20 secs. Old saved defaults and party settings migrate without changing other waits or preset C. The live siege interval scales with a shorter inbound wait so the same two light-haul or four full-haul arrivals fit before landing at the shipped siege dial; the total caps and boarding window stay the same. Watch: the ship lands 20 s after the call.

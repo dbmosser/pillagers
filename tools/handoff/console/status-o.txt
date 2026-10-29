@@ -1,1 +1,1 @@
-10-29 06:49 gate: shipping cw-cx-extractwait20 (o-00t-237-extract-wait-20s, codex)
+10-29 07:04 gate: shipping cw-cx-statuswrap (o-00u-238-status-type-regression, codex)

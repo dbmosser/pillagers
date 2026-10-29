@@ -595,17 +595,17 @@
   "score": 2,
   "pass": false,
   "need": 4,
-  "verdict": "The new frame only quietens the ammo panel and swaps some copy. The extraction countdown is still a flat teal banner with several other competing panels, and the hero number is now the faintest thing in the corner.",
+  "verdict": "Only the countdown changed (15s to 9s) and the run info panel opened, which adds clutter. Most of the earlier advice on the ammo panel, the extract banner, the pickup pills and the top-right corner was not applied, so the screen is still a stack of unrelated dark boxes.",
   "findings": [
-   "P0 bottom-right ammo panel: Restore the panel to 90% opacity of --ui-panel (#16191b). Keep 12 / 24 in tx-1 at 56px. Put the weapon name and the backpack line in tx-2 at a minimum of 16px, at least 4.5:1.",
-   "P1 center-bottom 'extract b inbound 15s' banner: Make the seconds the hero: 56px f-cond 800 in --extract, with 'extract b inbound' at 20px tx-2 beside it. Shrink the slab to hug the text. Leave 16px of space above the hostiles strip, and fold the strip into the same card as a danger-red label.",
-   "P1 left-middle pickup/status stack: Use one pill component: 1px --ui-line-hi border and a 3px left bar coloured for the type only. Make rows 32px high with 8px gaps. Move 'running slowly' next to the 'standing' state tag at bottom-left.",
-   "P1 top-right contracts panel: Leave the corner for the cw-trcol column. For the contracts, use 16px tx-2 labels, a lime tick only on a finished row, and one shared 16px inner padding for both cards.",
-   "P2 top-left 'current pillager bots 3' scoreboard: Highlight the 'you' row with a 3px lime left bar and tx-1 text, and make the other rows tx-2. Use 24px of panel padding and the same header style as run info."
+   "P0 bottom-right ammo panel: Use an opaque --ui-panel (#16191b) fill at 90%. Put the weapon name and backpack line in tx-2 (#aaa498) at 16px or larger, and keep 12 / 24 at 56px tx-1. Use 16px of inner padding and a 1px --ui-line-hi border.",
+   "P1 top-right run info panel (open): Collapse the panel by default during extraction. If it stays open, use 16px labels in tx-2 and right-align the 'n/m' counts in tx-1 in a fixed 56px column. Cut each contract to one line, drop 'noon clear', and use 16px padding on all sides.",
+   "P1 centre-bottom extract banner: Make '9s' 56px f-cond 800 in --extract. Set 'extract b inbound' at 20px tx-2 beside it. Shrink the slab to hug the text with 16px padding. Merge the hostiles line into the same card as a 16px danger-red label, or leave an 8px gap.",
+   "P1 bottom-left 'contract item nearby · gold glow marks the box' toast: Shorten it to 'contract item nearby' and drop the 'gold glow' clause. Use the same pill as the pickups: 32px high, 1px --ui-line-hi border, a 3px left bar in --warn, tx-1 text at 20px, and an opaque --ui-panel fill.",
+   "P1 right-hand pickup pills (medkit, titanium cell, induction cell): Use one component: 32px rows with 8px gaps, tx-1 text at 20px, and a 3px left bar coloured by rarity only. Give all pills the same --ui-panel fill and a 1px --ui-line-hi border."
   ],
-  "pic": "tools/handoff/console/notes/shots/103-after/37-raid-extracting-countdown-1080.jpg",
-  "task": "manual",
-  "when": "2026-10-24T17:19"
+  "pic": "tools/handoff/console/notes/shots/o-00t-237-extract-wait-20s-after/37-raid-extracting-countdown-1080.jpg",
+  "task": "o-00t-237-extract-wait-20s",
+  "when": "2026-10-29T10:52"
  },
  "77-haul-reveal-done": {
   "score": 3,
