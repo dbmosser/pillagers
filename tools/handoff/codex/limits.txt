@@ -172,3 +172,6 @@
 2026-10-29 03:01 week=60.0% 5h=97.0% week_resets=2026-11-04 01:35 job=o-00m-231-hotbar-key-9
 2026-10-29 04:03 week=62.0% 5h=4.0% week_resets=2026-11-04 01:35 job=o-00m-231-hotbar-key-9
 2026-10-29 04:22 week=63.0% 5h=13.0% week_resets=2026-11-04 01:35 job=o-00n-232-one-rarity-per-gun
+2026-10-29 04:37 week=64.0% 5h=17.0% week_resets=2026-11-04 01:35 job=o-00n-232-one-rarity-per-gun
+2026-10-29 04:42 week=64.0% 5h=19.0% week_resets=2026-11-04 01:35 job=o-00n-232-one-rarity-per-gun
+2026-10-29 04:45 week=64.0% 5h=22.0% week_resets=2026-11-04 01:35 job=o-00o-233-missed-extract-no-call-again

@@ -611,3 +611,9 @@
 
 2026-10-29 | o-00n-232-one-rarity-per-gun | stash, shops, Wirt, gun cards and raid in both windows | six guns retain only their higher colour and stats; one codex entry per gun; Wirt odds follow the promoted items; loot-row layout unchanged | before: no recipe baseline | after: pending lane camera recipes rarity-stash, rarity-gamble, rarity-coop-p1 and rarity-coop-p2; exact paths follow with lane results.
 
+2026-10-29 | o-00n-232-one-rarity-per-gun | v36.38 rarity change verified in stash, Wirt and linked host; both real peers passed gun assertions | before: none (recipe stages) | after: tools/handoff/console/notes/shots/o-00n-232-one-rarity-per-gun-recipes-1/rarity-stash-1080.jpg, rarity-gamble-1080.jpg, rarity-coop-p1-1080.jpg; rarity-coop-p2-1080.jpg was NOT STAGED and is not valid verification.
+
+2026-10-29 | o-00n-232-one-rarity-per-gun | final v36.38 proof: all scenes staged at 1080p and 4k; locked migrated Magnum shows 77.5 damage, both linked players show purple Auto Rifle and blue SMG | before: recipe round 1 (player 2 invalid) | after: tools/handoff/console/notes/shots/o-00n-232-one-rarity-per-gun-recipes-2/rarity-stash-1080.jpg, rarity-gamble-1080.jpg, rarity-coop-p1-1080.jpg, rarity-coop-p2-1080.jpg.
+
+2026-10-29 | o-00o-233-missed-extract-no-call-again | missed extraction alert/feed, both windows | removed hold x to call again detail; kept headline and no-time warning | before: shared source verified; after: lane camera-recipes missed-extraction-p1-alert, missed-extraction-p1-feed, missed-extraction-p2-alert, missed-extraction-p2-feed (paths pending).
+

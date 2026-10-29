@@ -1824,36 +1824,36 @@
   "when": "2026-10-21T07:38"
  },
  "p1-1080": {
-  "score": 4,
-  "pass": true,
-  "need": 3,
-  "verdict": "The earlier advice was mostly followed: the stat grid is aligned, the backdrop is blurred and the player colours are right. What's left is a small card with a wide dead strip on the right and a few type-scale slips.",
-  "findings": [
-   "P1 card x601-1319 y213-867, hero block x633-810 y295-385: Widen the card to about 1000px. Put the hero on the left and a p1/p2 split bar on the right of that block: 8px tall, amber (4,250) and cyan (2,800) segments sized in proportion, with a 'p1 60%' / 'p2 40%' label (16px) under it. Alternatively raise the hero to 72px.",
-   "P1 award grid x633-1286 y640-765: Set the captions to 16px f-cond 600 in tx-2 and the values to 20px tx-1. Give every award cell a 3px left bar in its player colour, with the crown's bar in --r-gold. Use 24px column gaps and a 16px row gap, and align the first bar flush with the grid's left edge at x633.",
-   "P1 stat rows x633-1286 y437-590: Show each caption once, as a column header row above p1 (16px tx-2), and drop it from the p2 row. Use 5 columns: a 48px tag column, then four 200px columns. Centre the p1/p2 tags on the number baseline. Dim the 0 values to tx-2 so 13 and 8 stand out.",
-   "P2 'press any key' prompt x1105-1286 y800-833: Keep the prompt, but make the lime ring 40px and the text 24px f-cond 700 tx-1 so it clearly beats the stat numbers. Put 32px of space above it. Alternatively centre the prompt at the card's bottom edge.",
-   "P2 title 'run over' x633-736 y243-270: Set the title to 32px f-cond 700. Add a 16px gap under it, and a 1px --ui-line rule below the title row, matching the dividers lower in the card."
-  ],
-  "pic": "tools/handoff/console/notes/shots/o-09-196-run-over-card-moments-recipes-4/run-over-moments-p1-1080.jpg",
-  "task": "o-09-196-run-over-card-moments",
-  "when": "2026-10-28T21:04"
- },
- "p2-1080": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "This is a raid HUD, not the title screen I reviewed before, so there is no like-for-like comparison. The ammo readout is a clear hero number, but the open controls list, a duplicated extract cue, a stray capital and a few weak panels pull it down.",
+  "verdict": "The HUD is functional, but it still reads as stock dropdown boxes plus a thin bar. The controls list is now folded, which is correct. Capitals remain in 'run Info', and the left cards and hp bar have not been reworked.",
   "findings": [
-   "P1 top-right 'run Info' dropdown: Change the label to 'run info'. Use the same panel fill (--ui-panel), 1px --ui-line-hi border and 4px radius as the other HUD panels. Put it at a 48px margin from the top and right.",
-   "P1 left controls list (move/fight/gear/raid, 2 columns, about 300x300): In career, fold it to one 16px line, 'f1 controls', at mid-bottom left. In the party demo, if it must stay open, reduce it to the 8 most useful keys. Give the key caps no fill and a 1px --ui-line border. Set the labels in --tx-2 at 16px minimum.",
-   "P1 top-centre 'extract 152m' pill and right-edge 'c 152m' arrow: Keep only the top-centre teal pill, with the direction arrow inside it. Delete the right-edge chip.",
-   "P1 bottom contract banner 'contract item nearby · gold glow marks the box': Shorten it to 'contract item nearby' and drop the explanation. Make the text --tx-1 with a 3px --warn left bar. Show it as an alert in the top-centre banner slot, not at the bottom left. Leave a 24px gap from other panels.",
-   "P2 top-left 'current pillagers 0' panel: Set the rows to --tx-2 (#aaa498) at 16px. Keep the 'you' row in --tx-1 with a 3px lime or amber bar. Drop the '0 out · 3 dead' footer. Align the $ values right with tabular numerals."
+   "P1 'run Info' dropdown x1603-1900 y18-54: Render it as 'run info'. Shrink it to about 160px wide at x1736-1896. Use --ui-panel fill, a 1px --ui-line-hi border and a 4px radius. Use 16px f-cond 600 text and a 12px chevron.",
+   "P1 hp bar x24-430 y1035-1068: Make the bar 260x12px with a --ui-line track at x24 y1048. Put 'hp' at 16px tx-2 and '100' at 24px f-cond 700 tx-1 on a line above it. Keep 56px for the ammo only.",
+   "P1 'current pillagers 3' x8-367 y143-242 and 'pillager' tag x15-170 y325-358: Put both on the same --ui-panel fill with a 4px radius at x24. Use a 16px tx-2 header on the party card and a 24px row pitch. Make the ally name 16px tx-1 with a 6px hp bar on --ui-line.",
+   "P2 hotbar x660-850 y968-1058: Draw the selected outline at 2px --acc. Make idle borders --ui-line-hi. Put the slot numbers inside each slot's top-left at 16px tx-2. Draw empty slots 4-0 as 90px --ui-panel squares at 60% opacity.",
+   "P2 'f1 controls' chip x440-540 y941-964: Move it to x24 y1000, above the hp bar. Use --ui-panel fill, 16px tx-2 text and an 'f1' key chip in tx-1 on --ui-raised."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00g-224-slower-gun-switch-recipes-2/rifle-switch-p2-1080.jpg",
-  "task": "o-00g-224-slower-gun-switch",
-  "when": "2026-10-29T03:56"
+  "pic": "tools/handoff/console/notes/shots/o-00n-232-one-rarity-per-gun-recipes-2/rarity-coop-p1-1080.jpg",
+  "task": "o-00n-232-one-rarity-per-gun",
+  "when": "2026-10-29T08:39"
+ },
+ "p2-1080": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The shot is now a raid HUD instead of the title, and it is a set of mismatched widgets: two native-looking dropdowns, a green chip, a green hp slab and a black tooltip, with a capital letter on screen.",
+  "findings": [
+   "P0 top-right dropdown (1603-1901 x 19-54): Change the label to 'run info'. Replace both selects with one 48px-high pill style: --ui-panel fill, 1px --ui-line-hi border, 4px radius, 16px --f-cond 600 text. Put both on a 48px margin and the same top baseline.",
+   "P1 'current pillagers 3' dropdown (8-367 x 142-170): Dock it to the top-left at x=48, y=48, about 240px wide. Align it with the right dropdown, or collapse it to a '3' chip.",
+   "P1 hp bar (24-430 x 1035-1068): Set it in a --ui-panel container 320x32 at x=48, y=1080-48-32, with a 1px --ui-line-hi border and a --ok fill. Put 'hp' at 16px --tx-2 and '100' at 20px --tx-1, with no 36px text.",
+   "P1 'keyboard' chip (5-105 x 6-32) and the 'pillager' bar (16-170 x 325-358): Make the chip a neutral --ui-line-hi chip in --tx-2 at 16px, with a 48px margin. Drop the 'pillager' bar or fold it into the hp block. Show the name once.",
+   "P1 hotbar slots (660-850 x 968-1058): Use a 2px --acc border on the selected slot. Give every slot a --ui-panel fill at 85% opacity and a 1px --ui-line-hi border. Draw the digit labels at 16px --tx-2 inside the slot corners, not on the wall."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00n-232-one-rarity-per-gun-recipes-2/rarity-coop-p2-1080.jpg",
+  "task": "o-00n-232-one-rarity-per-gun",
+  "when": "2026-10-29T08:39"
  },
  "pix86c-fashion": {
   "score": 3,
@@ -4414,5 +4414,37 @@
   "pic": "tools/handoff/console/notes/shots/o-00m-231-hotbar-key-9-recipes-2/hotbar9-stash-p1-1080.jpg",
   "task": "o-00m-231-hotbar-key-9",
   "when": "2026-10-29T08:07"
+ },
+ "rarity-stash": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The window is clean, dark and consistent. The earlier P1 problems are still there: the stash grid leaves a large dead area, the header money is split into three small pieces, and the controls row is crowded.",
+  "findings": [
+   "P1 stash grid and lower left pane (x 110-1085, y 530-890): Dock a 320px detail pane in the empty area below the grid, with name, rarity bar and stats for the focused tile. Remove the floating tooltip for pad and keyboard focus. Keep the 2px --acc outline on the focused tile.",
+   "P1 right pane below the hotbar (x 1087-1810, y 590-890): Enlarge the backpack slots to fill the pane height, or add a loadout summary below the hotbar. Use solid 1px --ui-line borders in place of dashes.",
+   "P1 header money row (x 1430-1745, y 80-105): Show '$48,250' alone at 32px f-cond 700 --tx-1. Put 'stash $17,654 · bag $0' on one 16px --tx-2 line beneath it, and move 'xp' into that line. Right-align it with a 24px gap left of the X.",
+   "P1 tab and filter row (y 125-170): Set tabs to 20px --fs-body and add a 3px --acc underline on the active tab. Move sort, armory and trophies into a separate right-aligned group at least 24px from the search box, or into the footer. Shorten the search box to 280px.",
+   "P2 stash and backpack sub-headers (y 185-225): Remove the second 'backpack' label and fold the count into the tab as 'backpack 0/12'. Use one style for all counters: 16px --tx-2. Hide '$0 going up' when it is zero."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00n-232-one-rarity-per-gun-recipes-2/rarity-stash-1080.jpg",
+  "task": "o-00n-232-one-rarity-per-gun",
+  "when": "2026-10-29T08:40"
+ },
+ "rarity-gamble": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The gamble window is tidy and uses the style tokens correctly, but the lower third of the card is empty, the gamble panel has a hole in it, and the small type is under the guide's 16px floor.",
+  "findings": [
+   "P1 card bottom, y 700-1020: Stretch both panels to the card's bottom padding (bottom edge near y 1000). Or shrink the card to fit its content. Or center the panels vertically in the body. Give the body 24px padding on every side.",
+   "P1 the gamble panel, y 430-585: Enlarge the question-mark tile to about 280px, centered like the offer art, with the odds list below it at 20px row height. This mirrors the right panel's layout. Alternatively, pin the button to the bottom and spread the content evenly.",
+   "P1 odds labels and percentages, header stats: Raise the labels, percentages and stats to 16px with +.04em tracking, in tx-1 or tx-2. Make the bars 8px tall. Use a row pitch of 36px.",
+   "P2 header money row, top right: Use one style for all three stats: 20px label, with only the money value in tx-1 600. Space them 32px apart. Leave a 24px gap before the X. Do not use a bold white number for xp.",
+   "P2 offer panel body: Cut the 'new limited time offer arrives...' line to a short timer such as '3:00' (label size, beside the panel title). Keep one line, 'worth $14,904', in tx-2 at 16px. Give the art tile a 1px line-hi border."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00n-232-one-rarity-per-gun-recipes-2/rarity-gamble-1080.jpg",
+  "task": "o-00n-232-one-rarity-per-gun",
+  "when": "2026-10-29T08:40"
  }
 }

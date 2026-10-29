@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.39 - MISSED EXTRACTION NOTICE
+
+Co-op hunt while he was away. His note 10-29: the call-again instruction makes no sense when the player is outside the circle.
+
+MEASURED. Check 36.39 passes, and fails on v36.38.
 ## v36.38 - ONE RARITY PER GUN
 
 Co-op hunt while he was away. His order 10-29: get rid of the lower rarity of any weapons. The six affected guns retain only their former higher colour, 1.25 times damage and 1.5 times value under the original permanent id. Old higher ids migrate before validation; stash cells, locks, kit picks, wear and Forge marks survive. Watch: each gun has one rarity; the guns that had two are always the better one. These guns now always hit 25 percent harder than their old common find, including guns carried by pillagers. Watch both windows for matching gun colours and saved loadouts. Pickup code, loot sounds and loot rows are untouched.

@@ -1,0 +1,7 @@
+v36.39: missed extraction notice
+
+missed extraction no longer says hold x to call again
+
+Check 36.39. Fails on v36.38.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
