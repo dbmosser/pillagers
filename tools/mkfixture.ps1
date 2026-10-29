@@ -6215,7 +6215,7 @@ window.__REGRESS=[
        if(!g.goalPaid||g.goalPaid.items.length!==4) return 'hard goal items not settled';
        if(ITEMS[item].use==='gun'){ if(P.weapons.indexOf(ITEMS[item].gk)<0&&P.stash.indexOf(item)<0) return 'goal gun not banked'; }
        else if(P.stash.filter(function(a){return a===item;}).length<=count) return 'goal item not in stash';
-       if(document.getElementById('oc_manifest').textContent.toLowerCase().indexOf('run goals: '+ITEMS[item].name.toLowerCase())<0) return 'goal item missing from extracted card';
+       if(!Array.prototype.some.call(document.querySelectorAll('#oc_manifest .gr'),function(row){var text=row.textContent.toLowerCase();return text.indexOf('run goals')>=0&&text.indexOf(ITEMS[item].name.toLowerCase())>=0;})) return 'goal item missing from extracted card';
        prep(); S.goals=null; goalsNetTake([[0,9,0]]); before=P.credits; r=RNGS;
        goalsNetTake([[0,10,1]]); goalsNetTake([[0,10,1]]); goalsTick(0.1);
        if(!g.goalRewards||g.goalRewards.cash!==1000||g.cs.s||P.credits!==before) return 'career peer reward missing, repeated, banked early or added SP';
