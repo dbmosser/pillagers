@@ -11,3 +11,5 @@ First: on v36.53 with an old saved key map (staged like 35.74 part ONE), press t
 Check (must FAIL on v36.53): with an old saved key map, a middle mouse press in a raid makes one mark that shows in the raid, map and minimap of both windows; the compact party legend names the mark key once (D-UP on a pad). Then 35.74, 20.76 and 36.52 pass.
 Rules: keep his v36.52 order (one mark per player, spot marks stay until moved or cleared, entity pings follow 10 s, loot notices separate); storage key salvagerun:profile unchanged (old key maps load and keep their keys); seed 4242 fingerprint unchanged; no team damage; test both windows.
 TASK DONE when shipped and ON HIS PC, with what he should watch for at the party.
+
+CEO 10-29 14:05: renamed o-00w so Codex (which wrote v36.52) runs it now, ahead of its pace rest: party ping. Codex run 1 at high effort.
