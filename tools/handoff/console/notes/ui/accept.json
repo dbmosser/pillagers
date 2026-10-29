@@ -3715,32 +3715,32 @@
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The raid HUD reads cleanly in the lower-left controls list and the ammo block. It scatters about six chrome styles across the screen, and its small text sits below the 16px floor. The hero numbers are weak, and a capital letter and a $/score mix-up break the owner's rules.",
+  "verdict": "The raid HUD is still a pile of mismatched panels: the 'run info' bar has a capital I, the controls list is open instead of folded, and the status chips, banner, hp bar and tags all use different styles.",
   "findings": [
-   "P0 run info dropdown, top right: Change the text to 'run info'. Give the bar the same panel fill (#16191b), 1px #4a5257 border and 4px radius as the other panels. Use a 20px f-cond 600 title and inset the bar 24px from the screen edge.",
-   "P1 current pillagers panel, top left: Raise rows to 16px (--fs-label) with --tx-2 (#aaa498) for dead rows. Make the 'you' row --tx-1 at 20px with a lime 3px left bar. Use a 24px row pitch and right-align the values in one column.",
-   "P1 controls list, mid-left (move / fight / gear / raid): Fold it to a single 16px line at mid-bottom left, as the owner ordered ('f1 controls'), and open it only on F1. When open, use 16px minimum text, 24px column gaps, and --tx-2 section labels with a 1px --ui-line divider.",
-   "P1 hp bar, bottom left: Make the bar 12px high on a --ui-panel track with 1px border, and use --ok only for the fill. Put 'hp 100' in --fs-body at 8px padding. Place it at 24px from the edge, aligned to the status chips.",
-   "P1 status chips (concealed, in cover) and contract banner: Use one chip style: 32px high, 4px radius, --ui-panel fill, 1px --ui-line-hi border, a 16px label, and a colour only on the 16px glyph. Shorten the banner to 'contract item nearby' and cut the second half."
+   "P0 run info dropdown, top right: Change the text to 'run info'. Use fill #16191b, a 1px #4a5257 border, a 4px radius, a 20px f-cond 600 label and a 24px inset from the top and right edges. Make the chevron --tx-2.",
+   "P0 controls list, mid-left (move / fight / gear / raid): Fold it to one 16px line, 'f1 controls', at x=24 and bottom=96. Open it on F1 only, with 16px text, --tx-2 section labels, a 24px column gap and a 1px --ui-line divider.",
+   "P1 the long dock cache label, right edge: Put both in one 32px chip with the --ui-panel fill and a 1px --ui-line-hi border, inset 24px from the edge. Use --tx-1 text at 16px and keep the teal only on the arrow glyph.",
+   "P1 current pillagers panel, top left: Use 16px rows on a 24px pitch with --tx-2 for dead rows. Make the 'you' row --tx-1 at 20px with a 3px --acc left bar. Right-align the values in one column. Drop the footer line or merge it into the header, and use an opaque --ui-panel fill.",
+   "P1 status chips (concealed, in cover) and the contract banner: Use one chip style: 32px high, 4px radius, --ui-panel fill, 1px --ui-line-hi border, a 16px --tx-1 label, and colour only on the glyph. Change the banner to 'contract item nearby' and remove the explaining half."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-09h-name-tags-overlap-recipes-1/tags-pixel-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-09h-name-tags-overlap-recipes-2/tags-pixel-1080.jpg",
   "task": "o-09h-name-tags-overlap",
-  "when": "2026-10-29T00:06"
+  "when": "2026-10-29T00:14"
  },
  "tags-smooth": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The raid HUD works as a readable set of panels, but it is crowded, the type sizes are inconsistent, a capital letter shows on screen, and the controls list is open and large instead of folded to one line.",
+  "verdict": "The name tags now sit tidily over the enemies, but the HUD is still a stack of mismatched boxes. The controls list is open and large, 'run info' still has a capital I, and the hp bar is raw.",
   "findings": [
-   "P1 left-middle controls list (move/gear/fight/raid): Fold it to one 16px line at the bottom left ('f1 controls') and open it only on F1. If it stays open, cut it to 8 or fewer rows and drop the repeated headers.",
-   "P1 'run info' header, top right: Fix the string to 'run info'. Match this panel's padding, border and chevron to the left panel. Size both at 16px label text.",
-   "P1 top-left 'current pillagers' panel: Set rows to 16px f-cond 600 in tx-2 at 4.5:1 or better. Make 'you' tx-1 with a 3px amber (P1) bar. Use 16px padding and a solid --ui-panel fill.",
-   "P1 hp bar, bottom left: Use f-cond 800 at 32px with no outline. Inset the bar 24px from the edges and give it a 4px radius, a --ui-panel track and a 1px border. Put the chips and bar on one baseline.",
-   "P2 weapon slots 1-8/0 along the bottom: Give every slot a 1px --ui-line-hi border and a 4px radius on a --ui-panel fill. Use --acc for the selected slot only, 2px. Keep empty slots at 40 percent opacity inside the same frame."
+   "P1 top right 'run info' header: Change the string to 'run info'. Set both panels to 16px label text, 16px padding, a --ui-panel fill, a 1px --ui-line-hi border and a 4px radius. Make the run info box 280px wide, not 330px.",
+   "P1 left-middle controls list: Fold it to one 16px 'f1 controls' line at the bottom left, 24px from the edge, and open it only on F1. If it stays open, cut it to 8 or fewer rows. Make the headers 16px tx-2 and use one --ui-panel fill.",
+   "P1 top-left 'current pillagers' panel: Set rows to 16px f-cond 600, with tx-2 at 4.5:1 or better. Make 'you' tx-1 with a 3px amber bar. Use 16px padding, a solid --ui-panel fill and a 24px margin from the edge. Drop the '0' and the footer, and move the 'dead' tags to a danger-red glyph.",
+   "P1 bottom left hp bar and status chips: Put hp at f-cond 800, 32px, with no outline. Inset the bar 24px from the edges and give it a 4px radius, a --ui-panel track and a 1px --ui-line-hi border. Put the chips and bar on one baseline, and make the chips 16px with a --ui-panel fill and a 1px border. Keep lime for selected only.",
+   "P2 bottom weapon slots 1-8/0: Draw all nine slots with the same 1px --ui-line-hi border, 4px radius and --ui-panel fill, 72px wide. Make empty slots 40 percent opacity inside the same frame. Use 2px --acc for the selected slot only and 16px numerals."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-09h-name-tags-overlap-recipes-1/tags-smooth-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-09h-name-tags-overlap-recipes-2/tags-smooth-1080.jpg",
   "task": "o-09h-name-tags-overlap",
-  "when": "2026-10-29T00:06"
+  "when": "2026-10-29T00:14"
  }
 }

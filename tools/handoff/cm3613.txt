@@ -1,0 +1,7 @@
+v36.13: cache names clear the screen edge
+
+Cache names sit on a readable panel inside the screen margin. The extraction chip still keeps its own space.
+
+Check 36.13. Fails on v36.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

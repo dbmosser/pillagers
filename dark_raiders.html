@@ -3865,8 +3865,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.12';
-var VER_AT='2026-10-28 20:11';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.13';
+var VER_AT='2026-10-28 20:20';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -40457,7 +40457,7 @@ if(ct.cache&&ct.tag&&!ct.strong){
       // v28.xx (cachetag), HIS NOTE (2026-10-16, a picture of CHILL ROW CACHE cut in two by a wall): "text should be on top". The name was
       // drawn here with its box, in the depth-sorted world pass, so any wall drawn in front of the box covered it. It is queued now and drawn
       // in the world text pass (_wtA) beside the nameplates, after every wall.
-      if(CACHETAGS.length<48) CACHETAGS.push({t:ct.tag,x:ct.x,y:ct.y-lift-d2-26});
+      if(CACHETAGS.length<48) CACHETAGS.push({t:ct.tag,x:ct.x,y:ct.y-lift-d2-26,cache:1}); // v28.xx (cw-cx-cachetagspace): a named cache gets the shared panel and screen margin.
     }
     // v8.50, audit: the empty `if(ct.seal){}` that used to sit here claimed the
     // seal y-sorted with everything else. ct.seal was never set on any container
@@ -42257,12 +42257,16 @@ var SHD=G.shells[i];
     // v28.xx (cw-cx-tagstack): cache names reserve their actual font bounds before the extraction distance chip is placed.
     for(var _cq=0;_cq<_ctq.length;_cq++){
       var _cg=_ctq[_cq]; wc.font=FS(_cg.f||TYPE.head);
+      // v28.xx (cw-cx-cachetagspace): the critic on the fixed overlap found the cache name too close to the edge and weak on busy ground. Keep its own panel, distinct from the extraction destination.
       var _cm=wc.measureText(_cg.t), _cw=_cm.width, _ca=_cm.actualBoundingBoxAscent||wlPx(), _cd=_cm.actualBoundingBoxDescent||wlPx()*0.25;
-      if(!_cg.always&&wlUnder(_cg.x-_cw/2,_cg.y-_ca-2,_cw,_ca+_cd+4)) continue;
-      var _ctop=wlTagPlace(_cg.x-_cw/2-2,_cg.y-_ca-2,_cw+4,_ca+_cd+4);
+      var _cp=_cg.cache?8:2, _cx=_cg.x, _ch=_ca+_cd+_cp*2;
+      if(_cg.cache){var _margin=24*Math.max(1,hudRes())/WTX.z;_cx=clamp(_cx,WTX.ox+_margin+_cw/2+_cp,WTX.ox+W/WTX.z-_margin-_cw/2-_cp);}
+      if(!_cg.always&&wlUnder(_cx-_cw/2-_cp,_cg.y-_ca-_cp,_cw+_cp*2,_ch)) continue;
+      var _ctop=wlTagPlace(_cx-_cw/2-_cp,_cg.y-_ca-_cp,_cw+_cp*2,_ch);
       if(_ctop===null) continue;
-      var _cy=_ctop+_ca+2;
-      wc.fillStyle=INK; wc.fillText(_cg.t,_cg.x+1,_cy+1); wc.fillStyle=_cg.c||'#e6b4ff'; wc.fillText(_cg.t,_cg.x,_cy);
+      var _cy=_ctop+_ca+_cp;
+      if(_cg.cache) uiPanel(wc,_cx-_cw/2-_cp,_ctop,_cw+_cp*2,_ch,null);
+      wc.fillStyle=INK; wc.fillText(_cg.t,_cx+1,_cy+1); wc.fillStyle=_cg.cache?UIC.tx_1:(_cg.c||'#e6b4ff'); wc.fillText(_cg.t,_cx,_cy);
     }
     wc.textAlign='left'; }
   if(NET.on) netUpTags();   // v15.79: the party names over their heads, beside the pillager nameplates
@@ -56002,7 +56006,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.12: Nearby world names stack when their boxes would overlap. The extraction distance chip clears cache names. Check 36.12 fails on v36.11',
+  now:'v36.13: Cache names sit on a readable panel inside the screen margin. The extraction chip still keeps its own space. Check 36.13 fails on v36.12',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

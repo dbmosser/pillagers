@@ -1,0 +1,5 @@
+## v36.13 - CACHE NAMES CLEAR THE SCREEN EDGE
+
+Co-op hunt while he was away. The critic found the separated cache name too close to the right edge and weak on busy ground. Named caches now use the shared graphite panel and cream text, with the whole panel inset 24px at 1080p and 48px at 4K. Cache and extraction labels remain separate because they identify different destinations. Watch: cache names near either edge should remain whole and readable, with the extraction chip on its own clear line. Only drawing changes.
+
+MEASURED. Check 36.13 passes, and fails on v36.12.
