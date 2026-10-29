@@ -3880,8 +3880,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.25';
-var VER_AT='2026-10-28 22:30';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.26';
+var VER_AT='2026-10-28 22:33';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -40901,15 +40901,21 @@ function wlUnder(x,y,w,h){
   return wlHit(EDGEBOX.trcol,X,Y,X1,Y1)||wlHit(HUDBOX.cond,X,Y,X1,Y1)||(s.g===G&&wlHit(s,X,Y,X1,Y1))||(CLOCKBOX.g===G&&wlHit(CLOCKBOX,X,Y,X1,Y1))||wlHit(EDGEBOX.notes,X,Y,X1,Y1);   // v35.xx (cw-clockcard): and the clock card and the notes row
 }
 // v28.xx (cw-cx-tagstack): audit 9, adjacent machine names overprinted each other. Reserve the drawn text, crew block and health pip; later names stack above earlier names. Only draw coordinates move.
-var WLTEXT={g:null,boxes:[]};
+var WLTEXT={g:null,boxes:[]}, WLCAP={told:0};   // v28.xx (cw-tagloop): the cap tells the crash catcher once a sitting
 function wlTagPlace(x,y,w,h){
   var z=WTX.z, gap=4*Math.max(1,hudRes()), b={x:(x-WTX.ox)*z,y:(y-WTX.oy)*z,w:w*z,h:h*z}, i,q,hit;
   if(!(z>0)||b.x+b.w<0||b.x>W) return null;
+  // v28.xx (cw-tagloop), HIS WORDS (2026-10-28): "whoa i think my game crashed". THE NAME TAG STACK ALWAYS ENDS. A tag pushed up to sit on the one below it
+  // could land a rounding hair over it (y - gap - h, plus h again, came out above y - gap), so it still counted as touching, was put back on the same spot
+  // and the loop never ended: the page froze (his two freezes of 10-28 night, and the robots' hangs; a paused robot page showed wlTagPlace on top of the stack). Every move now
+  // goes up at least one pixel, and the stack gives up after twice the tags plus 8 passes: that tag is skipped for the frame and one crash note says so.
+  var _np=0, _ny, _cap=WLTEXT.boxes.length*2+8;
   do{
     hit=false;
+    if(++_np>_cap){ if(!WLCAP.told){ WLCAP.told=1; try{ noteCrash('hang','name tag stack capped','wlTagPlace'); }catch(_wn){} } return null; }
     for(i=0;i<WLTEXT.boxes.length;i++){
       q=WLTEXT.boxes[i];
-      if(b.x<q.x+q.w+gap&&b.x+b.w>q.x-gap&&b.y<q.y+q.h+gap&&b.y+b.h>q.y-gap){b.y=q.y-gap-b.h;hit=true;break;}
+      if(b.x<q.x+q.w+gap&&b.x+b.w>q.x-gap&&b.y<q.y+q.h+gap&&b.y+b.h>q.y-gap){_ny=q.y-gap-b.h;b.y=(_ny<b.y)?_ny:b.y-1;hit=true;break;}
     }
   }while(hit&&b.y>=gap);
   if(b.y<gap||b.y>H) return null;
@@ -52933,6 +52939,34 @@ function noteCrash(kind,msg,where){  try{
 // so the first two lines were the message and the top frame, cut at 200 characters: a canvas error is about 120 characters
 // before the frame, and the cut took the line and column, the only part that says where. The lines that carry a location
 // are kept; a stack with none keeps its first two lines as before.
+// v28.xx (cw-tagloop), HIS WORDS (2026-10-28): "whoa i think my game crashed", and no report reached us. A frozen page cannot write anything, so a live raid
+// leaves a small heartbeat in localStorage once a second (its own key, never the profile), and a clean leave (the page closed or reloaded, the raid over)
+// wipes it. A heartbeat still there on the next load means the last raid stopped answering or was killed: one crash entry says so, with the build and the
+// raid second, so the next freeze reaches his run report. The test pages never write one (unless a check asks).
+var HBEAT_KEY='salvagerun:hb'+(NETP2?':p2':'')+(NETSLOT?(':'+NETSLOT):''), HBEAT={at:0,on:false};
+function hbTest(){ return typeof __runPrep==='function'&&!window.__hbTest; }
+function hbTick(){
+  var now, live;
+  if(hbTest()) return;
+  live=(typeof state!=='undefined'&&state==='raid'&&G&&!G.over&&!G.sim);
+  if(!live){ if(HBEAT.on) hbClear(); return; }
+  now=Date.now(); if(HBEAT.on&&now-HBEAT.at<1000) return;
+  HBEAT.at=now; HBEAT.on=true;
+  try{ localStorage.setItem(HBEAT_KEY,JSON.stringify({v:VER,t:now,rs:Math.round(+G.t||0)})); }catch(_h1){}
+}
+function hbClear(){ HBEAT.on=false; try{ localStorage.removeItem(HBEAT_KEY); }catch(_h2){} }
+function hbCheck(){
+  var s=null, h=null;
+  if(hbTest()) return null;
+  try{ s=localStorage.getItem(HBEAT_KEY); localStorage.removeItem(HBEAT_KEY); }catch(_h3){ return null; }
+  if(!s) return null;
+  try{ h=JSON.parse(s); }catch(_h4){ return null; }
+  if(!h||!(h.t>0)||Date.now()-h.t>86400000) return null;
+  noteCrash('hang','the raid stopped answering (build '+h.v+', raid '+h.rs+' s)','heartbeat');
+  return h;
+}
+try{ window.addEventListener('pagehide',hbClear); }catch(_h5){}
+try{ hbCheck(); }catch(_h6){}
 function crashWhere(stack){
   var L=String(stack||'').split('\n'), loc=L.filter(function(x){ return (/:\d+:\d+/).test(x); });
   return (loc.length?loc:L).slice(0,2).join(' ');
@@ -55419,6 +55453,7 @@ function hidStart(){
 }
 function loop(ts){
   DRS.frameStart=performance.now(); // v28.xx (cw-cx-ladderwindow): own work starts before frame setup and simulation.
+  try{ hbTick(); }catch(_hbt){}   // v28.xx (cw-tagloop): the raid heartbeat, once a second
   if(!HID.fromWorker){ requestAnimationFrame(loop); HID.lastRaf=(typeof performance!=='undefined')?performance.now():Date.now(); if(!HID.w) hidStart(); }
   try{ syncTopRight(); }catch(_tr2){}   // v11.52: a string compare per frame, a DOM write only on change
   try{ trHide(ts); }catch(_th){}   // v30.xx (cw-trcol): the page text in the corner is clipped away while the raid HUD draws its rows
@@ -56077,7 +56112,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.25: active reload adds 5% a stack, 15% at most Check 36.25 fails on v36.24',
+  now:'v36.26: the game no longer freezes in busy fights Check 36.26 fails on v36.25',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

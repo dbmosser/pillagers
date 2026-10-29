@@ -1,1 +1,1 @@
-10-28 22:29 gate: shipping cw-cx-reload5pct (o-00e-222-active-reload-5pct-steps, codex)
+10-28 22:33 pictures: recipe round 1 for o-00e-222-active-reload-5pct-steps (screens reload-5pct-coop-p1-cap,reload-5pct-coop-p2-cap,reload-5pct-demo-p1-cap,reload-5pct-demo-p2-cap, camera 9364)

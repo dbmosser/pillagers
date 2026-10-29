@@ -1,0 +1,5 @@
+## v36.26 - THE GAME NO LONGER FREEZES
+
+Co-op hunt while he was away. His 10-28 night freezes (Page Unresponsive twice) and the robots hangs: the world name tag stack could loop forever on a rounding hair. Fixed, capped, and a frozen raid now leaves a crash note on the next load. Watch: busy fights with many machine name tags on screen
+
+MEASURED. Check 36.26 passes, and fails on v36.25.

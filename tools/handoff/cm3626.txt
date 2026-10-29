@@ -1,0 +1,7 @@
+v36.26: the game no longer freezes
+
+the game no longer freezes in busy fights
+
+Check 36.26. Fails on v36.25.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
