@@ -6797,7 +6797,8 @@ window.__REGRESS=[
        uiPanel=function(c,x,y,w,h){if((/_wtA/).test(String(new Error().stack))){var m=c.getTransform();pan.push({x:(m.e+x*m.a)/DPRH,y:(m.f+y*m.d)/DPRH,w:w*m.a/DPRH,h:h*m.d/DPRH});}return op.apply(this,arguments);};
        for(var r=0;r<2;r++){
          __forceSize(r?3840:1920,r?2160:1080);__frame(0);ct.x=WTX.ox+(W-3)/WTX.z;ct.y=p.y+100;rec=null;pan=[];__frame(0);
-         var q=pan[0],margin=24*Math.max(1,hudRes());
+         var q=null,margin=24*Math.max(1,hudRes());
+         for(var qp=0;rec&&qp<pan.length;qp++){var qb=pan[qp];if(rec.x>=qb.x&&rec.x+rec.w<=qb.x+qb.w&&rec.y>=qb.y&&rec.y+rec.h<=qb.y+qb.h){q=qb;break;}}
          if(!rec||!q){bad.push('cache name/shared panel missing at '+W);continue;}
          if(q.x<margin-0.1||q.x+q.w>W-margin+0.1)bad.push('cache panel touches screen edge at '+W);
          if(rec.x<q.x+2||rec.x+rec.w>q.x+q.w-2||rec.y<q.y+2||rec.y+rec.h>q.y+q.h-2)bad.push('name not inside panel at '+W);
