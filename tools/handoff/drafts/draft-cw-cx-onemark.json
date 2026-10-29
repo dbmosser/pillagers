@@ -1,0 +1,164 @@
+{
+    "title":  "PING AND MAP MARK ARE ONE",
+    "why":  "His order: the ping and the map mark are one mark. One deliberate mark per player uses the png message and the same record for the raid, map and minimap. Spot marks last until moved or cleared; entity pings still follow for ten seconds. Automatic loot notices stay separate. Watch: the ping and the map mark are one mark. In both windows, move and clear each colour from the raid and map and check that the other window follows.",
+    "now":  "Middle mouse, N, pad and map clicks move one mark. Ping your spot again or right click the map to clear it everywhere.",
+    "edits":  [
+                  {
+                      "anchor":  "function netWpSend(){\n  var w;\n  if(typeof NET!==\u0027object\u0027||!NET||!NET.on) return false;\n  w=(typeof G!==\u0027undefined\u0027\u0026\u0026G)?G.waypoint:null;\n  netBroadcast(w?{t:\u0027wp\u0027,x:Math.round(w.x),y:Math.round(w.y)}:{t:\u0027wp\u0027,clr:1});\n  return true;\n}",
+                      "replacement":  "// v28.xx (cw-cx-onemark), his order: \"the two need to become the same thing\". Waypoint callers use the same mark record and png word.\nfunction netMarkSet(x,y){\n  if(typeof G===\u0027undefined\u0027||!G||!isFinite(x)||!isFinite(y)) return null;\n  var m={t:\u0027png\u0027,x:Math.round(clamp(x,0,WORLD_W)),y:Math.round(clamp(y,0,WORLD_H)),w:\u0027\u0027,spot:1};\n  netPingPush(NET.seat,m); NET.pingLast=m; NET.pingTarget=null; NET.pingAt=Date.now();\n  if(NET.on) netBroadcast(m);\n  return G.waypoint;\n}\nfunction netMarkClear(){\n  netPingPush(NET.seat,{clr:1}); NET.pingLast=null; NET.pingTarget=null; NET.pingAt=0;\n  if(NET.on) netBroadcast({t:\u0027png\u0027,clr:1});\n  return true;\n}\nfunction netMarkColour(s){return +s\u003c=0?\u0027#ffc04a\u0027:\u0027#6fe0ff\u0027;}\nfunction netWpSend(){\n  var w=(typeof G!==\u0027undefined\u0027\u0026\u0026G)?G.waypoint:null;\n  if(w) netMarkSet(w.x,w.y); else netMarkClear();\n  return !!NET.on;\n}"
+                  },
+                  {
+                      "anchor":  "function netWpTake(peer,m){\n  var s, i, o;\n  if(!peer||peer.state!==\u0027in\u0027) return \u0027ignored\u0027;\n  if(NET.role===\u0027host\u0027) s=peer.seat; else { s=(m.s===undefined)?0:m.s; if(typeof s!==\u0027number\u0027||s!==(s|0)) return \u0027bad\u0027; }\n  if(s===NET.seat) return \u0027ignored\u0027;\n  if(!NET.wps) NET.wps={};\n  if(m.clr) delete NET.wps[s];\n  else { if(typeof m.x!==\u0027number\u0027||typeof m.y!==\u0027number\u0027||!isFinite(m.x)||!isFinite(m.y)) return \u0027bad\u0027; NET.wps[s]={x:clamp(m.x,0,WORLD_W),y:clamp(m.y,0,WORLD_H)}; }\n  if(NET.role===\u0027host\u0027){ o=m.clr?{t:\u0027wp\u0027,s:s,clr:1}:{t:\u0027wp\u0027,s:s,x:NET.wps[s].x,y:NET.wps[s].y}; for(i=0;i\u003cNET.peers.length;i++) if(NET.peers[i]!==peer\u0026\u0026NET.peers[i].state===\u0027in\u0027) netSend(NET.peers[i],o); }\n  try{ if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.sim\u0026\u0026!m.clr) blip(\u0027pick\u0027); }catch(_b){}\n  return m.clr?\u0027wp:clr\u0027:\u0027wp\u0027;\n}",
+                      "replacement":  "// v28.xx (cw-cx-onemark): accept the old map word for late arrival; keep entity identity and remaining time in that snapshot.\nfunction netWpTake(peer,m){\n  var r=netPingTake(peer,{s:m.s,x:m.x,y:m.y,w:m.w,id:m.id,dg:m.dg,spot:m.spot===undefined?1:m.spot,age:m.age,clr:m.clr});\n  return r===\u0027png\u0027?(m.clr?\u0027wp:clr\u0027:\u0027wp\u0027):r;\n}"
+                  },
+                  {
+                      "anchor":  "function netWpFromMap(){\n  var MP=mapProj(), w;\n  if(!(mouse.x\u003e=MP.ox\u0026\u0026mouse.x\u003c=MP.ox+WORLD_W*MP.sc\u0026\u0026mouse.y\u003e=MP.oy\u0026\u0026mouse.y\u003c=MP.oy+WORLD_H*MP.sc)) return null;\n  w=mapScreenToWorld(mouse.x,mouse.y);\n  G.waypoint={x:clamp(w.x,0,WORLD_W),y:clamp(w.y,0,WORLD_H)};\n  blip(\u0027pick\u0027); say(\u0027WAYPOINT SET\u0027,\u0027sys\u0027,(typeof NET===\u0027object\u0027\u0026\u0026NET\u0026\u0026NET.on)?{sub:\u0027Your party can see it.\u0027}:null);   // v22.xx (R55): Waypoint, never Marker (his Marked Waypoint)\n  netWpSend();\n  return G.waypoint;\n}",
+                      "replacement":  "function netWpFromMap(){\n  var MP=mapProj(), w;\n  if(!(mouse.x\u003e=MP.ox\u0026\u0026mouse.x\u003c=MP.ox+WORLD_W*MP.sc\u0026\u0026mouse.y\u003e=MP.oy\u0026\u0026mouse.y\u003c=MP.oy+WORLD_H*MP.sc)) return null;\n  w=mapScreenToWorld(mouse.x,mouse.y);\n  netMarkSet(w.x,w.y); say(\u0027mark set\u0027,\u0027sys\u0027);\n  return G.waypoint;\n}"
+                  },
+                  {
+                      "anchor":  "    if(e.button===2){ G.waypoint=null; say(\u0027WAYPOINT CLEARED\u0027,\u0027sys\u0027); try{ if(NET.on) netWpSend(); }catch(_wc){} return; }   // v22.xx (R55): a system label in caps",
+                      "replacement":  "    if(e.button===2){ netMarkClear(); say(\u0027mark cleared\u0027,\u0027sys\u0027); return; }   // v28.xx (cw-cx-onemark): clear the same mark in every view and window."
+                  },
+                  {
+                      "anchor":  "        G.waypoint={x:clamp(wpt.x,0,WORLD_W),y:clamp(wpt.y,0,WORLD_H)};\n        blip(\u0027pick\u0027); say(\u0027WAYPOINT SET\u0027,\u0027sys\u0027);   // v22.xx (R55): a system label in caps\n        try{ if(NET.on) netWpSend(); }catch(_ws){}   // v16.46: your party sees your map marker",
+                      "replacement":  "        netMarkSet(wpt.x,wpt.y); say(\u0027mark set\u0027,\u0027sys\u0027);   // v28.xx (cw-cx-onemark): map clicks and raid pings move one mark."
+                  },
+                  {
+                      "anchor":  "function netPingMake(){\n  var w, i, e, bd=NET_PING_SNAP, d, hit=null, m;\n  // v28.xx (cw-cx-solopings): only a party needs a shared raid seed. No ping behind a panel, while down, or on the Undercroft floor.\n  if(typeof G===\u0027undefined\u0027||!G||G.over||!G.player||G.hubFloor||G.sim||G.paused||G.bagOpen||G.trade||G.forgeUI||G.player.downed||G.player.dying||(NET.on\u0026\u0026!NET.upSeed)) return null;\n  // v16.61, stability (co-op review): the double press is read BEFORE the 0.5 s limit. That limit stood first and answered\n  // every press inside 0.5 s with nothing, so the 0.4 s double press the controls legend promises (twice: danger) never came.\n  if(!G.mapOpen\u0026\u0026NET.pingAt\u0026\u0026Date.now()-NET.pingAt\u003c400){   // v16.46: pressed twice, the last ping becomes DANGER\n    if(NET.pingLast\u0026\u0026!NET.pingLast.dg){ NET.pingLast.dg=1; if(NET.on) netBroadcast(NET.pingLast); netPingPush(NET.seat,NET.pingLast,NET.pingTarget); }\n    return NET.pingLast||null;\n  }\n  if(NET.pingAt\u0026\u0026Date.now()-NET.pingAt\u003c500) return null;\n  if(G.mapOpen) return netWpFromMap();   // v16.46: a ping on the open map is your map marker, as in Fortnite\n  NET.pingAt=Date.now();\n  w=mouseWorld();\n  for(i=0;i\u003cG.ents.length;i++){ e=G.ents[i]; if((NET.on\u0026\u0026!e.nid)||e.hp\u003c=0||e.merc) continue; d=dist(e,w); if(d\u003cbd){ bd=d; hit=e; } }\n  m={t:\u0027png\u0027,x:Math.round(hit?hit.x:w.x),y:Math.round(hit?hit.y:w.y),w:hit?netPingName(hit):\u0027\u0027};   // v17.57: the boss by its name\n  if(hit) m.id=hit.nid;\n  if(NET.on) netBroadcast(m);\n  NET.pingLast=m;\n  NET.pingTarget=NET.on?null:hit;   // v28.xx (cw-cx-solopings): solo targets have no network id; keep the local body out of the wire word.\n  netPingPush(NET.seat,m,NET.pingTarget);\n  return m;\n}",
+                      "replacement":  "function netPingMake(){\n  var w, i, e, bd=NET_PING_SNAP, d, hit=null, m, own;\n  // v28.xx (cw-cx-onemark): spot marks last until moved or cleared; entity pings keep their timer and double-tap danger.\n  if(typeof G===\u0027undefined\u0027||!G||G.over||!G.player||G.hubFloor||G.sim||G.paused||G.bagOpen||G.trade||G.forgeUI||G.player.downed||G.player.dying||(NET.on\u0026\u0026!NET.upSeed)) return null;\n  if(G.mapOpen) return netWpFromMap();\n  w=mouseWorld(); netPingUpdate();\n  for(i=0;i\u003cG.ents.length;i++){e=G.ents[i];if((NET.on\u0026\u0026!e.nid)||e.hp\u003c=0||e.merc)continue;d=dist(e,w);if(d\u003cbd){bd=d;hit=e;}}\n  own=G.waypoint;\n  if(own\u0026\u0026own.spot\u0026\u0026dist(own,w)\u003c=28){netMarkClear();return null;}\n  if(hit\u0026\u0026NET.pingAt\u0026\u0026Date.now()-NET.pingAt\u003c400\u0026\u0026NET.pingLast\u0026\u0026!NET.pingLast.spot){\n    if(!NET.pingLast.dg){NET.pingLast.dg=1;if(NET.on)netBroadcast(NET.pingLast);netPingPush(NET.seat,NET.pingLast,NET.pingTarget);}\n    return NET.pingLast;\n  }\n  if(hit\u0026\u0026NET.pingAt\u0026\u0026Date.now()-NET.pingAt\u003c500) return null;\n  if(!hit) return netMarkSet(w.x,w.y);\n  NET.pingAt=Date.now();\n  m={t:\u0027png\u0027,x:Math.round(hit.x),y:Math.round(hit.y),w:netPingName(hit)};\n  if(hit.nid) m.id=hit.nid;\n  if(NET.on) netBroadcast(m);\n  NET.pingLast=m; NET.pingTarget=NET.on?null:hit;\n  netPingPush(NET.seat,m,NET.pingTarget);\n  return m;\n}"
+                  },
+                  {
+                      "anchor":  "function netPingTake(peer,m){\n  var s;\n  if(!peer||peer.state!==\u0027in\u0027) return \u0027ignored\u0027;\n  if(typeof m.x!==\u0027number\u0027||typeof m.y!==\u0027number\u0027||!isFinite(m.x)||!isFinite(m.y)) return \u0027bad\u0027;\n  if(NET.role===\u0027host\u0027) s=peer.seat; else { s=(m.s===undefined)?0:m.s; if(typeof s!==\u0027number\u0027||s!==(s|0)) return \u0027bad\u0027; }\n  if(s===NET.seat) return \u0027ignored\u0027;\n  var o={x:clamp(m.x,-9000,NET_UP_MAX),y:clamp(m.y,-9000,NET_UP_MAX),w:netClean(m.w,24),dg:m.dg?1:0,pl:m.pl?1:0};   // v32.xx (cw-droppings): pl marks a pile ping\n  if(typeof m.id===\u0027number\u0027) o.id=m.id|0;\n  if(NET.role===\u0027host\u0027){ var i; for(i=0;i\u003cNET.peers.length;i++) if(NET.peers[i]!==peer\u0026\u0026NET.peers[i].state===\u0027in\u0027) netSend(NET.peers[i],{t:\u0027png\u0027,s:s,x:o.x,y:o.y,w:o.w,id:o.id,dg:o.dg,pl:o.pl}); }\n  netPingPush(s,o);\n  return \u0027png\u0027;\n}",
+                      "replacement":  "function netPingTake(peer,m){\n  var s, o, i;\n  if(!peer||peer.state!==\u0027in\u0027) return \u0027ignored\u0027;\n  if(NET.role===\u0027host\u0027) s=peer.seat; else {s=m.s===undefined?0:m.s;if(typeof s!==\u0027number\u0027||s!==(s|0)||s\u003c0||s\u003e=NET.max)return \u0027bad\u0027;}\n  if(s===NET.seat) return \u0027ignored\u0027;\n  if(!m.clr\u0026\u0026(typeof m.x!==\u0027number\u0027||typeof m.y!==\u0027number\u0027||!isFinite(m.x)||!isFinite(m.y))) return \u0027bad\u0027;\n  // v28.xx (cw-cx-onemark): the host owns the sender seat, including clears. No target objects cross the wire.\n  o=m.clr?{t:\u0027png\u0027,s:s,clr:1}:{t:\u0027png\u0027,s:s,x:clamp(m.x,0,WORLD_W),y:clamp(m.y,0,WORLD_H),w:netClean(m.w,24),dg:m.dg?1:0,pl:m.pl?1:0,spot:m.spot?1:0};\n  if(!m.clr\u0026\u0026typeof m.id===\u0027number\u0027) o.id=m.id|0;\n  if(!m.clr\u0026\u0026typeof m.age===\u0027number\u0027\u0026\u0026isFinite(m.age)) o.age=clamp(m.age,0,NET_PING_T*1000);\n  if(NET.role===\u0027host\u0027) for(i=0;i\u003cNET.peers.length;i++) if(NET.peers[i]!==peer\u0026\u0026NET.peers[i].state===\u0027in\u0027) netSend(NET.peers[i],o);\n  netPingPush(s,o);\n  return \u0027png\u0027;\n}"
+                  },
+                  {
+                      "anchor":  "function netPingPush(s,o,target){\n  if(!NET.pings) NET.pings=[];\n  if(o.dg){ var _pi; for(_pi=NET.pings.length-1;_pi\u003e=0;_pi--) if(NET.pings[_pi].s===s\u0026\u0026Math.abs(NET.pings[_pi].x-o.x)\u003c2\u0026\u0026Math.abs(NET.pings[_pi].y-o.y)\u003c2) NET.pings.splice(_pi,1); }\n  NET.pings.push({s:s,x:o.x,y:o.y,w:o.w||\u0027\u0027,id:o.id,dg:o.dg?1:0,pl:o.pl?1:0,at:Date.now(),target:target||null});\n  if(NET.pings.length\u003e6) NET.pings.shift();\n  try{ if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.sim) blip(\u0027pick\u0027); }catch(_bp){}\n  return NET.pings.length;\n}",
+                      "replacement":  "function netPingPush(s,o,target){\n  var i,p;\n  if(!NET.pings) NET.pings=[];\n  // v28.xx (cw-cx-onemark): one deliberate mark per seat; automatic dropped-item notices stay separate.\n  if(!o.pl) for(i=NET.pings.length-1;i\u003e=0;i--) if(NET.pings[i].s===s\u0026\u0026!NET.pings[i].pl) NET.pings.splice(i,1);\n  if(o.clr){\n    if(NET.wps) delete NET.wps[s];\n    if(s===NET.seat\u0026\u0026typeof G!==\u0027undefined\u0027\u0026\u0026G) G.waypoint=null;\n    return NET.pings.length;\n  }\n  p={s:s,x:o.x,y:o.y,w:o.w||\u0027\u0027,id:o.id,dg:o.dg?1:0,pl:o.pl?1:0,spot:!o.pl\u0026\u0026(!!o.spot||(!o.id\u0026\u0026!target\u0026\u0026!o.w)),at:Date.now()-(o.age||0),target:target||null};\n  NET.pings.push(p);\n  if(!p.pl){\n    if(s===NET.seat\u0026\u0026typeof G!==\u0027undefined\u0027\u0026\u0026G) G.waypoint=p;\n    else {if(!NET.wps)NET.wps={};NET.wps[s]=p;}\n  }\n  if(NET.pings.length\u003e6) for(i=0;i\u003cNET.pings.length;i++) if(NET.pings[i].pl){NET.pings.splice(i,1);break;}\n  try{if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026!G.sim)blip(\u0027pick\u0027);}catch(_bp){}\n  return NET.pings.length;\n}"
+                  },
+                  {
+                      "anchor":  "function netPingUpdate(){\n  var i, p, e, now=Date.now();\n  if(!NET.pings) return 0;\n  for(i=NET.pings.length-1;i\u003e=0;i--){\n    p=NET.pings[i];\n    if((now-p.at)/1000\u003eNET_PING_T){ NET.pings.splice(i,1); continue; }\n    e=p.target||(p.id\u0026\u0026NET.entMap?NET.entMap[p.id]:null);\n    if(e\u0026\u0026e.hp\u003e0\u0026\u0026G\u0026\u0026G.ents.indexOf(e)\u003e=0){ p.x=e.x; p.y=e.y; }\n  }\n  return NET.pings.length;\n}",
+                      "replacement":  "function netPingUpdate(){\n  var i,p,e,now=Date.now();\n  if(!NET.pings) return 0;\n  for(i=NET.pings.length-1;i\u003e=0;i--){\n    p=NET.pings[i];\n    if(!p.spot\u0026\u0026(now-p.at)/1000\u003eNET_PING_T){\n      NET.pings.splice(i,1);\n      if(NET.wps\u0026\u0026NET.wps[p.s]===p)delete NET.wps[p.s];\n      if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026G.waypoint===p)G.waypoint=null;\n      continue;\n    }\n    e=p.target||(p.id\u0026\u0026NET.entMap?NET.entMap[p.id]:null);\n    if(e\u0026\u0026e.hp\u003e0\u0026\u0026G\u0026\u0026G.ents\u0026\u0026G.ents.indexOf(e)\u003e=0){p.x=e.x;p.y=e.y;}\n  }\n  return NET.pings.length;\n}"
+                  },
+                  {
+                      "anchor":  "    w=NET.wps[s]; q=w2s(w.x,0,w.y); if(!q) continue;",
+                      "replacement":  "    w=NET.wps[s]; if((NET.pings||[]).indexOf(w)\u003e=0)continue; q=w2s(w.x,0,w.y); if(!q) continue;"
+                  },
+                  {
+                      "anchor":  "    w=NET.wps[s]; px=ox+w.x*sc; py=oy+w.y*sc;",
+                      "replacement":  "    w=NET.wps[s]; if((NET.pings||[]).indexOf(w)\u003e=0)continue; px=ox+w.x*sc; py=oy+w.y*sc;"
+                  },
+                  {
+                      "anchor":  "      q=NET.wps[_ws]; if(!q||!isFinite(q.x)) continue; s=at(q.x,q.y);",
+                      "replacement":  "      q=NET.wps[_ws]; if(!q||!isFinite(q.x)||(NET.pings||[]).indexOf(q)\u003e=0) continue; s=at(q.x,q.y);"
+                  },
+                  {
+                      "anchor":  "      q=NET.pings[i]; if(!q||!isFinite(q.x)) continue; s=at(q.x,q.y); if(s.out) continue;",
+                      "replacement":  "      q=NET.pings[i]; if(!q||!isFinite(q.x)||(q===G.waypoint\u0026\u0026q.spot)) continue; s=at(q.x,q.y);\n      if(s.out){if(!q.pl)mmArrow(s,R,netMarkColour(q.s),q.s===NET.seat?\u0027waypoint\u0027:\u0027partywaypoint\u0027);continue;}"
+                  },
+                  {
+                      "anchor":  "      ctx.fillStyle=q.dg?\u0027#ff4a3a\u0027:(q.w?\u0027#ff8a3c\u0027:\u0027#6fe0ff\u0027);",
+                      "replacement":  "      ctx.fillStyle=q.pl?\u0027#ff8a3c\u0027:netMarkColour(q.s);"
+                  },
+                  {
+                      "anchor":  "  if(G.waypoint\u0026\u0026isFinite(G.waypoint.x)){",
+                      "replacement":  "  if(G.waypoint\u0026\u0026(!G.waypoint.at||G.waypoint.spot)\u0026\u0026isFinite(G.waypoint.x)){"
+                  },
+                  {
+                      "anchor":  "    if(s.out)mmArrow(s,R,UIC.acc,\u0027waypoint\u0027);",
+                      "replacement":  "    if(s.out)mmArrow(s,R,netMarkColour(NET.seat),\u0027waypoint\u0027);"
+                  },
+                  {
+                      "anchor":  "      ctx.strokeStyle=UIC.acc; ctx.lineWidth=1.6*R; ctx.beginPath(); ctx.arc(s.x,s.y,4.5*R,0,6.2832);",
+                      "replacement":  "      ctx.strokeStyle=netMarkColour(NET.seat); ctx.lineWidth=1.6*R; ctx.beginPath(); ctx.arc(s.x,s.y,4.5*R,0,6.2832);"
+                  },
+                  {
+                      "anchor":  "    p=NET.pings[i]; px=ox+p.x*sc; py=oy+p.y*sc;",
+                      "replacement":  "    p=NET.pings[i]; if(p===G.waypoint\u0026\u0026p.spot)continue; px=ox+p.x*sc; py=oy+p.y*sc;"
+                  },
+                  {
+                      "anchor":  "    colourCueGlyph(ctx,p.dg?\u0027danger\u0027:p.pl?\u0027loot\u0027:p.w?\u0027target\u0027:\u0027place\u0027,px,py,2*Math.max(1,hudRes()),p.dg?\u0027#ff4a3a\u0027:p.w?\u0027#ff8a3c\u0027:\u0027#6fe0ff\u0027); // v28.xx (cw-cx-pingmerge): match the minimap 24px ping and dark backing.",
+                      "replacement":  "    colourCueGlyph(ctx,p.dg?\u0027danger\u0027:p.pl?\u0027loot\u0027:p.w?\u0027target\u0027:\u0027place\u0027,px,py,2*Math.max(1,hudRes()),p.pl?\u0027#ff8a3c\u0027:netMarkColour(p.s)); // v28.xx (cw-cx-onemark): the same seat colour in all three views."
+                  },
+                  {
+                      "anchor":  "    c=p.dg?\u0027#ff4a3a\u0027:(p.w?\u0027#ff8a3c\u0027:((p.s===NET.seat)?HUDC.warn:HUDC.ally));   // v22.70 (R27): a teammate ping in the teammate colour, your own in amber like your Waypoint",
+                      "replacement":  "    c=p.pl?\u0027#ff8a3c\u0027:netMarkColour(p.s);   // v28.xx (cw-cx-onemark): p1 amber, p2 cyan in either window."
+                  },
+                  {
+                      "anchor":  "  if(G.waypoint){\n    var wpx=",
+                      "replacement":  "  if(G.waypoint\u0026\u0026(!G.waypoint.at||G.waypoint.spot)){\n    var wpx="
+                  },
+                  {
+                      "anchor":  "    ctx.strokeStyle=UIC.tx_1; ctx.lineWidth=2*_MZ;\n    ctx.beginPath(); ctx.arc(wpx",
+                      "replacement":  "    ctx.strokeStyle=netMarkColour(NET.seat); ctx.lineWidth=2*_MZ;\n    ctx.beginPath(); ctx.arc(wpx"
+                  },
+                  {
+                      "anchor":  "    ctx.fillText(\u0027WAYPOINT\u0027,wpx,wpy-14*_MZ); ctx.textAlign=\u0027left\u0027;",
+                      "replacement":  "    ctx.fillText(\u0027mark\u0027,wpx,wpy-14*_MZ); ctx.textAlign=\u0027left\u0027;"
+                  },
+                  {
+                      "anchor":  "    _tgt=G.waypoint; _lbl=\u0027WAYPOINT\u0027; _col=\u0027#ffc04a\u0027;",
+                      "replacement":  "    _tgt=G.waypoint; _lbl=\u0027mark\u0027; _col=netMarkColour(NET.seat);"
+                  },
+                  {
+                      "anchor":  "\u0027R STICK move marker",
+                      "replacement":  "\u0027R STICK move mark"
+                  },
+                  {
+                      "anchor":  "D-UP place marker\u0027",
+                      "replacement":  "D-UP set mark\u0027"
+                  },
+                  {
+                      "anchor":  "\u0027CLICK set waypoint",
+                      "replacement":  "\u0027CLICK set mark"
+                  },
+                  {
+                      "anchor":  "\u0027CLICK to set a waypoint\u0027",
+                      "replacement":  "\u0027CLICK to set a mark\u0027"
+                  },
+                  {
+                      "anchor":  "[\u0027KeyN\u0027,\u0027ping\u0027],[\u0027Mouse1\u0027,\u0027ping (mouse)\u0027]",
+                      "replacement":  "[\u0027KeyN\u0027,\u0027mark\u0027],[\u0027Mouse1\u0027,\u0027mark (mouse)\u0027]"
+                  },
+                  {
+                      "anchor":  "[12,\u0027ping (hold: the map)\u0027,\u0027WORLD\u0027]",
+                      "replacement":  "[12,\u0027mark (hold: the map)\u0027,\u0027WORLD\u0027]"
+                  },
+                  {
+                      "anchor":  "[n(12),\u0027ping (twice: danger); hold: map\u0027]",
+                      "replacement":  "[n(12),\u0027mark; hold: map\u0027]"
+                  },
+                  {
+                      "anchor":  "[n(12),\u0027ping, twice for danger\u0027]",
+                      "replacement":  "[n(12),\u0027mark\u0027]"
+                  },
+                  {
+                      "anchor":  "\u0027ping / map\u0027",
+                      "replacement":  "\u0027mark / map\u0027"
+                  },
+                  {
+                      "anchor":  "[b(12),\u0027ping, hold: map\u0027]",
+                      "replacement":  "[b(12),\u0027mark, hold: map\u0027]"
+                  },
+                  {
+                      "anchor":  "s(\u0027Mouse1\u0027)+\u0027 ping \u0026nbsp; \u0027",
+                      "replacement":  "s(\u0027Mouse1\u0027)+\u0027 mark \u0026nbsp; \u0027"
+                  },
+                  {
+                      "anchor":  "to ping a spot or an enemy for your party;",
+                      "replacement":  "to mark a spot or an enemy;"
+                  },
+                  {
+                      "anchor":  "+\u0027 WAYPOINT  \u0027+",
+                      "replacement":  "+\u0027 mark  \u0027+"
+                  },
+                  {
+                      "anchor":  "  if(G.waypoint\u0026\u0026typeof G.waypoint.x===\u0027number\u0027) netSend(peer,{t:\u0027wp\u0027,x:Math.round(G.waypoint.x),y:Math.round(G.waypoint.y)});",
+                      "replacement":  "  netPingUpdate();\n  if(G.waypoint\u0026\u0026typeof G.waypoint.x===\u0027number\u0027) netSend(peer,{t:\u0027wp\u0027,x:Math.round(G.waypoint.x),y:Math.round(G.waypoint.y),w:G.waypoint.w,id:G.waypoint.id,dg:G.waypoint.dg,spot:G.waypoint.spot===false?0:1,age:G.waypoint.at?Date.now()-G.waypoint.at:0});"
+                  },
+                  {
+                      "anchor":  "  if(NET.wps) for(id in NET.wps) if(Object.prototype.hasOwnProperty.call(NET.wps,id)\u0026\u0026(id|0)!==peer.seat\u0026\u0026NET.wps[id]\u0026\u0026typeof NET.wps[id].x===\u0027number\u0027) netSend(peer,{t:\u0027wp\u0027,s:id|0,x:Math.round(NET.wps[id].x),y:Math.round(NET.wps[id].y)});",
+                      "replacement":  "  if(NET.wps) for(id in NET.wps) if(Object.prototype.hasOwnProperty.call(NET.wps,id)\u0026\u0026(id|0)!==peer.seat\u0026\u0026NET.wps[id]\u0026\u0026typeof NET.wps[id].x===\u0027number\u0027){var lateMark=NET.wps[id];netSend(peer,{t:\u0027wp\u0027,s:id|0,x:Math.round(lateMark.x),y:Math.round(lateMark.y),w:lateMark.w,id:lateMark.id,dg:lateMark.dg,spot:lateMark.spot===false?0:1,age:lateMark.at?Date.now()-lateMark.at:0});}"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027one mark per seat: middle mouse, map click, move, toggle, clear, persistence, target expiry and host relay in all three views\u0027,\n   run:function(){\n     var keep={},ks=[\u0027on\u0027,\u0027role\u0027,\u0027seat\u0027,\u0027peers\u0027,\u0027pings\u0027,\u0027wps\u0027,\u0027pingAt\u0027,\u0027pingLast\u0027,\u0027pingTarget\u0027,\u0027entMap\u0027,\u0027upSeed\u0027],g,p,e,m,first,i,j,MP,shown=[],sent=[],world=[],arcs=[];\n     var mw=mouseWorld,bc=netBroadcast,ns=netSend,cg=colourCueGlyph,pl=netPingLabel,arc=ctx.arc,x0=mouse.x,y0=mouse.y;\n     ks.forEach(function(k){keep[k]=NET[k];});\n     function at(x,y){mouseWorld=function(){return {x:x,y:y};};}\n     function click(button,x,y){var b=cv.getBoundingClientRect();mouse.x=x;mouse.y=y;cv.dispatchEvent(new MouseEvent(\u0027mousedown\u0027,{button:button,clientX:b.left+x,clientY:b.top+y,bubbles:true,cancelable:true}));cv.dispatchEvent(new MouseEvent(\u0027mouseup\u0027,{button:button,bubbles:true}));}\n     try{\n       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();NET.on=false;\n       __deploy({kit:[\u0027gun_rifle\u0027],safe:null,mapIx:0,seed:4242});g=__state();p=g.player;\n       g.mapFirst=false;g.mapOpen=false;g.bagOpen=false;g.paused=false;g.rise=null;keys={};mouse.down=false;CFG.xfPix=0;\n       netBroadcast=function(v){sent.push(v);};netSend=function(pe,v){sent.push(v);return true;};\n       netPingLabel=function(t,x,y,r){world.push(t);return pl.apply(this,arguments);};\n       colourCueGlyph=function(c,k,x,y,s){shown.push(k);return cg.apply(this,arguments);};\n       ctx.arc=function(x,y,r){arcs.push({x:x,y:y,r:r});return arc.apply(this,arguments);};\n       for(i=0;i\u003c2;i++){\n         NET.on=!!i;NET.role=i?\u0027join\u0027:\u0027host\u0027;NET.seat=i;NET.upSeed=g.seed;NET.pings=[];NET.wps={};NET.pingAt=0;NET.pingLast=null;g.waypoint=null;\n         // v28.xx (cw-cx-onemark): an empty point under the cursor in the real seeded world.\n         first=null;for(j=0;j\u003c100\u0026\u0026!first;j++){var q={x:p.x+(j%10-5)*95,y:p.y+(Math.floor(j/10)-5)*95};if(q.x\u003e0\u0026\u0026q.y\u003e0\u0026\u0026q.x\u003cWORLD_W\u0026\u0026q.y\u003cWORLD_H\u0026\u0026!g.ents.some(function(v){return v.hp\u003e0\u0026\u0026!v.merc\u0026\u0026dist(v,q)\u003cNET_PING_SNAP+2;}))first=q;}\n         if(!first)return \u0027cannot stage empty cursor point\u0027;\n         at(first.x,first.y);raidKey(\u0027Mouse1\u0027,false,null);\n         if(!g.waypoint||NET.pings.length!==1||g.waypoint!==NET.pings[0])return \u0027middle mouse did not set the one shared mark in seat \u0027+i;\n         m=NET.pings[0];m.at=Date.now()-60000;netPingUpdate();if(NET.pings[0]!==m||!g.waypoint)return \u0027spot faded\u0027;\n         shown=[];arcs=[];mmMarks({x:100,y:100,w:400,h:400},.3,1);if(!MMAP.got.wp)return \u0027spot missing on minimap\u0027;\n         g.mapOpen=true;arcs=[];drawMapOverlayRaw();MP=mapProj();if(!arcs.some(function(a){return Math.abs(a.x-(MP.ox+m.x*MP.sc))\u003c2\u0026\u0026Math.abs(a.y-(MP.oy+m.y*MP.sc))\u003c2;}))return \u0027middle mouse spot missing on map\u0027;\n         var nx=clamp(first.x+200,20,WORLD_W-20),ny=clamp(first.y+180,20,WORLD_H-20);\n         click(0,MP.ox+nx*MP.sc,MP.oy+ny*MP.sc);\n         if(!g.waypoint||Math.abs(g.waypoint.x-nx)\u003e3||NET.pings.length!==1)return \u0027map click did not move same mark\u0027;\n         g.mapOpen=false;world=[];if(netPingDraw()!==1||!world.some(function(t){return /\\d+m/.test(t);}))return \u0027map mark missing raid marker/distance\u0027;\n         at(first.x,first.y);raidKey(\u0027KeyN\u0027,false,null);if(NET.pings.length!==1||NET.pings[0].x!==Math.round(first.x))return \u0027second ping did not move mark\u0027;\n         raidKey(\u0027KeyN\u0027,false,null);if(g.waypoint||NET.pings.length)return \u0027pinging own mark did not clear\u0027;\n         at(first.x,first.y);raidKey(\u0027Mouse1\u0027,false,null);g.mapOpen=true;click(2,MP.ox+80,MP.oy+80);\n         if(g.waypoint||NET.pings.length)return \u0027right click did not clear both\u0027;g.mapOpen=false;\n         if(netMarkColour(0)!==\u0027#ffc04a\u0027||netMarkColour(1)!==\u0027#6fe0ff\u0027)return \u0027seat colours differ\u0027;\n         NET.on=true;NET.role=i?\u0027join\u0027:\u0027host\u0027;NET.peers=[{state:\u0027in\u0027,seat:1-i},{state:\u0027in\u0027,seat:2}];sent=[];\n         var peer=NET.peers[0];netPingTake(peer,{s:1-i,x:first.x,y:first.y,spot:1});\n         if(NET.pings.length!==1||NET.pings[0].s!==1-i||!NET.pings[0].spot||!NET.wps[1-i])return \u0027partner did not keep mark\u0027;\n         shown=[];netWpMapDraw(0,0,.1);if(shown.indexOf(\u0027place\u0027)\u003c0)return \u0027partner map lost mark\u0027;\n         world=[];if(netPingDraw()!==1||world.length!==1)return \u0027partner raid missing or duplicate\u0027;\n         if(!i\u0026\u0026(sent.length!==1||sent[0].s!==1))return \u0027host failed relay\u0027;\n         netPingTake(peer,{s:1-i,x:first.x+90,y:first.y+80,spot:1});if(NET.pings.length!==1||NET.pings[0].x!==first.x+90)return \u0027partner move left old mark\u0027;\n         netPingTake(peer,{s:1-i,clr:1});if(NET.pings.length||NET.wps[1-i])return \u0027partner clear left mark\u0027;\n         NET.on=false;e=g.ents.filter(function(v){return v.hp\u003e0\u0026\u0026!v.merc;})[0];NET.pingAt=0;\n         at(e.x,e.y);raidKey(\u0027KeyN\u0027,false,null);m=NET.pings[0];if(!m||m.spot||m.target!==e)return \u0027entity lost timed tracking\u0027;\n         e.x+=5;netPingUpdate();if(m.x!==e.x||g.waypoint.x!==e.x)return \u0027entity map position stale\u0027;\n         m.at=Date.now()-10001;netPingUpdate();if(NET.pings.length||g.waypoint)return \u0027entity failed expiry\u0027;\n       }\n       return null;\n     }finally{\n       mouseWorld=mw;netBroadcast=bc;netSend=ns;colourCueGlyph=cg;netPingLabel=pl;ctx.arc=arc;mouse.x=x0;mouse.y=y0;\n       NET.on=false;try{__endRaid(\u0027abandon\u0027);}catch(_e){}__topClear();keys={};mouse.down=false;ks.forEach(function(k){NET[k]=keep[k];});\n     }\n   }},"
+}

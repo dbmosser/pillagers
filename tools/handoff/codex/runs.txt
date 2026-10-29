@@ -561,3 +561,5 @@
 2026-10-29 09:08 o-00u-238-no-heal-or-plate-while-reloading 76s ok PARTIAL in=2606032 out=19671 run=2
 2026-10-29 09:15 o-00u-238-no-heal-or-plate-while-reloading 103s ok PARTIAL in=3892211 out=23383 run=3
 2026-10-29 09:18 o-00u-238-no-heal-or-plate-while-reloading 77s ok DONE in=4702930 out=25714 run=4
+2026-10-29 11:42 o-00v-239-ping-and-map-mark-are-one 732s ok PARTIAL in=1615612 out=25775 run=1
+2026-10-29 11:44 o-00v-239-ping-and-map-mark-are-one 81s ok PARTIAL in=2137332 out=28397 run=2

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.51 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v36.35 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
+
+MEASURED. Check 36.51 passes, and fails on v36.50.
 ## v36.50 - RAID REPORTS SAY WHAT HELD THE FRAME RATE
 
 Co-op hunt while he was away. FPS czar: five of his raids on 10-28 ran at a steady 30 fps and the run lines could not say why (the draw passes were light, about 4 ms, but they time only the drawing). Each live raid frame now files the game own work, and every run line prints it with the screen rate and the frame cap, so the next slow raid shows whether the game or something outside it held the frame rate. Report only: nothing in play changes.

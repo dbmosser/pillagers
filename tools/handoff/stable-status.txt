@@ -1,26 +1,21 @@
 Latest stable: v35.98 (2026-10-29 08:30)
-Checked: 2026-10-29 09:32
+Checked: 2026-10-29 11:35
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1029-0712  v36.44  failing 81, new 10  robots 187 min/0 problems  -> 10 check(s) newly failing, e.g. v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right | v34.60 cw-airchips: with all four power-up chips showing at 
+  corpus-1029-0843  v36.46  failing 85, new 5  robots 113 min/2 problems  -> 5 check(s) newly failing, e.g. v36.00 menus master pass 2026-10-28: the KIA card with a ful | v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right
+  corpus-1029-0712  v36.44  failing 81, new 5  robots 187 min/0 problems  -> 5 check(s) newly failing, e.g. v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right | v31.77 the run over card: the score word is a 16px label ove
   corpus-1029-0502  v36.39  failing 82, new 5  robots 57 min/0 problems  -> 5 check(s) newly failing, e.g. v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right | v31.77 the run over card: the score word is a 16px label ove
   corpus-1029-0339  v36.37  failing 73, new 5  robots 57 min/1 problems  -> 5 check(s) newly failing, e.g. v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right | v31.77 the run over card: the score word is a 16px label ove
   corpus-1029-0216  v36.33  failing 75, new 4  robots 115 min/1 problems  -> 4 check(s) newly failing, e.g. v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right | v31.77 the run over card: the score word is a 16px label ove
   corpus-1029-0048  v36.30  failing 74, new 4  robots 57 min/0 problems  -> 4 check(s) newly failing, e.g. v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right | v31.77 the run over card: the score word is a 16px label ove
   corpus-1028-2325  v36.27  failing 75, new 5  robots 63 min/0 problems  -> 5 check(s) newly failing, e.g. v36.22 active reload damage and stim time share a real 16px  | v36.20 active reload and stim share readable status type, ab
   corpus-1028-2206  v36.23  failing 73, new 3  robots 111 min/31 problems  -> 3 check(s) newly failing, e.g. v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right | v31.77 the run over card: the score word is a 16px label ove
-  corpus-1028-1954  v36.11  failing 69, new 4  robots 110 min/0 problems  -> 4 check(s) newly failing, e.g. v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right | v31.77 the run over card: the score word is a 16px label ove
 
 Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
   v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right hand lower corner m
   v31.77 the run over card: the score word is a 16px label over the 56px figure, a
   v29.47 the run over card is Panel P on the shared look: 1px panel, 32px Run over
   v30.62 the raid HUD panels draw no resize hatch until the pointer is over them (
-  v14.76 the stash hover row offers every key for every item: hovering a Bandage o
-  v34.60 cw-airchips: with all four power-up chips showing at 4K the air strike pl
-  v27.94 his order (add the sounds): the air strike has sounds (a confirm and an i
-  v25.13 his mode design and rule (2026-10-12): a CAREER raid scores kills exactly
-  v22.74 wind-ups show on the use bar only: a Bandage used at 50 health and a plat
-  v18.75 using a bandage, medkit or plate shows a HUD bar: APPLYING BANDAGE with a
+  v36.00 menus master pass 2026-10-28: the KIA card with a full hit history (8 row

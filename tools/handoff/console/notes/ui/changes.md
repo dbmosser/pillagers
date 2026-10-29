@@ -646,3 +646,5 @@
 
 2026-10-29 | o-00u-238-no-heal-or-plate-while-reloading | raid HUD, both roles | v36.49: medical use clears the reload ring and active chain; manual/empty reloads stay blocked through medical use. Existing layout and strings retained. After host: tools/handoff/console/notes/shots/o-00u-238-no-heal-or-plate-while-reloading-recipes-2/reload-medical-host-1080.jpg; after player 2: tools/handoff/console/notes/shots/o-00u-238-no-heal-or-plate-while-reloading-recipes-2/reload-medical-p2-1080.jpg. Both roles staged at 1080p/4k; critic 2 for existing HUD layout, handed off separately after camera cap.
 
+2026-10-29 | o-00v-239-ping-and-map-mark-are-one | raid, minimap, sector map, key lists and pad controls | One mark per player, persistent spots, shared map/raid clear, p1 amber and p2 cyan; ping/waypoint player labels become mark because he explicitly ordered one name and one control. Before: lane automatic capture if available; after: lane camera-recipes output mark-solo-raid, mark-solo-map, mark-p1-partner-raid, mark-p2-partner-raid, mark-p1-partner-map, mark-p2-partner-map (paths pending lane).
+

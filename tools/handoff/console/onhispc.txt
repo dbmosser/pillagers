@@ -116,3 +116,4 @@
 10-29 08:53 v36.47 cw-hudstack on his pc after 50s (8802 serves 36.47) week 88%
 10-29 09:02 v36.48 cw-bagsort on his pc after 51s (8802 serves 36.48) week 88%
 10-29 09:12 v36.49 cw-cx-reloadmedical on his pc after 34s (8802 serves 36.49) week 88%
+10-29 09:43 v36.50 cw-fpswork on his pc after 49s (8802 serves 36.50) week 88%
