@@ -1101,7 +1101,14 @@ while($true){
         if(Build-Fixture){ Copy-Item -LiteralPath ($T+'\fixture.html') -Destination ($T+'\fxcorpus.html') -Force; PutS 'fx_blob' $fb; Say ('build v'+(GameVer)+': the robot plays it') } else { PutS 'fx_fail' $fb }
       }
     }
-    if((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){ $atPc=((AwaySec) -lt 900); $script:gcAtStart=(GameChrome); Start-Robot 9332 'fixture-soak-spare2.html' $(if($atPc -or $script:gcAtStart -or (GetS 'no4k') -eq (Get-Date).ToString('yyyy-MM-dd')){ '' }else{ '3840x2160' }) -Low:$atPc }
+    # 10-28 23:55: a new robot block needs the START memory (6 GB free; 4K needs 7). Before, the next hour's robot started on the 3 GB
+    # keep-going bar because the runner was still working: the 4K robot started at 4.3 GB free (17:44 and 21:23) and was stopped for memory
+    # within a minute, 0 raids. Under 6 GB the runner stops working, so the next start waits for 6 GB like any other start.
+    if((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){
+      $sf=FreeGB
+      if($sf -lt 6){ Stop-Work 'under 6 GB free for a new robot' }
+      else { $atPc=((AwaySec) -lt 900); $script:gcAtStart=(GameChrome); Start-Robot 9332 'fixture-soak-spare2.html' $(if($atPc -or $script:gcAtStart -or $sf -lt 7 -or (GetS 'no4k') -eq (Get-Date).ToString('yyyy-MM-dd')){ '' }else{ '3840x2160' }) -Low:$atPc }
+    }
   } else {
     if((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -eq 0){ Start-Robot 9331 'fixture-soak-spare1.html' }
     # 10-22: Start-Robot takes a screen size (fuzz.ps1 -Size), but both robots here stay at 1080p. A 4K robot on the main PC reads as "he is gaming"
