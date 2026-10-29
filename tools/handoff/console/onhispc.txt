@@ -79,3 +79,4 @@
 10-28 19:39 v36.10 cw-cx-sentence-callouts on his pc after 49s (8802 serves 36.10) week 84%
 10-28 19:52 v36.11 cw-cx-rack-short-answer on his pc after 33s (8802 serves 36.11) week 84%
 10-28 20:13 v36.12 cw-cx-tagstack on his pc after 65s (8802 serves 36.12) week 84%
+10-28 20:22 v36.13 cw-cx-cachetagspace on his pc after 65s (8802 serves 36.13) week 84%

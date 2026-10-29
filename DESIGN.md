@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.14 - WORLD MARKERS SHARE ONE LABEL STYLE
+
+Co-op hunt while he was away. The critic on the separated cache and extraction marker pictures found different type sizes and panel styles. Both now use the shared graphite panel, cream 16px labels and 32px minimum height at 1080p, doubled at 4K. The exit arrow stays teal and the two destinations keep separate markers. Watch: the cache name and extraction distance should remain easy to tell apart and never overprint; enemy names and health pips still stack. Only rendering changes.
+
+MEASURED. Check 36.14 passes, and fails on v36.13.
 ## v36.13 - CACHE NAMES CLEAR THE SCREEN EDGE
 
 Co-op hunt while he was away. The critic found the separated cache name too close to the right edge and weak on busy ground. Named caches now use the shared graphite panel and cream text, with the whole panel inset 24px at 1080p and 48px at 4K. Cache and extraction labels remain separate because they identify different destinations. Watch: cache names near either edge should remain whole and readable, with the extraction chip on its own clear line. Only drawing changes.

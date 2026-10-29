@@ -1,0 +1,7 @@
+v36.14: world markers share one label style
+
+Cache and extraction markers share one readable label size and panel style. The exit arrow stays teal.
+
+Check 36.14. Fails on v36.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

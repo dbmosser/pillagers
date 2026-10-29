@@ -3865,8 +3865,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.13';
-var VER_AT='2026-10-28 20:20';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.14';
+var VER_AT='2026-10-28 20:30';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -42256,10 +42256,11 @@ var SHD=G.shells[i];
     // v28.xx (cw-cx-propsfinish): cache and landmark names share the existing world-text queue and its HUD transform.
     // v28.xx (cw-cx-tagstack): cache names reserve their actual font bounds before the extraction distance chip is placed.
     for(var _cq=0;_cq<_ctq.length;_cq++){
-      var _cg=_ctq[_cq]; wc.font=FS(_cg.f||TYPE.head);
+      var _cg=_ctq[_cq]; wc.font=_cg.cache?uiFont('label',Math.max(1,hudRes())/WTX.z):FS(_cg.f||TYPE.head); // v28.xx (cw-cx-worldchips): cache and extraction labels share the 16px screen label size.
       // v28.xx (cw-cx-cachetagspace): the critic on the fixed overlap found the cache name too close to the edge and weak on busy ground. Keep its own panel, distinct from the extraction destination.
       var _cm=wc.measureText(_cg.t), _cw=_cm.width, _ca=_cm.actualBoundingBoxAscent||wlPx(), _cd=_cm.actualBoundingBoxDescent||wlPx()*0.25;
-      var _cp=_cg.cache?8:2, _cx=_cg.x, _ch=_ca+_cd+_cp*2;
+      // v28.xx (cw-cx-worldchips): a cache label has a 32px minimum panel, matching the extraction chip; reserve the full panel for the overlap test.
+      var _cp=_cg.cache?Math.max(8*Math.max(1,hudRes())/WTX.z,(32*Math.max(1,hudRes())/WTX.z-_ca-_cd)/2):2, _cx=_cg.x, _ch=_ca+_cd+_cp*2;
       if(_cg.cache){var _margin=24*Math.max(1,hudRes())/WTX.z;_cx=clamp(_cx,WTX.ox+_margin+_cw/2+_cp,WTX.ox+W/WTX.z-_margin-_cw/2-_cp);}
       if(!_cg.always&&wlUnder(_cx-_cw/2-_cp,_cg.y-_ca-_cp,_cw+_cp*2,_ch)) continue;
       var _ctop=wlTagPlace(_cx-_cw/2-_cp,_cg.y-_ca-_cp,_cw+_cp*2,_ch);
@@ -43617,8 +43618,9 @@ function extPillPulse(s){
   k=(now-G.xpAt)/0.6;
   return (k>=0&&k<1)?Math.max(k,0.001):0;
 }
+// v28.xx (cw-cx-worldchips): the critic on cache pictures asked for matching panels and label sizes. Keep teal on the exit arrow; the name and distance read in cream.
 function extEdgeArrow(E){
-  var hr=Math.max(1,hudRes()), p=G.player, ps, ox=W/2, oy=H/2, a0, lab, f=hudFS(TYPE.head), tw, bw, bh, k, s, a=0, cx=0, cy=0, ok=false, mx, rx, ry, i, B, L=[], col='#4de3d0', ar, ux, uy, tx, ty;
+  var hr=Math.max(1,hudRes()), p=G.player, ps, ox=W/2, oy=H/2, a0, lab, f=uiFont('label',hr), tw, bw, bh, k, s, a=0, cx=0, cy=0, ok=false, mx, rx, ry, i, B, L=[], col='#4de3d0', ar, ux, uy, tx, ty;
   EXTARROW.on=0;
   if(!E||!E.za||!E.z||!G) return false;
   ps=p?w2s(p.x,0,p.y):null; if(ps){ ox=ps.x; oy=ps.y; }
@@ -43627,7 +43629,7 @@ function extEdgeArrow(E){
   mx=LH(6)*hr; ar=LH(8)*hr;
   ctx.save();
   try{
-    ctx.font=f; tw=ctx.measureText(TX(lab)).width; bw=Math.round(tw+LH(16)*hr); bh=Math.round(msgPx(f)*1.5);
+    ctx.font=f; tw=ctx.measureText(TX(lab)).width; bw=Math.round(tw+LH(16)*hr); bh=Math.round(32*hr);
     // what it keeps off: every HUD panel and edge stack as last drawn, the gun card corner, the teammate rows, the feed, the pickup stack's column even while it is
     // empty, and the clock with the pill
     for(k in HUDBOX){ B=HUDBOX[k]; if(B&&B.w>0&&B.h>0) L.push(B); }
@@ -43644,8 +43646,8 @@ function extEdgeArrow(E){
     for(s=1;s>=0.55&&!ok;s-=0.15) for(i=0;i<29&&!ok;i++){ a=a0+((i&1)?1:-1)*Math.ceil(i/2)*0.06; cx=W/2+Math.cos(a)*rx*s; cy=H/2+Math.sin(a)*ry*s; if(!hit(cx,cy)) ok=true; }
     if(!ok){ cx=W/2+Math.cos(a0)*rx*0.55; cy=H/2+Math.sin(a0)*ry*0.55; }
     cx=Math.round(cx); cy=Math.round(cy);
-    hudPlate(Math.round(cx-bw/2),Math.round(cy-bh/2),bw,bh,null,HUDC.plate);
-    ctx.textAlign='center'; ctx.fillStyle=col;
+    uiPanel(ctx,Math.round(cx-bw/2),Math.round(cy-bh/2),bw,bh,null);
+    ctx.textAlign='center'; ctx.fillStyle=UIC.tx_1;
     hudText(lab,cx,Math.round(cy+msgPx(f)*0.36));
     // the arrow just outside the plate on the side of the exit, pointing at it
     ux=cx+Math.cos(a0)*(bw/2+ar*1.2); uy=cy+Math.sin(a0)*(bh/2+ar*0.9);
@@ -56006,7 +56008,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.13: Cache names sit on a readable panel inside the screen margin. The extraction chip still keeps its own space. Check 36.13 fails on v36.12',
+  now:'v36.14: Cache and extraction markers share one readable label size and panel style. The exit arrow stays teal. Check 36.14 fails on v36.13',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
