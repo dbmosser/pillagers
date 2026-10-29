@@ -1,0 +1,60 @@
+{
+    "title":  "RELOAD CHAIN ENDS ON GUN SWITCH",
+    "why":  "His 10-28 order: active reload chain should also break if player switches guns. Watch: switching guns ends the active reload chain",
+    "now":  "switching guns ends the active reload chain",
+    "edits":  [
+                  {
+                      "anchor":  "function activeReloadTick(p){",
+                      "replacement":  "// v28.xx (cw-cx-reloadswitch), HIS WORDS (2026-10-28): \"Active reload chain should also break if player switches guns\".\n// v28.xx (cw-cx-reloadswitch): every held-gun assignment uses this door; reset only this player before the status reads it.\nfunction arSetHeldGun(p,w){\n  if(p.wep!==w){ p.arStk=0; p.arBonus=0; p.arGun=null; p.arHot=0; }\n  p.wep=w;\n}\nfunction activeReloadTick(p){"
+                  },
+                  {
+                      "anchor":  "p.wep=nw; p.wepIssued=false;",
+                      "replacement":  "arSetHeldGun(p,nw); p.wepIssued=false;"
+                  },
+                  {
+                      "anchor":  "g.player.wep=WEAPONS[FREEKIT_GUN];",
+                      "replacement":  "arSetHeldGun(g.player,WEAPONS[FREEKIT_GUN]);"
+                  },
+                  {
+                      "anchor":  "g.player.wep=rollFieldGun(\u0027rifle\u0027); g.player.ammo=g.player.wep.mag;",
+                      "replacement":  "arSetHeldGun(g.player,rollFieldGun(\u0027rifle\u0027)); g.player.ammo=g.player.wep.mag;"
+                  },
+                  {
+                      "anchor":  "p.wep=found; p.ammo=",
+                      "replacement":  "arSetHeldGun(p,found); p.ammo="
+                  },
+                  {
+                      "anchor":  "p.wep=p.sec||WEAPONS.fists; p.ammo=",
+                      "replacement":  "arSetHeldGun(p,p.sec||WEAPONS.fists); p.ammo="
+                  },
+                  {
+                      "anchor":  "pp.wep=pp.sec; pp.ammo=",
+                      "replacement":  "arSetHeldGun(pp,pp.sec); pp.ammo="
+                  },
+                  {
+                      "anchor":  "else { p.wep=g; p.ammo=_rd;",
+                      "replacement":  "else { arSetHeldGun(p,g); p.ammo=_rd;"
+                  },
+                  {
+                      "anchor":  "if(hand){ p.wep=nc; p.ammo=carry;",
+                      "replacement":  "if(hand){ arSetHeldGun(p,nc); p.ammo=carry;"
+                  },
+                  {
+                      "anchor":  "p.wep=arcadeGun(a); p.sec=",
+                      "replacement":  "arSetHeldGun(p,arcadeGun(a)); p.sec="
+                  },
+                  {
+                      "anchor":  "// 10.1, 7.6, then 5.7 percent of the reload). A press outside the sweet spot, or a reload left to run out on its own, starts the chain over and the spot is wide again; a swap that",
+                      "replacement":  "// 10.1, 7.6, then 5.7 percent of the reload). A press outside the sweet spot, or a reload left to run out on its own, starts the chain over and the spot is wide again."
+                  },
+                  {
+                      "anchor":  "// cuts a reload short keeps it. The chain lives on the player (p.arStk), so in co-op each pillager has their own; the ring, the bar and X on a pad all read arLo and arHi. Live play only.",
+                      "replacement":  "// v28.xx (cw-cx-reloadswitch): changing the held gun also ends the chain, including a swap that cuts a reload short. Each pillager owns their own chain."
+                  },
+                  {
+                      "anchor":  "// v28.xx (cw-cx-reloadstatus): a chain survives a swap or an empty magazine; only claim damage while the bonus applies.",
+                      "replacement":  "// v28.xx (cw-cx-reloadswitch): an empty magazine keeps the chain; a held-gun change clears it before this status reads it."
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027switching guns ends only the local active reload chain immediately, hides its status, and the next hit starts at x1 in both windows\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid))return \u0027SKIP: this fixture cannot deploy\u0027;\n     var g,p,side,bad=[],kk=keys,mm=mouse.down,nk={on:NET.on,same:NET.same};\n     function entry(q){statusLive(q);for(var i=0;i\u003cSTATUSL.length;i++)if(STATUSL[i].id===\u0027ar\u0027)return STATUSL[i];return null;}\n     function start(){keys={};p.hand=null;p.ammo=2;p.reserve=60;p.reloading=p.wep.reload;p.rlTot=0;p.rlArm=0;activeReloadTick(p);}\n     function hit(){start();p.reloading=p.rlTot*0.49;keys.KeyR=true;var ok=activeReloadTick(p);keys={};return ok;}\n     function chain(){p.arStk=0;p.arBonus=0;if(!hit()||!hit()||p.arStk!==2)throw Error(\u0027cannot stage x2\u0027);}\n     function cleared(label){var e=entry(p);if(p.arStk!==0||p.arBonus!==0||p.arGun!=null||(e\u0026\u0026e.on))bad.push(NET.same+\u0027: \u0027+label+\u0027 kept chain, bonus, gun or status\u0027);}\n     try{\n       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();\n       __deploy({kit:[\u0027gun_pistol\u0027],safe:null,mapIx:0,seed:4242});g=__state();p=g\u0026\u0026g.player;if(!p||g.over)return \u0027no live raid\u0027;\n       g.sim=false;g.over=false;g.paused=false;g.bagOpen=false;g.mapOpen=false;NET.on=false;keys={};mouse.down=false;\n       for(side=0;side\u003c2;side++){\n         NET.same=side?\u0027p2\u0027:\u0027host\u0027;p.wep=cloneObj(WEAPONS.pistol);p.sec=cloneObj(WEAPONS.rifle);p.secAmmo=5;p.downed=false;p.dying=false;p.roll=0;\n         p.wepIssued=false;p.secIssued=false;p.wepFromArmory=false;p.secFromArmory=false;\n         chain();var a=p.wep,b=p.sec,e=entry(p);if(!e||!e.on||e.nm!==\u0027active reload x2\u0027)throw Error(\u0027cannot stage x2 status\u0027);\n         if(!swapGuns()||p.wep!==b)throw Error(\u0027cannot switch to gun B\u0027);cleared(\u0027switch to B\u0027);\n         if(!swapGuns()||p.wep!==a)throw Error(\u0027cannot switch back to A\u0027);cleared(\u0027switch back to A\u0027);\n         if(!hit())throw Error(\u0027cannot stage next active reload\u0027);e=entry(p);\n         if(p.arStk!==1||!e||!e.on||e.nm!==\u0027active reload x1\u0027||e.v!==\u0027+15% damage\u0027)bad.push(NET.same+\u0027: next hit did not restart at x1\u0027);\n         chain();start();if(!swapGuns())throw Error(\u0027cannot cancel reload by switching\u0027);cleared(\u0027cancelled reload\u0027);\n         if(p.reloading!==0||p.rlTot!==0)bad.push(NET.same+\u0027: switch kept the old reload\u0027);\n         if(bad.length)return bad.join(\u0027; \u0027);\n         chain();var partner=Object.assign({},p);partner.wep=cloneObj(WEAPONS.smg);partner.sec=cloneObj(WEAPONS.shotgun);partner.secAmmo=2;\n         g.player=partner;try{if(!swapGuns())throw Error(\u0027cannot switch partner gun\u0027);}finally{g.player=p;}\n         e=entry(p);if(p.arStk!==2||!p.arBonus||!e||!e.on||e.nm!==\u0027active reload x2\u0027)bad.push(NET.same+\u0027: partner switch cleared local chain\u0027);\n         if(partner.arStk!==0||partner.arBonus!==0||partner.arGun!=null)bad.push(NET.same+\u0027: partner retained own chain\u0027);\n         // v28.xx (cw-cx-reloadswitch): a no-op selection is not a switch; a different copy of the same gun is.\n         arSetHeldGun(p,p.wep);if(p.arStk!==2)bad.push(NET.same+\u0027: selecting held gun cleared chain\u0027);\n         arSetHeldGun(p,cloneObj(p.wep));cleared(\u0027different copy of same gun\u0027);\n         chain();arSetHeldGun(p,WEAPONS.fists);cleared(\u0027switch to melee\u0027);arSetHeldGun(p,a);cleared(\u0027return from melee\u0027);\n         chain();p.sec=cloneObj(WEAPONS.shotgun);g.bag=[\u0027gun_smg\u0027];\n         if(!equipFromBag(0,2))throw Error(\u0027cannot equip stowed gun\u0027);\n         if(p.arStk!==2||!p.arBonus)bad.push(NET.same+\u0027: stowed equip cleared held chain\u0027);\n         g.bag=[\u0027gun_rifle\u0027];if(!equipFromBag(0,1))throw Error(\u0027cannot equip held gun\u0027);cleared(\u0027bag equip\u0027);\n         chain();p.sec=WEAPONS.fists;p.secAmmo=0;\n         if(!bagHeldGun(p.swapped?\u0027gunB\u0027:\u0027gunA\u0027))throw Error(\u0027cannot stow held gun\u0027);cleared(\u0027stow held gun\u0027);\n       }\n       return bad.length?bad.join(\u0027; \u0027):null;\n     }finally{\n       if(g\u0026\u0026p)g.player=p;NET.on=nk.on;NET.same=nk.same;keys=kk;mouse.down=mm;\n       try{if(p){p.arStk=0;p.arBonus=0;p.arGun=null;}__endRaid(\u0027abandon\u0027);}catch(_e){}__topClear();\n     }\n   }},"
+}

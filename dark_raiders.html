@@ -3880,8 +3880,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.22';
-var VER_AT='2026-10-28 21:44';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.23';
+var VER_AT='2026-10-28 21:59';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15069,7 +15069,7 @@ function forgeBuy(ix){
   if(!forgeSpend(o.cost)){ say('need '+forgeMoney(o.cost),'warn'); try{ sndUi('deny'); }catch(_b0){} return false; }
   nw=forgeApply(w,1);
   if(o.k==='el') nw=forgeApply(w,2,o.el);   // v26.xx (forgest3): MK III with the element picked
-  p.wep=nw; p.wepIssued=false;
+  arSetHeldGun(p,nw); p.wepIssued=false;
   col=(o.k==='el')?ELEM[o.el].c:FORGE_GOLD; tag=(o.k==='el')?ELEM[o.el].name:'MK II';
   say('gun upgraded','obj',{sub:String(nw.name).toLowerCase()+((o.k==='el')?('  \u00b7  '+ELEM[o.el].name):'')});
   G.gunCard={gk:nw.id,w:nw,vs:w,route:'cost '+forgeMoney(o.cost),t0:G.t||0};   // v28.xx (cw-cx-forgeread): name the debit as the upgrade cost.
@@ -17775,7 +17775,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
         else g.bag.push(FREEKIT[_fk]);
       }
       if(WEAPONS[FREEKIT_GUN]){
-        g.player.wep=WEAPONS[FREEKIT_GUN];
+        arSetHeldGun(g.player,WEAPONS[FREEKIT_GUN]);
         g.player.ammo=g.player.wep.mag;
         g.player.reserve=g.player.wep.mag*2;   // v14.01, loadout audit: its own two magazines, not the home gun's
         // v6.88, his spec: "if they take the freebie and extract, then they keep the
@@ -17794,7 +17794,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
         else g.bag.push(DEV[dk]);
       }
       g.pouch.frag+=2; g.pouch.smoke+=2; g.pouch.decoy+=2;
-      g.player.wep=rollFieldGun('rifle'); g.player.ammo=g.player.wep.mag;
+      arSetHeldGun(g.player,rollFieldGun('rifle')); g.player.ammo=g.player.wep.mag;
       g.player.wepIssued=true; g.player.wepFromArmory=false;
     }
     var carried=0;
@@ -26239,11 +26239,17 @@ function rlfxStop(){
 var AR_A=0.42, AR_B=0.60, AR_BONUS=1.15;
 // v35.xx (cw-reloadstack), HIS ORDER (2026-10-27): "make the active reload stack but it gets harder each time". THE ACTIVE RELOAD STACKS. Each active reload in a row adds AR_STEP
 // to the bonus of the next magazine (x1.15, x1.25, x1.35, x1.45, then x1.55 from AR_STK_MAX on), and each one narrows the next sweet spot around its middle by AR_NARROW (18, 13.5,
-// 10.1, 7.6, then 5.7 percent of the reload). A press outside the sweet spot, or a reload left to run out on its own, starts the chain over and the spot is wide again; a swap that
-// cuts a reload short keeps it. The chain lives on the player (p.arStk), so in co-op each pillager has their own; the ring, the bar and X on a pad all read arLo and arHi. Live play only.
+// 10.1, 7.6, then 5.7 percent of the reload). A press outside the sweet spot, or a reload left to run out on its own, starts the chain over and the spot is wide again.
+// v28.xx (cw-cx-reloadswitch): changing the held gun also ends the chain, including a swap that cuts a reload short. Each pillager owns their own chain.
 var AR_STEP=0.10, AR_STK_MAX=5, AR_NARROW=0.75;
 function arLo(p){ var k=Math.min((p&&p.arStk)||0,AR_STK_MAX-1); return (k>0)?(AR_A+AR_B)/2-(AR_B-AR_A)/2*Math.pow(AR_NARROW,k):AR_A; }
 function arHi(p){ var k=Math.min((p&&p.arStk)||0,AR_STK_MAX-1); return (k>0)?(AR_A+AR_B)/2+(AR_B-AR_A)/2*Math.pow(AR_NARROW,k):AR_B; }
+// v28.xx (cw-cx-reloadswitch), HIS WORDS (2026-10-28): "Active reload chain should also break if player switches guns".
+// v28.xx (cw-cx-reloadswitch): every held-gun assignment uses this door; reset only this player before the status reads it.
+function arSetHeldGun(p,w){
+  if(p.wep!==w){ p.arStk=0; p.arBonus=0; p.arGun=null; p.arHot=0; }
+  p.wep=w;
+}
 function activeReloadTick(p){
   var f;
   if(!G||G.sim||!p||!p.wep) return false;
@@ -27279,7 +27285,7 @@ function grantLoot(ct,keys,delay0){
         // was reloading was filled to a full magazine 1.4 seconds later and said Reloaded, skipping its own longer reload. Every other
         // change of the gun in hand (bagHeldGun, swapGuns, equipFromBag) already clears it.
         var _gkPush2=(p.wep&&p.wep.id!=='fists'&&p.wep.mag!==0&&!p.wepIssued)?p.wep.id:null;   // v21.83
-        p.wep=found; p.ammo=(ct&&ct.dropped)?takeRounds(found.id,found.mag):Math.ceil(p.wep.mag/2); p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; p.rlTot=0; p.rlArm=0;   // v13.81; v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand
+        arSetHeldGun(p,found); p.ammo=(ct&&ct.dropped)?takeRounds(found.id,found.mag):Math.ceil(p.wep.mag/2); p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; p.rlTot=0; p.rlArm=0;   // v13.81; v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand
         gunKeysSettle({pushed:_gkPush2,arrived:found.id});   // v21.83: the found gun takes a gun key; the gun it pushed out keeps its own (v21.90: named)
         G.tel.weapon=p.wep.name;
         if(!G.sim){
@@ -27470,7 +27476,7 @@ function bagHeldGun(slot){
   gunQPush(g);   // v21.79: and its rolled quality
   if(!G.sim&&arm){ var oi=P.weapons.indexOf(g.id); if(oi>=0){ P.weapons.splice(oi,1); (G.spliced=G.spliced||[]).push(g.id); (P.raidSpliced=P.raidSpliced||[]).push(g.id); } }   // v14.03: on the saved profile too
   if(isHand){
-    p.wep=p.sec||WEAPONS.fists; p.ammo=p.secAmmo||0; p.wepIssued=!!p.secIssued; p.wepFromArmory=!!p.secFromArmory; p.reloading=0; p.rlTot=0; p.rlArm=0;   // v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand
+    arSetHeldGun(p,p.sec||WEAPONS.fists); p.ammo=p.secAmmo||0; p.wepIssued=!!p.secIssued; p.wepFromArmory=!!p.secFromArmory; p.reloading=0; p.rlTot=0; p.rlArm=0;   // v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand
     p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false;
     if(p.wep&&p.wep.id!=='fists') p.swapped=!sw;   // the gun that came up keeps its numbered slot; nothing came up, nothing flips
   } else {
@@ -27520,7 +27526,7 @@ function swapGuns(){
   var pp=G&&G.player;
   if(!pp||!pp.sec||pp.downed||pp.dying||pp.roll>0||G.over||G.paused) return false;   // v13.80
   var ow=pp.wep,oa=pp.ammo,oi=pp.wepIssued,of2=pp.wepFromArmory;
-  pp.wep=pp.sec; pp.ammo=pp.secAmmo; pp.wepIssued=pp.secIssued; pp.wepFromArmory=pp.secFromArmory;
+  arSetHeldGun(pp,pp.sec); pp.ammo=pp.secAmmo; pp.wepIssued=pp.secIssued; pp.wepFromArmory=pp.secFromArmory;
   pp.sec=ow; pp.secAmmo=oa; pp.secIssued=oi; pp.secFromArmory=of2;
 // v4.13 HIS NOTE: "when i switch from one gun to another, it goes from
   // holding to shooting, which is inaccurate". Correct: the swap writes
@@ -27626,7 +27632,7 @@ function equipFromBag(ix,slot){
   // magazine only for one found in the field, which is the rule in the README.
   var _rd=takeRounds(gk,g.mag);
   if(toSec){ p.sec=g; p.secAmmo=_rd; p.secIssued=false; p.secFromArmory=false; }
-  else { p.wep=g; p.ammo=_rd; p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; p.rlTot=0; p.rlArm=0; }   // v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand
+  else { arSetHeldGun(p,g); p.ammo=_rd; p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; p.rlTot=0; p.rlArm=0; }   // v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand
   G.tel.weapon=p.wep.name;
   G.tel.gunsEquipped=(G.tel.gunsEquipped||0)+1;
   if(G.bagSel>=G.bag.length) G.bagSel=Math.max(0,G.bag.length-1);
@@ -27738,7 +27744,7 @@ function gunClassSwapIn(o,oi,key,nw){
     G.bag.push('gun_'+old.id); stowRounds(old.id,oam-carry); gunQPush(old); bagged=true;
     if(arm&&P&&P.weapons){ ix=P.weapons.indexOf(old.id); if(ix>=0){ P.weapons.splice(ix,1); (G.spliced=G.spliced||[]).push(old.id); (P.raidSpliced=P.raidSpliced||[]).push(old.id); } }
   }
-  if(hand){ p.wep=nc; p.ammo=carry; p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; p.rlTot=0; p.rlArm=0; G.tel.weapon=nc.name; }   // v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand
+  if(hand){ arSetHeldGun(p,nc); p.ammo=carry; p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; p.rlTot=0; p.rlArm=0; G.tel.weapon=nc.name; }   // v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand
   else { p.sec=nc; p.secAmmo=carry; p.secIssued=false; p.secFromArmory=false; }
   G.tel.gunsEquipped=(G.tel.gunsEquipped||0)+1;
   for(k2 in A) if(A[k2]===key){ delete A[k2]; delete U[k2]; }
@@ -43969,7 +43975,7 @@ function statusLive(p){
       if(k>=1){
         E.on=true;
         t='active reload x'+k; if(E.nm!==t){ E.nm=t; E.nf=''; }
-        // v28.xx (cw-cx-reloadstatus): a chain survives a swap or an empty magazine; only claim damage while the bonus applies.
+        // v28.xx (cw-cx-reloadswitch): an empty magazine keeps the chain; a held-gun change clears it before this status reads it.
         t=(p.arBonus&&p.wep===p.arGun&&p.ammo>0&&!(p.reloading>0))?'+'+Math.round(((p.arMul||AR_BONUS)-1)*100)+'% damage':'chain ready';
         if(E.vk!==t){ E.vk=t; E.v=t; }
       }
@@ -56065,7 +56071,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.22: Status details use a 16px floor and muted ink below the larger status name. Check 36.22 fails on v36.21',
+  now:'v36.23: switching guns ends the active reload chain Check 36.23 fails on v36.22',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -65336,7 +65342,7 @@ function arcadeKitApply(p,g,why){
   if(!p||!g) return false;
   var a, b, k, _pk=arcadePartyKit();
   a=_pk.a; b=_pk.b||null;   // v28.xx (cw-partykit), his answer Q67 (2026-10-18): "Same kit all night, and a new kit after NEW PARTY." The two guns are in the party record
-  p.wep=arcadeGun(a); p.sec=b?arcadeGun(b):WEAPONS.fists;
+  arSetHeldGun(p,arcadeGun(a)); p.sec=b?arcadeGun(b):WEAPONS.fists;
   p.ammo=p.wep.mag; p.secAmmo=(p.sec&&p.sec.mag)||0; p.reserve=6*p.wep.mag;
   p.wepIssued=false; p.secIssued=false; p.wepFromArmory=false; p.secFromArmory=false;
   p.swapped=false; p.reloading=0; p.jam=0;

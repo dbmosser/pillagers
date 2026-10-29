@@ -1,0 +1,5 @@
+## v36.23 - RELOAD CHAIN ENDS ON GUN SWITCH
+
+Co-op hunt while he was away. His 10-28 order: active reload chain should also break if player switches guns. Watch: switching guns ends the active reload chain
+
+MEASURED. Check 36.23 passes, and fails on v36.22.

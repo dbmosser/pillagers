@@ -1,0 +1,7 @@
+v36.23: reload chain ends on gun switch
+
+switching guns ends the active reload chain
+
+Check 36.23. Fails on v36.22.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -36,3 +36,17 @@ Found that gen-draft puts why, not now, in DESIGN.md. Supplied the required exac
 
 After this second visual follow-up, if the critic still scores 2 for the same unrelated HUD or conflicting placement/colour requests, use the explicit two-follow-up stopping rule and retain the two best pictured versions (v36.20 round 2 and the forthcoming final round). The general raid-HUD requests were already handed to the coordinator. Do not redesign unrelated HUD elements or move the status out of the requested existing column to chase that score.
 
+
+--- codex run 2026-10-28 21:51 ---
+2026-10-28 final: cw-cx-statusdetail shipped as v36.22 and ON HIS PC v36.22 was confirmed in 33 seconds. All three keys are shipped. The normal ship gates passed; no seeded/gameplay changes were made. Confirmed the exact required watch text is now in DESIGN.md at line 40029: the active reload chain shows as a status with its count.
+
+Round 3 report confirms all four scenes staged at 1920x1080 and 3840x2160. Real linked peers report independent counts [1,3] or [3,1], each with its own +15% or +35% damage label. Reviewed all four attached 1080p views plus final player 1 x1, player 2 x1 and player 2 x3 4k views. The final player 2 x3 4k picture has a whole-left-HUD clipping anomaly (roster, hp and status all affected); final player 2 x1 4k and round 2 player 2 x3 4k are intact. Logged that capture/transform issue for the coordinator rather than changing the status placement without evidence. The local x3/+35% reading is still verified in its staging report and final 1080p picture.
+
+STOPPING RULE: the two shipped visual follow-ups (cw-cx-statusread and cw-cx-statusdetail) did not raise the critic score. All four scenes scored 2 in rounds 1, 2 and 3. Per the explicit rule to stop after two follow-ups without score improvement, this task ends DONE, not PARTIAL. Do not automatically retry this task to chase the whole-HUD score. Remaining critic requests concern unrelated roster/hp/hotbar/toast/extraction controls, relocation away from the explicitly requested left status column, the approved chain green, and the already documented false capital-I/font claim. These are handed off; no extra feature is being disabled or deferred here.
+
+Retained two best available pictured versions for review:
+- v36.22 final, larger shared status type, exact detail floor and muted value: tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-3/reload-status-p1-x1-1080.jpg, reload-status-p1-x3-1080.jpg, reload-status-p2-x1-1080.jpg, reload-status-p2-x3-1080.jpg, and the matching -4k.jpg set. Critic 2 throughout; final p2-x3-4k has the clipping issue noted above.
+- v36.20 preceding alternative, same larger status panels with brighter detail: tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-2/reload-status-p1-x1-1080.jpg, reload-status-p1-x3-1080.jpg, reload-status-p2-x1-1080.jpg, reload-status-p2-x3-1080.jpg, and matching -4k.jpg set. Critic 2 throughout; p2-x3-4k is intact and retained as the clean 4k x3 comparison.
+
+Final behaviour: the existing left status column shows only this window player active reload xN, shows the active magazine bonus or chain ready, and reads the existing chain reset directly. Regression check covers two actual active reloads to x2, disappearance immediately after a miss or ordinary reload, drawn text and separate local-player counts. Pickup stack, loot rows and loot sounds were never changed.
+

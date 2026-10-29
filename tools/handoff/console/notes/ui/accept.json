@@ -3811,64 +3811,64 @@
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The HUD is still a set of unrelated boxes with different borders, fills, type sizes and positions. Most of last round's advice was ignored, and a capital letter remains on screen.",
+  "verdict": "The HUD is readable, but it is still a scatter of mismatched boxes with no shared panel treatment. The earlier fixes were mostly not applied, and capitals remain on screen.",
   "findings": [
-   "P0 top-right 'run info' bar: Change the label to 'run info'. Make it a 4px-radius --ui-panel chip at 16px, about 160px wide, with a 1px --ui-line-hi border and 48px inset from the screen edge. Move the room tag out from under it, to the top-left or into the run info chip.",
-   "P1 left roster 'current pillagers 3': Collapse it to the player's own row by default. Use a 24px row pitch and 16px labels, with names in tx-2 and values in tx-1. Pad it 16px on a --ui-panel fill with a 1px --ui-line-hi border and a 4px radius.",
-   "P1 hp bar, bottom-left (y≈1050): Make it a 20px 'hp 100' label with a 12px bar, filled in --ok on --ui-raised, inset 48px from the left and bottom edges. Drop the duplicate 'pillager' bar or fold it into the roster.",
-   "P1 active reload chip (left, y≈452): Put it just above the weapon slots at x=48. Use a --ui-panel fill with a 1px --ui-line-hi border and a 4px radius. Set the title to 20px f-cond 600 in tx-1 and the detail to 16px tx-2, with a 40px icon. Use lime only for the ring while the effect is active.",
-   "P1 contract notice, 'pillager joined' toast and ammo block: Give all three the same --ui-panel, 1px --ui-line-hi border and 4px radius. Keep amber to a 3px --warn bar on the contract notice only. Move the toast to the left feed. Keep the 56px hero number for ammo only."
+   "P0 top-right 'run info' bar: Change the label to 'run info'. Make it a 160px --ui-panel chip with a 1px --ui-line-hi border and a 4px radius at 16px. Set it 48px from the right edge. Move the 'the long dock cache' tag to the top-left.",
+   "P0 'fl controls' hint at x≈440,y≈940 and 'c 152m' tag at right (y≈485): Dock the hint at x=48 just above the hp bar, written 'f1 controls' at 16px tx-2 inside a --ui-panel chip. Delete the 'c 152m' tag, or fold it into the top-centre extract banner.",
+   "P1 hp bar, bottom-left (y≈1050): Use a 20px 'hp 100' label with a 12px bar on --ui-raised, inset 48px from the left and bottom edges. Remove the 'pillager' bar at y≈335.",
+   "P1 top-left roster 'current pillagers 3': Collapse the roster to the player's own row by default. Use a 24px row pitch, 16px text and 16px padding, with names in tx-2 and values in tx-1. Give it a 1px --ui-line-hi border and a 4px radius. Give the 'keyboard' tag the same chip style.",
+   "P1 'active reload x1' chip (left, y≈452): Move it to x=48 directly above the weapon slots. Use a 40px icon, a 20px f-cond 600 title and a 16px tx-2 detail on --ui-panel with a 1px --ui-line-hi border. Keep lime on the ring only."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-2/reload-status-p1-x1-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-3/reload-status-p1-x1-1080.jpg",
   "task": "o-00c-active-reload-status",
-  "when": "2026-10-29T01:38"
+  "when": "2026-10-29T01:48"
  },
  "p1-x3": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The reload chip is a little clearer, but the HUD still looks like unrelated widgets: it has a capital letter, mixed panel styles, a duplicate extraction cue and a cramped hp bar.",
+  "verdict": "The raid HUD is still a patchwork of unrelated chip styles: only the hp bar and the reload chip were partly fixed, and 'run Info' keeps its capital letter, the duplicate 'c 152m' chip and the loose, unaligned top-left cluster.",
   "findings": [
-   "P1 top-right 'run Info' bar (x~1610, y~32): Render it as 'run info'. Make it a 40px-high card with a 1px --ui-line-hi border, a 4px radius, 16px f-cond text, 8px padding and a 48px right margin.",
-   "P1 active reload x3 chip (left, y~452): Dock it 8px above the hp bar at x=48. Use a --ui-panel fill, a 1px --ui-line-hi border, a 4px radius and a 3px lime bar on the left edge. Set the title to 20px f-cond 600 tx-1 and the sub-line to 16px tx-2. Change the ring from teal to --acc.",
-   "P1 hp bar (bottom left, y~1050): Move it to x=48 and bottom=48. Make it 24px tall with a dark --ui-panel track and an --ok fill. Put '100' inside it at 20px f-cond 700 and a 'hp' label at 16px tx-2. Keep the 56px size for ammo only.",
-   "P1 top-left 'current pillagers' list and 'pillager' bar: Use one panel style: --ui-panel fill, 1px --ui-line-hi border, 4px radius, 8px padding, 16px labels, 20px values and a 24px row pitch. Show 'you' by default and collapse the other rows behind the chevron. Stack the 'pillager' bar 8px under the list.",
-   "P2 'c 152m' chip beside the arrow (right, y~485) and 'extract 152m' at the top: Delete the 'c 152m' chip and keep the edge arrow. Keep 'extract 152m' as the only distance readout, in a teal 16px chip with a 4px radius."
+   "P1 top-right 'run Info' bar (x~1610,y~32): Render it as 'run info'. Make it a 40px-high card with a --ui-panel fill, a 1px --ui-line-hi border, a 4px radius, 16px f-cond text and 8px padding. Set its right edge at 48px from the screen edge and keep the chevron inside the padding.",
+   "P1 'c 152m' chip with arrow (right, y~485) and 'extract 152m' (top centre): Delete the 'c 152m' chip and keep only the edge arrow, with no label. Keep 'extract 152m' as the single readout in a teal 16px chip with a 4px radius. Remove the arrow tucked under the chip, or make it 16px and centred.",
+   "P1 hp bar (bottom left, y~1050): Move the bar to x=48 and bottom=48. Make it 24px tall on a --ui-panel track with a 1px --ui-line-hi border and a 4px radius. Put '100' inside it at 20px f-cond 700 and a 'hp' label at 16px tx-2. Align the two status icons to the bar's left edge, 8px above it.",
+   "P1 top-left 'current pillagers' list and 'pillager' bar (x~10-370,y~145-360): Give both the same panel style: --ui-panel fill, 1px --ui-line-hi border, 4px radius, 8px padding. Set the left edge to x=48. Use 16px labels, 20px values and a 24px row pitch. Show only the 'you' row by default and collapse the rest behind the chevron. Stack the 'pillager' bar 8px below the list.",
+   "P1 active reload chip (left, y~452): Dock the chip at x=48, 8px above the hp bar. Use a --ui-panel fill, a 1px --ui-line-hi border, a 4px radius and a 3px --acc bar on the left edge. Set the title to 20px f-cond 600 tx-1 and the sub-line to 16px tx-2. Change the ring from teal to --acc."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-2/reload-status-p1-x3-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-3/reload-status-p1-x3-1080.jpg",
   "task": "o-00c-active-reload-status",
-  "when": "2026-10-29T01:38"
+  "when": "2026-10-29T01:48"
  },
  "p2-x1": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The active-reload chip is now a proper card, but the rest of the HUD still fights it: 'run Info' still has a capital I, the hp bar is still the loudest thing at bottom-left, and the tooltip, controls chip and player card are all still unstyled leftovers.",
+  "verdict": "The reload chip is better, but the run-info bar, hp bar, world tag and party tooltip are unchanged, and the screen is cluttered with floating tags and panels that don't match each other.",
   "findings": [
-   "P0 top right 'run Info' dropdown, x1600-1900, y18-55: Change the label to 'run info'. Shrink the bar to about 200x40px, with a 4px radius, --ui-panel fill, 1px --ui-line-hi border and 16px f-cond 600 text. Keep the chevron at 16px in tx-2.",
-   "P1 bottom-left hp bar, y1035-1068: Make the bar 24px tall and 320px wide, with its bottom edge 16px above the screen bottom. Put 'hp 100' at 20px f-cond 600 in --acc-ink or tx-1, inside the bar. Use --ok at 100% and --danger below 30%. Keep a 1px --ui-line border.",
-   "P1 'pillager' card, left, y323-358, and the world tag above the player at y471: Keep the card and drop the world tag. Build it from the standard panel with a 3px --extract-free P2 cyan left bar, 16px tx-1 text and a 4px radius. Align its left edge with the list above and the chip below at x16, using 8px gaps.",
-   "P1 bottom-centre 'in pillager's party' tooltip, y893-929: Delete it. If the party tag is needed, put it as a 16px tx-2 line inside the player card from the previous finding.",
-   "P1 active reload chip, x8-208, y430-475: Use the standard --ui-panel fill, 1px --ui-line-hi border and 4px radius, with a left edge at x16 and an 8px gap under the player card. Show the lime ring only while the buff is active, and fade the chip out when the buff ends."
+   "P0 top-right 'run Info' dropdown, x1603-1900, y18-55: Change the label to 'run info'. Make it 200x40px with --ui-panel fill, a 1px --ui-line-hi border, a 4px radius and 16px f-cond 600 text. Make the chevron 16px in tx-2.",
+   "P1 bottom-left hp bar, x24-430, y1035-1068: Make the bar 320x24px and put its bottom edge 16px above the screen bottom (y1040), with its left edge at x16 to match the other panels. Use 20px f-cond 600 text in tx-1 on a --ui-panel track with a 1px --ui-line border. Use --ok at full health and --danger below 30%.",
+   "P1 in-world tag 'pillager' above the player, x358-404, y463-483, plus the left card at y323-358: Delete the world tag. Keep the card, with a 3px P2 cyan left bar, 16px tx-1 text, a 4px radius and a --ui-panel fill. Align its left edge to x16.",
+   "P1 bottom-centre 'in pillager's party' tooltip, x884-1036, y893-929: Delete it. If the party tag is needed, add it as a 16px tx-2 line inside the player card.",
+   "P1 left column stack: pillagers list y143-242, card y323-358, reload chip y430-475: Put all three on x16 with 8px gaps between them. Give them the same --ui-panel fill, 1px --ui-line-hi border, 4px radius and 8px inner padding. Keep the reload chip's lime ring only while the buff is active."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-2/reload-status-p2-x1-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-3/reload-status-p2-x1-1080.jpg",
   "task": "o-00c-active-reload-status",
-  "when": "2026-10-29T01:38"
+  "when": "2026-10-29T01:48"
  },
  "p2-x3": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The active reload chip now reads well, but the HUD around it is still a pile of mismatched boxes, with a capital in the dropdown, a wide empty bar, an unstyled hp bar and a hotbar that sits on top of the map.",
+  "verdict": "The HUD is still a set of unrelated boxes: a capital 'I' in 'run Info', an hp bar stuck to the bottom-left corner, a clipped hotbar and chips with mismatched padding, borders and type sizes. Almost none of the earlier advice has been applied.",
   "findings": [
-   "P1 top-right 'run Info' dropdown: Change the text to 'run info'. Shrink the bar to about 200x40 and align its right edge to 1824px (the 5% margin). Use --ui-panel with a 1px --ui-line-hi border and a 4px radius, and 16px f-cond 600 text.",
-   "P1 bottom-left 'hp 100' bar: Put a 32px f-cond 700 number to the left of a 320x16 bar. Give the bar a --ui-panel track and a 1px --ui-line-hi border, and fill it with --ok. Inset it 48px from the left and bottom edges, with 8px between the number and the bar.",
-   "P1 top-left 'current pillagers 3' panel: Use 16px labels and 20px values on a 28px row pitch. Fill the 'you' row with --ui-raised and add a 3px amber P1 bar. Set the panel to x=96, 300px wide, with 16px padding. Dock the health bar 8px under the panel at the same left edge.",
-   "P1 bottom hotbar slots 1-0 and 'f1 controls' chip: Draw all 10 slots as 64px --ui-panel squares with a 1px --ui-line border and 8px gaps. Give the selected slot a 2px --acc border. Move the controls hint to the mid-bottom left, as one 16px tx-2 line at x=96, y=1000. Use 'f1' in the f-cond key cap.",
-   "P2 left 'active reload x3' chip: Dock the chip 8px under the pillager health bar at the same x. Use 20px title and 16px tx-2 sub-line on --ui-panel with a 1px --ui-line-hi border and 4px radius. Set the ring stroke to --acc."
+   "P0 top-right 'run Info' dropdown: Change the text to 'run info'. Make the bar 200x40, right edge at x=1824, with a --ui-panel fill, a 1px --ui-line-hi border and a 4px radius. Use 16px f-cond 600 text and a 12px chevron in tx-2.",
+   "P1 bottom hotbar slots 1-10: Draw all 10 slots as 64px --ui-panel squares with a 1px --ui-line border and 8px gaps, centred at the bottom with 48px from the bottom edge. Give the selected slot a 2px --acc border. Use 16px f-cond numerals in tx-2 at the top-left of each slot. Dim empty slots to 50%.",
+   "P1 bottom-left 'hp 100' bar: Inset it 48px from the left and bottom edges. Put a 32px f-cond 700 number to the left of a 320x16 bar with a --ui-panel track, a 1px --ui-line-hi border and an --ok fill. Use the 16px label 'hp' in tx-2 and keep the number off the fill. Make the 'pillager' bar the same component.",
+   "P1 top-left 'current pillagers' panel and the 'pillager' bar below it: Set the panel to x=96, 300px wide, with 16px padding and a 28px row pitch. Use 16px tx-2 labels and 20px tx-1 values. Fill the 'you' row with --ui-raised and add a 3px amber bar at its left. Dock the pillager bar 8px under the panel at the same left edge and the same width.",
+   "P1 left 'active reload x3' chip: Dock it 8px under the pillager bar at the same x and width. Use a 20px title and a 16px tx-2 sub-line on --ui-panel with a 1px --ui-line-hi border and a 4px radius. Set the ring stroke to --acc and make the icon 32px."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-2/reload-status-p2-x3-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-3/reload-status-p2-x3-1080.jpg",
   "task": "o-00c-active-reload-status",
-  "when": "2026-10-29T01:39"
+  "when": "2026-10-29T01:49"
  }
 }

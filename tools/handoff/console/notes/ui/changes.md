@@ -570,3 +570,7 @@
 2026-10-28 | o-00c-active-reload-status | shared status column, both windows | readable shared status panels shipped in v36.20 | before: tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-1/ | after: tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-2/ (p1/p2 x1/x3, 1080 and 4k).
 2026-10-28 | o-00c-active-reload-status second follow-up | shared status values | exact 16px detail floor and tx-2 #aaa498 replace 15.6px/#cdd6dd for a clearer name/value hierarchy | before: tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-2/ | after: lane round 3 pending.
 
+2026-10-28 | o-00c-active-reload-status | shared status details, both windows | v36.22 exact 16px detail floor and muted tx-2 shipped and ON HIS PC | before: tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-2/ | after: tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-3/ (p1/p2 x1/x3 at 1080 and 4k). Critic remains 2; stopped under the two-follow-up rule, with both pictured versions retained in task notes.
+
+2026-10-28 | o-00c2-reload-chain-breaks-on-switch | raid status, both windows | switching the held gun removes that player's active reload status immediately; the next active reload begins at x1 | before: existing behavior recorded in task | after: lane camera-recipes.json scenes reload-switch-p1-view-p1, reload-switch-p1-view-p2, reload-switch-p2-view-p1, reload-switch-p2-view-p2; picture paths pending lane capture
+

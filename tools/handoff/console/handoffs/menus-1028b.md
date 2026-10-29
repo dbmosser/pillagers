@@ -17,15 +17,11 @@ cw-menupolish2 v35.93 (Wirt gamble panel: mystery tile beside the odds by rarity
 cw-endcards v35.95 (KIA card: how it went and damage taken side by side at body size, names left aligned, time as m:ss; extracted card: damage taken sources in two columns so the footnote sits above the button).
 cw-wirtfit v35.97 (Wirt offer at 4K: the offer picture gives up height when the panel is short, so the buy button lines up with the gamble button and its need line sits inside the panel; builder menus-round5/build-round5.py).
 cw-kiafit v36.00 (KIA card with a full 8 hit list fits 4K: rows line height 1.4, lost money and tiles closer; builder menus-round5/build-round5b.py).
+cw-keycards v36.18 (HIS ORDER 10-28: in-game keys are keycards; keys only means keys you press; builder menus-round6/build-keycards.py).
+cw-stashtabs v36.21 (HIS PICK a: loadout tabs backpack and keys on the loadout title line; item details a floating card beside the stash item; old check 35.42 retargeted by fixq; builder menus-round6/build-stashtabs.py).
 
-## Waiting on his pick: stash backpack (do NOT build before he picks)
-At 4K the stash loadout column gets 207 to 255 layout px but needs about 410 before the 12 backpack slots (his answers 8 and 28) fit. Today the backpack box is 0 tall there and the key hints row sits over the gun keys.
-- Pick page (private to him): https://claude.ai/artifact/1aYie9N91LWmAXs3gEcdt8
-- Read his answer: ArtifactData get, url above, collection answers, doc stash-backpack ({pick:'a'|'b', note, at}). Empty at 19:30 10-28.
-- a: loadout tabs "backpack" (12 full slots + hotbar) and "keys" (gun keys + item wheel); the 160px item details strip becomes a hover card (floating, so nothing resizes; his 10-27 order bans hover resizing).
-- b: nothing moves; the loadout column scrolls; details strip stays.
-- Mockups and their CSS: tools/handoff/drafts/menus-round3/ (build-options.py, recipes-options.json, pick/). Build only the picked option, check the new-player and stocked stash at 4K and 1080.
-- Memory note: pillagers-stash-backpack-pick-2026-10-28.md.
+## Stash backpack pick: DONE
+He picked a on 10-28 (shipped v36.21). Pad players: the details card follows the pad highlight in the stash grid.
 
 ## Next candidates
 - CEO 10-28: next, menus the party players see first (title, demo start, run cards) at 4K.
