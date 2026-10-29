@@ -11,3 +11,5 @@ Build (one rule for every door: belt keys 5-9 and 0, H, the plate key, the wheel
 Check (must FAIL on the current build): reload the rifle, press the bandage belt key mid-reload: p.reloading becomes 0 and the heal starts; during the bandage wind-up press R: no reload starts; same two with a plate.
 Rules: seed 4242 fingerprint must hold (the bot sim's own heals untouched); both windows; never touch the pickup stack, loot sounds or loot rows. DESIGN.md watch line: "no healing or plating while you reload". Model: Sonnet 5.5 high.
 TASK DONE when it shipped and is ON HIS PC.
+
+HIS ADDITION 10-28 ~23:32: "or shooting to reload cxl". So EVERY way a reload is cut short ends the active reload chain (p.arStk=0, p.arBonus=0, like a miss): firing to cancel a reload (wherever the trigger cuts a reload, e.g. the shotgun's shell-by-shell load or any fire-interrupts-reload path), a bandage/medkit/plate, a gun swap (already does), a roll, a sprint, going down. Find every door that sets p.reloading=0 before the reload finished and put the chain reset there in one helper. Add to the check: start a reload, fire to cut it: arStk is 0.
