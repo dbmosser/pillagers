@@ -6450,7 +6450,7 @@ window.__REGRESS=[
    }},
   {v:'36.22',what:'active reload damage and stim time share a real 16px detail floor and the style-guide muted ink',
    run:function(){
-     var g,p,ft=ctx.fillText,kk=keys,mm=mouse.down,seen={},bad=[],us,ownUS=false;
+     var g,p,ft=ctx.fillText,kk=keys,mm=mouse.down,seen={},bad=[],us,ownUS=false,layout=[HUDBOX,FEEDBOX,MEDALBOX,NETTEAMBOX];HUDBOX={};FEEDBOX={on:0};MEDALBOX={on:0};NETTEAMBOX={n:0};
      try{
        __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();
        ownUS=Object.prototype.hasOwnProperty.call(P,'uiScale');us=P.uiScale;P.uiScale=1;
@@ -6463,7 +6463,7 @@ window.__REGRESS=[
        };
        ctx.save();try{var hd=(typeof DPRH==='number'&&DPRH>0)?DPRH:1;ctx.setTransform(hd,0,0,hd,0,0);drawStatusIcons();}finally{ctx.restore();}
        ['+35% damage','5s'].forEach(function(t){
-         if(!seen[t]||!isFinite(seen[t].px)||seen[t].px<15.99)bad.push(t+' detail below 16px ('+(seen[t]?seen[t].px.toFixed(3):'not drawn')+')');
+       HUDBOX=layout[0];FEEDBOX=layout[1];MEDALBOX=layout[2];NETTEAMBOX=layout[3];if(!seen[t]||!isFinite(seen[t].px)||seen[t].px<15.99)bad.push(t+' detail below 16px ('+(seen[t]?seen[t].px.toFixed(3):'not drawn')+')');
          else if(seen[t].col!=='#aaa498')bad.push(t+' detail does not use tx-2');
        });
        return bad.length?bad.join('; '):null;
@@ -6518,7 +6518,7 @@ window.__REGRESS=[
      return bad.length?bad.join('; '):null; }},
   {v:'36.20',what:'active reload and stim share readable status type, about 20px titles and 16px values at 1080p, in bordered style-guide panels',
    run:function(){
-     var g,p,ft=ctx.fillText,st=ctx.stroke,kk=keys,mm=mouse.down,seen={},borders=0,bad=[],us,ownUS=false;
+     var g,p,ft=ctx.fillText,st=ctx.stroke,kk=keys,mm=mouse.down,seen={},borders=0,bad=[],us,ownUS=false,layout=[HUDBOX,FEEDBOX,MEDALBOX,NETTEAMBOX];HUDBOX={};FEEDBOX={on:0};MEDALBOX={on:0};NETTEAMBOX={n:0};
      try{
        __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();
        // v28.xx (cw-cx-statusread): pin the type scale; the canvas rounds FS requests to tenths of a pixel.
@@ -6533,7 +6533,7 @@ window.__REGRESS=[
        ctx.stroke=function(){if(ctx.strokeStyle==='#4a5257')borders++;return st.apply(this,arguments);};
        // v28.xx (cw-cx-statusread): draw in the HUD canvas space, independent of the last world render transform.
        ctx.save();try{var hd=(typeof DPRH==='number'&&DPRH>0)?DPRH:1;ctx.setTransform(hd,0,0,hd,0,0);drawStatusIcons();}finally{ctx.restore();}
-       ['active reload x3','stim'].forEach(function(t){if(!seen[t]||!isFinite(seen[t].px)||seen[t].px<14.9)bad.push(t+' title is below the shared callout size ('+(seen[t]?seen[t].px.toFixed(3):'not drawn')+' logical px)');else if(seen[t].col!=='#efe9dc')bad.push(t+' title lacks neutral contrast');});
+       HUDBOX=layout[0];FEEDBOX=layout[1];MEDALBOX=layout[2];NETTEAMBOX=layout[3];['active reload x3','stim'].forEach(function(t){if(!seen[t]||!isFinite(seen[t].px)||seen[t].px<14.9)bad.push(t+' title is below the shared callout size ('+(seen[t]?seen[t].px.toFixed(3):'not drawn')+' logical px)');else if(seen[t].col!=='#efe9dc')bad.push(t+' title lacks neutral contrast');});
        ['+35% damage','5s'].forEach(function(t){if(!seen[t]||!isFinite(seen[t].px)||seen[t].px<11.9)bad.push(t+' detail is below the shared label size ('+(seen[t]?seen[t].px.toFixed(3):'not drawn')+' logical px)');});
        if(borders<2)bad.push('status panels lack the shared border');
        return bad.length?bad.join('; '):null;
