@@ -69,3 +69,4 @@ SHIPPED 10-28 v35.66: 201 air strike needs 3000 damage (was 1500). On his PC 168
 - His order 10-28 ~20:05 (verbatim, to the CEO chat): "hold to breach should say hold e to breach". Job tasks/o-00b-hold-e-to-breach.md (Codex, first in line).
 - His order 10-28 ~20:06 (verbatim, to the CEO chat): "active reload bonus stacks should be shown as a status". Job tasks/o-00c-active-reload-status.md (Codex, after o-00b).
 - His order 10-28 ~20:15 (verbatim, to the CEO chat): "the extract doesn't need to make an audible noise the entire time we are waiting for it, just the first 3 and the last 3 seconds.  should attract enemies the entire time though". Job tasks/o-00d-extract-quiet-middle.md (Codex, third in line).
+- His order 10-28 ~21:25 (verbatim, to the CEO chat): "Active reload chain should also break if player switches guns". Job tasks/o-00c2-reload-chain-breaks-on-switch.md (Codex, next in line).
