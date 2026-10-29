@@ -566,3 +566,6 @@
 2026-10-29 12:08 o-00v-239-ping-and-map-mark-are-one 440s ok PARTIAL in=4084815 out=43488 run=3
 2026-10-29 12:27 o-00v-239-ping-and-map-mark-are-one 147s ok PARTIAL in=5027879 out=47103 run=4
 2026-10-29 12:34 o-00v-no-caches-on-map 404s ok PARTIAL in=1509418 out=13878 run=1
+2026-10-29 12:43 o-00v-no-caches-on-map 115s ok PARTIAL in=2243623 out=17602 run=2
+2026-10-29 12:45 o-00v-no-caches-on-map 33s ok DONE in=2615337 out=18479 run=3
+2026-10-29 14:03 o-00w-244-ping-after-mark-merge 477s ok PARTIAL in=1481799 out=18373 run=1

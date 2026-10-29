@@ -1,0 +1,5 @@
+## v36.55 - MARK LEGENDS AND OLD SAVE CHECKS
+
+Co-op hunt while he was away. The old mouse check pressed the same persistent spot twice, so the second press correctly cleared it. The controller legend already says mark; the keyboard compact row still said ping. Watch: middle mouse sets one mark, pressing that spot again clears it, and D-UP marks on a pad.
+
+MEASURED. Check 36.55 passes, and fails on v36.54.

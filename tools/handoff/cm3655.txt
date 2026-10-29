@@ -1,0 +1,7 @@
+v36.55: mark legends and old save checks
+
+The compact party legends both say mark. Old saved keys remain unchanged. Regression checks stage independent mouse presses and cover all three views and both roles.
+
+Check 36.55. Fails on v36.54.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -274,18 +274,18 @@
  "22-raid-map-open": {
   "score": 3,
   "pass": false,
-  "verdict": "The window shell (title left, x top-right, centred card, lime m close key) is consistent and clean. The map is still a crowd of tiny labels and the contracts column is a flat list of identical rows, so the eye has no clear first stop. The 'cache' labels now clump into leader-line tangles at the top-right and right-middle.",
+  "need": 4,
+  "verdict": "Removing the cache tags cleared the cluttered label pile-ups on the map, but the labels are still weak in tiers and contrast, and the contracts panel is unchanged: its bars are still thin grey rules, its text is still all one weight, and the 'open' row still breaks the count column.",
   "findings": [
-   "P1 map, strongbox/blast freezer cluster (x 920-1080, y 360-560): Merge duplicate-type tags into one label with a count, for example 'cache x4'. Keep one leader line per label. Keep the tag column at least 24px clear of the zone and extract labels. Drop the leader lines when the icon is within 40px.",
-   "P1 map, top-right (x 960-1060, y 180-290): Combine them into one 'cache x3' label. Put it outside the room rectangle at least 12px from the 'locked' label. Use 16px type.",
-   "P1 contracts panel, rows: Draw the progress bar as a 4px track in --ui-line with a --acc fill proportional to progress. Set reward text in --tx-1 and the name in --tx-1 at 20px. Give every row a count in the same slot ('0/1') so 'open' does not break the column.",
-   "P1 map labels, overall: Use three tiers: extract labels 20px --extract, point-of-interest labels 16px --tx-1, zone names 16px --tx-2 at 4.5:1 or better. Give POI labels a 1px dark text outline or a 60% --ui-void chip behind them.",
-   "P2 map, left edge (old image only; 'codex entry' toast): None needed. Confirm in a later capture that toasts never draw over the window card."
+   "P1 contracts panel, rows (x 1140-1745, y 240-890): Draw a 4px track in --ui-line with an --acc fill proportional to progress. Set names in --tx-1 at 20px and rewards in --tx-2 at 16px. Give every row the same count slot ('0/1'). Move 'holding' and 'open' into a status tag at the left of the bar.",
+   "P1 map labels, overall (extract c/b/a, zone names, POI labels): Extract labels 20px --extract. POI labels 16px --tx-1 with a 60% --ui-void chip behind them. Zone names 16px --tx-2 at 4.5:1 or better, with a 1px dark outline. Make 'locked' a --warn glyph instead of bold white text.",
+   "P1 map, strongbox label and icon (x 1015-1080, y 400-480): Put the label 12px to the right of the icon, or below it, with a chip behind it. Move 'blast freezer · locked' at least 24px left. Make the icon 28px.",
+   "P2 map, extract b cluster (x 960-1075, y 480-560): Centre the 'extract b' label under its marker and give it a chip. Keep it 16px clear of the room edge.",
+   "P2 map frame, empty lower-left and lower-right (x 160-1085, y 640-900): Drop the unlabelled ring markers or add labels at 16px. Shrink the red 'encampment' labels to 16px, or give them a --danger diamond with the label in --tx-1."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-03-map-popups-wait-after/22-raid-map-open-1080.jpg",
-  "task": "o-03-map-popups-wait",
-  "when": "2026-10-20T05:09",
-  "need": 4
+  "pic": "tools/handoff/console/notes/shots/o-00v-no-caches-on-map-after/22-raid-map-open-1080.jpg",
+  "task": "o-00v-no-caches-on-map",
+  "when": "2026-10-29T16:40"
  },
  "23-raid-backpack-open": {
   "score": 3,
@@ -1827,33 +1827,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The modal and toast from last time are gone and the left buff stack is now tidy, but the top-centre cluster is still a ragged overlap of three differently sized boxes, and the bottom-left hp and armour bars, the weapon slots and the ammo panel still don't share one panel language or one margin.",
+  "verdict": "This is a clean, consistent sector-map card with a good title, x close and footer hint, but the map labels are tiny and crowded, the contracts list is flat, and the earlier raid-HUD advice does not apply to this screen.",
   "findings": [
-   "P1 Top-centre cluster, clock, team score and extract tag, x858-1062 y17-200: Stack them in one 220px-wide column centred at x960 with 8px gaps: clock y16-72, score y80-144, extract chip y152-184. Set the 'you' and 'p2' lines at 16px, in amber for P1 and cyan for P2. Use 24px internal padding. Make 'team score' 16px tx-2 and the 0 sp a 32px figure, so the 56px hero stays on the clock or the ammo.",
-   "P1 Bottom-left armour and hp bars, x24-430 y962-1068, and 'f1 controls', x443-540 y943-967: Put both bars on one --ui-panel block at x48-448, y~960-1032, with 24px bars, a 4px radius and an 8px gap. Use 20px f-cond 700 labels in tx-1 inside the bars at the same size. Keep the armour blue as a rarity-like colour only if it is the identity colour, otherwise use tx-2. Move 'f1 controls' to a 16px chip 16px above the block at x48.",
-   "P1 Left buff stack x10-230 y432-704 and player-2 bar x14-170 y324-360: Move the stack and the p2 bar to x48. Make every panel 220x56 at 80% --ui-panel with 20px names and 16px tx-2 sub-labels. Make the p2 bar the same 220px wide with a 16px label. Collapse the buffs that have no timer into one 'damage +15%' row.",
-   "P1 Weapon slots, x553-1480 y968-1062: Draw all ten slots as 64x64 --ui-panel tiles with an 8px gap, centred on x960 and 24px from the bottom. Use a 2px --acc border only on the selected tile. Set the key digit at 16px tx-2 in the top-left of each tile. Put the ammo count at 16px tx-1 bottom-right, and dim the empty tiles to 40%.",
-   "P2 Ammo panel, x1709-1910 y925-1020: Move the panel in to x1824 (48px margin) and set it 220x96 with a 4px radius. Put the magazine count at 56px in tx-1 and the reserve at 24px in tx-2. Put the weapon name at 16px tx-2 with 8px of space before the digits."
+   "P1 Map labels across x160-1080 y190-880 (peddler, the long dock, foreman office, extract c, seal 0%, chill row): Set all map labels to 16px f-cond 600 tx-1. Give each a 2px --ui-void text halo, or a 4px-radius chip at 70% void. Move 'strongbox' 16px left of the map edge, and nudge 'extract b' and 'chill row' apart by at least 12px.",
+   "P1 Contracts panel x1120-1765 y160-918: Put the reward on the row's right side at 20px f-cond 700 tx-1, and the 0/1 progress at 16px tx-2 on the same baseline. Replace the dividers with 1px --ui-line. Draw a separate 4px progress bar at x1144 only on rows with progress above 0, filled in --acc.",
+   "P2 Header x126-1790 y80-110: Delete 'elites and keys are live intel'. Set 'sector map' to 16px tx-2. Keep 'dawn · clear' at 16px tx-2 with 24px of space before the 48px close box.",
+   "P2 Map legend and in-map text, 'intel live' x178 y191: Change it to 'intel live'. Add a one-line legend in the footer at 16px tx-2: teal ring = extract, red diamond = encampment, with a 12px glyph per item.",
+   "P2 Footer x126-1794 y975-1000: Show the key hint for the device in use, such as 'a set mark', in a 20px lime-bordered key chip. Group 'surveyed 2%' at 16px tx-1 with its number. Keep 'm close' with a 24px chip."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00u-238-status-type-regression-recipes-2/status-type-demo-p1-1080.jpg",
-  "task": "o-00u-238-status-type-regression",
-  "when": "2026-10-29T11:23"
+  "pic": "tools/handoff/console/notes/shots/o-00v-no-caches-on-map-recipes-2/map-no-caches-p1-1080.jpg",
+  "task": "o-00v-no-caches-on-map",
+  "when": "2026-10-29T16:44"
  },
  "p2-1080": {
-  "score": 2,
-  "pass": false,
+  "score": 3,
+  "pass": true,
   "need": 3,
-  "verdict": "This is a cluttered in-raid HUD, not the title screen I reviewed before. Six panels all carry equal weight, and the two stacked progress bars and the controls card compete with the play area.",
+  "verdict": "The card frame is clean and consistent: a title on the left, an x on the right, a footer, and a calm contracts list. The map itself is the weak part, with small dim labels that collide with each other, and the contract rows are flat and unclear.",
   "findings": [
-   "P1 top-left leaderboard (current pillagers, 7 dead rows): Fold it to one line, 'you $210 · 1 left', and show the full list only on tab. If it stays, drop the dead rows to a single 'out · 7 dead' line and set rows to 16px --tx-2 (#aaa498) on --ui-panel.",
-   "P1 run info panel (right, under the minimap): Use 16px rows with an 8px gap and a 16px inner padding. Truncate or write contract names so each fits on one line, ending '0/2' right-aligned. Put 8px between the minimap and this panel. Fix the missing noun in the 'lost … broken' line.",
-   "P1 controls card (mid-left, move/fight/gear/raid): Show it as a single folded line at mid-bottom left, 'f1 controls', 16px --tx-2. Open the full card only on F1. When open, make section labels 16px --tx-1 and keycaps 1px --ui-line-hi.",
-   "P1 centre-bottom progress bars (slotting armour plate / applying bandage): Show one bar at 320px wide and 12px tall, with the label above at 16px. Queue the second action as a text line. Use --acc for the fill, or --ok for a heal, and 8px padding.",
-   "P2 top-centre stack (timer 9:00, score 0 sp, extraction 141m): Use one 4px-radius card with two rows: timer at 56px f-cond 800, then 'score 0 sp' at 20px beneath. Put the extraction chip 8px under it in --extract with 16px text."
+   "P1 map labels (packing floor, the long dock, the sump, scrap line, chill row, strongbox): Use one label rule. Area names are 16px f-cond 600 in --tx-2. Interactive points (peddler, forge, strongbox) are 16px in --tx-1. Extractions are 16px in --extract. Add a 2px --ui-void text shadow or halo so labels stay readable over walls.",
+   "P1 map label collisions (intel live, seal 0%, extract b / strongbox, extract a / hot ground, foreman office · locked): Inset 'intel live' 8px below the frame, or move it into the header. Offset the extract b and strongbox labels by at least 16px, with the labels placed outside the tiles. Keep an 8px clear gap around every label, and nudge the labels that touch.",
+   "P1 contracts list rows: Keep names at 20px --tx-1. Put the reward at 20px --acc-free --tx-1 on the right, with progress at 16px --tx-2 directly beneath it. Make the bar 4px tall with a --ui-line track and a --acc fill that grows with progress. Add a 1px --ui-line divider between rows, with 16px padding top and bottom.",
+   "P2 header: 'elites and keys are live intel' and footer 'click to set a mark', 'surveyed 2%': Delete the header sentence or turn it into a 16px 'live intel' tag. Keep a 24px gap between the title and 'sector map', and make 'sector map' --tx-2 at 20px. Raise the footer hints to 16px --tx-2 and separate them by 32px.",
+   "P2 close controls (x top right, 'm close' bottom right): Keep the x as the close control. In the footer, draw the 'm' keycap with a 1px --ui-line-hi border and --tx-1 text, not an --acc fill, and set both at 16px."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00u-238-no-heal-or-plate-while-reloading-recipes-2/reload-medical-p2-1080.jpg",
-  "task": "o-00u-238-no-heal-or-plate-while-reloading",
-  "when": "2026-10-29T13:17"
+  "pic": "tools/handoff/console/notes/shots/o-00v-no-caches-on-map-recipes-2/map-no-caches-p2-1080.jpg",
+  "task": "o-00v-no-caches-on-map",
+  "when": "2026-10-29T16:45"
  },
  "pix86c-fashion": {
   "score": 3,

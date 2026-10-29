@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.55 - MARK LEGENDS AND OLD SAVE CHECKS
+
+Co-op hunt while he was away. The old mouse check pressed the same persistent spot twice, so the second press correctly cleared it. The controller legend already says mark; the keyboard compact row still said ping. Watch: middle mouse sets one mark, pressing that spot again clears it, and D-UP marks on a pad.
+
+MEASURED. Check 36.55 passes, and fails on v36.54.
 ## v36.54 - CACHES OFF THE MAP
 
 Co-op hunt while he was away. His order 2026-10-29: quit showing caches on the map, even if player burns a data slot. It makes the map super messy. Watch: the map no longer marks caches.
