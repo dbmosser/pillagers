@@ -6273,7 +6273,7 @@ window.__REGRESS=[
          if(!swapGuns()||p.wep!==b)throw Error('cannot switch to gun B');cleared('switch to B');
          if(!swapGuns()||p.wep!==a)throw Error('cannot switch back to A');cleared('switch back to A');
          if(!hit())throw Error('cannot stage next active reload');e=entry(p);
-         if(p.arStk!==1||!e||!e.on||e.nm!=='active reload x1'||e.v!=='+15% damage')bad.push(NET.same+': next hit did not restart at x1');
+         if(p.arStk!==1||!e||!e.on||e.nm!=='active reload x1'||e.v!==('+'+Math.round((AR_BONUS-1)*100)+'% damage'))bad.push(NET.same+': next hit did not restart at x1');
          chain();start();if(!swapGuns())throw Error('cannot cancel reload by switching');cleared('cancelled reload');
          if(p.reloading!==0||p.rlTot!==0)bad.push(NET.same+': switch kept the old reload');
          if(bad.length)return bad.join('; ');
@@ -6435,8 +6435,8 @@ window.__REGRESS=[
          NET.same=side?'p2':'host';p.wep=cloneObj(WEAPONS.pistol);p.arStk=0;p.arBonus=0;p.downed=false;
          e=entry();if(e&&e.on)bad.push(NET.same+': zero chain has a status');
          if(!tap(0.51)||!tap(0.51)||p.arStk!==2)return NET.same+': staging two active reloads failed';
-         e=entry();if(!e||!e.on||e.nm!=='active reload x2'||e.v!=='+25% damage')bad.push(NET.same+': two hits lack active reload x2 and +25% damage');
-         drawn();if(words.indexOf('active reload x2')<0||words.indexOf('+25% damage')<0)bad.push(NET.same+': chain or bonus not drawn in the status column');
+         e=entry();if(!e||!e.on||e.nm!=='active reload x2'||e.v!==('+'+Math.round((AR_BONUS+AR_STEP-1)*100)+'% damage'))bad.push(NET.same+': two hits lack active reload x2 and its configured damage bonus');
+         drawn();if(words.indexOf('active reload x2')<0||words.indexOf(('+'+Math.round((AR_BONUS+AR_STEP-1)*100)+'% damage'))<0)bad.push(NET.same+': chain or bonus not drawn in the status column');
          p.arBonus=0;e=entry();if(!e||!e.on||e.v!=='chain ready')bad.push(NET.same+': inactive magazine still claims a damage bonus');
          if(tap(0.1)||p.arStk!==0)return NET.same+': staging miss failed';
          e=entry();if(e&&e.on)bad.push(NET.same+': miss kept the status');
@@ -10656,7 +10656,7 @@ window.__REGRESS=[
        try{ __topClear(); __cleanProfile(); }catch(_c){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'35.27',what:'cw-reloadstack, his order 2026-10-27 (make the active reload stack but it gets harder each time): each active reload in a row adds to the bonus (x1.15, x1.25, x1.35), the sweet spot narrows each time, a miss or a reload left to run out starts the chain over, and the ring, the bar and X on a pad follow the narrower spot',
+  {v:'35.27',what:'cw-reloadstack, his order 2026-10-27 (make the active reload stack but it gets harder each time): each active reload in a row adds to the bonus (the configured first, second and third bonuses), the sweet spot narrows each time, a miss or a reload left to run out starts the chain over, and the ring, the bar and X on a pad follow the narrower spot',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__sim)) return 'SKIP: no raid here';
      if(typeof activeReloadTick!=='function'||typeof AR_A!=='number'||typeof reloadBarDraw!=='function'||typeof fireWeapon!=='function') return 'SKIP: no active reload in this fixture';
@@ -10685,20 +10685,20 @@ window.__REGRESS=[
        d0=shot();
        h=[hitAt(0.51),null,null]; d1=shot(); h[1]=hitAt(0.51); d2=shot(); h[2]=hitAt(0.51); d3=shot();
        if(!(h[0]&&h[1]&&h[2])) bad.push('ONE control: a press in the middle of the sweet spot did not land ('+h.join(',')+')');
-       if(!near(d1/d0,1.15)) bad.push('ONE control: the first active reload gives '+x3(d1)+', not x1.15');
+       if(!near(d1/d0,AR_BONUS)) bad.push('ONE control: the first active reload gives '+x3(d1)+', not the configured first bonus');
        if(!(d2>d1+0.01)) bad.push('ONE: two active reloads in a row give '+x3(d2)+' on the second, no more than the first ('+x3(d1)+')');
-       else if(!near(d2/d0,1.25)||!near(d3/d0,1.35)) bad.push('ONE: the stack reads '+x3(d2)+' then '+x3(d3)+', not x1.25 then x1.35');
+       else if(!near(d2/d0,AR_BONUS+AR_STEP)||!near(d3/d0,AR_BONUS+2*AR_STEP)) bad.push('ONE: the stack reads '+x3(d2)+' then '+x3(d3)+', not the configured second and third bonuses');
        // TWO: the second spot is narrower. A press at 0.431 of the reload lands on a fresh chain (inside 0.42 to 0.60) and misses on the second
        if(!runOut()) bad.push('TWO: a reload left alone did not run out');
        dA=shot(); if(!near(dA/d0,1)) bad.push('TWO: a reload left to run out kept a bonus ('+x3(dA)+')');
        if(!hitAt(0.431)) bad.push('TWO control: a fresh chain did not take a press at 0.431 of the reload, inside the old sweet spot');
        else if(hitAt(0.431)) bad.push('TWO: the second sweet spot is no narrower: a press at 0.431 of the reload landed again');
-       else { if(!tapAt(0.51)) bad.push('TWO: after the miss a press in the middle did not land'); dB=shot(); if(!near(dB/d0,1.15)) bad.push('TWO: a miss did not start the chain over: the next active reload gives '+x3(dB)+', not x1.15'); }
+       else { if(!tapAt(0.51)) bad.push('TWO: after the miss a press in the middle did not land'); dB=shot(); if(!near(dB/d0,AR_BONUS)) bad.push('TWO: a miss did not start the chain over: the next active reload gives '+x3(dB)+', not the configured first bonus'); }
        // THREE: a reload left to run out starts the chain over
        h=[hitAt(0.51),null]; dA=shot(); runOut(); h[1]=hitAt(0.51); dB=shot();
        if(!(h[0]&&h[1])) bad.push('THREE control: a press in the middle did not land ('+h.join(',')+')');
-       if(!near(dA/d0,1.25)) bad.push('THREE: the active reload after the restart gives '+x3(dA)+', not x1.25');
-       if(!near(dB/d0,1.15)) bad.push('THREE: a reload left to run out did not start the chain over: the next one gives '+x3(dB)+', not x1.15');
+       if(!near(dA/d0,AR_BONUS+AR_STEP)) bad.push('THREE: the active reload after the restart gives '+x3(dA)+', not the configured second bonus');
+       if(!near(dB/d0,AR_BONUS)) bad.push('THREE: a reload left to run out did not start the chain over: the next one gives '+x3(dB)+', not the configured first bonus');
        // FOUR: with two in the chain the ring and the bar draw the narrower spot
        hitAt(0.51);
        if(!start()) bad.push('FOUR: staging: R did not start a reload');
@@ -10730,7 +10730,7 @@ window.__REGRESS=[
            p.reloading=p.rlTot*(1-0.51); padClr(); poll([2]); xm2=PAD.xMode; activeReloadTick(p); padHit=!(p.reloading>0)&&p.arBonus===1; keys={}; padClr(); poll([]); keys={};
            if(xm2!=='KeyR'||!padHit) bad.push('FIVE control: on a pad next to a box, X in the middle of the spot did not land the active reload ('+xm2+')');
            if(xm1!=='KeyE') bad.push('FIVE: on a pad next to a box, X at 0.445 of the reload, outside the narrower spot, read '+xm1+', not the search');
-           dA=shot(); if(padHit&&!near(dA/d0,1.35)) bad.push('FIVE: on a pad the third active reload in a row gives '+x3(dA)+', not x1.35');
+           dA=shot(); if(padHit&&!near(dA/d0,AR_BONUS+2*AR_STEP)) bad.push('FIVE: on a pad the third active reload in a row gives '+x3(dA)+', not the configured third bonus');
          }
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
