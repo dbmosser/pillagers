@@ -6190,7 +6190,7 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ if(prof&&keep){ var q=__P(); q.stash=keep.s; q.hotAssign=keep.h; q.stashTab=keep.t; } }catch(_a){} try{ __topClear(); __cleanProfile(); }catch(_c){} }
      return bad.length?bad.join('; '):null; }},
-  {v:'36.45',what:'combat status panels share a measured width of at least 220px, 48px rows and full 20px/16px type in crowded solo and both demo roles at 1080p and 4K',
+  {v:'36.45',what:'combat status panels share one measured width, rows of at least 40px (cw-hudstack, his 10-29 picture: were 220px by 48px) and full 20px/16px type in crowded solo and both demo roles at 1080p and 4K',
    run:function(){
      var g,p,ft=ctx.fillText,sp=statusPill,kk=keys,md=mouse.down,us=P.uiScale,ownUS=Object.prototype.hasOwnProperty.call(P,'uiScale'),buzz=P.buzz,
          boxes=[HUDBOX,FEEDBOX,MEDALBOX,NETTEAMBOX],nk={on:NET.on,role:NET.role,seat:NET.seat},ar=ARCADE.role,
@@ -6211,7 +6211,7 @@ window.__REGRESS=[
          ['stim','active reload x3','steady hand +15%','beast mode +15%','liquor'].forEach(function(t){need(seen[t]&&isFinite(seen[t].px)&&seen[t].px>=19.99,t+' title below 20px or missing');});
          ['5s','+15% damage','damage','4s','30s'].forEach(function(t){need(seen[t]&&isFinite(seen[t].px)&&seen[t].px>=15.99,t+' detail below 16px or missing');});
          need(panels.length>=5,'a live status panel was omitted');
-         panels.forEach(function(a,i){need(a.w/hudRes()>=219.9&&a.h/hudRes()>=47.9,'panel '+i+' below shared dimensions');need(Math.abs(a.w-panels[0].w)<0.1,'panel '+i+' width differs');need(a.x>=0&&a.y>=0&&a.x+a.w<=W+0.1&&a.y+a.h<=H+0.1,'panel '+i+' outside viewport');panels.forEach(function(b,j){if(j>i)need(!(a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y),'panels '+i+' and '+j+' overlap');});});
+         panels.forEach(function(a,i){need(a.h/hudRes()>=39.5,'panel '+i+' below the 40px row');need(Math.abs(a.w-panels[0].w)<0.1,'panel '+i+' width differs');need(a.x>=0&&a.y>=0&&a.x+a.w<=W+0.1&&a.y+a.h<=H+0.1,'panel '+i+' outside viewport');panels.forEach(function(b,j){if(j>i)need(!(a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y),'panels '+i+' and '+j+' overlap');});});
        }
        return bad.length?bad.join('; '):null;
      }finally{
