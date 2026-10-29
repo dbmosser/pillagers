@@ -51,6 +51,17 @@ function chromeZoom() {
   return out;
 }
 
+// 10-29 (FPS czar): his Chrome's hardware acceleration switch and the chrome://flags he changed (names only), from Local State. Off or a
+// vsync flag holds the browser's frames below the screen, and the game can only draw the frames the browser hands it.
+function chromeGpu() {
+  try {
+    const s = JSON.parse(fs.readFileSync(path.join(process.env.LOCALAPPDATA || '', 'Google', 'Chrome', 'User Data', 'Local State'), 'utf8'));
+    const hw = s && s.hardware_acceleration_mode;
+    const flags = (s && s.browser && Array.isArray(s.browser.enabled_labs_experiments)) ? s.browser.enabled_labs_experiments.map(String).slice(0, 60) : [];
+    return { hardwareAcceleration: !(hw && hw.enabled === false), flags };
+  } catch { return { error: 'no Chrome Local State' }; }
+}
+
 // the party copy he plays on 8802 (party-host-copy.ps1's default folder) and its game version
 const PARTY_DIR = 'C:\\claudecode\\pillagers-party';
 function partyVer() {
@@ -139,6 +150,7 @@ export const JOBS = {
   async ['chrome-view'](_args, ctx) {
     const r = await psJson(path.join(ctx.repoRoot, 'tools', 'bridge', 'chrome-view.ps1'), 60000);
     r.zoom = chromeZoom();
+    r.chrome = chromeGpu();
     return r;
   },
 
