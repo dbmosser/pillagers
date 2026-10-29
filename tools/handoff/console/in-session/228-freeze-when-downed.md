@@ -12,3 +12,5 @@ BUILD:
 Check (must FAIL on the current build): the scripted downed-with-Lance case finishes its frame within budget; the guard caps the loop.
 Rules: seed 4242 fingerprint (ents 85/374, containers 165/593) must hold; both windows; never touch the pickup stack, loot sounds or loot rows. DESIGN.md watch line: "going down with the Lance no longer freezes the game". Say plainly what he should watch for.
 TASK DONE when it shipped and is ON HIS PC.
+
+HIS SECOND REPORT 10-28 about 22:35 EDT: "game crashed again" (a second freeze, no details given; his 8802 had v36.23 or the new v36.24). Treat as the same hang until proven otherwise; no report reached exports again.
