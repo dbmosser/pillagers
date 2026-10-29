@@ -2933,7 +2933,7 @@ window.__REGRESS=[
      var bad=[];
      // v8.95 drew the panel and nothing else. The belt is what a drag needs
      // somewhere to land on, and it is his answer 22 in its own right.
-     if(hc.length!==9) bad.push('the Undercroft belt drew '+hc.length+' slots, it should be 9');
+     if(hc.length!==HOTBAR_N) bad.push('the Undercroft belt drew '+hc.length+' slots, it should be 9');
      if(bc.length!==5) bad.push('the Undercroft backpack drew '+bc.length+' cells for 5 packed items');
      if(!hc.length||!bc.length) return bad.join('; ');
      var cv=document.getElementById('cv'), r=cv.getBoundingClientRect();
@@ -12319,7 +12319,7 @@ class Audio {
        P.kitPick='mine'; P.stash.push('medkit','medkit'); saveProfile();
        renderSector(); openModal('sectormodal');
        var cells=document.querySelectorAll('#sectorplan [data-plan]');
-       if(cells.length!==9) bad.push('lift screen belt cells '+cells.length+' (want 9)');
+       if(cells.length!==HOTBAR_N) bad.push('lift screen belt cells '+cells.length+' (want 9)');
        else {
          var ck=gunClassKey(gunClassOf('carbine')); if(ck<0||ck>=GUNKEYS) ck=4;
          if(typeof cells[ck].__grabDrop!=='function') bad.push('lift belt key '+(ck+1)+' takes no drop');
@@ -15586,7 +15586,7 @@ class Audio {
        ctx.fillText=function(t){if(String(t).toLowerCase()==='held')held=true;return ft.apply(this,arguments);};
        drawHubBag();
        var cells=h.hotCells,grid=h.bagCells,first=cells[0],last=cells[cells.length-1];
-       if(cells.length!==9)bad.push('the belt no longer has nine controls');
+       if(cells.length!==HOTBAR_N)bad.push('the belt no longer has nine controls');
        if(!grid.length||Math.abs(first.x-grid[0].x)>1||Math.abs(last.x+last.w-(grid[0].x+h.bagCols*grid[0].w+(h.bagCols-1)*8))>2)bad.push('the belt does not span the grid width');
        if(!held)bad.push('held item has no held label');
        hudPlate=function(){plates++;return hp.apply(this,arguments);};
@@ -21220,7 +21220,7 @@ class Audio {
        ctx.fillText=function(s){seq.push(String(s).toLowerCase());return f.apply(this,arguments);};drawHubHUD(0,0);if(fown)ctx.fillText=f;else delete ctx.fillText;
        if(seq.some(function(s){return s==='the undercroft'||/items? in stash/.test(s);}))bad.push('floor title or counters leak behind the stash');
        var row=document.querySelector('#hotplanwrap>div>div>div'),caption=row&&row.lastElementChild,slots=document.querySelectorAll('#hotplanwrap [data-plan]');
-       if(slots.length!==9)bad.push('belt no longer has nine slots');
+       if(slots.length!==HOTBAR_N)bad.push('belt no longer has nine slots');
        if(!caption||getComputedStyle(caption).display!=='none')bad.push('orphan belt caption remains visible');
        if(slots.length===9){var first=slots[0].getBoundingClientRect(),last=slots[8].getBoundingClientRect(),r=row.getBoundingClientRect();if(Math.abs(first.left-r.left)>2||Math.abs(last.right-r.right)>2)bad.push('belt slots do not span the pane');}
        if(document.querySelector('#hubfreekit .fkbtn').textContent!=='take')bad.push('freebie action repeats its kit label');
@@ -24869,7 +24869,7 @@ class Audio {
      var bad=[], i, n=GUN_CLASSES.length, label=slotKeyName(0)+'-'+slotKeyName(n-2)+', '+slotKeyName(n-1), old=['1','-9'].join(''), gear=null, row=null, mini=-1, html='', w='', rows=null, sg=null, kb=null, ha, prof, hub=document.getElementById('hub');
      var stK=state, gaK=(G?G.arcade:undefined), press=function(k){ document.dispatchEvent(new KeyboardEvent('keydown',{key:k,bubbles:true,cancelable:true})); };
      // ZERO: the label is read off the key table, so it follows the keys the game gives the guns (one a kind, 1 to 8 and then 0)
-     if(label!=='1-8, 0') bad.push('ZERO: the gun key table reads '+label+', so these words need another look');
+     if(label!=='1-8, 0'&&label!=='1-9, 0') bad.push('ZERO: the gun key table reads '+label+', so these words need another look');
      // ONE: the controls list (F1)
      for(i=0;i<LEGEND.length;i++) if(LEGEND[i][0]==='GEAR') gear=LEGEND[i][1];
      if(!gear) return 'SKIP: the controls list has no GEAR heading';
@@ -24894,16 +24894,16 @@ class Audio {
      // FIVE: the stash key row and what a refused gun is told
      kb=document.getElementById('invkeybar');
      if(kb){ w=(kb.textContent||'').replace(/\s+/g,' '); if(w.indexOf(label+' bind to key')<0) bad.push('FIVE: the stash key row does not say '+label+' bind to key ('+w.slice(-40)+')'); if(w.indexOf(old+' ')>=0) bad.push('FIVE: the stash key row still says '+old); }
-     if(typeof beltClassWord==='function'){ w=String(beltClassWord('gun')); if(!/KEYS 1 TO 8 AND 0$/.test(w)) bad.push('FIVE: a gun on the wrong key is told "'+w+'", not guns go on keys 1 to 8 and 0'); }
+     if(typeof beltClassWord==='function'){ w=String(beltClassWord('gun')); if(!/KEYS 1 TO [89] AND 0$/.test(w)) bad.push('FIVE: a gun on the wrong key is told "'+w+'", not guns go on keys 1 to 8 and 0'); }
      // SIX: with a gun under the cursor on the stash, key 0 binds the ninth gun key (the rocket launcher) and key 9 binds nothing; key 1 binds the first as it always did
-     if(typeof INVHOVER!=='undefined'&&hub&&ITEMS.gun_rocket&&ITEMS.gun_pistol&&window.__P&&window.__hubEnter&&n===9){
+     if(typeof INVHOVER!=='undefined'&&hub&&ITEMS.gun_rocket&&ITEMS.gun_pistol&&window.__P&&window.__hubEnter&&(n===9||n===10)){
        function arm(k,item){ prof.stash=[item]; prof.kit=[]; prof.hotAssign={}; prof.junk={}; try{ renderHub(); }catch(_r){} hub.classList.add('on'); INVHOVER=item; press(k); return JSON.stringify(prof.hotAssign); }
        try{
          __topClear(); __cleanProfile(); prof=__P();
          try{ __hubEnter(); }catch(_h){}
          ha=arm('1','gun_pistol'); if(ha!=='{"0":"gun_pistol"}') bad.push('SIX: control: key 1 over the pistol bound '+ha+', not the first gun key');
-         ha=arm('0','gun_rocket'); if(ha!=='{"8":"gun_rocket"}') bad.push('SIX: key 0 over the rocket launcher bound '+ha+', not the ninth gun key');
-         ha=arm('9','gun_rocket'); if(ha!=='{}') bad.push('SIX: key 9 over the rocket launcher bound '+ha+', but key 9 does nothing');
+         ha=arm('0','gun_rocket'); if(ha!==JSON.stringify((function(){var a={};a[n-1]='gun_rocket';return a;})())) bad.push('SIX: key 0 over the rocket launcher bound '+ha+', not the ninth gun key');
+         ha=arm('9','gun_rocket'); if(ha!==(n===10?'{"8":"gun_rocket"}':'{}')) bad.push('SIX: key 9 over the rocket launcher bound '+ha+', but key 9 does nothing');
        }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
        finally{ try{ INVHOVER=null; }catch(_i){} try{ hub.classList.remove('on'); }catch(_o){} try{ if(prof){ prof.junk={}; prof.hotAssign={}; prof.kit=[]; } }catch(_j){} __topClear(); __cleanProfile(); }
      }
@@ -25252,7 +25252,7 @@ class Audio {
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        // ZERO: the keys the game really gives the guns: one a kind, 1 to 8 and then 0 (key 9 does nothing)
        for(k=0;k<n;k++) codes.push(slotKeyCode(k));
-       if(codes.indexOf('Digit9')>=0) bad.push('ZERO: key 9 is a gun key now, so these words need another look');
+       if(n===9&&codes.indexOf('Digit9')>=0) bad.push('ZERO: key 9 is a gun key now, so these words need another look');
        // ONE: no row for H on the Keys list, in the table, the sections or the window
        if(KEYS_ACTS.some(function(a){ return a[0]==='KeyH'; })) bad.push('ONE: the Keys list still has an H row');
        if(KEYS_SECT.some(function(s){ return s[1].indexOf('KeyH')>=0; })) bad.push('ONE: a Keys section still lists H');
@@ -25262,11 +25262,11 @@ class Audio {
        // TWO: the locked gun keys and the note a rebind onto one gives
        t=slotKeyName(0)+' - '+slotKeyName(n-2)+', '+slotKeyName(n-1);
        if(h.indexOf(t)<0) bad.push('TWO: the locked keys do not say ['+t+']');
-       if(h.indexOf('1 - 9')>=0) bad.push('TWO: the locked keys still say 1 - 9');
+       if(n===9&&h.indexOf('1 - 9')>=0) bad.push('TWO: the locked keys still say 1 - 9');
        KEYS.note=null;
        if(keysBind('KeyR','Digit5')!==false) bad.push('TWO: a rebind onto key 5 was not refused');
        t=(KEYS.note&&KEYS.note.s)||'';
-       if(!/1-8 AND 0 CANNOT BE REBOUND/.test(t)||/1-9/.test(t)) bad.push('TWO: the refusal note says ['+t+']');
+       if(!/1-[89] AND 0 CANNOT BE REBOUND/.test(t)||(n===9&&/1-9/.test(t))) bad.push('TWO: the refusal note says ['+t+']');
        // THREE: the tips
        for(i=0;i<GEARRULES.length;i++){ all+=' | '+rowTxt(i); if(wrow<0&&GEARRULES[i][0]==='WEAPONS') wrow=i; if(row<0&&GEARRULES[i][0]==='ITEM WHEEL') row=i; if(arow<0&&GEARRULES[i][0]==='ARMOUR') arow=i; }
        if(wrow<0) bad.push('THREE: the tips have no WEAPONS rule');
@@ -32271,7 +32271,7 @@ class Audio {
        if(g.bullets.length) bad.push('the rocket is still flying');
        if(!(f.hp<hp0)) bad.push('the blast 100 units off did nothing to the body ('+hp0+' to '+f.hp+')');
        if(!(ITEMS.gun_rocket&&ITEMS.gun_rocket.gk==='rocket')) bad.push('no gun_rocket item');
-       if(gunClassOf('rocket')!=='rocket'||gunClassKey('rocket')!==8) bad.push('the rocket is not on class key 0');
+       if(gunClassOf('rocket')!=='rocket'||gunClassKey('rocket')!==HOTBAR_N-1) bad.push('the rocket is not on class key 0');
        if(WIRT_LOT_POOL.join('|').indexOf('gun_rocket')<0) bad.push('no loot source: not in the Wirt lot');
        if(GUN_CLASS_ICON.rocket!=='gun_rocket'||!GUNDEF.rocket) bad.push('no icon or drawn gun');
        return bad.length?bad.join('; '):null;
@@ -32335,22 +32335,22 @@ class Audio {
        svk=P.gunKeys;
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||!g.player) return 'SKIP: no raid';
-       want='pistol,smg,rifle,carbine,lmg,shotgun,sniper,energy,rocket';
+       want='pistol,smg,rifle,carbine,lmg,shotgun,sniper,energy,'+(HOTBAR_N===10?',':'')+'rocket';
        P.gunKeys=undefined; t=gunKeyTable().join(',');
        if(t!==want) bad.push('the key table is '+t);
        if(GUN_CLASSES.indexOf('marksman')>=0) bad.push('the marksman class is still a key');
-       if(gunClassKey('sniper')!==6||gunClassKey('energy')!==7||gunClassKey('rocket')!==8) bad.push('sniper '+gunClassKey('sniper')+' energy '+gunClassKey('energy')+' rocket '+gunClassKey('rocket'));
+       if(gunClassKey('sniper')!==6||gunClassKey('energy')!==7||gunClassKey('rocket')!==HOTBAR_N-1) bad.push('sniper '+gunClassKey('sniper')+' energy '+gunClassKey('energy')+' rocket '+gunClassKey('rocket'));
        P.gunKeys=['pistol','smg','rifle','carbine','lmg','shotgun','marksman','sniper','energy'];
        t=gunKeyTable().join(',');
-       if(t!=='pistol,smg,rifle,carbine,lmg,shotgun,sniper,energy,rocket') bad.push('a saved table with the marksman became '+t);
+       if(t!=='pistol,smg,rifle,carbine,lmg,shotgun,sniper,energy,rocket'.replace(',rocket',HOTBAR_N===10?',,rocket':',rocket')) bad.push('a saved table with the marksman became '+t);
        P.gunKeys=['energy','smg','rifle','carbine','lmg','shotgun','marksman','sniper','pistol'];
        t=gunKeyTable().join(',');
-       if(t!=='energy,smg,rifle,carbine,lmg,shotgun,sniper,pistol,rocket') bad.push('a custom saved table became '+t);
-       if(slotKeyName(8)!=='0'||slotKeyName(0)!=='1'||slotKeyName(6)!=='7'||slotKeyCode(8)!=='Digit0'||slotKeyCode(7)!=='Digit8') bad.push('the key names are wrong');
+       if(t!=='energy,smg,rifle,carbine,lmg,shotgun,sniper,pistol,rocket'.replace(',rocket',HOTBAR_N===10?',,rocket':',rocket')) bad.push('a custom saved table became '+t);
+       if(slotKeyName(HOTBAR_N-1)!=='0'||slotKeyName(0)!=='1'||slotKeyName(6)!=='7'||slotKeyCode(HOTBAR_N-1)!=='Digit0'||slotKeyCode(7)!=='Digit8') bad.push('the key names are wrong');
        setHot=function(i){ hots.push(i); };
        if(sz) setZoom=function(){ zooms++; };
        ['Digit1','Digit7','Digit8','Digit0','Digit9'].forEach(function(c){ try{ raidKey(c,false,null); }catch(_e){} keys[c]=false; });
-       if(hots.join(',')!=='0,6,7,8') bad.push('keys 1 7 8 0 9 chose cells '+hots.join(',')+' (want 0,6,7,8: 0 is the ninth cell, 9 nothing)');
+       if(hots.join(',')!==(HOTBAR_N===10?'0,6,7,9,8':'0,6,7,8')) bad.push('keys 1 7 8 0 9 chose cells '+hots.join(',')+' (want 0,6,7,8: 0 is the ninth cell, 9 nothing)');
        if(sz){ raidKey('Numpad0',false,null); keys.Numpad0=false; if(zooms!==1) bad.push('zoom to 100 ran '+zooms+' times after Digit0 and Numpad0 (want once, from the numpad)'); }
        return bad.length?bad.join('; '):null;
      } finally {
@@ -44796,7 +44796,7 @@ class Audio {
      var bad=[], gear=null, i, row=null, d=parseFloat(VER)-parseFloat(WHATSNEW_VER), s;
      for(i=0;i<LEGEND.length;i++) if(LEGEND[i][0]==='GEAR') gear=LEGEND[i][1];
      if(!gear) return 'SKIP: the controls list has no GEAR heading';
-     for(i=0;i<gear.length;i++) if(gear[i][0]==='1-9'||gear[i][0]==='1-8, 0') row=gear[i];   // retarget (cw-gunkeys19): the gun keys are named 1-8, 0 now (they were named 1-9), so the old and the new label both pass
+     for(i=0;i<gear.length;i++) if(gear[i][0]==='1-9'||(gear[i][0]==='1-8, 0'||gear[i][0]==='1-9, 0')) row=gear[i];   // retarget (cw-gunkeys19): the gun keys are named 1-8, 0 now (they were named 1-9), so the old and the new label both pass
      if(!row) bad.push('the controls list has no 1-9 row');
      else if(!/kind/.test(row[1])||!/stash/.test(row[1])) bad.push('the 1-9 row says '+JSON.stringify(row[1])+', not a gun for each kind set in the stash');
      if(parseFloat(WHATSNEW_VER)>26.43+0.001) return bad.length?bad.join('; '):'SKIP: the card has moved on, a later card check covers it';
@@ -45125,7 +45125,7 @@ class Audio {
        [].forEach.call(document.querySelectorAll('.modal.on'),function(m){ m.classList.remove('on'); });
        // ONE: the plates stand at his table and his order
        delete P.gunKeys; delete P.wheelOrder; hubOn();
-       if(document.querySelectorAll('#kitsetup [data-gk]').length!==9) bad.push('ONE: the GUN KEYS plate has '+document.querySelectorAll('#kitsetup [data-gk]').length+' tiles, not 9');
+       if(document.querySelectorAll('#kitsetup [data-gk]').length!==HOTBAR_N) bad.push('ONE: the GUN KEYS plate has '+document.querySelectorAll('#kitsetup [data-gk]').length+' tiles, not 9');
        if(document.querySelectorAll('#kitsetup [data-wh]').length!==8) bad.push('ONE: the WHEEL plate has '+document.querySelectorAll('#kitsetup [data-wh]').length+' tiles, not 8');
        a=tile('[data-gk',6); if(!a||!/SNIPER/i.test(a.textContent||'')) bad.push('ONE: key 7 is not the Sniper tile ('+(a&&a.textContent)+')');   /* v30.xx (00-fix-new-reds): cw-gunkeys0 took the Marksman class off, the Sniper is key 7 (index 6) now */
        a=tile('[data-wh',0); if(!a||!/MEDKIT/i.test(a.textContent||'')) bad.push('ONE: the top place is not the Medkit tile ('+(a&&a.textContent)+')');
@@ -45144,8 +45144,8 @@ class Audio {
        gk0=P.gunKeys?P.gunKeys.slice():null; wo0=P.wheelOrder?P.wheelOrder.slice():null;
        // THREE: the tiles are controls for the pad
        if(typeof padFocusables==='function'&&(!window.__vpAlive||__vpAlive())){
-         ws=padFocusables(hub); t=0; for(j=0;j<ws.length;j++) if(ws[j].classList&&ws[j].classList.contains('kst')) t++;
-         if(t!==17) bad.push('THREE: the pad reaches '+t+' of the 17 setup tiles');
+         var kc=document.getElementById('kitcol'), wasKeys=!!(kc&&kc.classList.contains('lt-keys')); try{ if(typeof stashTabSet==='function') stashTabSet(true); ws=padFocusables(hub); t=0; for(j=0;j<ws.length;j++) if(ws[j].classList&&ws[j].classList.contains('kst')) t++; }finally{ if(typeof stashTabSet==='function') stashTabSet(wasKeys); }
+         if(t!==HOTBAR_N+8) bad.push('THREE: the pad reaches '+t+' of the '+(HOTBAR_N+8)+' setup tiles');
        }
        try{ __applyLoaded(snap); }catch(_r){}
        // FOUR: the next raid reads them: the Longshot on key 2, the wheel in the stash order; and the old behaviour in DEMO
@@ -45833,8 +45833,8 @@ class Audio {
        if(gk.length<10) return 'SKIP: fewer than ten guns here';
        // ONE: nine keys, all guns
        sl=hotbarSlots();
-       if(GUNKEYS!==9) bad.push('ONE: GUNKEYS is '+GUNKEYS+', not 9');
-       if(sl.length!==9) bad.push('ONE: the belt has '+sl.length+' keys, not 9');
+       if(GUNKEYS!==HOTBAR_N) bad.push('ONE: GUNKEYS is '+GUNKEYS+', not 9');
+       if(sl.length!==HOTBAR_N) bad.push('ONE: the belt has '+sl.length+' keys, not 9');
        for(i=0;i<sl.length;i++) if(sl[i].kind!=='gun') bad.push('ONE: key '+(i+1)+' is a '+sl[i].kind+', not a gun');
        // TWO: no item key does anything
        g.bag=['bandage','bandage','medkit','plate','stim']; g.pouch.frag=2; g.pouch.smoke=1; g.pouch.decoy=1; g.pouch.trip=1; p.hp=50; p.healQ=0; p.prep=null; p.prepA=null; p.cooking=0;
@@ -45854,8 +45854,8 @@ class Audio {
        hot0=sl[6]&&sl[6].icon; if(hot0&&ITEMS[hot0]&&ITEMS[hot0].gk) hot0=ITEMS[hot0].gk;
        if(hot0){ raidKey('Digit7',false,null); keys={}; updatePlayer(0.05);
          if(!p.wep||p.wep.id!==hot0) bad.push('FOUR: key 7 left '+(p.wep&&p.wep.id)+' in hand, not '+hot0); }
-       // FIVE: an item dropped on the belt is refused in words; a gun is not
-       for(i=0;i<['frag','smoke','bandage','medkit','plate','stim'].length;i++){ k=['frag','smoke','bandage','medkit','plate','stim'][i]; pl=beltDropRefusal(k,2); if(!pl||!/WHEEL/.test(pl)) bad.push('FIVE: '+k+' on key 3 was answered '+JSON.stringify(pl)); }
+       // FIVE: manually dragged wheel items and guns may share every belt key (his 10-27 order).
+       for(i=0;i<['frag','smoke','bandage','medkit','plate','stim'].length;i++){ k=['frag','smoke','bandage','medkit','plate','stim'][i]; pl=beltDropRefusal(k,2); if(pl!=='') bad.push('FIVE: '+k+' on key 3 was answered '+JSON.stringify(pl)); }
        if(beltDropRefusal(gk[2],8)!=='') bad.push('FIVE: a gun on key 9 was refused ('+beltDropRefusal(gk[2],8)+')');
        // SIX: picking up an item pins nothing
        g.hotAssign={}; g.hotAuto={}; autoBelt('bandage',true); autoBelt('frag',true); autoBelt('plate',true);
@@ -45885,7 +45885,7 @@ class Audio {
        try{ if(window.__frame){ __frame(0); __frame(0); } } finally { proto.fillText=oFT; }
        if(window.__frame){
          ['THROW','MEDICAL','ARMOUR'].forEach(function(w){ if(txt.indexOf(w)>=0) bad.push('EIGHT: the belt still draws the label '+w); });
-         if(!g.hotCells||g.hotCells.length!==9) bad.push('EIGHT: the belt drew '+(g.hotCells?g.hotCells.length:0)+' keys, not 9');
+         if(!g.hotCells||g.hotCells.length!==HOTBAR_N) bad.push('EIGHT: the belt drew '+(g.hotCells?g.hotCells.length:0)+' keys, not 9');
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
@@ -47268,7 +47268,7 @@ class Audio {
      function gold(i){ var r=ringOf(i); return !!(r&&ref&&r.st===ref.st&&r.lw===ref.lw); }
      function expectGold(tag,want){
        var i, w, r;
-       if(!C||C.length!==9){ bad.push(tag+': the belt drew '+(C?C.length:0)+' keys, not 9'); return; }
+       if(!C||C.length!==HOTBAR_N){ bad.push(tag+': the belt drew '+(C?C.length:0)+' keys, not 9'); return; }
        if(!ref||ref.st!=='#ffc04a'||ref.lw!==2) bad.push(tag+': the gun in hand is not ringed in the gold ('+JSON.stringify(ref&&{st:ref.st,lw:ref.lw})+')');
        for(i=0;i<9;i++){
          w=want.indexOf(i)>=0;
@@ -47337,7 +47337,7 @@ class Audio {
        w0=p.wep.id;
        // ONE: the keycaps, on the right cells (Smoke is the pick, a Bandage the cheapest heal at 50 health, the rifle in hand)
        stock(); draw();
-       if(!C||C.length!==9) return 'the belt drew '+(C?C.length:0)+' keys, not 9';
+       if(!C||C.length!==HOTBAR_N) return 'the belt drew '+(C?C.length:0)+' keys, not 9';
        r={4:'U',5:'G',6:'H',7:'J',8:'HOLD H',1:'F'};
        for(k in r) if(capsOn(+k)!==r[k]) bad.push('ONE: key '+(+k+1)+' wears '+JSON.stringify(capsOn(+k))+', not '+r[k]);
        if(caps.length!==6) bad.push('ONE: the belt wears '+caps.length+' keycaps ('+caps.map(function(q){ return (q.i+1)+q.s; }).join(',')+'), not 6');
@@ -47423,10 +47423,10 @@ class Audio {
        var bad9=[], gear9=null, i9, rows9=LEGEND_MINI, ix9=-1;
        for(i9=0;i9<LEGEND.length;i9++) if(LEGEND[i9][0]==='GEAR') gear9=LEGEND[i9][1];
        if(!gear9) return 'SKIP: no GEAR section in the controls list';
-       if(!gear9.some(function(r){ return (r[0]==='1-9'||r[0]==='1-8, 0')&&/gun/.test(r[1]); }))   /* retarget (cw-gunkeys19): the gun keys are named 1-8, 0 now (they were named 1-9), so the old and the new label both pass */ bad9.push('the controls list has no 1-9 guns row');
+       if(!gear9.some(function(r){ return (r[0]==='1-9'||(r[0]==='1-8, 0'||r[0]==='1-9, 0'))&&/gun/.test(r[1]); }))   /* retarget (cw-gunkeys19): the gun keys are named 1-8, 0 now (they were named 1-9), so the old and the new label both pass */ bad9.push('the controls list has no 1-9 guns row');
        if(!gear9.some(function(r){ return /Q/.test(r[0])&&/wheel/.test(r[1]); })) bad9.push('the controls list has no HOLD Q item wheel row');
        if(gear9.some(function(r){ return ['G','U','H','J','5-6','7-8'].indexOf(r[0])>=0; })) bad9.push('the controls list still has an item key row');
-       for(i9=0;i9<rows9.length;i9++) if(rows9[i9][0]==='1-9'||rows9[i9][0]==='1-8, 0') ix9=i9;
+       for(i9=0;i9<rows9.length;i9++) if(rows9[i9][0]==='1-9'||(rows9[i9][0]==='1-8, 0'||rows9[i9][0]==='1-9, 0')) ix9=i9;
        if(ix9<0) bad9.push('the compact list has no 1-9 guns row'); else { if(ix9%2!==0) bad9.push('1-9 sits in the right hand column (entry '+ix9+')'); if(!rows9[ix9+1]||rows9[ix9+1][0]!=='B / I') bad9.push('B / I does not follow 1-9 on the same row'); }
        if(rows9.length%2!==0) bad9.push('the compact list has an odd number of entries ('+rows9.length+')');
        return bad9.length?bad9.join('; '):null;
@@ -47504,7 +47504,7 @@ class Audio {
        P.kit=['frag','bandage']; P.stash=['frag','bandage']; P.hotAssign={}; P.freeKit=0;
        d=document.createElement('div'); d.innerHTML=hotPlanHTML();
        cells=d.querySelectorAll('[data-plan]');
-       if(cells.length!==9) bad.push('ONE: the plan row has '+cells.length+' keys, not 9');
+       if(cells.length!==HOTBAR_N) bad.push('ONE: the plan row has '+cells.length+' keys, not 9');
        for(i=0;i<cells.length;i++){
          var grp=cells[i].parentNode&&cells[i].parentNode.parentNode, lb=grp&&grp.lastElementChild;
          nm=lb?String(lb.textContent||'').trim():'';
@@ -47522,7 +47522,7 @@ class Audio {
        txt=[]; proto.fillText=function(s,x,y){ txt.push({s:String(s),x:x,y:y}); return oFT.apply(this,arguments); };
        try{ __frame(0); __frame(0); } finally { proto.fillText=oFT; }
        C=g.hotCells;
-       if(!C||C.length!==9) bad.push('TWO: the belt drew '+(C?C.length:0)+' keys');
+       if(!C||C.length!==HOTBAR_N) bad.push('TWO: the belt drew '+(C?C.length:0)+' keys');
        else {
          if(!(g.hotAssign&&true)) bad.push('TWO: no belt');
          if(txt.some(function(t){ return t.s==='0'&&(inC(C[2],t.x,t.y)||inC(C[3],t.x,t.y)); })) bad.push('TWO: a vacant gun key prints a 0');
@@ -47563,7 +47563,7 @@ class Audio {
        g.bag=['bandage','plate']; g.pouch.frag=2; g.pouch.smoke=1; g.pouch.decoy=0; g.pouch.trip=0;
        g.hotAssign={4:'frag',5:'smoke',6:'bandage',8:'plate'}; g.hotAuto={}; g.hotPruned={}; g.hot=0; g.tsel=SX;
        spy(function(){ __frame(0); __frame(0); });
-       C=g.hotCells; if(!C||C.length!==9) return 'the belt drew '+(C?C.length:0)+' keys, not 9';
+       C=g.hotCells; if(!C||C.length!==HOTBAR_N) return 'the belt drew '+(C?C.length:0)+' keys, not 9';
        // ONE: the reserve is the number, the magazine is the bar
        r=txt.filter(function(t){ return t.s==='37'&&inC(C[0],t.x,t.y); });
        if(!r.length) bad.push('ONE: the rifle key shows no 37 (the rounds in reserve)');
@@ -47609,7 +47609,7 @@ class Audio {
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: staging: no raid';
        p=g.player; p.iv=99; g.ents.length=0; g.bagOpen=false; g.mapOpen=false; g.paused=false; keys={};
        g.hot=0; draw(); C=g.hotCells;
-       if(!C||C.length!==9) return 'the belt drew '+(C?C.length:0)+' keys, not 9';
+       if(!C||C.length!==HOTBAR_N) return 'the belt drew '+(C?C.length:0)+' keys, not 9';
        for(i=1;i<9;i++) if(Math.abs(C[i].w-C[0].w)>0.5) bad.push('key '+(i+1)+' is '+C[i].w+' wide, key 1 is '+C[0].w);
        function gap(a){ return C[a+1].x-(C[a].x+C[a].w); }
        for(gi=0;gi<8;gi++) if(gap(gi)<=0) bad.push('keys '+(gi+1)+' and '+(gi+2)+' touch or overlap');
@@ -48655,8 +48655,8 @@ class Audio {
   {v:'25.75',what:'the compact controls list keeps 1-9 TACTICAL BELT in the left column beside B / I (the v17.76 rule) and names the new keys in pairs: Q melee, F next gun, G throw, H heal, E search, X extract',
    run:function(){
      if(typeof LEGEND_MINI==='undefined') return 'SKIP: no compact legend here';
-     var bad=[], rows=LEGEND_MINI, i, ix=-1, k, found, want={'Q':'melee','F':'next gun','G':'throw','H':'heal','E':'search','X':'extract'}; if(typeof GUNKEYS!=='undefined'&&GUNKEYS>=9){ delete want.G; delete want.H; want.Q='item wheel'; want.V='melee'; }
-     for(i=0;i<rows.length;i++) if(rows[i][0]==='1-9'||rows[i][0]==='1-8, 0'||rows[i][0]==='1-4') ix=i;   // retarget (cw-gunkeys19): the gun keys are named 1-8, 0 now (they were named 1-9), so the old and the new label both pass   // v25.xx (belt8) retarget: the row is 1-4 guns now
+     var bad=[], rows=LEGEND_MINI, i, ix=-1, k, found, want={'Q':'melee','F':'next gun','G':'throw','H':'heal','E':'search','X':'extract'}; if(typeof GUNKEYS!=='undefined'&&GUNKEYS>=9){ delete want.G; delete want.H; want.Q='item wheel'; want[keyName(keysDef('KeyV'))]='melee'; }
+     for(i=0;i<rows.length;i++) if(rows[i][0]==='1-9'||(rows[i][0]==='1-8, 0'||rows[i][0]==='1-9, 0')||rows[i][0]==='1-4') ix=i;   // retarget (cw-gunkeys19): the gun keys are named 1-8, 0 now (they were named 1-9), so the old and the new label both pass   // v25.xx (belt8) retarget: the row is 1-4 guns now
      if(ix<0) bad.push('the compact list has no 1-9 row');
      else{
        if(ix%2!==0) bad.push('1-9 TACTICAL BELT sits in the right hand column (entry '+ix+'), so its label has no next column to be measured against');
@@ -74339,7 +74339,7 @@ class Audio {
        var oFR=ctx.fillRect, rects=[]; ctx.fillRect=function(x,y,w,h){ rects.push({x:x,y:y,w:w,h:h}); return oFR.apply(this,arguments); };
        try{ drawHUD(); }catch(_h){}
        delete ctx.fillRect; delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT;   // never leave an own fillText: the older checks capture text on the prototype
-       for(i=0;i<seen.length;i++){ if(seen[i].s==='1-9'||seen[i].s==='1-8, 0'||seen[i].s==='1-4') kx=seen[i];   /* retarget (cw-gunkeys19): the gun keys are named 1-8, 0 now (they were named 1-9), so the old and the new label both pass */ if(seen[i].s==='tactical belt'||seen[i].s==='guns') lx=seen[i]; if(seen[i].s==='B / I'||seen[i].s==='B/I') nx=seen[i]; }
+       for(i=0;i<seen.length;i++){ if(seen[i].s==='1-9'||(seen[i].s==='1-8, 0'||seen[i].s==='1-9, 0')||seen[i].s==='1-4') kx=seen[i];   /* retarget (cw-gunkeys19): the gun keys are named 1-8, 0 now (they were named 1-9), so the old and the new label both pass */ if(seen[i].s==='tactical belt'||seen[i].s==='guns') lx=seen[i]; if(seen[i].s==='B / I'||seen[i].s==='B/I') nx=seen[i]; }
        if(!kx||!lx||!nx) bad.push('the legend did not draw its belt row ('+(kx?'':'no key ')+(lx?'':'no label ')+(nx?'':'no next key')+')');
        else{   // v34.97 retarget (117r-legend-reds): since v34.78 the keys are caps with the word after them, in two columns. The right edge of the first column's words must clear the left edge of the cap that holds B / I in the second column.
          var cap=null, c0r=0;
@@ -83337,7 +83337,7 @@ class Audio {
        if(!hubBagOpen||!hubBagG) return 'SKIP: the Undercroft backpack did not open';
        stage(MK,{});
        var hc=hubBagG.hotCells||[], sl=slots();
-       if(hc.length!==9||sl.length!==9) return 'SKIP: the floor belt drew '+hc.length+' keys here, not 9';
+       if(hc.length!==HOTBAR_N||sl.length!==HOTBAR_N) return 'SKIP: the floor belt drew '+hc.length+' keys here, not 9';
        var mi=-1;
        for(var i=0;i<sl.length;i++) if(sl[i]&&sl[i].k==='heal'){ mi=i; break; }
        if(mi<0) return 'SKIP: the floor belt shows no Medical key here';
@@ -102239,7 +102239,7 @@ class Audio {
      var stale=[['F ','heal/revive'].join(''), ['Q/G ','throw'].join(''), ['TAB ','bag '].join(''), ['sprint ','on/off'].join(''), ['superhot ','mode'].join('')];
      for(var i=0;i<stale.length;i++) if(text.indexOf(stale[i])>=0) bad.push('the pause box still says "'+stale[i]+'"');
      // WHAT IT MUST SAY, and it must agree with the H list.
-     var need=[((typeof wheelOpen==='function')?['V ','melee']:((typeof xCallKey==='function')?['Q ','melee']:['F ','melee strike'])).join(''), ['I ','backpack'].join(''), (text.indexOf(['tactical ','belt'].join(''))>=0?['tactical ','belt']:((typeof wheelOpen==='function')?[(text.indexOf('1-8, 0 ')>=0?'1-8, 0 ':'1-9 '),'guns']:['1-4 ','guns'])).join(''), ['hold to ','sprint'].join('')];   // v28.82 (corpus-fix): V melee and 1-9 guns since the wheel (v26.xx)
+     var need=[((typeof wheelOpen==='function')?[keyName(keysOf('KeyV'))+' ','melee']:((typeof xCallKey==='function')?['Q ','melee']:['F ','melee strike'])).join(''), ['I ','backpack'].join(''), (text.indexOf(['tactical ','belt'].join(''))>=0?['tactical ','belt']:((typeof wheelOpen==='function')?[(text.indexOf('1-9, 0 ')>=0?'1-9, 0 ':(text.indexOf('1-8, 0 ')>=0?'1-8, 0 ':'1-9 ')),'guns']:['1-4 ','guns'])).join(''), ['hold to ','sprint'].join('')];   // v28.82 (corpus-fix): V melee and 1-9 guns since the wheel (v26.xx)
      for(i=0;i<need.length;i++) if(text.indexOf(need[i])<0) bad.push('the pause box does not say "'+need[i]+'"');
      var L=(window.__legend?__legend():null);
      if(L&&L.length){ var fRow=null; for(i=0;i<L.length;i++){ var rows=L[i][1]||[]; for(var j=0;j<rows.length;j++) if(rows[j][0]==='F') fRow=rows[j][1]; }
@@ -108645,7 +108645,7 @@ class Audio {
      var need={stash:'#stashgrid',backpack:'#kitgrid',hotbar:'#hotplanwrap',freebie:'#hubfreekit .fkbtn'};
      for(var k in need){ var el=hub.querySelector(need[k]); if(!vis(el)) bad.push('the '+k+' part is missing or not drawn'); }
      var cells=hub.querySelectorAll('[data-plan]');
-     if(cells.length!==9) bad.push('the hotbar has '+cells.length+' cells, not nine');
+     if(cells.length!==HOTBAR_N) bad.push('the hotbar has '+cells.length+' cells, not nine');
      // THREE: one way out with the mouse, and it works.
      var cl=hub.querySelector('#stashclose');
      if(!vis(cl)) bad.push('there is no CLOSE on the stash screen');
@@ -109293,7 +109293,7 @@ class Audio {
      if(!hb||!hb.cells||!hb.cells.length)
        bad.push('with the backpack closed the floor records no belt cells at all');
      else {
-       if(hb.cells.length!==9)
+       if(hb.cells.length!==HOTBAR_N)
          bad.push('the floor belt records '+hb.cells.length+' cells rather than the 9 slots the raid belt has');
        var painted=0;
        for(var c=0;c<hb.cells.length;c++) painted+=opaqueIn(hb.cells[c]);
@@ -109326,7 +109326,7 @@ class Audio {
      frames(performance.now()+1000);
      if(!__hubBag()) return done('SKIP: I did not open the backpack');
      var live=__hubBagLive();
-     if(!live||!live.hotCells||live.hotCells.length!==9)
+     if(!live||!live.hotCells||live.hotCells.length!==HOTBAR_N)
        bad.push('control: with the backpack open the panel belt records '+
                 ((live&&live.hotCells)?live.hotCells.length:0)+' cells rather than 9');
      var hbOpen=__hubBelt();
