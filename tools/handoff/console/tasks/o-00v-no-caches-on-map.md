@@ -15,3 +15,5 @@ Check (must FAIL on the current build): open the M map in a fresh seeded raid: n
 Old checks: cw-nocachelbl, cw-cx-sectorhold-o03 and cw-cx-mapstart-clear checks that want the cache ring or word will go red: retarget them to the new rule (his order supersedes), list them in the ship note.
 Rules: seed 4242 fingerprint must hold (draw only); both windows (P2's map too); never touch the pickup stack, loot sounds or loot rows. DESIGN.md watch line: "the map no longer marks caches". Take a uishots picture of the M map at 4K and look at it. Model: Sonnet 5.5 high.
 TASK DONE when it shipped and is ON HIS PC.
+
+CEO 10-29 12:35: the earlier job o-00v-239 (ping and map mark are one, v36.52-36.53, ON HIS PC) could not take its partner-window map pictures (bad pair code, now fixed in camera-recipes.json as cx239 + seat + base36). When this job takes its M map pictures, take the P2 window's map too with those corrected linked scenes and look at both: that closes the 239 picture check. The broad HUD findings its critic raised (hp block, hotbar, corner styles, contract panel, map label collisions) belong to 186f, not here.
