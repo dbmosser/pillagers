@@ -1092,6 +1092,15 @@ while($true){
     # 10-24; if it still reads the robot as a game, Watch puts it back to 1080p for the day (no4k).
     # (a Chrome game he left drawing already shows in the game check: then this start plays 1080p and nothing is blamed on the robot)
     # 10-28: while he is at the PC (working, not playing) the robot plays 1080p at below-normal priority, so his programs come first
+    # 10-28 23:50: the robot plays the newest build. Start-Corpus (which builds the robots' copy) is skipped while he is at the PC, so the
+    # light robot played v36.17 from 21:23 to past 23:43 while v36.18 to v36.27 shipped (the freeze fixes among them). A build that fails
+    # once is not tried again until master moves.
+    if((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0 -and ((Running 'corpq\.sh|corpus-slices\.sh') -eq 0)){
+      $fb=G -C $R rev-parse 'HEAD:dark_raiders.html'
+      if($fb -and (GetS 'fx_blob') -ne $fb -and (GetS 'fx_fail') -ne $fb){
+        if(Build-Fixture){ Copy-Item -LiteralPath ($T+'\fixture.html') -Destination ($T+'\fxcorpus.html') -Force; PutS 'fx_blob' $fb; Say ('build v'+(GameVer)+': the robot plays it') } else { PutS 'fx_fail' $fb }
+      }
+    }
     if((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){ $atPc=((AwaySec) -lt 900); $script:gcAtStart=(GameChrome); Start-Robot 9332 'fixture-soak-spare2.html' $(if($atPc -or $script:gcAtStart -or (GetS 'no4k') -eq (Get-Date).ToString('yyyy-MM-dd')){ '' }else{ '3840x2160' }) -Low:$atPc }
   } else {
     if((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -eq 0){ Start-Robot 9331 'fixture-soak-spare1.html' }
