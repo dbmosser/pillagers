@@ -1,0 +1,7 @@
+v36.22: status detail type and hierarchy
+
+Status details use a 16px floor and muted ink below the larger status name.
+
+Check 36.22. Fails on v36.21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

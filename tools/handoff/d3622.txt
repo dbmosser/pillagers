@@ -1,0 +1,5 @@
+## v36.22 - STATUS DETAIL TYPE AND HIERARCHY
+
+Co-op hunt while he was away. The second reload-status review asks for a real 16px detail floor and quieter bonus text. Both apply to every status consistently. Watch: the active reload chain shows as a status with its count.
+
+MEASURED. Check 36.22 passes, and fails on v36.21.

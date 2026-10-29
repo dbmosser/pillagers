@@ -6171,6 +6171,31 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'36.22',what:'active reload damage and stim time share a real 16px detail floor and the style-guide muted ink',
+   run:function(){
+     var g,p,ft=ctx.fillText,kk=keys,mm=mouse.down,seen={},bad=[],us,ownUS=false;
+     try{
+       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();
+       ownUS=Object.prototype.hasOwnProperty.call(P,'uiScale');us=P.uiScale;P.uiScale=1;
+       __deploy({kit:['gun_pistol'],safe:null,mapIx:0,seed:4242});g=__state();p=g&&g.player;if(!p||g.over)return 'no live raid';
+       g.mapOpen=false;g.bagOpen=false;g.paused=false;g.sim=false;keys={};mouse.down=false;
+       p.arStk=3;p.arBonus=1;p.arMul=1.35;p.arGun=p.wep;p.ammo=3;p.reloading=0;p.stimT=5;
+       ctx.fillText=function(t){
+         var text=String(t).toLowerCase(),m=ctx.getTransform(),px=parseFloat((/([\d.]+)px/.exec(ctx.font)||[])[1]),d=(typeof DPRH==='number'&&DPRH>0)?DPRH:1;
+         seen[text]={px:px*Math.sqrt(m.a*m.a+m.b*m.b)/d/hudRes(),col:ctx.fillStyle};return ft.apply(this,arguments);
+       };
+       ctx.save();try{var hd=(typeof DPRH==='number'&&DPRH>0)?DPRH:1;ctx.setTransform(hd,0,0,hd,0,0);drawStatusIcons();}finally{ctx.restore();}
+       ['+35% damage','5s'].forEach(function(t){
+         if(!seen[t]||!isFinite(seen[t].px)||seen[t].px<15.99)bad.push(t+' detail below 16px ('+(seen[t]?seen[t].px.toFixed(3):'not drawn')+')');
+         else if(seen[t].col!=='#aaa498')bad.push(t+' detail does not use tx-2');
+       });
+       return bad.length?bad.join('; '):null;
+     }finally{
+       ctx.fillText=ft;keys=kk;mouse.down=mm;
+       try{if(p){p.arStk=0;p.arBonus=0;p.stimT=0;}__endRaid('abandon');}catch(_e){}__topClear();
+       if(ownUS)P.uiScale=us;else delete P.uiScale;
+     }
+   }},
   {v:'36.21',what:'HIS PICK 2026-10-28 (stash option a, "Ok I guess go with A"): the stash loadout column has two tabs, BACKPACK (the 12 slots and the hotbar) and KEYS (gun keys and the item wheel), and the item details strip is a floating card beside the stash item under the mouse or the pad highlight, so nothing resizes; at his 4K screen the 12 backpack slots had no room and the key hints sat on the gun keys',
    run:function(){
      if(typeof renderHub!=='function'||typeof P!=='object'||!P) return 'SKIP: no stash here';

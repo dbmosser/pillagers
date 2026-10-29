@@ -1,0 +1,1 @@
+| STATUS DETAIL TYPE AND HIERARCHY | v36.22 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 36.22 passes, fails on v36.21 |

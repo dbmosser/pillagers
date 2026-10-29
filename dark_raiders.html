@@ -3880,8 +3880,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.21';
-var VER_AT='2026-10-28 21:42';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.22';
+var VER_AT='2026-10-28 21:44';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44179,7 +44179,8 @@ function drawStatusIcons(){
   // further status started a new column further right, out across the play area and off the screen. The column now shrinks to fit first
   // (down to 0.6), and never uses more than two columns; a status past those is left for the CONDITIONS panel, which lists the drinks too.
   var _sk=1; if(n>rows){ _sk=Math.max(0.6,Math.min(1,(yBot-oy+g*hr)/(n*(S+g)*hr))); rows=Math.max(1,Math.floor((yBot-oy+g*hr)/((S+g)*hr*_sk))); }
-  nf=FS(TYPE.head); vf=FS(TYPE.label);   // v28.xx (cw-cx-statusread): shared status type grows from about 16/13 to 20/16 px at 1080p.
+  // v28.xx (cw-cx-statusdetail): the shared status detail has a real 16px floor before the existing resolution and TV scaling.
+  nf=FS(TYPE.head); vf=FS(TYPE.label).replace(/([\d.]+)px/,function(m,n){ return Math.max(parseFloat(n),16*uiScale())+'px'; });
   lw=Math.max(2,S*0.085); rr=r*0.8; u=S*0.24; hx=r*1.04; ph=S*1.12;   // v28.xx (cw-cx-statusread): the two larger text lines fit inside the shared panel.
   ctx.save();
   try{
@@ -44216,7 +44217,7 @@ function drawStatusIcons(){
       }
       // v28.xx (cw-cx-statusread): neutral readable type; the existing ring and glyph carry each status colour.
       ctx.font=nf; ctx.fillStyle='#efe9dc'; ctx.fillText(E.nm,tx,cy-LH(2));
-      ctx.font=vf; ctx.fillStyle='#cdd6dd'; ctx.fillText(E.v||'',tx,cy+LH(11));
+      ctx.font=vf; ctx.fillStyle='#aaa498'; ctx.fillText(E.v||'',tx,cy+LH(11));   // v28.xx (cw-cx-statusdetail): style-guide tx-2 keeps the bonus below the status name in the hierarchy.
     }
   } finally { ctx.restore(); }
   return s;
@@ -56064,7 +56065,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.21: the stash loadout has a backpack tab and a keys tab, and item details pop up beside the item Check 36.21 fails on v36.20',
+  now:'v36.22: Status details use a 16px floor and muted ink below the larger status name. Check 36.22 fails on v36.21',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
