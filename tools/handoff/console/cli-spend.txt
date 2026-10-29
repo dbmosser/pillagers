@@ -1909,3 +1909,8 @@
 2026-10-29 0.0853 critic-o-00u-238-status-type-regression
 2026-10-29 0.0827 critic-o-00u-238-status-type-regression
 2026-10-29 0.0000 o-00u-238-status-type-regression
+2026-10-29 0.0939 critic-o-00u-238-status-type-regression
+2026-10-29 0.0867 critic-o-00u-238-status-type-regression
+2026-10-29 0.0896 critic-o-00u-238-status-type-regression
+2026-10-29 0.0868 critic-o-00u-238-status-type-regression
+2026-10-29 0.0000 o-00u-238-status-type-regression

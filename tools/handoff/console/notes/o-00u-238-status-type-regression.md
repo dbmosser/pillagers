@@ -38,3 +38,21 @@ Out-of-scope first-round critic findings about the clock/team-score/extraction c
 
 Pending: ship the new key, ON HIS PC, second camera round at 1080p and 4K, and critic results.
 
+
+--- codex run 2026-10-29 07:27 ---
+2026-10-29, final review, v36.45.
+
+cw-cx-statuspanels SHIPPED v36.45. ON HIS PC v36.45: his 8802 serves 36.45, 18 seconds after the ship. Both keys in keys.txt have shipped. LOCAL: no linked review. The change is confined to drawStatusIcons; no combat, network, storage or seeded random logic changed.
+
+Inspected all eight final pictures: the four attached 1080p pictures and all four 4K files through the image viewer. Final picture folder: tools/handoff/console/notes/shots/o-00u-238-status-type-regression-recipes-2/. Each scene shows healing, stim, active reload x3, steady hand +15% and beast mode +15% together. Both actual demo roles were photographed separately at both resolutions. The full controls column moves the stack beside it. No status title or detail is clipped or covered by another status in these pictures. The liquor double vision and initial easy-mode prompt from the first camera round are gone.
+
+Read and summarized the final camera report. All four scenes staged at both resolutions. Every report, including both linked-role readings, has five panels, minimum title size 20px and minimum detail size 16px after resolution normalization. At the photographed 1080p size the five panels are each 220px wide; the 4K panels grow with hudRes. Solo and full-legend pictures have zero DOM lint findings at both resolutions. Both demo 1080p pictures also have zero; each demo 4K picture has one small-text finding for the unrelated keyboard indicator, not a status label. The report's actual canvas sizes are 1918x1078 and 3838x2158 inside the camera's 1920x1080 and 3840x2160 browser viewports.
+
+Shipping audit tools/handoff/a3645.txt records that check 36.45 passes and fails on v36.44. The previous run established the crowding regression at v36.27 and retained 36.20/36.22 unchanged. The shipped font-floor and aligned-panel checks cover crowded layouts, both resolutions and solo/host/join rendering roles.
+
+Final external critic scores are demo P1 3, demo P2 3, solo 2 and full legend 2. These are whole-HUD grades, below the general raid target of 4; do not describe them as a critic pass. The critic acknowledges the tidy shared-width rows and improvement in both demo shots. It still estimates the status glyphs as 18px/13px despite the browser measuring their Canvas font sizes as 20px/16px; the required floor refers to the latter. It also reports 4-7px gaps where the renderer uses 8px. Its suggestions vary among 200px, 220px and 240px widths and 48px or 56px heights. The final implementation uses one measured width with a 220px minimum, 48px height and 8px gaps, retains the existing HUD anchor, and keeps the requested damage and time details visible rather than moving them into a tooltip. I have not graded the screen myself.
+
+The remaining critic findings concern a wider raid HUD restyle: player list, vitals, clock/team score/extract column, teammate plate, hotbar, ammo hint, full controls legend and margins. They remain handed off in alarms-new.md. The allowed two camera rounds are exhausted. No further status regression code is outstanding: the requested fix is shipped and ON HIS PC, five simultaneous statuses retain the specified floors, and all required solo/demo pictures at both resolutions have been inspected. Closing this regression task with the broader HUD score limitation recorded explicitly.
+
+Watch: with five combat statuses, check that a second column clears the vitals and every status remains visible.
+

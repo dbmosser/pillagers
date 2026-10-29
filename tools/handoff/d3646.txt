@@ -1,0 +1,5 @@
+## v36.46 - STASH KEY ROW NAMES KEY 0
+
+Co-op hunt while he was away. v36.37 gave the hotbar a 9 key, and the stash item key row printed 10 on its last button instead of 0, so the old every key check went red on the 10-29 run. The row names keys the way the hotbar does.
+
+MEASURED. Check 36.46 passes, and fails on v36.45.

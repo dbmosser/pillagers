@@ -640,3 +640,5 @@
 
 2026-10-29 | o-00u-238-status-type-regression | raid status HUD, solo and both demo roles | follow-up prepared: all rows share a measured width of at least 220px, 48px height and 8px gaps; 20px/16px type floors retained | before: tools/handoff/console/notes/shots/o-00u-238-status-type-regression-recipes-1/status-type-{solo,solo-full-legend,demo-p1,demo-p2}-{1080,4k}.jpg | after: recipe round 2 pending
 
+2026-10-29 | o-00u-238-status-type-regression | raid status HUD, solo and both demo roles | shipped v36.44/v36.45: keep 20px titles and 16px details; measured columns, shared minimum 220px width, 48px rows and 8px gaps | before: tools/handoff/console/notes/shots/o-00u-238-status-type-regression-recipes-1/status-type-{solo,solo-full-legend,demo-p1,demo-p2}-{1080,4k}.jpg (liquor staging affects first-round clarity) | after: tools/handoff/console/notes/shots/o-00u-238-status-type-regression-recipes-2/status-type-{solo,solo-full-legend,demo-p1,demo-p2}-{1080,4k}.jpg; all eight inspected
+

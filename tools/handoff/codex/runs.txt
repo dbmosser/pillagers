@@ -556,3 +556,4 @@
 2026-10-29 06:53 o-00t-237-extract-wait-20s 75s ok DONE in=1663249 out=16785 run=2
 2026-10-29 07:03 o-00u-238-status-type-regression 566s ok PARTIAL in=1231555 out=20219 run=1
 2026-10-29 07:16 o-00u-238-status-type-regression 297s ok PARTIAL in=2072943 out=29552 run=2
+2026-10-29 07:27 o-00u-238-status-type-regression 149s ok DONE in=2860152 out=33926 run=3

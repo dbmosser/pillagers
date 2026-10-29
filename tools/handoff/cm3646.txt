@@ -1,0 +1,7 @@
+v36.46: stash key row names key 0
+
+the stash item key row ends on key 0, as the hotbar does
+
+Check 36.46. Fails on v36.45.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

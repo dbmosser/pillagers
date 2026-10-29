@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.46 - STASH KEY ROW NAMES KEY 0
+
+Co-op hunt while he was away. v36.37 gave the hotbar a 9 key, and the stash item key row printed 10 on its last button instead of 0, so the old every key check went red on the 10-29 run. The row names keys the way the hotbar does.
+
+MEASURED. Check 36.46 passes, and fails on v36.45.
 ## v36.45 - COMBAT STATUS ROWS SHARE ONE WIDTH
 
 Co-op hunt while he was away. The critic flagged ragged status rows and cramped details in the first v36.44 pictures. Keep the readable type and give every row a measured width of at least 220px, 48px height and 8px gaps. Watch: crowded statuses must clear the vitals and remain fully visible.
