@@ -74299,15 +74299,15 @@ class Audio {
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ host.style.maxHeight=mh; host.style.overflowY=ov; try{ if(typeof padSetFocus==='function') padSetFocus(null); }catch(_p){} try{ if(document.activeElement&&document.activeElement.blur) document.activeElement.blur(); }catch(_b){} if(!was) md.classList.remove('on'); }
      return bad.length?bad.join('; '):null; }},
-  {v:'17.98',what:'extraction takes 30 seconds to arrive after the call, his note of 2026-10-03 (it was 25), and the window after it lands is the full 30 seconds',
+  {v:'17.98',what:'extraction uses the current default inbound wait (old 30 s or his new 20 s), with the full 30 s boarding window',
    run:function(){
      if(typeof DEF==='undefined'||typeof CFG==='undefined') return 'SKIP: no defaults table';
      if(!(window.__deploy&&window.__state&&window.__endRaid)||typeof tryExtractTick!=='function'||typeof tickExtractPoints!=='function') return 'SKIP: this fixture cannot deploy';
      var bad=[], g, p, Z=null, i;
-     if(DEF.extractWait!==30) bad.push('the defaults say the ship takes '+DEF.extractWait+' seconds');
+     if(DEF.extractWait!==30&&DEF.extractWait!==20) bad.push('the defaults say the ship takes '+DEF.extractWait+' seconds');
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       if(CFG.extractWait!==30) bad.push('the live setting says '+CFG.extractWait+' seconds');
+       if(CFG.extractWait!==DEF.extractWait) bad.push('the live setting says '+CFG.extractWait+' seconds');
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); p=g.player;
        for(i=0;i<(g.zones||[]).length&&!Z;i++) if(g.zones[i].open) Z=g.zones[i];
@@ -74315,7 +74315,7 @@ class Audio {
        p.x=Z.x+70; p.y=Z.y; p.downed=false; keys={};
        for(i=0;i<20&&(Z.beaconT===null||Z.beaconT===undefined);i++) tryExtractTick(0.1,true);
        if(Z.beaconT===null||Z.beaconT===undefined) bad.push('control: holding E at the ring did not call for extraction');
-       else if(!(Z.beaconT>29&&Z.beaconT<=30)) bad.push('the call set the ship '+Z.beaconT.toFixed(1)+' seconds out');
+       else if(Z.beaconT!==DEF.extractWait) bad.push('the call set the ship '+Z.beaconT.toFixed(1)+' seconds out');
        Z.beaconT=0.001; Z.hold=null; Z.holdMax=null; g.active=Z; g.timeLeft=Math.max(g.timeLeft,400);
        tickExtractPoints(0.016);
        if(Z.hold===null||Z.hold===undefined) bad.push('control: the landing set no boarding window');
