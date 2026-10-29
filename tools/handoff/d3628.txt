@@ -1,0 +1,5 @@
+## v36.28 - SLOWER GUN SWITCHES
+
+Co-op hunt while he was away. His words 10-29: make it take longer to switch guns. Every class draw takes half again as long, with the pistol rounded to 0.38 seconds. The status follows the actual draw timer. Watch: switching guns takes half again as long.
+
+MEASURED. Check 36.28 passes, and fails on v36.27.

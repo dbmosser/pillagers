@@ -1,0 +1,34 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  damage-streaks-p1-3                    NOT STAGED  35.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: seat 1 did not receive its own real kill credit
+    at stageStreakPair (<anonymous>:141:33)
+    at async <anonymous>:144:8
+    at async <anonymous>:1:21
+  damage-streaks-p1-15                   NOT STAGED  31.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: seat 1 did not receive its own real kill credit
+    at stageStreakPair (<anonymous>:141:33)
+    at async <anonymous>:144:8
+    at async <anonymous>:1:21
+  damage-streaks-p2-4                    NOT STAGED  31.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: seat 1 did not receive its own real kill credit
+    at stageStreakPair (<anonymous>:141:33)
+    at async <anonymous>:144:8
+    at async <anonymous>:1:21
+  damage-streaks-p2-15                   NOT STAGED  32.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: seat 1 did not receive its own real kill credit
+    at stageStreakPair (<anonymous>:141:33)
+    at async <anonymous>:144:8
+    at async <anonymous>:1:21
+== 4k : window 3876x2265, viewport 3840x2160
+  damage-streaks-p1-3                    NOT STAGED  35.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: seat 1 did not receive its own real kill credit
+    at stageStreakPair (<anonymous>:141:33)
+    at async <anonymous>:144:8
+    at async <anonymous>:1:21
+  damage-streaks-p1-15                   NOT STAGED  31.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: seat 1 did not receive its own real kill credit
+    at stageStreakPair (<anonymous>:141:33)
+    at async <anonymous>:144:8
+    at async <anonymous>:1:21
+  damage-streaks-p2-4                    NOT STAGED  31.9s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: seat 1 did not receive its own real kill credit
+    at stageStreakPair (<anonymous>:141:33)
+    at async <anonymous>:144:8
+    at async <anonymous>:1:21
+  damage-streaks-p2-15                   NOT STAGED  32.0s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: seat 1 did not receive its own real kill credit
+    at stageStreakPair (<anonymous>:141:33)
+    at async <anonymous>:144:8
+    at async <anonymous>:1:21

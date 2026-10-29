@@ -3880,8 +3880,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.27';
-var VER_AT='2026-10-28 23:08';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.28';
+var VER_AT='2026-10-28 23:49';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -27527,15 +27527,16 @@ function gearFoley(kind,w){
 }
 // v26.xx (wheel1), HIS ORDER 2026-10-14: "different guns should have different 'pull out' / 'ready to fire' times". A gun that comes into his hands
 // (a swap, a draw from the backpack, a pickup, and in the next builds the gun coming back after an item) cannot fire until it is ready: a
-// pistol in a quarter of a second, an SMG 0.4, a rifle 0.55, a shotgun 0.6, a marksman rifle 0.7, a sniper 0.85, the machine gun and the lance a
-// full second. The time is the gun's CLASS, so a Forge upgrade (MK II, MK III, an element) does not change it. drawTick, run every frame from
+// v28.xx (cw-cx-slowerswitch): the original times below were increased by half at his request; see DRAWT for the current seconds.
+// The time is the gun's CLASS, so a Forge upgrade (MK II, MK III, an element) does not change it. drawTick, run every frame from
 // updatePlayer, starts the clock when the gun in his hands is not the one it saw last frame; the first frame of a raid starts nothing (the gun
 // is drawn already), and the bot sim never waits (the clock is held at 0 under G.sim). p.drawT is the seconds left; p.drawLen the full time,
 // for the reticle. No seeded draw, nothing a bot reads.
-var DRAWT={pistol:0.25,magnum:0.35,smg:0.4,carbine:0.5,rifle:0.55,shotgun:0.6,sniper:0.85,lmg:1.0,lance:1.0,rocket:1.0};
+// v28.xx (cw-cx-slowerswitch), HIS WORDS 10-29: "make it take longer to switch guns". Half again as long; pistol rounded to 0.38 s.
+var DRAWT={pistol:0.38,magnum:0.525,smg:0.6,carbine:0.75,rifle:0.825,shotgun:0.9,sniper:1.275,lmg:1.5,lance:1.5,rocket:1.5};
 function drawTime(w){
   if(!w||!w.id||w.mag===0) return 0;
-  return Object.prototype.hasOwnProperty.call(DRAWT,w.id)?DRAWT[w.id]:0.5;
+  return Object.prototype.hasOwnProperty.call(DRAWT,w.id)?DRAWT[w.id]:0.75;
 }
 function drawTick(p,dt){
   var w=p.wep;
@@ -47285,7 +47286,7 @@ function playerStatus(){
   if((p.healQ||0)>0) parts.push('HEALING');
   if(p.jam>0) parts.push('JAMMED');
   else if(p.reloading>0) parts.push('RELOADING');
-  else if((G.t-(p.swapT===undefined?-9:p.swapT))<0.45) parts.push('SWITCHING GUNS');
+  else if(p.drawT>0) parts.push('SWITCHING GUNS');   // v28.xx (cw-cx-slowerswitch): the status follows the real draw clock.
   else if((G.t*1000)-(p.lastShot||-1e9)<350) parts.push('SHOOTING');
   else if(p.ads) parts.push('AIMING');
   if(p.cooking&&p.cookKind) parts.push('COOKING');
@@ -56160,7 +56161,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.27: Steady hand adds 1% damage per kill until hit or gun change. Beast mode adds 1% per kill within five seconds. Both cap at 15 and multiply with active reload. Check 36.27 fails on v36.26',
+  now:'v36.28: switching guns takes half again as long Check 36.28 fails on v36.27',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

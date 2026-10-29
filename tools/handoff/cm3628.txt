@@ -1,0 +1,7 @@
+v36.28: slower gun switches
+
+switching guns takes half again as long
+
+Check 36.28. Fails on v36.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

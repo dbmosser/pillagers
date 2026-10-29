@@ -3966,5 +3966,69 @@
   "pic": "tools/handoff/console/notes/shots/o-00e-222-active-reload-5pct-steps-recipes-2/reload-5pct-demo-p2-cap-1080.jpg",
   "task": "o-00e-222-active-reload-5pct-steps",
   "when": "2026-10-29T02:48"
+ },
+ "p1-15": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The hud reads clearly and the ammo hero is strong, but the left side is crowded, the kill feed repeats itself, and the earlier hp, hotbar, extract-chip and f1 fixes are only partly applied.",
+  "findings": [
+   "P1 left column: pillagers panel, 'pillager' bar, three buff cards, three damage lines: Give every left-edge block one shared width (~220px), one --ui-panel fill at 85% alpha, --rad 4px and 8px padding. Use 20px f-cond 600 for titles and 16px for sub-lines. Put 16px gaps between blocks. Drop the plate behind the 'pillager' mini bar, or merge it into the pillagers panel.",
+   "P1 kill feed, right edge (3x 'pillager killed crawler' + 'you killed crawler'): Collapse repeats into 'pillager killed crawler x3'. Show kills in one place only, either the feed or the damage lines. Use 16px tx-2 on a 60% alpha plate, with only 'you' lines in tx-1 and no lime.",
+   "P1 hp bar, bottom-left: Make the bar 14px high on a --ui-panel plate with a 1px --ui-line-hi border and a --ok fill. Put 'hp 97' at 20px f-cond 600 tx-1 above the bar, left-aligned. Inset the bar to x=48 (5% margin) and align it with the hotbar baseline.",
+   "P1 hotbar, bottom-centre: Draw empty slots as 72px tiles at 60% alpha with a 1px --ui-line border and the digit at 16px tx-2 in the top-left corner. Drop the ghost icons. Use a 3px --acc border on the selected slot (or keep the P1 amber ring and add an --acc corner pip).",
+   "P2 top-right 'run info' card: Use a 16px tx-2 label per section with 20px tx-1 values. Set a 16px left inset and a 1px --ui-line divider between 'dawn clear' and 'contracts'. Shrink the card width to its content plus 16px padding."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00f-223-steady-hand-and-beast-mode-recipes-4/damage-streaks-p1-15-1080.jpg",
+  "task": "o-00f-223-steady-hand-and-beast-mode",
+  "when": "2026-10-29T03:26"
+ },
+ "p1-3": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The hud reads clearly, but it is still a pile of mismatched boxes: the two top panels differ in width, the left-edge stack has no common margin, and the empty-slot ghosts and tiny text keep it short of polished.",
+  "findings": [
+   "P1 top-left 'current pillagers' panel vs top-right 'run info' panel: Give both the same --ui-panel fill, 1px --ui-line-hi border, 4px radius and 16px padding, at 360px wide, pinned to the 48px margins and top-aligned at y=48. Set row text to 16px minimum with 8px row gaps, and make the chevron 16px.",
+   "P1 hotbar, empty slots 3 and 5-0 and the ghost weapon silhouettes: Delete the ghost icons and show only slots 1-4 plus at most one empty slot, all 96px square. Put the selected slot in a 2px --acc border and the others in 1px --ui-line-hi on --ui-panel. Set slot numbers to 16px tx-2 inside a --ui-panel pill at the top-left.",
+   "P1 left edge stack: buff cards, kill/feed lines, status icons, hp: Pin everything to x=48. Buff chips are 40px high with a 1px --ui-line-hi border and 16px tx-1 text. Feed lines are 16px tx-1 on --ui-panel, with a 3px bar in the player colour only. Space the groups 24px apart.",
+   "P1 hp bar bottom-left: Put hp in a --ui-panel frame at x=48, bottom 48px. The bar is 360x12 in --ok #76b97c. The number is 32px f-cond 700 tx-1 with no outline, and a 16px 'hp' label sits above it.",
+   "P2 right column pickup stack and 'c 152m' marker: Collapse repeats into one row, 'pillager killed crawler x4', at 16px. Pin the column at the 48px right margin with 8px gaps. Put the 'c 152m' marker with the extract indicator at the top."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00f-223-steady-hand-and-beast-mode-recipes-4/damage-streaks-p1-3-1080.jpg",
+  "task": "o-00f-223-steady-hand-and-beast-mode",
+  "when": "2026-10-29T03:26"
+ },
+ "p2-15": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The ammo card and buff stack are readable, but the HUD still has no single panel style, the hp bar and hotbar are unchanged, and the banner sits in the middle of the playfield.",
+  "findings": [
+   "P1 hp bar, bottom-left: Make the bar 280x16 with a 1px --ui-line-hi border on a --ui-panel track. Fill it with --ok. Put 'hp 100' at 20px in --tx-1 above the bar. Inset it to 96px left and 54px bottom.",
+   "P1 hotbar slots 3 to 0, bottom centre: Draw slots 3 to 0 as 64px --ui-panel tiles at 50% opacity with a 1px --ui-line border. Put the numbers inside each tile at 16px --tx-2. Mark the selected slot with a 3px --acc bar and a 2px --acc outline.",
+   "P1 left column: 'current pillagers' panel, buff cards, kill feed, 'f1 controls' chip: Put every left widget on one panel recipe: --ui-panel at 88% opacity, 4px radius, 1px --ui-line-hi border, 16px padding. Align them all to x=96 with a 16px gap. Use 16px --tx-2 for sub-lines and 20px --tx-1 for names.",
+   "P1 'host disconnected / you are hosting now' banner: Anchor it at top-centre, y=96, with 24px clear of the extract pill. Use a --ui-panel fill at 92% with a 4px --danger left bar and no outline. Set the title at 32px in --tx-1 with a --danger icon, and the sub-line at 16px in --tx-2.",
+   "P1 extract markers: 'extract 146m' pill under the clock and 'c 146m' with an arrow at the right edge: Keep the edge compass arrow only. Label it 'extract 146m' at 16px in --extract on a --ui-panel tile. Delete the top pill and its small arrow, so the clock stands alone."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00f-223-steady-hand-and-beast-mode-recipes-4/damage-streaks-p2-15-1080.jpg",
+  "task": "o-00f-223-steady-hand-and-beast-mode",
+  "when": "2026-10-29T03:26"
+ },
+ "p2-4": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The old disconnect banner is gone and the weapon block is a clear hero number, but the HUD still has about eight panel styles, four text sizes of the same row, and a hp bar and pillager list that ignore the earlier advice.",
+  "findings": [
+   "P0 bottom-left 'hp 100' bar: Inset the bar 48px from the left and bottom edges. Make it 16px tall with a 4px radius and a --ui-line track. Put 'hp 100' at 20px --tx-1 above or beside it, not inside it. Keep the --ok fill and switch it to --danger below 30%.",
+   "P1 top-left 'current pillagers' list: Set the text to 16px and the rows to 24px, inside a --ui-panel box with 8px padding and a 1px --ui-line-hi border. Colour 'you' in --warn or amber for P1. Move the panel to x=96, y=96. Put 8px of space between the chevron and the header text.",
+   "P1 left column: 'pillager' bar, three buff cards, three kill-feed rows: Put every left-side element on the same x of 48px, with a single panel style (--ui-panel, 1px --ui-line-hi, 4px radius) and an 8px gap between rows. Stack buffs, then feed, with no 250px dead gap. Give the teammate bar a label at 16px.",
+   "P1 right-edge 'you killed crawler' x4: Remove the right-side kill lines (kills belong to the left feed only). Keep the right stack for pickups, set in --tx-1 at 16px on a --ui-panel row with a 3px rarity bar. Merge repeats into 'crawler x4'.",
+   "P1 top-right 'run info' dropdown, 'the long dock cache' tag, 'c 146m' tag: Use one chip style (--ui-panel, 1px --ui-line-hi, 4px radius, 16px --tx-1, 40px rows). Right-align all three at x=1824. Fold 'c 146m' into the 'run info' content. Hold the dropdown closed by default."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00f-223-steady-hand-and-beast-mode-recipes-4/damage-streaks-p2-4-1080.jpg",
+  "task": "o-00f-223-steady-hand-and-beast-mode",
+  "when": "2026-10-29T03:27"
  }
 }

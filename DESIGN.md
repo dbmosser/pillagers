@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.28 - SLOWER GUN SWITCHES
+
+Co-op hunt while he was away. His words 10-29: make it take longer to switch guns. Every class draw takes half again as long, with the pistol rounded to 0.38 seconds. The status follows the actual draw timer. Watch: switching guns takes half again as long.
+
+MEASURED. Check 36.28 passes, and fails on v36.27.
 ## v36.27 - STEADY HAND AND BEAST MODE
 
 Co-op hunt while he was away. His 10-29 order: steady hand and beast mode, up to 15% each. Watch: steady hand and beast mode, up to 15% each; active reload at 15% makes the top combined round x1.520875, or +52.0875% damage. Air strike kills count for their owner, capped at 15; watch the five-second ring and immediate steady hand reset on any hit or gun change in both windows.

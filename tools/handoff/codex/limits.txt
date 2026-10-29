@@ -139,3 +139,11 @@
 2026-10-28 22:45 week=45.0% 5h=96.0% week_resets=2026-11-04 01:35 job=o-00e-222-active-reload-5pct-steps
 2026-10-28 22:49 week=45.0% 5h=97.0% week_resets=2026-11-04 01:35 job=o-00e-222-active-reload-5pct-steps
 2026-10-28 23:05 week=46.0% 5h=6.0% week_resets=2026-11-04 01:35 job=o-00f-223-steady-hand-and-beast-mode
+2026-10-28 23:12 week=46.0% 5h=7.0% week_resets=2026-11-04 01:35 job=o-00f-223-steady-hand-and-beast-mode
+2026-10-28 23:15 week=47.0% 5h=9.0% week_resets=2026-11-04 01:35 job=o-00f-223-steady-hand-and-beast-mode
+2026-10-28 23:23 week=47.0% 5h=10.0% week_resets=2026-11-04 01:35 job=o-00f-223-steady-hand-and-beast-mode
+2026-10-28 23:29 week=47.0% 5h=12.0% week_resets=2026-11-04 01:35 job=o-00f-223-steady-hand-and-beast-mode
+2026-10-28 23:34 week=48.0% 5h=16.0% week_resets=2026-11-04 01:35 job=o-00g-224-slower-gun-switch
+2026-10-28 23:36 week=48.0% 5h=16.0% week_resets=2026-11-04 01:35 job=o-00g-224-slower-gun-switch
+2026-10-28 23:40 week=48.0% 5h=19.0% week_resets=2026-11-04 01:35 job=o-00g-224-slower-gun-switch
+2026-10-28 23:46 week=49.0% 5h=21.0% week_resets=2026-11-04 01:35 job=o-00g-224-slower-gun-switch

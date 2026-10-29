@@ -499,3 +499,11 @@
 2026-10-28 22:49 o-00e-222-active-reload-5pct-steps 60s ok DONE in=3368097 out=25463 run=5
 2026-10-28 22:51 o-00f-223-steady-hand-and-beast-mode 118s usage-limit (not counted) back 2026-10-28 22:54
 2026-10-28 23:05 o-00f-223-steady-hand-and-beast-mode 549s ok PARTIAL in=1964100 out=16800 run=1
+2026-10-28 23:12 o-00f-223-steady-hand-and-beast-mode 68s ok PARTIAL in=2563381 out=18741 run=2
+2026-10-28 23:15 o-00f-223-steady-hand-and-beast-mode 77s ok PARTIAL in=3256151 out=20682 run=3
+2026-10-28 23:23 o-00f-223-steady-hand-and-beast-mode 131s ok PARTIAL in=4217665 out=24054 run=4
+2026-10-28 23:29 o-00f-223-steady-hand-and-beast-mode 157s ok DONE in=5128791 out=28009 run=5
+2026-10-28 23:34 o-00g-224-slower-gun-switch 271s ok PARTIAL in=777978 out=9891 run=1
+2026-10-28 23:36 o-00g-224-slower-gun-switch 51s ok PARTIAL in=1069277 out=11532 run=2
+2026-10-28 23:40 o-00g-224-slower-gun-switch 209s ok PARTIAL in=2103497 out=17233 run=3
+2026-10-28 23:46 o-00g-224-slower-gun-switch 346s ok PARTIAL in=3251836 out=27541 run=4

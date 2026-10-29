@@ -1,0 +1,34 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  damage-streaks-p1-3                    NOT STAGED   4.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:72
+    at <anonymous>:144:4
+    at <anonymous>:144:80
+  damage-streaks-p1-15                   NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:72
+    at <anonymous>:144:4
+    at <anonymous>:144:80
+  damage-streaks-p2-4                    NOT STAGED   4.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:72
+    at <anonymous>:144:4
+    at <anonymous>:144:80
+  damage-streaks-p2-15                   NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:72
+    at <anonymous>:144:4
+    at <anonymous>:144:80
+== 4k : window 3876x2265, viewport 3840x2160
+  damage-streaks-p1-3                    NOT STAGED   4.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:72
+    at <anonymous>:144:4
+    at <anonymous>:144:80
+  damage-streaks-p1-15                   NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:72
+    at <anonymous>:144:4
+    at <anonymous>:144:80
+  damage-streaks-p2-4                    NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:72
+    at <anonymous>:144:4
+    at <anonymous>:144:80
+  damage-streaks-p2-15                   NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:72
+    at <anonymous>:144:4
+    at <anonymous>:144:80
