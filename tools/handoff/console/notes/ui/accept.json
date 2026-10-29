@@ -4142,5 +4142,53 @@
   "pic": "tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-3/06-ads-hip-player2-1080.jpg",
   "task": "o-00h-225-ads-zoom-toward-the-aim",
   "when": "2026-10-29T04:41"
+ },
+ "timelord-controls": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The controls list is still a full 440x770px slab of tiny text pinned to the top-left, so it hides the map and fights the HUD, and last round's advice to fold it to one line was not followed. The 'run info' bar, the stray 'info' capital and the duplicate 'c 152m' marker are also unfixed.",
+  "findings": [
+   "P0 controls card, x15-450 y30-800: Fold the card to one 32px line, 'f1 controls', at x=48, y~960. When F1 opens it, anchor it bottom-left and cap it at 8 rows per group with a 2-column layout. Auto-close it after 5s.",
+   "P1 controls card, type and hierarchy: Set every row to 16px minimum, with the action at 20px tx-1 and the key cap at 16px f-cond in tx-2. Make headers 16px f-cond +.04em in tx-2 with a 1px --ui-line rule above each. Use a 16px gap between groups. Drop the lime-adjacent amber.",
+   "P1 controls card, panel and edge: Use --ui-panel fill, a 1px --ui-line-hi border, 4px radius and 24px inner padding, inset 48px. Set 'f1 hide' to 16px tx-2 with a key cap.",
+   "P1 run info bar, top-right x1603-1900 y18-53: Change the text to 'run info' in all lower case. Use --ui-panel with a 1px --ui-line-hi border and 4px radius. Set the chevron to 20px tx-1. Inset 48px from the right edge.",
+   "P1 top centre, extract pill x903-1017 y47-73, and 'c 152m' at x1805-1890 y476-496: Delete the 'c 152m' text and keep only the teal edge arrow. Set the pill to 20px with 8px vertical padding. Use --fs-hero 56px for the timer only when extract is under 60s."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00i-226-timelord-mode-recipes-2/timelord-controls-1080.jpg",
+  "task": "o-00i-226-timelord-mode",
+  "when": "2026-10-29T05:01"
+ },
+ "timelord-settings": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "A clean, consistent full-screen settings card with a clear lime focus row, but the detail pane is mostly empty, the list mixes raid and audio rows under one tab, and row text is small and dim.",
+  "findings": [
+   "P1 right detail pane: Show the current value and what each option does, or a preview. Otherwise narrow the pane to about 360px and give the list the freed width. Drop the lime top border unless the pane has focus.",
+   "P1 centre list, rows 'master volume' to 'effects volume': Move the volume rows under 'audio'. If the section has to stay, add a 16px label such as 'sound' in tx-2 with 24px spacing above it, and stop the list from being clipped mid-row at y=990.",
+   "P1 row labels and tab labels: Set row names to 20px in tx-1 (#efe9dc) at weight 600, or in tx-2 (#aaa498) at the very least. Set idle tab labels to 20px tx-2. Keep values in tx-1.",
+   "P2 left tab column: Give the active tab a --ui-raised fill and tx-1 text, and keep the lime bar only for the focused item. Use one 56px rhythm for tabs and rows. Group 'send play data' under a 1px divider.",
+   "P2 focused row 'timelord mode': Dim idle arrows to tx-2 at about 50% opacity. Keep lime only on the focused row's arrows and value, and remove the lime top border from the detail pane."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00i-226-timelord-mode-recipes-1/timelord-settings-1080.jpg",
+  "task": "o-00i-226-timelord-mode",
+  "when": "2026-10-29T04:58"
+ },
+ "timelord-toggle": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The controls card is now one folded line and the oversized left card is gone, but the HUD panels still don't share one recipe, the text is tiny, and the 'run info' label still has a capital I.",
+  "findings": [
+   "P1 top-right 'run info' bar (x1603-1900, y18-54): Change the text to 'run info'. Use --ui-panel at 90% opacity, a 1px --ui-line-hi border, a 4px radius, 16px --f-cond 600 text and 16px padding. Shrink the bar to its content, about 200px wide, and keep the chevron inset 16px from the right.",
+   "P1 HUD panel recipe: pillagers card, run info bar, ammo card, timelord toast, contract toast, 'f1 controls' chip, 'the long dock cache' label, 'c 152m' chip: Put every HUD panel on --ui-panel at 90%, a 1px --ui-line-hi border, a 4px radius and 16px padding. Take all text from the 56/32/20/16/14 scale and nothing smaller than 14px. Restyle the two map chips as 16px --tx-2 text with no box, or remove them.",
+   "P1 'timelord on' toast (x322-441, y638-668): Move it to a top-centre banner under the 'extract 152m' pill, at y about 96. Use 20px --f-cond 700 text, a 3px --acc left bar, 16px padding, and fade it after 2s. Show the contract-item line the same way, and stop it sitting beside the hp bar.",
+   "P1 'current pillagers 3' card (x8-367, y143-242): Use 16px --tx-2 for the header and the 'value at risk' label, and 20px --tx-1 for names. Set rows to 28px and padding to 16px. Mark 'you' with a 3px --acc bar. Right-align the $ values in tabular numerals and keep the chevron 16px from the edge.",
+   "P1 hp bar (x24-430, y1034-1068): Draw a 1px --ui-line-hi frame with a 4px radius on a --ui-panel track, with --ok as the fill. Set the label to 16px --f-cond 600 above the bar, with the value in 20px on the right. Keep a 5% margin from the screen edge."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00i-226-timelord-mode-recipes-2/timelord-toggle-1080.jpg",
+  "task": "o-00i-226-timelord-mode",
+  "when": "2026-10-29T05:02"
  }
 }

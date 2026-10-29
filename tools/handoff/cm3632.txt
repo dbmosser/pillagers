@@ -1,0 +1,7 @@
+v36.32: lance reload tail
+
+the Lance no longer rings on after a reload
+
+Check 36.32. Fails on v36.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

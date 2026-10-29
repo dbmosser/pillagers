@@ -514,3 +514,6 @@
 2026-10-29 00:43 o-00h-225-ads-zoom-toward-the-aim 123s ok DONE in=5790900 out=48716 run=4
 2026-10-29 00:48 o-00i-226-timelord-mode 278s ok PARTIAL in=1016930 out=12319 run=1
 2026-10-29 00:51 o-00i-226-timelord-mode 162s ok PARTIAL in=1869307 out=18583 run=2
+2026-10-29 01:00 o-00i-226-timelord-mode 103s ok PARTIAL in=2465359 out=22429 run=3
+2026-10-29 01:02 o-00i-226-timelord-mode 39s ok DONE in=2726664 out=23725 run=4
+2026-10-29 01:13 o-00j-227-lance-reload-long-tail 629s ok PARTIAL in=1752705 out=22110 run=1

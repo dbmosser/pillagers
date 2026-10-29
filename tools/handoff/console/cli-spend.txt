@@ -1795,3 +1795,11 @@
 2026-10-28 0.0000 o-00h-225-ads-zoom-toward-the-aim
 2026-10-29 0.0000 o-00i-226-timelord-mode
 2026-10-29 0.0000 o-00i-226-timelord-mode
+2026-10-29 0.0909 critic-o-00i-226-timelord-mode
+2026-10-29 0.0843 critic-o-00i-226-timelord-mode
+2026-10-29 0.0884 critic-o-00i-226-timelord-mode
+2026-10-29 0.0000 o-00i-226-timelord-mode
+2026-10-29 0.0903 critic-o-00i-226-timelord-mode
+2026-10-29 0.0919 critic-o-00i-226-timelord-mode
+2026-10-29 0.0000 o-00i-226-timelord-mode
+2026-10-29 0.0000 o-00j-227-lance-reload-long-tail

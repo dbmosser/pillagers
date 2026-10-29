@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.32 - LANCE RELOAD TAIL
+
+Co-op hunt while he was away. His Lance reload report: the room feedback filter was resonant at its default Q and could sustain a charge or shot indoors. Use a non-resonant filter and cap vault feedback at 0.80.
+
+MEASURED. Check 36.32 passes, and fails on v36.31.
 ## v36.31 - timelord mode
 
 Co-op hunt while he was away. His order of 2026-10-29: rename superhot mode to timelord mode. This changes live words and their callout filters while keeping saved settings and the party word intact. Watch: superhot mode is now timelord mode

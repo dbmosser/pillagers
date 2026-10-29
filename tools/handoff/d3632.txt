@@ -1,0 +1,5 @@
+## v36.32 - LANCE RELOAD TAIL
+
+Co-op hunt while he was away. His Lance reload report: the room feedback filter was resonant at its default Q and could sustain a charge or shot indoors. Use a non-resonant filter and cap vault feedback at 0.80.
+
+MEASURED. Check 36.32 passes, and fails on v36.31.
