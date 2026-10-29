@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.52 - PING AND MAP MARK ARE ONE
+
+Co-op hunt while he was away. His order: the ping and the map mark are one mark. One deliberate mark per player uses the png message and the same record for the raid, map and minimap. Spot marks last until moved or cleared; entity pings still follow for ten seconds. Automatic loot notices stay separate. Watch: the ping and the map mark are one mark. In both windows, move and clear each colour from the raid and map and check that the other window follows.
+
+MEASURED. Check 36.52 passes, and fails on v36.51.
 ## v36.51 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v36.35 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.

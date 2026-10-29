@@ -1,0 +1,5 @@
+## v36.52 - PING AND MAP MARK ARE ONE
+
+Co-op hunt while he was away. His order: the ping and the map mark are one mark. One deliberate mark per player uses the png message and the same record for the raid, map and minimap. Spot marks last until moved or cleared; entity pings still follow for ten seconds. Automatic loot notices stay separate. Watch: the ping and the map mark are one mark. In both windows, move and clear each colour from the raid and map and check that the other window follows.
+
+MEASURED. Check 36.52 passes, and fails on v36.51.

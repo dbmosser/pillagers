@@ -1,0 +1,7 @@
+v36.52: ping and map mark are one
+
+Middle mouse, N, pad and map clicks move one mark. Ping your spot again or right click the map to clear it everywhere.
+
+Check 36.52. Fails on v36.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
