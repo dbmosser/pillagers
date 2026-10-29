@@ -40,3 +40,5 @@ Pictures: tools/handoff/console/notes/shots/o-132-hit-jolt-from-the-bullet-recip
 17. Teammate strip margins, on the shared inset of 2.
 18. Bottom HUD alignment: hotbar, vitals and ammo card on one baseline.
 Before building, read tools/handoff/console/notes/hud-critic-inbox.md, fold any new line into 186g, 186f or 186d, and mark it FOLDED.
+
+ALSO (CEO 10-29 00:30, from the o-00h critic on v36.29): forge and seal world labels clip at the right screen edge (cache names were fixed in v36.13, these were not); oversized hp label; faint empty hotbar slots. Pictures: tools/handoff/console/notes/shots/o-00h-225-ads-zoom-toward-the-aim-recipes-1/.
