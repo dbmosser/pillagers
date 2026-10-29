@@ -7818,7 +7818,9 @@ class Audio {
        }
        if(rr[1].querySelectorAll('.aosc')[3].querySelector('b').textContent!=='2') bad.push('partner deaths not drawn');
        r=c.querySelectorAll('.aobmt > div:first-child');
-       if(r.length!==6) bad.push('not six moments');
+       var labels=[].map.call(r,function(e){return e.firstChild.textContent.trim().toLowerCase();});
+       var legacy=labels.indexOf('best streak')>=0;
+       if(r.length!==5+(legacy?1:0)||labels.filter(function(t){return t!=='best streak';}).join('|')!=='crown|closest call|most damage|biggest haul|longest shot') bad.push('retained moments missing or duplicated: '+labels.join(', '));
        for(i=0;i<r.length;i++) if(parseFloat(getComputedStyle(r[i]).fontSize)<20) bad.push('moment labels below 20px');
        cs=getComputedStyle(d); if(cs.backgroundColor!=='rgba(6, 7, 8, 0.8)') bad.push('background is not the quiet 80 percent scrim: '+cs.backgroundColor);
        if(cs.backdropFilter!=='blur(6px)') bad.push('background blur is not 6px');
