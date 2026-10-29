@@ -3885,8 +3885,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.40';
-var VER_AT='2026-10-29 05:16';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.41';
+var VER_AT='2026-10-29 05:58';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5982,6 +5982,7 @@ function trBox(){
 }
 // the plate of the HUD panels (hudPanel: chamfer, one flat 88% fill, the 1px light edge of v31.03), drawn by hand so a row costs no closure and no gradient
 function trPlate(x,y,w,h){
+  hudFadeRect(x,y,w,h);
   var c=Math.max(0,Math.min(10,w/3,h/3)), d=Math.max(0,c-.5);
   ctx.beginPath(); ctx.moveTo(x+c,y); ctx.lineTo(x+w,y); ctx.lineTo(x+w,y+h); ctx.lineTo(x,y+h); ctx.lineTo(x,y+c); ctx.closePath();
   ctx.fillStyle='rgba(17,19,21,.88)'; ctx.fill();
@@ -13508,6 +13509,7 @@ function uiIconPath(name){
   return _uiIconP[name];
 }
 function hudPlate(x,y,w,h,accent,fill){
+  hudFadeRect(x,y,w,h);
   if(!(w>0&&h>0)) return;
   var r=Math.max(0,Math.min(LH(HUDPS.rad),h/2,w/2));
   ctx.fillStyle=fill||HUDPS.fill;
@@ -44124,6 +44126,7 @@ function statusLive(p){
 }
 // v28.xx (cw-cx-statusread): the shared status panel, four-pixel corners and one quiet border, at the existing size and anchor.
 function statusPill(x0,cy,x1,h){
+  hudFadeRect(x0,cy-h/2,Math.max(h,x1-x0),h);
   var r=Math.min(LH(4),h/2), top=cy-h/2, bot=cy+h/2;
   if(x1<x0+h) x1=x0+h;
   ctx.beginPath(); ctx.moveTo(x0+r,top); ctx.lineTo(x1-r,top); ctx.quadraticCurveTo(x1,top,x1,top+r);
@@ -44789,7 +44792,127 @@ function stamFade(p){
   STAMF.a=want?Math.min(1,STAMF.a+d/0.15):Math.max(0,STAMF.a-d/0.5);
   return STAMF.a;
 }
+// v28.xx (cw-cx-hudfade), HIS NOTE (2026-10-28): "if the player is partially obscured (or nearly obscured) by a hud element, it should go highly translucent (65%?) until the player is no longer obscured".
+var HUDFADE={g:null,panels:{},active:null,now:0,live:false,bodies:[],layer:null,dom:[],scan:0};
+var HUDFADE_PROPS=['fillStyle','strokeStyle','font','textAlign','textBaseline','direction','lineWidth','lineCap','lineJoin','miterLimit','lineDashOffset','globalAlpha','globalCompositeOperation','shadowBlur','shadowColor','shadowOffsetX','shadowOffsetY','imageSmoothingEnabled','imageSmoothingQuality','filter','fontKerning','fontStretch','fontVariantCaps','letterSpacing','wordSpacing','textRendering'];
+function hudFadeNow(){ return performance.now()/1000; }
+function hudFadeBody(p,build){
+  var z=ZOOM(), s=w2s(p.x,0,p.y), k=figKS(build), rx=24*k[0]*z, ht=52*k[1]*z;
+  return {x:s.x-rx,y:s.y-ht,w:rx*2,h:ht+10*z};
+}
+function hudFadeStep(s,b,people,scale,now){
+  var margin=(s.near?32:24)*scale, hit=false, i, p, dt=Math.max(0,Math.min(0.25,now-s.at)), target;
+  if(b&&b.w>0&&b.h>0) for(i=0;i<people.length;i++){
+    p=people[i];
+    if(p.x<b.x+b.w+margin&&p.x+p.w>b.x-margin&&p.y<b.y+b.h+margin&&p.y+p.h>b.y-margin){ hit=true; break; }
+  }
+  s.near=hit; s.at=now; target=hit?0.35:1;
+  s.a=target<s.a?Math.max(target,s.a-0.65*dt/0.15):Math.min(target,s.a+0.65*dt/0.15);
+  if(Math.abs(s.a-target)<0.00001) s.a=target;
+  return s.a;
+}
+function hudFadeFrame(){
+  var F=HUDFADE, i, p, list;
+  F.now=hudFadeNow();
+  F.live=!!(G&&G.player&&!G.over&&!G.sim&&!G.hubFloor&&!G.bagOpen&&!G.mapOpen&&!G.forgeUI&&state==='raid');
+  if(F.g!==G){ hudFadeDomReset(); F.g=G; F.panels={}; F.scan=0; }
+  F.bodies=[];
+  if(!F.live){ hudFadeDomReset(); return; }
+  F.bodies.push(hudFadeBody(G.player,cosWorn('build')));
+  // v28.xx (cw-cx-hudfade): separate windows use their own pillager. A shared viewport's local players use the same camera transform.
+  list=G.players;
+  if(Array.isArray(list)) for(i=0;i<list.length;i++){ p=list[i]; if(p&&p!==G.player&&p.hp>0&&!p.gone) F.bodies.push(hudFadeBody(p,p.build)); }
+  hudFadeDom();
+}
+function hudFadeCopy(from,to){
+  var i,k,t=from.getTransform();
+  for(i=0;i<HUDFADE_PROPS.length;i++){ k=HUDFADE_PROPS[i]; if(k in from) to[k]=from[k]; }
+  to.setLineDash(from.getLineDash()); to.setTransform(t.a,t.b,t.c,t.d,t.e,t.f);
+}
+function hudFadeBegin(key){
+  var F=HUDFADE,s,t,c;
+  if(!F.live||F.active) return null;
+  s=F.panels[key]; if(!s) s=F.panels[key]={a:1,near:false,at:F.now,box:null};
+  hudFadeStep(s,s.box,F.bodies,hudRes(),F.now);
+  t={key:key,s:s,base:ctx,box:null,capture:s.a<0.99999}; F.active=t;
+  if(t.capture){
+    if(!F.layer) F.layer=document.createElement('canvas');
+    c=F.layer;
+    if(c.width!==ctx.canvas.width||c.height!==ctx.canvas.height){ c.width=ctx.canvas.width; c.height=ctx.canvas.height; }
+    t.ink=c.getContext('2d');
+    t.ink.setTransform(1,0,0,1,0,0); t.ink.clearRect(0,0,c.width,c.height);
+    hudFadeCopy(ctx,t.ink); ctx=t.ink;
+  }
+  return t;
+}
+function hudFadeBounds(b){
+  var t=HUDFADE.active, a, x,y;
+  if(!t||!b||!(b.w>0&&b.h>0)) return;
+  a=t.box;
+  if(!a){ t.box={x:b.x,y:b.y,w:b.w,h:b.h}; return; }
+  x=Math.min(a.x,b.x); y=Math.min(a.y,b.y);
+  a.w=Math.max(a.x+a.w,b.x+b.w)-x; a.h=Math.max(a.y+a.h,b.y+b.h)-y; a.x=x; a.y=y;
+}
+function hudFadeRect(x,y,w,h){
+  var t,m,d=DPRH||1;
+  if(!HUDFADE.active) return;
+  t=ctx.getTransform();
+  m={x:(t.a*x+t.c*y+t.e)/d,y:(t.b*x+t.d*y+t.f)/d,w:Math.abs(t.a*w/d)+Math.abs(t.c*h/d),h:Math.abs(t.b*w/d)+Math.abs(t.d*h/d)};
+  hudFadeBounds(m);
+}
+function hudFadeEnd(t,b){
+  var ink;
+  if(!t) return;
+  if(b) hudFadeBounds(b);
+  t.s.box=t.box; t.s.drawnA=t.s.a; t.s.seen=HUDFADE.now;
+  if(t.capture){
+    ink=ctx; ctx=t.base;
+    hudFadeCopy(ink,ctx);
+    ctx.save();
+    try{
+      ctx.setTransform(1,0,0,1,0,0); ctx.globalAlpha=t.s.a; ctx.globalCompositeOperation='source-over';
+      ctx.shadowBlur=0; ctx.shadowOffsetX=0; ctx.shadowOffsetY=0; ctx.shadowColor='rgba(0,0,0,0)'; ctx.filter='none';
+      ctx.drawImage(ink.canvas,0,0);
+    } finally { ctx.restore(); }
+  }
+  HUDFADE.active=null;
+}
+function hudFadeCall(key,fn,args,bounds){
+  var t=hudFadeBegin(key), a=args?args.slice():[], i;
+  if(t&&t.capture) for(i=0;i<a.length;i++) if(a[i]===t.base) a[i]=ctx;
+  try{ return fn.apply(null,a); } finally { hudFadeEnd(t,bounds?bounds():null); }
+}
+function hudFadeDomReset(){
+  var F=HUDFADE,i,e;
+  for(i=0;i<F.dom.length;i++){ e=F.dom[i]; if(e.changed){ e.el.style.opacity=e.inline; e.changed=false; } }
+}
+function hudFadeDom(){
+  var F=HUDFADE,els,i,j,e,c,b,s,a,old,entry,root=document.getElementById('root');
+  if(!root) return;
+  if(F.now>=F.scan){
+    old=F.dom; F.dom=[]; F.scan=F.now+0.05;
+    els=root.querySelectorAll(':scope > *,[data-hud-panel]');
+    for(i=0;i<els.length;i++){
+      e=els[i]; if(/^(CANVAS|SCRIPT|STYLE)$/.test(e.tagName)||e.matches('.screen,.modal,.pausebox,.outcome')||e.closest('.screen,.modal,.pausebox,.outcome')) continue;
+      c=getComputedStyle(e); b=e.getBoundingClientRect();
+      if((c.position==='fixed'||c.position==='absolute'||e.hasAttribute('data-hud-panel'))&&b.width>0&&b.height>0&&b.width<W*0.75&&b.height<H*0.75){
+        entry=null;
+        for(j=0;j<old.length;j++) if(old[j].el===e){entry=old[j];break;}
+        F.dom.push(entry||{el:e,inline:e.style.opacity,base:parseFloat(c.opacity),changed:false,s:{a:1,near:false,at:F.now}});
+      }
+    }
+    for(j=0;j<old.length;j++) if(F.dom.indexOf(old[j])<0&&old[j].changed) old[j].el.style.opacity=old[j].inline;
+  }
+  for(i=0;i<F.dom.length;i++){
+    e=F.dom[i]; b=e.el.getBoundingClientRect(); c=getComputedStyle(e.el);
+    s=(b.width>0&&b.height>0&&c.visibility!=='hidden'&&c.display!=='none')?{x:b.left,y:b.top,w:b.width,h:b.height}:null;
+    a=hudFadeStep(e.s,s,F.bodies,hudRes(),F.now);
+    if(a<1){ e.el.style.opacity=String(e.base*a); e.changed=true; }
+    else if(e.changed){ e.el.style.opacity=e.inline; e.changed=false; }
+  }
+}
 function drawHUD(){
+  hudFadeFrame();
   var p=G.player,T=G.tel,i;
   hudClampAll();
   ctx.clearRect(0,0,W,H);
@@ -44802,10 +44925,10 @@ function drawHUD(){
   // "NAME offers you ITEM, T or Y to take it, Ns" line (v17.52) never reached the screen; only the three second toast did,
   // which is why a player who looked away never knew an offer was waiting. Drawn here, after the clear and the vignette.
   try{ msgLayout(); }catch(_ml){ HUDMSGB=0; }   // v21.86 (R04): the message rows first, so everything under them knows where they end
-  try{ drawBossBar(); }catch(_bb){}   // v17.45: his pick 21
-  try{ drawGiftLine(); }catch(_gl){}   // v17.52: an open trade offer stays on screen
-  try{ drawUseBar(); }catch(_ub){}   // v18.75, his note: the bandage, medkit and plate wind-ups on the HUD
-  try{ drawLore(); }catch(_lr){}   // v22.xx (R39): the map story card
+  try{ hudFadeCall('boss',drawBossBar,[]); }catch(_bb){}   // v17.45: his pick 21
+  try{ hudFadeCall('gift',drawGiftLine,[]); }catch(_gl){}   // v17.52: an open trade offer stays on screen
+  try{ hudFadeCall('use',drawUseBar,[]); }catch(_ub){}   // v18.75, his note: the bandage, medkit and plate wind-ups on the HUD
+  try{ hudFadeCall('lore',drawLore,[]); }catch(_lr){}   // v22.xx (R39): the map story card
   if(p.hp<32&&!p.downed){
     // v9.69, HIS NOTE: "red flashing for low health should slow down 2x when not
     // in combat". It ran at one rate forever, a cycle every 1.05 seconds, as
@@ -44864,7 +44987,7 @@ function drawHUD(){
   try{ flowDraw(ctx,p); }catch(_fdw){}   // v26.xx (flow2): the raid flow on the HUD (the air strike aim, the strikes in flight and the meter)
   try{ pwrDraw(ctx,p); }catch(_pwd){}   // v26.xx (party2): the power-ups on the floor, the aura and the timer chips
   try{ pwrDraw2(ctx,p); }catch(_pwd2){}   // v26.xx (party3): the shield bubble and the screen clear wave
-  try{ styMedalDraw(ctx,p); }catch(_smd){}   // v27.38 (partyp1): the medal row at the left edge
+  try{ hudFadeCall('medals',styMedalDraw,[ctx,p],function(){return STYBOX.n?STYBOX:null;}); }catch(_smd){}   // v27.38 (partyp1): the medal row at the left edge
   // reticle at the cursor
 if(!p.downed&&!G.bagOpen&&!G.mapOpen&&!(G.wheel&&!G.wheel.pad)){   // v28.xx (cw-wheelcursor): the arrow, not the cross, while the wheel is open
     var rx0=mouse.x,ry0=mouse.y;
@@ -45246,8 +45369,9 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen&&!(G.wheel&&!G.wheel.pad)){   // v28.xx (cw
   // v8.91: the conditions and contracts panel, grown from the top right corner
   // it is anchored to. Wrapped around the call rather than inside it because the
   // collapsed state returns early and would skip the restore.
-  try{ drawMinimap(); }catch(_mm){ MMAP.box=null; }   // v24.xx (minimap1): his "add minimap", top right, before CONDITIONS so it can start below it
+  try{ hudFadeCall('minimap',drawMinimap,[],function(){return MMAP.box;}); }catch(_mm){ MMAP.box=null; }   // v24.xx (minimap1): his "add minimap", top right, before CONDITIONS so it can start below it
   try{ trBox(); }catch(_tb){}   // v30.xx (cw-trcol): the column's box for everything that keeps clear of the corner
+  hudFadeCall('conditions',function(){
   ctx.save(); hudZoomIn('cond',W,0);
   (function(){
     var _arc=!!G.arcade;   // v27.42 (info1): the DEMO shows the panel too, with its run goals only
@@ -45471,6 +45595,7 @@ hudPanel(bx,by,bw,bh,undefined,1);   // v18.13: the one HUD panel
   })();
   ctx.restore();
   if(HUDBOX.cond) HUDBOX.cond=hudZoomRect('cond',W,0,HUDBOX.cond);
+  },[],function(){return HUDBOX.cond;});
   EDGEBOX.goals=null;   // v27.42 (info1): the run goals are rows of RUN INFO (goalsHud is kept, not drawn)   // v26.xx (flow3): the run goals, the same panel in DEMO and CAREER
   // v22.xx, the raid text rewrite (R38): A LINE SAID WITH THE MAP OPEN DRAWS OVER IT. HIS ORDER (2026-10-09): the raid text reads like
   // a shooter HUD, and in those a callout is never hidden by the map. The message band (the alert, the location tag and the feed)
@@ -45484,8 +45609,8 @@ hudPanel(bx,by,bw,bh,undefined,1);   // v18.13: the one HUD panel
     // v10.43, his answers 25 and 30: the message line scales with the monitor
     // like every panel, anchored at the top centre. It was 19px at 4K.
     ctx.save(); hudZoomIn('msg',W/2,0);
-    if(_alL&&G){ try{ alertDraw(_alL); }catch(_ad){} }   // v22.13 (R08): the alert lane, at the top of the band
-    else if(_loc&&G){ try{ locDraw(_loc); }catch(_ld){} }   // v22.xx (R34): the location tag in the free alert slot
+    if(_alL&&G){ try{ hudFadeCall('alert',alertDraw,[_alL]); }catch(_ad){} }   // v22.13 (R08): the alert lane, at the top of the band
+    else if(_loc&&G){ try{ hudFadeCall('location',locDraw,[_loc]); }catch(_ld){} }   // v22.xx (R34): the location tag in the free alert slot
     ctx.font=FS(TYPE.label);
     // HIS NOTE, 2026-08-25: "i see that the game is giving me messages in the
     // upper left corner but I can't really read them bc it is blocked by the key
@@ -45516,7 +45641,7 @@ hudPanel(bx,by,bw,bh,undefined,1);   // v18.13: the one HUD panel
     ctx.textAlign='left';
     ctx.restore();                              // v10.43: end of the message scale
   }
-  try{ feedDraw(); }catch(_fdw){}   // v27.24 (feed1): the feed, bottom left (over the map too)
+  try{ hudFadeCall('feed',feedDraw,[]); }catch(_fdw){}   // v27.24 (feed1): the feed, bottom left (over the map too)
   try{ ansDraw(); }catch(_ansd){}   // v35.xx (cw-answerline): the answer line under the character
   };
   if(!G.mapOpen) _lanes();   // v22.xx (R38): with the map open the band is drawn after it, below
@@ -45935,15 +46060,16 @@ ctx.fillStyle='#4de3d0';
   // SPEC 6.1 and 11: the hotbar, centred at the bottom where the eye goes under
   // pressure. Icons are drawn, not text: a gun silhouette, a throwable sphere, a
   // cross for medical, and so on - a slot reads at a glance.
-  drawBelt();
+  hudFadeCall('belt',drawBelt,[],function(){var c=G.hotCells||[]; for(var i=0;i<c.length;i++) hudFadeBounds({x:c[i].x-4,y:c[i].y-4,w:c[i].w+8,h:c[i].h+8}); return null;});
   try{ drawWheel(); }catch(_dwh){}   // v26.xx (wheel2): the item wheel, over the belt
-  try{ drawHand(); }catch(_dhd){}   // v26.xx (wheel3): and the item in hand
+  try{ hudFadeCall('hand',drawHand,[]); }catch(_dhd){}   // v26.xx (wheel3): and the item in hand
   // Bars, at a size you can read in a firefight. His answers, twice: the HUD
   // should be BIGGER and the health bar "NEEDS TO BE LARGER". 150x10 grew to
   // 280x18 with the number inside the bar itself where your eye already is,
   // and armour and stamina scaled with it.
 var by=H-34;
   var _boB=hudOff('body');
+  hudFadeCall('vitals',function(){
   ctx.save(); ctx.translate(_boB.dx,_boB.dy);
   // The scale is applied lower down, around the bars only: this block also
   // carries the TERMS badge and the CONCEALED line, which live at the TOP and
@@ -46125,6 +46251,7 @@ if(p.armor>0){
   ctx.restore();   /* v28.xx (cw-barheight): centred on the taller bar */   /* v28.xx (cw-barsame): the word follows the longer bar */
   ctx.restore();                          // v8.08: end of the corner scale
   ctx.restore();
+  },[],function(){return HUDBOX.body;});
   // v19.07, FROM THE REVIEW OF 2026-10-07 (found checking the status icons against the teammate HUD): THE CO-OP HUD DRAWS WHERE
   // IT SHOULD. netTeamHud, netFeedDraw, netPingDraw and netPadHud were called inside the vitals corner's zoom (hudZoomIn body, 1.4
   // times hudRes about the bottom left), so every point they drew was pushed up and out: at 1080p the teammate rows sat in the top
@@ -46133,10 +46260,11 @@ if(p.armor>0){
   // screen; the kill feed starts below CONDITIONS and grows too; the status column starts below the teammate rows.
   try{ NETTEAMBOX.n=0; }catch(_ntb){}   // v19.07: no rows unless drawn this frame, so a party that ended never moves the status column
   try{ if(NET.on) netTeamHud(by); }catch(_nth){}   // v16.26: your teammates, their health and armour
-  EDGEBOX.feed=null; try{ if(NET.on) netFeedDraw(); }catch(_nfd){}   // v16.42: the kill feed
+  EDGEBOX.feed=null; try{ if(NET.on) hudFadeCall('partyfeed',netFeedDraw,[]); }catch(_nfd){}   // v16.42: the kill feed
   try{ netPingDraw(); }catch(_npd){}   // v28.xx (cw-cx-solopings): your ping is visible in solo too.
-  try{ if(NET.same) netPadHud(); }catch(_nph){}   // v16.78: the controller paused word, in the window whose pad went quiet
+  try{ if(NET.same) hudFadeCall('padnotice',netPadHud,[]); }catch(_nph){}   // v16.78: the controller paused word, in the window whose pad went quiet
   var _boG=hudOff('gear');
+  hudFadeCall('gun',function(){
   ctx.save(); ctx.translate(_boG.dx,_boG.dy);
   hudZoomIn('gear',W,H);                 // v8.08: grows up and left from the corner
   if(typeof G.beaconT==='number'&&G.beaconT>0&&extBandOn(p)) ctx.globalAlpha=0.7;   // v35.xx (cw-clockcard): only while the band shows   // v28.xx (cw-h103fix): the critic found 60 percent too faint to read the rounds, so 70;   // v28.xx (cw-h103hero), the critic on screen 37 ('the extraction banner still lacks hero weight'): while the ship is inbound the extract line is the one hero, so the ammo card steps down; it is back at full strength the moment the countdown ends
@@ -46293,6 +46421,7 @@ if(p.armor>0){
   // throwable counts live on the hotbar now, not as a second readout
 
 ctx.restore();
+  },[],function(){return GUNCARD.g===G?GUNCARD:HUDBOX.gear;});
   // v8.43, audit: RIGHT ALIGNED, on the line itself. W-16 is the right margin, but
   // textAlign was 'left' here - restored from a state that inherited it - so the
   // string started at x=1904 on a 1920 canvas and ran off the edge. Set locally
@@ -46310,6 +46439,7 @@ ctx.restore();
   var _exRow=_exBelt-LH(26)*_exR;   // the arrow, the distance, the converging count
   var _exBan=_exBelt-LH(62)*_exR;   // the headline above it; v32.xx (cw-hostcol) 14 px higher so the hostiles plate has an 8 px gap under it
   var _exBW=0;   // width of the banner plate, shared with the hostiles plate under it
+  hudFadeCall('extractionband',function(){
   if(extBandOn(p)){   // v35.xx (cw-clockcard): within 250 m
     var inRing=dist(p,G.active)<G.active.r;
     var _exL=extLetter(G.active);
@@ -46359,6 +46489,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     if(G.active.callT>0) bar(W/2-70*_exR,_exRow+LH(5)*_exR,140*_exR,7*_exR,clamp(G.active.callT/1.6,0,1),'#4de3d0');
     ctx.textAlign='left';
   }
+  });
   // HIS NOTE, v3.58: "THE SEAL NEEDS some sort of visual indicator to tell you
   // to hold E". Same disease as the beacon call: the interaction existed, the
   // instruction lived nowhere.
@@ -46429,6 +46560,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     // whole screen, and a fillRect(0,0,W,H) under a 2x scale about the centre
     // covers a quarter of it.
     ctx.fillStyle='rgba(60,8,5,.30)'; ctx.fillRect(0,0,W,H);   // v34.40 (cw-downedcard3), critic on screen 34 (P1 'the heavy red wash tints every HUD colour'): the downed wash is 30 percent, was 45, so the HUD keeps its contrast
+    hudFadeCall('downed',function(){
     // v9.08, HIS NOTE: this block is too small. Everything below scales with the
     // SCREEN as well as the text setting, which is the half that was missing:
     // the type roles and LH follow the TEXT SIZE setting only, so at 4K this was
@@ -46540,6 +46672,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     }
     ctx.textAlign='left';
     ctx.restore();
+    });
   }
   // HIS NOTE: "a middle-of-the-screen HOLD E TO EXTRACT once its open, even if
   // downed". He is right that it was missing and the reason is that the bottom
@@ -46697,7 +46830,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
       ctx.translate(_legDX+_legFX,_legShift+_legDY);   // bottom on the target, plus his drag (and the room the feed takes)
       hudZoomIn('legend',0,_legTarget);    // then grow upward from there
     }
-    if(_f1L) LEGFULL=null; drawLegend(G.legendOn===2&&!HOL.c?_fz:1,!!_f1L); if(_f1L&&LEGFULL) LEGSIDE={x:_f1L.x+(LEGFULL.x-6)*_fz,y:_f1L.b+(LEGFULL.y-H)*_fz,w:LEGFULL.w*_fz,h:LEGFULL.h*_fz}; // v28.xx (cw-cx-foldedhint): the full-list fit scale belongs only to the open full list.
+    if(_f1L) LEGFULL=null; hudFadeCall('controls',drawLegend,[G.legendOn===2&&!HOL.c?_fz:1,!!_f1L]); if(_f1L&&LEGFULL) LEGSIDE={x:_f1L.x+(LEGFULL.x-6)*_fz,y:_f1L.b+(LEGFULL.y-H)*_fz,w:LEGFULL.w*_fz,h:LEGFULL.h*_fz}; // v28.xx (cw-cx-foldedhint): the full-list fit scale belongs only to the open full list.
     ctx.restore();
     if(HUDBOX.legend){
       // v9.46: SCREEN SPACE, and the shift added the way the draw adds it.
@@ -46728,7 +46861,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
       HUDBOX.legend=_lz; if(G.legendOn===1&&!HOL.c) LEGSIDE={x:_lz.x,y:_lz.y,w:_lz.w,h:_lz.h};   // v35.xx (cw-f1left): the opened compact list as drawn, so the feed lines step right of it
     }
   }
-  try{ drawStatusIcons(); }catch(_sti){}   // v19.00, his note (2026-10-07): the status icons down the left, under the backpack, a trade and the map
+  try{ hudFadeCall('status',drawStatusIcons,[]); }catch(_sti){}   // v19.00, his note (2026-10-07): the status icons down the left, under the backpack, a trade and the map
   if(G.bagOpen) drawBag();
   // The item under the cursor while it is being carried. Drawn last so it rides
   // over both the panel and the bar, which is the only way a drag reads as
@@ -46743,14 +46876,14 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
   else if(!G.mapOpen&&!G.bagOpen&&!legOverBoard()){   // v35.xx (cw-f1left): not while the full controls list stands over it
     // v8.91: grows from the top left corner it already sits in.
     ctx.save(); hudZoomIn('raiders',0,0);
-    drawRaiderBoard();
+    hudFadeCall('valueatrisk',drawRaiderBoard,[]);
     ctx.restore();
     if(HUDBOX.raiders) HUDBOX.raiders=hudZoomRect('raiders',0,0,HUDBOX.raiders);
   }
   if(HUDBOX.mmap){ var _mmh=HUDBOX.mmap; delete HUDBOX.mmap; HUDBOX.mmap=_mmh; }   // v28.xx (cw-mmfold): the minimap is drawn first and every panel over it, so its box is tried last: run info, the keys list or the pillager board dragged over its fold tab keep their own clicks
-  if(G.arcade){ try{ arcadeHud(); }catch(_ahd){} }   // v23.23 (arcade4): the arcade layer, the EXTRACTED! banner
+  if(G.arcade){ try{ hudFadeCall('arcadebanner',arcadeHud,[]); }catch(_ahd){} }   // v23.23 (arcade4): the arcade layer, the EXTRACTED! banner
   if(G.carAsk&&!G.arcade){ try{ easyHud(); }catch(_ehc){} }   // v28.xx (cw-easycareer): the career easy card
-  RSTAT.on=0; if(keys['AltLeft']&&!G.mapOpen&&!G.bagOpen&&!G.trade){ try{ raidStatusDraw(); }catch(_rsd){} } RSTAT.rows=null;   // v25.xx (altstatus): hold ALT, the raid status over everything else
+  RSTAT.on=0; if(keys['AltLeft']&&!G.mapOpen&&!G.bagOpen&&!G.trade){ try{ hudFadeCall('raidstatus',raidStatusDraw,[]); }catch(_rsd){} } RSTAT.rows=null;   // v25.xx (altstatus): hold ALT, the raid status over everything else
   // v8.93: the resize grips. Every panel that can be scaled gets three short
   // diagonal strokes in its bottom right corner, which is the shape every window
   // in every program has used for this since before he was born. Drawn from
@@ -46780,7 +46913,7 @@ var _ea=Math.atan2(G.active.y-p.y,G.active.x-p.x),_ed=Math.round(dist(p,G.active
     }
   })();
   if(G.mapOpen){ FEEDBOX.on=0; FEEDBOX.rows=[]; drawMapOverlay(); }   // v28.xx (cw-cx-sectorhold-o03): clear the previous feed layout while its draw pass waits behind the map.
-  try{ if(!G.mapOpen) trColDraw(); }catch(_tc){}   // v31.xx (cw-mapstyle): the corner column is not drawn over the map card (its header has its own X and weather line); it comes back when the map shuts. The old note:    // v30.xx (cw-trcol): the wallet and notes rows of the corner column, over everything else the way the page text was
+  try{ if(!G.mapOpen) hudFadeCall('notes',trColDraw,[]); }catch(_tc){}   // v31.xx (cw-mapstyle): the corner column is not drawn over the map card (its header has its own X and weather line); it comes back when the map shuts. The old note:    // v30.xx (cw-trcol): the wallet and notes rows of the corner column, over everything else the way the page text was
   try{ if(G.forgeUI) drawForgeUI(); }catch(_dfu){}   // v28.xx (cw-cx-forgefinish): the station scrim covers every raid HUD panel.
 }
 // EVERYTHING KNOWN ABOUT AN ITEM, as [label,value] rows. Shared by the stash
@@ -47676,6 +47809,7 @@ function hudChev(xr,yb,open){
 }
 // v28.xx (cw-hudstar), the critic (2026-10-19) on the raid HUD: 'the lime tick on every panel spends the accent'. The style guide gives the 2px tab to the panel that is the star (the gun card, the ammo). Every other raid panel passes plain=1 and draws no tab.
 function hudPanel(x,y,w,h,a,plain){
+  hudFadeRect(x,y,w,h);
   var c, g;
   if(!(w>0&&h>0)) return;
   c=Math.max(0,Math.min(LH(HUDPS.rad),w/3,h/3)); a=(a===undefined)?0.88:a;   // v34.69 (cw-hudpanel1): the shared 4px radius, not a cut corner
@@ -48019,6 +48153,7 @@ function legChipSpot(){
   return {x:x,y:y,w:w,h:h,f:f,px:px,t:t,ov:ov,base:b,belt:c.y-LH(4)};
 }
 function legChipDraw(s){
+  hudFadeRect(s.x,s.y,s.w,s.h);
   var T, kT, m, a, kw, x0;
   ctx.save();
   try{
@@ -56192,7 +56327,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.40: kills pay base sp without score chains, multiplier badges or kill-count medals; beast mode rewards quick kills. Check 36.40 fails on v36.39',
+  now:'v36.41: hud panels go see-through over your pillager Check 36.41 fails on v36.40',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -63121,6 +63256,9 @@ function netTeamHud(by){
     y=Math.round(H*0.30)+n*44; n++;   // v16.27, his note: the rows sat on the belt help line; they now run down the left edge, clear of it
     _ty=_tt+(n-1)*Math.round(44*_thr)+Math.round(15*_thr); ctx.save(); ctx.translate(0,_ty-_thr*y); ctx.scale(_thr,_thr);   // v19.07: this row drawn at its screen place and size
     NETTEAMBOX={n:n,x:Math.round(12*_thr),y:_tt,w:Math.round(158*_thr),h:Math.round(n*44*_thr)};
+    var _hfMate=hudFadeBegin('partner-'+g.seat);
+    try{
+    hudFadeRect(x-4,y-15,w+8,36);
     ctx.fillStyle='rgba(6,9,13,.62)'; ctx.fillRect(x-4,y-15,w+8,36);
     ctx.font=FS(TYPE.label); ctx.textAlign='left';
     ctx.fillStyle=g.dn?HUDC.danger:HUDC.ally; ctx.fillText(netSeatName(g.seat)||'PILLAGER',x,y);   // v22.70 (R27): one teammate colour
@@ -63129,6 +63267,7 @@ function netTeamHud(by){
     ctx.fillStyle='rgba(255,255,255,.12)'; ctx.fillRect(x,y+5,w,7);
     ctx.fillStyle=g.dn?'#8a2a22':(f<0.35?'#e2564a':'#6fe0a0'); ctx.fillRect(x,y+5,w*f,7);
     if(g.ac>0){ ctx.fillStyle='rgba(255,255,255,.10)'; ctx.fillRect(x,y+14,w,4); ctx.fillStyle='#6fb8ff'; ctx.fillRect(x,y+14,w*clamp((g.ar||0)/g.ac,0,1),4); }
+    } finally { hudFadeEnd(_hfMate); }
     ctx.restore();   // v19.07: the row's own scale ends before the edge arrow, which works in screen space
     try{ netMateArrow(g); }catch(_ma){}   // v16.41: an arrow at the screen edge to a teammate off screen
   }
@@ -66519,6 +66658,8 @@ function airDraw(c,p){
     c0=(G.hotCells&&G.hotCells[0])?G.hotCells[0].y:H-U(130);
     bw=U(200); bh=U(28); R0=airPlateAt(bw,bh,z); x=R0.x; y=R0.y;   // v27.36 (strikeplace): over on the right, at the end of the gun bar (was just right of the middle, in the way of the power-up chips and the item in hand)
     G.airBox={x:x,y:y,w:bw,h:bh};
+    var _hfAir=hudFadeBegin('air'); c=ctx;
+    try{
     rdy=A.m>=AIR.need; fl=clamp(A.m/AIR.need,0,1);
     hudPlate(x,y,bw,bh,rdy?UIC.acc:null,HUDC.plate);
     c.textAlign='left'; c.font=hudFS(TYPE.micro); c.fillStyle=rdy?UIC.acc:UIC.tx_2; hudText('AIR STRIKE',x+U(12),y+Math.round(bh*0.64));
@@ -66527,6 +66668,7 @@ function airDraw(c,p){
     c.fillStyle=rdy?('rgba(255,192,74,'+(0.75+0.25*Math.sin(t*8)).toFixed(3)+')'):'#ff8a3c'; c.fillRect(bx,by,bwid*fl,U(6));
     if(rdy) hudKey(airCapLabel(),x+bw-U((padOn()||airCapLabel().length>1)?74:46),y+Math.round(bh*0.7),U(8),U((padOn()||airCapLabel().length>1)?62:32));   // v27.43 (rvw1, cloud review 21): the key as it is bound
     else { c.textAlign='right'; c.fillStyle=UIC.tx_1; hudText(Math.floor(fl*100)+'%',x+bw-U(10),y+Math.round(bh*0.64)); }
+    } finally { hudFadeEnd(_hfAir,G.airBox); c=ctx; }
   }
   c.restore();
 }
@@ -69051,6 +69193,8 @@ function pwrDraw(c,p){
     n++;
   }
   if(ids.length){
+    var _hfChips=hudFadeBegin('powerchips'); c=ctx;
+    try{
     c.font=hudFS(TYPE.micro); c.textAlign='left'; tot=-8*z;
     for(i=0;i<ids.length;i++){ ids[i].tw=c.measureText(ids[i].n).width+60*z; tot+=ids[i].tw+8*z; }
     miny=H*0.84;
@@ -69066,6 +69210,7 @@ function pwrDraw(c,p){
       c.textAlign='right'; c.fillStyle='rgba('+D.rgb+',1)'; hudText(Math.ceil(S.act[D.k])+'S',x0+Math.round(ew-8*z),y0+Math.round(15*z)); c.textAlign='left';
       x0+=Math.round(ew+8*z);
     }
+    } finally { hudFadeEnd(_hfChips,EDGEBOX.chips); c=ctx; }
   }
   c.restore();
 }
@@ -69295,9 +69440,11 @@ function arcadeScoreHud(y,z){
   if(clock){
     ctx.font=fc;cw=Math.ceil(Math.max(70*z,ctx.measureText('10:00').width/2+cpad*1.6));
     clockY=top+cpad+Math.round(ch*0.92);cBot=Math.ceil(clockY+ch*0.22+cpad);
+    hudFadeCall('clock',function(){
     hudPlate(cx-cw,top,cw*2,cBot-top,null,HUDC.plate);
     CLOCKBOX.g=G;CLOCKBOX.x=cx-cw;CLOCKBOX.y=top;CLOCKBOX.w=cw*2;CLOCKBOX.h=cBot-top;
     apo=(fin&&ct>0)?clockPopIn(cx,clockY-ch*.3,G.timeLeft):false;ctx.font=fc;ctx.fillStyle=fin?'#ff5a4a':'#cdd6dd';hudText(Math.floor(ct/60)+':'+(ct%60<10?'0':'')+(ct%60),cx,clockY);if(apo)ctx.restore();
+    });
     top=cBot+Math.round((rushUI?16:6)*z);   // v28.xx (cw-cx-rushlayout): a full 16px gap between the separate clock and score windows.
   }
   labelY=top+pad+lh;scoreY=labelY+Math.round(8*z)+h;
@@ -69306,12 +69453,14 @@ function arcadeScoreHud(y,z){
   pw=Math.ceil(Math.max(100*z,w/2+pad+side));
   ctx.font=fs; pw=Math.max(pw,Math.ceil(dmulTagW(ctx.measureText(solo?'SCORE':'TEAM SCORE').width,z)+pad));   // v35.xx (cw-dmulshow): room for the multiplier tag
   bot=Math.ceil(scoreY+Math.max(h*.25,rushUI?lh:0)+pad);   // v28.xx (cw-cx-rushlayout): the partner figure keeps its descent and bottom inset with the quieter score font.
+  hudFadeCall('score',function(){
   hudPlate(cx-pw,top,pw*2,bot-top,null,rushUI?'rgba(17,19,21,.96)':HUDC.plate);   // v28.xx (cw-cx-rushlayout): score labels stay legible over a wall or rain.
   SCOREBOX.g=G;SCOREBOX.x=cx-pw;SCOREBOX.y=top;SCOREBOX.w=pw*2;SCOREBOX.h=bot-top;
   ctx.font=fs;ctx.fillStyle=UIC.tx_2;hudText(solo?'SCORE':'TEAM SCORE',cx,labelY);
   dmulTag(cx,labelY,ctx.measureText(solo?'SCORE':'TEAM SCORE').width,z);   // v35.xx (cw-dmulshow): the settings multiplier beside the label
   ctx.font=fb;ctx.fillStyle=UIC.tx_1;hudText(nm,cx,scoreY);
   if(!solo){gx=Math.round(cx+w/2+24*z);ctx.font=fs;ctx.textAlign='left';ctx.fillStyle=UIC.tx_2;hudText('YOU '+arcadeCr(mine),gx,Math.round(scoreY-lh*.5));hudText((ARCADE.role==='p2'?'P1 ':'P2 ')+arcadeCr(mate),gx,Math.round(scoreY+lh*.75));}
+  });
   ctx.restore();return bot;
 }
 // v23.35, HIS ORDER (2026-10-11), build 13 of 20 (arcade13): THE ARCADE HUD. A walk-up player needs the score, the way out and when he
@@ -69346,6 +69495,7 @@ function arcadeHud(){
   a=Math.max(0,Math.min(1,k/0.15,(ARCADE_BANNER_T-k)/0.4));
   bw=LH(440); bh=LH(156); y=Math.round(H*0.30);
   ctx.save(); ctx.globalAlpha=a; ctx.textAlign='center'; ctx.textBaseline='alphabetic';
+  hudFadeRect(cx-bw/2,y-LH(56),bw,bh);
   ctx.fillStyle='rgba(6,9,13,.84)'; ctx.fillRect(cx-bw/2,y-LH(56),bw,bh);
   ctx.strokeStyle='rgba(127,196,160,.80)'; ctx.lineWidth=2; ctx.strokeRect(cx-bw/2+1,y-LH(56)+1,bw-2,bh-2);
   ctx.font=FSz(TYPE.huge,1.6); ctx.fillStyle='#7fc4a0'; ctx.fillText('EXTRACTED!',cx,y);

@@ -28,3 +28,28 @@ Handed over the changed fixture-retarget.json. Existing cw-cx-nokillstreak key a
 35.99 now requires crown, closest call, most damage, biggest haul and longest shot exactly once in their existing order. It accepts the legacy best-streak row while testing the old build and its absence on the candidate. The stat-grid alignment, label sizes, equal death counts, scrim, divider and crown color checks remain intact. The retarget is compatible before and after the ship.
 
 Validation: the revised assertion passes DOM-shaped versions of both six-row and five-row layouts, and rejects missing, unknown and duplicate moments. The complete replacement check parses, its original-file anchor matches once, and the unchanged mk script still prints written against refreshed v36.39. No further game-code change was needed. Remaining lane work: apply/run the new retarget, retry preflight/ship, confirm ON HIS PC and review the linked-window pictures.
+
+--- codex run 2026-10-29 05:26 ---
+2026-10-29 - cw-cx-nokillstreak shipped as v36.40 and is ON HIS PC v36.40: his 8802 served 36.40 at 33 seconds after the ship. Both fixture-retarget commits are in: ccf38fdec and 718237cd4. The shipped gate passed the kill-chain regression.
+
+Reviewed all four round-1 pictures. Demo p1 and p2 staged successfully: each local audit records seven base awards of 50 SP, no removed alerts or sounds, no old chain state/ring/badge, and live beast mode. The easy-mode opening question remained over the playfield in both pictures. Career p1/p2 did not stage, so their disconnected/non-career pictures and critic scores are invalid evidence for this task. They must not prompt a HUD redesign.
+
+Changed camera setup only for round 2. Found the fixture explicitly sets CAREER_ON=0 unless its URL has career=1. Both real windows now set CAREER_ON=1 before building their raid, so careerKill and G.cs exist. The camera answers the real normal/easy question with easyAnswer(false), after the map-first overlay is closed. It holds the already earned beast timer and waits 6.5 seconds for ordinary transient kill labels and medal animations to expire naturally before photographing. It does not hide or alter live game HUD features. Added unobscured-play assertions and peer-state diagnostics for any remaining staging failure.
+
+All four complete updated camera wrappers parse with the helper prelude and popups flag. Handed over changed camera-recipes.json. No new game script, fixture retarget or ship is needed. Remaining lane work: photograph round 2, obtain valid career evidence in both real windows and critic reviews of the unobscured scenes. No critic finish line is claimed from round 1.
+
+--- codex run 2026-10-29 05:33 ---
+2026-10-29 - Complete. cw-cx-nokillstreak shipped in commit d7aed4a66 as v36.40 and was confirmed ON HIS PC v36.40 (his 8802 served it 33 seconds after shipping). Both fixture batches shipped in ccf38fdec and 718237cd4. No further game edits are needed.
+
+Round 2 used the second and final camera allowance. Valid demo p1 and p2 pictures staged at both 1080p and 4K, and career p2 staged at both resolutions. Each successful scene audited BOTH real linked peers: each peer received seven awards of exactly 50 SP (five kills one second apart and two grenade casualties), had beast mode at seven stacks, no score-chain state or ring, no old badge, no removed alert, no removed medal and no count sound. The shipped regression also exercises both arcade and career ownership paths. This supplies both-window pictures in demo and real linked host/guest career audits.
+
+Best valid pictures, one from each window:
+- tools/handoff/console/notes/shots/o-00p-234-no-kill-streak-callouts-recipes-2/no-kill-chain-demo-p1-1080.jpg
+- tools/handoff/console/notes/shots/o-00p-234-no-kill-streak-callouts-recipes-2/no-kill-chain-demo-p2-1080.jpg
+The corresponding 4K files pass staging too. Extra valid career evidence: no-kill-chain-coop-p2-1080.jpg and no-kill-chain-coop-p2-4k.jpg in the same folder. Full host/guest audit data are in report.json.
+
+Career p1 photography remains NOT STAGED: the guest failed to link or enter while a welcome pack remained visible. Its picture and critic review do not assess this task. No game defect was established by that setup failure, and it does not invalidate the successful linked career p2 audit of both peers. No more photography is authorized by the two-round cap.
+
+The critic gave the valid round-2 scenes 3/5. The existing review recorder keys these pictures as p1-1080 and p2-1080 and records score:3, need:3, pass:true. This is focused-scene acceptance, not a claim that the entire raid HUD reaches its broader 4/5 goal. The valid-scene findings concern existing hp/armour bars, loose empty-slot digits, panel margins, buff/roster alignment, team-score columns and goal-toast presentation. They are handed to the coordinator for the wider HUD work; no unrelated controls, loot rows or gameplay values were changed to chase those reviews. The removed score-chain UI is absent in every valid picture; the two requested beast-mode status rows remain.
+
+Watch: no more double or triple kill callouts; beast mode is the streak. Arcade scores will run lower because earlier leaderboard nights included streak multipliers and count-medal points. DESIGN.md has this note from the shipped draft.

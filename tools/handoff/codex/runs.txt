@@ -540,3 +540,6 @@
 2026-10-29 05:07 o-00p-234-no-kill-streak-callouts 741s ok PARTIAL in=2392975 out=23053 run=1
 2026-10-29 05:09 o-00p-234-no-kill-streak-callouts 96s ok PARTIAL in=3309284 out=26027 run=2
 2026-10-29 05:12 o-00p-234-no-kill-streak-callouts 86s ok PARTIAL in=4052998 out=28622 run=3
+2026-10-29 05:26 o-00p-234-no-kill-streak-callouts 227s ok PARTIAL in=5576533 out=33387 run=4
+2026-10-29 05:33 o-00p-234-no-kill-streak-callouts 118s ok DONE in=6470455 out=36607 run=5
+2026-10-29 05:55 o-00q-235-hud-fades-over-your-pillager 1317s ok PARTIAL in=5418619 out=35767 run=1

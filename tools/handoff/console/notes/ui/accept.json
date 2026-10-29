@@ -1827,33 +1827,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The HUD is functional, but it still reads as stock dropdown boxes plus a thin bar. The controls list is now folded, which is correct. Capitals remain in 'run Info', and the left cards and hp bar have not been reworked.",
+  "verdict": "This is a raid HUD, not the loot card I reviewed last time, so I can't judge progress on that card. The HUD is readable and mostly consistent, but the centre stack is crowded and the 'goal done' toast is washed out.",
   "findings": [
-   "P1 'run Info' dropdown x1603-1900 y18-54: Render it as 'run info'. Shrink it to about 160px wide at x1736-1896. Use --ui-panel fill, a 1px --ui-line-hi border and a 4px radius. Use 16px f-cond 600 text and a 12px chevron.",
-   "P1 hp bar x24-430 y1035-1068: Make the bar 260x12px with a --ui-line track at x24 y1048. Put 'hp' at 16px tx-2 and '100' at 24px f-cond 700 tx-1 on a line above it. Keep 56px for the ammo only.",
-   "P1 'current pillagers 3' x8-367 y143-242 and 'pillager' tag x15-170 y325-358: Put both on the same --ui-panel fill with a 4px radius at x24. Use a 16px tx-2 header on the party card and a 24px row pitch. Make the ally name 16px tx-1 with a 6px hp bar on --ui-line.",
-   "P2 hotbar x660-850 y968-1058: Draw the selected outline at 2px --acc. Make idle borders --ui-line-hi. Put the slot numbers inside each slot's top-left at 16px tx-2. Draw empty slots 4-0 as 90px --ui-panel squares at 60% opacity.",
-   "P2 'f1 controls' chip x440-540 y941-964: Move it to x24 y1000, above the hp bar. Use --ui-panel fill, 16px tx-2 text and an 'f1' key chip in tx-1 on --ui-raised."
+   "P1 Top-centre stack x778-1142 y18-258: timer, weather icon, team score panel and extract chip: Use one 360px column centred at x960 with 8px gaps between blocks. Timer 56px hero, then the team score row, then the extract chip. Set the 'you' and 'p2' lines at 16px tx-2 in a fixed right column, aligned to the 1,500 sp baseline. Leave 8px between the chip and the panel.",
+   "P1 'goal done' toast x846-1075 y306-395: Give it the --ui-panel fill at 92% opacity and a 3px --ok left bar. Set the title to 32px f-cond 700 in tx-1 with a --ok icon. Set 'power-up' to 16px tx-2 at 4.5:1 or better. Move it to y150, under the top stack, and fade it out at 1.6s.",
+   "P1 HUD panel fills across the screen: goals chip, buff cards, ammo card, score panel: Use one HUD panel recipe: --ui-panel at 88%, 1px --ui-line-hi border, 4px radius, 8px or 16px padding. Reserve the lime outline for the selected weapon slot only.",
+   "P2 Bottom-left hp and armour bars x22-430 y965-1068, and hotbar numbers 1-0 on the wall strip: Make both bars 20px tall with a 4px radius and 8px between them. Put the label and value inside at 16px 600. Keep the hp label at 20px. Draw the digits at 14px tx-2 inside a 64px dim slot tile with a --ui-panel fill at 60%, or hide the empty slots.",
+   "P2 Buff cards x8-275 y430-547: Move them to x48 and keep a 24px gap. Set names to 20px 600 and sublines to 16px tx-2. Add a thin 3px timer bar along the card bottom in --acc for timed buffs."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00n-232-one-rarity-per-gun-recipes-2/rarity-coop-p1-1080.jpg",
-  "task": "o-00n-232-one-rarity-per-gun",
-  "when": "2026-10-29T08:39"
+  "pic": "tools/handoff/console/notes/shots/o-00p-234-no-kill-streak-callouts-recipes-2/no-kill-chain-demo-p1-1080.jpg",
+  "task": "o-00p-234-no-kill-streak-callouts",
+  "when": "2026-10-29T09:31"
  },
  "p2-1080": {
-  "score": 2,
-  "pass": false,
+  "score": 3,
+  "pass": true,
   "need": 3,
-  "verdict": "The shot is now a raid HUD instead of the title, and it is a set of mismatched widgets: two native-looking dropdowns, a green chip, a green hp slab and a black tooltip, with a capital letter on screen.",
+  "verdict": "The HUD is much cleaner than before: empty hotbar slots are gone, the ammo block is a strong hero number, and the top-centre cluster holds together. It still reads as a set of floating boxes with no shared margin, size or panel style.",
   "findings": [
-   "P0 top-right dropdown (1603-1901 x 19-54): Change the label to 'run info'. Replace both selects with one 48px-high pill style: --ui-panel fill, 1px --ui-line-hi border, 4px radius, 16px --f-cond 600 text. Put both on a 48px margin and the same top baseline.",
-   "P1 'current pillagers 3' dropdown (8-367 x 142-170): Dock it to the top-left at x=48, y=48, about 240px wide. Align it with the right dropdown, or collapse it to a '3' chip.",
-   "P1 hp bar (24-430 x 1035-1068): Set it in a --ui-panel container 320x32 at x=48, y=1080-48-32, with a 1px --ui-line-hi border and a --ok fill. Put 'hp' at 16px --tx-2 and '100' at 20px --tx-1, with no 36px text.",
-   "P1 'keyboard' chip (5-105 x 6-32) and the 'pillager' bar (16-170 x 325-358): Make the chip a neutral --ui-line-hi chip in --tx-2 at 16px, with a 48px margin. Drop the 'pillager' bar or fold it into the hp block. Show the name once.",
-   "P1 hotbar slots (660-850 x 968-1058): Use a 2px --acc border on the selected slot. Give every slot a --ui-panel fill at 85% opacity and a 1px --ui-line-hi border. Draw the digit labels at 16px --tx-2 inside the slot corners, not on the wall."
+   "P1 bottom-left hp and armour bars (22-432 x 965-1068): Put both in one --ui-panel (4px radius, 1px --ui-line-hi) at x=48, bottom=48. Make the bars 320x20 with a 16px --tx-2 label and a 20px --tx-1 right-aligned number. Fill hp with --ok and armour with a darker blue. Remove the 30px weight.",
+   "P1 hotbar (960-1148 x 966-1054) and the digit strip (570-1472 x 970-990): Hide the unused digits, or draw all ten as 64px tiles at 70% --ui-panel with a 1px --ui-line-hi border. Centre the row at x=960. Give the selected slot a 2px --acc border. Put 16px --tx-2 digits top-left inside each tile. Move the 'f' badge into a 16px chip above the tile.",
+   "P1 top-centre stack: clock, team score, extract chip, goal-done toast (770-1150 x 18-395): Use one 320px column at x=800, with a 16px gap between blocks and the same --ui-panel fill throughout. Make the clock the only 56px number. Shrink the team score to 32px, with the 'you' and 'p1' rows at 16px --tx-2. Place the toast 16px below the extract chip, with no overlap, and move the arrow inside the chip.",
+   "P1 left column (8-275 x 322-565): Set a 48px left margin and one 280px panel style for all of them. Use a 20px --tx-1 title and a 16px --tx-2 sub-line, in a 64px row with a 40px icon. Give the combo chip the same panel. Space the blocks 8px apart.",
+   "P2 top-right goals bar (1603-1901 x 20-64): Right-align at x=1872, y=48, in the shared panel, with a 16px --tx-2 'goals' label, a 20px --tx-1 '1/3' and a 16px chevron."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00n-232-one-rarity-per-gun-recipes-2/rarity-coop-p2-1080.jpg",
-  "task": "o-00n-232-one-rarity-per-gun",
-  "when": "2026-10-29T08:39"
+  "pic": "tools/handoff/console/notes/shots/o-00p-234-no-kill-streak-callouts-recipes-2/no-kill-chain-demo-p2-1080.jpg",
+  "task": "o-00p-234-no-kill-streak-callouts",
+  "when": "2026-10-29T09:31"
  },
  "pix86c-fashion": {
   "score": 3,

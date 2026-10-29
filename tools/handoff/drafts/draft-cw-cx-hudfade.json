@@ -1,0 +1,192 @@
+{
+    "title":  "HUD CLEARS YOUR PILLAGER",
+    "why":  "His 10-28 order: a HUD panel that obscures your pillager becomes 65 percent see-through until you step clear.",
+    "now":  "hud panels go see-through over your pillager",
+    "edits":  [
+                  {
+                      "anchor":  "function drawHUD(){",
+                      "replacement":  "// v28.xx (cw-cx-hudfade), HIS NOTE (2026-10-28): \"if the player is partially obscured (or nearly obscured) by a hud element, it should go highly translucent (65%?) until the player is no longer obscured\".\nvar HUDFADE={g:null,panels:{},active:null,now:0,live:false,bodies:[],layer:null,dom:[],scan:0};\nvar HUDFADE_PROPS=[\u0027fillStyle\u0027,\u0027strokeStyle\u0027,\u0027font\u0027,\u0027textAlign\u0027,\u0027textBaseline\u0027,\u0027direction\u0027,\u0027lineWidth\u0027,\u0027lineCap\u0027,\u0027lineJoin\u0027,\u0027miterLimit\u0027,\u0027lineDashOffset\u0027,\u0027globalAlpha\u0027,\u0027globalCompositeOperation\u0027,\u0027shadowBlur\u0027,\u0027shadowColor\u0027,\u0027shadowOffsetX\u0027,\u0027shadowOffsetY\u0027,\u0027imageSmoothingEnabled\u0027,\u0027imageSmoothingQuality\u0027,\u0027filter\u0027,\u0027fontKerning\u0027,\u0027fontStretch\u0027,\u0027fontVariantCaps\u0027,\u0027letterSpacing\u0027,\u0027wordSpacing\u0027,\u0027textRendering\u0027];\nfunction hudFadeNow(){ return performance.now()/1000; }\nfunction hudFadeBody(p,build){\n  var z=ZOOM(), s=w2s(p.x,0,p.y), k=figKS(build), rx=24*k[0]*z, ht=52*k[1]*z;\n  return {x:s.x-rx,y:s.y-ht,w:rx*2,h:ht+10*z};\n}\nfunction hudFadeStep(s,b,people,scale,now){\n  var margin=(s.near?32:24)*scale, hit=false, i, p, dt=Math.max(0,Math.min(0.25,now-s.at)), target;\n  if(b\u0026\u0026b.w\u003e0\u0026\u0026b.h\u003e0) for(i=0;i\u003cpeople.length;i++){\n    p=people[i];\n    if(p.x\u003cb.x+b.w+margin\u0026\u0026p.x+p.w\u003eb.x-margin\u0026\u0026p.y\u003cb.y+b.h+margin\u0026\u0026p.y+p.h\u003eb.y-margin){ hit=true; break; }\n  }\n  s.near=hit; s.at=now; target=hit?0.35:1;\n  s.a=target\u003cs.a?Math.max(target,s.a-0.65*dt/0.15):Math.min(target,s.a+0.65*dt/0.15);\n  if(Math.abs(s.a-target)\u003c0.00001) s.a=target;\n  return s.a;\n}\nfunction hudFadeFrame(){\n  var F=HUDFADE, i, p, list;\n  F.now=hudFadeNow();\n  F.live=!!(G\u0026\u0026G.player\u0026\u0026!G.over\u0026\u0026!G.sim\u0026\u0026!G.hubFloor\u0026\u0026!G.bagOpen\u0026\u0026!G.mapOpen\u0026\u0026!G.forgeUI\u0026\u0026state===\u0027raid\u0027);\n  if(F.g!==G){ hudFadeDomReset(); F.g=G; F.panels={}; F.scan=0; }\n  F.bodies=[];\n  if(!F.live){ hudFadeDomReset(); return; }\n  F.bodies.push(hudFadeBody(G.player,cosWorn(\u0027build\u0027)));\n  // v28.xx (cw-cx-hudfade): separate windows use their own pillager. A shared viewport\u0027s local players use the same camera transform.\n  list=G.players;\n  if(Array.isArray(list)) for(i=0;i\u003clist.length;i++){ p=list[i]; if(p\u0026\u0026p!==G.player\u0026\u0026p.hp\u003e0\u0026\u0026!p.gone) F.bodies.push(hudFadeBody(p,p.build)); }\n  hudFadeDom();\n}\nfunction hudFadeCopy(from,to){\n  var i,k,t=from.getTransform();\n  for(i=0;i\u003cHUDFADE_PROPS.length;i++){ k=HUDFADE_PROPS[i]; if(k in from) to[k]=from[k]; }\n  to.setLineDash(from.getLineDash()); to.setTransform(t.a,t.b,t.c,t.d,t.e,t.f);\n}\nfunction hudFadeBegin(key){\n  var F=HUDFADE,s,t,c;\n  if(!F.live||F.active) return null;\n  s=F.panels[key]; if(!s) s=F.panels[key]={a:1,near:false,at:F.now,box:null};\n  hudFadeStep(s,s.box,F.bodies,hudRes(),F.now);\n  t={key:key,s:s,base:ctx,box:null,capture:s.a\u003c0.99999}; F.active=t;\n  if(t.capture){\n    if(!F.layer) F.layer=document.createElement(\u0027canvas\u0027);\n    c=F.layer;\n    if(c.width!==ctx.canvas.width||c.height!==ctx.canvas.height){ c.width=ctx.canvas.width; c.height=ctx.canvas.height; }\n    t.ink=c.getContext(\u00272d\u0027);\n    t.ink.setTransform(1,0,0,1,0,0); t.ink.clearRect(0,0,c.width,c.height);\n    hudFadeCopy(ctx,t.ink); ctx=t.ink;\n  }\n  return t;\n}\nfunction hudFadeBounds(b){\n  var t=HUDFADE.active, a, x,y;\n  if(!t||!b||!(b.w\u003e0\u0026\u0026b.h\u003e0)) return;\n  a=t.box;\n  if(!a){ t.box={x:b.x,y:b.y,w:b.w,h:b.h}; return; }\n  x=Math.min(a.x,b.x); y=Math.min(a.y,b.y);\n  a.w=Math.max(a.x+a.w,b.x+b.w)-x; a.h=Math.max(a.y+a.h,b.y+b.h)-y; a.x=x; a.y=y;\n}\nfunction hudFadeRect(x,y,w,h){\n  var t,m,d=DPRH||1;\n  if(!HUDFADE.active) return;\n  t=ctx.getTransform();\n  m={x:(t.a*x+t.c*y+t.e)/d,y:(t.b*x+t.d*y+t.f)/d,w:Math.abs(t.a*w/d)+Math.abs(t.c*h/d),h:Math.abs(t.b*w/d)+Math.abs(t.d*h/d)};\n  hudFadeBounds(m);\n}\nfunction hudFadeEnd(t,b){\n  var ink;\n  if(!t) return;\n  if(b) hudFadeBounds(b);\n  t.s.box=t.box; t.s.drawnA=t.s.a; t.s.seen=HUDFADE.now;\n  if(t.capture){\n    ink=ctx; ctx=t.base;\n    hudFadeCopy(ink,ctx);\n    ctx.save();\n    try{\n      ctx.setTransform(1,0,0,1,0,0); ctx.globalAlpha=t.s.a; ctx.globalCompositeOperation=\u0027source-over\u0027;\n      ctx.shadowBlur=0; ctx.shadowOffsetX=0; ctx.shadowOffsetY=0; ctx.shadowColor=\u0027rgba(0,0,0,0)\u0027; ctx.filter=\u0027none\u0027;\n      ctx.drawImage(ink.canvas,0,0);\n    } finally { ctx.restore(); }\n  }\n  HUDFADE.active=null;\n}\nfunction hudFadeCall(key,fn,args,bounds){\n  var t=hudFadeBegin(key), a=args?args.slice():[], i;\n  if(t\u0026\u0026t.capture) for(i=0;i\u003ca.length;i++) if(a[i]===t.base) a[i]=ctx;\n  try{ return fn.apply(null,a); } finally { hudFadeEnd(t,bounds?bounds():null); }\n}\nfunction hudFadeDomReset(){\n  var F=HUDFADE,i,e;\n  for(i=0;i\u003cF.dom.length;i++){ e=F.dom[i]; if(e.changed){ e.el.style.opacity=e.inline; e.changed=false; } }\n}\nfunction hudFadeDom(){\n  var F=HUDFADE,els,i,j,e,c,b,s,a,old,entry,root=document.getElementById(\u0027root\u0027);\n  if(!root) return;\n  if(F.now\u003e=F.scan){\n    old=F.dom; F.dom=[]; F.scan=F.now+0.05;\n    els=root.querySelectorAll(\u0027:scope \u003e *,[data-hud-panel]\u0027);\n    for(i=0;i\u003cels.length;i++){\n      e=els[i]; if(/^(CANVAS|SCRIPT|STYLE)$/.test(e.tagName)||e.matches(\u0027.screen,.modal,.pausebox,.outcome\u0027)||e.closest(\u0027.screen,.modal,.pausebox,.outcome\u0027)) continue;\n      c=getComputedStyle(e); b=e.getBoundingClientRect();\n      if((c.position===\u0027fixed\u0027||c.position===\u0027absolute\u0027||e.hasAttribute(\u0027data-hud-panel\u0027))\u0026\u0026b.width\u003e0\u0026\u0026b.height\u003e0\u0026\u0026b.width\u003cW*0.75\u0026\u0026b.height\u003cH*0.75){\n        entry=null;\n        for(j=0;j\u003cold.length;j++) if(old[j].el===e){entry=old[j];break;}\n        F.dom.push(entry||{el:e,inline:e.style.opacity,base:parseFloat(c.opacity),changed:false,s:{a:1,near:false,at:F.now}});\n      }\n    }\n    for(j=0;j\u003cold.length;j++) if(F.dom.indexOf(old[j])\u003c0\u0026\u0026old[j].changed) old[j].el.style.opacity=old[j].inline;\n  }\n  for(i=0;i\u003cF.dom.length;i++){\n    e=F.dom[i]; b=e.el.getBoundingClientRect(); c=getComputedStyle(e.el);\n    s=(b.width\u003e0\u0026\u0026b.height\u003e0\u0026\u0026c.visibility!==\u0027hidden\u0027\u0026\u0026c.display!==\u0027none\u0027)?{x:b.left,y:b.top,w:b.width,h:b.height}:null;\n    a=hudFadeStep(e.s,s,F.bodies,hudRes(),F.now);\n    if(a\u003c1){ e.el.style.opacity=String(e.base*a); e.changed=true; }\n    else if(e.changed){ e.el.style.opacity=e.inline; e.changed=false; }\n  }\n}\nfunction drawHUD(){\n  hudFadeFrame();"
+                  },
+                  {
+                      "anchor":  "function hudPlate(x,y,w,h,accent,fill){",
+                      "replacement":  "function hudPlate(x,y,w,h,accent,fill){\n  hudFadeRect(x,y,w,h);"
+                  },
+                  {
+                      "anchor":  "function hudPanel(x,y,w,h,a,plain){",
+                      "replacement":  "function hudPanel(x,y,w,h,a,plain){\n  hudFadeRect(x,y,w,h);"
+                  },
+                  {
+                      "anchor":  "function trPlate(x,y,w,h){",
+                      "replacement":  "function trPlate(x,y,w,h){\n  hudFadeRect(x,y,w,h);"
+                  },
+                  {
+                      "anchor":  "function statusPill(x0,cy,x1,h){",
+                      "replacement":  "function statusPill(x0,cy,x1,h){\n  hudFadeRect(x0,cy-h/2,Math.max(h,x1-x0),h);"
+                  },
+                  {
+                      "anchor":  "function legChipDraw(s){",
+                      "replacement":  "function legChipDraw(s){\n  hudFadeRect(s.x,s.y,s.w,s.h);"
+                  },
+                  {
+                      "anchor":  "  try{ drawBossBar(); }catch(_bb){}   // v17.45: his pick 21",
+                      "replacement":  "  try{ hudFadeCall(\u0027boss\u0027,drawBossBar,[]); }catch(_bb){}   // v17.45: his pick 21"
+                  },
+                  {
+                      "anchor":  "  try{ drawGiftLine(); }catch(_gl){}   // v17.52: an open trade offer stays on screen",
+                      "replacement":  "  try{ hudFadeCall(\u0027gift\u0027,drawGiftLine,[]); }catch(_gl){}   // v17.52: an open trade offer stays on screen"
+                  },
+                  {
+                      "anchor":  "  try{ drawLore(); }catch(_lr){}   // v22.xx (R39): the map story card",
+                      "replacement":  "  try{ hudFadeCall(\u0027lore\u0027,drawLore,[]); }catch(_lr){}   // v22.xx (R39): the map story card"
+                  },
+                  {
+                      "anchor":  "  try{ drawUseBar(); }catch(_ub){}   // v18.75, his note: the bandage, medkit and plate wind-ups on the HUD",
+                      "replacement":  "  try{ hudFadeCall(\u0027use\u0027,drawUseBar,[]); }catch(_ub){}   // v18.75, his note: the bandage, medkit and plate wind-ups on the HUD"
+                  },
+                  {
+                      "anchor":  "  try{ drawMinimap(); }catch(_mm){ MMAP.box=null; }   // v24.xx (minimap1): his \"add minimap\", top right, before CONDITIONS so it can start below it",
+                      "replacement":  "  try{ hudFadeCall(\u0027minimap\u0027,drawMinimap,[],function(){return MMAP.box;}); }catch(_mm){ MMAP.box=null; }   // v24.xx (minimap1): his \"add minimap\", top right, before CONDITIONS so it can start below it"
+                  },
+                  {
+                      "anchor":  "  try{ feedDraw(); }catch(_fdw){}   // v27.24 (feed1): the feed, bottom left (over the map too)",
+                      "replacement":  "  try{ hudFadeCall(\u0027feed\u0027,feedDraw,[]); }catch(_fdw){}   // v27.24 (feed1): the feed, bottom left (over the map too)"
+                  },
+                  {
+                      "anchor":  "  try{ drawHand(); }catch(_dhd){}   // v26.xx (wheel3): and the item in hand",
+                      "replacement":  "  try{ hudFadeCall(\u0027hand\u0027,drawHand,[]); }catch(_dhd){}   // v26.xx (wheel3): and the item in hand"
+                  },
+                  {
+                      "anchor":  "  try{ drawStatusIcons(); }catch(_sti){}   // v19.00, his note (2026-10-07): the status icons down the left, under the backpack, a trade and the map",
+                      "replacement":  "  try{ hudFadeCall(\u0027status\u0027,drawStatusIcons,[]); }catch(_sti){}   // v19.00, his note (2026-10-07): the status icons down the left, under the backpack, a trade and the map"
+                  },
+                  {
+                      "anchor":  "  EDGEBOX.feed=null; try{ if(NET.on) netFeedDraw(); }catch(_nfd){}   // v16.42: the kill feed",
+                      "replacement":  "  EDGEBOX.feed=null; try{ if(NET.on) hudFadeCall(\u0027partyfeed\u0027,netFeedDraw,[]); }catch(_nfd){}   // v16.42: the kill feed"
+                  },
+                  {
+                      "anchor":  "  try{ if(NET.same) netPadHud(); }catch(_nph){}   // v16.78: the controller paused word, in the window whose pad went quiet",
+                      "replacement":  "  try{ if(NET.same) hudFadeCall(\u0027padnotice\u0027,netPadHud,[]); }catch(_nph){}   // v16.78: the controller paused word, in the window whose pad went quiet"
+                  },
+                  {
+                      "anchor":  "  try{ if(!G.mapOpen) trColDraw(); }catch(_tc){}   // v31.xx (cw-mapstyle): the corner column is not drawn over the map card (its header has its own X and weather line); it comes back when the map shuts. The old note:    // v30.xx (cw-trcol): the wallet and notes rows of the corner column, over everything else the way the page text was",
+                      "replacement":  "  try{ if(!G.mapOpen) hudFadeCall(\u0027notes\u0027,trColDraw,[]); }catch(_tc){}   // v31.xx (cw-mapstyle): the corner column is not drawn over the map card (its header has its own X and weather line); it comes back when the map shuts. The old note:    // v30.xx (cw-trcol): the wallet and notes rows of the corner column, over everything else the way the page text was"
+                  },
+                  {
+                      "anchor":  "  RSTAT.on=0; if(keys[\u0027AltLeft\u0027]\u0026\u0026!G.mapOpen\u0026\u0026!G.bagOpen\u0026\u0026!G.trade){ try{ raidStatusDraw(); }catch(_rsd){} } RSTAT.rows=null;   // v25.xx (altstatus): hold ALT, the raid status over everything else",
+                      "replacement":  "  RSTAT.on=0; if(keys[\u0027AltLeft\u0027]\u0026\u0026!G.mapOpen\u0026\u0026!G.bagOpen\u0026\u0026!G.trade){ try{ hudFadeCall(\u0027raidstatus\u0027,raidStatusDraw,[]); }catch(_rsd){} } RSTAT.rows=null;   // v25.xx (altstatus): hold ALT, the raid status over everything else"
+                  },
+                  {
+                      "anchor":  "  if(G.arcade){ try{ arcadeHud(); }catch(_ahd){} }   // v23.23 (arcade4): the arcade layer, the EXTRACTED! banner",
+                      "replacement":  "  if(G.arcade){ try{ hudFadeCall(\u0027arcadebanner\u0027,arcadeHud,[]); }catch(_ahd){} }   // v23.23 (arcade4): the arcade layer, the EXTRACTED! banner"
+                  },
+                  {
+                      "anchor":  "  try{ styMedalDraw(ctx,p); }catch(_smd){}   // v27.38 (partyp1): the medal row at the left edge",
+                      "replacement":  "  try{ hudFadeCall(\u0027medals\u0027,styMedalDraw,[ctx,p],function(){return STYBOX.n?STYBOX:null;}); }catch(_smd){}   // v27.38 (partyp1): the medal row at the left edge"
+                  },
+                  {
+                      "anchor":  "  drawBelt();\n  try{ drawWheel(); }catch(_dwh){}   // v26.xx (wheel2): the item wheel, over the belt",
+                      "replacement":  "  hudFadeCall(\u0027belt\u0027,drawBelt,[],function(){var c=G.hotCells||[]; for(var i=0;i\u003cc.length;i++) hudFadeBounds({x:c[i].x-4,y:c[i].y-4,w:c[i].w+8,h:c[i].h+8}); return null;});\n  try{ drawWheel(); }catch(_dwh){}   // v26.xx (wheel2): the item wheel, over the belt"
+                  },
+                  {
+                      "anchor":  "  ctx.save(); hudZoomIn(\u0027cond\u0027,W,0);\n  (function(){",
+                      "replacement":  "  hudFadeCall(\u0027conditions\u0027,function(){\n  ctx.save(); hudZoomIn(\u0027cond\u0027,W,0);\n  (function(){"
+                  },
+                  {
+                      "anchor":  "  if(HUDBOX.cond) HUDBOX.cond=hudZoomRect(\u0027cond\u0027,W,0,HUDBOX.cond);",
+                      "replacement":  "  if(HUDBOX.cond) HUDBOX.cond=hudZoomRect(\u0027cond\u0027,W,0,HUDBOX.cond);\n  },[],function(){return HUDBOX.cond;});"
+                  },
+                  {
+                      "anchor":  "  var _boB=hudOff(\u0027body\u0027);\n  ctx.save(); ctx.translate(_boB.dx,_boB.dy);",
+                      "replacement":  "  var _boB=hudOff(\u0027body\u0027);\n  hudFadeCall(\u0027vitals\u0027,function(){\n  ctx.save(); ctx.translate(_boB.dx,_boB.dy);"
+                  },
+                  {
+                      "anchor":  "  ctx.restore();                          // v8.08: end of the corner scale\n  ctx.restore();",
+                      "replacement":  "  ctx.restore();                          // v8.08: end of the corner scale\n  ctx.restore();\n  },[],function(){return HUDBOX.body;});"
+                  },
+                  {
+                      "anchor":  "  var _boG=hudOff(\u0027gear\u0027);\n  ctx.save(); ctx.translate(_boG.dx,_boG.dy);",
+                      "replacement":  "  var _boG=hudOff(\u0027gear\u0027);\n  hudFadeCall(\u0027gun\u0027,function(){\n  ctx.save(); ctx.translate(_boG.dx,_boG.dy);"
+                  },
+                  {
+                      "anchor":  "ctx.restore();\n  // v8.43, audit: RIGHT ALIGNED, on the line itself.",
+                      "replacement":  "ctx.restore();\n  },[],function(){return GUNCARD.g===G?GUNCARD:HUDBOX.gear;});\n  // v8.43, audit: RIGHT ALIGNED, on the line itself."
+                  },
+                  {
+                      "anchor":  "    hudPlate(cx-cw,top,cw*2,cBot-top,null,HUDC.plate);",
+                      "replacement":  "    hudFadeCall(\u0027clock\u0027,function(){\n    hudPlate(cx-cw,top,cw*2,cBot-top,null,HUDC.plate);"
+                  },
+                  {
+                      "anchor":  "    apo=(fin\u0026\u0026ct\u003e0)?clockPopIn(cx,clockY-ch*.3,G.timeLeft):false;ctx.font=fc;ctx.fillStyle=fin?\u0027#ff5a4a\u0027:\u0027#cdd6dd\u0027;hudText(Math.floor(ct/60)+\u0027:\u0027+(ct%60\u003c10?\u00270\u0027:\u0027\u0027)+(ct%60),cx,clockY);if(apo)ctx.restore();",
+                      "replacement":  "    apo=(fin\u0026\u0026ct\u003e0)?clockPopIn(cx,clockY-ch*.3,G.timeLeft):false;ctx.font=fc;ctx.fillStyle=fin?\u0027#ff5a4a\u0027:\u0027#cdd6dd\u0027;hudText(Math.floor(ct/60)+\u0027:\u0027+(ct%60\u003c10?\u00270\u0027:\u0027\u0027)+(ct%60),cx,clockY);if(apo)ctx.restore();\n    });"
+                  },
+                  {
+                      "anchor":  "  hudPlate(cx-pw,top,pw*2,bot-top,null,rushUI?\u0027rgba(17,19,21,.96)\u0027:HUDC.plate);   // v28.xx (cw-cx-rushlayout): score labels stay legible over a wall or rain.",
+                      "replacement":  "  hudFadeCall(\u0027score\u0027,function(){\n  hudPlate(cx-pw,top,pw*2,bot-top,null,rushUI?\u0027rgba(17,19,21,.96)\u0027:HUDC.plate);   // v28.xx (cw-cx-rushlayout): score labels stay legible over a wall or rain."
+                  },
+                  {
+                      "anchor":  "  if(!solo){gx=Math.round(cx+w/2+24*z);ctx.font=fs;ctx.textAlign=\u0027left\u0027;ctx.fillStyle=UIC.tx_2;hudText(\u0027YOU \u0027+arcadeCr(mine),gx,Math.round(scoreY-lh*.5));hudText((ARCADE.role===\u0027p2\u0027?\u0027P1 \u0027:\u0027P2 \u0027)+arcadeCr(mate),gx,Math.round(scoreY+lh*.75));}",
+                      "replacement":  "  if(!solo){gx=Math.round(cx+w/2+24*z);ctx.font=fs;ctx.textAlign=\u0027left\u0027;ctx.fillStyle=UIC.tx_2;hudText(\u0027YOU \u0027+arcadeCr(mine),gx,Math.round(scoreY-lh*.5));hudText((ARCADE.role===\u0027p2\u0027?\u0027P1 \u0027:\u0027P2 \u0027)+arcadeCr(mate),gx,Math.round(scoreY+lh*.75));}\n  });"
+                  },
+                  {
+                      "anchor":  "    if(_f1L) LEGFULL=null; drawLegend(G.legendOn===2\u0026\u0026!HOL.c?_fz:1,!!_f1L); if(_f1L\u0026\u0026LEGFULL) LEGSIDE={x:_f1L.x+(LEGFULL.x-6)*_fz,y:_f1L.b+(LEGFULL.y-H)*_fz,w:LEGFULL.w*_fz,h:LEGFULL.h*_fz}; // v28.xx (cw-cx-foldedhint): the full-list fit scale belongs only to the open full list.",
+                      "replacement":  "    if(_f1L) LEGFULL=null; hudFadeCall(\u0027controls\u0027,drawLegend,[G.legendOn===2\u0026\u0026!HOL.c?_fz:1,!!_f1L]); if(_f1L\u0026\u0026LEGFULL) LEGSIDE={x:_f1L.x+(LEGFULL.x-6)*_fz,y:_f1L.b+(LEGFULL.y-H)*_fz,w:LEGFULL.w*_fz,h:LEGFULL.h*_fz}; // v28.xx (cw-cx-foldedhint): the full-list fit scale belongs only to the open full list."
+                  },
+                  {
+                      "anchor":  "    drawRaiderBoard();",
+                      "replacement":  "    hudFadeCall(\u0027valueatrisk\u0027,drawRaiderBoard,[]);"
+                  },
+                  {
+                      "anchor":  "    if(_alL\u0026\u0026G){ try{ alertDraw(_alL); }catch(_ad){} }   // v22.13 (R08): the alert lane, at the top of the band",
+                      "replacement":  "    if(_alL\u0026\u0026G){ try{ hudFadeCall(\u0027alert\u0027,alertDraw,[_alL]); }catch(_ad){} }   // v22.13 (R08): the alert lane, at the top of the band"
+                  },
+                  {
+                      "anchor":  "    else if(_loc\u0026\u0026G){ try{ locDraw(_loc); }catch(_ld){} }   // v22.xx (R34): the location tag in the free alert slot",
+                      "replacement":  "    else if(_loc\u0026\u0026G){ try{ hudFadeCall(\u0027location\u0027,locDraw,[_loc]); }catch(_ld){} }   // v22.xx (R34): the location tag in the free alert slot"
+                  },
+                  {
+                      "anchor":  "    ctx.fillStyle=\u0027rgba(6,9,13,.62)\u0027; ctx.fillRect(x-4,y-15,w+8,36);",
+                      "replacement":  "    var _hfMate=hudFadeBegin(\u0027partner-\u0027+g.seat);\n    try{\n    hudFadeRect(x-4,y-15,w+8,36);\n    ctx.fillStyle=\u0027rgba(6,9,13,.62)\u0027; ctx.fillRect(x-4,y-15,w+8,36);"
+                  },
+                  {
+                      "anchor":  "    ctx.restore();   // v19.07: the row\u0027s own scale ends before the edge arrow, which works in screen space",
+                      "replacement":  "    } finally { hudFadeEnd(_hfMate); }\n    ctx.restore();   // v19.07: the row\u0027s own scale ends before the edge arrow, which works in screen space"
+                  },
+                  {
+                      "anchor":  "    G.airBox={x:x,y:y,w:bw,h:bh};",
+                      "replacement":  "    G.airBox={x:x,y:y,w:bw,h:bh};\n    var _hfAir=hudFadeBegin(\u0027air\u0027); c=ctx;\n    try{"
+                  },
+                  {
+                      "anchor":  "    else { c.textAlign=\u0027right\u0027; c.fillStyle=UIC.tx_1; hudText(Math.floor(fl*100)+\u0027%\u0027,x+bw-U(10),y+Math.round(bh*0.64)); }",
+                      "replacement":  "    else { c.textAlign=\u0027right\u0027; c.fillStyle=UIC.tx_1; hudText(Math.floor(fl*100)+\u0027%\u0027,x+bw-U(10),y+Math.round(bh*0.64)); }\n    } finally { hudFadeEnd(_hfAir,G.airBox); c=ctx; }"
+                  },
+                  {
+                      "anchor":  "  if(ids.length){\n    c.font=hudFS(TYPE.micro); c.textAlign=\u0027left\u0027; tot=-8*z;",
+                      "replacement":  "  if(ids.length){\n    var _hfChips=hudFadeBegin(\u0027powerchips\u0027); c=ctx;\n    try{\n    c.font=hudFS(TYPE.micro); c.textAlign=\u0027left\u0027; tot=-8*z;"
+                  },
+                  {
+                      "anchor":  "      x0+=Math.round(ew+8*z);\n    }\n  }\n  c.restore();",
+                      "replacement":  "      x0+=Math.round(ew+8*z);\n    }\n    } finally { hudFadeEnd(_hfChips,EDGEBOX.chips); c=ctx; }\n  }\n  c.restore();"
+                  },
+                  {
+                      "anchor":  "  if(extBandOn(p)){   // v35.xx (cw-clockcard): within 250 m",
+                      "replacement":  "  hudFadeCall(\u0027extractionband\u0027,function(){\n  if(extBandOn(p)){   // v35.xx (cw-clockcard): within 250 m"
+                  },
+                  {
+                      "anchor":  "  // HIS NOTE, v3.58: \"THE SEAL NEEDS some sort of visual indicator to tell you",
+                      "replacement":  "  });\n  // HIS NOTE, v3.58: \"THE SEAL NEEDS some sort of visual indicator to tell you"
+                  },
+                  {
+                      "anchor":  "    ctx.fillStyle=\u0027rgba(60,8,5,.30)\u0027; ctx.fillRect(0,0,W,H);   // v34.40 (cw-downedcard3), critic on screen 34 (P1 \u0027the heavy red wash tints every HUD colour\u0027): the downed wash is 30 percent, was 45, so the HUD keeps its contrast",
+                      "replacement":  "    ctx.fillStyle=\u0027rgba(60,8,5,.30)\u0027; ctx.fillRect(0,0,W,H);   // v34.40 (cw-downedcard3), critic on screen 34 (P1 \u0027the heavy red wash tints every HUD colour\u0027): the downed wash is 30 percent, was 45, so the HUD keeps its contrast\n    hudFadeCall(\u0027downed\u0027,function(){"
+                  },
+                  {
+                      "anchor":  "    ctx.restore();\n  }\n  // HIS NOTE: \"a middle-of-the-screen HOLD E TO EXTRACT once its open, even if",
+                      "replacement":  "    ctx.restore();\n    });\n  }\n  // HIS NOTE: \"a middle-of-the-screen HOLD E TO EXTRACT once its open, even if"
+                  },
+                  {
+                      "anchor":  "  ctx.fillStyle=\u0027rgba(6,9,13,.84)\u0027; ctx.fillRect(cx-bw/2,y-LH(56),bw,bh);",
+                      "replacement":  "  hudFadeRect(cx-bw/2,y-LH(56),bw,bh);\n  ctx.fillStyle=\u0027rgba(6,9,13,.84)\u0027; ctx.fillRect(cx-bw/2,y-LH(56),bw,bh);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027fixed HUD panels fade to 35 percent over your pillager and recover clear of the hysteresis margin\u0027,\n   run:function(){\n     if(typeof hudFadeFrame!==\u0027function\u0027||typeof HUDFADE!==\u0027object\u0027) return \u0027no HUD panel obstruction fade\u0027;\n     var g,base,oldNow=hudFadeNow,now=1000,oldImage,images=[],score,far,p,x,y,i,e,oldTv=CFG.hudTv,oldAlpha;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027gun_carbine\u0027,\u0027bandage\u0027],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027no raid to stage\u0027;\n       g.career=true; g.arcade=false; g.bagOpen=false; g.mapOpen=false; g.paused=false;\n       keys={}; mouse.down=false; g.player.iv=9999;\n       __frame(0.016); base=ctx; oldImage=base.drawImage; oldAlpha=base.globalAlpha;\n       hudFadeNow=function(){return now;};\n       HUDFADE.g=null; drawHUD(); score={x:SCOREBOX.x,y:SCOREBOX.y,w:SCOREBOX.w,h:SCOREBOX.h};\n       if(!(score.w\u003e0\u0026\u0026score.h\u003e0)) return \u0027score plate was not drawn\u0027;\n       base.drawImage=function(){var a=HUDFADE.active; if(a\u0026\u0026a.key===\u0027score\u0027) images.push(this.globalAlpha); return oldImage.apply(this,arguments);};\n       p=g.player; x=p.x; y=p.y;\n       p.x=VX+(score.x+score.w/2)/ZOOM(); p.y=VY+(score.y+score.h/2+16*hudRes())/ZOOM();\n       for(i=0;i\u003c12;i++){now+=0.016;drawHUD();}\n       if(!HUDFADE.panels.score||HUDFADE.panels.score.a!==0.35) return \u0027score opacity did not reach 0.35 within 0.192 seconds\u0027;\n       if(!images.length||Math.abs(images[images.length-1]-0.35)\u003e0.00001) return \u0027score was not composited at 35 percent\u0027;\n       far=HUDFADE.panels.gun;\n       if(!far||far.a!==1||!far.box) return \u0027a far away gun panel faded\u0027;\n       // A DOM panel uses the same projected body, elapsed time and margins as the canvas panels.\n       e=document.createElement(\u0027div\u0027); e.setAttribute(\u0027data-hud-panel\u0027,\u0027fade-check\u0027);\n       e.style.cssText=\u0027position:fixed;left:\u0027+score.x+\u0027px;top:\u0027+score.y+\u0027px;width:\u0027+score.w+\u0027px;height:\u0027+score.h+\u0027px;opacity:1;pointer-events:none\u0027;\n       document.getElementById(\u0027root\u0027).appendChild(e); HUDFADE.scan=0;\n       for(i=0;i\u003c12;i++){now+=0.016;drawHUD();}\n       if(Math.abs(+e.style.opacity-0.35)\u003e0.00001) return \u0027DOM panel did not reach 35 percent\u0027;\n       p.x=VX+(score.x+score.w+100*hudRes())/ZOOM();\n       for(i=0;i\u003c12;i++){now+=0.016;drawHUD();}\n       if(HUDFADE.panels.score.a!==1||+e.style.opacity!==1) return \u0027canvas or DOM panel did not recover 100 pixels clear\u0027;\n       if(HUDFADE.panels.gun.a!==1) return \u0027far away panel changed opacity\u0027;\n       // At twice the HUD scale, the 48px entry and 64px exit margins keep an edge from flickering.\n       var s={a:1,near:false,at:0},b={x:100,y:100,w:100,h:100};\n       hudFadeStep(s,b,[{x:247,y:120,w:10,h:10}],2,0.2); if(s.a!==0.35) return \u0027scaled entry margin missing\u0027;\n       hudFadeStep(s,b,[{x:260,y:120,w:10,h:10}],2,0.4); if(s.a!==0.35) return \u0027exit hysteresis flickers\u0027;\n       hudFadeStep(s,b,[{x:265,y:120,w:10,h:10}],2,0.6); if(s.a!==1) return \u0027scaled exit margin stuck\u0027;\n       p.x=x;p.y=y;g.mapOpen=true;drawHUD();\n       if(+e.style.opacity!==1) return \u0027DOM opacity leaked into a menu\u0027;\n       return null;\n     } finally {\n       hudFadeNow=oldNow;CFG.hudTv=oldTv;\n       if(base\u0026\u0026oldImage){base.drawImage=oldImage;ctx=base;base.globalAlpha=oldAlpha;}\n       try{hudFadeDomReset();HUDFADE.active=null;}catch(_hf){}\n       if(e\u0026\u0026e.parentNode)e.parentNode.removeChild(e);\n       try{__endRaid(\u0027abandon\u0027);}catch(_end){}\n       __topClear();\n     }\n   }},\n"
+}

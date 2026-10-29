@@ -1,0 +1,7 @@
+v36.41: hud clears your pillager
+
+hud panels go see-through over your pillager
+
+Check 36.41. Fails on v36.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

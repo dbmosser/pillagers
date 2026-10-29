@@ -1,0 +1,22 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  no-kill-chain-demo-p1                  staged      14.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"mode":"demo","seat":1,"reports":[{"audit":{"points":[50,50,50,50,50,50,50],"alerts":["RUNNING SLOWLY","STRONGHOLD","GOLDEN ENEMY"],"sounds":["flap","flap","pick","flap","pick","flap","pick","flap","goldAppear","pick","flap","pick"],"medals":[]},"base":50,"txt":["8:16","team score","1,200 sp","you 
+  no-kill-chain-demo-p2                  staged      10.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"mode":"demo","seat":2,"reports":[{"audit":{"points":[50,50,50,50,50,50,50],"alerts":["RUNNING SLOWLY","STRONGHOLD","GOLDEN ENEMY","GOAL DONE","BOTTOMLESS CLIP"],"sounds":["flap","goldAppear","flap","flap","pick","pwrAppear","pwrGetClip"],"medals":[]},"base":50,"txt":["8:16","team score","1,200 sp"
+  no-kill-chain-coop-p1                  NOT STAGED  30.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not enter a raid
+    at stageNoChainPair (<anonymous>:133:33)
+    at async <anonymous>:136:8
+    at async <anonymous>:1:21
+  no-kill-chain-coop-p2                  NOT STAGED  32.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: real local kill credit missing
+    at stageNoChainPair (<anonymous>:133:33)
+    at async <anonymous>:136:8
+    at async <anonymous>:1:21
+== 4k : window 3876x2265, viewport 3840x2160
+  no-kill-chain-demo-p1                  staged      15.4s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"mode":"demo","seat":1,"reports":[{"audit":{"points":[50,50,50,50,50,50,50],"alerts":["RUNNING SLOWLY","STRONGHOLD","GOLDEN ENEMY"],"sounds":["pick","pick","pick","pick","goldAppear","flap"],"medals":[]},"base":50,"txt":["8:16","team score","1,200 sp","you 350 sp","p2 850 sp","steady hand +7%","dam
+  no-kill-chain-demo-p2                  staged      11.3s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"mode":"demo","seat":2,"reports":[{"audit":{"points":[50,50,50,50,50,50,50],"alerts":["RUNNING SLOWLY","STRONGHOLD","GOLDEN ENEMY","GOAL DONE","RAPID FIRE"],"sounds":["flap","pick","pick","flap","pick","pick","goldAppear","pick","pick","pick","pick","pick","pwrAppear","pwrGetRapid"],"medals":[]},"b
+  no-kill-chain-coop-p1                  NOT STAGED  64.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not enter a raid
+    at stageNoChainPair (<anonymous>:133:33)
+    at async <anonymous>:136:8
+    at async <anonymous>:1:21
+  no-kill-chain-coop-p2                  NOT STAGED  33.7s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: real local kill credit missing
+    at stageNoChainPair (<anonymous>:133:33)
+    at async <anonymous>:136:8
+    at async <anonymous>:1:21
