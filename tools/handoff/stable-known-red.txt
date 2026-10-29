@@ -110,3 +110,13 @@ v33.51   # flake: "the frozen raid frame is not steady, so it cannot be compared
 v18.62   # wants the Undercroft footer; it is gone on purpose
 v34.00   # wants the Undercroft hint row and title plate; the hint row is gone on purpose
 v20.50   # wants the line under the station prompt above the belt; that line is gone (reads y NaN)
+# his 10-29 order, v36.38 one rarity per gun (the higher colour, 1.25x damage); sorted by the JTPC Correspondent 10-29 06:35; retarget in job 207
+v21.66   # old magnum and shotgun damage
+v24.03   # old rifle damage under the Forge
+v25.58   # old rifle damage on the Forge hover
+v26.21   # old rifle damage under the Forge
+v23.78   # Burst Carbine pull reads 64; confirm whole burst at the new damage
+v10.29   # welcome pack guns are rare and elite now
+v11.79   # bench guns show elite now
+v12.18   # bench guns show elite now
+v34.01   # no uncommon gun left to stage

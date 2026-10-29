@@ -66,3 +66,11 @@ ADDED 10-29 05:15 (JTPC Correspondent; spare PC run corpus-1029-0339 on v36.37),
 - 34.00: wants the hint row and the title plate. Retire the hint row part; keep the cream station names, 16px padding and toast clearance.
 - 20.50: wants the line under the [E] station line above the floor belt; that line is gone, so it reads y NaN. Keep the [E] station line and TAKE prompt asserts; drop the line under it.
 - 18.25 (already in the baseline): the Undercroft bottom line no longer says how to take a dropped item; the footer is gone. Retarget to the pause box and stash idle text parts only.
+
+ADDED 10-29 06:35 (JTPC Correspondent; spare PC run corpus-1029-0502 on v36.39), 9 more, all out of date by his order of 10-29 (v36.38 one rarity per gun: the six guns that had two rarities keep only the higher colour, at 1.25x damage and 1.5x value). Parked in known-red. Retarget each to the gun table as it is now (read rarity and damage from the live tables, never a hard-coded old number):
+- 21.66: magnum 77.5 (was 62), shotgun 20 (was 16); keep the single shot guns keep up idea against the live Auto Rifle numbers.
+- 24.03, 25.58, 26.21: the Forge MK II of a 37.4 rifle (was 29.9). Expect live base x the Forge step; keep WEAPONS untouched, no compounding, ranks.
+- 23.78: the Burst Carbine reads 64 a pull: check whether that is the whole burst at the new damage before retargeting (if it is a single shot, it is a real bug: make a job).
+- 10.29: the welcome pack's guns are rare and elite now (no green gun is left among them). 11.79 and 12.18: the bench holds 0 green and 1 blue by shown rarity; Burst Carbine, Auto Rifle and Riot Scattergun show elite. Retarget to "the bench and pack show the rarity every other screen shows", not to fixed colours.
+- 34.01: "no gun staged for uncommon": stage an uncommon item that is not one of the six guns, or skip uncommon guns if none is left.
+Side effect for the CEO (not a check problem): new characters now start with a rare and an elite gun, and the bench sells elite guns; that is his order working, but it makes the start stronger. Mention it to him only if a playtest shows it matters.
