@@ -22,3 +22,8 @@ Added config/profile cleanup to the new timing check. Lane must apply and run th
 The refused anchors match the worktree exactly, but the real repo fixture has mixed line endings: these two checks use LF within a file that also contains CRLF. retarget.mjs converts every multiline anchor to CRLF when it detects CRLF anywhere in the file, which prevents matching these blocks. Rebuilt the retarget as four unique single-line anchors copied from the current checks, avoiding line-ending conversion entirely.
 The same two font checks now save and clear cached HUD collision rectangles in their unique variable lines, then restore the rectangles after drawing and before their first assertions. Font floors, colors and panel-border assertions are unchanged. The timing key and camera recipes are unchanged. Lane still needs to apply and run retargets, preflight, ship, pictures/critic and ON HIS PC verification.
 
+
+--- codex run 2026-10-28 23:54 ---
+cw-cx-slowerswitch shipped as v36.28, commit bf7e8a222. The lane confirmed ON HIS PC v36.28 after 113 seconds. Font-check retargets committed as dc5565eaf and passed 36.20/36.22 on v36.27 before the ship. Rifle timing check and shipping gates passed.
+Camera round 1 did not stage either seat: my reduced prelude omitted prep(), which tools/uishots.ps1 always calls before the screen body. Both attached pictures show the title, so that critic result does not evaluate the switching-status change. Corrected the prelude with the standard async prep() that pins DPR to 1. Both full camera wrapper bodies and expectations parse, and prep exists in a local VM check. No further game patch is needed; request another recipe camera round and critic on the actual raid pictures.
+

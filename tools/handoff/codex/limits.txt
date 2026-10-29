@@ -147,3 +147,5 @@
 2026-10-28 23:36 week=48.0% 5h=16.0% week_resets=2026-11-04 01:35 job=o-00g-224-slower-gun-switch
 2026-10-28 23:40 week=48.0% 5h=19.0% week_resets=2026-11-04 01:35 job=o-00g-224-slower-gun-switch
 2026-10-28 23:46 week=49.0% 5h=21.0% week_resets=2026-11-04 01:35 job=o-00g-224-slower-gun-switch
+2026-10-28 23:54 week=49.0% 5h=22.0% week_resets=2026-11-04 01:35 job=o-00g-224-slower-gun-switch
+2026-10-29 00:10 week=50.0% 5h=28.0% week_resets=2026-11-04 01:35 job=o-00h-225-ads-zoom-toward-the-aim

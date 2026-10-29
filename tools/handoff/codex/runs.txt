@@ -507,3 +507,5 @@
 2026-10-28 23:36 o-00g-224-slower-gun-switch 51s ok PARTIAL in=1069277 out=11532 run=2
 2026-10-28 23:40 o-00g-224-slower-gun-switch 209s ok PARTIAL in=2103497 out=17233 run=3
 2026-10-28 23:46 o-00g-224-slower-gun-switch 346s ok PARTIAL in=3251836 out=27541 run=4
+2026-10-28 23:54 o-00g-224-slower-gun-switch 45s ok PARTIAL in=3646621 out=28916 run=5
+2026-10-29 00:10 o-00h-225-ads-zoom-toward-the-aim 871s ok PARTIAL in=1710012 out=26765 run=1

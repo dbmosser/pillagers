@@ -1840,20 +1840,20 @@
   "when": "2026-10-28T21:04"
  },
  "p2-1080": {
-  "score": 4,
+  "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The card now has a clear hierarchy: a 56px hero score, a stat grid with aligned columns, and a lime-ringed prompt. It is clean and consistent, but it is a bit small and sparse on the screen, and the awards block is still ragged.",
+  "verdict": "This is a raid HUD, not the title screen I reviewed before, so there is no like-for-like comparison. The ammo readout is a clear hero number, but the open controls list, a duplicated extract cue, a stray capital and a few weak panels pull it down.",
   "findings": [
-   "P1 awards grid (x 633-1286, y 640-765): Give all six awards the same 3px left bar in --ui-line, or give none a bar and mark the crown with a small glyph. Keep every text start at x=633. Labels 16px f-cond 600 --tx-2, values 20px --tx-1. Use a 24px row gap and 24px padding above the bottom divider.",
-   "P1 card size (x 601-1318, y 213-867): Widen the card to about 90% of the screen, or at least about 1100px. Put the team score hero on the left and a short p1/p2 score split bar on the right in the same row. Alternatively keep the card compact but raise the stat values to 24px.",
-   "P1 stat rows (x 633-1286, y 440-590): Set the values to 32px f-cond 700 (the title token) or 20px, never 30px. Set the p1/p2 tags to 20px f-cond 700 on the value baseline. Dim zero values to --tx-2.",
-   "P2 prompt row (x 1015-1286, y 800-833): Raise the prompt to 24px or keep 20px with the ring at 40px. Add a 1px --ui-line divider above it with a 24px gap. Keep it right-aligned.",
-   "P2 title and hero block (x 633-807, y 240-385): Use 16px between the title and the 'team score' label, 8px between the label and the hero, and 24px below the hero before the divider."
+   "P1 top-right 'run Info' dropdown: Change the label to 'run info'. Use the same panel fill (--ui-panel), 1px --ui-line-hi border and 4px radius as the other HUD panels. Put it at a 48px margin from the top and right.",
+   "P1 left controls list (move/fight/gear/raid, 2 columns, about 300x300): In career, fold it to one 16px line, 'f1 controls', at mid-bottom left. In the party demo, if it must stay open, reduce it to the 8 most useful keys. Give the key caps no fill and a 1px --ui-line border. Set the labels in --tx-2 at 16px minimum.",
+   "P1 top-centre 'extract 152m' pill and right-edge 'c 152m' arrow: Keep only the top-centre teal pill, with the direction arrow inside it. Delete the right-edge chip.",
+   "P1 bottom contract banner 'contract item nearby · gold glow marks the box': Shorten it to 'contract item nearby' and drop the explanation. Make the text --tx-1 with a 3px --warn left bar. Show it as an alert in the top-centre banner slot, not at the bottom left. Leave a 24px gap from other panels.",
+   "P2 top-left 'current pillagers 0' panel: Set the rows to --tx-2 (#aaa498) at 16px. Keep the 'you' row in --tx-1 with a 3px lime or amber bar. Drop the '0 out · 3 dead' footer. Align the $ values right with tabular numerals."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-09-196-run-over-card-moments-recipes-4/run-over-moments-p2-1080.jpg",
-  "task": "o-09-196-run-over-card-moments",
-  "when": "2026-10-28T21:05"
+  "pic": "tools/handoff/console/notes/shots/o-00g-224-slower-gun-switch-recipes-2/rifle-switch-p2-1080.jpg",
+  "task": "o-00g-224-slower-gun-switch",
+  "when": "2026-10-29T03:56"
  },
  "pix86c-fashion": {
   "score": 3,
@@ -4030,5 +4030,21 @@
   "pic": "tools/handoff/console/notes/shots/o-00f-223-steady-hand-and-beast-mode-recipes-4/damage-streaks-p2-4-1080.jpg",
   "task": "o-00f-223-steady-hand-and-beast-mode",
   "when": "2026-10-29T03:27"
+ },
+ "rifle-switch-host": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "This is a readable raid HUD with a strong ammo hero number. It has a stray capital in 'run Info', two crowded panels in the left column, undersized text and near-invisible empty weapon slots.",
+  "findings": [
+   "P1 top-right 'run info' dropdown: Render it as 'run info'. Shrink the bar to about 200px wide and 40px tall on --ui-panel with a 1px --ui-line-hi border, and sit it on the 48px margin.",
+   "P1 mid-left controls list (move/fight/gear/raid): Fold it to a single 16px line, 'f1 controls', at mid-bottom left (per rs-1). If the party demo must keep it open, cut it to one column of 8 rows, set every label to 16px tx-2, and put it on a 48px left margin with the same panel fill as the roster.",
+   "P1 top-left 'current pillagers' roster: Use 16px labels on a 24px row pitch. Give the 'you' row a --ui-raised fill with a 3px amber (P1) left bar. Right-align the $ values in f-cond. Drop 'dead' into a --danger glyph. Put the panel on the 48px margin.",
+   "P1 bottom weapon bar slots 4-0: Draw all 10 slots as 64px tiles at an 8px gap, with a 1px --ui-line border. Show empty ones as flat --ui-panel with the number at 16px in tx-2 and no silhouette. Make only the selected slot 80px with a lime 2px border. Keep amber for P1 identity elsewhere.",
+   "P2 bottom-left hp bar: Set 'hp' at 16px label and '100' at 32px in tx-1 on a --ui-panel plate. Use a 12px bar in --ok. Place it on the 48px bottom-left margin. Reserve the 56px hero size for the ammo only."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00g-224-slower-gun-switch-recipes-2/rifle-switch-host-1080.jpg",
+  "task": "o-00g-224-slower-gun-switch",
+  "when": "2026-10-29T03:55"
  }
 }

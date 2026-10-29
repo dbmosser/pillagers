@@ -40024,6 +40024,13 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.29 - AIMING ZOOMS TOWARD THE CROSSHAIR
+
+Co-op hunt while he was away. His 10-29 request: ADS should zoom toward the scope instead of onto the pillager. The camera now follows a world focal point and preserves the aimed ground point through zoom.
+
+aiming zooms toward the crosshair; watch that it never feels seasick and your pillager never leaves the screen
+
+MEASURED. Check 36.29 passes, and fails on v36.28.
 ## v36.28 - SLOWER GUN SWITCHES
 
 Co-op hunt while he was away. His words 10-29: make it take longer to switch guns. Every class draw takes half again as long, with the pistol rounded to 0.38 seconds. The status follows the actual draw timer. Watch: switching guns takes half again as long.

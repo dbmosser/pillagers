@@ -1,0 +1,7 @@
+v36.29: aiming zooms toward the crosshair
+
+aiming zooms toward the crosshair; watch that it never feels seasick and your pillager never leaves the screen
+
+Check 36.29. Fails on v36.28.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

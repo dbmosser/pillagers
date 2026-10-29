@@ -1,1 +1,1 @@
-10-28 23:48 gate: shipping cw-cx-slowerswitch (o-00g-224-slower-gun-switch, codex)
+10-29 00:12 gate: shipping cw-cx-aimfocus (o-00h-225-ads-zoom-toward-the-aim, codex)

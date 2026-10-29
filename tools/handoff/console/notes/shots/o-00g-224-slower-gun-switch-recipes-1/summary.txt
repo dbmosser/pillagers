@@ -1,0 +1,18 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  rifle-switch-host                      NOT STAGED   4.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:566
+    at <anonymous>:1:1140
+    at <anonymous>:1:1216
+  rifle-switch-p2                        NOT STAGED   4.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:566
+    at <anonymous>:1:1136
+    at <anonymous>:1:1212
+== 4k : window 3876x2265, viewport 3840x2160
+  rifle-switch-host                      NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:566
+    at <anonymous>:1:1140
+    at <anonymous>:1:1216
+  rifle-switch-p2                        NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:566
+    at <anonymous>:1:1136
+    at <anonymous>:1:1212
