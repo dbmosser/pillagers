@@ -603,3 +603,5 @@
 
 2026-10-29 | o-00k-229-run-goals-pay-cash-not-sp | extracted goal rewards, demo goals panel | Full item names move to wrapping sublines with a 16px value gap; reward-card totals align at their bottom; demo keeps one goals heading. Q8: removes duplicate heading without removing reward information. | before: notes/shots/o-00k-229-run-goals-pay-cash-not-sp-recipes-4/goal-career-host-extracted-1080.jpg, goal-demo-peer-hud-1080.jpg | after: coordinator capture pending (camera limit 4/4)
 
+2026-10-29 | o-00l-230-undercroft-no-hint-bars | Undercroft floor and all station prompts | Removed the entire footer panel/key row and station option line for keyboard and pad; kept the E prompt; put lift R/T/F shortcuts in F1 help. His 10-28 removal order is the reason for deleting these words. Pictures: pending lane camera-recipes.json scenes 230-hub-lift-kb, 230-hub-midroom-kb, 230-hub-lift-pad, 230-hub-midroom-pad at 1080 and 4k; add returned paths after capture.
+

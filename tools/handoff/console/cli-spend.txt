@@ -1825,3 +1825,5 @@
 2026-10-29 0.0935 critic-o-00k-229-run-goals-pay-cash-not-sp
 2026-10-29 0.0950 critic-o-00k-229-run-goals-pay-cash-not-sp
 2026-10-29 0.0000 o-00k-229-run-goals-pay-cash-not-sp
+2026-10-29 0.0000 o-00l-230-undercroft-no-hint-bars
+2026-10-29 0.0000 o-00l-230-undercroft-no-hint-bars

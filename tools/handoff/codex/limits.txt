@@ -163,3 +163,5 @@
 2026-10-29 01:56 week=56.0% 5h=66.0% week_resets=2026-11-04 01:35 job=o-00k-229-run-goals-pay-cash-not-sp
 2026-10-29 02:04 week=56.0% 5h=69.0% week_resets=2026-11-04 01:35 job=o-00k-229-run-goals-pay-cash-not-sp
 2026-10-29 02:13 week=56.0% 5h=71.0% week_resets=2026-11-04 01:35 job=o-00k-229-run-goals-pay-cash-not-sp
+2026-10-29 02:24 week=57.0% 5h=76.0% week_resets=2026-11-04 01:35 job=o-00l-230-undercroft-no-hint-bars
+2026-10-29 02:26 week=57.0% 5h=77.0% week_resets=2026-11-04 01:35 job=o-00l-230-undercroft-no-hint-bars

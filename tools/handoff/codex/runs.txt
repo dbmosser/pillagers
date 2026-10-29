@@ -523,3 +523,5 @@
 2026-10-29 01:56 o-00k-229-run-goals-pay-cash-not-sp 153s ok PARTIAL in=6033056 out=36057 run=3
 2026-10-29 02:04 o-00k-229-run-goals-pay-cash-not-sp 220s ok PARTIAL in=7095436 out=42313 run=4
 2026-10-29 02:13 o-00k-229-run-goals-pay-cash-not-sp 324s ok PARTIAL in=8294210 out=51441 run=5
+2026-10-29 02:24 o-00l-230-undercroft-no-hint-bars 370s ok PARTIAL in=1160578 out=12719 run=1
+2026-10-29 02:26 o-00l-230-undercroft-no-hint-bars 97s ok PARTIAL in=1558102 out=15561 run=2

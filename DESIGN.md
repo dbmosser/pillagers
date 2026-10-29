@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.35 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v36.19 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
+
+MEASURED. Check 36.35 passes, and fails on v36.34.
 ## v36.34 - RUN GOAL REWARD ROWS FIT
 
 Co-op hunt while he was away. The critic found the extracted goal item name nearly clipped against its value and the empty SP panel total floating above the money total.
