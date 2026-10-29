@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.49 - HEALING AND PLATING CANCEL RELOADS
+
+Co-op hunt while he was away. His order: no bandage, medkit or plate at the same time as a reload, and every cancelled reload ends the active chain. Watch: no healing or plating while you reload. LOCAL: no linked review.
+
+MEASURED. Check 36.49 passes, and fails on v36.48.
 ## v36.48 - RAID BACKPACK IN GROUPS: GUNS, USABLES, CRAFTING
 
 Co-op hunt while he was away. His order 10-29: the raid backpack showed every part and piece of junk as a full tile mixed in with guns and usables. It now shows guns, then usables, then crafting and salvage, each under its own heading, with the crafting tiles smaller.

@@ -3885,8 +3885,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.48';
-var VER_AT='2026-10-29 09:00';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.49';
+var VER_AT='2026-10-29 09:11';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21351,7 +21351,7 @@ function tryRoll(){
   var mg=Math.sqrt(mx*mx+my*my);
   if(mg>0) p.rollDir={x:mx/mg,y:my/mg};
   else p.rollDir={x:Math.cos(p.face),y:Math.sin(p.face)};
-  p.roll=.38; p.rollCd=.85; p.iv=Math.max(p.iv,.30); p.stam-=ROLLSTAM;
+  reloadCancel(p); p.roll=.38; p.rollCd=.85; p.iv=Math.max(p.iv,.30); p.stam-=ROLLSTAM;
   if(G.arcade&&p.arcSh) arcadeShieldOff();   // v23.30 (arcade9)
   ping(p.x,p.y,80,false,false,'player','move'); blip('clank');
 }
@@ -24539,7 +24539,7 @@ p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.pr
     // a revive finds the stall and offers the deal again. No player text, no number and no seeded draw moved.
     G.nearPed=null; G.pedBlocked=0;
     G.nearForge=null; G.forgeUI=null;   // v26.xx (forgest2): and the bench shuts
-    p.reloading=0;   // v13.83, combat audit: a reload does not wait on the floor to finish after he stands
+    reloadCancel(p);   // v28.xx (cw-cx-reloadmedical): going down loses the reload and its chain.
     G.mapOpen=false; G.bagOpen=false; G.drag=null;   // v14.07, HUD audit: nothing covers the downed screen
     G.searching=null; G.searchT=0; G.nearDoor=null;   // v14.08, HUD audit: no search bar or door prompt frozen over the floor
     // v8.58, audit: it does NOT need medical. selfRevive requires none and
@@ -24973,7 +24973,7 @@ function handTake(k){
   if(!p||!it||G.sim||wheelHave(k)<=0||p.cooking||p.downed||p.dying) return false;
   len=(it.use==='throw')?0.35:(it.use==='stim'?0.25:0.30);
   p.hand={k:k,t:len,len:len,armed:0,used:0,prev:!!mouse.down};
-  p.reloading=0;
+  reloadCancel(p);   // v28.xx (cw-cx-reloadmedical): taking an item out cuts the reload, including its sound and chain.
   if(!G.sim) say((it.name+' out').toUpperCase());
   return true;
 }
@@ -26107,6 +26107,8 @@ function prepFoleyLand(PR){
   return true;
 }
 function startPrep(kind,key){
+  // v28.xx (cw-cx-reloadmedical): every heal/plate door shares this wind-up; stims and the bot sim keep their rules.
+  if(!G.sim&&(kind==='heal'||kind==='armor')) reloadCancel(G.player);
   // v13.67: the issued Bandage count is kept by trackIssuedBandages, which sees every way
   // one leaves the backpack; this line saw only a use.
   var _pr={t:0,
@@ -26309,8 +26311,18 @@ function dmgStreakMul(p){
   dmgStreakTick(p);
   return (1+0.01*(p.shStk||0))*(1+0.01*(p.bmStk||0));
 }
+// v28.xx (cw-cx-reloadmedical), HIS WORDS 10-28: "a reload cancel kills the reload streak" and "or shooting to reload cxl".
+function reloadCancel(p){
+  if(!p) return;
+  var cut=p.reloading>0;
+  p.reloading=0; p.rlTot=0; p.rlArm=0;
+  if(G&&!G.sim&&cut){ p.arStk=0; p.arBonus=0; p.arHot=0; p.arGun=null; p.arMul=1; }
+  if(G&&!G.sim&&RLFX.p===p) rlfxStop();
+}
+// v28.xx (cw-cx-reloadmedical), HIS WORDS: "player should not be permitted to apply a bandage and reload at the same ttime; nor apply armor and reload at the same time".
+function reloadMedicalBusy(p){ return !!(G&&!G.sim&&p&&(p.prep||p.prepA||(p.healQ||0)>0)); }
 function arSetHeldGun(p,w){
-  if(p.wep!==w){ p.arStk=0; p.arBonus=0; p.arGun=null; p.arHot=0; if(G&&!G.sim) p.shStk=0; }
+  if(p.wep!==w){ reloadCancel(p); p.arStk=0; p.arBonus=0; p.arGun=null; p.arHot=0; if(G&&!G.sim) p.shStk=0; }
   p.wep=w;
 }
 function activeReloadTick(p){
@@ -27348,7 +27360,7 @@ function grantLoot(ct,keys,delay0){
         // was reloading was filled to a full magazine 1.4 seconds later and said Reloaded, skipping its own longer reload. Every other
         // change of the gun in hand (bagHeldGun, swapGuns, equipFromBag) already clears it.
         var _gkPush2=(p.wep&&p.wep.id!=='fists'&&p.wep.mag!==0&&!p.wepIssued)?p.wep.id:null;   // v21.83
-        arSetHeldGun(p,found); p.ammo=(ct&&ct.dropped)?takeRounds(found.id,found.mag):Math.ceil(p.wep.mag/2); p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; p.rlTot=0; p.rlArm=0;   // v13.81; v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand
+        arSetHeldGun(p,found); p.ammo=(ct&&ct.dropped)?takeRounds(found.id,found.mag):Math.ceil(p.wep.mag/2); p.wepIssued=false; p.wepFromArmory=false; reloadCancel(p);   // v13.81; v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand
         gunKeysSettle({pushed:_gkPush2,arrived:found.id});   // v21.83: the found gun takes a gun key; the gun it pushed out keeps its own (v21.90: named)
         G.tel.weapon=p.wep.name;
         if(!G.sim){
@@ -27539,7 +27551,7 @@ function bagHeldGun(slot){
   gunQPush(g);   // v21.79: and its rolled quality
   if(!G.sim&&arm){ var oi=P.weapons.indexOf(g.id); if(oi>=0){ P.weapons.splice(oi,1); (G.spliced=G.spliced||[]).push(g.id); (P.raidSpliced=P.raidSpliced||[]).push(g.id); } }   // v14.03: on the saved profile too
   if(isHand){
-    arSetHeldGun(p,p.sec||WEAPONS.fists); p.ammo=p.secAmmo||0; p.wepIssued=!!p.secIssued; p.wepFromArmory=!!p.secFromArmory; p.reloading=0; p.rlTot=0; p.rlArm=0;   // v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand
+    arSetHeldGun(p,p.sec||WEAPONS.fists); p.ammo=p.secAmmo||0; p.wepIssued=!!p.secIssued; p.wepFromArmory=!!p.secFromArmory; reloadCancel(p);   // v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand
     p.sec=WEAPONS.fists; p.secAmmo=0; p.secIssued=true; p.secFromArmory=false;
     if(p.wep&&p.wep.id!=='fists') p.swapped=!sw;   // the gun that came up keeps its numbered slot; nothing came up, nothing flips
   } else {
@@ -27600,7 +27612,7 @@ function swapGuns(){
   // reads that first.
   // v28.55 (cloud-feel-reload-swap-ring), CLOUD HUNT 2026-10-15: the swap stopped the reload but kept the old gun's ring length (rlTot), so an
   // empty gun swapped in with the trigger held measured its new reload against the old one and the ring opened past its sweet spot.
-  pp.reloading=0; pp.rlTot=0; pp.rlArm=0; pp.fired=true; pp.lastShot=G.t*1000; pp.swapT=G.t;
+  reloadCancel(pp); pp.fired=true; pp.lastShot=G.t*1000; pp.swapT=G.t;
   pp.swapped=!pp.swapped;
   // The highlight follows the gun, always. Pressing X used to move the gun
   // without moving the selection, which is the other half of how the hotbar and
@@ -27696,7 +27708,7 @@ function equipFromBag(ix,slot){
   // magazine only for one found in the field, which is the rule in the README.
   var _rd=takeRounds(gk,g.mag);
   if(toSec){ p.sec=g; p.secAmmo=_rd; p.secIssued=false; p.secFromArmory=false; }
-  else { arSetHeldGun(p,g); p.ammo=_rd; p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; p.rlTot=0; p.rlArm=0; }   // v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand
+  else { arSetHeldGun(p,g); p.ammo=_rd; p.wepIssued=false; p.wepFromArmory=false; reloadCancel(p); }   // v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand
   G.tel.weapon=p.wep.name;
   G.tel.gunsEquipped=(G.tel.gunsEquipped||0)+1;
   if(G.bagSel>=G.bag.length) G.bagSel=Math.max(0,G.bag.length-1);
@@ -27810,7 +27822,7 @@ function gunClassSwapIn(o,oi,key,nw){
     G.bag.push('gun_'+old.id); stowRounds(old.id,oam-carry); gunQPush(old); bagged=true;
     if(arm&&P&&P.weapons){ ix=P.weapons.indexOf(old.id); if(ix>=0){ P.weapons.splice(ix,1); (G.spliced=G.spliced||[]).push(old.id); (P.raidSpliced=P.raidSpliced||[]).push(old.id); } }
   }
-  if(hand){ arSetHeldGun(p,nc); p.ammo=carry; p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; p.rlTot=0; p.rlArm=0; G.tel.weapon=nc.name; }   // v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand
+  if(hand){ arSetHeldGun(p,nc); p.ammo=carry; p.wepIssued=false; p.wepFromArmory=false; reloadCancel(p); G.tel.weapon=nc.name; }   // v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand
   else { p.sec=nc; p.secAmmo=carry; p.secIssued=false; p.secFromArmory=false; }
   G.tel.gunsEquipped=(G.tel.gunsEquipped||0)+1;
   for(k2 in A) if(A[k2]===key){ delete A[k2]; delete U[k2]; }
@@ -29746,7 +29758,7 @@ function updatePlayer(dt){
     // standing still applies all 30 and takes you 40 to 71; rolling applied
     // NOTHING, 30 stayed 30. Makes no seeded draw, so the stream is untouched.
     tickHeal(dt);
-    tickReload(dt);   // v13.83, combat audit: and the reload keeps going through a roll
+    reloadCancel(p);   // v28.xx (cw-cx-reloadmedical): a roll loses the reload clock and chain.
     drawTick(p,dt);   // v28.52 (cloud-feel-draw-roll), CLOUD HUNT 2026-10-15: and the draw clock too (it runs below this return), so a roll does not add 0.38 s to a draw
     // v15.08, throwables audit finding 6: A COOKED FRAG CHARGE KEEPS BURNING THROUGH A ROLL. This branch returns before both
     // fuse ticks, so a roll stopped the fuse and the COOKING countdown for the whole 0.38s, and two rolls held a live Frag
@@ -29858,6 +29870,7 @@ var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
   var wading=inWaterDeep(p.x,p.y,(CFG.wadeInset===undefined?11:CFG.wadeInset))||!!p.rollWet;
   if(wading) sprint=false;
   G.sprinting=sprint;
+  if(sprint&&p.reloading>0) reloadCancel(p);   // v28.xx (cw-cx-reloadmedical): sprint cuts the reload before it can finish.
   // v12.71: and here is the trail, reading the sprint flag AFTER the aiming and
   // the deep-water cancels above have had their say. Same 34 units, same 40
   // mark ceiling, same mine flag; only the moment it is asked has moved.
@@ -29987,11 +30000,11 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
 
   tickReload(dt);   // v13.83: also run from the roll branch, so a roll does not freeze it
   autoEmptyGun();   // v28.xx (cw-cx-drygun): the gun yields even when the trigger is released.
-  if(keys['KeyR']&&p.reloading<=0&&!p.hand&&p.ammo<p.wep.mag&&rlHave(p)){ p.reloading=p.wep.reload*buzzSlow(); T.reloads++; if(!G.sim) reloadFoley(p); }   // v10.56; v25.52 (his reload order): the magazine out, then the steps
+  if(keys['KeyR']&&p.reloading<=0&&!p.hand&&!reloadMedicalBusy(p)&&!sprint&&p.ammo<p.wep.mag&&rlHave(p)){ p.reloading=p.wep.reload*buzzSlow(); T.reloads++; if(!G.sim) reloadFoley(p); }   // v10.56; v25.52 (his reload order): the magazine out, then the steps
   // HOLDING THE TRIGGER ON AN EMPTY MAGAZINE RELOADS IT, v5.44, his note. The
   // bot has done this since it was written; the player had to let go and press
   // R. Held only, so a tap on an empty gun still does nothing.
-  if(mouse.down&&p.reloading<=0&&!p.hand&&p.wep.mag>0&&p.ammo<=0&&rlHave(p)&&!p.downed&&p.jam<=0&&CFG.autoRel!==0){   // v26.xx (settings4): AUTO-RELOAD WHEN EMPTY
+  if(mouse.down&&p.reloading<=0&&!p.hand&&!reloadMedicalBusy(p)&&!sprint&&p.wep.mag>0&&p.ammo<=0&&rlHave(p)&&!p.downed&&p.jam<=0&&CFG.autoRel!==0){   // v26.xx (settings4): AUTO-RELOAD WHEN EMPTY
     p.reloading=p.wep.reload*buzzSlow(); T.reloads++; if(!G.sim) reloadFoley(p);   // v25.52 (his reload order)   // v10.56; v22.73 (R28): the gun card says RELOADING
   }
 
@@ -30055,6 +30068,8 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
     if(p.cookKind==='frag'&&p.cookT>=FRAG_FUSE) cookOff();
   }
   var hotGun=(!HSC||(HSC.kind==='gun'&&!HSC.vacant&&!bagGunCell(HSC))||HSC.kind==='item');   // v21.93: a vacant gun key fires nothing; it says which key does   // v22.34: nor does a packed gun the pad walk highlighted
+  // v28.xx (cw-cx-reloadmedical): a fresh, fireable trigger cuts a partial reload; holding an empty trigger still lets it finish.
+  if(hotGun&&mouse.down&&!p.fired&&!p.trigYield&&!p.cooking&&!p.hand&&!(p.drawT>0)&&p.reloading>0&&p.ammo>0&&p.jam<=0&&now-p.lastShot>p.wep.rof*spinMul(p)*pwrRof()&&spinGo(p)) reloadCancel(p);
   if(mouse.down&&!hotGun&&!p.hand){
     // THROWABLES COOK, v3.11. Press pulls the pin and starts the clock in your
     // hand; release throws whatever fuse is left. Everything else on the hotbar
@@ -30146,7 +30161,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
       // on release, so an empty automatic clicks and says it once per pull, as a single shot gun always did on its pull, and
       // neither repeats while the trigger stays held. The same sound and the same line; no seeded draw.
 if(!p.fired||p.wep.auto){
-        if(rlHave(p)&&p.reloading<=0&&CFG.autoRel!==0){
+        if(rlHave(p)&&p.reloading<=0&&!reloadMedicalBusy(p)&&!sprint&&CFG.autoRel!==0){
           p.reloading=p.wep.reload; T.reloads++;
           if(!G.sim) reloadFoley(p);   // v25.52 (his reload order)   // v10.56; v22.73 (R28): the gun card says RELOADING
         } else if((!rlHave(p)||(CFG.autoRel===0&&p.reloading<=0))&&!p.dryTold){ p.dryTold=1; if(!G.sim) blipMine('dry'); }   // v26.xx (settings4): with AUTO-RELOAD off the empty gun with a reserve clicks too   // v10.56: an empty gun clicks; v22.73 (R28): the reticle says NO AMMO
@@ -56464,7 +56479,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.48: the raid backpack groups guns, then usables, then crafting and salvage on smaller tiles Check 36.48 fails on v36.47',
+  now:'v36.49: Medical use loses the reload clock and chain. R and empty-trigger reloads wait until medical use is done. Firing, rolling, sprinting, changing guns and going down cancel through one door. Check 36.49 fails on v36.48',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -65747,7 +65762,7 @@ function arcadeKitApply(p,g,why){
   arSetHeldGun(p,arcadeGun(a)); p.sec=b?arcadeGun(b):WEAPONS.fists;
   p.ammo=p.wep.mag; p.secAmmo=(p.sec&&p.sec.mag)||0; p.reserve=6*p.wep.mag;
   p.wepIssued=false; p.secIssued=false; p.wepFromArmory=false; p.secFromArmory=false;
-  p.swapped=false; p.reloading=0; p.jam=0;
+  p.swapped=false; reloadCancel(p); p.jam=0;
   p.armor=(p.armorCap===undefined?ARMOR_MAX:p.armorCap);
   p.hp=p.maxhp||100; p.revived=false;
   if(!Array.isArray(g.bag)) g.bag=[];
@@ -69239,7 +69254,7 @@ function pwrTick(p,dt){
     if(S.act[k]<=0){ S.act[k]=0; try{ blip('pwrEnd'); }catch(_e){} }   // v27.94 (snd3): one runs out
     else if(S.act[k]<=PWR.warn&&Math.ceil(S.act[k])!==Math.ceil(before)){ try{ blip('pwrLast'); }catch(_k){} }   // v27.94 (snd3): each of the last 3 s
   }
-  if(S.act.clip>0&&p.wep&&p.wep.mag>0){ p.ammo=p.wep.mag; p.reloading=0; p.jam=0; }
+  if(S.act.clip>0&&p.wep&&p.wep.mag>0){ p.ammo=p.wep.mag; reloadCancel(p); p.jam=0; }
   pwrTick2(p,dt,S);   // v26.xx (party3): the pulse clock and the bubble flash
 }
 // v28.27 (partyp7), HIS WORDS on the power-ups (2026-10-14, the party playtest): "i never saw one so not sure" and "floating icon". A pickup was a thirty pixel coin

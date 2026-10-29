@@ -557,3 +557,5 @@
 2026-10-29 07:03 o-00u-238-status-type-regression 566s ok PARTIAL in=1231555 out=20219 run=1
 2026-10-29 07:16 o-00u-238-status-type-regression 297s ok PARTIAL in=2072943 out=29552 run=2
 2026-10-29 07:27 o-00u-238-status-type-regression 149s ok DONE in=2860152 out=33926 run=3
+2026-10-29 09:06 o-00u-238-no-heal-or-plate-while-reloading 431s ok PARTIAL in=1764878 out=16987 run=1
+2026-10-29 09:08 o-00u-238-no-heal-or-plate-while-reloading 76s ok PARTIAL in=2606032 out=19671 run=2

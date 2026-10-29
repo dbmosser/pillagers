@@ -1,0 +1,7 @@
+v36.49: healing and plating cancel reloads
+
+Medical use loses the reload clock and chain. R and empty-trigger reloads wait until medical use is done. Firing, rolling, sprinting, changing guns and going down cancel through one door.
+
+Check 36.49. Fails on v36.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

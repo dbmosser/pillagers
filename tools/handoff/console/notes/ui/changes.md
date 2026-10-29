@@ -642,3 +642,5 @@
 
 2026-10-29 | o-00u-238-status-type-regression | raid status HUD, solo and both demo roles | shipped v36.44/v36.45: keep 20px titles and 16px details; measured columns, shared minimum 220px width, 48px rows and 8px gaps | before: tools/handoff/console/notes/shots/o-00u-238-status-type-regression-recipes-1/status-type-{solo,solo-full-legend,demo-p1,demo-p2}-{1080,4k}.jpg (liquor staging affects first-round clarity) | after: tools/handoff/console/notes/shots/o-00u-238-status-type-regression-recipes-2/status-type-{solo,solo-full-legend,demo-p1,demo-p2}-{1080,4k}.jpg; all eight inspected
 
+2026-10-29 | o-00u-238-no-heal-or-plate-while-reloading | raid HUD, both roles | Medical use clears the reload ring and active chain; reload stays blocked through healing or plating. No layout or text change. Before: existing v36.47 behavior (no new UI). After: camera-recipes.json reload-medical-host and reload-medical-p2 (lane supplies picture paths).
+

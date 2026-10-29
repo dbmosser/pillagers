@@ -1,0 +1,5 @@
+## v36.49 - HEALING AND PLATING CANCEL RELOADS
+
+Co-op hunt while he was away. His order: no bandage, medkit or plate at the same time as a reload, and every cancelled reload ends the active chain. Watch: no healing or plating while you reload. LOCAL: no linked review.
+
+MEASURED. Check 36.49 passes, and fails on v36.48.

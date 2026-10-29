@@ -1,0 +1,84 @@
+{
+    "title":  "HEALING AND PLATING CANCEL RELOADS",
+    "why":  "His order: no bandage, medkit or plate at the same time as a reload, and every cancelled reload ends the active chain. Watch: no healing or plating while you reload. LOCAL: no linked review.",
+    "now":  "Medical use loses the reload clock and chain. R and empty-trigger reloads wait until medical use is done. Firing, rolling, sprinting, changing guns and going down cancel through one door.",
+    "edits":  [
+                  {
+                      "anchor":  "function arSetHeldGun(p,w){",
+                      "replacement":  "// v28.xx (cw-cx-reloadmedical), HIS WORDS 10-28: \"a reload cancel kills the reload streak\" and \"or shooting to reload cxl\".\nfunction reloadCancel(p){\n  if(!p) return;\n  var cut=p.reloading\u003e0;\n  p.reloading=0; p.rlTot=0; p.rlArm=0;\n  if(G\u0026\u0026!G.sim\u0026\u0026cut){ p.arStk=0; p.arBonus=0; p.arHot=0; p.arGun=null; p.arMul=1; }\n  if(G\u0026\u0026!G.sim\u0026\u0026RLFX.p===p) rlfxStop();\n}\n// v28.xx (cw-cx-reloadmedical), HIS WORDS: \"player should not be permitted to apply a bandage and reload at the same ttime; nor apply armor and reload at the same time\".\nfunction reloadMedicalBusy(p){ return !!(G\u0026\u0026!G.sim\u0026\u0026p\u0026\u0026(p.prep||p.prepA||(p.healQ||0)\u003e0)); }\nfunction arSetHeldGun(p,w){"
+                  },
+                  {
+                      "anchor":  "if(p.wep!==w){ p.arStk=0;",
+                      "replacement":  "if(p.wep!==w){ reloadCancel(p); p.arStk=0;"
+                  },
+                  {
+                      "anchor":  "function startPrep(kind,key){",
+                      "replacement":  "function startPrep(kind,key){\n  // v28.xx (cw-cx-reloadmedical): every heal/plate door shares this wind-up; stims and the bot sim keep their rules.\n  if(!G.sim\u0026\u0026(kind===\u0027heal\u0027||kind===\u0027armor\u0027)) reloadCancel(G.player);"
+                  },
+                  {
+                      "anchor":  "        arSetHeldGun(p,found); p.ammo=(ct\u0026\u0026ct.dropped)?takeRounds(found.id,found.mag):Math.ceil(p.wep.mag/2); p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; p.rlTot=0; p.rlArm=0;   // v13.81; v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand",
+                      "replacement":  "        arSetHeldGun(p,found); p.ammo=(ct\u0026\u0026ct.dropped)?takeRounds(found.id,found.mag):Math.ceil(p.wep.mag/2); p.wepIssued=false; p.wepFromArmory=false; reloadCancel(p);   // v13.81; v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand"
+                  },
+                  {
+                      "anchor":  "    arSetHeldGun(p,p.sec||WEAPONS.fists); p.ammo=p.secAmmo||0; p.wepIssued=!!p.secIssued; p.wepFromArmory=!!p.secFromArmory; p.reloading=0; p.rlTot=0; p.rlArm=0;   // v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand",
+                      "replacement":  "    arSetHeldGun(p,p.sec||WEAPONS.fists); p.ammo=p.secAmmo||0; p.wepIssued=!!p.secIssued; p.wepFromArmory=!!p.secFromArmory; reloadCancel(p);   // v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand"
+                  },
+                  {
+                      "anchor":  "  else { arSetHeldGun(p,g); p.ammo=_rd; p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; p.rlTot=0; p.rlArm=0; }   // v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand",
+                      "replacement":  "  else { arSetHeldGun(p,g); p.ammo=_rd; p.wepIssued=false; p.wepFromArmory=false; reloadCancel(p); }   // v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand"
+                  },
+                  {
+                      "anchor":  "  if(hand){ arSetHeldGun(p,nc); p.ammo=carry; p.wepIssued=false; p.wepFromArmory=false; p.reloading=0; p.rlTot=0; p.rlArm=0; G.tel.weapon=nc.name; }   // v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand",
+                      "replacement":  "  if(hand){ arSetHeldGun(p,nc); p.ammo=carry; p.wepIssued=false; p.wepFromArmory=false; reloadCancel(p); G.tel.weapon=nc.name; }   // v28.55 (cloud-feel-reload-swap-ring): the reload ring starts over for the gun now in hand"
+                  },
+                  {
+                      "anchor":  "pp.reloading=0; pp.rlTot=0; pp.rlArm=0;",
+                      "replacement":  "reloadCancel(pp);"
+                  },
+                  {
+                      "anchor":  "    p.reloading=0;   // v13.83, combat audit: a reload does not wait on the floor to finish after he stands",
+                      "replacement":  "    reloadCancel(p);   // v28.xx (cw-cx-reloadmedical): going down loses the reload and its chain."
+                  },
+                  {
+                      "anchor":  "p.hand={k:k,t:len,len:len,armed:0,used:0,prev:!!mouse.down};\n  p.reloading=0;",
+                      "replacement":  "p.hand={k:k,t:len,len:len,armed:0,used:0,prev:!!mouse.down};\n  reloadCancel(p);   // v28.xx (cw-cx-reloadmedical): taking an item out cuts the reload, including its sound and chain."
+                  },
+                  {
+                      "anchor":  "p.swapped=false; p.reloading=0; p.jam=0;",
+                      "replacement":  "p.swapped=false; reloadCancel(p); p.jam=0;"
+                  },
+                  {
+                      "anchor":  "p.ammo=p.wep.mag; p.reloading=0; p.jam=0;",
+                      "replacement":  "p.ammo=p.wep.mag; reloadCancel(p); p.jam=0;"
+                  },
+                  {
+                      "anchor":  "p.roll=.38; p.rollCd=.85;",
+                      "replacement":  "reloadCancel(p); p.roll=.38; p.rollCd=.85;"
+                  },
+                  {
+                      "anchor":  "    tickReload(dt);   // v13.83, combat audit: and the reload keeps going through a roll",
+                      "replacement":  "    reloadCancel(p);   // v28.xx (cw-cx-reloadmedical): a roll loses the reload clock and chain."
+                  },
+                  {
+                      "anchor":  "  G.sprinting=sprint;\n  // v12.71:",
+                      "replacement":  "  G.sprinting=sprint;\n  if(sprint\u0026\u0026p.reloading\u003e0) reloadCancel(p);   // v28.xx (cw-cx-reloadmedical): sprint cuts the reload before it can finish.\n  // v12.71:"
+                  },
+                  {
+                      "anchor":  "keys[\u0027KeyR\u0027]\u0026\u0026p.reloading\u003c=0\u0026\u0026!p.hand\u0026\u0026p.ammo\u003cp.wep.mag",
+                      "replacement":  "keys[\u0027KeyR\u0027]\u0026\u0026p.reloading\u003c=0\u0026\u0026!p.hand\u0026\u0026!reloadMedicalBusy(p)\u0026\u0026!sprint\u0026\u0026p.ammo\u003cp.wep.mag"
+                  },
+                  {
+                      "anchor":  "mouse.down\u0026\u0026p.reloading\u003c=0\u0026\u0026!p.hand\u0026\u0026p.wep.mag\u003e0",
+                      "replacement":  "mouse.down\u0026\u0026p.reloading\u003c=0\u0026\u0026!p.hand\u0026\u0026!reloadMedicalBusy(p)\u0026\u0026!sprint\u0026\u0026p.wep.mag\u003e0"
+                  },
+                  {
+                      "anchor":  "if(rlHave(p)\u0026\u0026p.reloading\u003c=0\u0026\u0026CFG.autoRel!==0)",
+                      "replacement":  "if(rlHave(p)\u0026\u0026p.reloading\u003c=0\u0026\u0026!reloadMedicalBusy(p)\u0026\u0026!sprint\u0026\u0026CFG.autoRel!==0)"
+                  },
+                  {
+                      "anchor":  "  if(mouse.down\u0026\u0026!hotGun\u0026\u0026!p.hand){",
+                      "replacement":  "  // v28.xx (cw-cx-reloadmedical): a fresh, fireable trigger cuts a partial reload; holding an empty trigger still lets it finish.\n  if(hotGun\u0026\u0026mouse.down\u0026\u0026!p.fired\u0026\u0026!p.trigYield\u0026\u0026!p.cooking\u0026\u0026!p.hand\u0026\u0026!(p.drawT\u003e0)\u0026\u0026p.reloading\u003e0\u0026\u0026p.ammo\u003e0\u0026\u0026p.jam\u003c=0\u0026\u0026now-p.lastShot\u003ep.wep.rof*spinMul(p)*pwrRof()\u0026\u0026spinGo(p)) reloadCancel(p);\n  if(mouse.down\u0026\u0026!hotGun\u0026\u0026!p.hand){"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027heals and plates cancel reloads and block manual/empty reloads; every cancelled reload loses the active chain, for both local seats\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid)) return \u0027SKIP: no raid fixture\u0027;\n     var g,p,side,i,k,ix,tag,sl,bad=[],kk=keys,mm=Object.assign({},mouse),nk=Object.assign({},NET),pk=Object.assign({},PAD),cp=Object.assign({},CFG),hh=Object.assign({},HHOLD);\n     function ok(v,s){if(!v)bad.push(tag+\u0027: \u0027+s);}\n     function reset(){\n       keys={};mouse.down=false;PAD.on=false;PAD.mx=0;PAD.my=0;\n       p.wep=cloneObj(WEAPONS.rifle);p.drawRef=p.wep;p.drawT=0;p.drawLen=0;p.ammo=2;p.reserve=60;p.reloading=0;p.rlTot=0;p.rlArm=0;\n       p.hand=null;p.prep=null;p.prepA=null;p.healQ=0;p.healRate=0;p.healCap=undefined;p.healHi=0;p.healLo=undefined;p.cooking=false;\n       p.hp=30;p.maxhp=100;p.armor=0;p.armorCap=60;p.downed=false;p.dying=false;p.specOut=false;p.roll=0;p.rollWet=false;p.rollCd=0;p.jam=0;\n       p.iv=999;p.stam=100;p.stamLock=0;p.stamRelease=0;p.shotSprintRelease=false;p.ads=false;p.trigYield=0;p.fired=false;p.lastShot=-1e9;\n       g.bag=[\u0027bandage\u0027,\u0027medkit\u0027,\u0027plate\u0027,\u0027stim\u0027];g.hot=0;g.hotAssign={0:\u0027gun_rifle\u0027,6:\u0027bandage\u0027,7:\u0027medkit\u0027,8:\u0027plate\u0027,9:\u0027bandage\u0027};g.hotAuto={};g.hotPruned={};g.msel=\u0027bandage\u0027;\n       g.wheel=null;g.sprintOn=false;g.sprinting=false;g.shWas=false;g.crouchTog=false;HHOLD.arm=0;\n       p.arStk=2;p.arBonus=1;p.arGun=p.wep;p.arMul=1.1;p.arHot=0;\n     }\n     function arm(){keys={KeyR:true};updatePlayer(0.001);keys={};ok(p.reloading\u003e0,\u0027R did not stage a reload\u0027);p.arStk=2;p.arBonus=1;p.arHot=1;reloadFoley(p);}\n     function cut(s){ok(p.reloading===0\u0026\u0026p.rlTot===0\u0026\u0026p.rlArm===0,s+\u0027 retained the reload clock\u0027);ok(p.arStk===0\u0026\u0026p.arBonus===0\u0026\u0026p.arHot===0,s+\u0027 kept the chain\u0027);ok(!RLFX.on,s+\u0027 kept reload sound\u0027);}\n     function blocked(s){\n       keys={KeyR:true};mouse.down=false;updatePlayer(0.001);ok(!(p.reloading\u003e0),s+\u0027 allowed R\u0027);\n       keys={};p.ammo=0;p.fired=false;p.trigYield=0;mouse.down=true;updatePlayer(0.001);ok(!(p.reloading\u003e0),s+\u0027 allowed empty trigger\u0027);\n       mouse.down=false;keys={};\n     }\n     function belt(key,cell){\n       reset();arm();raidKey(key,false,null);keys={};cut(key+\u0027 draw\u0027);ok(p.hand\u0026\u0026p.hand.k===cell,key+\u0027 did not take item out\u0027);\n       if(p.hand){p.hand.t=0;mouse.down=false;handTick(p,0);mouse.down=true;handTick(p,0);mouse.down=false;}\n       ok(cell===\u0027plate\u0027?!!p.prepA:!!p.prep,key+\u0027 did not start medical\u0027);blocked(key);\n     }\n     try{\n       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();\n       __deploy({kit:[\u0027gun_rifle\u0027,\u0027gun_pistol\u0027],safe:null,mapIx:0,seed:4242});g=__state();p=g\u0026\u0026g.player;if(!p||g.over)return \u0027no live raid\u0027;\n       g.ents=[];g.zones=[];g.mapFirst=0;g.mapOpen=false;g.bagOpen=false;g.paused=false;g.trade=null;g.forgeUI=null;g.t=10;NET.on=false;\n       CFG.autoRel=1;CFG.sprintTgl=0;CFG.healPrep=1.5;CFG.armorPrep=2;\n       for(side=0;side\u003c2;side++){\n         NET.same=side?\u0027p2\u0027:\u0027host\u0027;NET.role=side?\u0027join\u0027:\u0027host\u0027;NET.seat=side;tag=NET.same;\n         belt(\u0027Digit7\u0027,\u0027bandage\u0027);belt(\u0027Digit8\u0027,\u0027medkit\u0027);belt(\u0027Digit9\u0027,\u0027plate\u0027);belt(\u0027Digit0\u0027,\u0027bandage\u0027);\n         // v28.xx (cw-cx-reloadmedical): H has no live medical picker after wheel4; exercise its shared use door with an assigned bandage cell.\n         reset();arm();ok(useBeltHeal(6),\u0027belt heal did not start\u0027);cut(\u0027belt heal\u0027);ok(!!p.prep,\u0027belt heal did not start wind-up\u0027);blocked(\u0027bandage wind-up\u0027);\n         tickPrep(2);ok(p.healQ\u003e0,\u0027bandage did not start healing\u0027);blocked(\u0027running heal\u0027);\n         tickHeal(100);keys={KeyR:true};updatePlayer(0.001);keys={};ok(p.reloading\u003e0,\u0027R stayed blocked after healing\u0027);\n         reset();arm();quickPlate();cut(\u0027quick plate\u0027);ok(!!p.prepA,\u0027quick plate did not start\u0027);blocked(\u0027plate wind-up\u0027);\n         tickPrep(3);keys={KeyR:true};updatePlayer(0.001);keys={};ok(p.reloading\u003e0,\u0027R stayed blocked after plate\u0027);\n         reset();arm();beltInstant(6);cut(\u0027instant bandage\u0027);ok(!!p.prep,\u0027instant bandage did not start\u0027);\n         reset();arm();beltInstant(8);cut(\u0027instant plate\u0027);ok(!!p.prepA,\u0027instant plate did not start\u0027);\n         reset();arm();handTake(\u0027medkit\u0027);cut(\u0027wheel draw\u0027);ok(wheelHeal(\u0027medkit\u0027)\u0026\u0026p.prep,\u0027wheel heal did not start\u0027);\n         reset();g.hot=5;arm();beltStep(1);cut(\u0027pad medical pick\u0027);ok(p.hand\u0026\u0026p.hand.k===\u0027bandage\u0027,\u0027pad bumper did not take bandage out\u0027);\n         reset();arm();mouse.down=true;var before=p.ammo;updatePlayer(0.001);cut(\u0027fire\u0027);ok(p.ammo===before-1,\u0027fire cancel did not fire a real round\u0027);\n         reset();p.wep=cloneObj(WEAPONS.shotgun);p.drawRef=p.wep;arm();mouse.down=true;before=p.ammo;updatePlayer(0.001);cut(\u0027shotgun fire\u0027);ok(p.ammo===before-1,\u0027shotgun fire cancel did not shoot\u0027);\n         reset();arm();p.roll=0.38;p.rollDir={x:1,y:0};updatePlayer(0.001);cut(\u0027roll\u0027);\n         reset();arm();keys={ShiftLeft:true,KeyW:true};updatePlayer(0.001);keys={};ok(g.sprinting,\u0027no sprint staged\u0027);cut(\u0027sprint\u0027);\n         reset();arm();p.sec=cloneObj(WEAPONS.pistol);p.secAmmo=3;swapGuns();cut(\u0027swap\u0027);\n         reset();arm();p.iv=0;p.hp=20;p.revived=false;damagePlayer(999,\u0027sentry\u0027,\u0027probe\u0027,p.x-2,p.y);ok(p.downed,\u0027no down staged\u0027);cut(\u0027down\u0027);\n         reset();arm();useStim(g.bag.indexOf(\u0027stim\u0027));ok(p.reloading\u003e0,\u0027stim cancelled reload\u0027);\n         reset();p.ammo=0;arm();mouse.down=true;updatePlayer(0.001);ok(p.reloading\u003e0,\u0027empty trigger cut its own reload\u0027);\n         reset();arm();p.reloading=1;p.arBonus=0;p.arHot=0;tickReload(0.002);ok(p.ammo\u003e2\u0026\u0026p.arStk===0,\u0027ordinary reload did not finish normally\u0027);\n         reset();arm();p.rlTot=p.wep.reload;p.reloading=p.rlTot*0.49;p.rlArm=1;keys={KeyR:true};ok(activeReloadTick(p)\u0026\u0026p.arStk===3\u0026\u0026p.arBonus===1,\u0027active reload was treated as cancellation\u0027);keys={};\n       }\n       return bad.length?bad.slice(0,20).join(\u0027; \u0027):null;\n     }finally{\n       if(p){p.downed=false;p.prep=null;p.prepA=null;p.healQ=0;p.hand=null;p.arStk=0;p.arBonus=0;p.reloading=0;}rlfxStop();\n       try{__endRaid(\u0027abandon\u0027);}catch(_e){}__topClear();\n       Object.assign(NET,nk);Object.assign(PAD,pk);Object.assign(CFG,cp);Object.assign(HHOLD,hh);keys=kk;Object.assign(mouse,mm);\n     }\n   }},"
+}
