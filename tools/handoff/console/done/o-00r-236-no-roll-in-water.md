@@ -10,3 +10,5 @@ Build:
 Check (must FAIL on the current build): pillager in water, press roll: p.roll stays 0 and stamina unchanged; roll toward water from 60 px away: the roll ends within a few px of the edge and he is wading.
 Rules: seed 4242 fingerprint (ents 85/374, containers 165/593) must hold; both windows; never touch the pickup stack, loot sounds or loot rows. DESIGN.md watch line: "no rolling in water". Model: Sonnet 5.5 high.
 TASK DONE when it shipped and is ON HIS PC.
+
+CEO 10-29 06:35: accepted without a linked-window run. A roll refusal is a local input rule; the regression covers host and p2 input roles, and both camera roles were photographed. Linked reviews are kept for changes that sync between windows.
