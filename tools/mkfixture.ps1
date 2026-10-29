@@ -9809,7 +9809,7 @@ class Audio {
      function ku(c){ window.dispatchEvent(new KeyboardEvent('keyup',{code:c,key:c,bubbles:true,cancelable:true})); }
      function clr(){ for(var z in keys) keys[z]=false; }
      function setMap(m){ P.keymap=m; P.keymapV=3; KEYS.inv=null; keysInv(); }
-     function mmb(){ NET.pingAt=0; NET.pingLast=null; window.dispatchEvent(new MouseEvent('mousedown',{button:1,bubbles:true,cancelable:true})); window.dispatchEvent(new MouseEvent('mouseup',{button:1,bubbles:true,cancelable:true})); return NET.pingLast; }
+     function mmb(){ /* v28.xx (cw-cx-marklegacy): independent input cases; a second press on the same persistent spot clears by design. */ NET.pings=[]; NET.wps={}; g.waypoint=null; NET.pingAt=0; NET.pingLast=null; window.dispatchEvent(new MouseEvent('mousedown',{button:1,bubbles:true,cancelable:true})); window.dispatchEvent(new MouseEvent('mouseup',{button:1,bubbles:true,cancelable:true})); return NET.pingLast; }
      function stand(){ p.downed=false; p.dying=false; p.roll=0; p.iv=99; p.cooking=0; p.meleeAt=undefined; p.lastShot=undefined; g.barT=0; g.paused=false; g.trade=null; g.bagOpen=false; g.mapOpen=false; g.forgeUI=null; g.searching=null; if(g.mapFirst) g.mapFirst=null; clr(); }
      function keyRow(code){ var m=new RegExp('class="keybtn[^"]*" data-k="'+code+'" style="([^"]*)">([^<]*)<').exec(h); return m?{st:m[1],k:m[2]}:null; }
      try{
@@ -68478,11 +68478,11 @@ class Audio {
        if(PAD.prev){ for(k in PAD.prev) if(!(k in PV)) delete PAD.prev[k]; for(k in PV) PAD.prev[k]=PV[k]; }
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'20.76',what:'on a controller the legends name D-UP for the ping, never both bumpers, and the compact party legend lists the ping once',
+  {v:'20.76',what:'on a controller the legends name D-UP for the mark (formerly ping), never both bumpers, and the compact party legend lists that action once',
    run:function(){
      if(typeof LEGEND_PAD==='undefined'||typeof drawLegend!=='function'||typeof hudOff!=='function'||!window.__deploy||!window.__endRaid||typeof NET!=='object'||!NET||typeof PAD!=='object'||!PAD) return 'SKIP: no legend or raid here';
      var NK={}, k, bad=[], i, j, r, g=null, bump='LB'+' + '+'RB', txt=[], had=Object.prototype.hasOwnProperty.call(ctx,'fillText'), oFT=ctx.fillText, oOn=PAD.on, oBr=PAD.brand, oLo, pings=0;
-     for(i=0;i<LEGEND_PAD.length;i++) for(j=0;j<LEGEND_PAD[i][1].length;j++){ r=LEGEND_PAD[i][1][j]; if(/ping/i.test(String(r[1]))&&String(r[0]).indexOf(bump)>=0) bad.push('the full controller list says '+r[0]+' '+r[1]); }
+     for(i=0;i<LEGEND_PAD.length;i++) for(j=0;j<LEGEND_PAD[i][1].length;j++){ r=LEGEND_PAD[i][1][j]; if(/(?:ping|mark)/i.test(String(r[1]))&&String(r[0]).indexOf(bump)>=0) bad.push('the full controller list says '+r[0]+' '+r[1]); }
      for(k in NET) NK[k]=NET[k];
      try{
        NET.on=false; NET.role=null; NET.peers=[];
@@ -68496,9 +68496,9 @@ class Audio {
        try{ drawLegend(); } finally { if(had) ctx.fillText=oFT; else delete ctx.fillText; }
        g.legendOn=oLo;
        if(txt.indexOf('drop to trade')<0) bad.push('the compact party legend lost its drop to trade row ('+txt.length+' lines drawn)');
-       for(i=0;i<txt.length;i++) if(/^ping/.test(txt[i])) pings++;
+       for(i=0;i<txt.length;i++) if(/^(?:ping|mark)\b/i.test(txt[i])){ pings++; if(String(txt[i-1]).toUpperCase()!=='D-UP') bad.push('the compact controller mark row does not name D-UP'); }
        if(txt.indexOf(bump)>=0) bad.push('the compact party legend names both bumpers for the ping');
-       if(pings!==1) bad.push('the compact party legend lists the ping '+pings+' times');
+       if(pings!==1) bad.push('the compact party legend lists the mark action '+pings+' times');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        if(had) ctx.fillText=oFT; else delete ctx.fillText;
