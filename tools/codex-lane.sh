@@ -321,6 +321,10 @@ ship_key(){
   why=$(lint_mk "$mk" "$k") || { appendfb "The lane refused mk-$k.ps1: $why"; return 1; }
   if [ -e "$dst" ] && ! grep -qxF "$k" "$LS/installed.txt"; then appendfb "The key $k is already used by another helper. Rename it (a new cw-cx- key) in keys.txt and the file name and the draft file name."; return 1; fi
   LC_ALL=C tr -d '\000' < "$mk" | LC_ALL=C sed '1s/^\xff\xfe//; 1s/^\xef\xbb\xbf//' > "$dst" || { appendfb "lane problem: could not copy the mk script to the scratchpad"; return 2; }
+  # 10-29 (CEO): the ship writes only draft.why into DESIGN.md and Codex puts its Watch: line in draft.now; every run of this mk script now ends by copying it (watchfix.ps1)
+  printf '
+& "%s" -Key %s
+' "$(cygpath -w "$R/tools/handoff/codex/watchfix.ps1")" "$k" >> "$dst"
   grep -qxF "$k" "$LS/installed.txt" || echo "$k" >> "$LS/installed.txt"
   ramwait || { say "waiting for RAM before the gate ($name)"; return 2; }
   say "gate: preflight $k ($name, codex)"

@@ -140,3 +140,6 @@ A linked two-window review costs a Claude helper about 140k tokens, so say in yo
 1. SYNCED: it moves between the two windows (packets, rewards, shared state, host/peer authority). Write "LINKED REVIEW NEEDED: synced" and the CEO chat runs a linked review.
 2. LOCAL: a rule of one window only (input, own HUD, own sound, own movement). Write "LOCAL: no linked review". The role regression check plus the per-role camera shots are enough, and the job closes on its ON HIS PC line.
 Never ask for a linked review for a local rule. When unsure, name the packet or shared field that would carry it; if you cannot name one, it is local.
+
+## The Watch: line (10-29)
+Put your "Watch:" line in the draft's why. If it is only in now, the lane copies it into why every time your mk script runs (tools/handoff/codex/watchfix.ps1), so the DESIGN.md section keeps it. No coordinator doc handoff is needed for it.
