@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.37 - the hotbar has a 9 key
+
+Co-op hunt while he was away. His order 10-28: add key 9 between 8 and 0, keeping the rocket launcher on 0 and old saved assignments on their keys.
+
+MEASURED. Check 36.37 passes, and fails on v36.36.
 ## v36.36 - UNDERCROFT WITHOUT HINT BARS
 
 Co-op hunt while he was away. His 2026-10-28 order removes the Undercroft footer and station option rows. Keep station E prompts, all actions and controls help. Watch: the undercroft has no key bars.

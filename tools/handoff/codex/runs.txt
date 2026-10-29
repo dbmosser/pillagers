@@ -525,3 +525,8 @@
 2026-10-29 02:13 o-00k-229-run-goals-pay-cash-not-sp 324s ok PARTIAL in=8294210 out=51441 run=5
 2026-10-29 02:24 o-00l-230-undercroft-no-hint-bars 370s ok PARTIAL in=1160578 out=12719 run=1
 2026-10-29 02:26 o-00l-230-undercroft-no-hint-bars 97s ok PARTIAL in=1558102 out=15561 run=2
+2026-10-29 02:39 o-00l-230-undercroft-no-hint-bars 87s ok DONE in=1968099 out=17793 run=3
+2026-10-29 02:55 o-00m-231-hotbar-key-9 979s ok PARTIAL in=5606849 out=29967 run=1
+2026-10-29 02:58 o-00m-231-hotbar-key-9 123s ok PARTIAL in=7593865 out=34750 run=2
+2026-10-29 02:58 o-00m-231-hotbar-key-9 33s ok PARTIAL in=8540538 out=36031 run=3
+2026-10-29 03:01 o-00m-231-hotbar-key-9 120s ok PARTIAL in=9930521 out=40732 run=4

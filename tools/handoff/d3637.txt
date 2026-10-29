@@ -1,0 +1,5 @@
+## v36.37 - the hotbar has a 9 key
+
+Co-op hunt while he was away. His order 10-28: add key 9 between 8 and 0, keeping the rocket launcher on 0 and old saved assignments on their keys.
+
+MEASURED. Check 36.37 passes, and fails on v36.36.

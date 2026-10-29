@@ -4270,5 +4270,69 @@
   "pic": "tools/handoff/console/notes/shots/o-00k-229-run-goals-pay-cash-not-sp-recipes-4/goal-demo-peer-hud-1080.jpg",
   "task": "o-00k-229-run-goals-pay-cash-not-sp",
   "when": "2026-10-29T06:08"
+ },
+ "30-hub-lift-kb": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The hub does feel like this game, with a clear lime 'enter raid!' beacon. But the screen is crowded: overlapping translucent aura discs, two stacked prompts at the bottom, and a loud amber 'experimental' tag all compete for attention, and the capital letter in the [e] hint isn't the only break from the rules.",
+  "findings": [
+   "P0 bottom centre, around the stash station and the 'enter raid!' prompt: Delete the welcome-pack sentence, or move it to the left feed. Show one prompt only, at 20px f-cond 600 on a --ui-panel pill with a 1px --ui-line-hi border. Place it 16px under the station label and clear the aura disc behind it. Use lime (--acc) text only when the prompt is the focused action.",
+   "P1 the whole floor: 8 aura discs of different tints, plus a large central disc: Remove the centre disc and keep one 1px ring per station at 12% opacity. Use one neutral tint, and lime only on the nearest station. Never overlap neighbours.",
+   "P1 enter raid! banner (top centre): Use a --ui-panel plate with a 4px radius and a 2px --acc border. Set the text at 32px f-cond 700 in --acc and drop the '!' so it matches the straight-copy rule. Align it centred 16px above the station, clear of the pillars.",
+   "P1 '***experimental feature may glitch***' tag under 'the last pour': Replace it with a 16px '--warn' glyph and one word ('beta') inside the station label chip, or drop it. Remove the asterisks.",
+   "P1 top-right currency strip: '$900 0 xp stash $5,064 bag $0': Use a vertical list on the right with a 16px label in --tx-2 and a 20px value in --tx-1, all items the same size. Put it in a --ui-panel box with 16px padding, 24px from the screen edge. Leave the build to cw-trcol if that job owns it."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00l-230-undercroft-no-hint-bars-recipes-1/230-hub-lift-kb-1080.jpg",
+  "task": "o-00l-230-undercroft-no-hint-bars",
+  "when": "2026-10-29T06:36"
+ },
+ "30-hub-lift-pad": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The hub reads as a prototype: the 'enter raid!' sign is the only strong accent but it clashes with the soft-rounded name tags, the bottom of the screen is a pile-up of tooltip, prompt, stash tag and hotbar, and nothing has a consistent type scale or panel style.",
+  "findings": [
+   "P0 bottom centre: the stash tag, the 'welcome pack' tooltip, the '[a] enter raid!' prompt and the lift pad: Keep one prompt pill at 20px f-cond, --acc fill with --acc-ink text, 8px above the pad. Delete the welcome-pack sentence (or move it to a 16px label on the stash tag only). Drop the duplicate prompt, since the top sign already names the action.",
+   "P0 top-right 'the mainframe' zone: Remove the stray circle or snap it to the zone centre. Use one halo style: 2px --ui-line-hi ring at 12% fill, with only the active zone in --acc or its own colour.",
+   "P1 'enter raid!' sign, top centre: Make it a 32px f-cond 700 label in a --ui-panel box with a 1px --acc border, 4px radius, and remove the '!'. Reserve a filled lime fill for the live prompt only.",
+   "P1 name tags (gambler, mainframe, shop, settings, the last pour, fashion, the stash): One tag spec: 16px f-cond 600, 8px 12px padding, --ui-panel fill, 1px --ui-line-hi border, 4px radius, centred 12px above the station. Offset 'the stash' and 'fashion' to avoid avatars.",
+   "P1 '***experimental feature may glitch***' under 'the last pour': Replace with a small 14px --warn glyph plus the word 'beta' inside the station tag, or drop it. Remove the asterisks."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00l-230-undercroft-no-hint-bars-recipes-1/230-hub-lift-pad-1080.jpg",
+  "task": "o-00l-230-undercroft-no-hint-bars",
+  "when": "2026-10-29T06:37"
+ },
+ "30-hub-midroom-kb": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The hub is readable and the lime 'enter raid!' call-out is the right first read, but it is let down by a crowded middle, overlapping glow circles, mixed label styles and an untidy top-right readout.",
+  "findings": [
+   "P1 station labels (gambler, mainframe, shop craft and hire, settings, last pour, stash, fashion): Light only the nearest station: 2px --acc border and --tx-1 text, with the others dimmed to --tx-2 at 70% opacity. Anchor every label 8px above its pad. Use the same 20px f-cond 600 for all labels, with 8px/16px padding and a 4px radius.",
+   "P1 top-right readout: '$900  0 xp  stash $5,064 bag $0': Make every item 20px f-cond 600 in one panel (--ui-panel, 1px --ui-line-hi border, 4px radius, 16px padding). Stack them vertically with 8px gaps. Use --tx-1 for values and --tx-2 for labels, and keep the right margin at least 32px.",
+   "P1 '***experimental feature may glitch***' under 'the last pour': Drop the asterisks and shorten it to 'experimental'. Set it at 16px --warn inside the label pill as a small tag. Alternatively, drop the text and use a 16px warn glyph beside the title.",
+   "P1 hub floor: translucent glow circles and rings: Remove stray and overlapping circles. Keep one 1px --ui-line-hi ring per station, with the nearest station's ring in --acc at 40% fill. Keep each pad's colour only if it is a tied-down meaning, and cap the circle fill at 8% opacity.",
+   "P2 bottom toast 'the welcome pack is in your stash.' and the hotbar: Move the toast to the top-centre banner slot, or the left feed, and trim it to 'welcome pack in stash'. Raise the empty-slot icons to 50% opacity. Change the selected slot border to --acc 2px. Keep the hotbar at least 24px from the toast."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00l-230-undercroft-no-hint-bars-recipes-1/230-hub-midroom-kb-1080.jpg",
+  "task": "o-00l-230-undercroft-no-hint-bars",
+  "when": "2026-10-29T06:37"
+ },
+ "30-hub-midroom-pad": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "the hub reads as a busy template: a huge lime 'enter raid!' sign is the only strong hierarchy, while a noisy room of overlapping glow circles and a clipped, mixed-style HUD make it look unfinished.",
+  "findings": [
+   "P0 top-right currency strip ($900, 0 xp, stash $5,064 bag $0): Make it one vertical list in the top-right with a 48px margin: $900, xp and stash each as a 20px f-cond 600 row, tx-1 for the value and tx-2 for the 16px label. Remove the 'xp' sub-label size jump and put 'bag' on its own row.",
+   "P0 station label 'enter raid!' (top centre): Make it the same 20px tag as the other stations, lime text only when focused or in range, no '!' ('enter raid'). If it must be the hero, give it the 32px title size and keep the same dark tag fill with a 1px --ui-line-hi border, 4px radius.",
+   "P1 proximity glow circles around each station and the player: Remove the fills and show one 2px ring in --acc at 60% only on the station the player is currently in range of; the other stations show a 1px --ui-line ring or none.",
+   "P1 '***experimental feature may glitch***' under 'the last pour': Replace with a small --warn glyph or the single word 'beta' at 16px inside the same tag as the station label; delete the asterisks.",
+   "P1 toast 'the welcome pack is in your stash.' and 'the stash' tag: Show it in the left feed only (one place for a line), 16px, or drop it. If it stays, place it in the bottom-left above the hotbar, never on a station."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00l-230-undercroft-no-hint-bars-recipes-1/230-hub-midroom-pad-1080.jpg",
+  "task": "o-00l-230-undercroft-no-hint-bars",
+  "when": "2026-10-29T06:37"
  }
 }

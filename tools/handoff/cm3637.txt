@@ -1,0 +1,7 @@
+v36.37: the hotbar has a 9 key
+
+the hotbar has a 9 key
+
+Check 36.37. Fails on v36.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

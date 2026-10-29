@@ -1,0 +1,1 @@
+| the hotbar has a 9 key | v36.37 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 36.37 passes, fails on v36.36 |

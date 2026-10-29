@@ -1,0 +1,144 @@
+{
+    "title":  "the hotbar has a 9 key",
+    "why":  "His order 10-28: add key 9 between 8 and 0, keeping the rocket launcher on 0 and old saved assignments on their keys.",
+    "now":  "the hotbar has a 9 key",
+    "edits":  [
+                  {
+                      "anchor":  "var HOTBAR_N=9;",
+                      "replacement":  "var HOTBAR_N=10; // v28.xx (cw-cx-hotbar9), his order 10-28: the hotbar has a 9 key."
+                  },
+                  {
+                      "anchor":  "var GUNKEYS=9;   // v26.xx (wheel4), HIS ORDER 2026-10-14: \"Lets ONLY show guns at the bottom of the screen, only 9 of them.\" Nine gun keys; grenades, heals and plates live on the item wheel (hold Q)",
+                      "replacement":  "var GUNKEYS=10; // v28.xx (cw-cx-hotbar9): ten assignable cells, keys 1-9 and 0."
+                  },
+                  {
+                      "anchor":  "var BELT_CLASS=[\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027];   // v26.xx (wheel4): was four guns, two throwables, two medical and a plate; the items moved to the wheel",
+                      "replacement":  "var BELT_CLASS=[\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027,\u0027gun\u0027];   // v26.xx (wheel4): was four guns, two throwables, two medical and a plate; the items moved to the wheel"
+                  },
+                  {
+                      "anchor":  "#root #hub #hotplanwrap\u003ediv\u003ediv\u003ediv\u003ediv:first-child{display:grid!important;grid-template-columns:repeat(9,minmax(0,1fr));gap:8px!important;width:100%;}",
+                      "replacement":  "#root #hub #hotplanwrap\u003ediv\u003ediv\u003ediv\u003ediv:first-child{display:grid!important;grid-template-columns:repeat(10,minmax(0,1fr));gap:8px!important;width:100%;}"
+                  },
+                  {
+                      "anchor":  "  mig739:1,mig945:1,beltV:5,   // v21.93: beltV, the four-gun belt plan, born set (beltSlidePlan)",
+                      "replacement":  "  mig739:1,mig945:1,beltV:5,hotbarV:10,   // v21.93: beltV, the four-gun belt plan, born set (beltSlidePlan)"
+                  },
+                  {
+                      "anchor":  "    var dn=(code===\u0027Digit0\u0027)?9:parseInt(code.slice(5),10);   // v28.xx (cw-gunkeys0): key 0 is the ninth gun key",
+                      "replacement":  "    var dn=(code===\u0027Digit0\u0027)?10:parseInt(code.slice(5),10); // v28.xx (cw-cx-hotbar9): 0 is the tenth cell."
+                  },
+                  {
+                      "anchor":  "    if(dn\u003e=1\u0026\u0026dn\u003c=9\u0026\u0026code!==\u0027Digit9\u0027){",
+                      "replacement":  "    if(dn\u003e=1\u0026\u0026dn\u003c=HOTBAR_N){ // v28.xx (cw-cx-hotbar9): 9 is the new cell; 0 remains last."
+                  },
+                  {
+                      "anchor":  "function slotKeyCode(i){ return i===8?\u0027Digit0\u0027:\u0027Digit\u0027+(i+1); }   // v28.xx (cw-gunkeys0): the ninth cell is key 0",
+                      "replacement":  "function slotKeyCode(i){ return i===9?\u0027Digit0\u0027:\u0027Digit\u0027+(i+1); } // v28.xx (cw-cx-hotbar9): keys 1-9 then 0."
+                  },
+                  {
+                      "anchor":  "function slotKeyName(i){ return i===8?\u00270\u0027:String(i+1); }",
+                      "replacement":  "function slotKeyName(i){ return i===9?\u00270\u0027:String(i+1); }"
+                  },
+                  {
+                      "anchor":  "var GUN_CLASSES=[\u0027pistol\u0027,\u0027smg\u0027,\u0027rifle\u0027,\u0027carbine\u0027,\u0027lmg\u0027,\u0027shotgun\u0027,\u0027sniper\u0027,\u0027energy\u0027,\u0027rocket\u0027];",
+                      "replacement":  "var GUN_CLASSES=[\u0027pistol\u0027,\u0027smg\u0027,\u0027rifle\u0027,\u0027carbine\u0027,\u0027lmg\u0027,\u0027shotgun\u0027,\u0027sniper\u0027,\u0027energy\u0027,null,\u0027rocket\u0027]; // v28.xx (cw-cx-hotbar9): key 9 starts without a class; rocket keeps 0."
+                  },
+                  {
+                      "anchor":  "// Marksman class is off the keys: 7 sniper, 8 energy, and the Rocket Launcher class sits on key 0 (the ninth cell, after 8). Key 9 does nothing.",
+                      "replacement":  "// v28.xx (cw-cx-hotbar9): 7 sniper, 8 energy, 9 unassigned, 0 rocket launcher; old assignments keep their printed key."
+                  },
+                  {
+                      "anchor":  "function gunKeysMigrate(a){   // a saved table that still holds the Marksman class loses it and gains the Rocket class, so no one\u0027s saved order is thrown away\n  if(!Array.isArray(a)||a.indexOf(\u0027marksman\u0027)\u003c0) return a;\n  var o=a.filter(function(c){ return c!==\u0027marksman\u0027; });\n  if(o.indexOf(\u0027rocket\u0027)\u003c0) o.push(\u0027rocket\u0027);\n  return o;\n}",
+                      "replacement":  "// v28.xx (cw-cx-hotbar9): retain the saved class order, including the class on key 0.\nfunction gunKeysMigrate(a){\n  if(!Array.isArray(a)) return a;\n  var o=a.slice();\n  if(o.indexOf(\u0027marksman\u0027)\u003e=0){ o=o.filter(function(c){ return c!==\u0027marksman\u0027; }); if(o.indexOf(\u0027rocket\u0027)\u003c0) o.push(\u0027rocket\u0027); }\n  if(o.length===9) o.splice(8,0,null);\n  return o;\n}"
+                  },
+                  {
+                      "anchor":  "function applyLoadedProfile(r){",
+                      "replacement":  "// v28.xx (cw-cx-hotbar9), his order 10-28: add 9 between 8 and 0; never move an existing key 0 assignment to 9.\nfunction hotbarProfileTen(p){\n  if(!p||typeof p!==\u0027object\u0027||p.hotbarV===10) return;\n  [p.hotAssign,p.hotBeforeFree,p.kitSaved\u0026\u0026p.kitSaved.hot].forEach(function(h){\n    if(!h||typeof h!==\u0027object\u0027) return;\n    if(Object.prototype.hasOwnProperty.call(h,8)){ h[9]=h[8]; delete h[8]; }\n    if(Array.isArray(h)\u0026\u0026h.length===9) h.length=10;\n  });\n  if(Array.isArray(p.gunKeys)) p.gunKeys=gunKeysMigrate(p.gunKeys);\n  if(p.keymap\u0026\u0026typeof p.keymap===\u0027object\u0027) for(var k in p.keymap) if(Object.prototype.hasOwnProperty.call(p.keymap,k)\u0026\u0026p.keymap[k]===\u0027Digit9\u0027) delete p.keymap[k];\n  if(typeof KEYS===\u0027object\u0027\u0026\u0026KEYS) KEYS.inv=null;\n  p.hotbarV=10;\n}\nfunction applyLoadedProfile(r){"
+                  },
+                  {
+                      "anchor":  "  if(!P.menuZoom) P.menuZoom=1.3;",
+                      "replacement":  "  hotbarProfileTen(P); // v28.xx (cw-cx-hotbar9): loaded and first-run profiles share the same in-place stamp.\n  if(!P.menuZoom) P.menuZoom=1.3;"
+                  },
+                  {
+                      "anchor":  "  var d=(ev.key===\u00270\u0027)?8:ev.key.charCodeAt(0)-49;                 // v31.xx (cw-gunkeys19): \u00271\u0027 -\u003e 0 up to \u00278\u0027 -\u003e 7, and \u00270\u0027 is the ninth gun key (the rocket launcher, cw-gunkeys0); \u00279\u0027 does nothing",
+                      "replacement":  "  var d=(ev.key===\u00270\u0027)?9:ev.key.charCodeAt(0)-49; // v28.xx (cw-cx-hotbar9): stash digits follow the ten-cell belt."
+                  },
+                  {
+                      "anchor":  "  if(ev.key.length!==1||d\u003c0||d\u003e8||ev.key===\u00279\u0027) return;",
+                      "replacement":  "  if(ev.key.length!==1||!/^[0-9]$/.test(ev.key)||d\u003c0||d\u003e=HOTBAR_N) return; // v28.xx (cw-cx-hotbar9): all ten stash digit keys."
+                  },
+                  {
+                      "anchor":  "        \u003cdiv\u003e\u003ckbd\u003e1-8, 0\u003c/kbd\u003e bind to key\u003c/div\u003e",
+                      "replacement":  "        \u003cdiv\u003e\u003ckbd\u003e1-9, 0\u003c/kbd\u003e bind to key\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "  if(KEYS_FIXED[physical]||/^Digit[0-8]$/.test(physical)){ KEYS.note={t:\u0027clash\u0027,s:keyName(physical)+\u0027 KEEPS ITS OWN JOB. ESC, TAB, P, BACKSPACE, F9, F11, THE KEY LEFT OF 1, 1-8 AND 0 CANNOT BE REBOUND.\u0027}; return false; }   // v25.xx (keyremap): the pause key and its kin are reserved",
+                      "replacement":  "  if(KEYS_FIXED[physical]||/^Digit[0-9]$/.test(physical)){ KEYS.note={t:\u0027clash\u0027,s:keyName(physical)+\u0027 KEEPS ITS OWN JOB. ESC, TAB, P, BACKSPACE, F9, F11, THE KEY LEFT OF 1, 1-9 AND 0 CANNOT BE REBOUND.\u0027}; return false; }   // v25.xx (keyremap): the pause key and its kin are reserved"
+                  },
+                  {
+                      "anchor":  "var KEYS_LOCKED=[[\u0027SELECT A GUN\u0027,\u00271 - 8, 0\u0027],[\u0027PAUSE\u0027,\u0027P\u0027],[\u0027PAUSE, OR BACK OUT\u0027,\u0027TAB\u0027],[\u0027CLOSE A WINDOW\u0027,\u0027ESC\u0027],[\u0027PUT THE CURSOR BACK\u0027,\u0027BACKSPACE\u0027],[\u0027timelord mode\u0027,\u0027LEFT OF 1\u0027],[\u0027FULLSCREEN\u0027,\u0027F11\u0027]];",
+                      "replacement":  "var KEYS_LOCKED=[[\u0027SELECT A GUN\u0027,\u00271 - 9, 0\u0027],[\u0027PAUSE\u0027,\u0027P\u0027],[\u0027PAUSE, OR BACK OUT\u0027,\u0027TAB\u0027],[\u0027CLOSE A WINDOW\u0027,\u0027ESC\u0027],[\u0027PUT THE CURSOR BACK\u0027,\u0027BACKSPACE\u0027],[\u0027timelord mode\u0027,\u0027LEFT OF 1\u0027],[\u0027FULLSCREEN\u0027,\u0027F11\u0027]];"
+                  },
+                  {
+                      "anchor":  "    s(\u0027ControlLeft\u0027)+\u0027 / \u0027+s(\u0027KeyC\u0027)+\u0027 crouch toggle \u0026nbsp; \u0027+s(\u0027KeyE\u0027)+\u0027 search / use \u0026nbsp; \u0027+s(\u0027KeyX\u0027)+\u0027 extraction \u0026nbsp; \u0027+s(\u0027KeyR\u0027)+\u0027 reload \u0026nbsp; \u0027+s(\u0027KeyV\u0027)+\u0027 melee \u0026nbsp; \u0027+s(\u0027KeyQ\u0027)+\u0027 item wheel (hold) \u0026nbsp; \u0027+s(\u0027KeyF\u0027)+\u0027 next gun \u0026nbsp; \u0027+k(\u00271-8, 0\u0027)+\u0027 guns \u0026nbsp; \u0027+s(\u0027KeyB\u0027)+\u0027 / \u0027+s(\u0027KeyI\u0027)+\u0027 backpack \u0026nbsp; \u0027+",
+                      "replacement":  "    s(\u0027ControlLeft\u0027)+\u0027 / \u0027+s(\u0027KeyC\u0027)+\u0027 crouch toggle \u0026nbsp; \u0027+s(\u0027KeyE\u0027)+\u0027 search / use \u0026nbsp; \u0027+s(\u0027KeyX\u0027)+\u0027 extraction \u0026nbsp; \u0027+s(\u0027KeyR\u0027)+\u0027 reload \u0026nbsp; \u0027+s(\u0027KeyV\u0027)+\u0027 melee \u0026nbsp; \u0027+s(\u0027KeyQ\u0027)+\u0027 item wheel (hold) \u0026nbsp; \u0027+s(\u0027KeyF\u0027)+\u0027 next gun \u0026nbsp; \u0027+k(\u00271-9, 0\u0027)+\u0027 guns \u0026nbsp; \u0027+s(\u0027KeyB\u0027)+\u0027 / \u0027+s(\u0027KeyI\u0027)+\u0027 backpack \u0026nbsp; \u0027+"
+                  },
+                  {
+                      "anchor":  "  return cls===\u0027gun\u0027?\u0027GUNS GO ON KEYS 1 TO 8 AND 0\u0027:\u0027ITEMS GO ON THE WHEEL\u0027;   // v31.xx (cw-gunkeys19): the gun keys are 1 to 8 and 0 (key 9 does nothing); the other two refusals say this word too   // v26.xx (wheel4): the belt takes guns only",
+                      "replacement":  "  return cls===\u0027gun\u0027?\u0027GUNS GO ON KEYS 1 TO 9 AND 0\u0027:\u0027ITEMS GO ON THE WHEEL\u0027;   // v31.xx (cw-gunkeys19): the gun keys are 1 to 8 and 0 (key 9 is assignable); the other two refusals say this word too   // v26.xx (wheel4): the belt takes guns only"
+                  },
+                  {
+                      "anchor":  "  [\u0027GEAR\u0027,[[\u00271-8, 0\u0027,\u0027a gun for each kind, set in the stash\u0027],[\u0027HOLD Q\u0027,\u0027item wheel: aim at a grenade, heal or plate and let go\u0027],[\u0027FIRE\u0027,\u0027use the item in hand, or fire\u0027],[\u0027B / I\u0027,\u0027backpack\u0027],[\u0027ENTER\u0027,\u0027equip gun from backpack\u0027],[\u0027BKSP\u0027,\u0027reset cursor\u0027]]],",
+                      "replacement":  "  [\u0027GEAR\u0027,[[\u00271-9, 0\u0027,\u0027a gun for each kind, set in the stash\u0027],[\u0027HOLD Q\u0027,\u0027item wheel: aim at a grenade, heal or plate and let go\u0027],[\u0027FIRE\u0027,\u0027use the item in hand, or fire\u0027],[\u0027B / I\u0027,\u0027backpack\u0027],[\u0027ENTER\u0027,\u0027equip gun from backpack\u0027],[\u0027BKSP\u0027,\u0027reset cursor\u0027]]],"
+                  },
+                  {
+                      "anchor":  "  [\u00271-8, 0\u0027,\u0027guns\u0027],[\u0027B / I\u0027,\u0027backpack\u0027],[\u0027LMB\u0027,\u0027use item\u0027],[\u0027M\u0027,\u0027map\u0027],",
+                      "replacement":  "  [\u00271-9, 0\u0027,\u0027guns\u0027],[\u0027B / I\u0027,\u0027backpack\u0027],[\u0027LMB\u0027,\u0027use item\u0027],[\u0027M\u0027,\u0027map\u0027],"
+                  },
+                  {
+                      "anchor":  "  [\u0027WEAPONS\u0027,\u0027keys 1 to 8 and 0 bring up\u0027],",
+                      "replacement":  "  [\u0027WEAPONS\u0027,\u0027keys 1 to 9 and 0 bring up\u0027],"
+                  },
+                  {
+                      "anchor":  "          say2(padOn()?padB(\u0027TACTICAL BELT \\u00b7 PICK UP AN ITEM WITH A, THEN A HERE\u0027):\u0027TACTICAL BELT \\u00b7 HOVER AN ITEM + PRESS 1-8 OR 0\u0027);   // v22.51: the shooter HUD voice, his name for the belt kept (v10.26)   // v16.80: a pad player is told the pad way",
+                      "replacement":  "          say2(padOn()?padB(\u0027TACTICAL BELT \\u00b7 PICK UP AN ITEM WITH A, THEN A HERE\u0027):\u0027TACTICAL BELT \\u00b7 HOVER AN ITEM + PRESS 1-9 OR 0\u0027);   // v22.51: the shooter HUD voice, his name for the belt kept (v10.26)   // v16.80: a pad player is told the pad way"
+                  },
+                  {
+                      "anchor":  "    [\u0027RELOAD\u0027,kn(\u0027KeyR\u0027),padB(pbn(2))],[\u0027SWITCH GUN\u0027,\u00271-8, 0\u0027,padB(pbn(4))+\u0027 / \u0027+padB(pbn(5))],[\u0027ITEMS\u0027,\u0027HOLD \u0027+kn(\u0027KeyQ\u0027),\u0027HOLD \u0027+padB(pbn(13))],   // v23.46 (arcade23): the quick heal",
+                      "replacement":  "    [\u0027RELOAD\u0027,kn(\u0027KeyR\u0027),padB(pbn(2))],[\u0027SWITCH GUN\u0027,\u00271-9, 0\u0027,padB(pbn(4))+\u0027 / \u0027+padB(pbn(5))],[\u0027ITEMS\u0027,\u0027HOLD \u0027+kn(\u0027KeyQ\u0027),\u0027HOLD \u0027+padB(pbn(13))],   // v23.46 (arcade23): the quick heal"
+                  },
+                  {
+                      "anchor":  "    if(!G.sim) say((\u0027Gun slot \u0027+(i+1)+\u0027 empty\u0027).toUpperCase());",
+                      "replacement":  "    if(!G.sim) say((\u0027Gun slot \u0027+slotKeyName(i)+\u0027 empty\u0027).toUpperCase());"
+                  },
+                  {
+                      "anchor":  "  if(s2.vacant){ if(!G.sim) say((\u0027Gun slot \u0027+(i+1)+\u0027 empty\u0027).toUpperCase()); _hinted=true; }   // v14.09, HUD audit: not written over by the cell line below",
+                      "replacement":  "  if(s2.vacant){ if(!G.sim) say((\u0027Gun slot \u0027+slotKeyName(i)+\u0027 empty\u0027).toUpperCase()); _hinted=true; }   // v14.09, HUD audit: not written over by the cell line below"
+                  },
+                  {
+                      "anchor":  "  for(i=0;i\u003cgl.length;i++) h+=\u0027\u003cdiv class=\"kst\" data-gk=\"\u0027+i+\u0027\" title=\"KEY \u0027+slotKeyName(i)+\u0027 \\u00b7 \u0027+GUN_CLASS_NAME[gl[i]]+\u0027 \\u00b7 DRAG ONTO ANOTHER KEY TO SWAP\"\u003e\u003cb\u003e\u0027+slotKeyName(i)+\u0027\u003c/b\u003e\u0027+iconImgHTML(GUN_CLASS_ICON[gl[i]],30,1)+\u0027\u003cspan\u003e\u0027+GUN_CLASS_NAME[gl[i]]+\u0027\u003c/span\u003e\u003c/div\u003e\u0027;",
+                      "replacement":  "  for(i=0;i\u003cgl.length;i++) h+=\u0027\u003cdiv class=\"kst\" data-gk=\"\u0027+i+\u0027\" title=\"KEY \u0027+slotKeyName(i)+\u0027 \\u00b7 \u0027+GUN_CLASS_NAME[gl[i]]+\u0027 \\u00b7 DRAG ONTO ANOTHER KEY TO SWAP\"\u003e\u003cb\u003e\u0027+slotKeyName(i)+\u0027\u003c/b\u003e\u0027+(gl[i]?iconImgHTML(GUN_CLASS_ICON[gl[i]],30,1):\u0027\u0027)+\u0027\u003cspan\u003e\u0027+GUN_CLASS_NAME[gl[i]]+\u0027\u003c/span\u003e\u003c/div\u003e\u0027;"
+                  },
+                  {
+                      "anchor":  "var GUN_CLASS_NAME={pistol:\u0027PISTOL\u0027,smg:\u0027SMG\u0027,rifle:\u0027RIFLE\u0027,carbine:\u0027CARBINE\u0027,lmg:\u0027LMG\u0027,shotgun:\u0027SHOTGUN\u0027,sniper:\u0027SNIPER\u0027,energy:\u0027ENERGY\u0027,rocket:\u0027ROCKET\u0027};",
+                      "replacement":  "var GUN_CLASS_NAME={pistol:\u0027PISTOL\u0027,smg:\u0027SMG\u0027,rifle:\u0027RIFLE\u0027,carbine:\u0027CARBINE\u0027,lmg:\u0027LMG\u0027,shotgun:\u0027SHOTGUN\u0027,sniper:\u0027SNIPER\u0027,energy:\u0027ENERGY\u0027,rocket:\u0027ROCKET\u0027,null:\u0027empty\u0027};"
+                  },
+                  {
+                      "anchor":  "      s=+from.slice(3); if(!(s\u003e=0\u0026\u0026s\u003c9)||s===ix) return;",
+                      "replacement":  "      s=+from.slice(3); if(!(s\u003e=0\u0026\u0026s\u003cgl.length)||s===ix) return; // v28.xx (cw-cx-hotbar9): class swaps include key 0 and the empty key 9."
+                  },
+                  {
+                      "anchor":  "  var sl=hotbarSlots(), n=sl.length, i=hotSel(), k;",
+                      "replacement":  "  var sl=hotbarSlots(), n=sl.length, i=(G.player\u0026\u0026G.player.hand\u0026\u0026G.player.hand.slot!==undefined)?G.player.hand.slot:hotSel(), k;"
+                  },
+                  {
+                      "anchor":  "  for(k=0;k\u003cn;k++){ i=(i+dir+n)%n; if(!(sl[i]\u0026\u0026(sl[i].vacant||sl[i].kind===\u0027empty\u0027||(i\u003cGUNKEYS\u0026\u0026sl[i].kind!==\u0027gun\u0027)))) break; }   // v25.xx (belt7): and a key with nothing on it (a throwable, medical or armour key with none of its kind); cw-hotfix1: and an item he put on a gun key",
+                      "replacement":  "  for(k=0;k\u003cn;k++){ i=(i+dir+n)%n; if(!(sl[i]\u0026\u0026(sl[i].vacant||sl[i].kind===\u0027empty\u0027))) break; }   // v25.xx (belt7): and a key with nothing on it (a throwable, medical or armour key with none of its kind); cw-hotfix1: and an item he put on a gun key"
+                  },
+                  {
+                      "anchor":  "  if(bagGunCell(sl[i])){",
+                      "replacement":  "  if(sl[i]\u0026\u0026/^(throw|heal|stim|armor)$/.test(sl[i].kind)){ beltEquip(i); return; } // v28.xx (cw-cx-hotbar9): pad bumpers can reach an item on 9 as well as a gun.\n  if(bagGunCell(sl[i])){"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-cx-hotbar9: ten drawn keys 1-9 and 0, digit 9 draws a gun and uses a wheel item dragged to 9, pad reaches 9, and old key 0 saves migrate once in place\u0027,\n   run:function(){\n     var g,p,sl,c,i,w,bi,an,rec=[],oFT=CanvasRenderingContext2D.prototype.fillText,oldP,saveKey=SKEY,stage=\u0027prepare\u0027;\n     function count(k){ return g.bag.filter(function(x){ return x===k; }).length; }\n     function press(k){ raidKey(k,false,null); keys[k]=false; }\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       oldP=JSON.parse(JSON.stringify(P));\n       if(HOTBAR_N!==10||GUNKEYS!==10) return \u0027the hotbar does not have ten assignable cells\u0027;\n       stage=\u0027direct old plan migration\u0027;\n       var legacy={credits:900,beltV:5,hotAssign:{0:\u0027gun_pistol\u0027,8:\u0027gun_rocket\u0027},hotBeforeFree:{8:\u0027medkit\u0027},kitSaved:{hot:[null,null,null,null,null,null,null,null,\u0027plate\u0027]},gunKeys:[\u0027energy\u0027,\u0027smg\u0027,\u0027rifle\u0027,\u0027carbine\u0027,\u0027lmg\u0027,\u0027shotgun\u0027,\u0027sniper\u0027,\u0027pistol\u0027,\u0027rocket\u0027]};\n       hotbarProfileTen(legacy);\n       if(legacy.hotAssign[9]!==\u0027gun_rocket\u0027||legacy.hotAssign[8]!==undefined||legacy.hotAssign[0]!==\u0027gun_pistol\u0027||legacy.hotBeforeFree[9]!==\u0027medkit\u0027||legacy.kitSaved.hot[9]!==\u0027plate\u0027||legacy.kitSaved.hot.length!==10) return \u0027old nine-cell assignments did not keep key 0\u0027;\n       legacy.hotAssign[8]=\u0027bandage\u0027; hotbarProfileTen(legacy);\n       if(legacy.hotAssign[8]!==\u0027bandage\u0027||legacy.hotAssign[9]!==\u0027gun_rocket\u0027) return \u0027the migration ran twice\u0027;\n       if(legacy.gunKeys[8]!==null||legacy.gunKeys[9]!==\u0027rocket\u0027||legacy.gunKeys[0]!==\u0027energy\u0027) return \u0027the saved class order moved\u0027;\n       var loaded=JSON.parse(JSON.stringify(oldP)); delete loaded.hotbarV; loaded.beltV=5; loaded.hotAssign={8:\u0027gun_rocket\u0027}; loaded.hotBeforeFree={8:\u0027medkit\u0027}; loaded.kitSaved={kit:[],hot:{8:\u0027bandage\u0027}};\n       stage=\u0027real profile load\u0027;\n       __applyLoaded(loaded);\n       if(!P.hotAssign||P.hotAssign[9]!==\u0027gun_rocket\u0027||P.hotAssign[8]!==undefined) return \u0027the real profile loader did not keep the old key 0 assignment on 0\u0027;\n       if(!P.kitSaved||!P.kitSaved.hot||P.kitSaved.hot[9]!==\u0027bandage\u0027||P.kitSaved.hot[8]!==undefined) return \u0027the real profile loader did not keep the set-aside plan on key 0\u0027;\n       if(P.hotBeforeFree!==null) return \u0027the real profile loader retained an ended raid plan\u0027;\n       P.gunKeys=undefined;\n       if(gunClassKey(\u0027rocket\u0027)!==9) return \u0027the default rocket class left key 0\u0027;\n       P.weapons=[\u0027carbine\u0027,\u0027shotgun\u0027]; P.equipped=\u0027carbine\u0027; P.equippedSec=\u0027shotgun\u0027; P.hotAssign={};\n       stage=\u0027raid belt drawing\u0027;\n       __deploy({kit:[\u0027bandage\u0027,\u0027medkit\u0027],safe:null,mapIx:0,seed:4242});\n       g=__state(); p=g.player; g.mapFirst=0; g.mapOpen=false; g.bagOpen=false; g.paused=false; g.trade=null; g.drag=null; g.wheel=null; keys={}; mouse.down=false;\n       if(pauseOpen) togglePauseBox(false); syncPause();\n       sl=hotbarSlots(); if(sl.length!==10||!sl[8].vacant) return \u0027the new key 9 did not start empty\u0027;\n       CanvasRenderingContext2D.prototype.fillText=function(t,x,y){ rec.push({s:String(t),x:x,y:y}); return oFT.apply(this,arguments); };\n       try{ __frame(0.016); }finally{ CanvasRenderingContext2D.prototype.fillText=oFT; }\n       if(!g.hotCells||g.hotCells.length!==10) return \u0027the raid belt did not draw ten cells\u0027;\n       for(i=0;i\u003c10;i++){\n         c=g.hotCells[i];\n         if(slotKeyName(i)!==String((i+1)%10)||slotKeyCode(i)!==\u0027Digit\u0027+((i+1)%10)||!rec.some(function(r){return r.s===slotKeyName(i)\u0026\u0026r.x\u003e=c.x\u0026\u0026r.x\u003cc.x+c.w\u0026\u0026r.y\u003e=c.y\u0026\u0026r.y\u003cc.y+c.h;})) return \u0027missing drawn digit \u0027+((i+1)%10)+\u0027 in its own cell\u0027;\n       }\n       stage=\u0027raid gun digit keys\u0027;\n       g.hotAssign={0:\u0027gun_carbine\u0027,8:\u0027gun_shotgun\u0027}; g.hotAuto={}; press(\u0027Digit1\u0027); press(\u0027Digit9\u0027); if(!p.wep||p.wep.id!==\u0027shotgun\u0027||heldGunCell(hotbarSlots())!==8) return \u00279 did not select its gun\u0027;\n       g.hotAssign[9]=\u0027gun_shotgun\u0027; delete g.hotAssign[8]; press(\u0027Digit1\u0027); press(\u0027Digit0\u0027); if(p.wep.id!==\u0027shotgun\u0027||heldGunCell(hotbarSlots())!==9) return \u00270 did not keep the last cell\u0027;\n       __frame(0.016); c=g.hotCells[8];\n       stage=\u0027wheel item drag to 9\u0027;\n       mouse.x=W/2; mouse.y=H/2; keys.KeyQ=true; press(\u0027KeyQ\u0027); keys.KeyQ=true; w=g.wheel;\n       if(!w) return \u0027no wheel to drag from\u0027;\n       bi=-1; for(i=0;i\u003cw.list.length;i++) if(w.list[i].k===\u0027bandage\u0027) bi=i;\n       if(bi\u003c0) return \u0027no carried bandage on wheel\u0027;\n       an=-Math.PI/2+bi*Math.PI*2/w.list.length; mouse.x=w.mx+Math.cos(an)*220; mouse.y=w.my+Math.sin(an)*220; updatePlayer(0.016);\n       cv.dispatchEvent(new MouseEvent(\u0027mousedown\u0027,{button:0,bubbles:true}));\n       if(!g.drag||g.drag.key!==\u0027bandage\u0027) return \u0027wheel bandage did not start dragging\u0027;\n       mouse.x=c.x+c.w/2; mouse.y=c.y+c.h/2; window.dispatchEvent(new MouseEvent(\u0027mouseup\u0027,{button:0,bubbles:true}));\n       keys.KeyQ=false; updatePlayer(0.016);\n       if(g.hotAssign[8]!==\u0027bandage\u0027||count(\u0027bandage\u0027)!==1) return \u0027drag onto 9 failed or spent the bandage\u0027;\n       stage=\u0027item selection and use on 9\u0027;\n       press(\u0027Digit9\u0027); if(!p.hand||p.hand.k!==\u0027bandage\u0027||p.hand.slot!==8) return \u00279 did not take out its dragged item\u0027;\n       p.hp=30; p.hand.t=0; mouse.down=false; handTick(p,0.016); mouse.down=true; handTick(p,0.016); mouse.down=false;\n       if(count(\u0027bandage\u0027)!==0\u0026\u0026!p.prep) return \u0027the trigger did not use the bandage selected by 9\u0027;\n       p.hand=null; p.prep=null; p.healQ=0; g.bag.push(\u0027bandage\u0027); g.hot=9;\n       stage=\u0027pad walk to 9\u0027;\n       beltStep(-1); if(!p.hand||p.hand.slot!==8) return \u0027pad belt walk skipped the item on 9\u0027;\n       p.hand=null; p.prep=null; g.hotAssign={8:\u0027gun_carbine\u0027}; g.hotAuto={}; press(\u0027Digit9\u0027); if(p.wep.id!==\u0027carbine\u0027) return \u00279 did not draw the pinned gun\u0027;\n       __endRaid(\u0027abandon\u0027); __topClear(); __cleanProfile();\n       stage=\u0027Undercroft floor belt\u0027;\n       __hubEnter(); __cfg({hubBelt:1}); for(i=0;i\u003c4;i++) __loop(performance.now()+i*17);\n       var hb=__hubBelt(); if(!hb||!hb.cells||hb.cells.length!==10) return \u0027Undercroft floor did not draw ten cells\u0027;\n       stage=\u0027stash digit 9 and plan cells\u0027;\n       var hub=document.getElementById(\u0027hub\u0027); renderHub(); hub.classList.add(\u0027on\u0027); P.stash=[\u0027medkit\u0027]; P.kit=[]; P.hotAssign={}; INVHOVER=\u0027medkit\u0027;\n       document.dispatchEvent(new KeyboardEvent(\u0027keydown\u0027,{key:\u00279\u0027,code:\u0027Digit9\u0027,bubbles:true,cancelable:true})); INVHOVER=null;\n       if(P.hotAssign[8]!==\u0027medkit\u0027) return \u0027stash digit 9 did not bind the new cell\u0027;\n       renderHub(); if(document.querySelectorAll(\u0027#hotplanwrap [data-plan]\u0027).length!==10) return \u0027stash did not draw ten plan cells\u0027;\n       if(keysBind(\u0027KeyR\u0027,\u0027Digit9\u0027)!==false) return \u00279 can still be rebound away from the hotbar\u0027;\n       if(SKEY!==saveKey) return \u0027the save key changed\u0027;\n       return null;\n     }catch(e){\n       return stage+\u0027: \u0027+String(e\u0026\u0026e.stack||e);\n     }finally{\n       CanvasRenderingContext2D.prototype.fillText=oFT; INVHOVER=null; keys={}; mouse.down=false;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){} __topClear();\n       if(oldP) P=oldP; if(typeof KEYS===\u0027object\u0027) KEYS.inv=null;\n     }\n   }},"
+}

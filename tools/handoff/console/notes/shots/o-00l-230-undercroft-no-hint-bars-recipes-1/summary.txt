@@ -1,0 +1,10 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  230-hub-lift-kb                        staged       6.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | hub lift kb
+  230-hub-midroom-kb                     staged       6.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | hub midroom kb
+  230-hub-lift-pad                       staged       6.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | hub lift pad
+  230-hub-midroom-pad                    staged       6.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | hub midroom pad
+== 4k : window 3876x2265, viewport 3840x2160
+  230-hub-lift-kb                        staged       7.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | hub lift kb
+  230-hub-midroom-kb                     staged       6.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | hub midroom kb
+  230-hub-lift-pad                       staged       6.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | hub lift pad
+  230-hub-midroom-pad                    staged       6.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | hub midroom pad
