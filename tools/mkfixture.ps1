@@ -25427,7 +25427,7 @@ window.__REGRESS=[
        proto.fillText=function(){ var s=String(arguments[0]), m=0; try{ m=this.measureText(s).width; }catch(_m){} txt.push({s:s,x:arguments[1],y:arguments[2],w:m}); return oFt.apply(this,arguments); };
        try{ __frame(0.016); } finally { proto.fillText=oFt; }
        k=null; w=null;
-       for(i=0;i<txt.length;i++){ if(/^left of 1$/i.test(txt[i].s)) k=txt[i]; if(/^superhot on\/off$/i.test(txt[i].s)) w=txt[i]; }
+       for(i=0;i<txt.length;i++){ if(/^left of 1$/i.test(txt[i].s)) k=txt[i]; if(/^(superhot|timelord) on\/off$/i.test(txt[i].s)) w=txt[i]; }
        if(!w) bad.push('the F1 controls list has no Superhot row');
        else if(!k) bad.push('the F1 controls list does not name the key for Superhot in words (LEFT OF 1)');
        else{
@@ -26717,18 +26717,18 @@ window.__REGRESS=[
      if(typeof cycleGameOpt!=='function'||typeof applyGameOpts!=='function'||typeof GAMEOPTS==='undefined'||typeof keys==='undefined'||typeof KeyboardEvent==='undefined') return 'SKIP: no Superhot row or keys in this build';
      if(typeof G!=='undefined'&&G&&G.sim) return 'SKIP: a sim is running';
      if(typeof __vpAlive==='function'&&!__vpAlive()) return 'SKIP: the page has no laid out viewport, so the Settings pane and the controls list cannot be read';
-     var bad=[], g=null, i, r, txt, proto=CanvasRenderingContext2D.prototype, oFt=proto.fillText, w, row, sl, hadGo=!!P.gameOpts, go0=P.gameOpts?JSON.parse(JSON.stringify(P.gameOpts)):null, ls0=null, seen;
+     var bad=[], g=null, i, r, txt, proto=CanvasRenderingContext2D.prototype, oFt=proto.fillText, w, row, sl, hadGo=!!P.gameOpts, go0=P.gameOpts?JSON.parse(JSON.stringify(P.gameOpts)):null, ls0=null, seen, shNow=statusNow, shT=statusNow();
      var hasNet=(typeof NET==='object'&&NET&&typeof netShTake==='function'&&typeof netShDrop==='function'), NK={}, k, netTouched=false;
      function el(id){ return document.getElementById(id); }
      function on(e){ return !!(e&&e.classList.contains('on')); }
      function clearKeys(){ try{ for(var kk in keys) keys[kk]=false; mouse.down=false; }catch(_k){} }
      // The key as it arrives: a keydown on the window, and a keyup, with the repeat flag a held key sends.
-     function bq(rep){ clearKeys(); window.dispatchEvent(new KeyboardEvent('keydown',{code:'Backquote',key:'`',repeat:!!rep,bubbles:true,cancelable:true})); window.dispatchEvent(new KeyboardEvent('keyup',{code:'Backquote',key:'`',bubbles:true,cancelable:true})); clearKeys(); }
+     function bq(rep){ shT+=0.4; statusNow=function(){ return shT; }; clearKeys(); window.dispatchEvent(new KeyboardEvent('keydown',{code:'Backquote',key:'`',repeat:!!rep,bubbles:true,cancelable:true})); window.dispatchEvent(new KeyboardEvent('keyup',{code:'Backquote',key:'`',bubbles:true,cancelable:true})); clearKeys(); }   // v28.xx (cw-cx-timelord): separate presses by 0.4 s on the answer clock, beyond its 0.35 s repeat guard
      function setSuper(v){ P.gameOpts=P.gameOpts||{}; P.gameOpts.superhot=v; applyGameOpts(); }
-     function topMsg(){ if(g&&g.msg) return g.msg; var L=(g&&g.fd&&g.fd.lines)||[]; return L.length?String(L[L.length-1].txt):''; }   // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): the grey rows are retired, so the line on top is the newest line of the left feed
+     function topMsg(){ if(g&&g.ans&&g.ans.m) return String(g.ans.m); if(g&&g.msg) return g.msg; var L=(g&&g.fd&&g.fd.lines)||[]; return L.length?String(L[L.length-1].txt):''; }   // v28.xx (cw-cx-timelord): read the current answer bubble, or the older message/feed lanes
      // Every Superhot line the player can see: the two message rows over the screen and the lines of the left feed.
-     function shLines(){ return (g.feed||[]).map(function(f){ return f&&f.m; }).concat(((g.fd&&g.fd.lines)||[]).map(function(l){ return l&&l.txt; })).filter(function(m){ return /^SUPERHOT/.test(m||''); }); }
-     function wipe(){ g.msg=''; g.msgT=0; g.feed=[]; g.msgQ=[]; g.fd={t:0,seq:0,lines:[]}; }
+     function shLines(){ return (g.feed||[]).map(function(f){ return f&&f.m; }).concat(((g.fd&&g.fd.lines)||[]).map(function(l){ return l&&l.txt; })).concat((g&&g.ans)?[g.ans.m]:[]).filter(function(m){ return /^(SUPERHOT|TIMELORD)/.test(m||''); }); }
+     function wipe(){ g.ans=null; g.ansSeen={}; g.msg=''; g.msgT=0; g.feed=[]; g.msgQ=[]; g.fd={t:0,seq:0,lines:[]}; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
@@ -26742,17 +26742,17 @@ window.__REGRESS=[
        // THE KEY: the key left of 1 turns Superhot on and off in a raid, once per press, and a held key (repeat) does nothing more.
        bq(false);
        if(CFG.superhot!==1||P.gameOpts.superhot!==1) bad.push('the key left of 1 did not turn Superhot on in a raid (dial '+CFG.superhot+', saved '+P.gameOpts.superhot+')');
-       if(topMsg()!=='SUPERHOT ON') bad.push('the first press said "'+topMsg()+'", not SUPERHOT ON');
+       if(!/^(SUPERHOT|TIMELORD) ON$/.test(topMsg())) bad.push('the first press said "'+topMsg()+'", not SUPERHOT ON');
        bq(true);
        if(CFG.superhot!==1) bad.push('a held key (repeat) flipped Superhot again');
        // THE TOAST TELLS THE TRUTH on three quick presses: the line on top is the state the last press set, not the one before it.
        bq(false);
-       if(CFG.superhot!==0||topMsg()!=='SUPERHOT OFF') bad.push('the second press said "'+topMsg()+'" with the dial at '+CFG.superhot+', not SUPERHOT OFF');
+       if(CFG.superhot!==0||!/^(SUPERHOT|TIMELORD) OFF$/.test(topMsg())) bad.push('the second press said "'+topMsg()+'" with the dial at '+CFG.superhot+', not SUPERHOT OFF');
        bq(false);
        if(CFG.superhot!==1) bad.push('the third press did not turn Superhot on again');
-       if(topMsg()!=='SUPERHOT ON') bad.push('on three quick presses the line on top said "'+topMsg()+'" with Superhot ON, so the toast shows the state before the last press');
+       if(!/^(SUPERHOT|TIMELORD) ON$/.test(topMsg())) bad.push('on three quick presses the line on top said "'+topMsg()+'" with Superhot ON, so the toast shows the state before the last press');
        seen=shLines();
-       if(seen.some(function(m){ return m!=='SUPERHOT ON'; })) bad.push('three quick presses (on, off, on) left the lines "'+seen.join('", "')+'" on screen, so one of them says OFF with Superhot ON');
+       if(seen.some(function(m){ return !/^(SUPERHOT|TIMELORD) ON$/.test(m); })) bad.push('three quick presses (on, off, on) left the lines "'+seen.join('", "')+'" on screen, so one of them says OFF with Superhot ON');
        // THE SETTINGS ROW follows the key: with Settings open the Superhot row shows the state the key set.
        if(typeof openSettings==='function'&&el('settingsmodal')){
          openSettings();
@@ -26781,7 +26781,7 @@ window.__REGRESS=[
        setSuper(0); wipe(); g.legendOn=2; g.bagOpen=false; txt=[];   // the feed is cleared: the lines the key just said would answer for the list
        proto.fillText=function(){ txt.push(String(arguments[0])); return oFt.apply(this,arguments); };
        try{ __frame(0.016); } finally { proto.fillText=oFt; }
-       if(!txt.some(function(s){ return /superhot/i.test(s); })) bad.push('the F1 controls list does not mention Superhot');
+       if(!txt.some(function(s){ return /(superhot|timelord)/i.test(s); })) bad.push('the F1 controls list does not mention Superhot');
        if(txt.indexOf('`')<0&&!txt.some(function(s){ return /^left of 1$/i.test(s); })) bad.push('the F1 controls list does not show the key left of 1');   // retargeted (cw-shkey2): the key is shown as the tick or in words
        g.legendOn=1;
        // THE PLAYER 2 WINDOW: it follows the host. Its own press says so and changes nothing; the host flipping it mid raid is said there too.
@@ -26794,17 +26794,18 @@ window.__REGRESS=[
          wipe();
          netShTake(1);
          if(CFG.superhot!==1) bad.push('the linked window did not follow the host to Superhot ON');
-         if(topMsg()!=='SUPERHOT ON') bad.push('the host turned Superhot on mid raid and the linked window said "'+topMsg()+'"');
+         if(!/^(SUPERHOT|TIMELORD) ON$/.test(topMsg())) bad.push('the host turned Superhot on mid raid and the linked window said "'+topMsg()+'"');
          wipe();
          netShTake(1);
          if(topMsg()) bad.push('the linked window said "'+topMsg()+'" when the host word did not change');
          netShTake(0);
-         if(CFG.superhot!==0||topMsg()!=='SUPERHOT OFF') bad.push('the host turning Superhot off mid raid left the linked window at '+CFG.superhot+' saying "'+topMsg()+'"');
+         if(CFG.superhot!==0||!/^(SUPERHOT|TIMELORD) OFF$/.test(topMsg())) bad.push('the host turning Superhot off mid raid left the linked window at '+CFG.superhot+' saying "'+topMsg()+'"');
          netShDrop();
        }
        return bad.length?bad.join('; '):null;
      } finally {
        proto.fillText=oFt;
+       statusNow=shNow;
        if(netTouched){ try{ for(k in NET) if(!(k in NK)) delete NET[k]; for(k in NK) NET[k]=NK[k]; }catch(_n){} }
        clearKeys();
        try{ var _sm=el('settingsmodal'); if(_sm) _sm.classList.remove('on'); }catch(_e0){}
@@ -87188,7 +87189,7 @@ window.__REGRESS=[
        // ONE: with Settings open, the backquote key turns Superhot on. The row he is looking at must say so.
        var s1=press();
        // CONTROL: the key reached the game: the dial is on, it said so, and Settings is still open.
-       if(CFG.superhot!==1||(has2&&s1.indexOf('SUPERHOT ON')<0)) return skip('the backquote key did not turn Superhot on here (dial '+CFG.superhot+', said '+s1.slice(0,40)+')');
+       if(CFG.superhot!==1||(has2&&!/(SUPERHOT|TIMELORD) ON/.test(s1))) return skip('the backquote key did not turn Superhot on here (dial '+CFG.superhot+', said '+s1.slice(0,40)+')');
        if(!sm.classList.contains('on')) return skip('the key closed Settings here');
        var t1=rowTxt();
        if(t1!==ON) bad.push('with Settings open, the backquote key turned Superhot on and the Superhot row still reads '+t1);
@@ -87203,7 +87204,7 @@ window.__REGRESS=[
        if(CFG.superhot!==1||rowTxt()!==ON) return skip('a click did not turn Superhot back on here ('+rowTxt()+', dial '+CFG.superhot+')');
        var s3=press();
        // CONTROL: the key turned the dial off and said so.
-       if(CFG.superhot!==0||(has2&&s3.indexOf('SUPERHOT OFF')<0)) return skip('the backquote key did not turn Superhot off here (dial '+CFG.superhot+', said '+s3.slice(0,40)+')');
+       if(CFG.superhot!==0||(has2&&!/(SUPERHOT|TIMELORD) OFF/.test(s3))) return skip('the backquote key did not turn Superhot off here (dial '+CFG.superhot+', said '+s3.slice(0,40)+')');
        var t3=rowTxt();
        if(t3!==OFF) bad.push('with Settings open, the backquote key turned Superhot off and the Superhot row still reads '+t3);
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
