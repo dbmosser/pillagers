@@ -1,5 +1,5 @@
 CODEX_MODEL=gpt-6.1-sol
-# (not built) codex-lane.sh reads none of CX_EFFORT_DEFAULT, CX_EFFORT_STEP_RUN, PARK_MIN, CX_FRESH_AT, CX_PAUSE_AT, CX_PAUSE_SEC_AT; effort comes from CODEX_EFFORT (high unless set)
+# (not built) codex-lane.sh reads none of PARK_MIN, CX_FRESH_AT, CX_PAUSE_SEC_AT; effort comes from CODEX_EFFORT (high unless set)
 CX_EFFORT_DEFAULT=medium
 CX_EFFORT_STEP_RUN=3
 MAXRUNS=5

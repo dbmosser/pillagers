@@ -143,3 +143,6 @@ Never ask for a linked review for a local rule. When unsure, name the packet or 
 
 ## The Watch: line (10-29)
 Put your "Watch:" line in the draft's why. If it is only in now, the lane copies it into why every time your mk script runs (tools/handoff/codex/watchfix.ps1), so the DESIGN.md section keeps it. No coordinator doc handoff is needed for it.
+
+## Reserve and camera rounds (10-29, CEO order)
+At CX_PAUSE_AT=92 percent of the week the lane stops taking jobs, his o-00* orders included, and looks again every 30 minutes; the 8 points left are for party-night fixes. Only a job file with a line "party-breaking: yes" still runs then. A "camera: N" line in a job file sets its camera rounds; "effort: low" means 1; otherwise CAMERA_ROUNDS (2).

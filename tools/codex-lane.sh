@@ -151,7 +151,15 @@ if [ "$MODE" = run ]; then
     rm -f "$X/rest-until.txt" "$X/rest-why.txt"; fi
   # 10-29 (CEO + Codex Correspondent): pace the week so Codex lasts to the party. PACE_PER_H points an hour from PACE_FROM_EPOCH at PACE_FROM_PCT (caps-codex.txt);
   # over that line, only his own o-00* orders run, the rest rest until the line catches up (at most 90 min, then it looks again). PACE_PER_H unset = off.
-  ph=$(cap PACE_PER_H ""); if [ -n "$ph" ] && ! ls "$C/tasks/"o-00*.md >/dev/null 2>&1; then
+  # 10-29 (CEO): the reserve. At CX_PAUSE_AT percent of the week (92) nothing runs, his o-00* orders included, except a job file with a line "party-breaking: yes".
+  # Looks again in 30 minutes. The Codex Correspondent tells the CEO chat when this starts.
+  pa=$(cap CX_PAUSE_AT ""); wk0=$(tail -1 "$X/limits.txt" 2>/dev/null | grep -o 'week=[0-9.]*' | cut -d= -f2)
+  if [ -n "$pa" ] && [ -n "$wk0" ] && awk -v w="$wk0" -v p="$pa" 'BEGIN{exit !(w>=p)}' ; then
+    pbj=$(grep -aliE '^party-breaking: *yes' "$C/tasks/"o-*.md 2>/dev/null | head -1)
+    if [ -n "$pbj" ]; then JOBARG=$(basename "$pbj" .md); else
+    echo $((now+1800)) > "$X/rest-until.txt"; echo "week use $wk0% reached the reserve line ($pa%) kept for party night" > "$X/rest-why.txt"; say "resting: week use $wk0% reached the reserve line ($pa%) kept for party night"; exit 0; fi
+  fi
+  ph=$(cap PACE_PER_H ""); if [ -n "$ph" ] && [ -z "$JOBARG" ] && ! ls "$C/tasks/"o-00*.md >/dev/null 2>&1; then
     pf=$(cap PACE_FROM_EPOCH ""); pp=$(cap PACE_FROM_PCT ""); wk=$(tail -1 "$X/limits.txt" 2>/dev/null | grep -o 'week=[0-9.]*' | cut -d= -f2)
     if [ -n "$pf" ] && [ -n "$pp" ] && [ -n "$wk" ]; then
       lag=$(awk -v w="$wk" -v p="$pp" -v r="$ph" -v n="$now" -v f="$pf" 'BEGIN{l=p+r*(n-f)/3600; d=(w-l)/r; if(d>0){d=d*3600; if(d<600)d=600; if(d>5400)d=5400; printf "%d", d}}')
@@ -243,6 +251,8 @@ mkpre || { say "needs you: tools/handoff/preflight.sh changed shape; the codex l
 n0=$(cat "$C/spend.txt" "$C/cli-spend.txt" 2>/dev/null | grep -c " $name$")
 left=$(( MAXR - n0 )); [ "$left" -lt 1 ] && left=1
 
+# 10-29 (CEO): pure number or text jobs need one camera round: a "camera: N" line in the job file sets it, "effort: low" means 1, else CAMERA_ROUNDS
+CAMMAX=$(cap CAMERA_ROUNDS 4); cj=$(grep -m1 -aiE '^camera: *[0-9]+' "$t" 2>/dev/null | grep -o '[0-9]\+' | head -1); if [ -n "$cj" ]; then CAMMAX=$cj; elif grep -aqiE '^effort: *low' "$t" 2>/dev/null; then CAMMAX=1; fi
 fb=""; tid=""; sc=""; PICS=(); it=0; idle=0; picrounds=$(cat "$LS/picrounds.txt" 2>/dev/null); picrounds=${picrounds:-0}; r=""; lastclaim=""
 appendfb(){ fb="${fb}${fb:+
 }$1"; }
@@ -593,12 +603,12 @@ $CRITTXT"
     if [ -n "$rfile" ]; then
       rver=$(grep -m1 "^var VER='" "$R/dark_raiders.html" 2>/dev/null | sed "s/var VER='\([0-9]*\.[0-9]*\)'.*/\1/")
       rkey="$(rd "$rfile" | sha256sum | cut -c1-16) v$rver"; camr=$(cat "$LS/camrounds.txt" 2>/dev/null); camr=${camr:-0}
-      if [ "$rkey" != "$(cat "$LS/camkey.txt" 2>/dev/null)" ] && [ "$camr" -lt "$(cap CAMERA_ROUNDS 4)" ]; then   # a changed file or a new version
+      if [ "$rkey" != "$(cat "$LS/camkey.txt" 2>/dev/null)" ] && [ "$camr" -lt "$CAMMAX" ]; then   # a changed file or a new version
         # short of memory: the job waits (no Codex run, no round used) and its next pick starts with the gate-only pass
         ramwait || { say "pictures: waiting for RAM before $name's recipe round"; r="waiting"; break; }
         camr=$((camr+1)); echo "$camr" > "$LS/camrounds.txt"; echo "$rkey" > "$LS/camkey.txt"; CAM_DONE=1
         if shoot_recipes "$rfile" "$camr"; then critic_recipes "$camr"
-          appendfb "RECIPE PICTURES (round $camr of $(cap CAMERA_ROUNDS 4), $(basename "$rfile") on v$rver) are in $RW/tools/handoff/console/notes/shots/$name-recipes-$camr/ (the newest are attached; open them with your image viewer). The camera said:
+          appendfb "RECIPE PICTURES (round $camr of $CAMMAX, $(basename "$rfile") on v$rver) are in $RW/tools/handoff/console/notes/shots/$name-recipes-$camr/ (the newest are attached; open them with your image viewer). The camera said:
 $(tail -c 1500 "$X/log/$name-recipes-$camr.camera.txt")
 CRITIC:
 $CRITTXT"
