@@ -102,3 +102,7 @@ v27.21   # the stash tab is KEYCARDS since v36.18 (his order); the check wants K
 v27.46   # the breach gate reads HOLD E TO BREACH since v36.15 (his order); the check wants HOLD TO BREACH
 # his 10-28 order (job o-222, v36.25 active reload 5% a stack, 15% at most); sorted by the JTPC Correspondent 10-29 00:55; retarget in job 207
 v26.56   # wants +15% on the first perfect active reload; it is 5% a stack now (24.15 from 23, not 26.45)
+# flake: corpus-only renderer nondeterminism, sorted by check-in 10-29 from spare run corpus-1029-0048 on v36.30. Each passes twice alone on v36.37 and after its slice's earlier checks (slices 0-48, 240-242, 360-381 rerun on a fresh tab), so the game is steady; they fail only in the long loaded full run, red in every run since corpus-1028-1222 (v35.83), the same text as v8.85 and v8.89.
+v9.07    # flake: "two identical redraws differ, so no pixel measurement here means anything", the same corpus-only message as v8.85 and v8.89
+v34.90   # flake: staging reports "1 unsteady" or "2 unsteady" (the frozen redraw differs between two draws) in the side mark part; the sizes it measures are right; passes alone twice on v36.37
+v33.51   # flake: "the frozen raid frame is not steady, so it cannot be compared"; the pixel look is off by default (smooth look, v34.81); passes alone twice on v36.37
