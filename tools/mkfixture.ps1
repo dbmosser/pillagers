@@ -9047,7 +9047,7 @@ class Audio {
        __topClear();
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'35.68',what:'cw-diffmul, his order of 2026-10-28: every Settings row set harder than its default pays 5 percent more sp a step (pillager bots, machines, how hard they hit, extraction heat), superhot off pays a step, and the rows multiply (x1.54 at the hardest); a raid keeps the rows it was built with and reads superhot live; kills, style bonuses, goals and vaults pay sp with it in',
+  {v:'35.68',what:'cw-diffmul, his order of 2026-10-28: every Settings row set harder than its default pays 5 percent more sp a step (pillager bots, machines, how hard they hit, extraction heat), superhot off pays a step, and the rows multiply (x1.54 at the hardest); a raid keeps the rows it was built with and reads superhot live; kills, style bonuses, bounties and vaults pay sp with it in',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot deploy';
      if(typeof careerKill!=='function'||typeof scoreBonus!=='function'||typeof arcadeKillPts!=='function') return 'SKIP: no career score here';
@@ -9086,7 +9086,7 @@ class Audio {
        if(arcadeKillPts('sentry',0,0)!==Math.round(100*v)) bad.push('a demo sentry kill is worth '+arcadeKillPts('sentry',0,0)+', not '+Math.round(100*v));
        s0=g.cs.s|0; i=scoreBonus(100,p.x,p.y,'LONG SHOT');
        if(i!==Math.round(100*v)||(g.cs.s|0)-s0!==i) bad.push('a 100 sp bonus paid '+((g.cs.s|0)-s0)+' (said '+i+'), not '+Math.round(100*v));
-       if(typeof flowChip==='function'){ s0=g.cs.s|0; i=flowChip(200,'GOAL DONE','goal'); if(i!==Math.round(200*v)||(g.cs.s|0)-s0!==i) bad.push('a 200 sp goal paid '+((g.cs.s|0)-s0)+', not '+Math.round(200*v)); }
+       if(typeof flowChip==='function'){ s0=g.cs.s|0; i=flowChip(200,'BOUNTY CLAIMED','bounty'); if(i!==Math.round(200*v)||(g.cs.s|0)-s0!==i) bad.push('a 200 sp bounty paid '+((g.cs.s|0)-s0)+', not '+Math.round(200*v)); }
        if(typeof arcadeVaultPay==='function'&&typeof ARCADE_VAULT_PAY==='number'){ s0=g.cs.s|0; arcadeVaultPay({doorX:p.x,doorY:p.y}); if((g.cs.s|0)-s0!==Math.round(ARCADE_VAULT_PAY*v)) bad.push('a vault paid '+((g.cs.s|0)-s0)+', not '+Math.round(ARCADE_VAULT_PAY*v)); }
        // FOUR: the fixture switch pays x1
        DMUL_ON=0; s0=g.cs.s|0; scoreBonus(100,p.x,p.y,'LONG SHOT'); if((g.cs.s|0)-s0!==100) bad.push('with the multiplier off a 100 sp bonus paid '+((g.cs.s|0)-s0));
@@ -36654,11 +36654,11 @@ class Audio {
        snap=JSON.parse(JSON.stringify(__P()));
        if(!raid(['scrap','board','optic','servo','core','medkit'],1)) return 'SKIP: no live raid';
        if(!g.career||!g.cs) return 'SKIP: no CAREER raid in this build';
-       g.cs.s=750; g.cs.k=4; g.cs.b={kill:600,style:50,goal:100};
+       g.cs.s=750; g.cs.k=4; g.cs.b={kill:600,style:50,bounty:100};
        __endRaid('extract');
        man=document.getElementById('oc_manifest'); lg=man.querySelector('.lg'); tx=man.textContent||'';
        if(!lg) return 'the CAREER extraction card has no ledger';
-       for(i=0,rows=['KILLS','MEDALS','GOALS','EXTRACTION','RAID SCORE','CREDITS','ITEMS SECURED','HAUL VALUE','MONEY','ACCURACY','CONTAINERS','HEALTH'];i<rows.length;i++) if(lg.textContent.indexOf(rows[i])<0) bad.push('the ledger has no '+rows[i]);
+       for(i=0,rows=['KILLS','MEDALS','BOUNTY','EXTRACTION','RAID SCORE','CREDITS','ITEMS SECURED','HAUL VALUE','MONEY','ACCURACY','CONTAINERS','HEALTH'];i<rows.length;i++) if(lg.textContent.indexOf(rows[i])<0) bad.push('the ledger has no '+rows[i]);
        if(!lg.querySelector('.lgps')||!lg.querySelector('.lgpm')) bad.push('the ledger is not a RAID SCORE panel and a MONEY panel');   // retargeted for cw-spmoney, HIS ORDER 2026-10-28: sp and money never intermingled, so the one list grouped COMBAT and OBJECTIVES with a RAID TOTAL row is now two panels
        if(/items? secured for|You extracted with|ACHIEVEMENT:|CAREER SCORE/.test(tx)) bad.push('a sentence the ledger replaces is still on the card');
        if(dto('.sc')!==1500) bad.push('RAID SCORE is '+dto('.sc')+', not 1500 (750 x2)');
@@ -36824,8 +36824,8 @@ class Audio {
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||g.over) return bad.concat(['SKIP: no second raid']).join('; ');
        g.cs.s=0; g.cs.b=null;
-       scoreBonus(50,0,0,'TEST'); flowChip(100,'GOAL DONE','TEST');
-       if(!g.cs.b||g.cs.b.style!==50||g.cs.b.goal!==100) bad.push('the score tally is '+JSON.stringify(g.cs.b)+', not style 50 and goal 100');
+       scoreBonus(50,0,0,'TEST'); flowChip(100,'BOUNTY CLAIMED','TEST');
+       if(!g.cs.b||g.cs.b.style!==50||g.cs.b.bounty!==100) bad.push('the score tally is '+JSON.stringify(g.cs.b)+', not style 50 and bounty 100');
        if(g.cs.s!==150) bad.push('the score is '+g.cs.s+', not 150');
        g.cs.s=400; g.cs.k=3;
        __endRaid('extract');
@@ -42924,7 +42924,7 @@ class Audio {
        __topClear();
      }
      return bad.length?bad.slice(0,8).join('; '):null; }},
-  {v:'26.73',what:'flow3, his yes to run goals: every raid draws three small goals (the same three for the same seed), the two kill doors count what died, a met goal pays its chip into the DEMO score and into the CAREER raid score and only once, and the panel draws all three',
+  {v:'26.73',what:'run goals: three distinct goals on a seed side stream, kill doors count party progress, completion pays once (legacy chips or non-score rewards), and the panel draws all three',
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep&&window.__frame)) return 'SKIP: no raid or frame here';
      if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object') return 'SKIP: no arcade here';
@@ -42971,11 +42971,11 @@ class Audio {
        S.kills=9; S.wardens=0; S.elites=0; m0=ARCADE.mine|0; lines.length=0; flowTick(0.1);
        if((ARCADE.mine|0)!==m0||S.goals[0].done) bad.push('FIVE: a goal at 9 of 10 paid or finished');
        S.kills=10; flowTick(0.1);
-       if((ARCADE.mine|0)!==m0+200||!S.goals[0].done) bad.push('FIVE: the goal met paid '+((ARCADE.mine|0)-m0)+', not 200');
+       if((ARCADE.mine|0)!==m0+(typeof goalReward==='function'?0:200)||!S.goals[0].done) bad.push('FIVE: the goal did not finish with the expected SP delta (zero after his 10-28 order)');
        sawG=0; for(i=0;i<lines.length;i++) if(lines[i].indexOf(needG)>=0) sawG=1;
        if(!sawG) bad.push('FIVE: no GOAL DONE callout (said: '+lines.slice(-3).join(' / ')+')');
        flowTick(0.1); flowTick(0.1);
-       if((ARCADE.mine|0)!==m0+200) bad.push('FIVE: the chip was paid again ('+((ARCADE.mine|0)-m0)+')');
+       if((ARCADE.mine|0)!==m0+(typeof goalReward==='function'?0:200)) bad.push('FIVE: the completed goal changed SP again');
        // SIX: the panel draws every goal
        render2D(0); rows=goalsHud(ctx);
        if(rows!==3) bad.push('SIX: the panel drew '+rows+' goals');
