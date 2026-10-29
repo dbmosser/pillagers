@@ -127,3 +127,6 @@ v27.94   # wants arcadeKill to play the SPK_MEDALS streak pop; the streak is gon
 v34.60   # air strike vs chips: no power-up chips drawn on the watched canvas (faded)
 v22.74   # a plate going on draws no SLOTTING line on the watched canvas (faded)
 v18.75   # no SLOTTING ARMOUR PLATE bar on the watched canvas (faded)
+# his 10-29 orders (v36.47 run goals say what to do, v36.48 backpack groups); JTPC Correspondent 10-29 12:40; retarget in job 207
+v31.64   # wants t:'3 PILLAGERS'; it reads KILL 3 PILLAGERS now
+v9.13    # control wants the 1080p backpack at 862x606; it is 862x624 with the group headings

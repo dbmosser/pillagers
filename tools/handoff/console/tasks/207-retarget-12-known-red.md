@@ -74,3 +74,7 @@ ADDED 10-29 06:35 (JTPC Correspondent; spare PC run corpus-1029-0502 on v36.39),
 - 10.29: the welcome pack's guns are rare and elite now (no green gun is left among them). 11.79 and 12.18: the bench holds 0 green and 1 blue by shown rarity; Burst Carbine, Auto Rifle and Riot Scattergun show elite. Retarget to "the bench and pack show the rarity every other screen shows", not to fixed colours.
 - 34.01: "no gun staged for uncommon": stage an uncommon item that is not one of the six guns, or skip uncommon guns if none is left.
 Side effect for the CEO (not a check problem): new characters now start with a rare and an elite gun, and the bench sells elite guns; that is his order working, but it makes the start stronger. Mention it to him only if a playtest shows it matters.
+
+ADDED 10-29 12:40 (JTPC Correspondent; spare PC run corpus-1029-1104 on v36.50), 2 more, out of date by his 10-29 orders; parked in known-red:
+- 31.64: wants the run goal t:'3 PILLAGERS'; since v36.47 (his 10-29 picture: run goals say what to do) it is 'KILL 3 PILLAGERS'. Keep the no raider and pillagers-never-bots asserts; match 'KILL 3 PILLAGERS'.
+- 9.13: its control wants the raid backpack at 1080p to stay 862x606; since v36.48 (his order: guns, usables, crafting under headings) it is 862x624. Take the reference size from the live 1080p panel instead of a fixed number; keep "it follows the monitor" asserts.
