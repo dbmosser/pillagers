@@ -134,3 +134,9 @@ The lane empties notes-new.md, questions-new.md, alarms-new.md and changes-new.m
 
 ## Week pace to the party (10-29, CEO order, set by the Codex Correspondent)
 Codex week use was 66% at Thu 10-29 05:20 and climbing about 3.2 points an hour; at that rate it ran dry about Thu 15:00, two days before the party (Sat 10-31 night) and six days before the reset (11-04 01:35). The lane now keeps a pace line (caps-codex.txt: PACE_FROM_EPOCH, PACE_FROM_PCT, PACE_PER_H=0.40, reaching about 92% at Sat 22:00, 8 points kept for party-night fixes). Over the line, the lane runs only his own o-00* orders and rests (up to 90 min at a time) before taking any other job. Camera rounds 2 and picture rounds 2 (were 4 and 3). Effort is CX_EFFORT_DEFAULT=medium for jobs that are not o-00*, high from run 3 and always high for o-00*. Remove PACE_PER_H to turn the pace off; re-anchor the three PACE_ keys if the week use drifts from the line.
+
+## Two linked windows: which kind is your change (10-29, CEO rule)
+A linked two-window review costs a Claude helper about 140k tokens, so say in your handoff line which kind the change is:
+1. SYNCED: it moves between the two windows (packets, rewards, shared state, host/peer authority). Write "LINKED REVIEW NEEDED: synced" and the CEO chat runs a linked review.
+2. LOCAL: a rule of one window only (input, own HUD, own sound, own movement). Write "LOCAL: no linked review". The role regression check plus the per-role camera shots are enough, and the job closes on its ON HIS PC line.
+Never ask for a linked review for a local rule. When unsure, name the packet or shared field that would carry it; if you cannot name one, it is local.
