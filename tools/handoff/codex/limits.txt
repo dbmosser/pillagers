@@ -198,3 +198,5 @@
 2026-10-29 07:27 week=74.0% 5h=83.0% week_resets=2026-11-04 01:35 job=o-00u-238-status-type-regression
 2026-10-29 09:06 week=75.0% 5h=6.0% week_resets=2026-11-04 01:35 job=o-00u-238-no-heal-or-plate-while-reloading
 2026-10-29 09:08 week=75.0% 5h=7.0% week_resets=2026-11-04 01:35 job=o-00u-238-no-heal-or-plate-while-reloading
+2026-10-29 09:15 week=75.0% 5h=10.0% week_resets=2026-11-04 01:35 job=o-00u-238-no-heal-or-plate-while-reloading
+2026-10-29 09:18 week=76.0% 5h=11.0% week_resets=2026-11-04 01:35 job=o-00u-238-no-heal-or-plate-while-reloading

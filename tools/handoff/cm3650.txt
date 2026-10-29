@@ -1,0 +1,7 @@
+v36.50: raid reports say what held the frame rate
+
+Each raid line in the flight recorder ends its frame numbers with work:p50/p95ms screen:Nhz cap:N, and the party run report carries the same.
+
+Check 36.50. Fails on v36.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

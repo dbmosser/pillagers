@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.50 - RAID REPORTS SAY WHAT HELD THE FRAME RATE
+
+Co-op hunt while he was away. FPS czar: five of his raids on 10-28 ran at a steady 30 fps and the run lines could not say why (the draw passes were light, about 4 ms, but they time only the drawing). Each live raid frame now files the game own work, and every run line prints it with the screen rate and the frame cap, so the next slow raid shows whether the game or something outside it held the frame rate. Report only: nothing in play changes.
+
+MEASURED. Check 36.50 passes, and fails on v36.49.
 ## v36.49 - HEALING AND PLATING CANCEL RELOADS
 
 Co-op hunt while he was away. His order: no bandage, medkit or plate at the same time as a reload, and every cancelled reload ends the active chain. Watch: no healing or plating while you reload. LOCAL: no linked review.

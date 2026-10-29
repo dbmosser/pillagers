@@ -30,3 +30,34 @@ The gameplay replacements are unchanged. All 19 anchors apply exactly once on v3
 
 LOCAL: no linked review. Watch: no healing or plating while you reload. Awaiting another preflight, ship, ON HIS PC and both-role pictures.
 
+
+--- codex run 2026-10-29 09:15 ---
+2026-10-29 - Shipped v36.49; camera recipe repair only.
+
+Lane confirmed cw-cx-reloadmedical shipped. ON HIS PC v36.49: his 8802 serves 36.49, 34 seconds after shipping; he reloads to play it. LOCAL: no linked review.
+
+Looked at both round-1 pictures. They show the title, not the raid. The camera stopped before staging because the recipe omitted U.prep, which tools/uishots.ps1 always calls. The critic score 3 and title findings are unrelated to this gameplay fix; no title changes made.
+
+Repaired camera-recipes.json for the last allowed round. Added prep, verified the camera wrapper contract, and replaced game-private names with existing fixture hooks because the game lives inside an IIFE. __corpusAirHandStage sets and reports host/join roles, __useHot starts the assigned bandage, and __useArmor starts the plate. The recipe starts a reload first and refuses the shot unless medical prep exists and the reload and active chain are cleared. It now also refuses a picture if the title is still visible.
+
+The camera alone stops further animation-frame scheduling before staging, waits for the pending frame, and manually renders the real raid HUD. This keeps the preparation bars steady without replacing game functions. No game or fixture edits required. Updated camera JavaScript passes node --check. Awaiting corrected host and player 2 pictures and critic results.
+
+
+--- codex run 2026-10-29 09:18 ---
+2026-10-29 - Complete: cw-cx-reloadmedical shipped as v36.49, commit b0d16d252.
+
+ON HIS PC v36.49: lane confirmed his 8802 serves 36.49, 34 seconds after shipping. He reloads to play it. No direct access to his play port was used by this worker. LOCAL: no linked review.
+
+Viewed both corrected round-2 1080p pictures. The host and join-role pictures show slotting armour plate (1.3s) and applying bandage (1.0s), with no reload ring or reloading gun label. Camera staging also requires reloading===0 and arStk===0. Both roles staged at 1080p and 4k, with zero camera lint findings. The shipped regression covers manual and empty-trigger reload blocking during wind-up/healing, cancellation clock/chain/sound reset, firing, roll, sprint, gun changes, down, and preserved normal/active completion. Fixture retargets are in f7dff28e4.
+
+Evidence:
+- Host: tools/handoff/console/notes/shots/o-00u-238-no-heal-or-plate-while-reloading-recipes-2/reload-medical-host-1080.jpg
+- Player 2: tools/handoff/console/notes/shots/o-00u-238-no-heal-or-plate-while-reloading-recipes-2/reload-medical-p2-1080.jpg
+- Matching 4k files and report.json are in that same folder.
+
+Critic: host 2, player 2 score 2. These are existing HUD design findings, not a pass at the raid UI finish line. The two permitted camera rounds are exhausted. This task changes no screen design, dimensions, colours or strings; it closes on the shipped gameplay rule and per-role evidence, with broader HUD findings handed to the coordinator in alarms-new.md. No extra HUD restyling was bundled into the input fix.
+
+The reported P0 capital I in run Info is a critic misread: both pictures show lowercase run info, and the source fallback is the literal 'run info' at dark_raiders.html:45635. The two medical bars are allowed to run together: v11.82 explicitly permits a bandage and plate together. This order prohibits their overlap with reloads. No change made to that ruling. Remaining P1 observations concern the roster, expanded controls, preparation-bar presentation, and run-info layout; the top-centre sizing is also noted. The pictures are valid behavioral evidence despite that existing UI debt.
+
+Watch: no healing or plating while you reload. Reload cancellation also loses the active chain and bonus, including firing, rolling and sprinting. Task complete; only broader, separately scoped HUD work remains with the coordinator.
+

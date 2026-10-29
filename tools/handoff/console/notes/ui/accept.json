@@ -1840,20 +1840,20 @@
   "when": "2026-10-29T11:23"
  },
  "p2-1080": {
-  "score": 3,
-  "pass": true,
+  "score": 2,
+  "pass": false,
   "need": 3,
-  "verdict": "The modal is gone and the buff list, timer and ammo plate now read as one dark-plate system, but the top-centre stack is still a staggered pile, the vitals bars are loose, and the player 1 plate in the left margin is nearly unreadable.",
+  "verdict": "This is a cluttered in-raid HUD, not the title screen I reviewed before. Six panels all carry equal weight, and the two stacked progress bars and the controls card compete with the play area.",
   "findings": [
-   "P1 Top-centre stack x858-1060 y20-200: Make timer and score one 240px-wide column centred on x960 with 8px gaps. The timer is a 56px f-cond 800 hero. Drop the 'team score' label and keep 20px '0 sp'. Put the per-player lines at 16px tx-2 on one row. Make the extract pill 240x32 with a 16px --extract label, and move the arrow to its left edge at 24px.",
-   "P1 Bottom-left vitals x22-430 y965-1068: Put both bars on one --ui-panel plate with 8px padding and a 4px radius, left edge x48 to match the buff list at x10 -> x48. Make both bars 24px high with 8px between them. Use 16px labels at the left and the 56px hero for 'hp' only if there is room, otherwise 20px. Make the armour fill a desaturated blue (#5a8fc4).",
-   "P1 Left player-1 plate x15-170 y325-358: Make it 220x48 to match the buff rows, align left to x10, set the name at 16px f-cond 600 tx-1, and make the bars 8px high with a 4px gap. Put 8px between it and the first buff row, and a 1px --ui-line-hi border on both.",
-   "P1 Hotbar x445-1170 y945-1062: Draw all ten slots as 56x56 --ui-panel tiles with 8px gaps, with 16px tx-2 numbers inside at the top-left. Make the selected slot's border 2px --acc. Move the 'f1 controls' chip to 16px tx-2 at y=920, left-aligned to the first slot.",
-   "P2 Goals chip x1652-1900 y15-52: Make it 200x40 with 16px text and a 16px chevron. Put its top at y24 to match the timer top and its right edge at x1872. Give it a 1px --ui-line-hi border."
+   "P1 top-left leaderboard (current pillagers, 7 dead rows): Fold it to one line, 'you $210 · 1 left', and show the full list only on tab. If it stays, drop the dead rows to a single 'out · 7 dead' line and set rows to 16px --tx-2 (#aaa498) on --ui-panel.",
+   "P1 run info panel (right, under the minimap): Use 16px rows with an 8px gap and a 16px inner padding. Truncate or write contract names so each fits on one line, ending '0/2' right-aligned. Put 8px between the minimap and this panel. Fix the missing noun in the 'lost … broken' line.",
+   "P1 controls card (mid-left, move/fight/gear/raid): Show it as a single folded line at mid-bottom left, 'f1 controls', 16px --tx-2. Open the full card only on F1. When open, make section labels 16px --tx-1 and keycaps 1px --ui-line-hi.",
+   "P1 centre-bottom progress bars (slotting armour plate / applying bandage): Show one bar at 320px wide and 12px tall, with the label above at 16px. Queue the second action as a text line. Use --acc for the fill, or --ok for a heal, and 8px padding.",
+   "P2 top-centre stack (timer 9:00, score 0 sp, extraction 141m): Use one 4px-radius card with two rows: timer at 56px f-cond 800, then 'score 0 sp' at 20px beneath. Put the extraction chip 8px under it in --extract with 16px text."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00u-238-status-type-regression-recipes-2/status-type-demo-p2-1080.jpg",
-  "task": "o-00u-238-status-type-regression",
-  "when": "2026-10-29T11:24"
+  "pic": "tools/handoff/console/notes/shots/o-00u-238-no-heal-or-plate-while-reloading-recipes-2/reload-medical-p2-1080.jpg",
+  "task": "o-00u-238-no-heal-or-plate-while-reloading",
+  "when": "2026-10-29T13:17"
  },
  "pix86c-fashion": {
   "score": 3,
@@ -4638,5 +4638,21 @@
   "pic": "tools/handoff/console/notes/shots/o-00u-238-status-type-regression-recipes-2/status-type-solo-full-legend-1080.jpg",
   "task": "o-00u-238-status-type-regression",
   "when": "2026-10-29T11:24"
+ },
+ "reload-medical-host": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "This is an in-raid HUD, not the title screen the previous review covered. The top-left list, the key legend and the stacked progress bars all compete with each other. Two progress bars run at once, and 'run Info' has a capital I.",
+  "findings": [
+   "P0 top-right, 'run Info' header: Change the string to 'run info'. Give the header bar the same --ui-panel fill and 4px radius as the other HUD panels, at 16px f-cond 600.",
+   "P1 top-left roster panel ('current pillagers 0', 7 dead rows): Collapse the panel to one line, 'pillagers 0 out · 7 dead', at 16px, and open the full list on a key. If the list stays, drop the 'dead' rows to --tx-2 at 14px, set 'you' to 20px --tx-1, and remove the footer. Stop using purple as a one-off tint.",
+   "P1 mid-left controls panel (move, fight, gear, raid): Fold it to one line at bottom-left, 'f1 controls', at 16px --tx-2. Open the full list only on F1. If it must stay open, show a maximum of 6 rows.",
+   "P1 centre bottom, 'slotting armour plate' and 'applying bandage' bars: Show a single bar. Make it 360x32px, in --acc on a --ui-raised track, with a 16px label to its left and the time to its right. If two actions are allowed at once, show the second as a thin 4px bar under the first. Move the group 24px above the hotbar.",
+   "P1 top-centre stack (9:00 clock, score, extraction pill): Make all three the same width (220px), centred on one axis, with 8px gaps. Draw the score in 56px f-cond 800 and the label in 16px --tx-2. Keep the extraction pill teal as --extract at 16px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00u-238-no-heal-or-plate-while-reloading-recipes-2/reload-medical-host-1080.jpg",
+  "task": "o-00u-238-no-heal-or-plate-while-reloading",
+  "when": "2026-10-29T13:16"
  }
 }

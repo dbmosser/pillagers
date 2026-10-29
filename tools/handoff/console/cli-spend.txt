@@ -1916,3 +1916,8 @@
 2026-10-29 0.0000 o-00u-238-status-type-regression
 2026-10-29 0.0000 o-00u-238-no-heal-or-plate-while-reloading
 2026-10-29 0.0000 o-00u-238-no-heal-or-plate-while-reloading
+2026-10-29 0.2250 critic-o-00u-238-no-heal-or-plate-while-reloading
+2026-10-29 0.0000 o-00u-238-no-heal-or-plate-while-reloading
+2026-10-29 0.0919 critic-o-00u-238-no-heal-or-plate-while-reloading
+2026-10-29 0.0911 critic-o-00u-238-no-heal-or-plate-while-reloading
+2026-10-29 0.0000 o-00u-238-no-heal-or-plate-while-reloading

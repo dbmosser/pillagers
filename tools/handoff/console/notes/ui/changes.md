@@ -644,3 +644,5 @@
 
 2026-10-29 | o-00u-238-no-heal-or-plate-while-reloading | raid HUD, both roles | Medical use clears the reload ring and active chain; reload stays blocked through healing or plating. No layout or text change. Before: existing v36.47 behavior (no new UI). After: camera-recipes.json reload-medical-host and reload-medical-p2 (lane supplies picture paths).
 
+2026-10-29 | o-00u-238-no-heal-or-plate-while-reloading | raid HUD, both roles | v36.49: medical use clears the reload ring and active chain; manual/empty reloads stay blocked through medical use. Existing layout and strings retained. After host: tools/handoff/console/notes/shots/o-00u-238-no-heal-or-plate-while-reloading-recipes-2/reload-medical-host-1080.jpg; after player 2: tools/handoff/console/notes/shots/o-00u-238-no-heal-or-plate-while-reloading-recipes-2/reload-medical-p2-1080.jpg. Both roles staged at 1080p/4k; critic 2 for existing HUD layout, handed off separately after camera cap.
+
