@@ -630,3 +630,7 @@
 
 2026-10-29 | o-00r-236-no-roll-in-water | raid / both player roles | wet roll attempts only clank; rolls stop at the bank and switch to wading; no text or HUD layout change | before: unavailable for custom recipe | after: lane camera-recipes water-roll-p1 and water-roll-p2 (paths pending)
 
+2026-10-29 | o-00r-236-no-roll-in-water | raid, v36.42 ON HIS PC | round-1 title pictures invalid (U.prep missing); corrected camera setup only, no additional visible game change | pending: o-00r-236-no-roll-in-water-recipes-2/water-roll-p1-1080.jpg and water-roll-p2-1080.jpg
+2026-10-29 | o-00r-236-no-roll-in-water | raid, both linked players | v36.42 ON HIS PC: water refuses rolls without stamina cost; an entering roll ends at the bank and switches to wading | before: unavailable (round-1 staging failed) | after: tools/handoff/console/notes/shots/o-00r-236-no-roll-in-water-recipes-2/water-roll-p1-1080.jpg and tools/handoff/console/notes/shots/o-00r-236-no-roll-in-water-recipes-2/water-roll-p2-1080.jpg | whole-HUD critic p1=3,p2=2; unrelated HUD findings handed off
+2026-10-29 | o-00t-237-extract-wait-20s | extraction inbound (screen 37), October 3 history note | default countdown 30 to 20 s in career/demo; saved 30 migrates, other values remain; history note corrected to 20 s because the new order replaces that inbound timing | before/after pictures: lane screen 37 queued, paths pending.
+

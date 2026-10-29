@@ -3885,8 +3885,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.42';
-var VER_AT='2026-10-29 06:25';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.43';
+var VER_AT='2026-10-29 06:50';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4004,7 +4004,7 @@ var WHATSNEW=[
   'STEADIER MENUS AND STASH. A plain click on a gun in your armoury leaves it there, a controller can put a gun in gun 1 or gun 2 from the stash (press A twice on the gun), an item on belt key 1 no longer buries your gun, and ESC or TAB on Settings in a raid shuts Settings only. A hire you paid for is spent at the lift, and the game open in two tabs no longer wipes what the other tab saved.',
   'CONTROLLER RUMBLE AND ACHIEVEMENTS. Each player controller buzzes when that player is hit, goes down or is near a blast (Settings has a Controller rumble row). CTRL and a click moves one item from the stash to the backpack. After a party raid the end card shows a PARTY block with every player result, and twelve achievements are listed on the Mainframe beside your stats.',
   'THE NIGHT OF OCTOBER 3. Fewer big robots at the extraction. You see what your teammate sees: their view cone is open in your fog and the enemies in it are shown (Settings: Shared sight). Kid firing turns player 2 toward the nearest enemy before it is in range. Trading works in the Undercroft: right-click a stash item and OFFER it. Guns and items are painted like objects, sharp, and fill their cells. The title, the menus and the raid HUD share one look. Walls and trees are painted once and reused, so a busy street runs smoother. Trading is on every key legend and the Party window explains it.',
-  'YOUR NOTES OF OCTOBER 3. Player 2 picks a character from the saves list, and every character can play 1 PLAYER. F11 fullscreens both windows. ESC pauses player 1 even with the player 2 window selected. Kid mode set in one window shows in the other, and a Settings change keeps its place. The banner reads EXTRACT IN PROGRESS, extraction takes 30 seconds to arrive and stays 30, the seal spawns at a new landmark each raid and opens a little quicker. Every menu shares one look. When the game runs slowly it lowers its own render resolution a notch at a time, and the fog and darkness layers draw at half size.',
+  'YOUR NOTES OF OCTOBER 3. Player 2 picks a character from the saves list, and every character can play 1 PLAYER. F11 fullscreens both windows. ESC pauses player 1 even with the player 2 window selected. Kid mode set in one window shows in the other, and a Settings change keeps its place. The banner reads EXTRACT IN PROGRESS, extraction takes 20 seconds to arrive and stays 30, the seal spawns at a new landmark each raid and opens a little quicker. Every menu shares one look. When the game runs slowly it lowers its own render resolution a notch at a time, and the fog and darkness layers draw at half size.',
   'A BETTER FIRST HOUR. The title shows the Undercroft behind it, the WELCOME PACK shows its items, and the stash tells a first raid what to do: drag a gun and two heals into the loadout, then go up at ENTER RAID! The sector page shows a map of each sector. The raid controls legend stays out of the way after your first raids, the NEW IN card is short, and if the game runs slowly it says once where the Settings levers are. A controller unplugged pauses only the window that was playing it.',
   'SMOOTHER, LOUDER, YOURS. Settings has Master, Music and Effects volume, CHANGE KEYS to put any action on the key you want, and a KID MODE section where player 2 can come back after death. A two-player pair has one sound setting: both, player 1 only or player 2 only. A PlayStation pad is named in its own words. The sector page shows a map of each sector, the raid controls legend stays out of the way after your first raids, a covered player 1 window no longer freezes the raid for player 2, and if the player 1 window is gone, player 2 keeps the raid.',
   'KNOWING WHERE YOUR TEAMMATE IS. You are told when your teammate joins the raid and when he is out of it (killed, extracted or abandoned). JOIN THE RAID IN PROGRESS is bigger, and a teammate who joins late sees the walls already blown open and the map markers already placed, and is charged only for the time he played. In a party raid the backpack says Y (or T) offers an item. Pings and the kill feed name THE OVERSEER.',
@@ -4329,7 +4329,7 @@ function rr(){
 // Cone widened and pushed out at v0.68 on his note asking to see more. Measured:
 // this takes the revealed part of the screen from 26 percent to 52. Machines are
 // untouched, their own cones are separate, so this is squarely a player gain.
-var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:540,pSpeed:158,extractWait:30,
+var DEF={coneDeg:130,viewFar:620,ambient:190,raidSec:540,pSpeed:158,extractWait:20, // v28.xx (cw-cx-extractwait20): his 10-28 order, "change inbound pre-extraction time from 30 secs to 20 secs".
   // HIS NOTE, 2026-08-26: "i want 10 raiders on the map, not 5". This is the count at
 // the REFERENCE map size and every map scales it by area, which is why he counted
 // five: nOf multiplies by clamp(AREA/4, 0.45, 1.6) and COLD STORAGE runs 0.69. That
@@ -4345,7 +4345,9 @@ var PRESETS={
 };
 var CFG={};
 function cloneObj(o){ var r={},k; for(k in o) r[k]=o[k]; return r; }
-function applyCfg(base,over){ CFG=cloneObj(base); if(over){ for(var k in over) if(k in DEF) CFG[k]=over[k]; } }
+// v28.xx (cw-cx-extractwait20): migrate only the old default on load; preserve preset C and every other saved dial value. No storage key or profile format changes.
+function extractWaitLoad(v){ return v===30?20:v; }
+function applyCfg(base,over){ CFG=cloneObj(base); if(over){ for(var k in over) if(k in DEF) CFG[k]=(k==='extractWait'?extractWaitLoad(over[k]):over[k]); } }
 // v32.xx (cw-expmenu1), HIS ORDER (2026-10-14: "create an experimental settings menu inside settings where I can turn new features on and off"; round 3, 2.R4 b:
 // "make it a separate menu accessible from settings"). Settings has one row, experimental, that opens its own page with an on/off row per newer feature. Every
 // switch is ON by default, so a profile that never opens it plays exactly as before. Each key is a DEF key, so the host's off switches ride in the raid word
@@ -25705,7 +25707,8 @@ function greedOf(){ return clamp((bagValue()+((G&&G.arcade&&typeof ARCADE==='obj
 // ring is called the wave director holds its spawns (siegeCalled). Nothing here draws from the seeded stream.
 var SIEGE_FLAT=1.6, SIEGE_HAUL_CAP=5, SIEGE_DIAL=0.6, SIEGE_IV=6.4, SIEGE_IV_HAUL=2.0;
 function siegeBase(GR){ return (SIEGE_FLAT+SIEGE_HAUL_CAP*clamp(GR,0,1))/SIEGE_DIAL; }
-function siegeIvOf(GR){ return SIEGE_IV-SIEGE_IV_HAUL*clamp(GR,0,1); }
+// v28.xx (cw-cx-extractwait20): the arrival rate was tuned to a 30 s inbound wait. Compress shorter live waits proportionally, keeping the same arrivals by landing and the same cap. The headless sim keeps its arrival rate.
+function siegeIvOf(GR){ return (SIEGE_IV-SIEGE_IV_HAUL*clamp(GR,0,1))*((typeof G!=='undefined'&&G&&!G.sim)?Math.min(1,CFG.extractWait/30):1); }
 // Is any ring called right now, from the call through the 30 s boarding window? beaconT is a number from the call until the window
 // closes and null otherwise.
 function siegeCalled(){
@@ -28595,7 +28598,7 @@ function useHot(){
 }
 function tryExtractTick(dt,wantCall){
   // SPEC 5.2 and 5.3. Extraction is a TWO STAGE pull at any point that is still
-  // open, not one global beacon: pull once to call, wait 30s inbound, then pull
+  // v28.xx (cw-cx-extractwait20): open, not one global beacon: pull once to call, wait the inbound dial (20 s by default), then pull
   // AGAIN inside a 30s boarding window to actually leave. The window is shared,
   // so shadowing someone else's call and riding out on it is intended play.
   var p=G.player,T=G.tel;
@@ -56356,7 +56359,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.42: no rolling in water Check 36.42 fails on v36.41',
+  now:'v36.43: The ship lands 20 s after the call in career and demo. Old saved 30 s defaults load as 20 s. Watch the shorter wait and siege arrivals. Check 36.43 fails on v36.42',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -62182,7 +62185,7 @@ function netUpStart(m){
   NET.upFw=(m.fw===1||m.fw===0)?m.fw:null;   // v35.xx (cw-dmulshow): the host's fog of war row, read by the score multiplier while this raid is built
   try{
     for(k in DEF) if(Object.prototype.hasOwnProperty.call(DEF,k)) CFG[k]=DEF[k];
-    if(m.cfg&&typeof m.cfg==='object') for(k in m.cfg) if(Object.prototype.hasOwnProperty.call(DEF,k)&&(typeof m.cfg[k]==='number'||typeof m.cfg[k]==='string'||typeof m.cfg[k]==='boolean')) CFG[k]=m.cfg[k];
+    if(m.cfg&&typeof m.cfg==='object') for(k in m.cfg) if(Object.prototype.hasOwnProperty.call(DEF,k)&&(typeof m.cfg[k]==='number'||typeof m.cfg[k]==='string'||typeof m.cfg[k]==='boolean')) CFG[k]=(k==='extractWait'?extractWaitLoad(m.cfg[k]):m.cfg[k]); // v28.xx (cw-cx-extractwait20): old party settings load the same 20 s default.
     P.mapIx=clamp((m.mapIx|0),0,FIXED_MAPS.length-1); P.cond=(m.cond==='night')?'night':'day';
     P.terms=netUpTerms(m.terms); P.merc=netClean(m.merc,24)||null; P.intel=0; P.wxPick=netClean(m.wx,16)||'any';
     pendSeed=seed;
@@ -65602,7 +65605,7 @@ function arcadeSandboxOut(){
 // stops the arcade raid (no run is settled, nothing is saved, no card) before it puts his profile and his dials back.
 // v25.xx (demoextract), HIS QUESTION (2026-10-13): "demo mode -- why does the extraction prep countdown take less time? I want default
 // gameplay to be exactly the same". The overlay below also set the extraction call to 15 seconds, while a CAREER raid (and a normal raid)
-// waits the extractWait dial, 30 by default, so a DEMO ship arrived in half the time. His rule of 2026-10-12: gameplay is EXACTLY THE SAME
+// v28.xx (cw-cx-extractwait20): waits the extractWait dial (now 20 by default); the former 15 s DEMO overlay arrived sooner. His rule of 2026-10-12: gameplay is EXACTLY THE SAME
 // in DEMO and CAREER. The overlay no longer touches the call: a DEMO call waits the dial, as a CAREER call does (and a dial moved in
 // Settings applies to both). The raid clock dial stays as it was.
 // v25.xx (demounify), HIS RULE (2026-10-12): "GAMEPLAY ELEMENTS ... SHOULD BE EXACTLY THE SAME IN DEMO AND CAREER". The last dial the overlay

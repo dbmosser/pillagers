@@ -546,3 +546,10 @@
 2026-10-29 06:06 o-00q-235-hud-fades-over-your-pillager 207s ok PARTIAL in=6516220 out=41276 run=2
 2026-10-29 06:12 o-00q-235-hud-fades-over-your-pillager 138s ok DONE in=7588252 out=44878 run=3
 2026-10-29 06:22 o-00r-236-no-roll-in-water 606s ok PARTIAL in=1228133 out=21709 run=1
+2026-10-29 06:31 o-00r-236-no-roll-in-water 239s ok PARTIAL in=2179454 out=30215 run=2
+2026-10-29 06:35 o-00r-236-no-roll-in-water 91s ok DONE in=2778271 out=33193 run=3
+2026-10-29 06:37 o-00s-235-hud-fades-over-your-pillager 122s ok PARTIAL in=461750 out=3977 run=1
+2026-10-29 06:38 o-00s-235-hud-fades-over-your-pillager 56s ok PARTIAL in=748955 out=5796 run=2
+2026-10-29 06:39 o-00s-235-hud-fades-over-your-pillager 44s ok PARTIAL in=101328 out=1321 run=3
+2026-10-29 06:39 o-00s-235-hud-fades-over-your-pillager 50s ok DONE in=188356 out=2567 run=4
+2026-10-29 06:46 o-00t-237-extract-wait-20s 413s ok PARTIAL in=1390006 out=14561 run=1

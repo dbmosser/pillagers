@@ -1,0 +1,7 @@
+v36.43: extraction inbound 20 seconds
+
+The ship lands 20 s after the call in career and demo. Old saved 30 s defaults load as 20 s. Watch the shorter wait and siege arrivals.
+
+Check 36.43. Fails on v36.42.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
