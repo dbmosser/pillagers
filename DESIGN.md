@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.18 - IN-GAME KEYS ARE KEYCARDS NOW
+
+Co-op hunt while he was away. HIS ORDER 10-28: he was confused by keyboard keys versus in-game keys and asked to call the in-game ones something else. Every item that opens a sealed room is now a keycard, the stash tab reads keycards, and the map and Data Core lines say keycard. Words only.
+
+MEASURED. Check 36.18 passes, and fails on v36.17.
 ## v36.17 - ACTIVE RELOAD CHAIN STATUS
 
 Co-op hunt while he was away. His 10-28 order: active reload bonus stacks should be shown as a status.

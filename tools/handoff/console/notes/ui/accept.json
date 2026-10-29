@@ -3806,5 +3806,69 @@
   "pic": "tools/handoff/console/notes/shots/o-00b-hold-e-to-breach-recipes-4/breach-p2-progress-1080.jpg",
   "task": "o-00b-hold-e-to-breach",
   "when": "2026-10-29T01:04"
+ },
+ "p1-x1": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The active-reload status chip is a tiny, dim badge in the left margin, and the HUD around it is crowded and inconsistent: it has a capital 'I', '$' pill styling that varies by panel, and a 'run info' bar that clashes with the rest.",
+  "findings": [
+   "P0 top-right 'run info' bar: Lower-case it to 'run info'. Make it a 4px-radius --ui-panel chip at 16px, the same as the left roster. Move the room label out from under it.",
+   "P1 active reload chip (left, y≈452): Put it near the weapon slots or ammo block. Set the title to 20px f-cond 600 in tx-1, with the detail at 16px tx-2. Use a --ui-panel fill with a 1px --ui-line-hi border and a 4px radius. Use a 40px icon, with lime only for the ring while the effect is active.",
+   "P1 left roster 'current pillagers 3': Use 24px row pitch and 16px labels. Name in tx-2, value in tx-1. Collapse to the player's own row by default. Pad 16px.",
+   "P1 HUD panel consistency: Standardise on --ui-panel #16191b, a 1px --ui-line-hi border and a 4px radius for every HUD box. Reserve colour for state only.",
+   "P1 hp bar, bottom-left: Give it a 56px hero only for ammo. Make hp a 20px label plus number on a 12px bar, inset 48px from the screen edge, with --ok fill on --ui-raised."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-1/reload-status-p1-x1-1080.jpg",
+  "task": "o-00c-active-reload-status",
+  "when": "2026-10-29T01:22"
+ },
+ "p1-x3": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The HUD is readable, but the corners are crowded with small low-contrast panels in different styles. The one thing the screen is meant to show, the active reload x3 status, is a tiny chip that is easy to miss.",
+  "findings": [
+   "P1 active reload x3 status chip (left, y~452): Anchor it to the ammo block or the hp bar, 8px above it. Make the title 20px f-cond 600 and the sub-line 16px tx-2. Give it a 1px --ui-line-hi border and a 4px radius, with a 3px lime bar on the left edge while it is active.",
+   "P1 top-left 'current pillagers' list and 'pillager' bar: Put all three on one panel style: --ui-panel fill, 1px --ui-line-hi border, 4px radius. Use 16px labels and 20px names and values with 8px padding and a 24px row pitch. Show only 'you' with a count and collapse the other rows by default.",
+   "P1 top-right 'run info' bar and 'c 152m' chip: Fix the capital I in 'run info' (a capital is a defect). Delete the 'c 152m' chip or keep only the edge arrow. Restyle 'run info' as a collapsed 40px-high card in the shared panel style, 16px text, 8px padding.",
+   "P1 hp bar (bottom left, y~1050): Use a 48px safe margin (the 5% rule), a 24px-high bar with a --ok fill and a dark track, and 20px f-cond text sitting inside it. The 56px hero size belongs to ammo only.",
+   "P2 bottom-left icon row and 'f1 controls' hint: Use one outline colour (--ui-line-hi) for idle icons, 32px with 8px gaps. Make the 'f1 controls' hint 16px tx-2 with a single key chip, sitting on the same baseline as the slot bar."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-1/reload-status-p1-x3-1080.jpg",
+  "task": "o-00c-active-reload-status",
+  "when": "2026-10-29T01:23"
+ },
+ "p2-x1": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The active reload status chip is clear, but the HUD around it is cluttered and inconsistent: it has mixed panel styles, a stray capital, a near-invisible P2 marker, and several overlapping or floating elements.",
+  "findings": [
+   "P0 top right 'run Info' dropdown: Change the text to 'run info'. Shrink the bar to its content, about 200x40px, and use one 4px-radius --ui-panel fill, 1px --ui-line-hi border and 16px label type for every HUD panel.",
+   "P1 active reload x1 chip, left, y~452: Make the chip 48px high with an 8px gap under the status card. Use tx-1 20px f-cond 600 for 'active reload x1', 16px tx-2 for '+15% damage', and a lime --acc ring only while the buff is active. Use the same panel fill and border as the other HUD cards.",
+   "P1 'pillager' name card, left, y~335 and the world tag above the player: Put P2 in the standard panel with a 3px cyan (P2) left bar and 16px text. Keep either the card or the world tag, not both. Align its left edge to the 16px margin used by the list above.",
+   "P1 bottom-left row: 'f1 controls', 'in pillager's party' tooltip, and the hp bar: Delete the 'in pillager's party' tooltip, or fold it into the player card. Put 'f1 controls' on the left margin at a 16px label size in a standard chip. Shrink the hp numeral to 32px, set it inside a 24px-tall bar, and let the 56px ammo number be the only hero.",
+   "P2 weapon slots 1–0 at the bottom: Draw empty slots 3 to 0 as 64px --ui-panel tiles at 60% opacity with a 1px --ui-line border. Use the lime --acc border for the selected slot, since amber is player colour only and lime means selected. Use 16px tx-2 numerals."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-1/reload-status-p2-x1-1080.jpg",
+  "task": "o-00c-active-reload-status",
+  "when": "2026-10-29T01:23"
+ },
+ "p2-x3": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The reload buff chip is readable, but the HUD around it is scattered and inconsistent, with a capital letter, a status chip that is too small and too dim, and a fragmented layout.",
+  "findings": [
+   "P1 top-right 'run Info' dropdown: Change to 'run info'. Shrink the bar to content width (about 200x40) or collapse it to an icon. Align its left edge to the 5% margin (96px) to match the other corner blocks.",
+   "P1 active reload x3 chip, left, y=450: Set the title to 20px f-cond 600 in tx-1 and the sub-line to 16px tx-2. Use --ui-panel fill, a 1px --ui-line-hi border and 4px radius. Put the ring icon in --acc. Dock the chip 8px under the pillager health bar at the same left edge (x=16) so the two read as one status block.",
+   "P1 player count and value-at-risk panel, top left: Use 16px labels and 20px values with 28px row pitch. Highlight the 'you' row with --acc or an --ui-raised fill. Give the amber P1 and cyan P2 colour chips to each name. Trim the panel width to about 300px.",
+   "P1 bottom-left hp bar and 'hp 100': Make it a 320x16 bar with a --ui-panel track and 1px border, and set the number as a 32px f-cond 700 hero number to the left of the bar, not on it. Inset it 48px from the left and bottom edges, with 8px between the number and the bar.",
+   "P2 hotbar slots 1-0 and 'f1 controls' chip, bottom centre: Draw empty slots as 64px --ui-panel squares with a --ui-line border and 8px gaps. Set the selected border to --acc 2px. Move the controls hint out of the hotbar row, to mid-bottom left as the guide specifies, and use one 16px line."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-1/reload-status-p2-x3-1080.jpg",
+  "task": "o-00c-active-reload-status",
+  "when": "2026-10-29T01:23"
  }
 }

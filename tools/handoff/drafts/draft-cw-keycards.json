@@ -1,0 +1,100 @@
+{
+ "title": "IN-GAME KEYS ARE KEYCARDS NOW",
+ "why": "HIS ORDER 10-28: he was confused by keyboard keys versus in-game keys and asked to call the in-game ones something else. Every item that opens a sealed room is now a keycard, the stash tab reads keycards, and the map and Data Core lines say keycard. Words only.",
+ "now": "the items that open sealed rooms are keycards, so keys only means keys you press",
+ "edits": [
+  {
+   "anchor": "name:'Turbine Room Key',",
+   "replacement": "name:'Turbine Room Keycard',"
+  },
+  {
+   "anchor": "name:'Substation Vault Key',",
+   "replacement": "name:'Substation Vault Keycard',"
+  },
+  {
+   "anchor": "name:'Sealed Cellar Key',",
+   "replacement": "name:'Sealed Cellar Keycard',"
+  },
+  {
+   "anchor": "name:'Garage Depot Key',",
+   "replacement": "name:'Garage Depot Keycard',"
+  },
+  {
+   "anchor": "name:'Blast Freezer Key',",
+   "replacement": "name:'Blast Freezer Keycard',"
+  },
+  {
+   "anchor": "name:'Foreman Office Key',",
+   "replacement": "name:'Foreman Office Keycard',"
+  },
+  {
+   "anchor": "name:'Magazine Key',",
+   "replacement": "name:'Magazine Keycard',"
+  },
+  {
+   "anchor": "name:'Assay Office Key',",
+   "replacement": "name:'Assay Office Keycard',"
+  },
+  {
+   "anchor": "name:'Bond Room Key',",
+   "replacement": "name:'Bond Room Keycard',"
+  },
+  {
+   "anchor": "name:'Deep Freeze Key',",
+   "replacement": "name:'Deep Freeze Keycard',"
+  },
+  {
+   "anchor": "name:'Blast Vault Key',",
+   "replacement": "name:'Blast Vault Keycard',"
+  },
+  {
+   "anchor": "name:'Cryo Lockup Key',",
+   "replacement": "name:'Cryo Lockup Keycard',"
+  },
+  {
+   "anchor": "name:'Pump Control Vault Key',",
+   "replacement": "name:'Pump Control Vault Keycard',"
+  },
+  {
+   "anchor": "name:'Melt Locker Key',",
+   "replacement": "name:'Melt Locker Keycard',"
+  },
+  {
+   "anchor": "name:'Manifest Cage Key',",
+   "replacement": "name:'Manifest Cage Keycard',"
+  },
+  {
+   "anchor": "name:'Winch Room Key',",
+   "replacement": "name:'Winch Room Keycard',"
+  },
+  {
+   "anchor": "  if(g.kind==='key') return 'A key to a sealed room';",
+   "replacement": "  if(g.kind==='key') return 'A keycard to a sealed room';   // v28.xx (cw-keycards), HIS ORDER 2026-10-28: in-game keys are keycards, keys are what you press"
+  },
+  {
+   "anchor": "    return ITEMS[k]?ITEMS[k].name:'a key';",
+   "replacement": "    return ITEMS[k]?ITEMS[k].name:'a keycard';"
+  },
+  {
+   "anchor": "      mapLabel('KEY',ikx,iky-9*_MZ,UIC.tx_1);",
+   "replacement": "      mapLabel('KEYCARD',ikx,iky-9*_MZ,UIC.tx_1);   // v28.xx (cw-keycards)"
+  },
+  {
+   "anchor": "['salvage','SALVAGE'],['key','KEYS'],",
+   "replacement": "['salvage','SALVAGE'],['key','KEYCARDS'],"
+  },
+  {
+   "anchor": "    ?'Next raid: every locked-room key and every elite shown live on your map. One core per raid.'",
+   "replacement": "    ?'Next raid: every locked-room keycard and every elite shown live on your map. One core per raid.'"
+  },
+  {
+   "anchor": "deploys knowing things: every locked-room key location and every elite, live on the M map. One is in the stash.')",
+   "replacement": "deploys knowing things: every locked-room keycard location and every elite, live on the M map. One is in the stash.')"
+  },
+  {
+   "anchor": "Spend a Data Core for better map info. Every locked-room key location and every elite will be live on the M map.",
+   "replacement": "Spend a Data Core for better map info. Every locked-room keycard location and every elite will be live on the M map."
+  }
+ ],
+ "check": "  {v:'VER',what:'HIS ORDER 2026-10-28 (menus master chat): \"I am confused by keyboard keys vs in game keys, can we call the in game keys something else?\" Every item that opens a sealed room is a KEYCARD (Turbine Room Keycard), the stash filter tab reads KEYCARDS, a keycard on the ground is a keycard to a sealed room, and the Data Core lines say keycard; keys now only means keys you press',\n   run:function(){\n     if(typeof ITEMS!=='object'||typeof renderHub!=='function'||typeof gearLabel!=='function') return 'SKIP: no items here';\n     var bad=[], k, n=0, tb, t, g;\n     for(k in ITEMS){ if(ITEMS[k]&&ITEMS[k].use==='key'){ n++; if(!/ Keycard$/.test(ITEMS[k].name)) bad.push(k+' is named '+ITEMS[k].name+', not a keycard'); } }\n     if(n<10) bad.push('only '+n+' sealed room items');\n     for(k in ITEMS){ if(ITEMS[k]&&/\\bKeys?\\b/.test(ITEMS[k].name||'')) bad.push('item '+k+' still says key: '+ITEMS[k].name); }\n     t=gearLabel({kind:'key'})||''; if(!/keycard/i.test(t)||/\\bkey\\b/i.test(t)) bad.push('a keycard on the ground reads: '+t);\n     try{ renderHub(); }catch(e){}\n     tb=document.getElementById('stashtabs');\n     if(tb){ t=(tb.textContent||'').toLowerCase(); if(t.indexOf('keycards')<0) bad.push('the stash tabs have no keycards tab ('+t.slice(0,160)+')'); if(/\\bkeys\\b/.test(t)) bad.push('a stash tab still reads keys'); }\n     else bad.push('no stash tab row');\n     g=(typeof TXSHIP==='object')?TXSHIP['Spend a Data Core ($520 on the shelf) and your next raid deploys knowing things: every locked-room key location and every elite, live on the M map. None in the stash right now.']:null;\n     if(!g||!/keycard/.test(g)||/\\bkey\\b/.test(g)) bad.push('his Data Core line reads: '+g);\n     return bad.length?bad.join('; '):null; }},\n"
+}

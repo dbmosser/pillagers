@@ -1711,3 +1711,7 @@
 2026-10-28 0.0941 critic-o-00b-hold-e-to-breach
 2026-10-28 0.0000 o-00b-hold-e-to-breach
 2026-10-28 0.0000 o-00c-active-reload-status
+2026-10-28 0.0803 critic-o-00c-active-reload-status
+2026-10-28 0.0819 critic-o-00c-active-reload-status
+2026-10-28 0.0828 critic-o-00c-active-reload-status
+2026-10-28 0.0834 critic-o-00c-active-reload-status

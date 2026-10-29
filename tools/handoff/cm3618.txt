@@ -1,0 +1,7 @@
+v36.18: in-game keys are keycards now
+
+the items that open sealed rooms are keycards, so keys only means keys you press
+
+Check 36.18. Fails on v36.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

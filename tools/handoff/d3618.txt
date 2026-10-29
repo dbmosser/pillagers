@@ -1,0 +1,5 @@
+## v36.18 - IN-GAME KEYS ARE KEYCARDS NOW
+
+Co-op hunt while he was away. HIS ORDER 10-28: he was confused by keyboard keys versus in-game keys and asked to call the in-game ones something else. Every item that opens a sealed room is now a keycard, the stash tab reads keycards, and the map and Data Core lines say keycard. Words only.
+
+MEASURED. Check 36.18 passes, and fails on v36.17.
