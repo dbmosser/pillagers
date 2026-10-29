@@ -257,6 +257,15 @@ if ($GameCheck) {
       if ($avg -gt $pct) { $pct = [int]$avg; $hit = $n }
     }
   } catch { LogLine ('game check: cannot read the graphics card counters: ' + ($_.Exception.Message -replace '\s+', ' ')); $hit = ''; $pct = 0 }   # 10-20: go on, so the idle check, gaming.txt and the processor limit still run
+  # 10-29: his 1440p game at 60 fps works the graphics card under -Gpu3DPct, so this check had not seen him play since 10-28 14:36. The main
+  # PC tester (tools/spare/spare-runner.ps1, which runs as him and sees his screen; this task runs as SYSTEM and does not) writes playing.txt
+  # in the share while the game window is in front or a pad is in use. Read as data only: an epoch under 90 seconds old counts as a game.
+  $runWhy = ''
+  if (-not $hit) {
+    try { $pt = [string](Get-Content -LiteralPath (Join-Path $Share 'playing.txt') -Raw -ErrorAction Stop)
+          if ($pt -match '(?m)^epoch=(\d+)' -and ([DateTimeOffset]::UtcNow.ToUnixTimeSeconds() - [long]$Matches[1]) -lt 90) {
+            $hit = 'pillagers'; $pct = 0; $runWhy = 'the game'; if ($pt -match '(?m)^why=([a-z ]{1,40})') { $runWhy = $Matches[1].Trim() } } } catch { }
+  }
   $now = Get-Date; $last = $null
   if ($hit) { $last = $now; Set-Content -Path $GameSeen -Value $now.ToString('yyyy-MM-dd HH:mm:ss') -Encoding ASCII }
   else { try { $last = [datetime]::ParseExact((Get-Content $GameSeen -Raw -ErrorAction Stop).Trim(), 'yyyy-MM-dd HH:mm:ss', $null) } catch { } }
@@ -265,7 +274,7 @@ if ($GameCheck) {
   $atpc = ($idle -ge 0) -and ($idle -lt $AtPcIdleMin)
   $want = 100; $why = 'nobody at this PC for ' + $AtPcIdleMin + ' minutes and no game'
   if ($atpc) { $want = $AtPcCpuPct; $why = 'he is at this PC (keyboard or mouse used ' + $idle + ' min ago)' }
-  if ($gaming) { $want = $GameCpuPct; $why = $(if ($hit) { $hit + ' works the graphics card (' + $pct + '% 3D)' } else { 'a game in the last 10 minutes' }) }
+  if ($gaming) { $want = $GameCpuPct; $why = $(if ($runWhy) { 'he is playing (' + $runWhy + ')' } elseif ($hit) { $hit + ' works the graphics card (' + $pct + '% 3D)' } else { 'a game in the last 10 minutes' }) }
   $vm = GetVm
   $awayMem = (-not $gaming) -and $(if ($idle -ge 0) { $idle -ge $AwayMin } else { ($now.Hour -ge 23) -or ($now.Hour -lt 6) })
   MemFollow $vm $awayMem $idle

@@ -414,12 +414,23 @@ $script:playWhy=''
 # looked away from the game for a moment and was stopped a minute later (22:10 to 22:21: seven starts while he played, his game froze
 # twice, at 22:12 and 22:20, the second at 30 fps).
 $script:fgPlayT=(Get-Date).AddDays(-1)
+# 10-29 (Main PC Correspondent, from the FPS chat): the main PC game check (host-night-memory.ps1 -GameCheck, as SYSTEM, no view of his
+# screen) counts a game only at 15% of the graphics card; his 1440p game at 60 fps sits under that, so it had not seen him play since 10-28
+# 14:36 and held the VM to 50% instead of 30% while he played. While the game is in front now, or a pad was used in the last minute, this
+# writes playing.txt in the bridge share (at most every 30 s) and the game check counts it as a game. Pad and window only, never its
+# own gaming=1, so the two never hold each other on.
+$script:playNoteT=[long]0
+function PlayNote([string]$w){
+  if(((Epoch)-$script:playNoteT) -lt 30){ return }; $script:playNoteT=Epoch
+  try{ [IO.File]::WriteAllText((Join-Path $env:LOCALAPPDATA 'PillagersBridge\share\playing.txt'),('epoch='+(Epoch)+"`r`nwhy="+$w+"`r`n"),$Enc) }catch{}
+}
 function Playing(){
   $script:playWhy=''
-  if(((Get-Date)-$script:padUseT).TotalSeconds -lt 900){ $script:playWhy='a game pad'; return $true }
-  if((ShareGaming) -match '(?m)^gaming=1'){ $script:playWhy='the main PC game check'; return $true }
   $t=''; try{ $t=[PillagersIdle.Fg]::Title() }catch{}
   if($t -match '^(?i)pillagers(,| -|$)'){ $script:fgPlayT=Get-Date }
+  if($Idle){ if(((Get-Date)-$script:fgPlayT).TotalSeconds -lt 60){ PlayNote 'the game in front' } elseif(((Get-Date)-$script:padUseT).TotalSeconds -lt 60){ PlayNote 'a game pad' } }
+  if(((Get-Date)-$script:padUseT).TotalSeconds -lt 900){ $script:playWhy='a game pad'; return $true }
+  if((ShareGaming) -match '(?m)^gaming=1'){ $script:playWhy='the main PC game check'; return $true }
   if(((Get-Date)-$script:fgPlayT).TotalSeconds -lt 900){ $script:playWhy='the game in front'; return $true }
   GpuGame
   if(((Get-Date)-$script:gpuT).TotalSeconds -lt 600){ $script:playWhy='a game on the graphics card'; return $true }
