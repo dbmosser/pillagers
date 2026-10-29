@@ -5,3 +5,4 @@ Queue (CEO 10-28 22:00), tooling, after the party unless it starts eating more r
 3. The 21:15 review run on port 9339 died while another camera run was starting there: two runs picked the same port.
 Do: pairing codes always valid; a stale zoom or transform reset between shots; each run takes a free port. Check: three back-to-back two-window 4K recipes all link and all match the 1080 layout.
 4. o-00f (10-28 23:17): rounds 1 and 2 were all NOT STAGED, yet the critic scored the title-screen fallback pictures as if they were the raid; the critic should refuse a NOT STAGED picture.
+5. o-00g (10-28 23:48): retarget.mjs picks one newline style for the whole mkfixture.ps1, but the file has mixed LF and CRLF blocks, so exact multiline anchors are refused. Match LF and CRLF variants against the real file before choosing.
