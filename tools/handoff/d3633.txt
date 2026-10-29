@@ -1,0 +1,5 @@
+## v36.33 - RUN GOALS PAY REWARDS NOT SP
+
+Co-op hunt while he was away. His order 2026-10-28: sp is like a high score counter. Watch: run goals pay $ or items at the undercroft, never sp
+
+MEASURED. Check 36.33 passes, and fails on v36.32.

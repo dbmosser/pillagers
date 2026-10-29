@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.33 - RUN GOALS PAY REWARDS NOT SP
+
+Co-op hunt while he was away. His order 2026-10-28: sp is like a high score counter. Watch: run goals pay $ or items at the undercroft, never sp
+
+MEASURED. Check 36.33 passes, and fails on v36.32.
 ## v36.32 - LANCE RELOAD TAIL
 
 Co-op hunt while he was away. His Lance reload report: the room feedback filter was resonant at its default Q and could sustain a charge or shot indoors. Use a non-resonant filter and cap vault feedback at 0.80.

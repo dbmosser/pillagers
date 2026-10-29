@@ -157,3 +157,5 @@
 2026-10-29 01:00 week=52.0% 5h=45.0% week_resets=2026-11-04 01:35 job=o-00i-226-timelord-mode
 2026-10-29 01:02 week=52.0% 5h=46.0% week_resets=2026-11-04 01:35 job=o-00i-226-timelord-mode
 2026-10-29 01:13 week=53.0% 5h=52.0% week_resets=2026-11-04 01:35 job=o-00j-227-lance-reload-long-tail
+2026-10-29 01:17 week=53.0% 5h=52.0% week_resets=2026-11-04 01:35 job=o-00j-227-lance-reload-long-tail
+2026-10-29 01:29 week=55.0% 5h=60.0% week_resets=2026-11-04 01:35 job=o-00k-229-run-goals-pay-cash-not-sp

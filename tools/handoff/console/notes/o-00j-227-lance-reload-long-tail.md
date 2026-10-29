@@ -17,3 +17,7 @@ Draft offline results: worst peak more than 1.5 seconds after the deadline was 0
 DESIGN watch line is in draft.now: the Lance no longer rings on after a reload
 Watch on next play: finish a normal and active Lance reload indoors or in a vault. All four reload cues should remain, with the ring dying quickly. Other world sounds through the same room reverb also decay sooner. No screen changes or camera shots are needed for this audio fix.
 
+
+--- codex run 2026-10-29 01:17 ---
+2026-10-29 completion: the lane reports cw-cx-lancetail SHIPPED as v36.32 and ON HIS PC v36.32, 17 seconds after shipping. His 8802 serves 36.32; he reloads to play it. Refreshed master contains both reverb edits and VER 36.32. No further changes are needed. Watch on next play: the Lance no longer rings on after a reload; its vent, seat, whine and ready ping remain. Task complete.
+

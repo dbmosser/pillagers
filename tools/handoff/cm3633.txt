@@ -1,0 +1,7 @@
+v36.33: run goals pay rewards not sp
+
+Simple goals carry $1,000 to $1,500; hard goals carry a cache item. Extract to bank them, die or abandon to lose them. Demo goals give each seat a power-up. Goals never feed SP.
+
+Check 36.33. Fails on v36.32.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

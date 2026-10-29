@@ -1803,3 +1803,5 @@
 2026-10-29 0.0919 critic-o-00i-226-timelord-mode
 2026-10-29 0.0000 o-00i-226-timelord-mode
 2026-10-29 0.0000 o-00j-227-lance-reload-long-tail
+2026-10-29 0.0000 o-00j-227-lance-reload-long-tail
+2026-10-29 0.0000 o-00k-229-run-goals-pay-cash-not-sp
