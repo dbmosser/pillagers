@@ -1,10 +1,10 @@
 host=DESKTOP-82BKOP4
-seen=2026-10-28 22:48
-epoch=1793242134
+seen=2026-10-28 22:59
+epoch=1793242752
 game=29a40f18 v36.23
 test_run=running corpus-1028-2206.txt
 robots=1
-ram_free_gb=23.2
+ram_free_gb=23
 push_ok=1
 runner=A978208E
 mode=full
