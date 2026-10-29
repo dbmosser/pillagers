@@ -102,6 +102,10 @@ function laneLine(s){
   if(/day cap/.test(s)) return ['a','Done for today (daily money limit)'];
   if(/STOP file|paused/.test(s)) return ['r','Paused (the STOP file is there)'];
   if(/API error/.test(s)) return ['r','Could not reach Claude (key or credits problem)'];
+  // 10-29: the ChatGPT helper's own week pace (codex-lane.sh), its party-night reserve and its usage limit
+  if(m=/resting: week use ([\d.]+)% is ahead of the pace line to the party(?:, back about (.*))?/.exec(s)) return ['a','Resting: its ChatGPT week is at '+Math.round(+m[1])+'%, ahead of its pace line to the party'+(m[2]?'. Back about '+m[2]:'')];
+  if(m=/resting: week use ([\d.]+)% reached the reserve line/.exec(s)) return ['a','Resting: its ChatGPT week is at '+Math.round(+m[1])+'%, the rest is kept for party night (only party-breaking fixes run)'];
+  if(m=/resting: codex usage limit, back about ([^;]*)/.exec(s)) return ['a','Resting: ChatGPT\'s usage limit is reached. Back about '+m[1]];
   // 10-28: a lane's "needs you:" is almost always a machine fault for Claude to fix, never a question for him (his questions live in for-you.md)
   if(m=/needs you: (.*)/.exec(s)) return ['r','Stopped: '+m[1].replace(/\s*\(see [^)]*\)/g,'').replace(/;\s*\S+ kept\s*$/,'').replace(/the codex worktree cannot be refreshed/,'its own copy of the game could not be updated').replace(/codex is not installed/,'the ChatGPT program is missing from the VM')+' (a job for Claude, not you)'];
   return ['d',s];
@@ -159,9 +163,10 @@ function aiHtml(a,p){
     'Google Antigravity, free, with a daily limit. It only reads; Claude checks every bug it lists before anything changes.');
   // 10-28: it runs on his main PC, so while the link to the main PC is down it cannot be reached; say that, not "not running"
   const lw=!l.up&&!/main PC/.test(ls.msg)&&window.__LINK&&!window.__LINK.ok&&window.__LINK.failAt;
-  if(l.off) o+=svcRow('d','Local AI (your graphics card)','Retired (since 10-28): each model took your main PC below the memory you keep free, and none of its bug leads were real.','Its old bug leads stay listed below for the record.'); else   // caps.txt LOCAL_AI=0, the CEO's call
+  if(l.off) o+=svcRow('d','Local AI (your graphics card)','Retired (since 10-28): each model took your main PC below the memory you keep free, and none of its bug leads were real.','Its old bug checks are hidden.'); else   // caps.txt LOCAL_AI=0, the CEO's call
   o+=svcRow(!l.up?(lw||/main PC/.test(ls.msg)?'a':'r'):l.loaded.length?'g':(l.pull&&l.pull!=='done')?'b':'d','Local AI (your graphics card)',(!l.up?(lw?'Waiting: it runs on your main PC, and the link to your main PC is not answering.':/main PC/.test(ls.msg)?'Resting.':'<span class="warn">Not running.</span>'):l.loaded.length?'Thinking now ('+esc(l.loaded.join(', '))+').':(l.pull&&l.pull!=='done'&&!has38)?'Downloading the new model: '+esc(l.pull):'Idle.')+(ls.msg&&!lw&&!/not running/.test(ls.msg)?' '+esc(you(ls.msg).replace(/ \(Ollama\)/,'')):''),
     'Free. Models: '+(l.models.map(m=>esc(m.name)+' ('+m.gb+' GB)').join(', ')||'none')+'. Rests during your usual PC hours so your games stay smooth.');
+  if(l.off){ a.reviews=a.reviews.filter(r=>r.engine!=='ollama'); a.findings=a.findings.filter(f=>!/\[ollama\]/.test(f)); }   // 10-29: none of the retired local AI's leads were real; hide them
   o+='<div class="small" style="margin:10px 0 2px"><b>Bug checks</b> ('+a.reviewsToday+' today)</div>'+(a.reviews.length?a.reviews.map(r=>row(r.bugs?'a':'g',new Date(r.at).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}),rvLine(r))).join(''):row('d',null,'None yet'));
   if(a.findings.length) o+='<div class="small" style="margin:10px 0 2px"><b>Latest possible bugs</b> (leads, not facts: Claude checks each one in the code)</div>'+a.findings.slice().reverse().map(f=>{f=String(f);return row('a',null,esc(f.length>220?f.slice(0,217).replace(/\s+\S*$/,'')+' ...':f));}).join('');
   o+='<div class="small" style="margin-top:10px">Not used, on purpose: Grok, Copilot, Perplexity, Venice, DeepSeek and the free API tiers (cost or quality; see tools/handoff/ai-services/research.md).</div>';
