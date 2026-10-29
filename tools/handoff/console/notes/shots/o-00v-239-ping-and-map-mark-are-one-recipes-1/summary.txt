@@ -1,0 +1,22 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  mark-solo-raid                         staged       5.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"view":"world","solo":true,"age":209,"smooth":true,"followed":true}
+  mark-solo-map                          staged       5.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"view":"map","solo":true,"age":216,"smooth":true,"followed":true}
+  mark-p1-partner-raid                   staged      11.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"seat":1,"linked":true,"counts":[1,1],"smooth":true,"sender":"p2 pad"}
+  mark-p2-partner-raid                   staged       7.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"seat":2,"linked":true,"counts":[1,1],"smooth":true,"sender":"p1 mouse"}
+  mark-p1-partner-map                    NOT STAGED   4.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not open p2: p2raid
+    at partyPing (<anonymous>:61:51)
+    at async markCamera (<anonymous>:138:10)
+    at async <anonymous>:142:48
+    at async <anonymous>:1:21
+  mark-p2-partner-map                    NOT STAGED  66.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link: [{"state":{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"36926e48","name":"PILLAGER","host":true}],"status":"player 2 not linked","err":"Make an invite code first, then paste the reply to it here.","made":1,"codeLen":1190,"links":1},"sam
+== 4k : window 3876x2265, viewport 3840x2160
+  mark-solo-raid                         staged       5.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"view":"world","solo":true,"age":211,"smooth":true,"followed":true}
+  mark-solo-map                          staged       5.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"view":"map","solo":true,"age":208,"smooth":true,"followed":true}
+  mark-p1-partner-raid                   staged      11.6s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"seat":1,"linked":true,"counts":[1,1],"smooth":true,"sender":"p2 pad"}
+  mark-p2-partner-raid                   staged       7.7s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"seat":2,"linked":true,"counts":[1,1],"smooth":true,"sender":"p1 mouse"}
+  mark-p1-partner-map                    NOT STAGED   4.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not open p2: p2raid
+    at partyPing (<anonymous>:61:51)
+    at async markCamera (<anonymous>:138:10)
+    at async <anonymous>:142:48
+    at async <anonymous>:1:21
+  mark-p2-partner-map                    NOT STAGED  67.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: both real windows did not link: [{"state":{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"c9f84e46","name":"PILLAGER","host":true}],"status":"player 2 not linked","err":"Make an invite code first, then paste the reply to it here.","made":1,"codeLen":1190,"links":1},"sam

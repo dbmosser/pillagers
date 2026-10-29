@@ -4654,5 +4654,101 @@
   "pic": "tools/handoff/console/notes/shots/o-00u-238-no-heal-or-plate-while-reloading-recipes-2/reload-medical-host-1080.jpg",
   "task": "o-00u-238-no-heal-or-plate-while-reloading",
   "when": "2026-10-29T13:16"
+ },
+ "p1-partner-map": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "A clean, calm welcome-pack card, but the close x is misplaced and collides with the list, the hero is the wrong element, and the empty right half makes the rows look unfinished.",
+  "findings": [
+   "P0 close x, right edge at about y 488: Move it to the top-right corner of the card, 16px in from the top and right edges (box about 40x40 at x 1384-1424, y 172-212), on the title row. Keep it clear of the list column.",
+   "P1 quantity column (x2/x3): Put quantities in tx-1 at 20px f-cond 700 right after the name, or in a fixed 64px column right-aligned at the row edge. Show 'x1' on the single-item rows for a consistent column.",
+   "P1 hierarchy: title vs 'take the pack' button: Set the title to 32px f-cond 700. Add a thin lime 3px marker or a short subline of three to four words only if it adds meaning. Otherwise cut padding so the card hugs its content.",
+   "P1 rarity bars and row content: Make the rarity bar 4px by the full 64px row height. Drop item names to f-cond 600 at 20px in tx-1. Add a 16px tx-2 type tag ('smg', 'heal', 'grenade') after the name so the rows carry a second layer.",
+   "P2 card layout and empty space: Narrow the card to about 640px and centre it. Use 24px padding on all sides, with the title baseline 32px from the top. Remove the orphan lime tick or extend it into a full 3px top rule."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00v-239-ping-and-map-mark-are-one-recipes-1/mark-p1-partner-map-1080.jpg",
+  "task": "o-00v-239-ping-and-map-mark-are-one",
+  "when": "2026-10-29T15:58"
+ },
+ "p1-partner-raid": {
+  "score": 2,
+  "pass": false,
+  "need": 4,
+  "verdict": "The shot is a readable raid HUD, but the corners hold a handful of unrelated widget styles, there are stray capitals and a lot of clutter, and the mark and ping this build is about hardly shows.",
+  "findings": [
+   "P1 run info header under the minimap, top right: Change the string to 'run info'. Set the bar to the same 4px radius and --ui-panel fill as the other collapsed headers, and match its 16px label size.",
+   "P1 the mark ('pillager · 15m' tag and cyan diamond), centre-left: Draw the diamond filled in the shared mark colour at 24px with a 2px dark outline. Put the label directly above it with a 4px gap and a 1px leader. Use the identical glyph and colour on the minimap.",
+   "P1 HUD corners overall (top-left, top-right, bottom-left, bottom-right): Put every HUD block on a 24px margin with the shared 4px radius, the --ui-panel fill and a 1px --ui-line-hi border. Fold the 'pillager' box into the 'current pillagers' list. Keep one hot accent, which is the lime on the selected slot.",
+   "P1 hp bar, bottom left: Set the label to 20px f-cond. Make the bar 12px tall inside a framed panel with a 24px bottom margin. Use --ok for the fill. Keep the 56px hero for ammo only.",
+   "P2 weapon slot row, bottom centre: Hide empty slots, or draw them as 1px --ui-line outlines at a fixed 64px size. Make the selected border --acc, 2px. Align all number labels top left at 16px inside the tile."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00v-239-ping-and-map-mark-are-one-recipes-1/mark-p1-partner-raid-1080.jpg",
+  "task": "o-00v-239-ping-and-map-mark-are-one",
+  "when": "2026-10-29T15:59"
+ },
+ "p2-partner-map": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "This is a clean, consistent modal. The lime button is the clear primary action and the rarity bars work. It's still a plain list in an oversized card, with an unfocused title, a stray lime fragment and small row text.",
+  "findings": [
+   "P1 title 'welcome pack': Set the title to 32px, f-cond 700, with 24px of space above it. Add a one-line quiet subtitle in tx-2 at 16px, or a hero count such as '7 items' at 56px, so the card has one clear focal point.",
+   "P1 row names and rarity bars: Set row height to 72px and name size to 20px. Raise the quantity to tx-1 at 20px, and put it next to the name or in a fixed 64px column with tabular numbers. Give the rarity bar a 3px width and a rarity-coloured tag in the 16px label style on the right.",
+   "P2 top-left corner of the card (x≈504, y≈157): Either extend it into a full 3px accent bar across the card's top edge, or delete it. Do not leave a 36px stub.",
+   "P2 card layout and spacing: Use equal 32px padding on all sides. Put the header divider on --ui-line-hi. Narrow the card to about 720px, or add a right-hand detail pane that shows the selected item.",
+   "P2 'take the pack' button: Add a 2px outer focus ring in tx-1 with a 4px offset. Make the button 64px high with 20px bold text. Centre it, or span it across the footer, to match the shop and codex cards."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00v-239-ping-and-map-mark-are-one-recipes-1/mark-p2-partner-map-1080.jpg",
+  "task": "o-00v-239-ping-and-map-mark-are-one",
+  "when": "2026-10-29T15:59"
+ },
+ "p2-partner-raid": {
+  "score": 2,
+  "pass": false,
+  "need": 4,
+  "verdict": "A busy, cluttered raid HUD with inconsistent type, redundant labels and a bright diamond mark that competes with the player, so it reads as a debug layer rather than polished AAA UI.",
+  "findings": [
+   "P0 Run Info header, under the minimap (top right): Change the string to 'run info'. Use one collapse pattern with the same chevron size and weight on both, and make the header 16px label type in tx-2.",
+   "P1 Party/mark readout: 'pillager · 15m' tag, the 'in pillager's party' box, the 'pillager' bar at left, the 'current pillagers 3' dropdown, and the name over the player: Show the name once per entity. Delete 'in pillager's party' and the standalone party box. Use one chip spec: 16px f-cond 600, --ui-panel fill at 90%, 1px --ui-line-hi border, 4px radius, 8px padding. Anchor the mark tag 8px above the diamond, with a leader line if it sits off-screen.",
+   "P1 Map mark diamond at (840,492), and the minimap diamond: Draw the world mark as a 24px diamond with a 3px stroke in the P2 cyan or P1 amber, a dark 1px outer stroke for contrast, and a filled centre. Add a 1.5s bounce on placement. Use the same glyph and colour on the minimap, scaled down.",
+   "P1 Hud typography overall: hp 100 (≈32px), 12 / 24 (≈56px), clock 14:59, 'f1 controls', 'packing floor', weapon slots: Keep hero 56px for ammo only. Set hp to 32px or move it into a 40px-high bar with a 20px label. Raise the small labels (slot numbers, 'f1 controls', 'b / i backpack') to 16px at tx-2 or hide them. Set the zone name in f-cond 600 at 20px with normal tracking.",
+   "P1 Left edge stack: 'current pillagers 3' dropdown, the 'pillager' bar and the controls label: Merge them into one party panel at left: 8px margin, --ui-panel fill, 4px radius, and one row per player with a 4px coloured player bar, a 16px name and a 24px-high hp bar. Remove the dropdown chrome. Make 'f1 controls' a 16px chip with a 1px border."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00v-239-ping-and-map-mark-are-one-recipes-1/mark-p2-partner-raid-1080.jpg",
+  "task": "o-00v-239-ping-and-map-mark-are-one",
+  "when": "2026-10-29T16:00"
+ },
+ "mark-solo-map": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The window frame is clean and consistent (title, x close, footer legend, lime key chip), but the map is a crowded sea of overlapping small labels with no single focal point, and the contract rows have dim text and weak separation.",
+  "findings": [
+   "P1 map canvas, labels: Show one label tier by default: extracts, the mark and the player only. Reveal room and cache names on hover or zoom. Give all labels a 1px --ui-void text halo. Use at least 16px and --tx-1 or --tx-2. Add collision nudging with a 8px minimum gap.",
+   "P1 mark marker (map centre-left): Make the mark a 24px pin with a 2px ring and a 40px pulse. Put the 'mark' label 8px clear of the glyph on a --ui-panel chip. Use the P1 amber consistently. Do not let the label overlap the glyph.",
+   "P1 contracts panel rows: Names in --tx-1 at 20px 600. Prices in --tx-2 at 16px. Make the dividers 1px --ui-line. Draw a real 4px progress bar in --acc only on rows with progress. Highlight a done or holding row with a 3px --ok bar on the left edge.",
+   "P2 header row: Set the subtitle to 16px --tx-2 with a 16px gap after the title. Group '6pm · clear' 24px from the x. Reduce the x to 40px with a --ui-line-hi border so it matches other windows.",
+   "P2 footer: Make the chip 28px with 16px text. Use a 24px gap between footer items. Align 'surveyed 3%' to the map's right edge, or move it into the map frame as a 16px corner stat."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00v-239-ping-and-map-mark-are-one-recipes-1/mark-solo-map-1080.jpg",
+  "task": "o-00v-239-ping-and-map-mark-are-one",
+  "when": "2026-10-29T16:00"
+ },
+ "mark-solo-raid": {
+  "score": 3,
+  "pass": false,
+  "need": 4,
+  "verdict": "The in-raid HUD is readable and the 30/60 ammo hero number is strong, but its corners are inconsistent (green hp bar, bare '1-0' slot row, mixed dropdown headers), and the world callouts are inconsistent too: the 'run Info' header has a capital letter, the mark and 'you' pills are loose, and the sentry label sits on top of the sentry.",
+  "findings": [
+   "P1 top-right 'run Info' header (1603-1900, 330-360): Change the string to 'run info'. Give the header a 1px --ui-line-hi border and a lime 2px focus bar when selected, and match the 'current pillagers 7' header's height, 32px.",
+   "P1 bottom-left hp bar (25-430, 1035-1068): Inset the bar 48px from the left and bottom. Make it a 12px-tall track on --ui-panel with a --ok fill. Put 'hp 100' at 20px in --tx-1 on the panel above the bar, not on the fill.",
+   "P1 bottom-centre weapon slots 1 to 0 (560-1480, 965-1055): Show only owned slots plus at most 2 empty placeholders drawn as 1px --ui-line outlines. Set numerals to 16px --tx-2. Keep lime only on the selected slot. Make every tile 80x80 with a 4px radius.",
+   "P1 top-centre mark pill, 'you · 15m' tag, 'search crate' prompt: Use one world-tag recipe: 16px f-cond 600, --tx-1 on --scrim, 4px radius, 8px padding, plus a 6px pointer toward the target. Put 'you' tags within 16px of the player. Leave 16px between the clock and the mark pill.",
+   "P2 sentry label (1120-1190, 470-490) and the enemy cluster: Offset the label 24px above the sprite on a --scrim chip. Use 16px --warn or --tx-1 text. Draw the threat cone at 15% alpha so the label stays readable."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00v-239-ping-and-map-mark-are-one-recipes-1/mark-solo-raid-1080.jpg",
+  "task": "o-00v-239-ping-and-map-mark-are-one",
+  "when": "2026-10-29T16:00"
  }
 }

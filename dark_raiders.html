@@ -3885,8 +3885,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.52';
-var VER_AT='2026-10-29 11:52';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.53';
+var VER_AT='2026-10-29 12:11';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44752,16 +44752,19 @@ function mmMarks(r,sc,R){
       q=NET.pings[i]; if(!q||!isFinite(q.x)||(q===G.waypoint&&q.spot)) continue; s=at(q.x,q.y);
       if(s.out){if(!q.pl)mmArrow(s,R,netMarkColour(q.s),q.s===NET.seat?'waypoint':'partywaypoint');continue;}
       ctx.fillStyle=q.pl?'#ff8a3c':netMarkColour(q.s);
-      colourCueGlyph(ctx,q.dg?'danger':q.pl?'loot':q.w?'target':'place',s.x,s.y,2*R,ctx.fillStyle);MMAP.ops+=3; // v28.xx (cw-cx-pingmerge): 24px target, 28px dark backing at 1080p.
+      colourCueGlyph(ctx,q.dg?'danger':q.pl?'loot':q.w?'target':'place',s.x,s.y,(q.spot?2.4:2)*R,ctx.fillStyle);MMAP.ops+=3; // v28.xx (cw-cx-markread): spot glyph matches both larger views.
     }
   }
   if(G.waypoint&&(!G.waypoint.at||G.waypoint.spot)&&isFinite(G.waypoint.x)){
     s=at(G.waypoint.x,G.waypoint.y); got.wp=s.out?'pin':'in';
     if(s.out)mmArrow(s,R,netMarkColour(NET.seat),'waypoint');
     else {
-      ctx.strokeStyle=netMarkColour(NET.seat); ctx.lineWidth=1.6*R; ctx.beginPath(); ctx.arc(s.x,s.y,4.5*R,0,6.2832);
-      ctx.moveTo(s.x-8*R,s.y); ctx.lineTo(s.x-2*R,s.y); ctx.moveTo(s.x+2*R,s.y); ctx.lineTo(s.x+8*R,s.y);
-      ctx.moveTo(s.x,s.y-8*R); ctx.lineTo(s.x,s.y-2*R); ctx.moveTo(s.x,s.y+2*R); ctx.lineTo(s.x,s.y+8*R); ctx.stroke(); MMAP.ops++;
+      if(G.waypoint.spot){colourCueGlyph(ctx,'place',s.x,s.y,2.4*R,netMarkColour(NET.seat));MMAP.ops+=3;}
+      else {
+        ctx.strokeStyle=netMarkColour(NET.seat); ctx.lineWidth=1.6*R; ctx.beginPath(); ctx.arc(s.x,s.y,4.5*R,0,6.2832);
+        ctx.moveTo(s.x-8*R,s.y); ctx.lineTo(s.x-2*R,s.y); ctx.moveTo(s.x+2*R,s.y); ctx.lineTo(s.x+8*R,s.y);
+        ctx.moveTo(s.x,s.y-8*R); ctx.lineTo(s.x,s.y-2*R); ctx.moveTo(s.x,s.y+2*R); ctx.lineTo(s.x,s.y+8*R); ctx.stroke(); MMAP.ops++;
+      }
     }
   }
   // enemies you can see now: the world's own list (VIS), never one behind a wall. One path, one edge, one fill.
@@ -50983,18 +50986,24 @@ function drawMapOverlayRaw(){
   // dot so it cannot be mistaken for an extract or for himself.
   try{ netWpMapDraw(ox,oy,sc); }catch(_wm){}   // v28.xx (cw-cx-solopings): solo pings on the full map.
   if(G.waypoint&&(!G.waypoint.at||G.waypoint.spot)){
-    var wpx=ox+G.waypoint.x*sc, wpy=oy+G.waypoint.y*sc; mapIcon(wpx,wpy,12*_MZ);   // v21.41 (W-D4): the waypoint at the map zoom
-    ctx.strokeStyle=netMarkColour(NET.seat); ctx.lineWidth=2*_MZ;
-    ctx.beginPath(); ctx.arc(wpx,wpy,7*_MZ,0,6.2832); ctx.stroke();
-    ctx.lineWidth=_MZ;
-    ctx.beginPath();
-    ctx.moveTo(wpx-11*_MZ,wpy); ctx.lineTo(wpx-3*_MZ,wpy);
-    ctx.moveTo(wpx+3*_MZ,wpy);  ctx.lineTo(wpx+11*_MZ,wpy);
-    ctx.moveTo(wpx,wpy-11*_MZ); ctx.lineTo(wpx,wpy-3*_MZ);
-    ctx.moveTo(wpx,wpy+3*_MZ);  ctx.lineTo(wpx,wpy+11*_MZ);
-    ctx.stroke();
-    ctx.font=FS(TYPE.micro); ctx.fillStyle=UIC.tx_1; ctx.textAlign='center';
-    ctx.fillText('mark',wpx,wpy-14*_MZ); ctx.textAlign='left';
+    var wpx=ox+G.waypoint.x*sc, wpy=oy+G.waypoint.y*sc; mapIcon(wpx,wpy,12*_MZ);
+    if(G.waypoint.spot){
+      colourCueGlyph(ctx,'place',wpx,wpy,2.4*Math.max(1,hudRes()),netMarkColour(NET.seat));
+      netPingLabel('mark',wpx,wpy,Math.max(1,hudRes()),true);
+    } else {
+      // v28.xx (cw-cx-markread): legacy map callers keep the old ring until they enter the shared mark setter.
+      ctx.strokeStyle=netMarkColour(NET.seat); ctx.lineWidth=2*_MZ;
+      ctx.beginPath(); ctx.arc(wpx,wpy,7*_MZ,0,6.2832); ctx.stroke();
+      ctx.lineWidth=_MZ;
+      ctx.beginPath();
+      ctx.moveTo(wpx-11*_MZ,wpy); ctx.lineTo(wpx-3*_MZ,wpy);
+      ctx.moveTo(wpx+3*_MZ,wpy); ctx.lineTo(wpx+11*_MZ,wpy);
+      ctx.moveTo(wpx,wpy-11*_MZ); ctx.lineTo(wpx,wpy-3*_MZ);
+      ctx.moveTo(wpx,wpy+3*_MZ); ctx.lineTo(wpx,wpy+11*_MZ);
+      ctx.stroke();
+      ctx.font=FS(TYPE.micro); ctx.fillStyle=UIC.tx_1; ctx.textAlign='center';
+      ctx.fillText('mark',wpx,wpy-14*_MZ); ctx.textAlign='left';
+    }
   }
 // v4.31: what you have never seen is not on your map. Seen once, seen
   // forever, across runs. Painted over everything except your own marker and
@@ -56494,7 +56503,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.52: Middle mouse, N, pad and map clicks move one mark. Ping your spot again or right click the map to clear it everywhere. Check 36.52 fails on v36.51',
+  now:'v36.53: Spot marks share one filled diamond across the raid and both maps, with a nearby label. Check 36.53 fails on v36.52',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -63509,7 +63518,8 @@ function netWpMapDraw(ox,oy,sc){
   }
   for(i=0;i<(NET.pings||[]).length;i++){   // live pings show on the map too
     p=NET.pings[i]; if(p===G.waypoint&&p.spot)continue; px=ox+p.x*sc; py=oy+p.y*sc;
-    colourCueGlyph(ctx,p.dg?'danger':p.pl?'loot':p.w?'target':'place',px,py,2*Math.max(1,hudRes()),p.pl?'#ff8a3c':netMarkColour(p.s)); // v28.xx (cw-cx-onemark): the same seat colour in all three views.
+    colourCueGlyph(ctx,p.dg?'danger':p.pl?'loot':p.w?'target':'place',px,py,(p.spot?2.4:2)*Math.max(1,hudRes()),p.pl?'#ff8a3c':netMarkColour(p.s)); // v28.xx (cw-cx-markread): shared spot glyph.
+    if(p.spot)netPingLabel('mark',px,py,Math.max(1,hudRes()),true);
   }
   return n;
 }
@@ -63805,14 +63815,15 @@ function netPingForEntity(e){
   }
   return null;
 }
-function netPingLabel(lbl,x,y,r){
+function netPingLabel(lbl,x,y,r,spot){
   var w, left, by, top;
   ctx.save();
   lbl=String(lbl).toLowerCase();
   ctx.font='600 '+(16*r)+'px '+HUDF;
   w=Math.min(W-32*r,hudRawW(lbl)+16*r);
   left=clamp(x-w/2,8*r,W-w-8*r);
-  by=clamp(y<132*r?y+48*r:y-88*r,32*r,H-24*r);top=by-24*r;
+  by=clamp(spot?(y<64*r?y+40*r:y-24*r):(y<132*r?y+48*r:y-88*r),32*r,H-24*r);top=by-24*r;
+  if(spot){ctx.strokeStyle=UIC.tx_1;ctx.lineWidth=r;ctx.beginPath();ctx.moveTo(x,y+(by>y?12:-12)*r);ctx.lineTo(x,by>y?top:top+32*r);ctx.stroke();} // v28.xx (cw-cx-markread): 4px leader between the shared glyph and its plate.
   hudPanel(left,top,w,32*r,.85,1);
   ctx.textAlign='center';ctx.textBaseline='alphabetic';ctx.fillStyle=UIC.tx_1;
   ctx.fillText(lbl,left+w/2,by);
@@ -63830,16 +63841,21 @@ function netPingDraw(){
     s=w2s(p.x,0,p.y); if(!s) continue;
     x=clamp(s.x,M,W-M); y=clamp(s.y,M,H-M);
     c=p.pl?'#ff8a3c':netMarkColour(p.s);   // v28.xx (cw-cx-onemark): p1 amber, p2 cyan in either window.
-    ctx.save(); ctx.globalAlpha=0.55+0.45*Math.abs(Math.sin(now/180));
-    ctx.strokeStyle=c; ctx.lineWidth=2.5*r;
-    ctx.beginPath(); ctx.moveTo(x,y-LH(12)*r); ctx.lineTo(x+LH(9)*r,y); ctx.lineTo(x,y+LH(12)*r); ctx.lineTo(x-LH(9)*r,y); ctx.closePath(); ctx.stroke();
-    ctx.restore();
+    // v28.xx (cw-cx-markread): the same 24px filled spot diamond and dark backing in the raid, minimap and map.
+    if(p.spot) colourCueGlyph(ctx,'place',x,y,2.4*r,c);
+    else {
+      ctx.save(); ctx.globalAlpha=0.55+0.45*Math.abs(Math.sin(now/180));
+      ctx.strokeStyle=c; ctx.lineWidth=2.5*r;
+      ctx.beginPath(); ctx.moveTo(x,y-LH(12)*r); ctx.lineTo(x+LH(9)*r,y); ctx.lineTo(x,y+LH(12)*r); ctx.lineTo(x-LH(9)*r,y); ctx.closePath(); ctx.stroke();
+      ctx.restore();
+    }
     nm=(p.s===NET.seat)?'YOU':(netSeatName(p.s)||'PILLAGER');
     // v28.xx (cw-cx-pingmerge): retain the specific target identity and its running/friendly detail in the one readable plate.
     e=p.target||(p.id&&NET.entMap?NET.entMap[p.id]:null);
     var pingName=(e&&netPingForEntity(e)&&e.name)?e.name+(e.state==='extract'?' [running]':(e._plateTag||'')):p.w;
     lbl=nm+(pingName?('  \u00b7  '+pingName):(p.dg?'  \u00b7  DANGER':''))+'  \u00b7  '+((G&&G.player)?metres(dist(G.player,p)):0)+'m';
-    netPingLabel(lbl,x,y,r);   // v28.xx (cw-cx-pingread): 16px bone text, shared plate and a clear gap above the target.
+    if(p.spot&&p.s===NET.seat)lbl='mark  \u00b7  '+metres(dist(G.player,p))+'m';
+    netPingLabel(lbl,x,y,r,!!p.spot);   // v28.xx (cw-cx-markread): attach the spot label; target names keep their safe body gap.
     n++;
   }
   return n;

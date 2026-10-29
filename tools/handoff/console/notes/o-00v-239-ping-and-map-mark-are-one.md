@@ -27,3 +27,22 @@ The mk script prints written. All 39 anchors apply once. The complete generated 
 Fixture retarget is already committed as 45c0fea50; the lane reported checks 16.61, 22.00, 22.99, 23.08 and 31.09 passed on v36.50. Kept that file unchanged so its applied hashes remain valid. cw-cx-onemark stays in keys.txt for another preflight and ship attempt. Browser check, pictures, critic and ON HIS PC are still the lane work remaining.
 
 LINKED REVIEW NEEDED: synced. The png mark/move/clear and wp late-arrival snapshot carry the shared state; existing recipes cover both real windows.
+
+--- codex run 2026-10-29 12:08 ---
+2026-10-29, after v36.52 shipped.
+
+cw-cx-onemark SHIPPED. ON HIS PC v36.52: his 8802 serves 36.52, 65 seconds after the ship; he reloads to play it. Both real linked raid recipes staged, each with one mark in each window, after their move and right-click clear assertions succeeded. P1 sees the P2 cyan mark, and P2 sees the P1 amber map-click mark. The solo map and raid also staged. I inspected all six attached images. The two partner-map images are welcome-pack screens from failed setup, not map evidence.
+
+Critic round 1: solo raid 3, solo map 3, P1/P2 partner raids 2 each. Partner-map scores 2 and 3 are invalid for this task because neither map staged. The specific mark findings are correct: world hollow diamond, minimap filled diamond, own map crosshair, and a label too far above the mark.
+
+Prepared cw-cx-markread, a rendering-only follow-up. Actual spot marks use the same filled 24px diamond with dark backing and the same seat colour in raid, minimap and sector map. Spot plates have a 4px gap above the diamond plus a leader; the owner label says mark rather than you. Legacy ring callers remain compatible. Entity labels and markers keep their current body clearance. No timings, movement, shake, bounce, pickup, loot row or loot sound changes.
+
+All eight anchors apply exactly once and the generated draft is ASCII, including every anchor and replacement. The complete resulting game script, new fixture check and 36.52 retarget parse. Node drawing checks using the actual functions pass shared filled glyph, both seat colours, 1080p/4K sizes and label gaps, with entity label spacing unchanged. The current v36.52 drawing fails the new filled-glyph assertion, as required.
+
+New fixture-retarget.json contains only the new edit: check 36.52 now accepts an actual glyph draw at the mark location as well as its original arc draw. Its old ring-only map spy would reject the deliberately shared filled glyph. The spy still checks drawing at the same actual map location, and passes on the current old-ring build. Earlier retargets are already committed and are not repeated.
+
+Updated camera-recipes.json for round 2. The project camera suppresses beforeunload registrations, so the old beforeunload cleanup never ran; changed recipe cleanup to pagehide. Every linked invocation now has a unique pair code, preventing old teardown messages from crossing into the next scene. The fixture-only setup removes a stale p2-raid heartbeat and clears the in-memory copy before it opens test P2. The spot is staged 280-400 world units away for separation from the player icon on the sector map. Six scenes remain, covering solo and both real roles on map and raid.
+
+The critic capital-I finding is a font reading error: the actual title source at dark_raiders.html:45634 is already lower-case run info. The general corner/HUD, hp bar, hotbar, contract-panel and cache-label recommendations concern unchanged presentation and exceed this one-control job; recorded for the coordinator, without changing unrelated screens or the pickup rows. Welcome-pack findings came from the wrong stage and do not justify editing the welcome pack here.
+
+LOCAL: no linked review for cw-cx-markread, which changes drawing only. The original cw-cx-onemark sync is already shipped; both actual linked raid recipes proved its move and clear behavior. The final linked map pictures and critic results remain lane work after the follow-up ships.

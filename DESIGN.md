@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.53 - ONE MARK GLYPH IN ALL THREE VIEWS
+
+Co-op hunt while he was away. The critic found a hollow raid diamond, filled minimap diamond and a different map ring. Spot marks now use the same 24px filled seat-coloured glyph with dark backing in every view. Spot labels sit 4px clear above the glyph with a short leader; entity labels keep their existing safe gap. Watch: the ping and the map mark are one mark. Look for the same amber or cyan diamond and attached label in both windows.
+
+MEASURED. Check 36.53 passes, and fails on v36.52.
 ## v36.52 - PING AND MAP MARK ARE ONE
 
 Co-op hunt while he was away. His order: the ping and the map mark are one mark. One deliberate mark per player uses the png message and the same record for the raid, map and minimap. Spot marks last until moved or cleared; entity pings still follow for ten seconds. Automatic loot notices stay separate. Watch: the ping and the map mark are one mark. In both windows, move and clear each colour from the raid and map and check that the other window follows.

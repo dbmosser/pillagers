@@ -1923,3 +1923,10 @@
 2026-10-29 0.0000 o-00u-238-no-heal-or-plate-while-reloading
 2026-10-29 0.0000 o-00v-239-ping-and-map-mark-are-one
 2026-10-29 0.0000 o-00v-239-ping-and-map-mark-are-one
+2026-10-29 0.1027 critic-o-00v-239-ping-and-map-mark-are-one
+2026-10-29 0.0831 critic-o-00v-239-ping-and-map-mark-are-one
+2026-10-29 0.0782 critic-o-00v-239-ping-and-map-mark-are-one
+2026-10-29 0.0864 critic-o-00v-239-ping-and-map-mark-are-one
+2026-10-29 0.0809 critic-o-00v-239-ping-and-map-mark-are-one
+2026-10-29 0.0843 critic-o-00v-239-ping-and-map-mark-are-one
+2026-10-29 0.0000 o-00v-239-ping-and-map-mark-are-one

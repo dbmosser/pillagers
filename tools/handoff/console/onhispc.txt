@@ -118,3 +118,4 @@
 10-29 09:12 v36.49 cw-cx-reloadmedical on his pc after 34s (8802 serves 36.49) week 88%
 10-29 09:43 v36.50 cw-fpswork on his pc after 49s (8802 serves 36.50) week 88%
 10-29 11:49 v36.51 cw-cardstamp on his pc after 49s (8802 serves 36.51) week 89%
+10-29 11:54 v36.52 cw-cx-onemark on his pc after 65s (8802 serves 36.52) week 89%
