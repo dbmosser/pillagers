@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.42 - NO ROLLING IN WATER
+
+Co-op hunt while he was away. His 10-28 order: roll should not work in water. Wet starts refuse with a clank and no stamina cost or callout; a roll into water stops at the bank.
+
+MEASURED. Check 36.42 passes, and fails on v36.41.
 ## v36.41 - HUD CLEARS YOUR PILLAGER
 
 Co-op hunt while he was away. His 10-28 order: a HUD panel that obscures your pillager becomes 65 percent see-through until you step clear.

@@ -1,0 +1,7 @@
+v36.42: no rolling in water
+
+no rolling in water
+
+Check 36.42. Fails on v36.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

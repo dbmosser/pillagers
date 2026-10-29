@@ -1,1 +1,1 @@
-10-29 05:57 gate: shipping cw-cx-hudfade (o-00q-235-hud-fades-over-your-pillager, codex)
+10-29 06:24 gate: shipping cw-cx-waterroll (o-00r-236-no-roll-in-water, codex)

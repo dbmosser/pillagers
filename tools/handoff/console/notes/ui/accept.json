@@ -4510,5 +4510,101 @@
   "pic": "tools/handoff/console/notes/shots/o-00o-233-missed-extract-no-call-again-recipes-1/missed-extraction-p2-feed-1080.jpg",
   "task": "o-00o-233-missed-extract-no-call-again",
   "when": "2026-10-29T08:53"
+ },
+ "35-p1-under-gun": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The HUD has the same problems as the last review: the top-centre stack is crowded, the goals panel is dense, and the ammo is faded, so it still reads as a prototype overlay.",
+  "findings": [
+   "P0 top-centre stack: timer 5:33, score card, 'extract 157m · closing' chip, 'extraction a closing' banner: Delete the chip. Change the banner to 'extraction closing' with 'closes in 1:33' at 16px. Make the timer the only 56px hero and put the score under it as a 20px inline line with no card. Use one --ui-panel style (1px --ui-line-hi, 4px radius) and 8px gaps.",
+   "P0 goals panel (right, y 328-552) and minimap: Add 12px inner padding and 8px row spacing. Set the section labels to 16px tx-2 and the rows to 20px tx-1, with counts right-aligned. Put a 1px --ui-line divider between sections. Show 3 rows or fold the panel to the single line 'goals 0/3'. Fix or remove 'the seal 0%'. Shrink the minimap to 240-280px and use a --ui-panel fill at 92% opacity.",
+   "P1 bottom-right ammo block 'compact smg 30 / 60' and 'air strike' bar: Draw '30' at 56px f-cond 800 in tx-1 and '/ 60' at 20px in tx-2, on an opaque --ui-panel fill. Set the gun name to 20px tx-2. Remove the backpack hint or raise it to 16px. Style the air strike bar like the other bars, with an --acc fill, and leave a 16px gap above the ammo.",
+   "P1 top-left 'current pillagers 0' dropdown: Make it a --ui-panel block with 12px padding and a 4px radius. Show the labels in tx-2 and the values in tx-1 at 20px, for example '7 dead · 0 out' with '$1,770' right-aligned. Align it to the 96px margin.",
+   "P1 hotbar and hp bar, bottom: Hide empty slots 5-0, or draw them as 1px --ui-line outlines at 56px. Make the active slot's border the only lime element. Move the hp bar to x=96 and make it a --ui-panel bar with an --ok fill and 20px --acc-ink text. Align the hp baseline with the hotbar bottom."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00q-235-hud-fades-over-your-pillager-recipes-2/235-p1-under-gun-1080.jpg",
+  "task": "o-00q-235-hud-fades-over-your-pillager",
+  "when": "2026-10-29T10:08"
+ },
+ "35-p1-under-minimap": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The minimap is now a transparent window with no border, and it butts against the goals panel. Extraction is still shown three times, the stray 'a' typos are still there, and the top-centre stack still has no clear hierarchy.",
+  "findings": [
+   "P0 top-centre: 'extract 157m · closing' pill, 'extraction a closing' card, and bottom-left 'extraction a available' tag: Keep only the top-centre card, in --extract teal, reading 'extraction closes in 1:33 · 157m'. Delete the pill and the bottom-left tag. Fix the strings to 'extraction closing' and 'extraction open'.",
+   "P0 minimap (x1603-1900, y20-318) and goals panel (y328-552): Give the minimap fill --ui-panel at 90% opacity and a 1px --ui-line-hi border with a 4px radius. Inset the icons 8px. Keep a 16px gap above the goals panel, on the same right margin as that panel.",
+   "P1 timer 5:33, score panel and sun icon (top centre): Merge them into one 240px panel. Make the 5:33 timer 56px weight 800 as the hero, and put 'score 9,100 sp' at 20px tx-1 beneath it. Put the sun inside the panel, left-aligned. Leave 16px to the extraction card.",
+   "P1 goals panel (x1603-1900): Make the 'goals 0/3' header 20px tx-1. Make the section labels 16px tx-2 with +.04em tracking. Make the rows 16px tx-1 with 8px gaps and 16px left padding. Remove the '6pm clear' line. Collapse 'run goals' by default.",
+   "P1 top-left 'current pillagers 0' bar (x8-367, y142-170): Make it a 4px-radius --ui-panel card with a 1px --ui-line-hi border and an 8px inset. Use the 16px label 'pillagers 0'. Shrink it to about 200px wide and align it to the 48px margin."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00q-235-hud-fades-over-your-pillager-recipes-2/235-p1-under-minimap-1080.jpg",
+  "task": "o-00q-235-hud-fades-over-your-pillager",
+  "when": "2026-10-29T10:09"
+ },
+ "35-p1-under-score": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The minimap is smaller, which helps, but the score and timer are still faded under props and now read as ghosted grey boxes. The goals panel is still fully open and crowded. The extraction banner still has a typo and a duplicate pill, so it is a busy HUD with no clear first read.",
+  "findings": [
+   "P0 top-centre score and timer (5:33, 9,100 sp): Merge them into one 4px-radius --ui-panel plate at 85% opacity, about 240x96, centred at y=16. Keep the text at full --tx-1 and never fade it below 100%. Fade only the plate fill, and no lower than 70%. Make the score 32px weight 700, the timer 20px, and the 'score' label 16px --tx-2.",
+   "P0 extraction banner 'extraction a closing': Fix the copy to 'extraction closing'. Delete the 'extract 157m · closing' pill and put the distance in line 2: 'closes in 1:33 · 157m' at 16px --tx-2. Use --extract teal for the icon and left bar, not amber, and give the banner a 4px radius and a 4px left bar. Drop the title to 20px weight 700.",
+   "P1 goals panel, right-middle (1603,328 to 1901,552): Fold it to one line 'goals 0/3' by default and open it with a key. If it stays open: headings at 16px --tx-2 +.04em, rows at 20px --tx-1, 8px between groups, a 1px --ui-line divider between groups, a maximum of 4 rows, and a 16px gap below the minimap.",
+   "P1 top-left 'current pillagers 0' dropdown: Fold it to a 16px chip about 160px wide ('pillagers 0'). Add an 'at risk' row below it: $1,770 at 20px weight 700 --tx-1 with the 'at risk' label at 16px --tx-2. Make the chevron --tx-2 and 16px.",
+   "P1 minimap and goals panels, top-right: Use a 1px --ui-line-hi border and 4px radius on both panels, with the same width of 300px. Dim the wall bars to --ui-line-hi. Draw the player marker at 12px in --acc. Pad the chevrons 8px from the edge."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00q-235-hud-fades-over-your-pillager-recipes-2/235-p1-under-score-1080.jpg",
+  "task": "o-00q-235-hud-fades-over-your-pillager",
+  "when": "2026-10-29T10:09"
+ },
+ "35-p2-under-gun": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The panels are now capped and anchored top-right, but the HUD is still crowded and inconsistent: the contract toast is clipped by hotbar slot 1, the top-centre stack repeats itself, and the bottom-right panels sit against each other with no gap.",
+  "findings": [
+   "P0 bottom-left: 'contract item nearby · gold glow m…' toast: Cap the toast at 340px with ellipsis, or shorten it to 'contract item nearby'. Move it to y~640 above the hotbar. Leave a 16px gap to the f1 chip and a 16px gap to slot 1.",
+   "P0 bottom-right: air strike bar, ammo block, backpack hint: Use one right-hand column of 360px with a 24px right inset, matching the minimap and goals panel. Give both the air strike bar and the ammo block an opaque --ui-panel fill, a 1px --ui-line-hi border and a 4px radius. Put 16px between the two panels. Set the weapon name in tx-1 at 20px and the 56px 30 in --acc or tx-1.",
+   "P1 top-centre: timer, score, extract pill, extraction-closing banner: Remove the pill and fold '157m' into the banner subline ('157m · closes in 1:33'). Make the timer and score one 360px panel. Give the banner a 3px --warn left bar only and no full outline. Leave 16px between the score block and the banner.",
+   "P1 goals panel text (top right): Set the section labels at 16px f-cond 600 tx-2 with .04em tracking and the items at 20px tx-1. Add a 1px --ui-line divider between groups and 8px row padding. Use an opaque --ui-panel fill. Align the chevron with the minimap's at 16px from the right edge.",
+   "P1 top-left: 'current pillagers 0' dropdown: Remove it from the raid HUD, or restyle it as a --ui-panel pill at 24px from the left and top. Fold the 'keyboard' badge into the same pill at 16px f-cond."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00q-235-hud-fades-over-your-pillager-recipes-2/235-p2-under-gun-1080.jpg",
+  "task": "o-00q-235-hud-fades-over-your-pillager",
+  "when": "2026-10-29T10:09"
+ },
+ "35-p2-under-minimap": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The HUD is still crowded and inconsistent: the goals panel is still a long list of text, the top-centre stack is stacked three deep, and the left feed text is clipped by the weapon bar.",
+  "findings": [
+   "P0 left feed 'contract item nearby · gold glow m' (18-375 x 715-748): Cap feed width at 340px and ellipsize or wrap it. Move the feed up to y≈640 so it clears the slot bar by 16px. Put 'f1 controls' at the bottom-left as a 16px line, 32px from the edge.",
+   "P0 top-centre stack (876-1140 x 20-385): Delete the chip. Fix the banner text to 'extraction closing'. Give the timer the hero 56px and drop the score to a 20px line under it with no card. Use --warn only on the banner's 3px left bar.",
+   "P1 goals panel (1540-1898 x 395-663): Default to a collapsed 3 rows (header 'goals 0/3' plus the next goal). Headers in --tx-2 16px, rows in --tx-1 20px, 16px gaps between sections. Inset 48px from the right edge and 16px from the minimap. Fill: opaque --ui-panel.",
+   "P1 weapon bar (375-1465 x 690-800): Draw all 10 slots as 72px tiles with an 8px gap and a 1px --ui-line border. The selected tile gets a 2px --acc border, not amber. Numbers at 16px, inside the top-left corner of the tile. Dim empty tiles to 40%.",
+   "P1 bottom-right stack: air strike bar and ammo card (1535-1910 x 803-1047): Align both to a 320px column inset 48px from the right and bottom. Raise the air strike text to 16px, with the fill in --acc, or --warn when cooling down. Keep '30' at 56px and make '/ 60' 20px in --tx-2. Use the same 4px radius and 1px --ui-line-hi border as the other panels."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00q-235-hud-fades-over-your-pillager-recipes-2/235-p2-under-minimap-1080.jpg",
+  "task": "o-00q-235-hud-fades-over-your-pillager",
+  "when": "2026-10-29T10:10"
+ },
+ "35-p2-under-score": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The score and clock panels are now deliberately faded and the sprite shows through them, so the hero number is unreadable. The banner still has its duplicate pill and the 'extraction a closing' typo, and the goals panel is an unstructured text dump.",
+  "findings": [
+   "P0 top-centre clock (5:33) and score (9,160 sp) panels: Fade the panel fill only and keep the text at 100% opacity, with a floor of 70% panel opacity. Alternatively, fade only while the player is within 120px, and keep the text at tx-1 32px f-cond 700. Draw the sprite below the HUD layer. Add 16px padding and put the 'score' label at 16px tx-2 on its own line above the number.",
+   "P0 banner stack under the score: Delete the pill. Keep one card that reads 'extraction closing' with '1:33' at 56px f-cond 800 in --extract teal, and drop the 'closes in' line. Show the 157m distance as a 16px tx-2 suffix. Remove or relabel the 5:33 clock so there is only one timer.",
+   "P1 goals panel, right, y 395-690: Use 16px tx-2 section labels with +.04em tracking and 20px f-cond 600 item rows. Put the counts right-aligned in lime or tx-2. Fix the wrap with a hanging indent of 16px. Use 16px padding and an 8px gap below the minimap. Show only the active 3 goals and collapse the rest behind the chevron.",
+   "P1 minimap, top-right: Reduce it to about 300px and dim the fill to --ui-void at 85%. Use a 1px --ui-line-hi border with a 4px radius. Move the 'n' to 8px inside the corner. Make the markers at least 16px.",
+   "P1 bottom-right ammo and air strike stack: Make both 340px wide with a shared 5% right margin and a 16px gap. Set labels at 16px tx-2. Give the 'b / i backpack' hint 16px of padding from the bottom edge. Remove the ghost sprite or lower it to 10% opacity."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00q-235-hud-fades-over-your-pillager-recipes-2/235-p2-under-score-1080.jpg",
+  "task": "o-00q-235-hud-fades-over-your-pillager",
+  "when": "2026-10-29T10:10"
  }
 }

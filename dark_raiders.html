@@ -3885,8 +3885,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.41';
-var VER_AT='2026-10-29 05:58';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.42';
+var VER_AT='2026-10-29 06:25';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -21280,6 +21280,22 @@ function cycleThrow(){
 // makes it a defensive tool. At 45 stamina you get two from full and then you
 // are walking, and rolling now competes with sprinting for the same pool.
 var ROLLSPD=320,ROLLSTAM=45;
+// v28.xx (cw-cx-waterroll), HIS WORDS: "roll shouldn't work in water". Both human seats and pillagers stop at the first wet point.
+function rollWaterEnd(p,ox,oy){
+  var nx=p.x,ny=p.y,parts=Math.max(1,Math.ceil(Math.hypot(nx-ox,ny-oy))),lo=0,hi=0;
+  // v28.xx (cw-cx-waterroll): sample inside the existing collision step too, so a thin strip cannot be skipped by a dry endpoint.
+  for(var i=1;i<=parts;i++){
+    var t=i/parts;
+    if(inWater(ox+(nx-ox)*t,oy+(ny-oy)*t)){ lo=(i-1)/parts; hi=t; break; }
+  }
+  if(!hi) return false;
+  for(var j=0;j<10;j++){
+    var mid=(lo+hi)*0.5;
+    if(inWater(ox+(nx-ox)*mid,oy+(ny-oy)*mid)) hi=mid; else lo=mid;
+  }
+  p.x=ox+(nx-ox)*hi; p.y=oy+(ny-oy)*hi; p.roll=0; p.rollWet=true;
+  return true;
+}
 function tryRoll(){
   var p=G.player;
   // v24.20, HIS ORDER 2026-10-12 (his #39, full controller navigation): NO ROLL IN THE DROP-IN HOLD. After a demo respawn he stands
@@ -21293,6 +21309,8 @@ function tryRoll(){
   // the cooldown is a tenth of a second after one he just watched. Stamina is
   // the one he cannot see the reason for, and it is the one that costs 45 of
   // 100, so the third roll in a row is always the one that dies quietly.
+  // v28.xx (cw-cx-waterroll), HIS WORDS 2026-10-28: "roll shouldn't work in water". Refuse before stamina or the tired callout.
+  if(inWater(p.x,p.y)){ if(!G.sim) blip('clank'); return; }
   if(!p.downed&&!(p.roll>0)&&!(p.rollCd>0)&&p.stam<ROLLSTAM){
     G.rollSayT=(G.rollSayT||0);
     if(G.rollSayT<=0){
@@ -29678,6 +29696,8 @@ function updatePlayer(dt){
   if(p.roll>0) iceStop(p);   // v31.91 (cw-iceslide): a roll takes over from the slide
   if(p.dbOn){ p.dbOn=0; p.dbSpent=0; p.dbLock=0; p.dbGainT=0; }   // v28.xx (downbar1): on his feet again, the downed bar is gone
   if(p.rollCd>0) p.rollCd-=dt;
+  // v28.xx (cw-cx-waterroll): entering water by a shove or correction also ends an active roll.
+  if(p.roll>0&&inWater(p.x,p.y)){ p.roll=0; p.rollWet=true; }
   if(p.roll>0){
     if(G.netRevT){ G.netRevT=0; G.netRevS=-1; }   // v17.05, co-op hunt 2026-09-28: a roll breaks a pick-up hold too; netRevHold, which reset it, runs only after a roll
     p.roll-=dt;
@@ -29689,8 +29709,11 @@ function updatePlayer(dt){
     // between collision tests than a walk does.
     var rox=p.x,roy=p.y,rd=ROLLSPD*dt,rsl=Math.max(1,Math.ceil(rd/8));
     for(var rs=0;rs<rsl;rs++){
+      var rwx=p.x,rwy=p.y;
       p.x+=p.rollDir.x*rd/rsl; p.y+=p.rollDir.y*rd/rsl;
       collide(p,G.map.walls);
+      // v28.xx (cw-cx-waterroll): finish at the bank, with no remaining roll-speed steps this frame.
+      if(rollWaterEnd(p,rwx,rwy)){ G.sprinting=false; break; }
     }
     p.bob+=dt*22;
     T.distance+=dist({x:rox,y:roy},p);
@@ -29819,7 +29842,9 @@ var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
   G.sprinting=sprint;
   // v31.29 (cw-nobagfull), HIS RULING: no bag limit, no weight, ever. Nothing in this function reads the old pack cap any more (the search never refuses for a full
   // backpack); updateBot keeps its own copy for its greed test.
-  var wading=inWaterDeep(p.x,p.y,(CFG.wadeInset===undefined?11:CFG.wadeInset));
+  // v28.xx (cw-cx-waterroll): a roll stopped at the bank wades immediately; normal walking keeps its existing shore inset.
+  if(p.rollWet&&!inWater(p.x,p.y)) p.rollWet=false;
+  var wading=inWaterDeep(p.x,p.y,(CFG.wadeInset===undefined?11:CFG.wadeInset))||!!p.rollWet;
   if(wading) sprint=false;
   G.sprinting=sprint;
   // v12.71: and here is the trail, reading the sprint flag AFTER the aiming and
@@ -32255,10 +32280,14 @@ if(e.state==='possum'){
     if(e.rollCd>0) e.rollCd-=dt;
     if(e.roll>0){
       e.roll-=dt;
-      var _rr=ROLLSPD*dt,_rsl=Math.max(1,Math.ceil(_rr/8));
+      // v28.xx (cw-cx-waterroll): pillagers share the water stop; dry movement and the existing cooldown draw stay in place.
+      var _rr=inWater(e.x,e.y)?0:ROLLSPD*dt,_rsl=Math.max(1,Math.ceil(_rr/8));
+      if(!_rr) e.roll=0;
       for(var _rs2=0;_rs2<_rsl;_rs2++){
+        var _rwx=e.x,_rwy=e.y;
         e.x+=(e.rollDir.x*_rr)/_rsl; e.y+=(e.rollDir.y*_rr)/_rsl;
         collide(e,G.map.walls);
+        if(rollWaterEnd(e,_rwx,_rwy)) break;
       }
       e.moving=true;
       if(e.roll<=0){ e.roll=0; e.rollCd=1.5+rnd(0,0.6); }
@@ -34182,7 +34211,7 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
               // round, side chosen by which way he is already facing, so the
               // dodge breaks the shooter's lead instead of running along it.
               if(CFG.raiderRoll!==0&&en.kind==='raider'&&!en.downed&&!en.finished&&
-                 !en.roll&&!(en.rollCd>0)&&en.hp>0&&
+                 !en.roll&&!(en.rollCd>0)&&en.hp>0&&!inWater(en.x,en.y)&&   /* v28.xx (cw-cx-waterroll): a shot cannot start a water roll. */
                  dist(en,p)<(CFG.raiderRollEar===undefined?900:CFG.raiderRollEar)){
                 var _bl=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1;
                 var _px=-b.vy/_bl,_py=b.vx/_bl;
@@ -56327,7 +56356,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.41: hud panels go see-through over your pillager Check 36.41 fails on v36.40',
+  now:'v36.42: no rolling in water Check 36.42 fails on v36.41',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -64640,7 +64669,7 @@ function netShotTake(peer,m){
   if(m.sk&&typeof m.a==='number'&&isFinite(m.a)) animHitFrom(e,Math.cos(m.a),Math.sin(m.a));
   else animHitFrom(e,e.x-sx,e.y-sy);
   /* v28.xx (cw-blowround), CLOUD HUNT 2026-10-15: only a gun round (sk) rolls him out of the line; player 2 crowbar, frag, finisher and air strike do not, as the host own blows do not */
-  if(m.sk&&CFG.raiderRoll!==0&&e.kind==='raider'&&!e.downed&&!e.finished&&!e.roll&&!(e.rollCd>0)&&e.hp>0&&typeof m.a==='number'&&isFinite(m.a)&&
+  if(m.sk&&CFG.raiderRoll!==0&&e.kind==='raider'&&!e.downed&&!e.finished&&!e.roll&&!(e.rollCd>0)&&e.hp>0&&!inWater(e.x,e.y)&&typeof m.a==='number'&&isFinite(m.a)&&   /* v28.xx (cw-cx-waterroll): the partner shot obeys the same water rule. */
      dist(e,{x:sx,y:sy})<(CFG.raiderRollEar===undefined?900:CFG.raiderRollEar)){
     px=-Math.sin(m.a); py=Math.cos(m.a);
     if((px*Math.cos(e.face)+py*Math.sin(e.face))<0){ px=-px; py=-py; }

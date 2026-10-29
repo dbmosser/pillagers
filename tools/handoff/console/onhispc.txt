@@ -107,3 +107,4 @@
 10-29 04:27 v36.38 cw-cx-onerarity on his pc after 33s (8802 serves 36.38) week 86%
 10-29 04:50 v36.39 cw-cx-missedextract on his pc after 33s (8802 serves 36.39) week 86%
 10-29 05:17 v36.40 cw-cx-nokillstreak on his pc after 33s (8802 serves 36.40) week 87%
+10-29 05:59 v36.41 cw-cx-hudfade on his pc after 17s (8802 serves 36.41) week 87%
