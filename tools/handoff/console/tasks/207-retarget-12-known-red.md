@@ -60,3 +60,9 @@ ADDED 10-28 23:40 (JTPC Correspondent; spare PC run corpus-1028-2206 on v36.23),
 
 ADDED 10-29 00:55 (JTPC Correspondent; spare PC run corpus-1028-2325 on v36.27), 1 more, out of date by his order; parked in known-red:
 - 26.56: part ONE wants the next round after a perfect active reload at +15% (26.45 from 23); since v36.25 (his order, job o-222) each stack pays 5%, 15% at most, so the first gives 24.15. Expect 5% a stack (23 x 1.05 on the first), and add a part that three in a row reach 15% and a fourth stays at 15%.
+
+ADDED 10-29 05:15 (JTPC Correspondent; spare PC run corpus-1029-0339 on v36.37), out of date by his order (v36.36, his 10-28 order removes the Undercroft footer and the station option rows; the station E prompts stay); parked in known-red:
+- 18.62: wants the Undercroft footer drawn with a halo clear of the belt ("control: no footer was drawn"). Retire the footer parts; keep the title and stats line halo parts.
+- 34.00: wants the hint row and the title plate. Retire the hint row part; keep the cream station names, 16px padding and toast clearance.
+- 20.50: wants the line under the [E] station line above the floor belt; that line is gone, so it reads y NaN. Keep the [E] station line and TAKE prompt asserts; drop the line under it.
+- 18.25 (already in the baseline): the Undercroft bottom line no longer says how to take a dropped item; the footer is gone. Retarget to the pause box and stash idle text parts only.
