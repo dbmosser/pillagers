@@ -1,0 +1,7 @@
+v36.15: breach gate names the hold key
+
+the breach gate says which key to hold
+
+Check 36.15. Fails on v36.14.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

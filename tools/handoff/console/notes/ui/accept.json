@@ -3715,32 +3715,32 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The controls list is now folded to one line and the run info dropdown is clean, but the HUD still uses mixed chip styles and type sizes, the pillagers panel is cramped, and the banner still explains.",
+  "verdict": "The HUD is readable and mostly lower case, but the earlier panel, chip and column fixes were only partly applied, so it still reads as several unrelated widgets with tiny text, mixed fills and uneven edges.",
   "findings": [
-   "P1 current pillagers panel, top left: Set rows to 16px on a 24px pitch and the 'you' row to 20px --tx-1 with a 3px --acc left bar. Dim dead rows to --tx-2 and drop the footer. Make the fill opaque --ui-panel with a 1px --ui-line-hi border, 4px radius, 16px padding, and move it to x=24, y=24.",
-   "P1 contract banner, bottom left (y≈789): Change the text to 'contract item nearby'. Use the same 32px chip as the status chips: --ui-panel fill, 1px --ui-line-hi border, 16px --tx-1 label, and the glyph the only colour.",
-   "P1 status chips (concealed, in cover) and hp bar, bottom left: Use one 32px chip style with --tx-1 16px labels and a 1px --ui-line-hi border. Reduce the hp bar to 12px high with 20px 'hp 100' text above it. Put everything on a 24px left edge with an 8px gap between rows.",
-   "P1 right-edge markers: 'a 15m' chip and 'the long dock cache' label: Use one 32px chip with --ui-panel fill, 1px --ui-line-hi border and 16px --tx-1 text, inset 24px from the edge. Put the teal only on the arrow glyph. Stack the two chips with an 8px gap.",
-   "P2 score panel and clock, top centre: Make one 200px-wide column with the same --ui-panel fill and 4px radius: clock 32px, then score at 20px with a 16px --tx-2 label, then the extract chip at 16px. Use an 8px gap and the same width for all three."
+   "P1 current pillagers panel, top left: Set rows to 16px on a 24px pitch. Make the 'you' row 20px --tx-1 with a 3px --acc left bar. Dim dead rows to --tx-2 and delete the footer. Use an opaque --ui-panel fill, a 1px --ui-line-hi border, 4px radius, 16px padding, and position it at x=24, y=24.",
+   "P1 contract banner, bottom left (y≈789): Cut the text to 'contract item nearby'. Use a 32px chip with --ui-panel fill, a 1px --ui-line-hi border and 16px --tx-1 text, with the glyph as the only colour. Place it at x=24.",
+   "P1 bottom-left stack: status chips, 'f1 controls', hp bar: Use one 32px chip style with 16px --tx-1 labels and a 1px --ui-line-hi border for the status chips and the f1 hint. Reduce the hp bar to 12px high with 'hp 100' at 20px above it. Put everything on a 24px left edge with an 8px gap between rows.",
+   "P1 right-edge markers: 'a 15m' chip and 'the long dock cache' label: Use one 32px chip per item with --ui-panel fill, a 1px --ui-line-hi border and 16px --tx-1 text. Put the arrow inside the chip as its only colour. Inset the chips 24px from the right edge and stack them with an 8px gap. Rename 'a 15m' to '15m'.",
+   "P2 top centre: clock, score, extract chip: Make one 200px column with the same --ui-panel fill and 4px radius: clock 32px, then score at 20px with a 16px --tx-2 label, then the extract chip at 16px with the same width. Use an 8px gap. Put the sun icon inside the clock panel."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-09h-name-tags-overlap-recipes-3/tags-pixel-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-09h-name-tags-overlap-recipes-4/tags-pixel-1080.jpg",
   "task": "o-09h-name-tags-overlap",
-  "when": "2026-10-29T00:24"
+  "when": "2026-10-29T00:34"
  },
  "tags-smooth": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The controls list is now a single 'f1 controls' line, 'run info' is a collapsed bar and the weapon slots are more consistent. The HUD is still scattered across the screen: panel styles, corner margins and type sizes don't match, and the top-left panel and weapon slots still look unfinished.",
+  "verdict": "The HUD is readable and the ammo card and weapon slots are fairly clean, but the top-right bar has a text collision, the top-centre stack is ragged, and the panels still don't share one frame and edge margin.",
   "findings": [
-   "P1 top-left 'current pillagers' panel: Set rows to 16px f-cond 600 with names in tx-1 and 16px padding. Drop the '0' and the footer. Replace each 'dead' with a 16px --danger glyph. Move the panel 24px from the edge. Give it the shared --ui-panel fill and a 1px --ui-line-hi border at 4px radius.",
-   "P1 top-right 'run info' bar: Make it 280px wide, 40px tall and 24px from the top and right edges. Use a 16px f-cond 600 label, a --ui-panel fill, a 1px --ui-line-hi border and a 4px radius. Shrink the chevron to 16px and tx-2.",
-   "P1 bottom-left status chips and hp bar: Set the chips to 16px text on a --ui-panel fill with a 1px --ui-line-hi border and a 4px radius, in tx-1 with no lime. Make the 'hp 100' text f-cond 800 at 32px. Give the bar a --ui-panel track, a 1px border and a 4px radius. Put the chips and bar in one column at x=24 with 8px between them.",
-   "P1 weapon slots 1-8/0: Draw all nine slots at 72px wide and 72px tall with an 8px gap. Use the same --ui-panel fill, 1px --ui-line-hi border and 4px radius. Dim empty slots to 40 percent inside the same frame. Use a 2px --acc border on the selected slot only. Make the numerals 16px tx-2.",
-   "P1 top-centre timer, score and extract stack: Make one 240px-wide column centred on x=960 with 8px gaps. Give each box the --ui-panel fill, a 1px --ui-line-hi border and a 4px radius. Keep 15:00 as the one f-cond 800 hero at 56px. Make the score 32px. Set 'extract 707m' to 16px with a teal glyph only, not a teal border."
+   "P0 top-right run info bar: Make the bar 280px wide and 40px tall, at 24px from the top and right edges. Use 16px f-cond 600 text with 16px padding and a 16px gap between items. Drop the 'run' label or give it its own 8px slot. Keep '$900' at 20px and put stash and bag in tx-2. Set the border to 1px --ui-line-hi, the radius to 4px and the fill to --ui-panel.",
+   "P1 top-left 'current pillagers' panel: Move the panel to x=24, y=24. Use 16px rows with 16px padding and a 24px row pitch. Delete the '0' and the footer. Replace 'dead' with a 16px --danger glyph. Use a --ui-panel fill, a 1px --ui-line-hi border and a 4px radius.",
+   "P1 top-centre timer, score and extract stack: Use one 240px column centred on x=960 with 8px gaps. Give every box the same --ui-panel fill, 1px --ui-line-hi border and 4px radius. Keep 15:00 as the one 56px hero and set the score to 32px. Set 'extract 707m' to 16px tx-1 with a teal glyph only. Move the sun icon outside the column.",
+   "P1 bottom-left status chips and hp bar: Put the chips and bar in one column at x=24, 8px apart, with a 24px bottom margin. Make the chips 16px tx-1 on --ui-panel with a 1px --ui-line-hi border and a 4px radius. Make 'hp 100' f-cond 800 at 32px, using --ui-panel for the track and 4px for the radius. Use --ok for the fill.",
+   "P1 weapon slots 1-8/0: Draw all nine slots at 72px wide and 72px tall with an 8px gap. Use the same --ui-panel fill, 1px --ui-line-hi border and 4px radius. Dim empty slots to 40 percent inside the same frame. Use a 2px --acc border on the selected slot only. Make the numerals 16px tx-2. Align the row's baseline with the ammo card at y=1056."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-09h-name-tags-overlap-recipes-3/tags-smooth-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-09h-name-tags-overlap-recipes-4/tags-smooth-1080.jpg",
   "task": "o-09h-name-tags-overlap",
-  "when": "2026-10-29T00:25"
+  "when": "2026-10-29T00:34"
  }
 }

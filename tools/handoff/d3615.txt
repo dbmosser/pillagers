@@ -1,0 +1,5 @@
+## v36.15 - BREACH GATE NAMES THE HOLD KEY
+
+Co-op hunt while he was away. His 10-28 order: hold to breach should say hold e to breach. The hold reads the search action, so the label uses its local keyboard or pad binding. Watch: the breach gate says which key to hold
+
+MEASURED. Check 36.15 passes, and fails on v36.14.

@@ -3865,8 +3865,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.14';
-var VER_AT='2026-10-28 20:30';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.15';
+var VER_AT='2026-10-28 20:43';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -56008,7 +56008,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.14: Cache and extraction markers share one readable label size and panel style. The exit arrow stays teal. Check 36.14 fails on v36.13',
+  now:'v36.15: the breach gate says which key to hold Check 36.15 fails on v36.14',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -67401,7 +67401,8 @@ function shDraw(c){
     d=p?Math.hypot(p.x-gp.x,p.y-gp.y):1e9;
     if(d<600){
       ls=w2s(gp.x+s.nx*70,0,gp.y+s.ny*70);
-      txt=(s.prog>0)?('BREACHING  '+Math.round(s.prog*100)+'%'):'HOLD TO BREACH';
+      // v28.xx (cw-cx-breachkey), his 10-28 order: "hold to breach should say hold e to breach". The search action held by shHeld is named locally in each window.
+      txt=(s.prog>0)?('BREACHING  '+Math.round(s.prog*100)+'%'):('HOLD '+keyLabel('KeyE','E')+' TO BREACH');
       c.textAlign='center'; c.font=hudFS(TYPE.label); c.fillStyle='rgba(6,9,13,.72)';
       c.fillRect(ls.x-c.measureText(txt).width/2-U(8),ls.y-U(18),c.measureText(txt).width+U(16),U(22));
       c.fillStyle=(s.prog>0)?'#ffc04a':'#ffd0a0'; hudText(txt,ls.x,ls.y-U(2));

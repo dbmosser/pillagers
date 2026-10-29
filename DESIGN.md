@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.15 - BREACH GATE NAMES THE HOLD KEY
+
+Co-op hunt while he was away. His 10-28 order: hold to breach should say hold e to breach. The hold reads the search action, so the label uses its local keyboard or pad binding. Watch: the breach gate says which key to hold
+
+MEASURED. Check 36.15 passes, and fails on v36.14.
 ## v36.14 - WORLD MARKERS SHARE ONE LABEL STYLE
 
 Co-op hunt while he was away. The critic on the separated cache and extraction marker pictures found different type sizes and panel styles. Both now use the shared graphite panel, cream 16px labels and 32px minimum height at 1080p, doubled at 4K. The exit arrow stays teal and the two destinations keep separate markers. Watch: the cache name and extraction distance should remain easy to tell apart and never overprint; enemy names and health pips still stack. Only rendering changes.
