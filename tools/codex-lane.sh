@@ -144,6 +144,8 @@ today=$(date +%F); now=$(date +%s); name=""
 if [ "$MODE" = run ]; then
   if [ -f "$C/STOP" ] || [ -f "$X/STOP" ]; then say "paused (STOP file)"; exit 0; fi
   re=$(cat "$X/rest-until.txt" 2>/dev/null | tr -dc '0-9')
+  # 10-29 (CEO): a pace rest never holds his own o-00* orders; a usage-limit or reserve rest still does
+  if [ -n "$re" ] && grep -q "ahead of the pace line" "$X/rest-why.txt" 2>/dev/null && ls "$C/tasks/"o-00*.md >/dev/null 2>&1; then rm -f "$X/rest-until.txt" "$X/rest-why.txt"; re=""; fi
   if [ -n "$re" ]; then
     if [ "$re" -gt "$now" ]; then
       [ -f "$X/rest-why.txt" ] && why=$(cat "$X/rest-why.txt") || why="codex is resting"
