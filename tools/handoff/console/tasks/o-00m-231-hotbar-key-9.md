@@ -1,0 +1,9 @@
+# o-00m-231 hotbar-key-9 : the hotbar gets a 9 key between 8 and 0
+HIS WORDS 10-28 about 22:30 EDT (in the Gameplay Edit Intaker chat): "there is a 8 key and a 0 key on the hotbar, but no 9 key lol -- we need a 9 key on the hotbar also, thanks"
+
+What is on HEAD (v36.23): the bar has nine cells, keys 1-8 then 0 (cw-gunkeys0, his 10-18 order: the rocket launcher on '0'). dark_raiders.html ~27687-27690 slotKeyCode(i): i===8 -> 'Digit0'; keydown ~18574-18580 maps Digit0 to the ninth and skips Digit9 ('9' does nothing); the bag/stash digit handler ~57723 does the same ("'9' does nothing").
+
+Build: the bar becomes TEN cells, keys 1 2 3 4 5 6 7 8 9 0 in that order, like every PC shooter. The new cell is key 9, between 8 and 0; key 0 keeps the rocket launcher cell and everything already on it (his 10-18 order). Every place that knows the cell count follows: the in-raid belt, the Undercroft belt, the bag/stash digit keys, drag to hotbar, the wheel and hotbar sharing (his 10-27 hotbar orders), the pad, the key list and controls page, the P2 window and the net copy of the belt. A saved hotbar (a nine-cell assignment in the profile) loads into the ten cells with nothing moved: the old ninth (key 0) stays on key 0 and the new key 9 cell starts empty. Never change salvagerun:profile; migrate in place if the array length is stored.
+Check (must FAIL on the current build): the belt draws ten cells labelled 1-9 and 0; pressing 9 selects/uses the new cell; an item dragged to it is used by 9; an old nine-cell save keeps its key 0 item on 0.
+Rules: take pictures (uishots: raid belt and Undercroft belt, 1080p and 4K) and look at them; seed 4242 fingerprint must hold; both windows; never touch the pickup stack, loot sounds or loot rows. DESIGN.md watch line: "the hotbar has a 9 key". Model: Opus high (save and party plumbing).
+TASK DONE when it shipped and is ON HIS PC.
