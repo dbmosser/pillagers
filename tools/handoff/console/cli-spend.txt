@@ -1930,3 +1930,11 @@
 2026-10-29 0.0809 critic-o-00v-239-ping-and-map-mark-are-one
 2026-10-29 0.0843 critic-o-00v-239-ping-and-map-mark-are-one
 2026-10-29 0.0000 o-00v-239-ping-and-map-mark-are-one
+2026-10-29 0.0775 critic-o-00v-239-ping-and-map-mark-are-one
+2026-10-29 0.0850 critic-o-00v-239-ping-and-map-mark-are-one
+2026-10-29 0.0789 critic-o-00v-239-ping-and-map-mark-are-one
+2026-10-29 0.0851 critic-o-00v-239-ping-and-map-mark-are-one
+2026-10-29 0.0817 critic-o-00v-239-ping-and-map-mark-are-one
+2026-10-29 0.0854 critic-o-00v-239-ping-and-map-mark-are-one
+2026-10-29 0.0000 o-00v-239-ping-and-map-mark-are-one
+2026-10-29 0.0000 o-00v-no-caches-on-map

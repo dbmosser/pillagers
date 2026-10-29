@@ -1,0 +1,5 @@
+## v36.54 - CACHES OFF THE MAP
+
+Co-op hunt while he was away. His order 2026-10-29: quit showing caches on the map, even if player burns a data slot. It makes the map super messy. Watch: the map no longer marks caches.
+
+MEASURED. Check 36.54 passes, and fails on v36.53.

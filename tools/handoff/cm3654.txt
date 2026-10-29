@@ -1,0 +1,7 @@
+v36.54: caches off the map
+
+Both maps hide cache marks and words with or without intel. The Stray reward keeps one plain ring. Strongbox, locked rooms and other objectives stay. LOCAL: no linked review. Retargets: cw-nocachelbl 33.42, cw-cx-sectorhold-o03 32.27, cw-cx-mapstart-clear 33.54, cw-cx-mapquiet-o03 32.33 and cw-cx-mapspace-o03 32.30 accept old cache marks or the new hidden caches while preserving their other checks.
+
+Check 36.54. Fails on v36.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

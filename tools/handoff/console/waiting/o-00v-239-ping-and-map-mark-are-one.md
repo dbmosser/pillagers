@@ -13,3 +13,8 @@ Build: ONE MARK per player.
 Check (must FAIL on the current build): middle-click a spot: G.waypoint (or the merged mark) is set and the map draws it; click the map: the raid draws a ping marker at that spot; a second ping moves it; right click on the map clears both.
 Rules: seed 4242 fingerprint must hold; both windows; never touch the pickup stack, loot sounds or loot rows. Take pictures (uishots: raid with the mark, map with the mark, partner view). DESIGN.md watch line: "the ping and the map mark are one mark". Model: Opus high (net).
 TASK DONE when it shipped and is ON HIS PC.
+
+Lane note 2026-10-29 12:27: shipped cw-cx-onemark cw-cx-markread and parked: only lane-side steps are left. Codex's last words:
+Both changes are shipped and ON HIS PC v36.53. Corrected the invalid camera pairing codes and verified them against the game’s parser.
+
+TASK PARTIAL: coordinator must run corrected linked captures beyond the exhausted two-round limit; raid critic score remains 3/4

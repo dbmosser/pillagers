@@ -203,3 +203,5 @@
 2026-10-29 11:42 week=77.0% 5h=17.0% week_resets=2026-11-04 01:35 job=o-00v-239-ping-and-map-mark-are-one
 2026-10-29 11:44 week=77.0% 5h=18.0% week_resets=2026-11-04 01:35 job=o-00v-239-ping-and-map-mark-are-one
 2026-10-29 12:08 week=78.0% 5h=23.0% week_resets=2026-11-04 01:35 job=o-00v-239-ping-and-map-mark-are-one
+2026-10-29 12:27 week=78.0% 5h=25.0% week_resets=2026-11-04 01:35 job=o-00v-239-ping-and-map-mark-are-one
+2026-10-29 12:34 week=79.0% 5h=30.0% week_resets=2026-11-04 01:35 job=o-00v-no-caches-on-map

@@ -46,3 +46,20 @@ Updated camera-recipes.json for round 2. The project camera suppresses beforeunl
 The critic capital-I finding is a font reading error: the actual title source at dark_raiders.html:45634 is already lower-case run info. The general corner/HUD, hp bar, hotbar, contract-panel and cache-label recommendations concern unchanged presentation and exceed this one-control job; recorded for the coordinator, without changing unrelated screens or the pickup rows. Welcome-pack findings came from the wrong stage and do not justify editing the welcome pack here.
 
 LOCAL: no linked review for cw-cx-markread, which changes drawing only. The original cw-cx-onemark sync is already shipped; both actual linked raid recipes proved its move and clear behavior. The final linked map pictures and critic results remain lane work after the follow-up ships.
+
+--- codex run 2026-10-29 12:27 ---
+2026-10-29, after v36.53 shipped and the second camera round.
+
+cw-cx-markread SHIPPED as v36.53 (76b7f3e83). ON HIS PC v36.53: his 8802 serves 36.53, 49 seconds after shipping; he reloads to play it. Retarget b13afe8c8 passed check 36.52 on the prior build before the ship. Both requested game keys are shipped and remain listed in keys.txt. No further game change is prepared in this run.
+
+I inspected all six attached round-2 images. Solo raid and map show the shared filled amber diamond and nearby mark plate. Their critic scores stayed at 3. All four linked screenshots are welcome-pack images from failed handshakes, so none counts as mark evidence or a valid review of the mark. Round-1 real P1/P2 raid shots remain valid evidence of the original synchronized mark, including move and right-click clear in both windows before capture.
+
+I caused the round-2 setup failure by changing pair codes to include underscores and a long decimal time. The actual netPairOf parser (dark_raiders.html:60610) accepts only 4-16 lowercase letters/digits. The report explicitly says player 2 is missing its pair code. Corrected camera-recipes.json to use cx239 + seat + a base36 timestamp (14 characters today). Verified the actual game parser accepts generated codes for both roles and both query shapes, rejects the old broken code, and all recipe scripts parse. Pagehide cleanup and stale fixture-heartbeat cleanup remain. This is a camera-only repair, with no game change or new ship key.
+
+Both permitted automatic camera rounds have been consumed. I have not raised the cap, started a browser, or bypassed the camera limit. The coordinator must run the corrected four linked scenes, or raise this task camera allowance, to finish the missing current-version P1/P2 map and raid pictures. Mark-specific rendering is also covered by the shipped 36.53 check in both seat colours and three views; that does not replace the missing pictures.
+
+Best current images: tools/handoff/console/notes/shots/o-00v-239-ping-and-map-mark-are-one-recipes-2/mark-solo-raid-1080.jpg (v36.53, critic 3), and mark-solo-map-1080.jpg in the same directory (v36.53, critic 3). Best valid linked images: recipes-1/mark-p1-partner-raid-1080.jpg and recipes-1/mark-p2-partner-raid-1080.jpg (v36.52, critic 2 each). Round-2 linked images are invalid and must not replace them as evidence.
+
+The raid score of 3 is below its 4 finish line. Remaining round-2 raid findings concern unchanged hp, hotbar, corner headers and other world tags. Remaining map findings concern unchanged room/cache labels and contracts; its mark-label finding asks for 16px text and at least 8px from extract c, while the code already uses 16px and the image shows about 16px horizontally between the mark plate and extract label. I have not changed unrelated controls, pickup rows or loot sounds in pursuit of a screen-wide score. The coordinator has the full broader HUD findings from the prior alarm.
+
+LOCAL: no linked review for the v36.53 rendering follow-up. Original synchronized png/wp behavior is shipped; the missing current-version linked-camera evidence and raid critic finish line remain coordinator work. Task is not reported complete.

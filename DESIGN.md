@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.54 - CACHES OFF THE MAP
+
+Co-op hunt while he was away. His order 2026-10-29: quit showing caches on the map, even if player burns a data slot. It makes the map super messy. Watch: the map no longer marks caches.
+
+MEASURED. Check 36.54 passes, and fails on v36.53.
 ## v36.53 - ONE MARK GLYPH IN ALL THREE VIEWS
 
 Co-op hunt while he was away. The critic found a hollow raid diamond, filled minimap diamond and a different map ring. Spot marks now use the same 24px filled seat-coloured glyph with dark backing in every view. Spot labels sit 4px clear above the glyph with a short leader; entity labels keep their existing safe gap. Watch: the ping and the map mark are one mark. Look for the same amber or cyan diamond and attached label in both windows.
