@@ -99,3 +99,4 @@
 10-29 00:37 v36.30 cw-cx-adsstationtags on his pc after 33s (8802 serves 36.30) week 86%
 10-29 00:56 v36.31 cw-cx-timelord on his pc after 66s (8802 serves 36.31) week 86%
 10-29 01:17 v36.32 cw-cx-lancetail on his pc after 17s (8802 serves 36.32) week 86%
+10-29 01:34 v36.33 cw-cx-goalrewards on his pc after 34s (8802 serves 36.33) week 86%

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.34 - RUN GOAL REWARD ROWS FIT
+
+Co-op hunt while he was away. The critic found the extracted goal item name nearly clipped against its value and the empty SP panel total floating above the money total.
+
+MEASURED. Check 36.34 passes, and fails on v36.33.
 ## v36.33 - RUN GOALS PAY REWARDS NOT SP
 
 Co-op hunt while he was away. His order 2026-10-28: sp is like a high score counter. Watch: run goals pay $ or items at the undercroft, never sp

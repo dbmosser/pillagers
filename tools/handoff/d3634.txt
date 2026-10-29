@@ -1,0 +1,5 @@
+## v36.34 - RUN GOAL REWARD ROWS FIT
+
+Co-op hunt while he was away. The critic found the extracted goal item name nearly clipped against its value and the empty SP panel total floating above the money total.
+
+MEASURED. Check 36.34 passes, and fails on v36.33.

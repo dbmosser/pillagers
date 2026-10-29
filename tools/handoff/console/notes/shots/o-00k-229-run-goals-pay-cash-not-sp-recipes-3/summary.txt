@@ -1,0 +1,47 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  goal-career-host-hud                   NOT STAGED  21.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot set properties of undefined (setting 's')
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A:184065:33), <anonymous>:1:105)
+    at window.__gx (http://localhost:8808/fixture.html?netslot=A:187784:33)
+    at <anonymous>:57:24
+    at Array.forEac
+  goal-career-host-extracted             NOT STAGED   4.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not open p2
+    at stageGoalCamera (<anonymous>:18:53)
+    at <anonymous>:107:14
+    at async <anonymous>:1:21
+  goal-career-peer-extracted             NOT STAGED  15.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not link p2
+    at stageGoalCamera (<anonymous>:32:55)
+    at async <anonymous>:107:8
+    at async <anonymous>:1:21
+  goal-demo-host-hud                     NOT STAGED  17.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot set properties of undefined (setting 's')
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A:184065:33), <anonymous>:1:105)
+    at window.__gx (http://localhost:8808/fixture.html?netslot=A:187784:33)
+    at <anonymous>:57:24
+    at Array.forEac
+  goal-demo-peer-hud                     NOT STAGED  17.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot set properties of undefined (setting 's')
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A:184065:33), <anonymous>:1:105)
+    at window.__gx (http://localhost:8808/fixture.html?netslot=A:187784:33)
+    at <anonymous>:57:24
+    at Array.forEac
+== 4k : window 3876x2265, viewport 3840x2160
+  goal-career-host-hud                   NOT STAGED  22.1s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot set properties of undefined (setting 's')
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A:184065:33), <anonymous>:1:105)
+    at window.__gx (http://localhost:8808/fixture.html?netslot=A:187784:33)
+    at <anonymous>:57:24
+    at Array.forEac
+  goal-career-host-extracted             NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not open p2
+    at stageGoalCamera (<anonymous>:18:53)
+    at <anonymous>:107:14
+    at async <anonymous>:1:21
+  goal-career-peer-extracted             NOT STAGED  15.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not link p2
+    at stageGoalCamera (<anonymous>:32:55)
+    at async <anonymous>:107:8
+    at async <anonymous>:1:21
+  goal-demo-host-hud                     NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: host did not open p2
+    at stageGoalCamera (<anonymous>:18:53)
+    at <anonymous>:107:14
+    at async <anonymous>:1:21
+  goal-demo-peer-hud                     NOT STAGED  18.1s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot set properties of undefined (setting 's')
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?netslot=A:184065:33), <anonymous>:1:105)
+    at window.__gx (http://localhost:8808/fixture.html?netslot=A:187784:33)
+    at <anonymous>:57:24
+    at Array.forEac

@@ -1,0 +1,1 @@
+| RUN GOAL REWARD ROWS FIT | v36.34 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 36.34 passes, fails on v36.33 |

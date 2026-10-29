@@ -4190,5 +4190,85 @@
   "pic": "tools/handoff/console/notes/shots/o-00i-226-timelord-mode-recipes-2/timelord-toggle-1080.jpg",
   "task": "o-00i-226-timelord-mode",
   "when": "2026-10-29T05:02"
+ },
+ "goal-career-host-extracted": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "This is a clean, lower-case run-over card with a clear lime 0 sp hero and a single lime leaderboard button. It is held back by an empty score panel, text that is too small, and a weak lower half, so a player would call it decent but not polished. It is not the same screen as the earlier title-screen review, so I can't compare the two.",
+  "findings": [
+   "P1 raid score panel (682-951, 219-522): Anchor the hero to the same baseline as the $5,065 total at y~485 and separate it with the same 1px divider. Or move the sp total to a full-width hero strip above both panels. Fill the gap with the 3 medal/bonus rows instead of leaving it blank.",
+   "P1 stat row labels and rows (698-1222, 240-440): Set all labels to 16px f-cond 600 in --tx-2 #aaa498 (4.5:1 or better), and set value rows to 20px. Use a 36px row pitch and keep the 'raid score' and 'money' headers at 16px with +.04em tracking.",
+   "P1 run goals row (985-1222, 427): Split it into two rows, 'run goals' and a sub-line of 'support mg' in 16px --tx-2 with a 24px indent. Or shorten it to 'support mg' and give the label column at least 16px of gap before the value.",
+   "P1 medals row (806-1114, 630-697): Enlarge each medal to 56px with a 2px --ui-line-hi border. Give each its own distinct glyph, or fill it with --acc-ink on --acc when earned. Replace the amber underline with a 16px tx-1 label. Make the gap between medals 24px.",
+   "P2 +130 xp and 'how did that run feel +' (889-1030, 740-808): Show '+130 xp' at 20px f-cond 700 in --tx-1, 24px below the medals. Make the survey a 16px --tx-2 text button with a 1px --ui-line border, 40px high, or remove it from the card. Pull the leaderboard button up so the gaps are 24px, 24px and 32px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00k-229-run-goals-pay-cash-not-sp-recipes-4/goal-career-host-extracted-1080.jpg",
+  "task": "o-00k-229-run-goals-pay-cash-not-sp",
+  "when": "2026-10-29T06:06"
+ },
+ "goal-career-host-hud": {
+  "score": 2,
+  "pass": false,
+  "need": 4,
+  "verdict": "The clock, ammo and hotbar read well, but the top-right goals panel is still a dense wall of mixed small text, the left panel is tiny, and the duplicate extract markers, the explanatory feed line and the off-grid hp bar were not fixed.",
+  "findings": [
+   "P1 top-right goals panel (1603-1900, 20-243): Use a 16px --tx-2 header row ('goals 0/3'). Use 20px --tx-1 rows with 8px gaps. Put a 1px --ui-line divider between 'contracts' and 'run goals'. Use 16px inner padding. Show progress right-aligned as 16px --acc only on the active row, and fix the 'item' tag to a 16px --warn glyph.",
+   "P1 left 'current pillagers' panel (8-367, 143-262): Set the rows to 20px f-cond 600 with the header at 16px --tx-2. Use 8px row gaps, 16px padding, --ui-panel at .9 fill and a 1px #4a5257 border. Move it to x=96 and share one chevron inset with the goals panel.",
+   "P1 extract pill (904-1016, 197-220) and right-edge marker 'c 152m' (1800-1890, 470-500): Keep only the pill, in 20px --extract. Put it 16px under the score card or move it next to the clock. Delete the right-edge text and keep only a teal arrow at the screen edge.",
+   "P1 left feed line (15-400, 775-805): Cut it to 'contract item nearby' at 20px --tx-1 on --ui-panel with a 3px --warn bar, x=96. Teach the glow once in how to play.",
+   "P1 hp bar (24-430, 1035-1068): Move it to x=96, bottom 54px. Make the bar 24px high with a #2e3337 track and an --ok fill. Put '100' at 32px f-cond 700 --tx-1 left of the bar, with 16px gaps to the chips."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00k-229-run-goals-pay-cash-not-sp-recipes-4/goal-career-host-hud-1080.jpg",
+  "task": "o-00k-229-run-goals-pay-cash-not-sp",
+  "when": "2026-10-29T06:07"
+ },
+ "goal-career-peer-extracted": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "This is now the real extracted card and it reads cleanly, with a clear lime CTA, a clear total and a teal title, but the two stat panels are uneven, the text is too small and dim, and the lower half drifts.",
+  "findings": [
+   "P1 stat panels (x681-1239, y218-523): Make the two panels equal height with the content top-aligned, or merge the score into one row above the money panel. Make the one hero number the money total (56px, tx-1) and set the sp total to 32px. Use 16px tx-2 headers with +.04em tracking and a 1px --ui-line underline.",
+   "P1 money rows 'run goals' and 'run goals: support mg (field)' (y389-427): Rename the rows so each says what it is ('goal bonus', 'field goal'), make the signs consistent, and keep at least 16px between label and value. If the second row is a sub-line, indent it 16px in tx-2.",
+   "P1 lower half (y630-830): medals, '+130 xp', 'how did that run feel +': Use a 24px rhythm: medals, then '+130 xp' at 20px f-cond 600 in tx-1, then the survey as a 40px outlined secondary button at 20px with a --ui-line-hi border. Make the medal underlines --ui-line or the rarity colour as a 3px bar. Move the survey to the left of the CTA row.",
+   "P1 stat tiles (y539-613): Set the labels to tx-2 at 16px with +.04em tracking, values at 32px f-cond 700, and borders in --ui-line-hi. Align the tile row edges with the panel edges at x681 and x1239 (they already match, keep them).",
+   "P2 close x (x1246-1294, y157-204) vs title (y177): Make it a 40px square with a --ui-line-hi border and a tx-2 glyph, 16px from the card edge, with a lime border only on focus. Keep the title at 32px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00k-229-run-goals-pay-cash-not-sp-recipes-4/goal-career-peer-extracted-1080.jpg",
+  "task": "o-00k-229-run-goals-pay-cash-not-sp",
+  "when": "2026-10-29T06:07"
+ },
+ "goal-demo-host-hud": {
+  "score": 3,
+  "pass": false,
+  "need": 4,
+  "verdict": "The top-left list is gone, run info folds to a compact goals card and the hud reads cleaner, but the bottom-left stack and the top-centre cluster still ignore the shared panel, type and margin tokens.",
+  "findings": [
+   "P1 top-centre cluster (845-1075, 18-340): clock, team score, extract chip, goal-done banner: Use one 16px gap between boxes and one --ui-panel fill with a 1px #4a5257 border and 4px radius. Make the clock the only hero at 56px f-cond 800. Set the goal-done banner title to 20px f-cond 700 and animate it away after 2s. Centre all boxes on x=960 with the same 280px width.",
+   "P1 hp and armour bars (24-430, 965-1068): Put both bars at 20px high on a --ui-panel plate with a 1px #4a5257 border and 4px radius. Set the text to 16px f-cond 700 --tx-1, and fill hp with --ok #76b97c. Keep the armour fill as one muted blue. Use an 8px gap between the bars. Leave the left margin at 54px and the bottom margin at 48px.",
+   "P1 status chips 'concealed' / 'in cover' (25-328, 912-950): Make both chips --tx-1 on --ui-panel with a 1px #4a5257 border, 16px f-cond 600, and a 4px radius. Keep the two icons at a 24px square with no ring. Use --acc, --warn or --danger only when a state is actually good, risky or bad.",
+   "P1 hotbar (553-1105, 955-1060): Draw every slot as a 72px tile with a --ui-panel fill, a 1px #4a5257 border and a 4px radius. Give the selected slot a 2px --acc #e6ff3d border. Set the numbers to 16px --tx-2 inside the tile at top-left. Drop empty icons to 30% opacity. Align the row bottom to the same 48px margin as hp.",
+   "P2 goals card (1603-1900, 18-138): Remove the 'run goals' line. Show each row as 'name' left and a --ok check or 'power-up' at the right, in a right-aligned 16px column. Use 16px padding, an 8px row gap and a 1px #4a5257 border. Match the 280px width of the centre cluster."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00k-229-run-goals-pay-cash-not-sp-recipes-4/goal-demo-host-hud-1080.jpg",
+  "task": "o-00k-229-run-goals-pay-cash-not-sp",
+  "when": "2026-10-29T06:07"
+ },
+ "goal-demo-peer-hud": {
+  "score": 3,
+  "pass": false,
+  "need": 4,
+  "verdict": "The HUD is much quieter than before: the controls list is folded to one line, the banner explainer is gone, and the old pillagers list and the 'run info' header are gone. It still looks like a stack of unrelated boxes, with a crowded top-centre, mixed type sizes and mixed corner radii.",
+  "findings": [
+   "P1 top-centre stack (x845-1075, y18-338): Keep the 10:00 timer at 32px with the extract chip 8px below it. Move the team score to the top-left feed at x24/y24 at 16px. Show the goal-done toast only at y120 as the single alert, with a 16px gap below the chip. Give every box a 4px radius, a --ui-panel fill and a 1px --ui-line-hi border.",
+   "P1 goals panel (x1603-1900, y20-138): Delete the 'run goals' line and the repeated 'power-up' words. Use a 16px tx-2 header ('goals 1/3'), 16px rows in tx-1 and the done row in --ok with a check glyph. Use 16px padding, a 4px radius, a 1px --ui-line-hi border and x1872/y24 from the right and top edges (24px margin).",
+   "P1 bottom-left status cluster (x24-430, y910-1068): Make both bars 12px tall with a 16px label above each in tx-1. Keep the hp number at 20px, not 32px. Use equal-height pills with a 1px --warn or --extract border and tx-1 text. Put the 'f1 controls' chip at x24/y1000, directly above the hp bar, so it joins the cluster. Keep the 24px margin from the left and the bottom.",
+   "P1 ammo panel (x1668-1910, y902-1018): Right-align the panel to x1896 (24px margin) and align the bottom with the hp bar at y1056. Set 'burst carbine' at 16px tx-2. Keep the 56px f-cond 800 number, with '/ 144' at 20px in tx-2.",
+   "P2 weapon slots (x890-1105, y955-1060) and slot numbers (x560-1460, y960-975): Draw all 10 slots on one row of equal 48px tiles with an 8px gap and a --ui-panel fill, with empty ones at 40% opacity. Put the buff chip on a 16px f-cond 600 line, 8px above the row, with a --danger left bar of 3px. Use 'double damage' only at 16px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00k-229-run-goals-pay-cash-not-sp-recipes-4/goal-demo-peer-hud-1080.jpg",
+  "task": "o-00k-229-run-goals-pay-cash-not-sp",
+  "when": "2026-10-29T06:08"
  }
 }

@@ -1,0 +1,7 @@
+v36.34: run goal reward rows fit
+
+Goal cache items keep their full names on wrapping sublines with a 16px gap before the value. Reward cards align score and money totals. Demo goals keep one heading and still show every reward.
+
+Check 36.34. Fails on v36.33.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

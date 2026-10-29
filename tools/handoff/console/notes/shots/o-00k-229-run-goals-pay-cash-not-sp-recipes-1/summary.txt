@@ -1,0 +1,32 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  goal-career-host-hud                   NOT STAGED   5.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: careerPostBuild is not defined
+    at <anonymous>:1:7676
+    at async <anonymous>:1:21
+  goal-career-host-extracted             NOT STAGED   5.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: careerPostBuild is not defined
+    at <anonymous>:1:7676
+    at async <anonymous>:1:21
+  goal-career-peer-extracted             NOT STAGED   5.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: careerPostBuild is not defined
+    at <anonymous>:1:7676
+    at async <anonymous>:1:21
+  goal-demo-host-hud                     NOT STAGED   5.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: careerPostBuild is not defined
+    at <anonymous>:1:7676
+    at async <anonymous>:1:21
+  goal-demo-peer-hud                     NOT STAGED   5.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: careerPostBuild is not defined
+    at <anonymous>:1:7676
+    at async <anonymous>:1:21
+== 4k : window 3876x2265, viewport 3840x2160
+  goal-career-host-hud                   NOT STAGED   5.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: careerPostBuild is not defined
+    at <anonymous>:1:7676
+    at async <anonymous>:1:21
+  goal-career-host-extracted             NOT STAGED   5.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: careerPostBuild is not defined
+    at <anonymous>:1:7676
+    at async <anonymous>:1:21
+  goal-career-peer-extracted             NOT STAGED   5.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: careerPostBuild is not defined
+    at <anonymous>:1:7676
+    at async <anonymous>:1:21
+  goal-demo-host-hud                     NOT STAGED   5.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: careerPostBuild is not defined
+    at <anonymous>:1:7676
+    at async <anonymous>:1:21
+  goal-demo-peer-hud                     NOT STAGED   5.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: careerPostBuild is not defined
+    at <anonymous>:1:7676
+    at async <anonymous>:1:21

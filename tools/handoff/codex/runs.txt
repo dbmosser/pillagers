@@ -519,3 +519,7 @@
 2026-10-29 01:13 o-00j-227-lance-reload-long-tail 629s ok PARTIAL in=1752705 out=22110 run=1
 2026-10-29 01:17 o-00j-227-lance-reload-long-tail 17s ok DONE in=2034008 out=22507 run=2
 2026-10-29 01:29 o-00k-229-run-goals-pay-cash-not-sp 702s ok PARTIAL in=3041546 out=23394 run=1
+2026-10-29 01:41 o-00k-229-run-goals-pay-cash-not-sp 271s ok PARTIAL in=5105420 out=31220 run=2
+2026-10-29 01:56 o-00k-229-run-goals-pay-cash-not-sp 153s ok PARTIAL in=6033056 out=36057 run=3
+2026-10-29 02:04 o-00k-229-run-goals-pay-cash-not-sp 220s ok PARTIAL in=7095436 out=42313 run=4
+2026-10-29 02:13 o-00k-229-run-goals-pay-cash-not-sp 324s ok PARTIAL in=8294210 out=51441 run=5
