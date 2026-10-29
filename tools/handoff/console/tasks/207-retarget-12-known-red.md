@@ -57,3 +57,6 @@ ADDED 10-28 23:40 (JTPC Correspondent; spare PC run corpus-1028-2206 on v36.23),
 - 26.37, 26.42, 32.89: the GUN KEYS and WHEEL tiles sit on the keys tab of the stash loadout column since v36.21 (his pick, option a); on the default backpack tab they measure 0 px. Open the keys tab first, then keep every assert (pad reaches the 17 tiles, names whole, gun key tile wider than a wheel tile, nothing sticks out, zoom 1 and 1.3).
 - 27.21: the stash tab is KEYCARDS since v36.18 (his order: in-game keys are keycards). Expect KEYCARDS where it wants KEYS; keep the one filter row and the tab order.
 - 27.46: part FOUR wants HOLD TO BREACH; since v36.15 (his order) the gate reads HOLD E TO BREACH from the search key binding. Expect 'HOLD '+keyName(the search key)+' TO BREACH'.
+
+ADDED 10-29 00:55 (JTPC Correspondent; spare PC run corpus-1028-2325 on v36.27), 1 more, out of date by his order; parked in known-red:
+- 26.56: part ONE wants the next round after a perfect active reload at +15% (26.45 from 23); since v36.25 (his order, job o-222) each stack pays 5%, 15% at most, so the first gives 24.15. Expect 5% a stack (23 x 1.05 on the first), and add a part that three in a row reach 15% and a fourth stays at 15%.

@@ -100,3 +100,5 @@ v26.42   # same keys tab: tiles measure 0 px on the backpack tab
 v32.89   # same keys tab: all 17 names read hidden on the backpack tab
 v27.21   # the stash tab is KEYCARDS since v36.18 (his order); the check wants KEYS
 v27.46   # the breach gate reads HOLD E TO BREACH since v36.15 (his order); the check wants HOLD TO BREACH
+# his 10-28 order (job o-222, v36.25 active reload 5% a stack, 15% at most); sorted by the JTPC Correspondent 10-29 00:55; retarget in job 207
+v26.56   # wants +15% on the first perfect active reload; it is 5% a stack now (24.15 from 23, not 26.45)
