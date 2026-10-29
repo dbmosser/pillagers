@@ -5584,3 +5584,4 @@
 2026-10-29 09:59:52 raid 4 demo1 raidSeed=1641482721 map=0 god=0 sec=109 end=ended problems=0 newUnique=0 totalUnique=1 totalProblems=1 events=3359 score=0 ents=52 travelPx=9389 fires=91 menuPct=22 heapMB=63 p2= gfx=9995/10.25/10.25/4/1 work=10808/5.25/7.25/9.25 build=36.46
 2026-10-29 10:05:02 raid 5 demo2p raidSeed=387932443 map=0 god=1 sec=305 end=clock-end problems=0 newUnique=0 totalUnique=1 totalProblems=1 events=9041 score=0 ents=50 travelPx=29702 fires=91 menuPct=16 heapMB=74 p2=link_2s_join_4s_pad_fwd gfx=27727/10.25/19.75/67/1 gfx2=28020/10.25/10.25/58/1 work=28697/6.25/12.25/15.75 work2=29064/4.75/11.25/15.25 build=36.46
 2026-10-29 10:25:03 FUZZ START seed=827213903 minutes=60 raidsec=300 port=9331 srv=8806 build=36.50 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-10-29 10:45:13 FUZZ START seed=866260820 minutes=60 raidsec=300 port=9331 srv=8806 build=36.50 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
