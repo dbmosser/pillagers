@@ -1,0 +1,5 @@
+## v36.27 - STEADY HAND AND BEAST MODE
+
+Co-op hunt while he was away. His 10-29 order: steady hand and beast mode, up to 15% each. Watch: steady hand and beast mode, up to 15% each; active reload at 15% makes the top combined round x1.520875, or +52.0875% damage. Air strike kills count for their owner, capped at 15; watch the five-second ring and immediate steady hand reset on any hit or gun change in both windows.
+
+MEASURED. Check 36.27 passes, and fails on v36.26.

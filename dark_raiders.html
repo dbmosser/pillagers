@@ -3880,8 +3880,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.26';
-var VER_AT='2026-10-28 22:33';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.27';
+var VER_AT='2026-10-28 23:08';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24309,7 +24309,7 @@ function damagePlayer(amt,src,srcName,sx,sy){
   // rounds pass where he stood, but frag blasts, shells and every other hurt still reached him: grunts in his window and red
   // numbers on empty ground for his teammate. Nothing hurts a spectating host now.
   if(G&&G.player&&G.player.specOut) return;
-  if(G&&!G.sim&&G.player&&pwrOn('shield')){ try{ pwrShieldHit(sx,sy); }catch(_psh){} return; }   // v26.xx (party3): the shield bubble takes the hit
+  if(G&&!G.sim&&G.player&&pwrOn('shield')){ dmgStreakHurt(G.player,amt); try{ pwrShieldHit(sx,sy); }catch(_psh){} return; }   // v26.xx (party3): the shield bubble takes the hit
   // v23.30 (arcade9): the arcade spawn shield takes the hit, above every stamp, and sparks teal on the bubble
   if(G&&G.arcade&&G.player&&G.player.arcSh){ if(!G.sim){ var _sa=(sx!==undefined&&isFinite(sx)&&isFinite(sy))?Math.atan2(sy-G.player.y,sx-G.player.x):-1.5708; try{ spark(G.player.x+Math.cos(_sa)*22,G.player.y-18+Math.sin(_sa)*28,'#5ff5e4',8,160); }catch(_ss){} } return; }
   // v4.28: the direction of the hit, stamped for the ring around the body.
@@ -24378,6 +24378,7 @@ function damagePlayer(amt,src,srcName,sx,sy){
     return;
   }
   amt*=CFG.eDmg*easyDmgMul();   // v28.xx (cw-easymode): a third off once he said yes to easy mode
+  dmgStreakHurt(p,amt);   // v28.xx (cw-cx-damagestreaks): any health or armour hit, before the plate absorbs it.
   if(p.armor>0){
     // NOT ||, v2.16. No Rig has absorb 0.00 and 0 is falsy, so this fallback
     // silently handed a player wearing nothing 0.55 absorption, better than the
@@ -25546,7 +25547,7 @@ if(wep.mag===0){
   for(var pel=0;pel<shots;pel++){
     var ang=base+rnd(-spx,spx);
     G.bullets.push({sx:sh.x,sy:sh.y,mzd:Math.max(0,gunMuzD(sh,wep)-17),ly:shotLy(sh,wep),x:sh.x+Math.cos(ang)*17,y:sh.y+Math.sin(ang)*17,   // v28.xx (cw-thirdsize): ly, the height its tracer is drawn at, the gun line of the drawn body (drawing only)
-      vx:Math.cos(ang)*(wep.rkt?RKT_SPD:1180),vy:Math.sin(ang)*(wep.rkt?RKT_SPD:1180),dmg:wep.dmg*((sh&&sh.elite)?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)*((fromPlayer&&!G.sim&&G.player.arBonus>0)?(G.player.arMul||AR_BONUS):1)*pwrMul('dmg',fromPlayer),   // v26.xx (feel11): the active reload bonus
+      vx:Math.cos(ang)*(wep.rkt?RKT_SPD:1180),vy:Math.sin(ang)*(wep.rkt?RKT_SPD:1180),dmg:wep.dmg*((sh&&sh.elite)?(CFG.eliteDmg===undefined?1.6:CFG.eliteDmg):1)*((fromPlayer&&!G.sim&&G.player.arBonus>0)?(G.player.arMul||AR_BONUS):1)*((fromPlayer&&!G.sim)?dmgStreakMul(sh):1)*pwrMul('dmg',fromPlayer),   // v28.xx (cw-cx-damagestreaks): active reload, steady hand and beast mode multiply onto this round
       life:wep.rng/(wep.rkt?RKT_SPD:1180),player:!!fromPlayer,owner:sh,tint:foeShot(sh,fromPlayer)?ENEMY_TRACER:(wep.tint||'#ffd48a'),   // v28.xx (cw-cx-redtracers): hostile machines and pillager bots, including forged guns, warn in red
       el:(fromPlayer&&wep.el&&ELEM[wep.el])?wep.el:'',   // v23.xx (forge3): a MK III round carries its element
       rkt:wep.rkt?1:0,_pen:wep.rkt?99:0,thru:(wep.id==='lance')?1:0,gid:fromPlayer?String(wep.id||''):''});   // v26.xx (career1): the round carries the id of the gun it came from, for the kill tally   // v11.84, HIS NOTE: the Lance travels through crawlers
@@ -26246,8 +26247,29 @@ function arLo(p){ var k=Math.min((p&&p.arStk)||0,AR_STK_MAX-1); return (k>0)?(AR
 function arHi(p){ var k=Math.min((p&&p.arStk)||0,AR_STK_MAX-1); return (k>0)?(AR_A+AR_B)/2+(AR_B-AR_A)/2*Math.pow(AR_NARROW,k):AR_B; }
 // v28.xx (cw-cx-reloadswitch), HIS WORDS (2026-10-28): "Active reload chain should also break if player switches guns".
 // v28.xx (cw-cx-reloadswitch): every held-gun assignment uses this door; reset only this player before the status reads it.
+// v28.xx (cw-cx-damagestreaks), HIS WORDS (2026-10-29): "steady hand" and "beast mode", 1% per kill, up to 15 each.
+// v28.xx (cw-cx-damagestreaks): each window owns its player; the host kill and the addressed net kill use the same door.
+// v28.xx (cw-cx-damagestreaks): air strike kills count. The five seconds use raid time, like the other combat timers. No seeded draws, no sim.
+function dmgStreakTick(p){
+  if(!G||G.sim||!p) return;
+  if((p.bmStk||0)>0&&G.t>=(p.bmUntil||0)){ p.bmStk=0; p.bmUntil=0; }
+}
+function dmgStreakKill(p,kind){
+  if(!G||G.sim||G.over||!p||p.specOut||p.dying||p.downed||!(p.hp>0)||kind==='stray'||kind==='peddler') return;
+  dmgStreakTick(p);
+  p.shStk=Math.min(15,(p.shStk||0)+1);
+  p.bmStk=Math.min(15,(p.bmStk||0)+1); p.bmUntil=G.t+5;
+}
+function dmgStreakHurt(p,amt){
+  if(G&&!G.sim&&p&&amt>0) p.shStk=0;
+}
+function dmgStreakMul(p){
+  if(!G||G.sim||!p) return 1;
+  dmgStreakTick(p);
+  return (1+0.01*(p.shStk||0))*(1+0.01*(p.bmStk||0));
+}
 function arSetHeldGun(p,w){
-  if(p.wep!==w){ p.arStk=0; p.arBonus=0; p.arGun=null; p.arHot=0; }
+  if(p.wep!==w){ p.arStk=0; p.arBonus=0; p.arGun=null; p.arHot=0; if(G&&!G.sim) p.shStk=0; }
   p.wep=w;
 }
 function activeReloadTick(p){
@@ -29532,6 +29554,7 @@ function autoEmptyGun(){
 }
 function updatePlayer(dt){
   var p=G.player,T=G.tel;
+  dmgStreakTick(p);   // v28.xx (cw-cx-damagestreaks): expire before any early return or shot.
   fogMark();
   try{ fowMark(); }catch(_fw){}   // v35.xx (cw-fogwar): this raid's explored ground, only while the option is on
   DT_LAST=isFinite(dt)?dt:0.016;
@@ -32078,6 +32101,7 @@ if(e.state==='possum'){
       // saved, stepped his contracts and wrote a grudge into his save, for a raid he was no longer in. Such a death is credited to nobody.
       try{ feedKillEnt(e); }catch(_fke){}   // v27.24 (feed1): the kill in the feed, his, a teammate's or nobody's
       if(e.byPlayer&&!(G.player&&G.player.specOut)){
+        dmgStreakKill(G.player,e.kind);   // v28.xx (cw-cx-damagestreaks): a credited enemy death, including the air strike.
         T.kills[e.kind]++; contractKill(e.kind);
         try{ gunKillNote(e); }catch(_gkn){}
         try{ trophyKill(e); }catch(_tkl){}   // v26.xx (career4): the golden enemy and the Overseer are trophies   // v26.xx (career1): the gun tally
@@ -43943,6 +43967,9 @@ var STATUSL=[
   {id:'stim',  nm:'STIM',       col:'#ffd25a', bad:0},
   // v28.xx (cw-cx-reloadstatus), HIS WORDS (2026-10-28): active reload bonus stacks should be shown as a status.
   {id:'ar',    nm:'active reload x1', col:'#9fe8b0', bad:0},
+  // v28.xx (cw-cx-damagestreaks): the existing status list, immediately after active reload.
+  {id:'sh',    nm:'steady hand', col:'#9fe8b0', bad:0},
+  {id:'bm',    nm:'beast mode', col:'#ffd25a', bad:0},
   {id:'rest',  nm:'RECOVERING', col:'#ff9db0', bad:0},
   {id:'wind',  nm:'WINDED',     col:'#ff5a4a', bad:1},
   {id:'wade',  nm:'WADING',     col:'#6fb6d8', bad:1},
@@ -43990,6 +44017,18 @@ function statusLive(p){
         // v28.xx (cw-cx-reloadswitch): an empty magazine keeps the chain; a held-gun change clears it before this status reads it.
         t=(p.arBonus&&p.wep===p.arGun&&p.ammo>0&&!(p.reloading>0))?'+'+Math.round(((p.arMul||AR_BONUS)-1)*100)+'% damage':'chain ready';
         if(E.vk!==t){ E.vk=t; E.v=t; }
+      }
+    } else if(E.id==='sh'||E.id==='bm'){
+      // v28.xx (cw-cx-damagestreaks): names carry the exact percent; beast mode uses the shared shrinking ring and seconds.
+      if(!G.sim){
+        dmgStreakTick(p); k=(E.id==='sh')?(p.shStk||0):(p.bmStk||0);
+        if(k>0){
+          E.on=true; t=(E.id==='sh'?'steady hand':'beast mode')+' +'+k+'%';
+          if(E.nm!==t){ E.nm=t; E.nf=''; }
+          t='damage';
+          if(E.id==='bm'){ n=Math.max(0,p.bmUntil-G.t); E.f=clamp(n/5,0,1); t=Math.ceil(n)+'s'; }
+          if(E.vk!==t){ E.vk=t; E.v=t; }
+        }
       }
     } else if(E.id==='rest'){
       // tickRegen's own test: standing, under the Bandage ceiling, and regenDelay seconds since a shot fired or taken
@@ -44040,7 +44079,16 @@ function statusPill(x0,cy,x1,h){
 // blotter tab for blotter.
 function statusGlyph(id,cx,cy,u,col){
   ctx.beginPath();
-  if(id==='ar'){
+  // v28.xx (cw-cx-damagestreaks): a steady crosshair and three claw marks in the existing plain-path glyph family.
+  if(id==='sh'){
+    ctx.lineWidth=u*0.22; ctx.arc(cx,cy,u*0.55,0,6.2832); ctx.stroke(); ctx.beginPath();
+    ctx.moveTo(cx-u,cy); ctx.lineTo(cx-u*0.35,cy); ctx.moveTo(cx+u*0.35,cy); ctx.lineTo(cx+u,cy);
+    ctx.moveTo(cx,cy-u); ctx.lineTo(cx,cy-u*0.35); ctx.moveTo(cx,cy+u*0.35); ctx.lineTo(cx,cy+u); ctx.stroke();
+  } else if(id==='bm'){
+    ctx.lineWidth=u*0.25; ctx.lineCap='round';
+    for(var claw=-1;claw<=1;claw++){ ctx.moveTo(cx+claw*u*0.6+u*0.25,cy-u*0.85); ctx.lineTo(cx+claw*u*0.6-u*0.25,cy+u*0.85); }
+    ctx.stroke(); ctx.lineCap='butt';
+  } else if(id==='ar'){
     // v28.xx (cw-cx-reloadstatus): a reload arrow in the same plain-path family as the other status glyphs.
     ctx.lineWidth=u*0.27; ctx.lineCap='round'; ctx.arc(cx,cy,u*0.78,0.35,4.7); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(cx+u*0.35,cy-u*0.78); ctx.lineTo(cx-u*0.18,cy-u*1.10); ctx.lineTo(cx-u*0.18,cy-u*0.46); ctx.closePath(); ctx.fill();
@@ -56112,7 +56160,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.26: the game no longer freezes in busy fights Check 36.26 fails on v36.25',
+  now:'v36.27: Steady hand adds 1% damage per kill until hit or gun change. Beast mode adds 1% per kill within five seconds. Both cap at 15 and multiply with active reload. Check 36.27 fails on v36.26',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -64655,6 +64703,7 @@ function netKillTake(peer,m){
   k=netClean(m.k,12); T=G.tel; e=(NET.entMap&&NET.entMap[m.id|0])||(NET.entDead&&NET.entDead[m.id|0])||null;   // v16.13: or the body the gone word just took off
   if(!k) return 'bad';
   if(T.kills&&T.kills[k]!==undefined) T.kills[k]++;
+  dmgStreakKill(G.player,k);   // v28.xx (cw-cx-damagestreaks): only this addressed seat receives its own streak.
   try{ contractKill(k); }catch(_ck){}
   if(e){ try{ gunKillNote(e); }catch(_gkn2){} try{ trophyKill(e); }catch(_tk2){} }   // v26.xx (career10): cloud review 24: player 2 kill tally and trophies count on his own window too
   if(m.el||(e&&e.elite)) T.eliteKills=(T.eliteKills||0)+1;

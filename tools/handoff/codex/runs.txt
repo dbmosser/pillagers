@@ -495,3 +495,7 @@
 2026-10-28 22:24 o-00e-222-active-reload-5pct-steps 393s ok PARTIAL in=1111883 out=13126 run=1
 2026-10-28 22:26 o-00e-222-active-reload-5pct-steps 78s ok PARTIAL in=1524729 out=15300 run=2
 2026-10-28 22:27 o-00e-222-active-reload-5pct-steps 97s ok PARTIAL in=1978691 out=17786 run=3
+2026-10-28 22:45 o-00e-222-active-reload-5pct-steps 207s ok PARTIAL in=3072872 out=23739 run=4
+2026-10-28 22:49 o-00e-222-active-reload-5pct-steps 60s ok DONE in=3368097 out=25463 run=5
+2026-10-28 22:51 o-00f-223-steady-hand-and-beast-mode 118s usage-limit (not counted) back 2026-10-28 22:54
+2026-10-28 23:05 o-00f-223-steady-hand-and-beast-mode 549s ok PARTIAL in=1964100 out=16800 run=1

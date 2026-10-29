@@ -136,3 +136,6 @@
 2026-10-28 22:24 week=44.0% 5h=92.0% week_resets=2026-11-04 01:35 job=o-00e-222-active-reload-5pct-steps
 2026-10-28 22:26 week=44.0% 5h=93.0% week_resets=2026-11-04 01:35 job=o-00e-222-active-reload-5pct-steps
 2026-10-28 22:27 week=44.0% 5h=94.0% week_resets=2026-11-04 01:35 job=o-00e-222-active-reload-5pct-steps
+2026-10-28 22:45 week=45.0% 5h=96.0% week_resets=2026-11-04 01:35 job=o-00e-222-active-reload-5pct-steps
+2026-10-28 22:49 week=45.0% 5h=97.0% week_resets=2026-11-04 01:35 job=o-00e-222-active-reload-5pct-steps
+2026-10-28 23:05 week=46.0% 5h=6.0% week_resets=2026-11-04 01:35 job=o-00f-223-steady-hand-and-beast-mode

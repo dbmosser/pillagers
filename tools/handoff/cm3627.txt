@@ -1,0 +1,7 @@
+v36.27: steady hand and beast mode
+
+Steady hand adds 1% damage per kill until hit or gun change. Beast mode adds 1% per kill within five seconds. Both cap at 15 and multiply with active reload.
+
+Check 36.27. Fails on v36.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -92,3 +92,4 @@
 10-28 22:02 v36.23 cw-cx-reloadswitch on his pc after 65s (8802 serves 36.23) week 85%
 10-28 22:17 v36.24 cw-cx-extractquiet on his pc after 62s (8802 serves 36.24) week 85%
 10-28 22:33 v36.25 cw-cx-reload5pct on his pc after 82s (8802 serves 36.25) week 85%
+10-28 22:35 v36.26 cw-tagloop on his pc after 34s (8802 serves 36.26) week 85%

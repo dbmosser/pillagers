@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.27 - STEADY HAND AND BEAST MODE
+
+Co-op hunt while he was away. His 10-29 order: steady hand and beast mode, up to 15% each. Watch: steady hand and beast mode, up to 15% each; active reload at 15% makes the top combined round x1.520875, or +52.0875% damage. Air strike kills count for their owner, capped at 15; watch the five-second ring and immediate steady hand reset on any hit or gun change in both windows.
+
+MEASURED. Check 36.27 passes, and fails on v36.26.
 ## v36.26 - THE GAME NO LONGER FREEZES
 
 Co-op hunt while he was away. His 10-28 night freezes (Page Unresponsive twice) and the robots hangs: the world name tag stack could loop forever on a rounding hair. Fixed, capped, and a frozen raid now leaves a crash note on the next load. Watch: busy fights with many machine name tags on screen

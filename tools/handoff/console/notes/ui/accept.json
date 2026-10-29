@@ -3934,5 +3934,37 @@
   "pic": "tools/handoff/console/notes/shots/o-00c2-reload-chain-breaks-on-switch-recipes-1/reload-switch-p2-view-p2-1080.jpg",
   "task": "o-00c2-reload-chain-breaks-on-switch",
   "when": "2026-10-29T02:05"
+ },
+ "p1-cap": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The earlier clutter fixes (ghost hotbar icons, the extra left widgets and the name plate) are mostly in, but a blocking 'want easy mode?' modal now sits mid-screen with an oversized lime slab and a lone unlabeled '9', and the HUD around it is still crowded and uneven.",
+  "findings": [
+   "P1 'want easy mode?' modal (492-1427 x 261-579): Add a --scrim rgba(6,7,8,.80) full-screen layer behind the card. Shrink the card to about 640x300 and centre it at y=540, so it clears the HUD. Put the '9' in a 56px --fs-hero style or a 40px countdown ring, or fold it into the 'no' button as 'n no 9'. Set the title to 32px with 32px padding.",
+   "P1 'y yes' button (539-944 x 432-532): Make both buttons 56px tall. Keep lime on only the focused button, and give the other button a 1px --ui-line-hi border with --tx-1 text. Put 'y' and 'n' in 16px key-caps with a 4px radius. Set the labels to 20px f-cond 700 and centre them with 16px between the buttons.",
+   "P1 top-centre stack: clock, 'team score', 'extract 141m' (825-1094 x 18-258): Merge the clock and score into one 268px panel with 8px/16px padding. Show the team total at 20px, with the per-player values as 16px --tx-2 text. Put 'extract 141m' at 16px teal with 16px of clearance above the modal. Align the menu button to the 32px right edge or the top-right cluster.",
+   "P1 bottom hotbar and bottom-left bars (24-430 x 965-1068, slots 560-1460): Make both bars 12px tall and 320px wide at x=32. Put the labels above at 16px, with hp value 20px. Remove the empty numerals 2-5 and 7-0 and show one dimmed spare slot. Put 'f1 controls' at 16px, 32px above the hotbar's left edge.",
+   "P1 left widgets: 'player 2' plate (16-170 x 322-358), 'active reload x3' chip (8-263 x 430-486), 'keyboard' and 'elite cache' tags (top-left): Put all of them on one --ui-panel at 80% fill with a 1px --ui-line-hi border, 4px radius, and x=32. Use 16px gaps. Set the labels to 16px, the 'active reload' title to 20px f-cond 600 and the '+15% damage' line to 16px --tx-2. Set 'keyboard' in f-cond 600 like the rest."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00e-222-active-reload-5pct-steps-recipes-2/reload-5pct-demo-p1-cap-1080.jpg",
+  "task": "o-00e-222-active-reload-5pct-steps",
+  "when": "2026-10-29T02:48"
+ },
+ "p2-cap": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The 'want easy mode?' modal is a plain flat rectangle in the middle of a busy HUD, with a huge empty header band, a lime 'yes' that takes the choice for the player, and cramped, unaligned HUD modules around it.",
+  "findings": [
+   "P1 'want easy mode?' modal (x=492-1427, y=260-579): Draw a --scrim rgba(6,7,8,.80) over the whole screen. Make the card 720x360 with a --ui-panel fill, a 1px --ui-line-hi border and a 4px radius, centred. Use 32px padding, a 32px --tx-1 title at y+32, and cut the dead gap so the buttons sit 24px under the title. Turn the countdown into a full-width 4px --acc bar along the card's bottom edge that drains, and keep the '9' at 20px --tx-2 beside the title.",
+   "P1 'y yes' / 'n no' buttons (y=432-533): Make both buttons 56px high and 280px wide with 16px between them, centred, 4px radius. Keep 'yes' as the --acc fill with --acc-ink 20px text, and give 'no' a 1px --ui-line-hi border with --tx-1 text. Show 'y' and 'n' as 16px --tx-2 key chips on the left of each button. Put pad focus on a 3px --acc outline with a 4px offset.",
+   "P1 left column: 'player 1' bar, 'active reload x3' card, 'armour 60', 'hp 100': Stack them in one column at x=48, 360px wide, with 16px gaps and one panel recipe (--ui-panel fill, 1px --ui-line-hi border, 4px radius, 16px padding). Keep one health bar, 24px high, with --ok fill and a 20px --tx-1 'hp 100' label. Put the 'armour 60' bar directly above it at 16px high. Make 'player 1' a 16px --tx-2 label, not a second bar. Make the buff card 64px high, with its text at 20px/16px.",
+   "P1 top-centre cluster: '9:58' clock, storm icon, 'team score' panel, 'extract 118m' pill: Make one 280px panel centred at x=820-1100. Put the clock at 32px --tx-1 in the top row, a 16px --tx-2 'team score 0 sp' row below it, and the 'you / p1' split on one row at 16px with 16px padding. Leave a 16px gap, then a 32px-high extract pill with 16px --extract text. Dock the storm icon inside the panel at its right, 24px.",
+   "P1 hotbar (y=955-1055): Draw all 10 slots as 64px tiles with 8px gaps, centred at the bottom with a 48px margin. Give empty slots a 1px --ui-line border at 40% opacity and a 16px --tx-2 number. Make the selected slot a 3px --acc outline. Keep the ammo count at 16px inside the tile."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00e-222-active-reload-5pct-steps-recipes-2/reload-5pct-demo-p2-cap-1080.jpg",
+  "task": "o-00e-222-active-reload-5pct-steps",
+  "when": "2026-10-29T02:48"
  }
 }
