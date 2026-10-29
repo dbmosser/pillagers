@@ -1,0 +1,7 @@
+v36.36: undercroft without hint bars
+
+the undercroft has no key bars. Station prompts remain and the lift shortcuts are in F1 help.
+
+Check 36.36. Fails on v36.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

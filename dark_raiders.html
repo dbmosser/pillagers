@@ -3885,8 +3885,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.35';
-var VER_AT='2026-10-29 02:29';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.36';
+var VER_AT='2026-10-29 02:34';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -52346,41 +52346,17 @@ function hubStationNames(S,ox,oy){
   }
   wc.restore();
 }
-// v28.xx (cw-cx-hubfloor): 16px words and 28px key chips; bindings and last-input pad labels stay live.
-function hubFloorHints(line){
-  var R=Math.max(1,(typeof hudRes==='function')?hudRes():1), rows;
-  if(padOn()) rows=[[padB('L STICK'),'WALK'],[padB('LS'),'JOG'],[keyLabel('KeyE','E'),'USE STATION']];
-  else rows=[[keyLabel('KeyW','W')+keyLabel('KeyA','A')+keyLabel('KeyS','S')+keyLabel('KeyD','D'),'WALK'],[keyLabel('ShiftLeft','SHIFT'),'JOG'],[keyLabel('KeyE','E'),'USE STATION']];
-  if(HB&&HB.drops&&HB.drops.length) rows.push([keyLabel('KeyE','E'),'TAKE THE DROPPED ITEM']);
-  if(!padOn()&&typeof line==='string'){
-    rows=line.split(/\s+\u00b7\s+/).map(function(s){ var m=/^(.*?) (WALK|JOG|USE STATION|TAKE THE DROPPED ITEM)$/.exec(s); return m?[m[1],m[2]]:null; }).filter(function(s){return !!s;});
-  }
-  if(!padOn()) rows.push([keyLabel('KeyM','M'),'MAP']);   // cw-beltswap: M opens the lift map on the floor (35.12)
-  ctx.save(); ctx.font=uiFont('label',R); ctx.textAlign='left';
-  var total=32*R, i;
-  for(i=0;i<rows.length;i++){
-    rows[i].push(Math.max(28*R,ctx.measureText(rows[i][0]).width+16*R),ctx.measureText(rows[i][1]).width);
-    total+=rows[i][2]+8*R+rows[i][3]+(i?24*R:0);
-  }
-  // v28.xx (cw-cx-hubfloorclear): 8px above the belt frame; the toast sits another 8px above this row or the focused prompt.
-  var x=(W-total)/2, y=hubFootY()-48*R, toast=document.getElementById('hubtoast');
+// v28.xx (cw-cx-hubnohint), his 2026-10-28 note: "get rid of all this shit in the undercroft, none of it is helpful". Keep toast clearance without drawing a key bar.
+function hubFloorToast(){
+  var R=Math.max(1,(typeof hudRes==='function')?hudRes():1), y=hubFootY()-48*R, toast=document.getElementById('hubtoast');
   if(toast){
     var scale=cv.getBoundingClientRect().height/Math.max(1,H), zoom=parseFloat(toast.style.zoom)||1;
     var ceiling=HB.near?Math.min(y,hubFootY()-100*R):y;
     var bottom=(Math.ceil((H-ceiling+8*R)*scale/zoom))+'px';
     if(toast.style.getPropertyValue('--hub-floor-toast-bottom')!==bottom) toast.style.setProperty('--hub-floor-toast-bottom',bottom);
   }
-  uiPanel(ctx,x,y,total,44*R); x+=16*R;
-  for(i=0;i<rows.length;i++){
-    var row=rows[i];
-    ctx.fillStyle=UIC.ui_raised; ctx.fillRect(x,y+8*R,row[2],28*R);
-    ctx.strokeStyle=UIC.ui_line_hi; ctx.lineWidth=R; ctx.strokeRect(x+.5*R,y+8.5*R,row[2]-R,27*R);
-    ctx.fillStyle=UIC.tx_1; ctx.textAlign='center'; ctx.fillText(row[0],x+row[2]/2,y+27*R);
-    x+=row[2]+8*R; ctx.textAlign='left'; ctx.fillStyle=UIC.tx_2; ctx.fillText(row[1],x,y+27*R);
-    x+=row[3]+24*R;
-  }
-  ctx.restore();
 }
+
 // v20.88, from the whole-game bug hunt of 2026-10-08 (V-A1): IS A WINDOW OPEN OVER THE FLOOR. Any window that is on counts, except
 // the tuning and sim consoles, which openModal lets sit over whatever they tune.
 function hubWinOn(){
@@ -52444,9 +52420,7 @@ function drawHubHUD(ox,oy){
     ctx.textAlign='center';
     ctx.font=uiFont('body',_hpR); ctx.fillStyle=UIC.tx_1; // v28.xx (cw-cx-hubfloor): the focused station stays above the control pill.
     ctx.fillText('['+keyLabel('KeyE','E')+']  '+s.label,W/2,_hpF-76*_hpR);
-    // v10.93, HIS NOTE: this was #8a96a1, which is the dimmest grey in the file.
-    ctx.font=uiFont('label',_hpR); ctx.fillStyle=UIC.tx_2; // v28.xx (cw-cx-hubfloor): guide size and muted colour.
-    ctx.fillText(typeof s.sub==='function'?s.sub():s.sub,W/2,_hpF-52*_hpR);
+    // v28.xx (cw-cx-hubnohint): his 2026-10-28 removal applies to every station option row, keyboard and pad. The E prompt above stays.
     ctx.textAlign='left';
   }
   // The one-time card. Dismissed by walking, because the first thing anybody
@@ -52572,6 +52546,8 @@ function drawHubHUD(ox,oy){
              'B or I','your things','TAB','pause, or back out','M','the map'];
     if(typeof NET==='object'&&NET&&NET.on) _lg.push('E','take an item your teammate dropped (drop one from the stash menu)');   // v18.28: trading on the floor card
     _lg.push('F1','close this');   if(!padOn()) for(var _li=0;_li<_lg.length;_li+=2) _lg[_li]=legendKeys(_lg[_li]);   // v25.xx (keyremap): and the Undercroft list names the keys as set
+    // v28.xx (cw-cx-hubnohint): the removed lift options remain discoverable in the requested controls list.
+    _lg.push(keyLabel('KeyR','R'),'lift: quick ascent',keyLabel('KeyT','T'),'lift: the terms',keyLabel('KeyF','F'),'lift: party');
     ctx.font=FS(TYPE.label);
     var _lw=0;
     for(var _li=0;_li<_lg.length;_li+=2)
@@ -52599,8 +52575,7 @@ function drawHubHUD(ox,oy){
   // through by its frame line. It is not drawn while a window is open, as the floor heading is not (v20.88), and is back the frame
   // the window closes. It is the last thing the floor HUD draws, so nothing after it is skipped.
   if(hubWinOn()){ ctx.textAlign='left'; return; }
-  // v28.xx (cw-cx-hubfloor): the existing words and bindings feed the 16px control pill.
-  hubFloorHints(hubFootKeys('WASD WALK  ·  SHIFT JOG  ·  E USE STATION'+((HB&&HB.drops&&HB.drops.length)?'  \u00b7  E TAKE THE DROPPED ITEM':'')),W/2,hubFootY());   // v18.25: and the trade key while a party is on; v18.59: in the keys as set
+  hubFloorToast();   // v28.xx (cw-cx-hubnohint): toast placement survives the removed footer. Retired footer arguments: 'WASD WALK  ·  SHIFT JOG  ·  E USE STATION'+((HB&&HB.drops&&HB.drops.length)?'  \u00b7  E TAKE THE DROPPED ITEM':'')),W/2,hubFootY());   // v18.25: and the trade key while a party is on; v18.59: in the keys as set
   ctx.textAlign='left';
 }
 // ================================================================ main loop
@@ -56212,7 +56187,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.35: The what is new stamp keeps up with the build; the three notes are unchanged. Check 36.35 fails on v36.34',
+  now:'v36.36: the undercroft has no key bars. Station prompts remain and the lift shortcuts are in F1 help. Check 36.36 fails on v36.35',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

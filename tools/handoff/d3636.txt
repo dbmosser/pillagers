@@ -1,0 +1,5 @@
+## v36.36 - UNDERCROFT WITHOUT HINT BARS
+
+Co-op hunt while he was away. His 2026-10-28 order removes the Undercroft footer and station option rows. Keep station E prompts, all actions and controls help. Watch: the undercroft has no key bars.
+
+MEASURED. Check 36.36 passes, and fails on v36.35.

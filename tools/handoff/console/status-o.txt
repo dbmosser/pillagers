@@ -1,1 +1,1 @@
-10-29 02:28 gate: the what is new card is stale, shipping a card refresh first (cw-cx-hubnohint, o-00l-230-undercroft-no-hint-bars)
+10-29 02:32 gate: shipping cw-cx-hubnohint (o-00l-230-undercroft-no-hint-bars, codex)

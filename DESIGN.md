@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.36 - UNDERCROFT WITHOUT HINT BARS
+
+Co-op hunt while he was away. His 2026-10-28 order removes the Undercroft footer and station option rows. Keep station E prompts, all actions and controls help. Watch: the undercroft has no key bars.
+
+MEASURED. Check 36.36 passes, and fails on v36.35.
 ## v36.35 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v36.19 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
