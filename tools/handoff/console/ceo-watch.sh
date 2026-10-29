@@ -17,8 +17,11 @@ while true; do
   if [ "$al" -gt "$al0" ]; then
     while IFS= read -r l; do
       [ -z "$(echo "$l" | tr -d '[:space:]')" ] && continue
-      if echo "$l" | grep -qiE 'P0|not on his|needs you|please (run|include|confirm|return)|fail|crash|freez|bhang(s|ing)?b'; then new+="ALARM: $l"$'\n'
-      elif echo "$l" | grep -qi 'critic' && echo "$l" | grep -qi 'hud'; then echo "- $(date '+%m-%d %H:%M') (auto from alarms.md): $(echo "$l" | cut -c1-600)" >> "$C/notes/hud-critic-inbox.md"
+      # 10-29 07:30 (CEO): urgent words wake first; a critic note about existing UI outside the task (route, carry forward, UI owner,
+      # outside this) goes to the HUD inbox even when it says P0 or please include; a linked review wakes only when Codex marks it synced.
+      if echo "$l" | grep -qiE 'not on his|needs you|crash|freez|\bhang(s|ing)?\b|linked review needed: synced|coordinator action|doc(umentation)? handoff|went to failed'; then new+="ALARM: $l"$'\n'
+      elif echo "$l" | grep -qi 'critic' && echo "$l" | grep -qiE 'hud|ui|outside th|route|carry|owner|existing|inherited'; then echo "- $(date '+%m-%d %H:%M') (auto from alarms.md): $(echo "$l" | cut -c1-600)" >> "$C/notes/hud-critic-inbox.md"
+      elif echo "$l" | grep -qiE 'P0|please (run|include|confirm|return)|fail'; then new+="ALARM: $l"$'\n'
       elif echo "$l" | grep -qiE 'on his pc confirmed|camera (limit|cap) (is )?reached|no further (mechanic|camera)'; then :
       else new+="ALARM: $l"$'\n'; fi
     done < <(tail -c +$((al0+1)) "$C/alarms.md")
