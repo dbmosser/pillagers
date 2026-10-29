@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.21 - STASH LOADOUT IN TWO TABS: BACKPACK AND KEYS
+
+Co-op hunt while he was away. HIS PICK 10-28 (option a): at his 4K screen the loadout column was too short, so the 12 backpack slots got no room and the key hints sat on the gun keys. The column has a backpack tab (12 full slots and the hotbar) and a keys tab (gun keys and item wheel), and item details show as a card beside the item under the mouse, so nothing resizes.
+
+MEASURED. Check 36.21 passes, and fails on v36.20.
 ## v36.20 - READABLE SHARED STATUS LABELS
 
 Co-op hunt while he was away. The active reload critic found the status title and damage detail too small at 1080p. Keep every status consistent in the existing left column.

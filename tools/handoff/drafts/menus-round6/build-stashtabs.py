@@ -10,13 +10,13 @@ def rep(a,b):
     assert G.count(a)==1,(a[:60],G.count(a))
     E.append({'anchor':a,'replacement':b})
 an='<div class="lohead">LOADOUT<em>$<span id="kitval">0</span> going up</em></div>'
-rep(an,an+'\n          <div class="lotabs" id="lotabs" role="tablist"><button type="button" data-lt="pack" class="on" aria-selected="true">BACKPACK</button><button type="button" data-lt="keys" aria-selected="false">KEYS</button></div><!-- v28.xx (cw-stashtabs), HIS PICK 2026-10-28: the loadout column in two tabs -->')
+rep(an,'<div class="lohead"><span class="lotabs" id="lotabs" role="tablist"><button type="button" data-lt="pack" class="on" aria-selected="true">BACKPACK</button><button type="button" data-lt="keys" aria-selected="false">KEYS</button></span><em>$<span id="kitval">0</span> going up</em></div><!-- v28.xx (cw-stashtabs), HIS PICK 2026-10-28: the loadout column in two tabs, on its title line so they cost no height -->')
 an="#root #hub #stashdetail>div>div{line-height:1.3!important;}"
 rep(an,an+"\n"
 "/* v28.xx (cw-stashtabs), HIS PICK (2026-10-28, \"Ok I guess go with A\"): at his 4K screen the loadout column had 207 to 255px for 410px of content, so the 12 backpack slots got no room and the key hints sat on the gun keys. The column has two tabs now: BACKPACK (the 12 slots at full size, then the hotbar) and KEYS (gun keys and the item wheel). The 160px details strip is a card beside the stash item under the mouse or the pad highlight; it floats, so nothing resizes (his 10-27 order), and its buttons stay on the right-click menu. */\n"
-"html #root #hub #lotabs{display:flex;gap:24px;padding:4px 0 0;margin:0 0 8px;border-bottom:1px solid var(--ui-line-hi);}\n"
-"html #root #hub #lotabs button{appearance:none;background:none!important;border:0!important;border-bottom:3px solid transparent!important;border-radius:0!important;box-shadow:none!important;min-height:0!important;min-width:0!important;margin:0!important;padding:0 0 4px!important;font:600 var(--fs-body)/1.6 var(--f-cond)!important;letter-spacing:.04em;color:var(--tx-2)!important;cursor:pointer;}\n"
-"html #root #hub #lotabs button.on{color:var(--tx-1)!important;border-bottom-color:var(--acc)!important;}\n"
+"html #root #hub #lotabs{display:flex;align-items:baseline;gap:24px;}\n"
+"html #root #hub #lotabs button{appearance:none;background:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;min-height:0!important;min-width:0!important;margin:0!important;padding:0!important;font:inherit!important;letter-spacing:inherit;color:var(--tx-2)!important;cursor:pointer;text-decoration:underline 3px transparent;text-underline-offset:8px;}\n"
+"html #root #hub #lotabs button.on{color:var(--tx-1)!important;text-decoration-color:var(--acc);}\n"
 "html #root #hub #lotabs button:hover{color:var(--tx-1)!important;}\n"
 "html #root #hub #kitcol.lt-keys > .losec:not(#kitsetup),html #root #hub #kitcol.lt-keys > #firstkit{display:none!important;}\n"
 "html #root #hub #kitcol:not(.lt-keys) > #kitsetup{display:none!important;}\n"
@@ -24,7 +24,7 @@ rep(an,an+"\n"
 "html #root #hub #kitcol .losec{flex:none!important;}\n"
 "html #root #hub #kitgrid{flex:none!important;height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:8px!important;}\n"
 "html #root #hub #kitgrid .cell{width:auto!important;height:auto!important;min-height:0!important;aspect-ratio:1/1;}\n"
-"html #root #hub #stashdetail{position:absolute!important;z-index:40;display:none!important;box-sizing:border-box;width:min(560px,46%);height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;pointer-events:none;margin:0!important;padding:12px 16px!important;background:var(--ui-raised)!important;border:1px solid var(--ui-line-hi)!important;}\n"
+"html #root #hub #stashdetail{position:absolute!important;z-index:40;display:none!important;box-sizing:border-box;width:min(560px,46%);height:auto!important;min-height:0!important;max-height:none!important;overflow:visible!important;pointer-events:none;margin:0!important;padding:12px 16px!important;font-size:var(--fs-label)!important;background:var(--ui-raised)!important;border:1px solid var(--ui-line-hi)!important;}\n"
 "html #root #hub #stashdetail.sdon{display:block!important;}\n"
 "html #root #hub #stashdetail #stashacts{display:none!important;}\n"
 "html #root #hub #stashdetail>div{grid-template-rows:none!important;grid-auto-flow:row!important;grid-template-columns:repeat(2,minmax(0,1fr));}")

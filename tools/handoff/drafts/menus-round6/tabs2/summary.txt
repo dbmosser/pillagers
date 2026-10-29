@@ -1,0 +1,6 @@
+== 4k : window 3876x2265, viewport 3840x2160
+  04-tabs-pack                           staged       8.0s  
+  04-tabs-keys                           staged       7.8s  
+  67-tabs-pack                           staged       6.2s  
+  67-tabs-keys                           staged       6.5s  
+  67-tabs-hover                          staged       6.5s  

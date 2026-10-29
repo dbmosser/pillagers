@@ -1,0 +1,7 @@
+v36.21: stash loadout in two tabs: backpack and keys
+
+the stash loadout has a backpack tab and a keys tab, and item details pop up beside the item
+
+Check 36.21. Fails on v36.20.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

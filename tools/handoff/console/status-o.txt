@@ -1,1 +1,1 @@
-10-28 21:33 gate: shipping cw-cx-statusread (o-00c-active-reload-status, codex)
+10-28 21:42 gate: shipping cw-cx-statusdetail (o-00c-active-reload-status, codex)

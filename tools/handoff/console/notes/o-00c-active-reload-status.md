@@ -26,3 +26,13 @@ The new check captures actual status drawing for active reload and stim and requ
 
 Original active reload status remains shipped and ON HIS PC as v36.17; this follow-up is still pending preflight, ship and new pictures/critic. No new feature or extra HUD work added.
 
+
+--- codex run 2026-10-28 21:41 ---
+2026-10-28 round 2: cw-cx-statusread shipped as v36.20; ON HIS PC v36.20 confirmed in 33 seconds. All four scenes staged in both 1920x1080 and 3840x2160, and the real linked peers again reported different local counts and bonuses correctly. Pictures: tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-2/. Reviewed the four attached 1080p views. Critic scores remain 2 on every scene. It now explicitly says the status reads well and the icon, 20px title and 16px detail work. The remaining scoped issue in player 1 x3 is subtitle hierarchy, and player 2 x3 still requests a strict 16px floor.
+
+Second visual follow-up is cw-cx-statusdetail: shared status details have an explicit 16px floor before resolution/TV scaling, rather than TYPE.label at 15.6px, and use style-guide tx-2 #aaa498 instead of #cdd6dd. Names, glyphs, position, count logic and gameplay stay as shipped. The new check captures the actual reload damage and stim time labels at pinned scale and requires 16px and tx-2 on both; it fails current v36.20 on the old size/ink. Uses the corrected HUD pixel ratio and canonical transform from the passing v36.20 check.
+
+Found that gen-draft puts why, not now, in DESIGN.md. Supplied the required exact watch line in this new draft why so it reaches DESIGN automatically: the active reload chain shows as a status with its count. Earlier notes incorrectly assumed draft now would put it there; now only updates DEVNOW.
+
+After this second visual follow-up, if the critic still scores 2 for the same unrelated HUD or conflicting placement/colour requests, use the explicit two-follow-up stopping rule and retain the two best pictured versions (v36.20 round 2 and the forthcoming final round). The general raid-HUD requests were already handed to the coordinator. Do not redesign unrelated HUD elements or move the status out of the requested existing column to chase that score.
+

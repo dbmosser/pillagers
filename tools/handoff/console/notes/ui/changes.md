@@ -567,3 +567,6 @@
 2026-10-28 | o-00c-active-reload-status | raid HUD, both windows | shipped active reload xN status with +15%/+35% damage | after: tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-1/reload-status-p1-x1-1080.jpg, reload-status-p1-x3-1080.jpg, reload-status-p2-x1-1080.jpg, reload-status-p2-x3-1080.jpg and matching -4k.jpg files; no original-build before shot.
 2026-10-28 | o-00c-active-reload-status follow-up | shared left status column | title/value type about 16/13 to 20/16 px, neutral text, bordered panel with four-unit corners, matching collision clearance | before: tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-1/ | after: lane round 2 pictures pending.
 
+2026-10-28 | o-00c-active-reload-status | shared status column, both windows | readable shared status panels shipped in v36.20 | before: tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-1/ | after: tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-2/ (p1/p2 x1/x3, 1080 and 4k).
+2026-10-28 | o-00c-active-reload-status second follow-up | shared status values | exact 16px detail floor and tx-2 #aaa498 replace 15.6px/#cdd6dd for a clearer name/value hierarchy | before: tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-2/ | after: lane round 3 pending.
+

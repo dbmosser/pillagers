@@ -1,0 +1,14 @@
+== 4k : window 3876x2265, viewport 3840x2160
+  04-tabs-pack                           staged       7.9s  
+  04-tabs-keys                           staged       7.8s  
+  04-tabs-hover                          staged       7.8s  
+  67-tabs-pack                           staged       6.3s  
+  67-tabs-keys                           staged       6.5s  
+  67-tabs-hover                          staged       6.5s  
+== 1080 : window 1956x1185, viewport 1920x1080
+  04-tabs-pack                           staged       7.6s  
+  04-tabs-keys                           staged       7.6s  
+  04-tabs-hover                          staged       7.6s  
+  67-tabs-pack                           staged       6.0s  
+  67-tabs-keys                           staged       6.3s  
+  67-tabs-hover                          staged       6.2s  
