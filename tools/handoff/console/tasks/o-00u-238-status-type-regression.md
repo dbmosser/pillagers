@@ -1,4 +1,4 @@
-# 229-red-36.20-36.22-status-type-shrinks : the active reload and stim status text fell under its size floor between v36.23 and v36.27
+# 238-status-type-regression (was o-229, number clashed with o-00k-229; moved to the front) : the active reload and stim status text fell under its size floor between v36.23 and v36.27
 Queue (JTPC Correspondent 10-29 00:55; spare PC run corpus-1028-2325 on v36.27, red there, green in corpus-1028-2206 on v36.23). Fix, MEDIUM: he reads this status in every fight, and both checks are new (his readability passes of 10-28) and block stable.
 effort: medium (Opus high; bisect first)
 
@@ -10,3 +10,4 @@ Do: keep the 20px titles and the 16px detail floor at 1080p with every status th
 Check (must FAIL on v36.27): with active reload x3, stim, steady hand and beast mode all showing at 1080p, every status title is at least the shared callout size and every detail at least 16px. Then 36.20 and 36.22 pass.
 Rules: HUD rendering only, no simulation change; player text lower case; no storage key change; seed 4242 fingerprint unchanged.
 TASK DONE when shipped and ON HIS PC.
+Evidence (CEO check-in 10-29): v36.27 (1283480e5) added STATUSL rows 'sh' (steady hand) and 'bm' (beast mode) right after 'ar', so up to 5 pills (stim, active reload, steady hand, beast mode, more) can share the column and the fit step shrinks type: 14.4 px titles and 11.8 px labels at the same viewport where v36.23 held 20 and 16. Both checks were green on v36.23 and red on v36.27 and are not outdated: his readability floor still stands. Not added to stable-known-red.
