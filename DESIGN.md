@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.40 - beast mode replaces kill streak rewards
+
+Co-op hunt while he was away. His 10-28 order: get rid of double kill, triple kill and the rest; beast mode replaces them. Beast mode shipped in v36.27. Arcade scores will run lower: earlier leaderboard nights included streak multiplier and kill-count medal points. Watch: no more double or triple kill callouts; beast mode is the streak.
+
+MEASURED. Check 36.40 passes, and fails on v36.39.
 ## v36.39 - MISSED EXTRACTION NOTICE
 
 Co-op hunt while he was away. His note 10-29: the call-again instruction makes no sense when the player is outside the circle. Watch: missed extraction no longer says hold x to call again

@@ -1,0 +1,7 @@
+v36.40: beast mode replaces kill streak rewards
+
+kills pay base sp without score chains, multiplier badges or kill-count medals; beast mode rewards quick kills.
+
+Check 36.40. Fails on v36.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

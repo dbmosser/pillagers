@@ -4446,5 +4446,69 @@
   "pic": "tools/handoff/console/notes/shots/o-00n-232-one-rarity-per-gun-recipes-2/rarity-gamble-1080.jpg",
   "task": "o-00n-232-one-rarity-per-gun",
   "when": "2026-10-29T08:40"
+ },
+ "p1-alert": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The HUD is readable and mostly follows the lower-case, one-accent rules, but the missed-extraction alert is a small amber banner with no urgency. The top-centre status cluster has no clear order, and the leaderboard and run-info panels compete with it.",
+  "findings": [
+   "P1 top-centre alert 'extraction missed': Make it a 56px f-cond 800 banner (hero tier) on --ui-panel with a 4px --danger left bar and a --danger icon. Use the bounce-in motion (--m-in 240ms) and hold it for 3s. Add a short second line in 20px tx-2, such as 'next extraction in 2:10', so the player has something to do.",
+   "P1 top-centre cluster (3:20 timer, 'extract 30m' pill, alert): Put the timer and the pill in one --ui-panel plate, 8px padding, 4px radius, centred on x=960. Put the alert directly under it with a 16px gap, on the same centre axis. Give the timer a solid plate so it is no longer bare text over the walls.",
+   "P1 left leaderboard 'current pillagers 0': Raise the rows to 16px and make the 'you' row 20px tx-1 with a 3px --acc left bar. Drop the dead rows to a single '7 dead' summary line, or fold them with a chevron. Remove the magenta unless it is the P2 cyan or an agreed player colour. Make the dead rows tx-2 and the dollar amounts tabular and right-aligned.",
+   "P1 'extraction a available' and 'elite cache' world tags: Use one tag style: --ui-panel fill, 1px --ui-line-hi border, 4px radius, 16px f-cond 600, 8px/4px padding. Keep teal only for the extraction tag's glyph or border. Hide 'extraction a available' while the missed alert is showing, or change it to 'extraction a: closed'.",
+   "P2 top-right minimap and 'run info' dropdown: Frame the minimap with a 1px --ui-line-hi border and a 4px radius. Set the 'run info' bar to the same 4px radius, an 8px gap and a 20px label. Align the right edge to the 5% margin (96px) used elsewhere, as the leaderboard does on the left."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00o-233-missed-extract-no-call-again-recipes-1/missed-extraction-p1-alert-1080.jpg",
+  "task": "o-00o-233-missed-extract-no-call-again",
+  "when": "2026-10-29T08:52"
+ },
+ "p1-feed": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The raid HUD has the right pieces, but the 'extraction missed' state is weak: the event is a small left-edge toast far from the action, while the large leaderboard and the stray 'extraction available' tag compete with it.",
+  "findings": [
+   "P0 'extraction missed' toast, bottom-left (x≈15-197, y≈777-802): Put 'extraction missed' in the top-centre alert banner at --fs-title 32px with a --danger or --warn accent bar. Remove the left-edge copy. If a feed line remains, set the left inset to at least 48px.",
+   "P0 'extraction a available' tag over the extraction ring (x≈570-725, y≈460-480): Fix the text, for example 'extraction open'. Hide or switch the tag to a 'closed' state once the extraction is missed. Use 20px --f-cond on --ui-panel with --tx-1 text and a 3px --extract bar.",
+   "P1 Leaderboard panel, top-left (x≈8-367, y≈143-333): Collapse to the top 3 rows plus 'you' by default. Set rows to 16px --f-cond with 24px line height and --tx-2 at 4.5:1 or better. Mark dead rows with a --danger dot instead of text. Drop the purple, or tie it to rarity or party colour and explain it. Use an opaque --ui-panel fill with a 1px --ui-line-hi border.",
+   "P1 Top-right minimap and 'run info' dropdown (x≈1603-1900, y≈18-362): Give the minimap a 1px --ui-line-hi border and a 4px radius on a --ui-panel plate. Sit 'run info' flush under it with the same width, a 16px gap and the same 4px radius. Enlarge or remove the compass 'n'. Keep a 48px margin from the screen edge.",
+   "P1 Top-centre clock and 'extract 30m' (x≈895-1030, y≈10-75): Show the timer at --fs-hero 56px f-cond 800 on a --ui-panel plate. Replace 'extract 30m' with one clear line, for example 'extract in 30:00'. Move the direction arrow onto the screen edge or the minimap."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00o-233-missed-extract-no-call-again-recipes-1/missed-extraction-p1-feed-1080.jpg",
+  "task": "o-00o-233-missed-extract-no-call-again",
+  "when": "2026-10-29T08:52"
+ },
+ "p2-alert": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The missed-extraction banner is clear and sits in the right place, but the HUD around it is crowded, uses mixed type sizes and has a few text errors.",
+  "findings": [
+   "P1 extraction missed banner (top centre) and the 'extract 30m' pill plus clock above it: Remove or grey the 'extract 30m' pill while the missed state is showing. Make the banner 56px tall with a 4px left bar and no underline. Use tx-1 for the text with the amber only on the glyph. Keep the banner at least 160px from the clock.",
+   "P1 'extraction a available' label (left centre, teal): Fix the string, or hide the label and ring when the extraction is missed. If extraction really is still available, change the banner wording so the two do not contradict each other.",
+   "P1 scoreboard panel at top left ('current pillagers 0', 'value at risk'): Show only the top 3–4 rows plus 'you'. Drop the footer line. Set every row to 16px in tx-2, with 'you' in tx-1. Put the purple row in the P2 cyan or in tx-1. Use the --ui-panel fill at 85% opacity with a 1px --ui-line-hi border.",
+   "P2 bottom-left 'hp 100' bar and the '4 minutes left' tag: Make the hp label 20px inside the bar and let the bar be 24px tall with a 4px radius. Move the timer into the top-centre cluster next to the clock, or drop it. Keep one hero number per screen: the ammo.",
+   "P2 hotbar (bottom centre): Draw empty slots as 1px --ui-line tiles of the same size, or hide them. Change the selected border to --acc at 3px. Use a 96px grid with 8px gaps."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00o-233-missed-extract-no-call-again-recipes-1/missed-extraction-p2-alert-1080.jpg",
+  "task": "o-00o-233-missed-extract-no-call-again",
+  "when": "2026-10-29T08:53"
+ },
+ "p2-feed": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The HUD is readable and mostly lower case, but it shows contradictory extraction messages, scatters small low-contrast text around the screen, and shows a tiny, easy-to-miss missed-extraction notice.",
+  "findings": [
+   "P0 extraction state: world label 'extraction a available' (648,470), left feed 'extraction missed' (105,789), top banner 'extract 30m': Remove the 'extraction a available' label once extraction is missed, or change it to 'closed'. Fix the typo. Send the miss to the top-centre alert banner at --fs-title 32px in --danger, and keep the left feed to one short line. Make the banner and the ring state agree.",
+   "P1 left feed 'extraction missed' (15-198, 778-802): Use --danger for the miss, set the text at 20px, and put it on a --ui-panel fill (80% opacity) with a 3px bar. Use the same 24px padding as the other feed rows and give it a 160ms bounce-in.",
+   "P1 top-left 'current pillagers' panel (10-367, 143-333): Show only the top 3 plus 'you', or fold the list into 'run info'. Use 16px minimum text, make the 'you' row --acc or --ui-raised with a 3px bar, and show 'dead' as --danger glyphs, not words. Set the header at 16px in --tx-2 and the 'you' value at 20px in --tx-1. Give every row a 32px height.",
+   "P1 HUD type sizes overall: 'f1 controls' (440-540, 942), 'run info', 'b / i backpack' (1684, 1027), slot numbers 3,5-0 (~14px): Set all labels to at least 16px in --tx-2 on a --ui-panel plate. Remove or dim the empty slot numbers, or fold them into slot frames. Move 'f1 controls' to sit left-aligned with the hp bar, in one short line on a plate.",
+   "P2 bottom-centre hotbar (558-948, 968-1055): Draw all 10 slots at 72px with a 4px radius and a 1px --ui-line-hi border. Mark the selected slot with a --acc 3px border. Use a consistent 8px gap and put the numbers at one fixed offset."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00o-233-missed-extract-no-call-again-recipes-1/missed-extraction-p2-feed-1080.jpg",
+  "task": "o-00o-233-missed-extract-no-call-again",
+  "when": "2026-10-29T08:53"
  }
 }

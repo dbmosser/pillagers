@@ -536,3 +536,7 @@
 2026-10-29 04:37 o-00n-232-one-rarity-per-gun 291s ok PARTIAL in=5491830 out=35114 run=2
 2026-10-29 04:42 o-00n-232-one-rarity-per-gun 112s ok DONE in=6850459 out=38151 run=3
 2026-10-29 04:45 o-00o-233-missed-extract-no-call-again 224s ok PARTIAL in=628127 out=8226 run=1
+2026-10-29 04:54 o-00o-233-missed-extract-no-call-again 83s ok DONE in=994470 out=10432 run=2
+2026-10-29 05:07 o-00p-234-no-kill-streak-callouts 741s ok PARTIAL in=2392975 out=23053 run=1
+2026-10-29 05:09 o-00p-234-no-kill-streak-callouts 96s ok PARTIAL in=3309284 out=26027 run=2
+2026-10-29 05:12 o-00p-234-no-kill-streak-callouts 86s ok PARTIAL in=4052998 out=28622 run=3
