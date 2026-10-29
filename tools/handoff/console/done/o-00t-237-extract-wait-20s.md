@@ -6,3 +6,5 @@ Build: DEF extractWait 20 in career and arcade alike. A saved profile or party c
 Check (must FAIL on the current build): call an extraction: the ship lands 20 s later (beaconT starts at 20), in career and arcade, both windows.
 Rules: seed 4242 fingerprint (ents 85/374, containers 165/593) must hold (if the bot sim's extract timing moves the fingerprint, keep the sim's own wait unchanged and say so); never touch the pickup stack, loot sounds or loot rows; never change salvagerun:profile. Retarget older checks that assume 30 (fixq). DESIGN.md watch line: "the ship lands 20 s after the call". Model: Sonnet 5.5 high.
 TASK DONE when it shipped and is ON HIS PC.
+
+VERIFIED by the CEO 10-29 07:10: real linked host + p2 review on v36.43 PASS, career and demo, both callers: clock starts at 20 in both windows, windows agree within 0.1 s, extraction opens 20 s of game time after the call. Pictures: notes/shots/o-00t-237-linked-review/.
