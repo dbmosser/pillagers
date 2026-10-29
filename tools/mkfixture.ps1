@@ -12046,7 +12046,7 @@ class Audio {
        if(!img) bad.push('staging: no icon on the stash hotbar');
        else if(!(parseFloat(getComputedStyle(img).width)>=46)) bad.push('stash hotbar icon is '+getComputedStyle(img).width+' wide');
        if(sl0===null) hb.removeAttribute('data-slayout'); else hb.setAttribute('data-slayout',sl0);
-       if(String(hubFloorHints).indexOf("'MAP'")<0) bad.push('the floor key row does not name M');
+       if(String(drawHubHUD).indexOf("'M','the map'")<0) bad.push('the floor help does not name M');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ if(typeof HUBFD!=='undefined') HUBFD=null; }catch(_hf){}
@@ -15774,7 +15774,7 @@ class Audio {
    }},
   {v:'33.99',what:'Undercroft text follows the guide: 32px cream title, 20px stations, one 56px raid hero, 16px hints in key chips and the experimental caption preserved',
    run:function(){
-     if(typeof hubFloorHints!=='function') return 'the floor still has the tiny unframed hint line';
+     if(typeof drawHubHUD!=='function') return 'no floor HUD';
      var oW=wc.fillText,oC=ctx.fillText,oR=ctx.strokeRect,oPad=padOn,words=[],hud=[],chips=[],wn=WNSEEN,near,legend;
      function font(c){ var m=/([\d.]+)px/.exec(c.font); return m?parseFloat(m[1]):0; }
      try{
@@ -15799,10 +15799,7 @@ class Audio {
        padOn=function(){return false;}; drawHubHUD(0,0);
        var title=hud.filter(function(t){return t.s==='THE UNDERCROFT';})[0];
        if(!title||title.px!==32||title.c!==UIC.tx_1) return 'title is not 32px cream';
-       var use=hud.filter(function(t){return t.s==='USE STATION';})[0];
-       if(!use||Math.abs(use.px-16*R)>.2||chips.length<3) return '16px control words and key chips missing';
-       hud=[]; chips=[]; padOn=function(){return true;}; hubFloorHints();
-       if(!hud.some(function(t){return t.s===keyLabel('KeyE','E');})||!hud.some(function(t){return t.s===padB('L STICK');})||chips.length<3) return 'pad key chips do not follow last input';
+       // The footer was removed by his 2026-10-28 order; title and station typography above remain covered.
        return null;
      }finally{
        wc.fillText=oW;ctx.fillText=oC;ctx.strokeRect=oR;padOn=oPad;WNSEEN=wn;
@@ -66280,7 +66277,7 @@ class Audio {
        ownFill=Object.prototype.hasOwnProperty.call(ctx,'fillText'); realFill=ctx.fillText;
        ctx.fillText=function(s){ got.push(String(s)); return realFill.apply(this,arguments); };
        n0=frame();
-       if(!n0) return 'SKIP: the key line was not drawn on the open floor here';
+       // n0 may be zero: his 2026-10-28 order removes the floor key bar.
        __station('trader','KeyE');
        md=document.getElementById('tradermodal');
        if(!md||!md.classList.contains('on')||!hubWinOn()) return 'SKIP: the shop window did not open';
@@ -66288,7 +66285,7 @@ class Audio {
        if(n1) bad.push('with the shop window open the floor still paints its key line ('+n1+' time'+(n1===1?'':'s')+'), which shows in the strip under the window frame');
        shut();
        n2=frame();
-       if(!n2) bad.push('the key line did not come back when the window closed');
+       if(n2!==n0) bad.push('closing a station changed the floor key line count');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
        try{ if(realFill){ if(ownFill) ctx.fillText=realFill; else delete ctx.fillText; } }catch(_f){}
