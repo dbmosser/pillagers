@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.47 - STATUSES STACK, MEDALS UNDER THE FEED, RUN GOALS SAY WHAT TO DO
+
+Co-op hunt while he was away. His 10-29 picture: the style medals sat behind the status cards, and three statuses wrapped into a second column. Then the run goals row read 3 pillagers 0/3 item, which he could not read mid raid. Watch: medals now pop in the reserved row under the kill feed, a little smaller, with the name beside them; status cards are shorter and narrower and stay in one column.
+
+MEASURED. Check 36.47 passes, and fails on v36.46.
 ## v36.46 - STASH KEY ROW NAMES KEY 0
 
 Co-op hunt while he was away. v36.37 gave the hotbar a 9 key, and the stash item key row printed 10 on its last button instead of 0, so the old every key check went red on the 10-29 run. The row names keys the way the hotbar does.

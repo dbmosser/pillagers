@@ -3885,8 +3885,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.46';
-var VER_AT='2026-10-29 07:30';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.47';
+var VER_AT='2026-10-29 08:51';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -44304,8 +44304,11 @@ function ammoLow(p){ return !!(p&&p.wep&&p.wep.mag>0&&p.ammo>0&&p.ammo<=Math.cei
 function ammoCapOn(p){ return !!(p&&p.wep&&p.wep.mag>0&&p.ammo===0&&!(p.reloading>0)&&!(p.jam>0)&&rsvShow(p)>0); }
 function ammoCapKey(){ var s=padOn()?String(padB(pbn(2))):String(keyLabel('KeyR','R')); return s.replace(/[\[\]]/g,'').toLowerCase(); }
 function ammoCapW(){ var o=ctx.font, w; ctx.font=FS(TYPE.head); w=ctx.measureText(ammoCapKey()).width; ctx.font=o; return Math.max(LH(24),w+LH(14))+LH(10); }
+// v28.xx (cw-hudstack): the status column as drawn this frame, in screen pixels (n 0 when none): the medal row's fallback spot keeps clear of it, and the checks read it.
+var STATBOX={n:0,x:0,y:0,w:0,h:0};
 function drawStatusIcons(){
-  var p=G&&G.player, L=STATUSL, E, i, j, n=0, s=0, hr, S, g, r, ox, oy, yBot, rows, B, wC, nf, vf, x, y, cx, cy, tx, tw, lw, rr, u, hx, ph;
+  var p=G&&G.player, L=STATUSL, E, i, j, n=0, s=0, hr, S, g, r, ox, oy, yBot, rows, B, wC, nf, vf, x, y, cx, cy, tx, tw, lw, rr, u, hx, ph, _top;
+  STATBOX.n=0;
   if(!p||G.over||G.sim||G.mapOpen) return 0;
   statusLive(p);
   for(i=0;i<L.length;i++) if(L[i].on) n++;
@@ -44313,8 +44316,11 @@ function drawStatusIcons(){
   // v28.xx (cw-cx-statuswrap): crowding changes the rows and columns, never the shared 20px title and 16px detail floors.
   nf=FS(TYPE.head).replace(/([\d.]+)px/,function(m,n){ return Math.max(parseFloat(n),20*uiScale())+'px'; });
   vf=FS(TYPE.label).replace(/([\d.]+)px/,function(m,n){ return Math.max(parseFloat(n),16*uiScale())+'px'; });
-  hr=hudRes(); S=LH(26); g=Math.round(8*uiScale()); r=S/2;
-  ph=Math.max(48*uiScale(),parseFloat((/([\d.]+)px/).exec(nf)[1])+parseFloat((/([\d.]+)px/).exec(vf)[1])+LH(8));
+  // v28.xx (cw-hudstack), HIS NOTE (2026-10-29, his picture of three statuses over two medals): "the statuses are too big and that makes them spill over to the right ...
+  // ideally they would all be vertical and not collide and the statuses might be marginally smaller". A row is 40 px tall (was 48), its disc 24 (was 26) and the gap 6
+  // (was 8); the shared width is the widest live words (the 220 px floor is gone). The 20 px title and 16 px detail floors stay.
+  hr=hudRes(); S=LH(24); g=Math.round(6*uiScale()); r=S/2;
+  ph=Math.max(40*uiScale(),parseFloat((/([\d.]+)px/).exec(nf)[1])+parseFloat((/([\d.]+)px/).exec(vf)[1])+LH(4));
   tw=0;
   ctx.save();
   try{
@@ -44325,10 +44331,12 @@ function drawStatusIcons(){
       tw=Math.max(tw,E.nw||0,E.vw||0);
     }
   } finally { ctx.restore(); }
-  wC=(Math.ceil(Math.max(220*uiScale(),ph+LH(6)+tw+LH(10)))+g)*hr;   // v28.xx (cw-cx-statuspanels): one measured panel width, at least 220px, with an eight-pixel column gap.
+  wC=(Math.ceil(ph+LH(4)+tw+LH(12))+g)*hr;   // v28.xx (cw-hudstack): one shared width, the widest live words and 12 px after them, and the 6 px gap
   ox=Math.round(9*hr);                       // the left edge the legend and the board already share
   oy=Math.round(H*0.40);                     // under the board, whose height is capped at 38 percent of the screen
   if(typeof NETTEAMBOX==='object'&&NETTEAMBOX&&NETTEAMBOX.n&&NETTEAMBOX.y+NETTEAMBOX.h+g*hr>oy) oy=Math.round(NETTEAMBOX.y+NETTEAMBOX.h+g*hr);   // v19.07: and below the teammate rows
+  // v28.xx (cw-hudstack): how high the column may start when its rows do not fit under 40 percent: under every panel above it at the left, the teammate rows and 20 percent of the screen
+  _top=Math.round(H*0.20); if(typeof NETTEAMBOX==='object'&&NETTEAMBOX&&NETTEAMBOX.n) _top=Math.max(_top,Math.round(NETTEAMBOX.y+NETTEAMBOX.h+g*hr));
   yBot=H-LH(8)*hr;                           // and it stops above the controls and the vitals, wherever they sit
   // v19.19, from the review (2026-10-07): the board was avoided only when its top was above the column, and the controls list and the
   // vitals only when their top was below it, so a board dragged down, or a list grown or dragged up, had the icons drawn over it. Every
@@ -44336,12 +44344,15 @@ function drawStatusIcons(){
   // that starts lower ends the column above it. When that leaves no room for a row, the column moves to the right of those panels.
   var _bx=[legOverBoard()?null:HUDBOX.raiders,HUDBOX.legend,(G&&G.legendOn===2)?LEGSIDE:null,HUDBOX.body,FEEDBOX.on?FEEDBOX:null,(typeof MEDALBOX==='object'&&MEDALBOX&&MEDALBOX.on)?MEDALBOX:null].filter(function(b){ return b&&b.x<ox+wC&&b.x+b.w>ox; }).sort(function(a,b){ return a.y-b.y; }), _bi, _br;
   for(_bi=0;_bi<_bx.length;_bi++){ B=_bx[_bi];
-    if(B.y+B.h+g*hr<=oy||B.y>=yBot) continue;
+    if(B.y+B.h+g*hr<=oy||B.y>=yBot){ if(B.y<oy&&B!==FEEDBOX&&B!==MEDALBOX) _top=Math.max(_top,Math.round(B.y+B.h+g*hr)); continue; }   // v28.xx (cw-hudstack): a panel above the column bounds how high it may start
     if(B===FEEDBOX||B===MEDALBOX){ yBot=Math.min(yBot,B.y-g*hr); continue; }   // cw-hudfix, his note 10-27: the feed and the medal strip only cap the column
-    if(B.y<=oy+S*hr/2) oy=Math.round(B.y+B.h+g*hr);
+    if(B.y<=oy+S*hr/2){ oy=Math.round(B.y+B.h+g*hr); _top=Math.max(_top,oy); }
     else yBot=Math.min(yBot,B.y-((B===HUDBOX.body)?LH(20):g)*hr);
   }
   rows=Math.max(1,Math.floor((yBot-oy+g*hr)/((ph+g)*hr)));
+  // v28.xx (cw-hudstack): one column first. When the rows do not fit between 40 percent and the feed, the column starts higher, as high as it must and never over
+  // a panel above it; only when that is not enough does it wrap (below).
+  if((n>rows||yBot-oy<ph*hr)&&oy>_top){ oy=Math.floor(Math.max(_top,yBot-(n*(ph+g)-g)*hr)); rows=Math.max(1,Math.floor((yBot-oy+g*hr)/((ph+g)*hr)+1e-6)); }
   // v28.xx (cw-cx-statuswrap): wrap at full type size; if two columns cannot fit vertically, stack beside the left HUD panels.
   if(n>rows*2||yBot-oy<ph*hr){
     _br=0; for(_bi=0;_bi<_bx.length;_bi++) _br=Math.max(_br,_bx[_bi].x+_bx[_bi].w);
@@ -44358,7 +44369,7 @@ function drawStatusIcons(){
       E=L[i]; if(!E.on) continue;
       // v28.xx (cw-cx-statuswrap): every live status is drawn, with measured column spacing and a panel-height row step.
       x=Math.floor(s/rows)*wC/hr; y=(s%rows)*(ph+g); s++;
-      cx=x+ph/2; cy=y+ph/2; tx=x+ph+LH(6);
+      cx=x+ph/2; cy=y+ph/2; tx=x+ph+LH(4);   // v28.xx (cw-hudstack): the words 4 px nearer the disc
       ctx.globalAlpha=(E.id==='stim'&&p.stimT<=3)?(0.6+0.4*Math.cos((G.t||0)*12)):1;   // the last three seconds of a stim blink
       // the words' widths, measured again only when the words or the text size change
       if(E.nf!==nf){ ctx.font=nf; E.nf=nf; E.nw=ctx.measureText(E.nm).width; }
@@ -44388,6 +44399,7 @@ function drawStatusIcons(){
       ctx.font=vf; ctx.fillStyle='#aaa498'; ctx.fillText(E.v||'',tx,cy+LH(11));   // v28.xx (cw-cx-statusdetail): style-guide tx-2 keeps the bonus below the status name in the hierarchy.
     }
   } finally { ctx.restore(); }
+  STATBOX.n=s; STATBOX.x=ox; STATBOX.y=oy; STATBOX.w=Math.ceil(s/rows)*wC-g*hr; STATBOX.h=Math.min(s,rows)*(ph+g)*hr-g*hr;   // v28.xx (cw-hudstack)
   return s;
 }
 var CONDWRAP={}, CONDWRAPN=0;   // v19.82: the CONDITIONS box's wrapped lines, by font, width and text (see wrap() below)
@@ -45549,7 +45561,8 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
       if(!_arc) rows.push({k:'RUN GOALS',v:'',c:UIC.acc});   // v28.xx (cw-cx-goalrewardlayout): the demo already has its goals count as the panel heading.
       for(var _gq=0;_gq<G.flow.goals.length;_gq++){
         var _gl=G.flow.goals[_gq];
-        rows.push({k:'',v:String(_gl.t)+((!_gl.done&&_gl.n>1)?('\u00a0\u00a0'+_gl.v+'/'+_gl.n):'')+'\u00a0\u00a0'+((_gl.done?'done ':'')+goalRewardText(_gl)),vc:_gl.done?UIC.ok:UIC.tx_1});
+        // v28.xx (cw-hudstack), HIS NOTE (2026-10-29): "3 pillager 0/3 item -- no idea what that means". The task (kill 3 pillagers), its count, then a dot and what it pays.
+        rows.push({k:'',v:String(_gl.t)+((!_gl.done&&_gl.n>1)?('\u00a0\u00a0'+_gl.v+'/'+_gl.n):'')+(_gl.done?'\u00a0\u00a0done':'')+'\u00a0\u00a0\u00b7\u00a0\u00a0'+goalRewardText(_gl).replace(/ /g,'\u00a0'),vc:_gl.done?UIC.ok:UIC.tx_1});
       }
     }
     // THE FIRST CUT PUT THE EFFECT RIGHT ALIGNED ON THE NAME'S OWN LINE and the
@@ -56369,7 +56382,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.46: the stash item key row ends on key 0, as the hotbar does Check 36.46 fails on v36.45',
+  now:'v36.47: Status cards are 40 px rows fitted to their words in one column, starting higher when they need room. Style medals stand in the reserved medal row between the feed and the vitals, clear of every status. Run goals read as tasks (kill 3 pillagers 0/3, get 10 kills) with what they pay (bonus loot, ,000). HUD rendering and goal words only. Check 36.47 fails on v36.46',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -66739,8 +66752,9 @@ function flowDraw(c,p){
 // Death and abandon lose them. The arcade demo gives each seat one local power-up at its feet, using the existing weighted kill pool.
 var GOAL_TAG=61;
 var GOALS={
-  kill10:{t:'10 KILLS',n:10,chip:200}, crate6:{t:'6 CRATES',n:6,chip:200}, wave3:{t:'3 WAVES',n:3,chip:250}, air1:{t:'AIR STRIKE',n:1,chip:300},
-  vault:{t:'OPEN A VAULT',n:1,chip:400}, pill3:{t:'3 PILLAGERS',n:3,chip:400}, elite:{t:'KILL AN ELITE',n:1,chip:400}, ward:{t:'DOWN A WARDEN',n:1,chip:500}
+  // v28.xx (cw-hudstack), HIS NOTE (2026-10-29): "3 pillager 0/3 item -- no idea what that means, not very useful mid raid". Every goal is a thing to do.
+  kill10:{t:'GET 10 KILLS',n:10,chip:200}, crate6:{t:'OPEN 6 CRATES',n:6,chip:200}, wave3:{t:'SURVIVE 3 WAVES',n:3,chip:250}, air1:{t:'CALL AN AIR STRIKE',n:1,chip:300},
+  vault:{t:'OPEN A VAULT',n:1,chip:400}, pill3:{t:'KILL 3 PILLAGERS',n:3,chip:400}, elite:{t:'KILL AN ELITE',n:1,chip:400}, ward:{t:'DOWN A WARDEN',n:1,chip:500}
 };
 var GOAL_IDS=['kill10','crate6','wave3','air1','vault','pill3','elite','ward'];
 function flowKill(k,el,boss){
@@ -66785,9 +66799,10 @@ function flowChip(n,head,sub){
   return n;
 }
 // v28.xx (cw-cx-goalrewards), HIS WORDS (2026-10-28): "sp is like a high score counter". Changing goals pay only on extraction; the demo gets power-ups.
+function goalPaysItem(gl){ return /^(vault|pill3|elite|ward)$/.test(gl.id); }
 function goalRewardText(gl){
   if(G.arcade) return 'power-up';
-  return /^(vault|pill3|elite|ward)$/.test(gl.id)?'item':('$'+((gl.chip|0)*5).toLocaleString());
+  return goalPaysItem(gl)?'bonus loot':('$'+((gl.chip|0)*5).toLocaleString());   // v28.xx (cw-hudstack): the cache roll reads bonus loot, not item
 }
 function goalReward(gl,quiet){
   var R, item=null, kd=null, total=0, pick=0, i, p=G.player;
@@ -66801,7 +66816,7 @@ function goalReward(gl,quiet){
     pwrDrop(kd,p.x,p.y);
   } else {
     R=G.goalRewards||(G.goalRewards={cash:0,items:[]});
-    if(goalRewardText(gl)==='item'){
+    if(goalPaysItem(gl)){
       sideStream((G.seed>>>0)||1,GOAL_TAG+200+GOAL_IDS.indexOf(gl.id),function(){ item=rollLoot(LOOT.cache); });
       if(item&&ITEMS[item]) R.items.push(item);
       else R.cash+=(gl.chip|0)*5;
@@ -68979,11 +68994,18 @@ function styEmblem(c,key,tier,s,age){
 // where the row goes: the left edge, its middle on the middle of the screen, slid up or down to the nearest stretch clear of every panel (the pillager
 // board, the controls list, the vitals, the feed, the teammate rows) that its emblems and the name plate under them need
 function styMedalSpot(z,n){
+  // v28.xx (cw-hudstack), HIS NOTE (2026-10-29): "the medals and the statuses collide". The row was slid up and down from the middle of the screen, and the status
+  // column (drawn after it) was not one of the panels it kept clear of. It now stands in the medal spot kept for it since v27.40 (his "Halo puts medals in a row at
+  // the left"), between the feed and the vitals, where nothing else draws: the emblems as tall as the spot allows (36 px at 1080p, were 50) and the name plate beside
+  // the newest, not under it. Without a spot (no feed this raid) the old search below stands, and it keeps clear of the status column too.
+  var M=(typeof MEDALBOX==='object'&&MEDALBOX&&MEDALBOX.on&&MEDALBOX.w>0&&MEDALBOX.h>0)?MEDALBOX:null, ms;
+  if(M){ ms=Math.max(8,Math.min(Math.round(STYM.size*z),Math.floor(M.h/2)-Math.round(2*z))); return {x:M.x,y:Math.round(M.y+M.h/2),s:ms,g:Math.round(STYM.gap*z),free:1,dn:ms,side:1}; }
   var s=Math.round(STYM.size*z), g=Math.round(STYM.gap*z), x0=Math.round(LH(9)*z), rw=n*(2*s+g)-g, up=s, dn=s+Math.round(34*z), m=Math.round(6*z), bx=[], k, B, i, c, cy=Math.round(H*0.5), best=-1, bd=1e9, free=1, cand=[];
   for(k in HUDBOX){ B=HUDBOX[k]; if(B&&B.w>0&&B.h>0) bx.push(B); }
   if(typeof EDGEBOX==='object') for(k in EDGEBOX){ B=EDGEBOX[k]; if(B&&B.w>0&&B.h>0) bx.push(B); }
   if(typeof FEEDBOX==='object'&&FEEDBOX&&FEEDBOX.on&&FEEDBOX.w>0) bx.push(FEEDBOX);
   if(typeof NETTEAMBOX==='object'&&NETTEAMBOX&&NETTEAMBOX.n&&NETTEAMBOX.w>0) bx.push(NETTEAMBOX);
+  if(typeof STATBOX==='object'&&STATBOX&&STATBOX.n&&STATBOX.w>0) bx.push(STATBOX);   // v28.xx (cw-hudstack)
   function hit(yy){ for(var j=0;j<bx.length;j++){ var b=bx[j]; if(x0+rw>b.x&&x0<b.x+b.w&&yy+dn+m>b.y&&yy-up-m<b.y+b.h) return true; } return false; }
   if(hit(cy)){
     for(i=0;i<bx.length;i++){ B=bx[i]; if(x0+rw>B.x&&x0<B.x+B.w) cand.push(B.y-m-dn-1,B.y+B.h+m+up+1); }
@@ -69029,7 +69051,8 @@ function styMedalDraw(c,p){
       a=Math.min(1,age/0.14)*Math.min(1,(STYM.nameT-age)/0.5);
       c.globalAlpha=a; c.font=hudFS(TYPE.label); c.textAlign='left'; c.textBaseline='alphabetic';
       nm=String(pp.txt); fg='';   /* v35.xx (cw-clockcard): the medal's name, no figure */ hh=Math.round(26*z); w=Math.round(c.measureText(nm).width+c.measureText(fg).width+34*z);
-      x=sp.x; y=sp.y+s+Math.round(7*z);
+      if(sp.side){ x=sp.x+live.length*(2*s+sp.g)-sp.g+Math.round(10*z); y=Math.round(sp.y-hh/2); }   // v28.xx (cw-hudstack): beside the row, in the medal spot
+      else { x=sp.x; y=sp.y+s+Math.round(7*z); }
       hudPlate(x,y,w,hh,teal?'rgb(95,245,228)':T.mid,'rgba(8,10,13,.88)');
       c.fillStyle='rgba(255,246,222,1)'; hudText(nm,x+Math.round(13*z),y+Math.round(hh*0.5+5*z));
       c.fillStyle=teal?'rgb(95,245,228)':T.hi; c.textAlign='right'; hudText(fg,x+w-Math.round(9*z),y+Math.round(hh*0.5+5*z)); c.textAlign='left';

@@ -1,0 +1,7 @@
+v36.47: statuses stack, medals under the feed, run goals say what to do
+
+Status cards are 40 px rows fitted to their words in one column, starting higher when they need room. Style medals stand in the reserved medal row between the feed and the vitals, clear of every status. Run goals read as tasks (kill 3 pillagers 0/3, get 10 kills) with what they pay (bonus loot, $1,000). HUD rendering and goal words only.
+
+Check 36.47. Fails on v36.46.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

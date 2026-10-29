@@ -1,0 +1,5 @@
+## v36.47 - STATUSES STACK, MEDALS UNDER THE FEED, RUN GOALS SAY WHAT TO DO
+
+Co-op hunt while he was away. His 10-29 picture: the style medals sat behind the status cards, and three statuses wrapped into a second column. Then the run goals row read 3 pillagers 0/3 item, which he could not read mid raid. Watch: medals now pop in the reserved row under the kill feed, a little smaller, with the name beside them; status cards are shorter and narrower and stay in one column.
+
+MEASURED. Check 36.47 passes, and fails on v36.46.
