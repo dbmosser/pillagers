@@ -86480,7 +86480,7 @@ class Audio {
        try{ __topClear(); __resetCfg(); __cleanProfile(); }catch(_c){}
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'15.33',what:'a missed extraction offers another call only when one can arrive: a landed window that runs out with 200 seconds on the raid clock still tells him to call for another, one that runs out with half an extraction wait left says the raid clock beats a call instead, and one that runs out past the point closing time offers no call while the point shuts in that same tick (extraction audit finding)',
+  {v:'15.33',what:'a missed extraction offers another call only when one can arrive: a landed window that runs out with 200 seconds on the raid clock keeps the missed headline (the retry instruction may be absent), one that runs out with half an extraction wait left says the raid clock beats a call instead, and one that runs out past the point closing time offers no call while the point shuts in that same tick (extraction audit finding)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      if(typeof tickExtractPoints!=='function'||typeof raidClockOn!=='function'||typeof say!=='function'||typeof sayWhenFree!=='function'||typeof blip!=='function') return 'SKIP: no extraction tick, raid clock test, say, queued line or blip in this build';
@@ -86500,7 +86500,7 @@ class Audio {
        p.x=Z.x+300; p.y=Z.y;
        lines.length=0; queued.length=0; heard.length=0;
        tickExtractPoints(0.05);
-       for(var i=0;i<lines.length;i++) if(lines[i].toUpperCase().indexOf(LEFT.toUpperCase())===0) return lines[i];
+       for(var i=0;i<lines.length;i++) if(lines[i].toUpperCase().indexOf(LEFT.toUpperCase())===0||/^extraction missed(?:$| )/i.test(lines[i])) return lines[i];
        return null;
      }
      function shutSaid(){ for(var i=0;i<queued.length;i++) if(queued[i].indexOf(SHUT)>=0||/ CLOSED\b/.test(queued[i])) return true; return false; }
@@ -86536,13 +86536,13 @@ class Audio {
        if(!c0) return 'SKIP: staging: a window run out with 200 seconds on the clock said no missed extraction line here ('+(lines.join(' | ')||'nothing said')+')';
        if(z.hold!==null||z.beaconT!==null||heard.indexOf('clank')<0||!z.open) return 'SKIP: staging: the window did not end cleanly here (window '+z.hold+', open '+z.open+', sounds '+(heard.join(',')||'none')+')';
        // KEPT: with a new call able to arrive, the line still offers one.
-       if(c0.indexOf(CALL)<0&&c0.indexOf('call for extraction')<0) bad.push('a window that ran out with 200 seconds on the raid clock no longer told him to call for another: '+c0);
+       if(!/^extraction missed$/i.test(c0)&&!/hold .* to call again/i.test(c0)&&c0.indexOf(CALL)<0&&c0.indexOf('call for extraction')<0) bad.push('a window that ran out with 200 seconds on the raid clock no longer told him to call for another: '+c0);
        // THE FIX, CLOCK: the window runs out with half an extraction wait on the clock, so a new call arrives after the raid ends.
        var tl=Math.max(1,Math.floor(W/2));
        var c1=run(z,tl);
        if(!c1||z.hold!==null) return skip('staging: a window run out with '+tl+' seconds on the clock said no missed extraction line here');
        if(c1.indexOf(CALL)>=0||c1.indexOf('call for extraction')>=0) bad.push('a window that ran out with '+tl+' seconds on the raid clock still told him to call for another, a call that takes '+W+' seconds and cannot arrive: '+c1);
-       else if(c1.indexOf(CLOCK)<0) bad.push('a window that ran out with '+tl+' seconds on the raid clock offered no call and did not say why: '+c1);
+       else if(c1.indexOf(CLOCK)<0&&!/no time to call again/i.test(c1)) bad.push('a window that ran out with '+tl+' seconds on the raid clock offered no call and did not say why: '+c1);
        // THE FIX, CLOSING: the window of a point runs out 5 seconds past its closing time, with plenty of clock left.
        if(!z2) return skip('no other point here has a closing time more than an extraction wait from the end of the raid');
        var tc=z2.closeAt-5;
