@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.12 - WORLD NAME TAGS KEEP THEIR OWN SPACE
+
+Co-op hunt while he was away. The audit found adjacent crawler names printed together. Later world names now stack above occupied label boxes, including crew blocks and health pips. The extraction distance chip also avoids the cache names drawn in the same frame. Only draw coordinates change. Watch in a crowded fight: names should stay separate at 1080p and 4K, wounded health pips should stay with their names, and the right edge extraction chip should clear cache names. A crowded tag with no room above the screen is omitted for that frame.
+
+MEASURED. Check 36.12 passes, and fails on v36.11.
 ## v36.11 - SHORT RACK ANSWER
 
 Co-op hunt while he was away. The critic found the full rack cost list repeated in the refusal toast. His rule calls for short callouts.

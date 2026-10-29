@@ -1,0 +1,7 @@
+v36.12: world name tags keep their own space
+
+Nearby world names stack when their boxes would overlap. The extraction distance chip clears cache names.
+
+Check 36.12. Fails on v36.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

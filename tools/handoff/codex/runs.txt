@@ -472,3 +472,6 @@
 2026-10-28 19:31 o-09g-sentence-callouts 56s ok PARTIAL in=1125378 out=16628 run=2
 2026-10-28 19:34 o-09g-sentence-callouts 107s ok PARTIAL in=1725762 out=20861 run=3
 2026-10-28 19:46 o-09g-sentence-callouts 304s ok PARTIAL in=3393581 out=32144 run=4
+2026-10-28 19:57 o-09g-sentence-callouts 76s ok DONE in=3833553 out=34768 run=5
+2026-10-28 20:04 o-09h-name-tags-overlap 433s ok PARTIAL in=1729614 out=16105 run=1
+2026-10-28 20:09 o-09h-name-tags-overlap 161s ok PARTIAL in=2827418 out=21552 run=2

@@ -50,3 +50,19 @@ The critic demand to delete the Claude paragraph conflicts with the explicit tas
 
 Local follow-up validation: mk prints written; game and fixture anchors each match once; patched JavaScript, new check, retargeted 36.10 and six camera recipes parse; all output files ASCII. The original shipped key remains listed, followed by the new text key. Lane preflight, follow-up ship, ON HIS PC and corrected camera review remain.
 
+
+--- codex run 2026-10-28 19:57 ---
+2026-10-28, o-09g-sentence-callouts, completion on v36.11.
+
+Both keys are shipped. Original batch: fd3c82e7a, v36.10, ON HIS PC v36.10 after 49 seconds. Rack refusal follow-up: v36.11, ON HIS PC v36.11 after 33 seconds. Lane confirmed ef8a25b96 retargeted check 36.10 and passed it on the preceding build before shipping. No further code is queued.
+
+Reviewed all six attached round-two 1080 pictures. The core toast preserves next-raid intel and the used packed core count; the rack toast is exactly not enough parts. The spent-revive answer shows one per raid, and SELECT A HEAL names all three choices without a period, visibly in both player layouts. Camera expectations require the answer box itself to be drawn with that text. All six recipes staged at 1080 and 4k with zero camera-lint findings.
+
+Round-two critic scores: core 2; rack 2; host heal 3; host revive 2; join heal 2; join revive 2. These are whole-screen scores, not passing UI scores. The changed callouts are readable; the remaining findings request broader HUD, hub or mainframe redesign, or conflict with his rulings. The explicit text-only task is finished under its TASK DONE when shipped and ON HIS PC requirement; this does not claim the surrounding screens met the UI finish line.
+
+Kept the requested one per raid detail and the packed-core spending notice. Critic suggestions to move refusal answers into the feed/top alert conflict with his newer cw-answerline under-player answer ruling. Suggested numbered heal keys would advertise controls this task does not implement. The protected TXSHIP Claude paragraph remains unchanged; the exact conflict was already logged as b-31. Broader findings and the open-controls overlap are handed to the coordinator and existing 186f-hud-panel-consistency task, without turning this callout batch into a screen redesign.
+
+Two best evidence sets retained: round one shows the real racks tab and callout context at tools/handoff/console/notes/shots/o-09g-sentence-callouts-recipes-1/ (all score 2); round two shows unobscured, separate player answers at tools/handoff/console/notes/shots/o-09g-sentence-callouts-recipes-2/ (host heal 3, others 2). Best callout pictures: round-two callouts-host-heal-1080.jpg and callouts-join-revive-1080.jpg; the matching other-player pictures are in the same folder. No before pictures existed for these custom recipes.
+
+Watch on the next play: a second self-revive says one per raid, and slotting a packed core names the used core and next-raid intel. TASK DONE for the 15 callouts; unrelated screen design work remains with its owners.
+

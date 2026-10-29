@@ -3587,33 +3587,33 @@
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "A dim, flat racks tab that fills a 90 percent card with about 40 percent content, where every button is greyed, small explanatory paragraphs sit on screen, and the teal headline and the dev-voice copy fight the style guide.",
+  "verdict": "This is a different screen from the rack card I reviewed before, so I can't judge whether that advice was followed. As a hub it has a strong 'enter raid!' label, but the bottom stack is crowded, the top-right HUD is tiny and scattered, and there are overlaps and stray text throughout.",
   "findings": [
-   "P0 import-a-friend paragraph (right column, y≈383-428): Delete the paragraph. If one hint is needed, use a single 16px tx-2 line such as 'import a friend's run report', with no more than 60 characters.",
-   "P1 hierarchy, whole card: Change the counter to tx-1 at 32px, or use --acc only if it is the selected state. Make 'build a rack' the one lime primary button (--acc fill, --acc-ink text, 20px, 600) when it is affordable. Show disabled buttons at 40 percent opacity with a --ui-line border and no fill, so enabled and disabled read differently. Show the cost as a 16px tx-2 line.",
-   "P1 layout, y≈600-1020 and the left/right margins: Left-align the content to the 119px header margin and use a two-column grid with 24px gaps. Put the rack slots in the left column at 64px each. Fill the right column and the bottom with real content, or shrink the card height to fit.",
-   "P1 rack slot row (y≈216-256): Fill each slot with --ui-panel and a --ui-line-hi border at 4px radius. Add a 16px tx-2 index number to each slot, and fill built slots with --acc. Align the row's left edge with the 'build a rack' column.",
-   "P1 cost line under 'build a rack' (y≈383-406): Replace it with four 16px chips, for example 'scrap metal 0/12', 'copper wire 0/9', 'cracked cell 0/6' and 'circuit board 0/6'. Use tx-1 when held and --danger when short. Put them in one row of equal gaps of 8px."
+   "P1 bottom centre, y≈850-1065: toast, controls strip and hotbar stacked: Delete the controls strip in the hub, or fold it into one 16px tx-2 line. Move the toast above the stack with a 24px gap, with 16px tx-1 text on --ui-panel, and shorten it to 'core slotted'. Show only the owned hotbar slots, and keep the empty ones at 40% opacity with no icon.",
+   "P1 top-right HUD, y≈20-40: '$900  0 xp  stash $0 bag $0': Build it as the cw-trcol vertical list: each row 20px f-cond 600, tx-1 value with a 16px tx-2 label, rows 32px apart, right-aligned to the 5% margin (96px). Remove 'stash $0 bag $0' or merge it into the title card.",
+   "P1 '***experimental feature may glitch***' at (1510, 764): Delete it. If a flag is needed, use a 16px --warn word 'beta' inside the 'the last pour' label, with no asterisks and no second box.",
+   "P1 station labels versus characters: 'the last pour', 'the stash', 'fashion' and 'shop, craft, and hire': Place every label at a fixed 12px above the pad ring and draw it above the sprites with a 1px --ui-line-hi border. Remove the stray second zone circle. Give each station a single 2px ring.",
+   "P1 'enter raid!' at (960, 118): Use 'enter raid' with no '!'. Put it in a --ui-panel chip with a 1px --acc border and 8px padding. Add a 16px tx-2 'e' key hint beneath it, 8px away."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-09g-sentence-callouts-recipes-1/callouts-core-packed-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-09g-sentence-callouts-recipes-2/callouts-core-packed-1080.jpg",
   "task": "o-09g-sentence-callouts",
-  "when": "2026-10-28T23:40"
+  "when": "2026-10-28T23:54"
  },
  "callouts-rack-parts": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The screen is flat and mostly empty. Every button looks disabled, the one accent is teal instead of lime, and a leaked developer sentence plus duplicated cost copy hurt it badly.",
+  "verdict": "This picture is the undercroft hub with a 'not enough parts' toast. The rack-build screen the earlier review covered isn't visible, so nothing from that advice can be judged as fixed, and the hub has its own hierarchy and clutter problems.",
   "findings": [
-   "P0 import-a-friend description, right column: Delete it. Replace it with a one-line label of at most 40 characters, such as 'import a run report', at 16px tx-2. Drop the 'claude' reference entirely.",
-   "P1 toast at top, plus the cost paragraph under 'build a rack': Show the cost once, as four item chips (icon, count needed, held count) under the button, with held counts in --danger when short. Delete the paragraph. Shorten the toast to 'not enough parts' or remove it.",
-   "P1 build a rack, fold 10 racks, slot a data core: Make 'build a rack' the one --acc primary, or a clear disabled state with a 4.5:1 label and a cost chip. Keep the other two as outlined secondary buttons with a --ui-line-hi border. Show a 3px lime focus bar on the focused one.",
-   "P1 '0 of 10 racks' and the 10 empty slots: Set the count in tx-1 at 32px, or use --acc for the filled count only. Fill the slots with --ui-panel and a 1px --ui-line border, and light built slots with an --acc bar. Use 48px slots with a 16px gap.",
-   "P1 content area, below y=600: Align the content to the 119px header margin. Use a two-column grid, with left 560px for the rack grid and actions and right for the import panel, set inside --ui-panel cards with a --rad of 4px. Move the actions to the bottom footer row or fill the space with a rack detail pane."
+   "P0 the last pour label, at (1510,764): Delete the sentence. If a flag is needed, use a 16px 'beta' chip in --warn on --ui-panel, with no asterisks, anchored 8px under the station label.",
+   "P0 the screen the review was meant to show (rack build / import a friend): Recapture with the rack window open at 1080p. Show a centred 90% card with a 56px header, an x in the corner, and the three action buttons.",
+   "P1 enter raid! at the top centre (850-1070, 90-145): Change it to 'enter raid' at --fs-title 32px in --acc, with no '!'. Put it on a --ui-panel plate with a 1px --ui-line-hi border and a 3px --acc bottom bar.",
+   "P1 not enough parts toast at (960,870), and the controls hint at (960,918): Move the toast to the top-centre banner slot. Give it a --danger left bar and a 4.5:1 label. Keep at least 24px between the toast, the controls strip and the hotbar.",
+   "P1 top-right currency strip at (1660-1900, 15-40): Use one 20px f-cond tx-1 line per item in a vertical list, with a --ui-panel plate behind it and 16px padding. Keep the labels at 16px tx-2. Remove the mixed sizes."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-09g-sentence-callouts-recipes-1/callouts-rack-parts-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-09g-sentence-callouts-recipes-2/callouts-rack-parts-1080.jpg",
   "task": "o-09g-sentence-callouts",
-  "when": "2026-10-28T23:41"
+  "when": "2026-10-28T23:56"
  },
  "callouts-raid-host": {
   "score": 2,
@@ -3646,5 +3646,101 @@
   "pic": "tools/handoff/console/notes/shots/o-09g-sentence-callouts-recipes-1/callouts-raid-join-1080.jpg",
   "task": "o-09g-sentence-callouts",
   "when": "2026-10-28T23:41"
+ },
+ "callouts-host-heal": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The in-raid HUD is clean and the one-place-per-line rule holds, with a good hero ammo number. But several elements are tiny, the pickup card is a crowded two-colour sentence, and the player-list panel and the 'run info' dropdown don't match each other or the rest of the HUD.",
+  "findings": [
+   "P1 bottom-centre toast 'select a heal · bandage, medkit or armour plate': Cut to 'heal: 1 bandage · 2 medkit · 3 plate' as 16px f-cond chips anchored 16px above the hotbar. Use one callout style: 4px radius, --ui-panel at 90%, 1px --ui-line-hi border.",
+   "P1 left callout 'contract item nearby · gold glow marks the box': Shorten to 'contract item nearby'. Put the 'gold glow' half in the tutorial only. Match the callout shell to the heal toast (--ui-panel, 4px radius, 16px label). Use --warn only for the icon and tx-1 for the text.",
+   "P1 top-left 'current pillagers 3' panel: Set rows to 16px f-cond 600 with 28px row height and 16px padding, and tx-2 for the header. Tint the 'you' row with the P1 amber 3px bar. Give the panel the same --ui-panel fill and 4px radius as the other HUD panels.",
+   "P1 bottom-left 'hp 100' bar: Inset it 48px from the left and bottom, make it 20px tall with a 4px radius and a 1px --ui-line-hi track, and put 'hp' at 16px label and 100 at 20px in tx-1 inside the bar. Use --ok at about 85% brightness.",
+   "P2 top-right 'run info' dropdown: Restyle it as a --ui-panel pill at 4px radius, 16px type, the same chevron as the pillagers panel and 16px padding. Fix the clipped label at x=1893 by keeping a 48px safe margin or fading the label."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09g-sentence-callouts-recipes-2/callouts-host-heal-1080.jpg",
+  "task": "o-09g-sentence-callouts",
+  "when": "2026-10-28T23:55"
+ },
+ "callouts-host-revive": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The raid HUD has the right pieces, but it uses too many type sizes, panel styles and accents. Several elements are too small to read from a couch, and the ammo readout is the only part that reads as intentional.",
+  "findings": [
+   "P1 top-left 'current pillagers' panel: Use 16px minimum text on a --ui-panel fill with a 1px --ui-line-hi border and a 4px radius. Set the row height to 24px and the padding to 8px. Collapse it by default to the single line 'you $162'. Make the header --tx-2 at 16px.",
+   "P1 bottom-left controls tag and top-right 'run info': Make the 'f1 controls' tag 16px with a 24px key chip on a --ui-panel fill, placed 16px above the hotbar's left edge. Restyle 'run info' to the same 4px-radius panel with a 1px --ui-line-hi border and 16px --tx-1 text.",
+   "P1 center toast 'self-revive spent · one per raid': Move it to the top-centre banner slot under the clock, or the left feed. Shorten it to 'self-revive spent'. Use the same 4px-radius panel and 20px type as the extract banner, and fade it after 3s.",
+   "P1 hotbar, bottom centre: Draw all 8 slots as 72px --ui-panel tiles with a 1px --ui-line border and a 16px --tx-2 number. Make the selected slot's 3px border --acc only. Remove the ghost silhouettes or drop them to 15% opacity.",
+   "P2 world labels: 'packing floor', 'the forge', 'the seal 0%', 'chi...': Use one label style: 16px f-cond 600, --tx-1, with a 2px dark outline and no letter spacing. Use colour only for state (--acc for the interactable the player is near). Clamp labels to 24px inside the screen edge."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09g-sentence-callouts-recipes-2/callouts-host-revive-1080.jpg",
+  "task": "o-09g-sentence-callouts",
+  "when": "2026-10-28T23:55"
+ },
+ "callouts-join-heal": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The in-raid HUD has a strong ammo hero number, but it is a stack of mismatched, tiny, low-contrast widgets, with several callouts and small labels competing at different sizes and no consistent panel language.",
+  "findings": [
+   "P1 top-left 'current pillagers' list: Raise rows to 16px label type on a 32px pitch. Use --ui-panel fill with a 1px --ui-line-hi border, 4px radius and 16px padding. Colour the P1 row amber and the others --tx-2, and keep values in tabular f-cond 600.",
+   "P1 mid-screen callout 'select a heal · bandage, medkit or armour plate': Cut it to a short label such as 'heal: 1 bandage 2 medkit', or move it into the left feed. Make it a single shared callout component at 16px with a 4px radius, --ui-panel fill and a 3px left accent bar. Place it 48px above the hotbar.",
+   "P1 callouts: 'contract item nearby · gold glow marks the box' and 'select a heal': Use one callout component. Put it on the 5% (96px) left margin, with --tx-1 text and a 3px --warn bar only for warnings. Shorten the copy to 'contract item nearby'.",
+   "P1 hp bar bottom-left: Inset it to 48px from the bottom and 96px from the left. Use a 24px-tall bar, a --ui-line track, an --ok fill, and the number in --tx-1 at 20px f-cond 700 with 8px padding. Align the baseline with the hotbar slot bottoms.",
+   "P2 hotbar slots 3-0 and 'f1 controls' chip: Draw empty slots as 72px boxes with a 1px --ui-line border at 40% opacity and 16px numbers. Delete the ghost silhouettes. Align the controls chip's left edge with the hp bar and use the same 16px chip style."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09g-sentence-callouts-recipes-2/callouts-join-heal-1080.jpg",
+  "task": "o-09g-sentence-callouts",
+  "when": "2026-10-28T23:55"
+ },
+ "callouts-join-revive": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "A busy raid HUD whose callout works as a banner, but it sits mid-screen over the walls where the eye never looks. The hud is scattered across mixed type sizes, the panels are unrelated, and there are stray capitals and clutter.",
+  "findings": [
+   "P0 top-right 'run info' dropdown, and the right edge text 'chi': Restyle 'run info' as a --ui-panel card with a 1px --ui-line-hi border, a 4px radius and 16px label type, in the cw-trcol corner list. Remove the 'chi' fragment or keep it inside the 5% margin (96px).",
+   "P1 'self-revive spent · one per raid' callout, center ~y653: Move the alert to the top-centre banner slot below the clock. Cut it to 'self-revive spent'. Use a --ui-panel fill with a 3px --warn left bar and 20px f-cond 600 text.",
+   "P1 'current pillagers 3' list, top-left: Use 24px row height and 16px --tx-2 labels. Make the 'you' row --tx-1 with an amber 3px left bar. Make the header 16px, 600, +.04em. Inset the panel 48px from the edges.",
+   "P1 world labels 'packing floor', 'the forge', 'the seal 0%': One label style: 16px f-cond 600, +.04em, --tx-1, on a --scrim chip with a 2px outline. Colour only a 3px tick by meaning. Remove the letter-spacing on 'packing floor'.",
+   "P1 bottom-left hotbar and 'hp 100': Set the hp bar to 12px tall in --ok on a --ui-panel track, with a 20px f-cond 700 number right-aligned. Use one 4px radius for slots and a --acc 2px border for the selected slot. Hide empty slots or show them at 40% with 14px numbers. Remove the ghost icons."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09g-sentence-callouts-recipes-2/callouts-join-revive-1080.jpg",
+  "task": "o-09g-sentence-callouts",
+  "when": "2026-10-28T23:56"
+ },
+ "tags-pixel": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The raid HUD reads cleanly in the lower-left controls list and the ammo block. It scatters about six chrome styles across the screen, and its small text sits below the 16px floor. The hero numbers are weak, and a capital letter and a $/score mix-up break the owner's rules.",
+  "findings": [
+   "P0 run info dropdown, top right: Change the text to 'run info'. Give the bar the same panel fill (#16191b), 1px #4a5257 border and 4px radius as the other panels. Use a 20px f-cond 600 title and inset the bar 24px from the screen edge.",
+   "P1 current pillagers panel, top left: Raise rows to 16px (--fs-label) with --tx-2 (#aaa498) for dead rows. Make the 'you' row --tx-1 at 20px with a lime 3px left bar. Use a 24px row pitch and right-align the values in one column.",
+   "P1 controls list, mid-left (move / fight / gear / raid): Fold it to a single 16px line at mid-bottom left, as the owner ordered ('f1 controls'), and open it only on F1. When open, use 16px minimum text, 24px column gaps, and --tx-2 section labels with a 1px --ui-line divider.",
+   "P1 hp bar, bottom left: Make the bar 12px high on a --ui-panel track with 1px border, and use --ok only for the fill. Put 'hp 100' in --fs-body at 8px padding. Place it at 24px from the edge, aligned to the status chips.",
+   "P1 status chips (concealed, in cover) and contract banner: Use one chip style: 32px high, 4px radius, --ui-panel fill, 1px --ui-line-hi border, a 16px label, and a colour only on the 16px glyph. Shorten the banner to 'contract item nearby' and cut the second half."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09h-name-tags-overlap-recipes-1/tags-pixel-1080.jpg",
+  "task": "o-09h-name-tags-overlap",
+  "when": "2026-10-29T00:06"
+ },
+ "tags-smooth": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The raid HUD works as a readable set of panels, but it is crowded, the type sizes are inconsistent, a capital letter shows on screen, and the controls list is open and large instead of folded to one line.",
+  "findings": [
+   "P1 left-middle controls list (move/gear/fight/raid): Fold it to one 16px line at the bottom left ('f1 controls') and open it only on F1. If it stays open, cut it to 8 or fewer rows and drop the repeated headers.",
+   "P1 'run info' header, top right: Fix the string to 'run info'. Match this panel's padding, border and chevron to the left panel. Size both at 16px label text.",
+   "P1 top-left 'current pillagers' panel: Set rows to 16px f-cond 600 in tx-2 at 4.5:1 or better. Make 'you' tx-1 with a 3px amber (P1) bar. Use 16px padding and a solid --ui-panel fill.",
+   "P1 hp bar, bottom left: Use f-cond 800 at 32px with no outline. Inset the bar 24px from the edges and give it a 4px radius, a --ui-panel track and a 1px border. Put the chips and bar on one baseline.",
+   "P2 weapon slots 1-8/0 along the bottom: Give every slot a 1px --ui-line-hi border and a 4px radius on a --ui-panel fill. Use --acc for the selected slot only, 2px. Keep empty slots at 40 percent opacity inside the same frame."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09h-name-tags-overlap-recipes-1/tags-smooth-1080.jpg",
+  "task": "o-09h-name-tags-overlap",
+  "when": "2026-10-29T00:06"
  }
 }

@@ -77,3 +77,4 @@
 10-28 18:39 v36.08 cw-cx-dmgspace on his pc after 81s (8802 serves 36.08) week 84%
 10-28 19:20 v36.09 cw-cx-feedname on his pc after 17s (8802 serves 36.09) week 84%
 10-28 19:39 v36.10 cw-cx-sentence-callouts on his pc after 49s (8802 serves 36.10) week 84%
+10-28 19:52 v36.11 cw-cx-rack-short-answer on his pc after 33s (8802 serves 36.11) week 84%

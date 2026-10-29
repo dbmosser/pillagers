@@ -3865,8 +3865,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.11';
-var VER_AT='2026-10-28 19:51';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.12';
+var VER_AT='2026-10-28 20:11';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -40850,6 +40850,22 @@ function wlUnder(x,y,w,h){
   }
   return wlHit(EDGEBOX.trcol,X,Y,X1,Y1)||wlHit(HUDBOX.cond,X,Y,X1,Y1)||(s.g===G&&wlHit(s,X,Y,X1,Y1))||(CLOCKBOX.g===G&&wlHit(CLOCKBOX,X,Y,X1,Y1))||wlHit(EDGEBOX.notes,X,Y,X1,Y1);   // v35.xx (cw-clockcard): and the clock card and the notes row
 }
+// v28.xx (cw-cx-tagstack): audit 9, adjacent machine names overprinted each other. Reserve the drawn text, crew block and health pip; later names stack above earlier names. Only draw coordinates move.
+var WLTEXT={g:null,boxes:[]};
+function wlTagPlace(x,y,w,h){
+  var z=WTX.z, gap=4*Math.max(1,hudRes()), b={x:(x-WTX.ox)*z,y:(y-WTX.oy)*z,w:w*z,h:h*z}, i,q,hit;
+  if(!(z>0)||b.x+b.w<0||b.x>W) return null;
+  do{
+    hit=false;
+    for(i=0;i<WLTEXT.boxes.length;i++){
+      q=WLTEXT.boxes[i];
+      if(b.x<q.x+q.w+gap&&b.x+b.w>q.x-gap&&b.y<q.y+q.h+gap&&b.y+b.h>q.y-gap){b.y=q.y-gap-b.h;hit=true;break;}
+    }
+  }while(hit&&b.y>=gap);
+  if(b.y<gap||b.y>H) return null;
+  WLTEXT.boxes.push(b);
+  return WTX.oy+b.y/z;
+}
 function wlPx(){ var f=wc.font, m; if(f!==_wlF){ _wlF=f; m=/([\d.]+)px/.exec(f); _wlP=m?+m[1]:12; } return _wlP; }   // the size of the font wc is set to, in the units it draws in
 function render2D(dt){
   gfxqEase(dt); // v28.xx (cw-cx-laddereffects): ease decorative HUD and weather changes over one second.
@@ -42218,6 +42234,7 @@ var SHD=G.shells[i];
   // world transform (_wtA and _wtB, called before the weather). Only the order changes: what is drawn, where, and the canSee gate on
   // the nameplates are the same, and no pass is added.
   var _wtA=function(){
+  WLTEXT.g=G; WLTEXT.boxes.length=0; // v28.xx (cw-cx-tagstack): this frame only, shared with the later extraction chip pass.
   drawLongshotGlints();   // v28.xx (cw-cx-longshotglint): over the darkness and fog, apart from the visible-body list
   // v28.xx (cw-headbars): the heal and plate bars over the head, over every wall (HIS ORDER 2026-10-15: bars "never blocked by buildings")
   var _pbs=[p.prep,p.prepA], _pbi;
@@ -42237,7 +42254,16 @@ var SHD=G.shells[i];
   if(_ctq.length){ wc.font=FS(TYPE.head); wc.textAlign='center';
     var _cpx=wlPx();
     // v28.xx (cw-cx-propsfinish): cache and landmark names share the existing world-text queue and its HUD transform.
-    for(var _cq=0;_cq<_ctq.length;_cq++){ var _cg=_ctq[_cq]; wc.font=FS(_cg.f||TYPE.head); var _cw=wc.measureText(_cg.t).width; if(!_cg.always&&wlUnder(_cg.x-_cw/2,_cg.y-_cpx,_cw,_cpx*1.3)) continue; wc.fillStyle=INK; wc.fillText(_cg.t,_cg.x+1,_cg.y+1); wc.fillStyle=_cg.c||'#e6b4ff'; wc.fillText(_cg.t,_cg.x,_cg.y); }
+    // v28.xx (cw-cx-tagstack): cache names reserve their actual font bounds before the extraction distance chip is placed.
+    for(var _cq=0;_cq<_ctq.length;_cq++){
+      var _cg=_ctq[_cq]; wc.font=FS(_cg.f||TYPE.head);
+      var _cm=wc.measureText(_cg.t), _cw=_cm.width, _ca=_cm.actualBoundingBoxAscent||wlPx(), _cd=_cm.actualBoundingBoxDescent||wlPx()*0.25;
+      if(!_cg.always&&wlUnder(_cg.x-_cw/2,_cg.y-_ca-2,_cw,_ca+_cd+4)) continue;
+      var _ctop=wlTagPlace(_cg.x-_cw/2-2,_cg.y-_ca-2,_cw+4,_ca+_cd+4);
+      if(_ctop===null) continue;
+      var _cy=_ctop+_ca+2;
+      wc.fillStyle=INK; wc.fillText(_cg.t,_cg.x+1,_cy+1); wc.fillStyle=_cg.c||'#e6b4ff'; wc.fillText(_cg.t,_cg.x,_cy);
+    }
     wc.textAlign='left'; }
   if(NET.on) netUpTags();   // v15.79: the party names over their heads, beside the pillager nameplates
   // nameplates over anything you can currently see
@@ -42280,7 +42306,10 @@ if(ne.kind==='listener'&&ne.state==='dormant') continue;
     // instrumenting fillRect during one frame and reading the stack of the call
     // that covered the column. The height now comes from the actual px token.
     var ph2=Math.ceil(parseFloat((wc.font.match(/([\d.]+)px/)||[0,12])[1])*1.35);
-    if(wlUnder(ne.x-tw/2-11,ne.y-lift-ph2+3,tw+22,ph2+5)) continue;   // v31.xx (cw-trcol2): a nameplate (with its crew block and health pip) is not drawn over the corner column or the score plate
+    // v28.xx (cw-cx-tagstack): include the crew block and wounded health pip in the occupied box. If there is no room above the screen, omit only this crowded name.
+    var _ntop=wlTagPlace(ne.x-tw/2-11,ne.y-lift-ph2+3,tw+22,ph2+5);
+    if(_ntop===null||wlUnder(ne.x-tw/2-11,_ntop,tw+22,ph2+5)) continue;
+    lift=ne.y-_ntop-ph2+3;
     wc.fillStyle='rgba(6,9,13,.62)';
     if(!pingPlate) wc.fillRect(ne.x-tw/2-4,ne.y-lift-ph2+3,tw+8,ph2); // v28.xx (cw-cx-pingmerge): no empty duplicate plate.
     // v8.39, audit: the plate is centred on the entity and the text was drawn at
@@ -43601,6 +43630,8 @@ function extEdgeArrow(E){
     for(k in EDGEBOX){ B=EDGEBOX[k]; if(B&&B.w>0&&B.h>0) L.push(B); }
     if(typeof NETTEAMBOX==='object'&&NETTEAMBOX&&NETTEAMBOX.n&&NETTEAMBOX.w>0) L.push(NETTEAMBOX);
     if(G.cornerBox) L.push(G.cornerBox);
+    // v28.xx (cw-cx-tagstack): the CEO cache-name P0: give the chip its own space beside this frame's world labels, including the arrow and margin.
+    if(WLTEXT.g===G) for(i=0;i<WLTEXT.boxes.length;i++) L.push(WLTEXT.boxes[i]);
     if(typeof FEEDBOX==='object'&&FEEDBOX&&FEEDBOX.on&&FEEDBOX.w>0) L.push(FEEDBOX);
     L.push({x:W-LH(250)*hr,y:Math.round(H*0.5),w:LH(250)*hr,h:H});
     L.push({x:W/2-LH(170)*hr,y:0,w:LH(340)*hr,h:LH(130)*hr});
@@ -55971,7 +56002,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.11: The refusal says not enough parts; the mainframe retains its cost row. Check 36.11 fails on v36.10',
+  now:'v36.12: Nearby world names stack when their boxes would overlap. The extraction distance chip clears cache names. Check 36.12 fails on v36.11',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
