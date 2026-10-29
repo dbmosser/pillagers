@@ -1,0 +1,36 @@
+{
+    "title":  "READABLE SHARED STATUS LABELS",
+    "why":  "The active reload critic found the status title and damage detail too small at 1080p. Keep every status consistent in the existing left column.",
+    "now":  "Status names and values are larger in matching bordered panels; the active reload chain shows as a status with its count.",
+    "edits":  [
+                  {
+                      "anchor":  "  nf=FS(TYPE.label); vf=FS(TYPE.micro);",
+                      "replacement":  "  nf=FS(TYPE.head); vf=FS(TYPE.label);   // v28.xx (cw-cx-statusread): shared status type grows from about 16/13 to 20/16 px at 1080p."
+                  },
+                  {
+                      "anchor":  "// A dark tab with round ends from x0 to x1, h tall, centred on cy.\nfunction statusPill(x0,cy,x1,h){\n  var r=h/2;\n  if(x1\u003cx0+h) x1=x0+h;\n  ctx.beginPath();\n  ctx.arc(x0+r,cy,r,Math.PI*0.5,Math.PI*1.5);\n  ctx.arc(x1-r,cy,r,-Math.PI*0.5,Math.PI*0.5);\n  ctx.closePath(); ctx.fill();\n}",
+                      "replacement":  "// v28.xx (cw-cx-statusread): the shared status panel, four-pixel corners and one quiet border, at the existing size and anchor.\nfunction statusPill(x0,cy,x1,h){\n  var r=Math.min(LH(4),h/2), top=cy-h/2, bot=cy+h/2;\n  if(x1\u003cx0+h) x1=x0+h;\n  ctx.beginPath(); ctx.moveTo(x0+r,top); ctx.lineTo(x1-r,top); ctx.quadraticCurveTo(x1,top,x1,top+r);\n  ctx.lineTo(x1,bot-r); ctx.quadraticCurveTo(x1,bot,x1-r,bot); ctx.lineTo(x0+r,bot); ctx.quadraticCurveTo(x0,bot,x0,bot-r);\n  ctx.lineTo(x0,top+r); ctx.quadraticCurveTo(x0,top,x0+r,top); ctx.closePath(); ctx.fill();\n  ctx.lineWidth=1; ctx.strokeStyle=\u0027#4a5257\u0027; ctx.stroke();\n}"
+                  },
+                  {
+                      "anchor":  "      ctx.fillStyle=\u0027rgba(6,9,13,.62)\u0027; statusPill(cx-ph/2,cy,tx+tw+LH(10),ph);",
+                      "replacement":  "      ctx.fillStyle=\u0027rgba(22,25,27,.90)\u0027; statusPill(cx-ph/2,cy,tx+tw+LH(10),ph);   // v28.xx (cw-cx-statusread): style-guide panel fill for every status."
+                  },
+                  {
+                      "anchor":  "  lw=Math.max(2,S*0.085); rr=r*0.8; u=S*0.24; hx=r*1.04; ph=S*0.86;",
+                      "replacement":  "  lw=Math.max(2,S*0.085); rr=r*0.8; u=S*0.24; hx=r*1.04; ph=S*1.12;   // v28.xx (cw-cx-statusread): the two larger text lines fit inside the shared panel."
+                  },
+                  {
+                      "anchor":  "      ctx.font=nf; ctx.fillStyle=E.col;     ctx.fillText(E.nm,tx,cy-LH(2));\n      ctx.font=vf; ctx.fillStyle=\u0027#cdd6dd\u0027; ctx.fillText(E.v||\u0027\u0027,tx,cy+LH(9));",
+                      "replacement":  "      // v28.xx (cw-cx-statusread): neutral readable type; the existing ring and glyph carry each status colour.\n      ctx.font=nf; ctx.fillStyle=\u0027#efe9dc\u0027; ctx.fillText(E.nm,tx,cy-LH(2));\n      ctx.font=vf; ctx.fillStyle=\u0027#cdd6dd\u0027; ctx.fillText(E.v||\u0027\u0027,tx,cy+LH(11));"
+                  },
+                  {
+                      "anchor":  "  wC=(S+LH(110))*hr;                         // one column, icon and words, on screen",
+                      "replacement":  "  wC=(S+LH(130))*hr;   // v28.xx (cw-cx-statusread): collision clearance includes the larger shared status labels."
+                  },
+                  {
+                      "anchor":  "      x=Math.floor(s/rows)*(S+LH(110)); y=(s%rows)*(S+g); s++;",
+                      "replacement":  "      x=Math.floor(s/rows)*(S+LH(130)); y=(s%rows)*(S+g); s++;   // v28.xx (cw-cx-statusread): the same width when a second column is needed."
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027active reload and stim share readable status type, about 20px titles and 16px values at 1080p, in bordered style-guide panels\u0027,\n   run:function(){\n     var g,p,ft=ctx.fillText,st=ctx.stroke,kk=keys,mm=mouse.down,seen={},borders=0,bad=[];\n     try{\n       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();\n       __deploy({kit:[\u0027gun_pistol\u0027],safe:null,mapIx:0,seed:4242});g=__state();p=g\u0026\u0026g.player;if(!p||g.over)return \u0027no live raid\u0027;\n       g.mapOpen=false;g.bagOpen=false;g.paused=false;g.sim=false;keys={};mouse.down=false;\n       p.arStk=3;p.arBonus=1;p.arMul=1.35;p.arGun=p.wep;p.ammo=3;p.reloading=0;p.stimT=5;\n       ctx.fillText=function(t){\n         var text=String(t).toLowerCase(),m=ctx.getTransform(),px=parseFloat((/([\\d.]+)px/.exec(ctx.font)||[])[1]),d=(typeof DPR===\u0027number\u0027\u0026\u0026DPR\u003e0)?DPR:1;\n         seen[text]={px:px*Math.sqrt(m.a*m.a+m.b*m.b)/d/hudRes()/UIK(),col:ctx.fillStyle};return ft.apply(this,arguments);\n       };\n       ctx.stroke=function(){if(ctx.strokeStyle===\u0027#4a5257\u0027)borders++;return st.apply(this,arguments);};\n       drawStatusIcons();\n       [\u0027active reload x3\u0027,\u0027stim\u0027].forEach(function(t){if(!seen[t]||seen[t].px\u003c14.99)bad.push(t+\u0027 title is below the shared callout size\u0027);else if(seen[t].col!==\u0027#efe9dc\u0027)bad.push(t+\u0027 title lacks neutral contrast\u0027);});\n       [\u0027+35% damage\u0027,\u00275s\u0027].forEach(function(t){if(!seen[t]||seen[t].px\u003c11.99)bad.push(t+\u0027 detail is below the shared label size\u0027);});\n       if(borders\u003c2)bad.push(\u0027status panels lack the shared border\u0027);\n       return bad.length?bad.join(\u0027; \u0027):null;\n     }finally{\n       ctx.fillText=ft;ctx.stroke=st;keys=kk;mouse.down=mm;\n       try{if(p){p.arStk=0;p.arBonus=0;p.stimT=0;}__endRaid(\u0027abandon\u0027);}catch(_e){}__topClear();\n     }\n   }},"
+}

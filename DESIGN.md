@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.19 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v36.03 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
+
+MEASURED. Check 36.19 passes, and fails on v36.18.
 ## v36.18 - IN-GAME KEYS ARE KEYCARDS NOW
 
 Co-op hunt while he was away. HIS ORDER 10-28: he was confused by keyboard keys versus in-game keys and asked to call the in-game ones something else. Every item that opens a sealed room is now a keycard, the stash tab reads keycards, and the map and Data Core lines say keycard. Words only.

@@ -564,3 +564,6 @@
 
 2026-10-28 | o-00c-active-reload-status | raid HUD, both windows | existing left status column gains a green reload-arrow icon, active reload xN name and damage bonus; hidden as soon as the chain resets | before: v36.16 existing raid HUD; after: lane camera-recipes.json, reload-status-p1-x1 / p1-x3 / p2-x1 / p2-x3 at 1080 and 4k (paths pending lane camera).
 
+2026-10-28 | o-00c-active-reload-status | raid HUD, both windows | shipped active reload xN status with +15%/+35% damage | after: tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-1/reload-status-p1-x1-1080.jpg, reload-status-p1-x3-1080.jpg, reload-status-p2-x1-1080.jpg, reload-status-p2-x3-1080.jpg and matching -4k.jpg files; no original-build before shot.
+2026-10-28 | o-00c-active-reload-status follow-up | shared left status column | title/value type about 16/13 to 20/16 px, neutral text, bordered panel with four-unit corners, matching collision clearance | before: tools/handoff/console/notes/shots/o-00c-active-reload-status-recipes-1/ | after: lane round 2 pictures pending.
+
