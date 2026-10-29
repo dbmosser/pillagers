@@ -1,0 +1,5 @@
+## v36.17 - ACTIVE RELOAD CHAIN STATUS
+
+Co-op hunt while he was away. His 10-28 order: active reload bonus stacks should be shown as a status.
+
+MEASURED. Check 36.17 passes, and fails on v36.16.

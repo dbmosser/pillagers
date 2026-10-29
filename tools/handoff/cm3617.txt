@@ -1,0 +1,7 @@
+v36.17: active reload chain status
+
+the active reload chain shows as a status with its count
+
+Check 36.17. Fails on v36.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

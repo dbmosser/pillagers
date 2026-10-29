@@ -1,0 +1,10 @@
+== 4k : window 3876x2265, viewport 3840x2160
+  01-title-mode-menu                     staged       5.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  45-arcade-attract-board                staged       7.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  46-arcade-attract-how-to-play          staged      15.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  47-arcade-drop-controls-card           staged      10.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  48-arcade-hud-move-to-start            staged      22.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  52-arcade-run-over                     staged      15.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  53-arcade-extracted-bonus-initials     staged      15.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  55-arcade-run-over-scored              staged      16.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  56-arcade-attract-board-scored         staged      15.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

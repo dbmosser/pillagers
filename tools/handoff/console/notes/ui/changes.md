@@ -562,3 +562,5 @@
 
 2026-10-28 | o-00b-hold-e-to-breach / cw-cx-breachclear | breach gate | move idle/progress label anchor from 70 world units outside to 70 units inside the doorway to clear the outside players and the scene's score panel; wording unchanged | before: tools/handoff/console/notes/shots/o-00b-hold-e-to-breach-recipes-4/breach-p2-progress-1080.jpg and breach-p2-progress-4k.jpg; after: pending lane ship and camera validation
 
+2026-10-28 | o-00c-active-reload-status | raid HUD, both windows | existing left status column gains a green reload-arrow icon, active reload xN name and damage bonus; hidden as soon as the chain resets | before: v36.16 existing raid HUD; after: lane camera-recipes.json, reload-status-p1-x1 / p1-x3 / p2-x1 / p2-x3 at 1080 and 4k (paths pending lane camera).
+

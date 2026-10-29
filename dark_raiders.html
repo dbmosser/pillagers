@@ -3865,8 +3865,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.16';
-var VER_AT='2026-10-28 21:09';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.17';
+var VER_AT='2026-10-28 21:19';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -43885,6 +43885,8 @@ function drawUseBar(){
 var STATUSL=[
   {id:'heal',  nm:'HEALING',    col:'#6fe0a0', bad:0},
   {id:'stim',  nm:'STIM',       col:'#ffd25a', bad:0},
+  // v28.xx (cw-cx-reloadstatus), HIS WORDS (2026-10-28): active reload bonus stacks should be shown as a status.
+  {id:'ar',    nm:'active reload x1', col:'#9fe8b0', bad:0},
   {id:'rest',  nm:'RECOVERING', col:'#ff9db0', bad:0},
   {id:'wind',  nm:'WINDED',     col:'#ff5a4a', bad:1},
   {id:'wade',  nm:'WADING',     col:'#6fb6d8', bad:1},
@@ -43923,6 +43925,16 @@ function statusLive(p){
       if(t>0&&(p.healAmt0||0)>0&&(p.healRate||0)>0){ E.on=true; E.f=clamp(t/p.healAmt0,0,1); k=Math.ceil(t/p.healRate); if(E.vk!==k){ E.vk=k; E.v=k+'s'; } }
     } else if(E.id==='stim'){
       if((p.stimT||0)>0){ E.on=true; E.f=clamp(p.stimT/STIM_SEC,0,1); k=Math.ceil(p.stimT); if(E.vk!==k){ E.vk=k; E.v=k+'s'; } }
+    } else if(E.id==='ar'){
+      // v28.xx (cw-cx-reloadstatus): this window owns the chain; no timer or copied network count can outlive its reset.
+      k=p.arStk||0;
+      if(k>=1){
+        E.on=true;
+        t='active reload x'+k; if(E.nm!==t){ E.nm=t; E.nf=''; }
+        // v28.xx (cw-cx-reloadstatus): a chain survives a swap or an empty magazine; only claim damage while the bonus applies.
+        t=(p.arBonus&&p.wep===p.arGun&&p.ammo>0&&!(p.reloading>0))?'+'+Math.round(((p.arMul||AR_BONUS)-1)*100)+'% damage':'chain ready';
+        if(E.vk!==t){ E.vk=t; E.v=t; }
+      }
     } else if(E.id==='rest'){
       // tickRegen's own test: standing, under the Bandage ceiling, and regenDelay seconds since a shot fired or taken
       top=healCeil(ITEMS.bandage);
@@ -43972,7 +43984,12 @@ function statusPill(x0,cy,x1,h){
 // blotter tab for blotter.
 function statusGlyph(id,cx,cy,u,col){
   ctx.beginPath();
-  if(id==='heal'){
+  if(id==='ar'){
+    // v28.xx (cw-cx-reloadstatus): a reload arrow in the same plain-path family as the other status glyphs.
+    ctx.lineWidth=u*0.27; ctx.lineCap='round'; ctx.arc(cx,cy,u*0.78,0.35,4.7); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(cx+u*0.35,cy-u*0.78); ctx.lineTo(cx-u*0.18,cy-u*1.10); ctx.lineTo(cx-u*0.18,cy-u*0.46); ctx.closePath(); ctx.fill();
+    ctx.lineCap='butt';
+  } else if(id==='heal'){
     ctx.rect(cx-u*0.34,cy-u,u*0.68,u*2); ctx.rect(cx-u,cy-u*0.34,u*2,u*0.68); ctx.fill();
   } else if(id==='stim'){
     ctx.save(); ctx.translate(cx,cy); ctx.rotate(-0.7854);
@@ -56008,7 +56025,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.16: the breach gate says which key to hold, clear of the players Check 36.16 fails on v36.15',
+  now:'v36.17: the active reload chain shows as a status with its count Check 36.17 fails on v36.16',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
