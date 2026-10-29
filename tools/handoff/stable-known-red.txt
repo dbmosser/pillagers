@@ -120,3 +120,10 @@ v10.29   # welcome pack guns are rare and elite now
 v11.79   # bench guns show elite now
 v12.18   # bench guns show elite now
 v34.01   # no uncommon gun left to stage
+# his 10-28 order, v36.40 beast mode replaces kill streak rewards (no double/triple kill, no streak multiplier, no streak medal pop); sorted by check-in 10-29 from run corpus-1029-0712 on v36.44; retarget in job 243
+v25.13   # wants the second kill inside the streak gap at x2 (150); plain kills pay base points only now
+v27.94   # wants arcadeKill to play the SPK_MEDALS streak pop; the streak is gone
+# his 10-28 order, v36.41 a HUD panel over your pillager fades to 35 percent; the pillager spawns at the map edge, the camera clamps, he stands under the use bar and chip row, so their text is drawn on the fade layer the old checks do not watch; retarget in job 243
+v34.60   # air strike vs chips: no power-up chips drawn on the watched canvas (faded)
+v22.74   # a plate going on draws no SLOTTING line on the watched canvas (faded)
+v18.75   # no SLOTTING ARMOUR PLATE bar on the watched canvas (faded)
