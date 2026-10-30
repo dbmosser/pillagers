@@ -132,3 +132,5 @@ v31.64   # wants t:'3 PILLAGERS'; it reads KILL 3 PILLAGERS now
 v9.13    # control wants the 1080p backpack at 862x606; it is 862x624 with the group headings
 # spare run corpus-1029-1512 on v36.55 (sorted 10-29): station windows found only 3 of 5 words, one run only; green in 1349 on v36.54 and every run before; v36.55 touched only party legend text and the 24.22 check did not change, so a slow station window on the loaded spare PC
 v24.22   # flake: only 3 of the five station words found in 1512, green before and not touched by v36.55
+# CEO 10-29 21:30 (his order: stable build for the party): cosmetic resize hatch on HUD panels, fix job o-240 stays open
+v30.62   # resize hatch shows without hover; cosmetic, job o-240

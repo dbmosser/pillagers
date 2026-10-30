@@ -1,5 +1,12 @@
 # START HERE
 
+## FROZEN FOR THE PARTY (his order 10-29 ~21:30, to the CEO chat): "get to a stable build and lets use that.  party is less than 48 hours away and i need some cluade usage left over for work tomorrow"
+- The party build is **v36.55**, stable since 10-29 22:13 (tag stable-v36.55). His 8802 serves it at both http://localhost:8802/ and /stable.html.
+- **No ships until Sun 11/1 01:00** (the week reset), unless he orders a fix himself. tools/handoff/console/STOP stops lanes a, b, c and o; tools/handoff/stable.freeze stops promotions. shipq.sh does NOT read STOP, so a chat must not ship by hand.
+- **Save Claude use:** no scheduled check-ins, no background watchers, no robot or critic runs that call Claude. The CEO cron and watcher are off. A chat answers only when he writes to it.
+- If he gives a game order now: write it into console/open-orders.md and a job in console/tasks/, do not build it, and tell him it waits until after the party.
+- At the first chat turn on or after Sun 11/1: remove STOP and stable.freeze, move after-nov1/ jobs back to tasks/, re-arm the CEO check-in (text in console/checkin-prompt.txt).
+
 ## CURRENT (rewritten 2026-10-27 night). One page on purpose: every new session reads it. The old 127 KB of handoff text (10-20 and the September alpha run) is in START-HERE-HISTORY.md; it is stale, do not copy rules from it.
 
 **The game:** PILLAGERS (old name Dark Raiders; the file is still dark_raiders.html). The owner plays, gives orders and is not a coder; his answers are binding. Current build: `var VER` in dark_raiders.html (or `git log -1`).
