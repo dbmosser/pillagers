@@ -1,0 +1,5 @@
+## v36.59 - WHOLE RUN RECORDINGS AND EVERY CAPTURE WHEN IDLE
+
+Co-op hunt while he was away. His order 10-30: F9 captures the whole run and an idle game plays every capture. Watch: f9 now records your whole run; when nobody touches the game it plays all your recordings
+
+MEASURED. Check 36.59 passes, and fails on v36.58.

@@ -124,3 +124,4 @@
 10-29 14:09 v36.55 cw-cx-marklegacy on his pc after 65s (8802 serves 36.55) week 89%
 10-30 06:53 v36.56 cw-cx-onlinecopy on his pc after 34s (8802 serves 36.56) week 90%
 10-30 07:24 v36.57 cw-cx-condition-ui2 on his pc after 18s (8802 serves 36.57) week 90%
+10-30 10:50 v36.58 cw-cx-reticleflight on his pc after 114s (8802 serves 36.58) week 91%

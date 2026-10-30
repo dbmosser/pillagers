@@ -4787,32 +4787,96 @@
   "score": 2,
   "pass": false,
   "need": 4,
-  "verdict": "This is a different screen from the earlier raid HUD review: it is the hub with a join-in-progress banner, and it is cluttered. Two competing top-centre banners, an orange warning label and mixed type sizes mean nothing leads the eye to one action.",
+  "verdict": "The earlier fixes were only partly applied: the controls line is folded and the hotbar is cleaner. But the HUD still sits on a 4–20px inset, the 'run info' label still has a capital I, and every corner uses a different panel style.",
   "findings": [
-   "P0 top-centre 'join the raid in progress' banner and 'enter raid!' button: Merge them into one lime --acc plate. Primary line 'enter raid' at 32px f-cond 700, no '!'. Secondary 'raid in progress' at 16px --tx-2 beneath it, inside the same 1px --ui-line-hi panel. Delete the 'or go up at...' sentence and the amber fill.",
-   "P0 'the last pour' station, 'experimental feature may glitch' label: Remove the asterisks. Use a 16px --warn 'experimental' tag, 8px padding, inside the station label chip. Move the full warning into the station's own window.",
-   "P1 top-right money row: '$900  147 xp  stash $610 bag $0': Inset 48px. Use one 20px f-cond 600 row in --tx-1 with 16px --tx-2 labels, 24px gaps, and a 1px --ui-line divider. Drop 'xp' to a 16px label. Put the hero size only on the '$' figure if anything.",
-   "P1 hotbar, bottom-centre: Show only the equipped slots. Dim the rest to a flat 1px --ui-line outline with no icon. Mark selection only with a 2px --acc border. Slot numbers 16px --tx-2. Inset the bar 48px from the bottom.",
-   "P1 station labels (wirt the gambler, the mainframe, shop craft and hire, settings, the stash, fashion): Use one chip style: 20px f-cond 600, 8px/16px padding, 4px radius, 1px --ui-line-hi border, anchored 16px above each pad. Reduce the pad circles to a 1px ring at 30% alpha. Delete the stray orange circle by the mainframe. Keep chips clear of NPC heads."
+   "P0 top-right 'run info' bar: Change the text to 'run info'. Merge the minimap and bar into one 1px --ui-line-hi panel with 4px radius, or put a 16px gap between them. Inset the pair 48px from the top and right edges.",
+   "P1 bottom-left 'hp 100' bar: Make the bar 240x16 with a 1px --ui-line-hi border and a --ui-panel track. Use --ok for the fill. Put 'hp 100' at 20px f-cond 600 above the bar. Inset 48px from the left and bottom edges.",
+   "P1 top-centre timer, extract chip and bolt icon: Set the timer to 56px f-cond 800 --tx-1. Put the chip 8px below it with a --ui-panel fill and a 1px --extract border. Remove the bolt icon or label it. Put a 40% --scrim behind the group. Move the group down to a 48px top inset.",
+   "P1 left roster 'current pillagers 7', 'host check' bar, and 'f1 controls' hint: Collapse the roster to its header row by default and open it on a key. Give every left-side panel a --ui-panel fill, a 1px --ui-line-hi border, 4px radius, 16px padding and a 48px edge inset. Set row text to 16px --tx-1 with money in --tx-2. Dock 'f1 controls' as a 16px --tx-2 line on the 48px bottom-left inset.",
+   "P1 bottom-right ammo card: Use the shared panel spec: --ui-panel fill, 1px --ui-line-hi border, 4px radius. Place it at a 48px right inset and a 48px bottom inset, the same as the hotbar and hp bar. Set the weapon name to 20px --tx-1 and the hint to 16px --tx-2."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00y-2p-online-party-critical-recipes-2/online-raid-guest-1080.jpg",
-  "task": "o-00y-2p-online-party-critical",
-  "when": "2026-10-30T11:10"
+  "pic": "tools/handoff/console/notes/shots/o-00y2-2p-lifecycle-test-recipes-2/online-raid-guest-1080.jpg",
+  "task": "o-00y2-2p-lifecycle-test",
+  "when": "2026-10-30T15:25"
  },
  "online-raid-host": {
   "score": 2,
   "pass": false,
   "need": 4,
-  "verdict": "The feed lines and the join toast are gone, but the full controls list is still open at the left, the roster is still a table, and hp is still a bare bar, so the screen is still crowded and has no clear first read.",
+  "verdict": "The previous advice was mostly ignored: the full controls list is still open on the left, the HUD is still a pile of differently styled boxes hugging the screen edges, and the mix of pixel-ish and clean type makes it read as a prototype.",
   "findings": [
-   "P0 controls list, left mid (x16-326, y455-800): Fold it to one 16px line 'f1 controls' at x=24, y=~1000, in --tx-2. Open it only on F1, as a 90% --ui-panel card with a 4px radius and a 1px --ui-line-hi border. Chip text is 16px, with a 32px row pitch.",
-   "P1 current pillagers roster, top-left (x8-367, y143-315): Default it to a single 20px row, 'pillagers 7', with the chevron. When open, use 16px text, a 32px row pitch, 1px --ui-line dividers, and your own row in --acc. Move the left edge to x=48 and use a solid --ui-panel fill.",
-   "P1 hp, bottom-left (x24-430, y1035-1068): Put it in a --ui-panel card with a 4px radius and a 1px --ui-line-hi border, 48px from the left and 32px from the bottom. Inside the card put a 16px 'hp' label, a 56px --fs-hero number in --tx-1, and an 8px bar about 240px wide in --ok.",
-   "P1 top-centre timer, chip and arrow (x900-1030, y10-90): Put the timer in a --ui-panel plate at 32px --fs-title with 8px of padding. Align the menu icon to the plate's right edge. Make the extract chip 16px, and attach the arrow to the chip's bottom edge, 24px tall, in --extract.",
-   "P1 minimap and 'run info' (x1603-1902, y18-362): Inset it to 48px from the top and right, and add a 1px --ui-line-hi border with a 4px radius on the same --ui-panel as the other cards. Make the run info row 32px high with 16px text and 8px padding, and put the collapse chevron at 24px."
+   "P0 controls list, left mid (x16-326, y455-800): Fold it by default to one 16px line 'f1 controls' at x=48, y=1000 in --tx-2. F1 opens a card with a 1px --ui-line-hi border, 4px radius and 32px row pitch. Delete the 'full list' footer and drop the chip fills to a 1px outline.",
+   "P1 roster, top-left (x8-367, y143-315): Move to x=48, y=48. Use a 32px row pitch, 16px text and 1px --ui-line dividers. Make your own row --acc or amber, and use --tx-1 for the others. Use --tx-2 for the header. Fold to one 20px row by default.",
+   "P1 hp, bottom-left (x24-430, y1035-1068): Put it in a --ui-panel card with a 4px radius and a 1px --ui-line-hi border at x=48, 32px from the bottom. Inside, use a 16px 'hp' label, a 56px --tx-1 number and an 8px bar about 240px wide in --ok.",
+   "P1 minimap and run info (x1603-1902, y18-362): Inset to 48px from the top and right. Use a 1px --ui-line-hi border and 4px radius on both. Make 'run info' a 32px row with 16px text and 8px padding, attached under the map with no gap.",
+   "P1 ammo card, bottom-right (x1668-1910, y902-1052): Inset 48px from the right and 32px from the bottom. Use 16px --tx-2 for the labels, a 56px --fs-hero numerator in --tx-1 and a 32px --tx-2 denominator. Put 16px padding inside."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00y-2p-online-party-critical-recipes-2/online-raid-host-1080.jpg",
-  "task": "o-00y-2p-online-party-critical",
-  "when": "2026-10-30T11:10"
+  "pic": "tools/handoff/console/notes/shots/o-00y2-2p-lifecycle-test-recipes-2/online-raid-host-1080.jpg",
+  "task": "o-00y2-2p-lifecycle-test",
+  "when": "2026-10-30T15:26"
+ },
+ "p1-moving": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The frame is still letterboxed with no HUD, and the nameplates are still unstyled blue-tinted boxes. The tracers pass through the reticle and the grey terrain split is still there, so most of the earlier advice was not applied.",
+  "findings": [
+   "P1 whole frame / HUD layer: Capture the full 1920x1080 frame with the HUD on. Put hp 320x24 bottom-left at x=96 and ammo as the 56px hero number bottom-right. Add a one-line 'f1 controls' at 16px mid-bottom-left. Remove the caption.",
+   "P1 hostile nameplate (x247-422, y620-710): Use one nameplate component: 16px f-cond 600 text, with tx-1 for friendly and --danger for hostile. Put it on a --ui-panel plate at 80% opacity with a 4px radius and a 3px side bar in the faction colour (red for hostile). Attach a 64x4 hp bar flush under the text with a 2px gap. Centre the plate 8px above the head, and put the '!' inside the plate or remove it.",
+   "P1 player 2 nameplate (x1488-1660, y75-137): Reuse the same nameplate component as the hostile tag. Use a 3px --extract-teal or cyan p2 side bar, 16px text, and the same 64x4 hp bar style with no white outline. Keep the same offset above the head.",
+   "P1 terrain split (y688) and tan block (x616-833, y906-985): Feather the grey region into the grass over 64px, or make it real terrain (a road tile with a 2px border). Texture the tan block as a crate or remove it. Cut the pink tracer fragments to about 40% opacity or use the p1 tracer colour.",
+   "P2 reticle (x463-690, y462-690): Shrink the ring to about 96px with a solid 2px --tx-1 stroke and a 1px dark outline. Use a 4px lime centre dot and draw tracers behind the reticle. Fade the dotted line over its last 64px before the ring."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00x-bullets-through-reticle-recipes-4/tracer-detail-p1-moving-1080.jpg",
+  "task": "o-00x-bullets-through-reticle",
+  "when": "2026-10-30T15:13"
+ },
+ "p1-still": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The banner that covered the action is gone and the reticle is now clear, but the hostile tag is still a heavy dark box with a red bar and a loose '!' that sits too high above it. The player 2 tag is a different style, and the player 1 tag and hp bar are missing from the frame.",
+  "findings": [
+   "P1 hostile tag, (248,620 to 422,710): Delete the box and the red side bar. Draw only a 6px by 96px hp bar, 8px above the head (y about 735), with a 1px #0b0c0d outline. Drop the 'hostile' word, or set it at 16px f-cond 600 in tx-1 with a 2px dark outline.",
+   "P1 player 2 tag, (1488,75 to 1660,138): Use 16px f-cond 600 for the label. Fill #16191b at 80% with a 1px #4a5257 border and a 4px radius. Keep cyan only on the text. Move the tag to 8px above the head (y about 170). Make the hp bar 6px high, 96px wide, 8px under the tag.",
+   "P1 red '!' (335,543 to 357,603): Delete it, or put it inside the tag as a 20px --warn glyph with 8px padding. Show it for 1 second only, when the enemy first notices the player.",
+   "P2 reticle, (463,462 to 690,690): Make the ring 96px with a solid 2px stroke in --tx-1 and a 1px #0b0c0d outline, plus a 4px centre dot. Keep the gap in the tick marks.",
+   "P2 gold pickup glow and marker, (1418,530 to 1620,665): Shrink the glow to 64px radius at 35% opacity. Use a 3px --r-gold ring only, and no filled disc."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00x-bullets-through-reticle-recipes-4/tracer-detail-p1-still-1080.jpg",
+  "task": "o-00x-bullets-through-reticle",
+  "when": "2026-10-30T15:13"
+ },
+ "p2-moving": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The full 1920x1080 frame is now captured and the hint banner is gone. But the name tags are still inconsistent, the reticle is faint, and there is no HUD, so a player would still call this unpolished.",
+  "findings": [
+   "P1 'player 1' tag (1492,74 to 1657,118): Set the tag to 16px f-cond 600 with +.04em tracking on a --ui-panel fill at 80% opacity, 4px radius, no outline. Colour the text P1 amber, and use '1' with a flag or serif so it is not confused with 'l'. Put it 12px above the head. Make the bar 10px tall with a 1px --ui-line track.",
+   "P1 'hostile' tag (248,620 to 422,708): Use the same 16px tag style as the player tags, in --danger text with no blue stripe. Anchor the tag 12px above the head, centred. Put the '!' inside the tag or 8px left of it at 20px. Give the bar a 4px gap below the tag and make its width equal to the tag width.",
+   "P1 reticle (465,462 to 690,690): Stroke the ring 2px in --tx-1 with a 1px #0b0c0d outer outline, at 100% opacity. Shrink the diameter to about 120px. Keep a 4px centre dot in --acc, and draw the whole reticle on the top layer.",
+   "P1 whole frame, no HUD: Add a minimal HUD with 48px margins. Put the hp bar and ammo bottom-left, using the hero number at 56px f-cond 800 for ammo. Show a P2 tag in cyan above the controlled character. Keep every other element at 16 to 20px.",
+   "P2 P1 ground rings (1530,310 to 1620,350) and (1530,560 to 1620,620): Draw the rings as 2px strokes beneath the feet at 100% opacity. Remove the '!' from the cyan ring, or replace it with a 16px label. Cap the muzzle-flash glow to a 40px radius and tint it warm white rather than lime."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00x-bullets-through-reticle-recipes-4/tracer-detail-p2-moving-1080.jpg",
+  "task": "o-00x-bullets-through-reticle",
+  "when": "2026-10-30T15:13"
+ },
+ "p2-still": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The frame is now nearly full-bleed and the caption sits at x=48, but the two name tags still don't match, the hard grey ground seam is still there, and the caption text is tiny.",
+  "findings": [
+   "P1 'player 1' tag (1492,75 to 1657,137) vs 'hostile' tag (247,620 to 422,693): Use one tag component: --ui-panel at 80% alpha, 4px radius, 20px f-cond 600 --tx-1 text, and a 3px left bar in the owner colour (P1 amber, P2 cyan, hostile --danger). Put a 6px hp bar under every name, 100% of the tag width. Drop the blue text and outline.",
+   "P1 Ground seam at y=688 (x80 to 1840): Feather the transition over 40 to 60px, or fill the lower area with grass tiles. If the grey is a real terrain change, give it a 2px edge tile and a darker shade, not a flat #7a7a80 slab.",
+   "P1 Caption 'tracer detail   player 2   still' (48,16 to 204,32): Use 16px f-cond 600 in --tx-2 at x=80, y=14, so it aligns with the frame's left edge. Make 'tracer detail' --tx-1 and separate the parts with a 1px --ui-line divider and 16px gaps.",
+   "P2 Frame margins (x0 to 80, x1840 to 1920, y0 to 48, y1032 to 1080): Either run it full-bleed at 1920x1080 or keep the 48px margin and add a 1px --ui-line-hi border on the frame at 4px radius.",
+   "P2 Reticle (465,462 to 690,690): Use a 3px --tx-1 stroke with a 1px --ui-void outline at 60%, and tint it with the shooter's colour (P2 cyan). That gives at least 3:1 against the grass."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00x-bullets-through-reticle-recipes-4/tracer-detail-p2-still-1080.jpg",
+  "task": "o-00x-bullets-through-reticle",
+  "when": "2026-10-30T15:14"
  }
 }

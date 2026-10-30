@@ -1,0 +1,7 @@
+v36.59: whole run recordings and every capture when idle
+
+F9 saves on run end, keeps every recording, and idle title, hub and arcade playback advances through browser and disk captures. LOCAL: no linked review. Retarget checks 21.48, 21.49, 21.59 and 21.17 for elapsed-only recording, lower case, decoded video and hub playback.
+
+Check 36.59. Fails on v36.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

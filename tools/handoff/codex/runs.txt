@@ -584,3 +584,13 @@
 2026-10-30 07:30 o-139-solo-pings 110s ok DONE in=420871 out=2865 run=1
 2026-10-30 08:43 o-00z-guest-slow-home-after-extract 157s ok DONE in=366719 out=4995 run=1
 2026-10-30 10:43 o-00x-bullets-through-reticle 614s ok PARTIAL in=1528320 out=19831 run=1
+2026-10-30 10:56 o-00x-bullets-through-reticle 284s ok PARTIAL in=2597629 out=28553 run=2
+2026-10-30 11:04 o-00x-bullets-through-reticle 249s ok PARTIAL in=3680798 out=34858 run=3
+2026-10-30 11:10 o-00x-bullets-through-reticle 170s ok PARTIAL in=4978621 out=39511 run=4
+2026-10-30 11:15 o-00x-bullets-through-reticle 76s ok DONE in=5616679 out=41523 run=5
+2026-10-30 11:18 o-00y2-2p-lifecycle-test 172s ok PARTIAL in=396081 out=7210 run=1
+2026-10-30 11:23 o-00y2-2p-lifecycle-test 190s ok PARTIAL in=1126149 out=14100 run=2
+2026-10-30 11:28 o-00y2-2p-lifecycle-test 145s ok PARTIAL in=1708052 out=19616 run=3
+2026-10-30 11:29 o-00y2-2p-lifecycle-test 33s ok PARTIAL in=1914729 out=20384 run=4
+2026-10-30 11:45 o-001-capture-whole-run-attract-plays-all 978s ok PARTIAL in=1418996 out=34294 run=1
+2026-10-30 11:49 o-001-capture-whole-run-attract-plays-all 198s ok PARTIAL in=2653927 out=40253 run=2

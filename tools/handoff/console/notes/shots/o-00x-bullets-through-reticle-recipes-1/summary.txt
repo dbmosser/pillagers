@@ -1,0 +1,30 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  reticle-p1-still                       NOT STAGED   4.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: no clear ground for the tracer view
+    at window.__reticleFlightProof (eval at window.__gx (http://localhost:8808/fixture.html:185469:33), <anonymous>:18:31)
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html:185469:33), <anonymous>:1:1)
+    at window.__gx (http:/
+  reticle-p1-moving                      NOT STAGED   4.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: no clear ground for the tracer view
+    at window.__reticleFlightProof (eval at window.__gx (http://localhost:8808/fixture.html:185469:33), <anonymous>:18:31)
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html:185469:33), <anonymous>:1:1)
+    at window.__gx (http:/
+  reticle-p2-still                       NOT STAGED   4.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: no clear ground for the tracer view
+    at window.__reticleFlightProof (eval at window.__gx (http://localhost:8808/fixture.html?p2=1&mode=coop&pair=reticleflight:185469:33), <anonymous>:18:31)
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?p2=1&mode=coop&pair=r
+  reticle-p2-moving                      NOT STAGED   4.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: no clear ground for the tracer view
+    at window.__reticleFlightProof (eval at window.__gx (http://localhost:8808/fixture.html?p2=1&mode=coop&pair=reticleflight:185469:33), <anonymous>:18:31)
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?p2=1&mode=coop&pair=r
+== 4k : window 3876x2265, viewport 3840x2160
+  reticle-p1-still                       NOT STAGED   4.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: no clear ground for the tracer view
+    at window.__reticleFlightProof (eval at window.__gx (http://localhost:8808/fixture.html:185469:33), <anonymous>:18:31)
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html:185469:33), <anonymous>:1:1)
+    at window.__gx (http:/
+  reticle-p1-moving                      NOT STAGED   4.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: no clear ground for the tracer view
+    at window.__reticleFlightProof (eval at window.__gx (http://localhost:8808/fixture.html:185469:33), <anonymous>:18:31)
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html:185469:33), <anonymous>:1:1)
+    at window.__gx (http:/
+  reticle-p2-still                       NOT STAGED   5.2s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: no clear ground for the tracer view
+    at window.__reticleFlightProof (eval at window.__gx (http://localhost:8808/fixture.html?p2=1&mode=coop&pair=reticleflight:185469:33), <anonymous>:18:31)
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?p2=1&mode=coop&pair=r
+  reticle-p2-moving                      NOT STAGED   4.9s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: no clear ground for the tracer view
+    at window.__reticleFlightProof (eval at window.__gx (http://localhost:8808/fixture.html?p2=1&mode=coop&pair=reticleflight:185469:33), <anonymous>:18:31)
+    at eval (eval at window.__gx (http://localhost:8808/fixture.html?p2=1&mode=coop&pair=r
