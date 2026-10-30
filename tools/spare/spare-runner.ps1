@@ -667,7 +667,7 @@ function Sync-Attract(){
     $PD='C:\claudecode\pillagers-party'; if(-not (Test-Path -LiteralPath ($PD+'\dark_raiders.html'))){ return }
     $src=Join-Path $env:USERPROFILE 'Downloads'; $dst=$PD+'\attract'
     $fs=@(Get-ChildItem -LiteralPath $src -Filter 'pillagers-attract*.webm' -File -ErrorAction SilentlyContinue)
-    if($fs.Count -eq 0 -and -not (Test-Path -LiteralPath $dst)){ return }
+    if($fs.Count -eq 0 -and -not (Test-Path -LiteralPath $dst)){ if((GetS 'attract') -ne 'none'){ PutS 'attract' 'none'; Say ('attract clips: no pillagers-attract*.webm in '+$src) }; return }
     New-Item -ItemType Directory -Force -Path $dst | Out-Null
     $nw=0
     foreach($f in $fs){ $d=Join-Path $dst $f.Name; $o=Get-Item -LiteralPath $d -ErrorAction SilentlyContinue
