@@ -46,3 +46,9 @@ The remaining work needs coordinator access. Confirmed the main repo still conta
 
 The installation helper was verified against a PRIVATE scratch root only: installed driver matches the reviewed correction exactly, CRLF survives, nine PASS lines append without losing existing notes, and a second application changes nothing. No tracked game, fixture or tool file was edited in this sandbox. All handoff files are ASCII. Everything this sandbox can prepare is complete; only coordinator installation, findings publication and on-his-PC confirmation remain.
 
+
+--- codex run 2026-10-30 12:18 ---
+2026-10-30, continuation at v36.61. The existing round2-results.json still records four successful staged lifecycle runs (both roles at 1080p and 4k), each pass=true with no audit failures or browser errors. These are the prior v36.58 results, not a new browser run on v36.61. All three prepared p2-driver-edits.json anchors still match the current main-repo driver exactly once. The current driver still has its old guest wait; the final nine findings have not been appended to notes/o-00y-findings.md. No new game defect or game fix is claimed.
+
+Everything that can be prepared in this sandbox remains ready. Coordinator action is unchanged: node C:/claudecode/pillagers-codex/.codex-work/o-00y2-2p-lifecycle-test/install-handoff.cjs "C:/claudecode/dark raiders". Then commit/sync the tool through normal maintenance and return ON HIS PC confirmation. This installs the equal 3000 ms return pauses and duration reporting and publishes the nine verified case findings. The command is already in alarms.md; no duplicate alarm or extra camera run was requested. LOCAL: no linked review.
+

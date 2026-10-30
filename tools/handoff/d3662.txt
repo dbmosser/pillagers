@@ -1,0 +1,5 @@
+## v36.62 - material hit puffs
+
+Co-op hunt while he was away. His pick 80: wall hits should look like the material heard in v23.84. Watch: shoot wood, brick and metal in both windows; look for tan splinters, brief dust and short sparks, with no effects through fog.
+
+MEASURED. Check 36.62 passes, and fails on v36.61.

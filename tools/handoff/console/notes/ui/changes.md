@@ -671,3 +671,5 @@
 
 2026-10-30 | o-001-capture-whole-run-attract-plays-all | captured-footage title and wake prompt | title padding to 24px and underline to 96x4px at 1080p, both scale at 4K; wake prompt bottom inset 12% to 14% | before: tools/handoff/console/notes/shots/o-001-capture-whole-run-attract-plays-all-recipes-2/capture-idle-hub-playlist-1080.jpg | after: lane recipes round 3 pending
 
+2026-10-30 | o-09i-impact-puffs-by-material | raid wall impacts, host and join | uniform yellow sparks/gray puff become brief wood splinters, masonry dust or metal sparks using the sound material; bounded and fog-gated | before: v36.61 code inspection, no before recipe capture | after: lane camera impact-wood-host, impact-concrete-host, impact-metal-host, impact-wood-join, impact-concrete-join, impact-metal-join (paths pending)
+

@@ -3912,8 +3912,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.61';
-var VER_AT='2026-10-30 12:12';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.62';
+var VER_AT='2026-10-30 12:28';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24006,6 +24006,26 @@ function bloodFx(x,y,sx,sy,amt){
   G.puffs.push({x:x+Math.cos(a)*4,y:y+Math.sin(a)*3,t:0,life:.22,c:BLOOD_MIST,r:7+5*k});
   if(fxr()<0.55){ d=fxn(6,14); decal(x+Math.cos(a)*d,y+16+Math.sin(a)*d*0.5,BLOOD_DROP,fxn(3.4,4.6)*(0.7+0.5*k)); }
 }
+// v28.xx (cw-cx-materialpuffs): his pick 80, match the sound material with a few brief chips, dust or sparks. Cosmetic stream only.
+function wallImpactFx(w,x,y,ux,uy){
+  if(!G||G.sim||!fowLive(x,y)) return 0;
+  if(G._impFxFrame!==G.frameN){ G._impFxFrame=G.frameN; G._impFxN=0; }
+  if((G._impFxN||0)>=8) return 0;
+  G._impFxN=(G._impFxN||0)+1;
+  var mat=matOf(w), reduced=CFG.fxLevel===0||GFXQ.particles===0||CFG.flashRed===1;
+  var n=reduced?1:(mat==='concrete'?2:4), a=Math.atan2(-uy,-ux), i, ang, speed;
+  for(i=0;i<n;i++){
+    if(mat==='concrete'){
+      G.puffs.push({x:x+fxn(-3,3),y:y+fxn(-2,2),t:0,life:fxn(.20,.28),c:'#b1a28d',r:fxn(5,9)});
+    }else{
+      ang=a+fxn(-1.25,1.25); speed=fxn(35,105);
+      G.sparks.push({x:x,y:y,vx:Math.cos(ang)*speed,vy:Math.sin(ang)*speed,t:0,
+        life:mat==='wood'?fxn(.18,.28):fxn(.10,.18),c:mat==='wood'?'#ba8a51':(mat==='glass'?'#b4d5dc':'#ffd58b'),
+        z:mat==='wood'?2:1.8,nc:mat!=='metal',sl:mat==='wood'?6:4});
+    }
+  }
+  return n;
+}
 function spark(x,y,col,n,spread){
   if(G.sim) return;
   if(col!==BLOOD_SPRAY) n=Math.min(70,Math.ceil(n*1.8));   // v32.xx (cw-machfx) a34 B (his pick): chunkier hit sparks, 1.8 times the count (blood keeps its own count)
@@ -34494,14 +34514,12 @@ if(en.kind==='stray'&&!en.hostile&&!G.sim){
           // inside-geometry test kills it. Caught it because a 25 unit deep wreck
           // was reporting two penetrations for one crossing.
           punched=true;
-          spark(b.x,b.y,'#ffd9a0',3,110);
-          if(!G.sim) G.puffs.push({x:b.x,y:b.y,t:0,life:.18,c:'#8a939c',r:6});
+          wallImpactFx(_struck,b.x-ux*_ex,b.y-uy*_ex,ux,uy);   // v28.xx (cw-cx-materialpuffs): entry face, same material as the sound
           sfx("clank",b.x,b.y,matOf(_struck));
         } else {
           // v28.xx (cw-cx-wallnoise): a stopped or bouncing player round uses the same impact noise budget.
           if(b.player&&!b.rkt&&matOf(_struck)!=='glass') impactNoise(b.x,b.y,b.sx,b.sy);
-          spark(b.x,b.y,'#ffd9a0',5,150);
-          if(!G.sim) G.puffs.push({x:b.x,y:b.y,t:0,life:.22,c:'#8a939c',r:9});
+          wallImpactFx(_struck,b.x,b.y,ux,uy);   // v28.xx (cw-cx-materialpuffs): stop and bounce share the bounded material burst
           decal(b.x,b.y,'#0d0f13',_decR);
           sfx("clank",b.x,b.y,matOf(_struck));
           if(_rs&&ricochetOff(b,_struck,ux,uy)) punched=true; else hit=true;   // v26.xx (feel18): off steel once   // v28.56 (cloud-feel-rico-wreck-gone), CLOUD HUNT 2026-10-15: only off a wall still standing
@@ -42669,7 +42687,13 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1; if(!fowLive(b.x,b.y)) contin
     if(!fowLive(sp.x,sp.y)) continue;   // cw-fow
     wc.globalAlpha=clamp(1-sp.t/sp.life,0,1);
     if(pixOn()){pixFxSpark(sp);continue;} // v28.xx (cw-cx-pixfx): blood, sparks and chips share the whole-unit path
-    var _sz=sp.z||3.4;   // v32.xx (cw-machfx) a34 B: 3.4 px sparks with a white-yellow core (#ffe9a8); blood and metal chunks have no core
+    // v28.xx (cw-cx-materialpuffs): slim moving splinters and short spark streaks in the smooth look; pixel mode keeps its whole-unit chips.
+    if(sp.sl){
+      var _sa=Math.atan2(sp.vy,sp.vx), _sx=Math.cos(_sa)*sp.sl/2, _sy=Math.sin(_sa)*sp.sl/2;
+      wc.strokeStyle=sp.c; wc.lineWidth=sp.z||1.8; wc.beginPath();
+      wc.moveTo(sp.x-_sx,sp.y-7.8-_sy); wc.lineTo(sp.x+_sx,sp.y-7.8+_sy); wc.stroke(); continue;
+    }
+    var _sz=sp.z||3.4;   // v28.xx (cw-cx-materialpuffs): existing sparks keep their square core
     wc.fillStyle=sp.c; wc.fillRect(sp.x-_sz/2,sp.y-7.8-_sz/2,_sz,_sz);
     if(sp.c!==BLOOD_SPRAY&&!sp.nc){ wc.fillStyle='#ffe9a8'; wc.fillRect(sp.x-0.8,sp.y-8.6,1.6,1.6); }
   }
@@ -56641,7 +56665,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.61: Recorded-footage title padding is 24px at 1080p with a 96 by 4px underline, and the wake prompt sits 14 percent above the bottom. LOCAL: no linked review. Check 36.61 fails on v36.60',
+  now:'v36.62: A few short-lived splinters, dust puffs or sparks use matOf, including teammate tracers. Eight bursts per frame, cosmetic randomness only. LOCAL: no linked review. Check 36.62 fails on v36.61',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -63004,7 +63028,18 @@ function netFxStep(dt){
   if(typeof G==='undefined'||!G||G.sim) return 0;
   if(G.fxBullets) for(i=G.fxBullets.length-1;i>=0;i--){
     b=G.fxBullets[i]; nx=b.x+b.vx*dt; ny=b.y+b.vy*dt; b.life-=dt;
-    if(b.life<=0||(G.map&&G.map.segs&&!losClear(b.x,b.y,nx,ny,G.map.segs))) G.fxBullets.splice(i,1); else { b.x=nx; b.y=ny; }
+    // v28.xx (cw-cx-materialpuffs): the other window derives its own visible hit from the existing cosmetic tracer; no new packet or shared state.
+    var _fxBlocked=G.map&&G.map.segs&&!losClear(b.x,b.y,nx,ny,G.map.segs);
+    if(_fxBlocked){
+      var _fxD=Math.hypot(nx-b.x,ny-b.y), _fxW=null, _fxT=_fxD+1, _fxL=G.map.walls||[], _fi, _ft;
+      if(_fxD>0) for(_fi=0;_fi<_fxL.length;_fi++){
+        if(_fxL[_fi].win) continue;
+        _ft=rayRect(b.x,b.y,b.vx*dt/_fxD,b.vy*dt/_fxD,_fxL[_fi],_fxD);
+        if(_ft>=0&&_ft<_fxT){ _fxT=_ft; _fxW=_fxL[_fi]; }
+      }
+      if(_fxW) wallImpactFx(_fxW,b.x+b.vx*dt/_fxD*_fxT,b.y+b.vy*dt/_fxD*_fxT,b.vx*dt/_fxD,b.vy*dt/_fxD);
+    }
+    if(b.life<=0||_fxBlocked) G.fxBullets.splice(i,1); else { b.x=nx; b.y=ny; }
   }
   NET.fxAcc=(NET.fxAcc||0)+dt;
   if(NET.fxAcc>=NET_HUB_STEP&&NET.fxQ&&NET.fxQ.length){

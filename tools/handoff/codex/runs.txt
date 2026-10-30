@@ -596,3 +596,6 @@
 2026-10-30 11:49 o-001-capture-whole-run-attract-plays-all 198s ok PARTIAL in=2653927 out=40253 run=2
 2026-10-30 12:01 o-001-capture-whole-run-attract-plays-all 387s ok PARTIAL in=3818849 out=51908 run=3
 2026-10-30 12:10 o-001-capture-whole-run-attract-plays-all 147s ok PARTIAL in=4339868 out=56726 run=4
+2026-10-30 12:17 o-001-capture-whole-run-attract-plays-all 62s ok DONE in=4719760 out=58554 run=5
+2026-10-30 12:18 o-00y2-2p-lifecycle-test 56s ok PARTIAL in=139547 out=1805 run=5
+2026-10-30 12:26 o-09i-impact-puffs-by-material 306s ok PARTIAL in=748306 out=11058 run=1

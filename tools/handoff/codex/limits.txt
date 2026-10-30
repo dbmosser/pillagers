@@ -235,3 +235,6 @@
 2026-10-30 11:49 week=90.0% 5h=6.0% week_resets=2026-11-04 01:35 job=o-001-capture-whole-run-attract-plays-all
 2026-10-30 12:01 week=90.0% 5h=9.0% week_resets=2026-11-04 01:35 job=o-001-capture-whole-run-attract-plays-all
 2026-10-30 12:10 week=90.0% 5h=10.0% week_resets=2026-11-04 01:35 job=o-001-capture-whole-run-attract-plays-all
+2026-10-30 12:17 week=90.0% 5h=11.0% week_resets=2026-11-04 01:35 job=o-001-capture-whole-run-attract-plays-all
+2026-10-30 12:18 week=91.0% 5h=12.0% week_resets=2026-11-04 01:35 job=o-00y2-2p-lifecycle-test
+2026-10-30 12:25 week=91.0% 5h=15.0% week_resets=2026-11-04 01:35 job=o-09i-impact-puffs-by-material

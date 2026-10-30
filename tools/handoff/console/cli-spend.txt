@@ -2006,3 +2006,10 @@
 2026-10-30 0.0814 critic-o-001-capture-whole-run-attract-plays-all
 2026-10-30 0.0828 critic-o-001-capture-whole-run-attract-plays-all
 2026-10-30 0.0000 o-001-capture-whole-run-attract-plays-all
+2026-10-30 0.0830 critic-o-001-capture-whole-run-attract-plays-all
+2026-10-30 0.0833 critic-o-001-capture-whole-run-attract-plays-all
+2026-10-30 0.0000 o-001-capture-whole-run-attract-plays-all
+2026-10-30 0.0000 o-00y2-2p-lifecycle-test
+2026-10-30 0.0858 critic-o-00y2-2p-lifecycle-test
+2026-10-30 0.0847 critic-o-00y2-2p-lifecycle-test
+2026-10-30 0.0000 o-09i-impact-puffs-by-material

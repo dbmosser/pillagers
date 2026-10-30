@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.62 - material hit puffs
+
+Co-op hunt while he was away. His pick 80: wall hits should look like the material heard in v23.84. Watch: shoot wood, brick and metal in both windows; look for tan splinters, brief dust and short sparks, with no effects through fog.
+
+MEASURED. Check 36.62 passes, and fails on v36.61.
 ## v36.61 - FINAL CAPTURE TITLE AND WAKE PROMPT SPACING
 
 Co-op hunt while he was away. The second critic pass still asked for more title breathing room and a higher wake prompt. This is the second and final presentation follow-up to the recording order. Watch: f9 now records your whole run; when nobody touches the game it plays all your recordings

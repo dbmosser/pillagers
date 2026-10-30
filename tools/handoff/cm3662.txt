@@ -1,0 +1,7 @@
+v36.62: material hit puffs
+
+A few short-lived splinters, dust puffs or sparks use matOf, including teammate tracers. Eight bursts per frame, cosmetic randomness only. LOCAL: no linked review.
+
+Check 36.62. Fails on v36.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -4784,36 +4784,36 @@
   "when": "2026-10-30T10:55"
  },
  "online-raid-guest": {
-  "score": 2,
+  "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "The earlier fixes were only partly applied: the controls line is folded and the hotbar is cleaner. But the HUD still sits on a 4–20px inset, the 'run info' label still has a capital I, and every corner uses a different panel style.",
+  "verdict": "The HUD is clearer than before, with a bold ammo readout, a fixed hp bar and a folded minimap, but the edge insets don't match, the panel treatments differ, and the roster and a capital letter still hurt it.",
   "findings": [
-   "P0 top-right 'run info' bar: Change the text to 'run info'. Merge the minimap and bar into one 1px --ui-line-hi panel with 4px radius, or put a 16px gap between them. Inset the pair 48px from the top and right edges.",
-   "P1 bottom-left 'hp 100' bar: Make the bar 240x16 with a 1px --ui-line-hi border and a --ui-panel track. Use --ok for the fill. Put 'hp 100' at 20px f-cond 600 above the bar. Inset 48px from the left and bottom edges.",
-   "P1 top-centre timer, extract chip and bolt icon: Set the timer to 56px f-cond 800 --tx-1. Put the chip 8px below it with a --ui-panel fill and a 1px --extract border. Remove the bolt icon or label it. Put a 40% --scrim behind the group. Move the group down to a 48px top inset.",
-   "P1 left roster 'current pillagers 7', 'host check' bar, and 'f1 controls' hint: Collapse the roster to its header row by default and open it on a key. Give every left-side panel a --ui-panel fill, a 1px --ui-line-hi border, 4px radius, 16px padding and a 48px edge inset. Set row text to 16px --tx-1 with money in --tx-2. Dock 'f1 controls' as a 16px --tx-2 line on the 48px bottom-left inset.",
-   "P1 bottom-right ammo card: Use the shared panel spec: --ui-panel fill, 1px --ui-line-hi border, 4px radius. Place it at a 48px right inset and a 48px bottom inset, the same as the hotbar and hp bar. Set the weapon name to 20px --tx-1 and the hint to 16px --tx-2."
+   "P0 top-right 'run info' bar: Set the text to 'run info'. Give the map and the bar the same 1px --ui-line-hi border and 4px radius. Move the pair to a 48px top inset and a 48px right inset, or at least match the ammo card's inset.",
+   "P1 left 'current pillagers 7' roster: Start the roster folded to its header row. When it is open, use a --ui-panel fill, a 1px --ui-line-hi border, 4px radius and 16px padding, and set the money to --tx-2 at 16px. Keep the 'value at risk' label and drop the second all-caps-style column header weight. Inset 48px from the left.",
+   "P1 bottom-left 'hp 100' bar: Make the bar 240x16 with a --ui-panel track and a 1px --ui-line-hi border. Put 'hp 100' above it at 20px f-cond 600 --tx-1. Inset 48px from the left and bottom.",
+   "P1 top-centre timer and 'extract 139m' chip: Set the timer to 56px f-cond 800 --tx-1. Put a 40% --scrim behind the group. Put the chip 8px below the timer, remove the bolt or give it a label, and move the group down to a 48px top inset.",
+   "P1 bottom-centre hotbar, 'f1 controls' hint and 'in host check's party' toast: Inset the hotbar 48px from the bottom. Set slot numbers to 16px --tx-2 over a 40% --scrim. Dock 'f1 controls' as a 16px --tx-2 line on the 48px bottom-left inset, or in the ammo card's footer. Give the toast 4px radius, a 1px --ui-line-hi border and --ui-panel fill, and fade it out after 3s."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00y2-2p-lifecycle-test-recipes-2/online-raid-guest-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-00y2-2p-lifecycle-test-recipes-3/online-raid-guest-1080.jpg",
   "task": "o-00y2-2p-lifecycle-test",
-  "when": "2026-10-30T15:25"
+  "when": "2026-10-30T16:20"
  },
  "online-raid-host": {
   "score": 2,
   "pass": false,
   "need": 4,
-  "verdict": "The previous advice was mostly ignored: the full controls list is still open on the left, the HUD is still a pile of differently styled boxes hugging the screen edges, and the mix of pixel-ish and clean type makes it read as a prototype.",
+  "verdict": "The earlier advice was not followed: the controls card is still open at full size and the corner panels are still crowded against the screen edges. The new screenshot shows no meaningful change. A capital letter, 'i' in 'run Info', has been added.",
   "findings": [
-   "P0 controls list, left mid (x16-326, y455-800): Fold it by default to one 16px line 'f1 controls' at x=48, y=1000 in --tx-2. F1 opens a card with a 1px --ui-line-hi border, 4px radius and 32px row pitch. Delete the 'full list' footer and drop the chip fills to a 1px outline.",
-   "P1 roster, top-left (x8-367, y143-315): Move to x=48, y=48. Use a 32px row pitch, 16px text and 1px --ui-line dividers. Make your own row --acc or amber, and use --tx-1 for the others. Use --tx-2 for the header. Fold to one 20px row by default.",
-   "P1 hp, bottom-left (x24-430, y1035-1068): Put it in a --ui-panel card with a 4px radius and a 1px --ui-line-hi border at x=48, 32px from the bottom. Inside, use a 16px 'hp' label, a 56px --tx-1 number and an 8px bar about 240px wide in --ok.",
-   "P1 minimap and run info (x1603-1902, y18-362): Inset to 48px from the top and right. Use a 1px --ui-line-hi border and 4px radius on both. Make 'run info' a 32px row with 16px text and 8px padding, attached under the map with no gap.",
-   "P1 ammo card, bottom-right (x1668-1910, y902-1052): Inset 48px from the right and 32px from the bottom. Use 16px --tx-2 for the labels, a 56px --fs-hero numerator in --tx-1 and a 32px --tx-2 denominator. Put 16px padding inside."
+   "P0 controls list, left mid (x16-327, y455-800): Fold it by default to one 16px 'f1 controls' line in --tx-2 at x=48, y=1000. F1 opens the card with a 1px --ui-line-hi border, 4px radius and 32px row pitch. Delete the 'full list' footer and make the key chips 1px outlines with no fill.",
+   "P0 'run Info' header (x1610, y333): Change the string to 'run info'. Make the header a 32px row with 16px --tx-1 text, 8px padding and a 1px --ui-line-hi border, attached under the map.",
+   "P1 roster, top-left (x8-367, y143-315): Move it to x=48, y=48. Use a 32px row pitch, 16px text and 1px --ui-line dividers. Colour your own row amber (P1) and the others --tx-1. Use --tx-2 for the header. Fold it to one 20px row by default, since it has 7 players.",
+   "P1 hp bar, bottom-left (x24-430, y1035-1068): Put it in a --ui-panel card with a 1px --ui-line-hi border and 4px radius at x=48, 32px from the bottom. Inside, use a 16px 'hp' label, a 56px --tx-1 number and an 8px --ok bar about 240px wide.",
+   "P1 minimap and ammo card, right side (x1603-1902, y18-362 / x1668-1910, y902-1052): Inset both to 48px from the right. Make the ammo card 16px --tx-2 labels, a 56px --tx-1 '12' and a 32px --tx-2 '/ 24'. Pad it 16px and use a 1px --ui-line-hi border with 4px radius. Give the minimap the same border and radius."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00y2-2p-lifecycle-test-recipes-2/online-raid-host-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-00y2-2p-lifecycle-test-recipes-3/online-raid-host-1080.jpg",
   "task": "o-00y2-2p-lifecycle-test",
-  "when": "2026-10-30T15:26"
+  "when": "2026-10-30T16:20"
  },
  "p1-moving": {
   "score": 2,
@@ -4883,32 +4883,32 @@
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The title now sits in a clean black plate and 'press any key' is lime and legible, but the screen is still letterboxed with grey bars, the title is small, and the station labels and the asterisk tag are still messy.",
+  "verdict": "The title plate and the lime 'press any key' pill are cleaner, but the grey outer frame, the asterisk tag, the crowded stations and the unvignetted hub scene are all still there.",
   "findings": [
-   "P0 outer frame, left x<200 and right x>1765, top y<45 and bottom y>975: Render the world edge to edge at 1920x1080. If the border must stay, fill it with --ui-void #0b0c0d. Add one vignette of rgba(6,7,8,.8) on the top 160px and bottom 120px.",
-   "P1 title plate (792,55)-(1128,167): Set 'pillagers' at 56px (--fs-hero) f-cond 800 in --tx-1. Use a --scrim rgba(6,7,8,.80) plate with 4px radius and 24px padding, centred at y≈120-240 so it clears the pillars. Make the underline 4px by 96px in --acc.",
-   "P1 '***experimental feature may glitch***' tag at (1387,752)-(1636,776): Remove it from the attract view. Where it must stay, show a 16px --warn chip reading 'beta', radius 4, 8px below the label, with no asterisks.",
-   "P1 'press any key' at (848,895)-(1072,950): Move it up to y≈880-930 so it clears the counter. Use a --scrim pill with 8x24 padding and 4px radius. Add a 1.2s bounce with --m-ease. Show 'press a' when a pad is in use.",
-   "P2 station labels (wirt the gambler, the mainframe, shop craft and hire, settings, the stash, fashion, the last pour): Anchor every label 24px above its station centre. Use one fill, --ui-panel at 90%, with a 1px --ui-line-hi border and 4px radius. Set 20px f-cond 600 in --tx-1 with 8x16 padding."
+   "P0 outer frame: left x<200, right x>1765, top y<45, bottom y>975: Render the scene at 1920x1080 edge to edge. If the border has to stay, fill it with #0b0c0d. Add a vignette of rgba(6,7,8,.8) on the top 160px and bottom 120px.",
+   "P1 '***experimental feature may glitch***' (1387,752)-(1636,776): Remove it from the attract view. Where it must stay, use a 16px --warn chip reading 'beta', radius 4, 8px below the label, with no asterisks.",
+   "P1 title plate (792,55)-(1128,167): Set the wordmark at 56px f-cond 800 in --tx-1. Use a --scrim rgba(6,7,8,.80) plate with 4px radius and 24px padding, centred at y≈140-260 so it clears the pillars. Make the underline 4px by 96px in --acc. Shift the pillars or the station so nothing shows behind the plate.",
+   "P1 'press any key' (848,872)-(1072,930): Move the plate up to y≈880-920 so it clears the desk, with 8x24 padding and 4px radius. Add a 1.2s bounce on --m-ease. Show 'press a' when a pad is in use.",
+   "P2 station labels: wirt the gambler, shop craft and hire, the stash, fashion, settings, the last pour, the mainframe: Anchor each label 24px above its station centre. Use one --ui-panel fill at 90% opacity, a 1px --ui-line-hi border and 4px radius. Set 20px f-cond 600 in --tx-1 with 8x16 padding. Cut the glow circles to 30% alpha and remove the centre circle."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-001-capture-whole-run-attract-plays-all-recipes-2/capture-idle-hub-playlist-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-001-capture-whole-run-attract-plays-all-recipes-3/capture-idle-hub-playlist-1080.jpg",
   "task": "o-001-capture-whole-run-attract-plays-all",
-  "when": "2026-10-30T16:07"
+  "when": "2026-10-30T16:16"
  },
  "capture-whole-run-timer": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The HUD is readable, but the timer is still small, every panel is a different shape, and the 'run info' label has a capital I and sits behind the building. The earlier advice was mostly not applied.",
+  "verdict": "The chips now share a dark panel style, but the margins, type sizes and corner alignment are still inconsistent, and the timer and hp bar are still too small and too close to the screen edge.",
   "findings": [
-   "P0 top-right 'run info' dropdown: Render the string as 'run info'. Use a --ui-panel fill, a 1px --ui-line-hi border and a 4px radius. Inset it 48px from the right and 32px from the top. Make it 16px f-cond with a 32px row height.",
-   "P1 top centre timer: Make the timer 56px f-cond 800 in tx-1. Turn the extract chip into a 16px --extract text label on a --ui-panel fill, 8px below the timer. Leave 16px between the timer and the icon.",
-   "P1 left roster panel 'current pillagers 3': Move the panel to x=48. Set the rows to 16px with 8px padding. Make the header tx-2 and the names and money tx-1. Right-align the money to one edge. Use --ui-panel, a 1px --ui-line-hi border and a 4px radius.",
-   "P1 HUD panel consistency: Use one chip style on every HUD piece: #16191b at 90% alpha, a 1px --ui-line-hi border and a 4px radius. Align the corner clusters to a 48px margin. Colour only the text or the glyph, not the fill.",
-   "P1 bottom-left hp bar and status chips: Lift the bar to y=1032 or higher, at least 48px from the bottom. Make it 16px tall. Put 'hp 100' at 20px in tx-1 on the right of the bar. Make both chips 32px high with 16px text."
+   "P0 top-right 'run info' dropdown: Render it as 'run info'. Inset it 48px from the right and 32px from the top. Make it 32px tall and 240px wide, with a 16px f-cond label and a --ui-panel fill. Leave 16px of clear space under it.",
+   "P1 top-centre timer '15:00': Make the timer 56px f-cond 800 in tx-1 at y=32. Leave 16px between the timer and the icon. Turn the extract chip into a --ui-panel chip with a 1px --ui-line-hi border, a 4px radius and 16px --extract text. Put it 8px below the timer and delete the stray arrow.",
+   "P1 left roster panel 'current pillagers 3': Move it to x=48, y=96. Use 16px rows with 8px padding, tx-2 headers and tx-1 names. Right-align the money to one edge. Use --ui-panel, a 1px --ui-line-hi border and a 4px radius. Drop the chevron or move it inside the padding.",
+   "P1 bottom-left hp bar: Lift the bar so its bottom edge is at y=1032 or higher, at least 48px from the bottom. Set x=48, height 16px, width 320px. Put 'hp 100' at 20px in tx-1 to the right of the bar, not on the fill.",
+   "P1 status chips 'concealed' / 'in cover' and their icons: Make both chips 32px high with 16px text and 8px padding on the same --ui-panel fill. Colour only the glyph. Align them to x=48 and leave 8px above the hp bar."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-001-capture-whole-run-attract-plays-all-recipes-2/capture-whole-run-timer-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-001-capture-whole-run-attract-plays-all-recipes-3/capture-whole-run-timer-1080.jpg",
   "task": "o-001-capture-whole-run-attract-plays-all",
-  "when": "2026-10-30T16:07"
+  "when": "2026-10-30T16:16"
  }
 }
