@@ -13025,7 +13025,7 @@ class Audio {
   {v:'35.14',what:'FOG OF WAR: unexplored ground is grey, and tracers and sparks out of sight stay hidden with fog of war on',
    run:function(){
      var bad=[], p, im, d, keep=CFG.fogWar, far=null, i, a, rr, x, y, pts=[], rects=[];
-     function hitL(){ for(var q=0;q<pts.length;q++) if(Math.abs(pts[q][0]-far.x)<1&&Math.abs(pts[q][1]-(far.y-12))<1) return true; return false; }
+     function hitL(){ for(var q=0;q<pts.length;q++) if(Math.abs(pts[q][0]-far.x)<1&&pts[q][1]>=far.y-12.01&&pts[q][1]<=far.y+0.01) return true; return false; }
      function hitR(){ for(var q=0;q<rects.length;q++) if(Math.abs(rects[q][0]-(far.x-1.7))<1.5&&Math.abs(rects[q][1]-(far.y-7.8-1.7))<1.5) return true; return false; }
      function stage(){
        G.fxBullets=[{x:far.x,y:far.y,vx:600,vy:0,life:2,tint:'#ffd48a',owner:1,sx:far.x-60,sy:far.y}];
