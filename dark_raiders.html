@@ -3912,8 +3912,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.62';
-var VER_AT='2026-10-30 12:28';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.63';
+var VER_AT='2026-10-30 13:05';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -32220,6 +32220,7 @@ if(e.state==='possum'){
       // v17.11, co-op hunt 2026-09-28: not once the host is out. A host who dies, extracts or abandons while the party is still up
       // top keeps the raid running for them, and a man he had dropped who bled out there added a kill to the run row he had already
       // saved, stepped his contracts and wrote a grudge into his save, for a raid he was no longer in. Such a death is credited to nobody.
+      sharedMachineDeath(e);   // v28.xx (cw-cx-sharedmachine): both recent contributors receive full machine SP.
       try{ feedKillEnt(e); }catch(_fke){}   // v27.24 (feed1): the kill in the feed, his, a teammate's or nobody's
       if(e.byPlayer&&!(G.player&&G.player.specOut)){
         dmgStreakKill(G.player,e.kind);   // v28.xx (cw-cx-damagestreaks): a credited enemy death, including the air strike.
@@ -56665,7 +56666,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.62: A few short-lived splinters, dust puffs or sparks use matOf, including teammate tracers. Eight bursts per frame, cosmetic randomness only. LOCAL: no linked review. Check 36.62 fails on v36.61',
+  now:'v36.63: Recent machine contributors each receive full kill SP. Kill counts and kill rewards still belong to the finishing player. Check 36.63 fails on v36.62',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -65256,6 +65257,15 @@ function netKillTake(peer,m){
   if(!netEntsPeer()) return 'down';
   k=netClean(m.k,12); T=G.tel; e=(NET.entMap&&NET.entMap[m.id|0])||(NET.entDead&&NET.entDead[m.id|0])||null;   // v16.13: or the body the gone word just took off
   if(!k) return 'bad';
+  // v28.xx (cw-cx-sharedmachine): addressed score-only credit, even if the gone snapshot has not arrived yet.
+  if(m.share===1){
+    if(!ELEM_MACH[k]||!Number.isFinite(m.x)||!Number.isFinite(m.y)||!(m.id>0)) return 'bad';
+    var seen=G.sharedSpSeen||(G.sharedSpSeen={});
+    if(seen[m.id]) return 'ignored';
+    seen[m.id]=1;
+    sharedMachineScore({kind:k,elite:!!m.el,affix:!!m.af,boss:!!m.boss,x:m.x,y:m.y});
+    return 'shared';
+  }
   if(T.kills&&T.kills[k]!==undefined) T.kills[k]++;
   dmgStreakKill(G.player,k);   // v28.xx (cw-cx-damagestreaks): only this addressed seat receives its own streak.
   try{ contractKill(k); }catch(_ck){}
@@ -69045,7 +69055,39 @@ function arcadeGunLoot(ct,key,itm,found){
 function arcadeBmNew(){ return {st:0,hl:0,ls:0,cc:0,dm:0,cur:0,lid:''}; }
 function arcadeBmAuth(){ return ARCADE.role==='host'||!!(G&&G.netWasJoin); }
 // v28.xx (cw-cx-overmoments): return the original blow unchanged; record health actually removed once on the body authority.
+// v28.xx (cw-cx-sharedmachine), HIS DECISION 10-28: "last 2.5 secs". The body authority timestamps real damage, in raid seconds.
+function sharedMachineMark(e,n,seat){
+  if(!G||G.sim||!NET.on||NET.role!=='host'||!(G.arcade||G.career)||!e||!ELEM_MACH[e.kind]||e.finished||!(e.hp>0)||!(n>0)||seat<0) return;
+  if(!e.sharedHits) e.sharedHits={};
+  e.sharedHits[seat|0]=G.t;
+}
+// v28.xx (cw-cx-sharedmachine): score only; the killing blow still owns kills, contracts, streaks, perks and drops.
+function sharedMachineScore(e){
+  if(!G||G.sim||G.over||!e||!ELEM_MACH[e.kind]||!G.player||G.player.specOut) return 0;
+  var st=G.arcade&&ARCADE.on?ARCADE:(G.career?G.cs:null), n;
+  if(!st) return 0;
+  n=arcadeKillPts(e.kind,e.affix&&e.elite?3:e.elite,e.boss);
+  if(!(n>0)) return 0;
+  if(G.hotZone&&Number.isFinite(e.x)&&Number.isFinite(e.y)&&Math.hypot(e.x-G.hotZone.x,e.y-G.hotZone.y)<=G.hotZone.r) n=Math.round(n*HOT_KILLX);
+  if(G.arcade){ if(arcadeRushOn()) n=Math.round(n*1.05); ARCADE.mine=(ARCADE.mine|0)+n; arcadeScSend(); }
+  else { G.cs.s=(G.cs.s|0)+n; csTally('kill',n); }
+  return n;
+}
+// v28.xx (cw-cx-sharedmachine): settle at death, before a later entity snapshot can age the last hit past the cutoff.
+function sharedMachineDeath(e){
+  if(!G||G.sim||!NET.on||NET.role!=='host'||!(G.arcade||G.career)||!e||!ELEM_MACH[e.kind]||e.hp>0||e.sharedPaid) return;
+  e.sharedPaid=1;
+  var hits=e.sharedHits||{}, seats=[], k, s, q, killer=e.byPlayer?0:(e.bySeat>0?e.bySeat:-1);
+  for(k in hits) if(Object.prototype.hasOwnProperty.call(hits,k)&&G.t-hits[k]>=0&&G.t-hits[k]<=2.5) seats.push(+k);
+  if(seats.length<2) return;
+  for(k=0;k<seats.length;k++){
+    s=seats[k]; if(s===killer) continue;
+    if(s===0) sharedMachineScore(e);
+    else { q=netPeerOfSeat(s); if(q) netSend(q,{t:'kill',share:1,seat:s,id:e.nid,k:e.kind,el:e.elite?1:0,af:e.affix?1:0,boss:!!e.boss,x:e.x,y:e.y}); }
+  }
+}
 function arcadeBmDamage(e,n,seat){
+  sharedMachineMark(e,n,seat);
   var b, v;
   if(!G||G.sim||!G.arcade||!ARCADE.on||!arcadeBmAuth()||seat<0||!e||e.finished||e.merc||e.friendlyPC||!(e.hp>0)||!(n>0)) return n;
   v=Math.min(e.hp,n);

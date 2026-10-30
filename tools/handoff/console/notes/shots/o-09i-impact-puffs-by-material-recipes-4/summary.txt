@@ -1,0 +1,14 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  impact-wood-host                       staged       5.5s  total   1: clip 0 off 0 small 0 contrast 0 font 1 overlap 0 focus 0  | wood host: review contact sheet from the real collision and renderer
+  impact-concrete-host                   staged       5.5s  total   1: clip 0 off 0 small 0 contrast 0 font 1 overlap 0 focus 0  | concrete host: review contact sheet from the real collision and renderer
+  impact-metal-host                      staged       5.5s  total   1: clip 0 off 0 small 0 contrast 0 font 1 overlap 0 focus 0  | metal host: review contact sheet from the real collision and renderer
+  impact-wood-join                       staged       5.5s  total   1: clip 0 off 0 small 0 contrast 0 font 1 overlap 0 focus 0  | wood join: review contact sheet from the real collision and renderer
+  impact-concrete-join                   staged       5.5s  total   1: clip 0 off 0 small 0 contrast 0 font 1 overlap 0 focus 0  | concrete join: review contact sheet from the real collision and renderer
+  impact-metal-join                      staged       5.5s  total   1: clip 0 off 0 small 0 contrast 0 font 1 overlap 0 focus 0  | metal join: review contact sheet from the real collision and renderer
+== 4k : window 3876x2265, viewport 3840x2160
+  impact-wood-host                       staged       5.7s  total   3: clip 0 off 0 small 2 contrast 0 font 1 overlap 0 focus 0  | wood host: review contact sheet from the real collision and renderer
+  impact-concrete-host                   staged       5.7s  total   3: clip 0 off 0 small 2 contrast 0 font 1 overlap 0 focus 0  | concrete host: review contact sheet from the real collision and renderer
+  impact-metal-host                      staged       5.8s  total   3: clip 0 off 0 small 2 contrast 0 font 1 overlap 0 focus 0  | metal host: review contact sheet from the real collision and renderer
+  impact-wood-join                       staged       6.4s  total   3: clip 0 off 0 small 2 contrast 0 font 1 overlap 0 focus 0  | wood join: review contact sheet from the real collision and renderer
+  impact-concrete-join                   staged       5.7s  total   3: clip 0 off 0 small 2 contrast 0 font 1 overlap 0 focus 0  | concrete join: review contact sheet from the real collision and renderer
+  impact-metal-join                      staged       5.8s  total   3: clip 0 off 0 small 2 contrast 0 font 1 overlap 0 focus 0  | metal join: review contact sheet from the real collision and renderer

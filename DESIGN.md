@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.63 - SHARED MACHINE POINTS
+
+Co-op hunt while he was away. His 10-28 decision: both players get full points when both hurt a machine in its last 2.5 seconds. Watch: compare both score clocks after a shared machine kill, then wait over 2.5 seconds after one player hits and confirm only the finisher scores.
+
+MEASURED. Check 36.63 passes, and fails on v36.62.
 ## v36.62 - material hit puffs
 
 Co-op hunt while he was away. His pick 80: wall hits should look like the material heard in v23.84. Watch: shoot wood, brick and metal in both windows; look for tan splinters, brief dust and short sparks, with no effects through fog.

@@ -4910,5 +4910,133 @@
   "pic": "tools/handoff/console/notes/shots/o-001-capture-whole-run-attract-plays-all-recipes-3/capture-whole-run-timer-1080.jpg",
   "task": "o-001-capture-whole-run-attract-plays-all",
   "when": "2026-10-30T16:16"
+ },
+ "impact-concrete-host": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The HUD and tan overlay from the last review are gone, replaced by a clean dark study sheet with three consistent frame cards, but the type is generic Arial-like and the caption sizes break the scale, so it reads as a dev contact sheet and not a Pillagers screen.",
+  "findings": [
+   "P1 title 'masonry dust' (x96,y205-240) and all text on the sheet: Set the title in f-cond 700 at 32px tx-1. Set 'impact study - local bullet' in f-body 400 at 20px tx-2. Use f-cond 600 for the frame labels. Do not use system fonts.",
+   "P1 frame labels '30 ms', '90 ms', '150 ms' (y786, about 20px): Set the numbers in f-cond 600 at 20px tx-1 with +.04em tracking, and put the 'ms' unit in 16px tx-2. Keep the 24px left padding and centre the text vertically in a 64px strip.",
+   "P2 footer note 'magnified game capture - native particle sizes - hud excluded' (x96,y870, about 15px): Delete it. If it must stay, set it at 14px f-body 500 tx-2 (4.5:1 or better) and align it to the bottom margin at y=1000.",
+   "P2 subtitle 'impact study - local bullet' (y296): Move the subtitle to 16px below the title baseline at 20px f-body tx-2. Keep 32px between the subtitle and the card row at y=352.",
+   "P2 three frame cards (x96-1824, y352-818): Use fill #16191b and a 1px #4a5257 border on the card. Make the gutters 24px. Centre the whole block vertically, or fill it, with the margin at 5% (96px). Render the captures with image-rendering:pixelated so the particles stay crisp."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09i-impact-puffs-by-material-recipes-4/impact-concrete-host-1080.jpg",
+  "task": "o-09i-impact-puffs-by-material",
+  "when": "2026-10-30T16:47"
+ },
+ "impact-concrete-join": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The shot is now a clean, lower-case, three-frame impact study with no HUD leftovers, but it is a generic template page in a system sans rather than Barlow, and the frames are blurry and low-contrast.",
+  "findings": [
+   "P1 title 'masonry dust' (96,205) and all text on the page: Set the title in --f-cond 700 at 32px, --tx-1. Set the subtitle and frame captions in --f-body 20px. Set the footer note in --f-body 14px at --tx-2.",
+   "P1 frame images (96-1824 x 351-755): Capture at native size and upscale with nearest-neighbour (image-rendering: pixelated). Or capture at 2x. Darken the wall plane by about 20% so the dust reaches at least 3:1 against it.",
+   "P1 hierarchy, title (96,205) vs frames: Make the frames the hero. Keep the title at 32px. Put the ms label at 20px f-cond 600 --tx-1 with a 3px --acc tick on the left edge of the caption strip, so it reads as a time axis.",
+   "P2 layout, vertical spacing (title 205, subtitle 296, frames 351, footer 870): Use a 48px margin. Space title, subtitle and frames at 24px steps. Centre the content block vertically, or anchor it at y=96.",
+   "P2 footer note (96,870): Cut it to 'magnified, hud hidden' at 14px f-body, or drop it and keep the detail in the filename or metadata."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09i-impact-puffs-by-material-recipes-4/impact-concrete-join-1080.jpg",
+  "task": "o-09i-impact-puffs-by-material",
+  "when": "2026-10-30T16:47"
+ },
+ "impact-metal-host": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The earlier HUD-versus-minimap problems are gone because this is now a clean three-frame impact study sheet, but it uses a generic system font, small type and a dead 1080px-high canvas with weak hierarchy.",
+  "findings": [
+   "P1 title 'metal sparks' x96-316 y203-240, subtitle y296: Set the title to f-cond 700 32px tx-1 (#efe9dc) and the subtitle to f-body 400 20px tx-2 (#aaa498). Set both at x96 with the title baseline at y240 and the subtitle 16px below it.",
+   "P1 frame captions '30 ms', '90 ms', '150 ms' at y786, and footer y870: Set the captions to f-cond 600 20px with a tx-2 label. Make the key time lime (--acc) only if one frame is the focus. Delete the footer line, or reduce it to a 14px f-body 500 'native sizes' tag at x96 y1032.",
+   "P1 the three frames x96-1824 y351-819: Crop each frame to the impact point at 2x zoom (about 280x200 source). Or make the frames 3 columns by 720px tall (y300-1020) so the sparks fill about 25% of the frame. Darken the scene backdrop to --ui-panel #16191b.",
+   "P2 whole sheet, y0-190 and y890-1080: Move the title to y96 with the 48px margin from the guide. Move the frame row down to y200 and grow it to y960. Use --fs-title 32px for the title and the 8px grid for all gaps.",
+   "P2 caption bars y755-819, card borders: Use a --ui-line-hi #4a5257 border with 4px radius, a --ui-panel #16191b caption fill, and a 3px --acc bar on the top of the active frame only."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09i-impact-puffs-by-material-recipes-4/impact-metal-host-1080.jpg",
+  "task": "o-09i-impact-puffs-by-material",
+  "when": "2026-10-30T16:48"
+ },
+ "impact-metal-join": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The new frame is a tidy three-panel contact sheet rather than a broken game view, so the old P0s are gone, but it reads as a dev debug page with small, generic Arial type and an effect that is hard to see.",
+  "findings": [
+   "P1 title 'metal sparks' (x96-316, y203-238) and subtitle (y296): Set the title in f-cond 700 32px, tx-1 #efe9dc. Set the subtitle in f-body 400 20px, tx-2 #aaa498. Put a 4px x 32px lime #e6ff3d bar at x96 beside the title, as the single accent on the page. Use a 24px gap between the title and the subtitle.",
+   "P1 three frame cards (x96-1824, y351-819): Use fill --ui-panel #16191b, border 1px --ui-line-hi #4a5257, radius 4px on the card and on the image clip. Make the caption strip --ui-raised #1e2225 with a 1px --ui-line top divider. Anchor the group vertically: title at y48 (margin 5% of 1080 is 54px) and cards starting at y160, enlarged to about 640px tall so the sparks fill the cards.",
+   "P1 spark frames (x358-422 y555-600, x908-1030 y565-630, x1568-1606 y575-610): Crop the game capture tighter around the impact point (2x more zoom) with nearest-neighbour scaling so it is crisp. Darken the backdrop with a 40% --ui-void overlay so the cream sparks (#fff1c0) reach 7:1 contrast. Keep the 90 ms and 150 ms frames at their native brightness.",
+   "P2 captions '30 ms', '90 ms', '150 ms' (x117, y786): Set them in f-cond 600 20px with tabular figures, tx-1. Show the 'ms' unit in 16px tx-2. Use 16px padding on the 8px grid, and a strip height of 56px.",
+   "P2 footer note (x96-531, y862-879): Remove the line, or fold 'native particle sizes' into the subtitle as one short tag. If it stays, use the 14px --fs-fine tx-2 token at the 5% margin, bottom-left y1026."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09i-impact-puffs-by-material-recipes-4/impact-metal-join-1080.jpg",
+  "task": "o-09i-impact-puffs-by-material",
+  "when": "2026-10-30T16:48"
+ },
+ "impact-wood-host": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The new version is a tidy three-frame impact study that fixes the old giant number and missing HUD. It is a dev contact sheet in a generic system font, not a game screen, and the splinters it exists to show are tiny and low-contrast.",
+  "findings": [
+   "P1 title 'wood splinters' (x96,y220) and all captions: Set the title in f-cond 700 at 32px, tx-1. Set the 30/90/150 ms captions in f-cond 600 at 16px with +.04em tracking, tx-2. Set the subtitle in f-body at 16px, tx-2.",
+   "P1 three frames (x96-1824, y352-755): Crop each frame tighter, to about 2x on the impact point. Or darken the floor 25% behind the particles. Add a 1px --ui-void outline to each splinter, or lift splinter lightness to about #fff3c4 with 100% alpha until 120 ms.",
+   "P1 caption rows (y755-818): Fill the caption bar with --ui-panel and a 1px --ui-line divider above it. Put '30 ms' in --acc as the hero frame and leave the other two in tx-2.",
+   "P2 background (full frame): Use --ui-bg #111315. Centre the block vertically, or align the title to the 5% margin (x96, y54).",
+   "P2 footer note (x96,y870): Cut it to 'magnified, no hud'. Use f-body at 14px in tx-2, and move it onto the same 16px baseline as the subtitle."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09i-impact-puffs-by-material-recipes-4/impact-wood-host-1080.jpg",
+  "task": "o-09i-impact-puffs-by-material",
+  "when": "2026-10-30T16:48"
+ },
+ "impact-wood-join": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "This is a dev contact sheet of three blurry wood-splinter crops, not the HUD the last review covered. It is clean and lower case, but it uses a default sans instead of Barlow, has no panel or type system, and the particles it exists to show are tiny, low contrast and soft.",
+  "findings": [
+   "P1 Whole sheet: title, subtitle, captions, footer: Set the title in Barlow Condensed 700 at 32px with tx-1 #efe9dc. Set the captions in Barlow Condensed 600 at 20px. Set the subtitle and footer in Barlow 500 at 16px, tx-2 #aaa498, with +.04em tracking.",
+   "P1 The three crops (x 96-1824, y 352-755): Render the crops with nearest-neighbour scaling (image-rendering:pixelated) at an integer 4x. Dim the floor to about 60% with a 40% --ui-void overlay, or add a 1px --ui-line-hi outline to each splinter, so every frame holds 4.5:1 or better.",
+   "P1 Subtitle 'impact study - teammate tracer' (y 296) and footer (y 870): Delete the footer. Keep one 16px tx-2 subtitle, written 'impact study / teammate tracer', or drop it. Raise anything that stays to 16px minimum on --ui-panel.",
+   "P2 Caption bars '30 ms', '90 ms', '150 ms' (y 755-818): Give each card --ui-panel #16191b, a 1px --ui-line-hi border, 4px radius, and 16px padding. Make the timestamp 20px f-cond 600 tx-1 and the unit 'ms' 16px tx-2, so the number is the focal point.",
+   "P2 Layout: title at y 220, huge empty bands above and below: Anchor the title at y 48 and x 96. Enlarge the crops to fill the space, or use a 2x3 grid so the splinter frames can be scaled to about 1.5x. Keep one consistent 48px outer margin."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09i-impact-puffs-by-material-recipes-4/impact-wood-join-1080.jpg",
+  "task": "o-09i-impact-puffs-by-material",
+  "when": "2026-10-30T16:48"
+ },
+ "pass-through-player-1": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The hp bar and hotbar selection improved, but the controls list is still fully open and tall, the 'run info' dropdown and roster still break the margins, and capital letters appear on screen. The result still reads as a debug overlay, not a polished HUD.",
+  "findings": [
+   "P0 top-right 'run info' dropdown and roster: Fix the capital to 'run info'. Move both panels to a 96px left or right and 54px top inset. Use --ui-panel at 90% with a 1px --ui-line-hi border and a 4px radius. Make the 'run info' bar 280px wide with a 16px label and a 12px chevron. Give roster rows a 32px height, 16px labels and 20px tx-1 values.",
+   "P0 capital letters on screen: Remove every capital letter. Use one hp label style of 16px f-cond in tx-1. Replace the middle dot with a line break or a second banner line.",
+   "P1 left controls list (the 310x345 panel): Start it folded as a single 40px-tall chip, 'f1 controls', at bottom-left, 24px above the hp bar. Open it only on F1. When open, use 16px tx-2 labels, 20px tx-1 key caps and 8px row gaps.",
+   "P1 hp bar (bottom-left): Make the bar 12px tall in --ok on a --ui-line track, with a 16px 'hp 100' label above it. Align it to the 96px left margin.",
+   "P1 bottom hotbar slots 3 and 5-0: Draw all 10 slots as 72px squares with a 1px --ui-line outline and 4px radius. Put 16px tx-2 numbers in the corner. Use a 2px --acc border for the selected slot. Remove the ghost art."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09j-players-pass-through-recipes-2/pass-through-player-1-1080.jpg",
+  "task": "o-09j-players-pass-through",
+  "when": "2026-10-30T16:56"
+ },
+ "pass-through-player-2": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The controls list is still a large open card, which is the main complaint from last time, and the HUD still has mixed text sizes, mixed edge margins and a mix of capitalised and lower-case text.",
+  "findings": [
+   "P0 left controls card (x16-327,y455-801): Fold it to one line, 'f1 controls', at x=24, y≈1000, in 16px tx-2. F1 opens the full card. For the party demo, cut it to 6 rows (move, sprint, fire, reload, extract, backpack) at 20px with 32px row height.",
+   "P1 'run info' dropdown (x1603-1900,y20-54) and the 'run Info' text: Change the text to 'run info'. Shrink the bar to about 160x36. Put the dropdown and the top-left card at the same 24px margin.",
+   "P1 top-left 'current pillagers' card (x8-367,y143-242): Set rows to 16px with 28px row height. Make names tx-1 and the values tx-2. Mark the 'you' row in --acc. Drop the '0 out · 3 dead' footer. Move the card to x=24.",
+   "P1 hp bar bottom-left (x24-430,y1035-1068): Make the bar 280x16 with a 1px --ui-line-hi outline. Put 'hp 100' above it in 20px/600. Raise the group so the bottom margin is at least 48px.",
+   "P1 hotbar (x557-1500,y968-1058): Frame every slot at 88x88 with --ui-panel fill and a 1px --ui-line-hi border. Keep a 3px --acc outline on the selected slot only. Set the digits to 16px/tx-2. Limit the row to the slots the player owns."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-09j-players-pass-through-recipes-2/pass-through-player-2-1080.jpg",
+  "task": "o-09j-players-pass-through",
+  "when": "2026-10-30T16:56"
  }
 }

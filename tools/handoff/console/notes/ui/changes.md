@@ -673,3 +673,11 @@
 
 2026-10-30 | o-09i-impact-puffs-by-material | raid wall impacts, host and join | uniform yellow sparks/gray puff become brief wood splinters, masonry dust or metal sparks using the sound material; bounded and fog-gated | before: v36.61 code inspection, no before recipe capture | after: lane camera impact-wood-host, impact-concrete-host, impact-metal-host, impact-wood-join, impact-concrete-join, impact-metal-join (paths pending)
 
+2026-10-30 | o-09i-impact-puffs-by-material | v36.62 raid impacts shipped ON HIS PC | first pictures tools/handoff/console/notes/shots/o-09i-impact-puffs-by-material-recipes-1/impact-{wood,concrete,metal}-{host,join}-1080.jpg; second pass requests isolated 3x detail camera, no game changes.
+
+2026-10-30 | o-09i-impact-puffs-by-material | material-effects review only | recipes-3/impact-{wood,concrete,metal}-{host,join}-1080.jpg has unobstructed effects; fourth pass is a labeled artifact of actual renderer crops at 30/90/150 ms; no additional shipped change.
+
+2026-10-30 | o-09i-impact-puffs-by-material | v36.62 material impacts, ON HIS PC | final detail evidence tools/handoff/console/notes/shots/o-09i-impact-puffs-by-material-recipes-4/impact-{wood,concrete,metal}-{host,join}-1080.jpg; normal context recipes-1; critic 3/3 masonry, 3/2 metal, 3/2 wood, closed at four-round/two-follow-up stop; no further game changes.
+
+2026-10-30 | o-10-195-shared-last-5s-points | raid score clock | both contributors receive full machine SP for hits in the last 2.5 seconds; layout unchanged | before: lane capture pending | after: shared-machine-host and shared-machine-peer recipe captures pending
+

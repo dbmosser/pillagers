@@ -599,3 +599,12 @@
 2026-10-30 12:17 o-001-capture-whole-run-attract-plays-all 62s ok DONE in=4719760 out=58554 run=5
 2026-10-30 12:18 o-00y2-2p-lifecycle-test 56s ok PARTIAL in=139547 out=1805 run=5
 2026-10-30 12:26 o-09i-impact-puffs-by-material 306s ok PARTIAL in=748306 out=11058 run=1
+2026-10-30 12:36 o-09i-impact-puffs-by-material 127s ok PARTIAL in=1182573 out=15159 run=2
+2026-10-30 12:40 o-09i-impact-puffs-by-material 63s ok PARTIAL in=1645176 out=16653 run=3
+2026-10-30 12:45 o-09i-impact-puffs-by-material 110s ok PARTIAL in=2066915 out=20043 run=4
+2026-10-30 12:50 o-09i-impact-puffs-by-material 75s ok DONE in=2559752 out=21928 run=5
+2026-10-30 12:52 o-09j-players-pass-through 145s ok PARTIAL in=654406 out=4496 run=1
+2026-10-30 12:54 o-09j-players-pass-through 42s ok PARTIAL in=1001367 out=5626 run=2
+2026-10-30 12:56 o-09j-players-pass-through 27s ok DONE in=1159915 out=6301 run=3
+2026-10-30 13:01 o-10-195-shared-last-5s-points 254s ok PARTIAL in=1311463 out=11063 run=1
+2026-10-30 13:02 o-10-195-shared-last-5s-points 61s ok PARTIAL in=1791340 out=13107 run=2

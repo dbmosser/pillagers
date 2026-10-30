@@ -1,0 +1,7 @@
+v36.63: shared machine points
+
+Recent machine contributors each receive full kill SP. Kill counts and kill rewards still belong to the finishing player.
+
+Check 36.63. Fails on v36.62.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

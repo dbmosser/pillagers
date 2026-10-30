@@ -128,3 +128,4 @@
 10-30 11:53 v36.59 cw-cx-wholerun on his pc after 17s (8802 serves 36.59) week 91%
 10-30 12:06 v36.60 cw-cx-capturechrome on his pc after 50s (8802 serves 36.60) week 91%
 10-30 12:14 v36.61 cw-cx-capturegaps on his pc after 66s (8802 serves 36.61) week 91%
+10-30 12:30 v36.62 cw-cx-materialpuffs on his pc after 50s (8802 serves 36.62) week 91%
