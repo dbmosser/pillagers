@@ -20,3 +20,9 @@ Check (must FAIL on the current build):
 Old checks about the 3 minute stop or the single 'main' clip: retarget them to his new order and list them in the ship note.
 Rules: render and HUD only, no sim; seed 4242 fingerprint; never the pickup stack, loot sounds or loot rows; storage key salvagerun:profile untouched (the clips live in their own IndexedDB). DESIGN.md watch line: "f9 now records your whole run; when nobody touches the game it plays all your recordings". Model: Codex high.
 TASK DONE when it is shipped and ON HIS PC.
+
+CEO 10-30 13:50, from the Main PC Correspondent: his Downloads holds NO pillagers-attract*.webm. Chrome most likely blocked the automatic downloads (the 3:00 stop fires the download without a key press, and Chrome blocks repeated automatic downloads from a site). So:
+(a) IndexedDB is the real store. Keep every clip there (item 2). The 'main' clip on his 8802 is his newest 3 minute capture: keep it, never overwrite it.
+(b) Also send each finished clip to the 8799 collector the game already reports to, IF it accepts a file post as it is. That is best effort; a failure is silent. Do not change the collector.
+(c) Keep the download, but only right after a key press (F9 stop); never fire it from the auto stop.
+(d) His 8802 serve.ps1 sends .webm as application/octet-stream, reads each file whole, and cannot seek. Folder clips must play from the start without seeking: no currentTime jumps, and 'ended' moves to the next clip.
