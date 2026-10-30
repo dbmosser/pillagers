@@ -27,6 +27,7 @@ PACE_FROM_EPOCH=1793265600
 PACE_FROM_PCT=66
 #PACE_PER_H=0.40
 # fewer camera and picture rounds per job (they cost the most): 2 instead of 4 and 3. Effort: CX_EFFORT_DEFAULT=medium (above) now applies to jobs that are not o-00* until run 3.
-CAMERA_ROUNDS=2
+CAMERA_ROUNDS=4
 PIC_ROUNDS=2
 # 10-30 (CEO, his order "try to blow Codex instead"): pace off, reserve 99%, so Codex runs flat out on 2 player fixes.
+# 10-30 (CEO, his "shouldn't we be blowing our codex use"): camera rounds back to 4; held jobs back in tasks/.
