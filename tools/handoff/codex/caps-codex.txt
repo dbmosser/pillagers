@@ -18,14 +18,15 @@ RETARGET_MAX_CHECKS=30
 RETARGET_RUN_SEC=330
 PARK_MIN=360
 CX_FRESH_AT=3000000
-CX_PAUSE_AT=92
-CX_PAUSE_SEC_AT=97
+CX_PAUSE_AT=99
+CX_PAUSE_SEC_AT=99
 CX_ANY=0
 # 10-29 05:30 (Codex Correspondent, CEO's order): pace the week to last to Sat 10-31 22:00 with about 8 points kept for party night. Week 66% at Thu 05:20.
 # Line: 66% at 05:20, +0.40 points an hour (reaches 92% Sat 22:00). Over the line only his o-00* orders run; the rest rest (at most 90 min at a time). Remove PACE_PER_H to turn off.
 PACE_FROM_EPOCH=1793265600
 PACE_FROM_PCT=66
-PACE_PER_H=0.40
+#PACE_PER_H=0.40
 # fewer camera and picture rounds per job (they cost the most): 2 instead of 4 and 3. Effort: CX_EFFORT_DEFAULT=medium (above) now applies to jobs that are not o-00* until run 3.
 CAMERA_ROUNDS=2
 PIC_ROUNDS=2
+# 10-30 (CEO, his order "try to blow Codex instead"): pace off, reserve 99%, so Codex runs flat out on 2 player fixes.
