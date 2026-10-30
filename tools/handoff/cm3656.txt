@@ -1,0 +1,7 @@
+v36.56: online party code manual copy
+
+A blocked copy keeps the exact code selected and focused. The button says copy by hand until that code copies successfully.
+
+Check 36.56. Fails on v36.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

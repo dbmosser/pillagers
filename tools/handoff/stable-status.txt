@@ -1,10 +1,10 @@
 Latest stable: v36.55 (2026-10-29 22:13)
-Checked: 2026-10-29 22:13
+Checked: 2026-10-30 06:01
 Play address: http://localhost:8802/stable.html
-Result: PROMOTED v36.55 (was v35.98); play address http://localhost:8802/stable.html
+Result: frozen (party freeze file): no change
 
 Newest test runs, newest first:
-  corpus-1029-1512  v36.55  failing 89, new 0  robots 403 min/0 problems  -> QUALIFIES
+  corpus-1029-1512  v36.55  failing 89, new 0  robots 904 min/0 problems  -> this is the current stable
   corpus-1029-1349  v36.54  failing 91, new 3  robots 57 min/0 problems  -> 3 check(s) newly failing, e.g. v8.89 a pillager wading out of sight draws no rings in the w | v35.74 cw-meleez, his order 10-28 (can we move melee to z as
   corpus-1029-1227  v36.53  failing 91, new 2  robots 57 min/1 problems  -> 2 check(s) newly failing, e.g. v35.74 cw-meleez, his order 10-28 (can we move melee to z as | v20.76 on a controller the legends name D-UP for the ping, n
   corpus-1029-1104  v36.50  failing 88, new 0  robots 173 min/2 problems  -> robots hit 2 problem(s) on it

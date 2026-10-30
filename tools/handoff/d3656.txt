@@ -1,0 +1,5 @@
+## v36.56 - ONLINE PARTY CODE MANUAL COPY
+
+Co-op hunt while he was away. The itch frame can deny clipboard access and the old fallback blurred the code without changing the copy button. Watch: if copy is blocked, copy by hand keeps the whole invite or reply selected for ctrl+c.
+
+MEASURED. Check 36.56 passes, and fails on v36.55.

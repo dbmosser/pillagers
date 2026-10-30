@@ -569,3 +569,6 @@
 2026-10-29 12:43 o-00v-no-caches-on-map 115s ok PARTIAL in=2243623 out=17602 run=2
 2026-10-29 12:45 o-00v-no-caches-on-map 33s ok DONE in=2615337 out=18479 run=3
 2026-10-29 14:03 o-00w-244-ping-after-mark-merge 477s ok PARTIAL in=1481799 out=18373 run=1
+2026-10-29 14:14 o-00w-244-ping-after-mark-merge 159s ok PARTIAL in=2028370 out=23772 run=2
+2026-10-29 14:17 o-00w-244-ping-after-mark-merge 41s ok DONE in=2407046 out=25227 run=3
+2026-10-30 06:48 o-00y-2p-online-party-critical 665s ok PARTIAL in=2751694 out=25792 run=1

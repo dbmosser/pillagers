@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.56 - ONLINE PARTY CODE MANUAL COPY
+
+Co-op hunt while he was away. The itch frame can deny clipboard access and the old fallback blurred the code without changing the copy button. Watch: if copy is blocked, copy by hand keeps the whole invite or reply selected for ctrl+c.
+
+MEASURED. Check 36.56 passes, and fails on v36.55.
 ## v36.55 - MARK LEGENDS AND OLD SAVE CHECKS
 
 Co-op hunt while he was away. The old mouse check pressed the same persistent spot twice, so the second press correctly cleared it. The controller legend already says mark; the keyboard compact row still said ping. Watch: middle mouse sets one mark, pressing that spot again clears it, and D-UP marks on a pad.

@@ -3885,8 +3885,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.55';
-var VER_AT='2026-10-29 14:07';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.56';
+var VER_AT='2026-10-30 06:51';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -56481,7 +56481,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.55: The compact party legends both say mark. Old saved keys remain unchanged. Regression checks stage independent mouse presses and cover all three views and both roles. Check 36.55 fails on v36.54',
+  now:'v36.56: A blocked copy keeps the exact code selected and focused. The button says copy by hand until that code copies successfully. Check 36.56 fails on v36.55',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -71028,6 +71028,8 @@ function renderParty(){
   cb.style.display=code?'':'none';
   g('partylen').textContent=code?(((role==='host')?'INVITE CODE, ':'REPLY CODE, ')+code.length+' CHARACTERS'):'';
   if(g('partycode').value!==code) g('partycode').value=code;
+  // v28.xx (cw-cx-onlinecopy): itch can block both clipboard paths; keep the manual copy label for this code.
+  g('partycopy').textContent=(code&&NET.copyHand===code)?'copy by hand':'copy code';
   rb.style.display=(role==='host'&&NET.pend&&NET.pend.state==='offer'&&NET.code)?'':'none';
   g('partyinvite').style.display=(role==='host'&&!NET.busy&&netFreeSeat()>=0)?'':'none';
   g('partyquit').style.display=role?'':'none';
@@ -71060,13 +71062,20 @@ function netUi(fn,busyText){
 function netCopy(){
   var t=document.getElementById('partycode');
   if(!t||!t.value) return;
-  var done=function(ok){ NET.status=ok?'Copied. Paste it to your friend.':'Select the code and copy it by hand.'; renderParty(); };
-  try{ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t.value).then(function(){ done(true); },function(){ netCopyOld(t,done); }); return; } }catch(e){}
+  // v28.xx (cw-cx-onlinecopy), his 10-30 order: the guest must be able to copy a reply inside the itch frame.
+  var code=t.value, done=function(ok){
+    if(t.value!==code) return;
+    NET.copyHand=ok?'':code;
+    NET.status=ok?'code copied':'copy by hand';
+    renderParty();
+    if(!ok){ try{ t.focus(); t.select(); }catch(_cf){} }
+  };
+  try{ if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(code).then(function(){ done(true); },function(){ if(t.value===code) netCopyOld(t,done); }); return; } }catch(e){}
   netCopyOld(t,done);
 }
 function netCopyOld(t,done){
   var ok=false;
-  try{ t.select(); ok=document.execCommand('copy'); t.blur(); }catch(e){ ok=false; }
+  try{ t.focus(); t.select(); ok=document.execCommand('copy'); if(ok) t.blur(); }catch(e){ ok=false; }
   done(ok);
 }
 (function(){
