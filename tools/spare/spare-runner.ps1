@@ -656,8 +656,33 @@ function Play8802(){
   }catch{ return '?' }
 }
 $script:partyT=0; $script:partyP=$null; $script:partyS=0; $script:partyW=''
+# 10-30 (CEO, his "update the game to play through all the captures during the party if the game is afk"): every 15 minutes his
+# Downloads\pillagers-attract*.webm are copied into the party copy's attract folder (what 8802 serves; untracked, and -Prepare never
+# cleans), only the new or changed ones, and attract\list.json names every clip there. Files only: 8802 itself is never touched.
+$script:attractT=[long]0
+function Sync-Attract(){
+  if(-not $Idle -or ((Epoch)-$script:attractT) -lt 900){ return }
+  $script:attractT=Epoch
+  try{
+    $PD='C:\claudecode\pillagers-party'; if(-not (Test-Path -LiteralPath ($PD+'\dark_raiders.html'))){ return }
+    $src=Join-Path $env:USERPROFILE 'Downloads'; $dst=$PD+'\attract'
+    $fs=@(Get-ChildItem -LiteralPath $src -Filter 'pillagers-attract*.webm' -File -ErrorAction SilentlyContinue)
+    if($fs.Count -eq 0 -and -not (Test-Path -LiteralPath $dst)){ return }
+    New-Item -ItemType Directory -Force -Path $dst | Out-Null
+    $nw=0
+    foreach($f in $fs){ $d=Join-Path $dst $f.Name; $o=Get-Item -LiteralPath $d -ErrorAction SilentlyContinue
+      if(-not $o -or $o.Length -ne $f.Length -or $o.LastWriteTime -lt $f.LastWriteTime){ Copy-Item -LiteralPath $f.FullName -Destination $d -Force -ErrorAction Stop; $nw++ } }
+    $names=@(Get-ChildItem -LiteralPath $dst -Filter 'pillagers-attract*.webm' -File -ErrorAction SilentlyContinue | Sort-Object Name | ForEach-Object { $_.Name })
+    $js='['+(($names | ForEach-Object { '"'+($_ -replace '\\','\\' -replace '"','\"')+'"' }) -join ',')+']'
+    $lf=$dst+'\list.json'; $old=''; try{ $old=[IO.File]::ReadAllText($lf) }catch{}
+    if($old -ne $js){ [IO.File]::WriteAllText($lf,$js,$Enc) }
+    if($nw -gt 0 -or $old -ne $js){ Say ('attract clips: '+$names.Count+' in the party copy ('+$nw+' new)') }
+    PutS 'attract' ([string]$names.Count)
+  }catch{ Say ('PROBLEM: attract clips: '+(Short $_.Exception.Message)) }
+}
 function Refresh-Party(){
   if(-not $Idle){ return }
+  Sync-Attract
   try{
     $PD='C:\claudecode\pillagers-party'
     if($script:partyP){   # a refresh started earlier: look at it, never wait for it
