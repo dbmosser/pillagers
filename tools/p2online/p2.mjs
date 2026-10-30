@@ -126,11 +126,15 @@ const LIB = `window.__p2=(function(){
   return {el:el,click:click,put:put,clear:clear,hold:hold,keep:keep,boot:boot,code:code,two:two,where:where,ascend:ascend,answer:answer,home:home,diag:diag,watch:watch,shoot:shoot};
 })(); 1`;
 
-// The test copy: the fixture this PC built for its tests, served by tools/spare/serve.mjs (the spare PC runs one on 8806).
-async function servePage(port, name) {
-  const src = path.join(T, 'fixture.html');
-  if (!fs.existsSync(src)) throw new Error('no test build at ' + src);
-  fs.copyFileSync(src, path.join(T, name));
+// The test copy: both PCs build it from the same commit (the host names it), since two copies on different builds refuse to link.
+// tools/mkfixture.ps1 -Src -Dst, from git show COMMIT:dark_raiders.html; the game folder's own files are never touched.
+// Served by tools/spare/serve.mjs (the spare PC runs one on 8806).
+async function servePage(port, name, commit) {
+  try { git(['fetch', '-q', 'origin', 'master'], R); } catch {}
+  const src = path.join(os.tmpdir(), 'p2online-src-' + name), dst = path.join(T, name);
+  fs.writeFileSync(src, execFileSync('git', ['show', commit + ':dark_raiders.html'], { cwd: R, maxBuffer: 64 << 20, timeout: 60000 }));
+  execFileSync('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', path.join(T, 'mkfixture.ps1'), '-Root', R, '-Src', src, '-Dst', dst], { stdio: 'ignore', timeout: 600000 });
+  if (!fs.existsSync(dst) || fs.statSync(dst).size < 5000000 || Date.now() - fs.statSync(dst).mtimeMs > 600000) throw new Error('the test copy of ' + commit.slice(0, 8) + ' did not build');
   const ok = async () => { try { return (await fetch('http://127.0.0.1:' + port + '/' + name, { method: 'HEAD' })).ok; } catch { return false; } };
   if (!(await ok())) { spawn(process.execPath, [path.join(T, 'spare', 'serve.mjs'), '--root', T, '--port', String(port)], { detached: true, stdio: 'ignore' }).unref();
     for (let i = 0; i < 40 && !(await ok()); i++) await sleep(250); }
@@ -149,21 +153,23 @@ async function host() {
   if (port === 8802) throw new Error('refusing 8802');
   const id = new Date().toISOString().replace(/[-:T]/g, '').slice(0, 12) + '-' + HOST, steps = [], bad = [];
   const step = (ok, s) => { steps.push((ok ? 'PASS ' : 'FAIL ') + s); if (!ok) bad.push(s); log((ok ? 'PASS ' : 'FAIL ') + s); };
-  let t = null, guest = null, ver = '';
+  let t = null, guest = null, ver = '', commit = '';
   try {
-    t = await openGame(cdp, (await servePage(port, 'fixture-soak-p2host.html')) + '?netslot=A');
+    commit = arg('commit', git(['rev-parse', 'origin/master'], R)); log('building the test copy of ' + commit.slice(0, 8));
+    t = await openGame(cdp, (await servePage(port, 'fixture-soak-p2host.html', commit)) + '?netslot=A');
     const b = await t.ev('__p2.boot()'); ver = b.ver; log('host page up, v' + ver);
     await t.ev("__p2.click('partyhost'),1");
     const invite = await t.until("__p2.code('PTY1o')", 30000, 'the invite code');
     step(true, 'HOST A PARTY made an invite code (' + invite.length + ' characters)');
-    await mbPut('req.json', { id, ver, invite, at: now(), host: HOST });
+    await mbPut('req.json', { id, ver, commit, invite, at: now(), host: HOST });
     log('invite in the mailbox as ' + id + '; waiting for the spare PC');
-    const rep = await mbWait('reply-' + id + '.json', 12 * 60000);
-    if (!rep) throw new Error('no reply code from the spare PC in 12 minutes (is its runner up?)');
+    const rep = await mbWait('reply-' + id + '.json', 25 * 60000);
+    if (!rep) { let why = ''; try { why = git(['show', 'origin/spare-results:spare/DESKTOP-82BKOP4/status.txt'], R).split(String.fromCharCode(10)).map(l => l.trim()).filter(l => /^(seen|test_run)=/.test(l)).join(', '); } catch {} throw new Error('no reply code from the spare PC in 25 minutes (its runner: ' + (why || 'unknown') + ')'); }
     step(rep.reply && rep.reply.indexOf('PTY1a') === 0, 'the spare PC joined with the invite and sent a reply code (v' + rep.ver + (rep.ver === ver ? ', same build' : ', NOT the host build v' + ver) + ')');
     await t.ev("__p2.put('partyreplyin'," + JSON.stringify(rep.reply) + "),__p2.click('partyaccept'),1");
     const st = await t.until('__p2.two()', 45000, 'LET THEM IN to link both PCs').catch(e => null);
-    step(!!st, 'LET THEM IN linked both PCs' + (st ? ' (roster ' + st.roster.length + ')' : ''));
+    let ns = ''; if (!st) { try { ns = JSON.stringify(await t.ev('(function(){var s=__net.state();return {status:s.status,err:s.err,links:s.links,roster:s.roster.length};})()')); } catch {} }
+    step(!!st, 'LET THEM IN linked both PCs' + (st ? ' (roster ' + st.roster.length + ')' : ' (host party window: ' + ns + ')'));
     if (!st) throw new Error('no link');
     await t.ev('__p2.clear(),__p2.keep(true),1'); await sleep(1000);
     const how = await t.ev('__p2.ascend()'); log('host ascends through ' + how);
@@ -199,7 +205,7 @@ async function guest(req) {
   const note = s => { notes.push(s); log(s); };
   let t = null;
   try {
-    t = await openGame(cdp, (await servePage(port, 'fixture-soak-p2guest.html')) + '?netslot=B');
+    note('building the test copy of ' + String(req.commit).slice(0, 8)); t = await openGame(cdp, (await servePage(port, 'fixture-soak-p2guest.html', req.commit)) + '?netslot=B');
     const b = await t.ev('__p2.boot()'); res.ver = b.ver; note('guest page up, v' + b.ver + (b.ver === req.ver ? '' : ' (host is v' + req.ver + ')'));
     await t.ev("__p2.put('partyin'," + JSON.stringify(req.invite) + "),__p2.click('partyjoin'),1");
     const reply = await t.until("__p2.code('PTY1a')", 45000, 'a reply code');
@@ -227,7 +233,7 @@ async function guestDaemon() {
     if (fs.statSync(me).mtimeMs !== m0) { log('p2.mjs changed: stopping, the runner starts the new one'); return; }
     try {
       mbSync(); const q = mbRead('req.json'), last = fs.existsSync(seen) ? fs.readFileSync(seen, 'utf8').trim() : '';
-      if (q && q.id && q.id !== last && !mbRead('guest-' + q.id + '.json') && q.at && Date.now() - Date.parse(q.at.replace(' ', 'T') + 'Z') < 15 * 60000) {
+      if (q && q.id && q.id !== last && !mbRead('guest-' + q.id + '.json') && q.commit && q.at && Date.now() - Date.parse(q.at.replace(' ', 'T') + 'Z') < 20 * 60000) {
         fs.writeFileSync(seen, q.id); log('invite ' + q.id + ' from ' + q.host); await guest(q);
       }
     } catch (e) { log('daemon: ' + String(e.message).slice(0, 200)); }
