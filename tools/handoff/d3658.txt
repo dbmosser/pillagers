@@ -1,0 +1,5 @@
+## v36.58 - BULLETS THROUGH THE RETICLE
+
+Co-op hunt while he was away. His 10-29 report: bullets looked high because the whole streak was lifted to gun height. Only the drawn height now blends to the sim line. Watch: bullets now run through the middle of your reticle
+
+MEASURED. Check 36.58 passes, and fails on v36.57.

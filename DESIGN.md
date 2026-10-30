@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.58 - BULLETS THROUGH THE RETICLE
+
+Co-op hunt while he was away. His 10-29 report: bullets looked high because the whole streak was lifted to gun height. Only the drawn height now blends to the sim line. Watch: bullets now run through the middle of your reticle
+
+MEASURED. Check 36.58 passes, and fails on v36.57.
 ## v36.57 - CONDITION REWARD SPACING
 
 Co-op hunt while he was away. The second critic found a wrapped blackout bonus, small belt targets and the Terms total outside its footer. Watch: check full backpacks, keyboard and pad focus, and 1080p footer clipping.

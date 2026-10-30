@@ -3912,8 +3912,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.57';
-var VER_AT='2026-10-30 07:23';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.58';
+var VER_AT='2026-10-30 10:47';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -25552,6 +25552,14 @@ function gunShake(wep){
 // v34.xx (cw-redtracers): his g-88 answer, "Enemy tracers in a warning colour". Allies keep their gun tint; no seeded draw.
 var ENEMY_TRACER='#ff3b2f';
 function foeShot(sh,fromPlayer){ return !fromPlayer&&sh&&!sh.merc&&!sh.friendlyPC&&!sh.friendly&&sh.kind!=='stray'&&sh.kind!=='peddler'; }
+// v28.xx (cw-cx-reticleflight), his 10-29 note: "ideally bullets should go through the center of the reticule, right?"
+// v28.xx (cw-cx-reticleflight): drawing only. Leave the muzzle at gun height, then meet the sim line over 220 world px; every window uses its existing shot origin.
+function shotDrawLift(b,back){
+  if(b._rico) return 0;
+  var ly=(b.ly>0)?b.ly:12, sx=isFinite(b.sx)?b.sx:b.x, sy=isFinite(b.sy)?b.sy:b.y;
+  var t=clamp((Math.hypot(b.x-sx,b.y-sy)-(back||0)-(b.mzd||0))/220,0,1);
+  return ly*(1-t*t*(3-2*t));
+}
 function fireWeapon(sh,wep,tx,ty,fromPlayer){
   if(fromPlayer&&G&&G.arcade&&G.player&&G.player.arcSh) arcadeShieldOff();   // v23.30 (arcade9): a shot drops the spawn shield
 // PARITY, v3.95, second item off his audit. Steady aim was not a player
@@ -42643,13 +42651,14 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1; if(!fowLive(b.x,b.y)) contin
     wc.strokeStyle=b.tint; wc.lineWidth=b.rkt?5:((b.el||b.elw)?3:2);   // v23.xx (forge8): an elemental tracer is wider, in its colour
     var _gtl=(b.rkt?26:9)*_trc, _gtv;
     if(b.mzd>0){ _gtv=Math.hypot(b.x-b.sx,b.y-b.sy); if(_gtv<b.mzd) continue; _gtl=Math.min(_gtl,_gtv-b.mzd); }   // v27.xx (guns2x): a tracer starts at the drawn muzzle, not inside the gun
-    var _ly=(b.ly>0)?b.ly:12;   // v28.xx (cw-thirdsize): at the gun line of the drawn body that fired it (12 for a machine)
-    wc.beginPath(); wc.moveTo(b.x-b.vx/bm*_gtl,b.y-b.vy/bm*_gtl-_ly);
+    var _ly=shotDrawLift(b,0), _lt=shotDrawLift(b,_gtl);   // v28.xx (cw-cx-reticleflight): each end follows the blend, so the streak meets the reticle instead of staying parallel above it
+    wc.beginPath(); wc.moveTo(b.x-b.vx/bm*_gtl,b.y-b.vy/bm*_gtl-_lt);
     wc.lineTo(b.x,b.y-_ly); wc.stroke();
-    if(b.rkt){ wc.fillStyle='#fff3c8'; wc.beginPath(); wc.arc(b.x,b.y-_ly,4,0,6.2832); wc.fill(); }   // v28.xx (cw-rocket): the rocket has a hot head
+    if(b.rkt){ wc.fillStyle='#fff3c8'; wc.beginPath(); wc.arc(b.x,b.y-_ly,4,0,6.2832); wc.fill(); }
     if(_trc>1){
+      var _gtn=Math.min(14,_gtl);
       wc.strokeStyle='rgba(255,236,180,.9)'; wc.lineWidth=1;
-      wc.beginPath(); wc.moveTo(b.x-b.vx/bm*14,b.y-b.vy/bm*14-_ly);
+      wc.beginPath(); wc.moveTo(b.x-b.vx/bm*_gtn,b.y-b.vy/bm*_gtn-shotDrawLift(b,_gtn));
       wc.lineTo(b.x,b.y-_ly); wc.stroke();
     }
   }
@@ -56508,7 +56517,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.57: Pre-raid conditions have 24px more width and keep the 5% SP value on one line. Belt cells are 48px in two rows and the armour warning follows the pack. Terms rows are 100px, the total is a 56px figure in the existing footer, idle buttons have a 2px border, and focus uses one outline. Descriptions are short. Map names can move sideways as well as up and down; a keyed-room legend names the purple marker. The approved blue map remains. Watch for full backpacks, keyboard and pad focus, and 1080p footer clipping. Reward formulas and feel do not change. Check 36.57 fails on v36.56',
+  now:'v36.58: Local, partner and hostile streaks ease from gun height to ground level over 220 world px. Muzzle flashes, sim flight, hits and impacts keep their positions. Check 36.58 fails on v36.57',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -62943,7 +62952,7 @@ function netFxTake(peer,m){
   if(NET.role==='host') for(i=0;i<NET.peers.length;i++){ q=NET.peers[i]; if(q!==peer&&q.state==='in') netSendFast(q,m); }
   if(m.k==='b'&&m.b&&m.b.length>=5){
     a=m.b; G.fxBullets=G.fxBullets||[];
-    if(G.fxBullets.length<80) G.fxBullets.push({x:+a[0]||0,y:+a[1]||0,vx:+a[2]||0,vy:+a[3]||0,life:Math.min(3,Math.max(0,+a[4]||0)),tint:(/^#[0-9a-fA-F]{3,8}$/).test(a[5])?a[5]:'#ffd48a',owner:1,fx:1,elw:a[6]?1:0}); var _mzw=(a.length>=11&&isFinite(a[8])&&isFinite(a[9])&&isFinite(a[10])&&Math.abs(a[9]-a[0])<120&&Math.abs(a[10]-a[1])<120)?1:0, _fb=G.fxBullets[G.fxBullets.length-1]; if(_mzw&&(+a[8])>0&&_fb&&_fb.fx&&_fb.x===(+a[0]||0)){ var _fv=Math.hypot(_fb.vx,_fb.vy)||1; _fb.mzd=Math.min(80,+a[8]); _fb.sx=_fb.x-_fb.vx/_fv*17; _fb.sy=_fb.y-_fb.vy/_fv*17; } if(_mzw&&_fb&&_fb.fx&&_fb.x===(+a[0]||0)&&!pixOn()) _fb.ly=(a.length>=12&&isFinite(a[11])&&(+a[11])>0&&(+a[11])<60)?+a[11]:20*FIG_SCALE; /* cw-figone: the height the shooter window drew it at (field 12); 20 times the figure size from an older window */ /* v28.xx (cw-thirdsize): his tracer at the gun line of his drawn body, as in his own window */   // v28.xx (cw-muzzlenet), CLOUD HUNT 2026-10-15: a word that carries the drawn muzzle starts the tracer there, as the shooter window does
+    if(G.fxBullets.length<80) G.fxBullets.push({x:+a[0]||0,y:+a[1]||0,vx:+a[2]||0,vy:+a[3]||0,_rico:a[7]?1:0,sx:(+a[0]||0)-(+a[2]||0)/(Math.hypot(+a[2]||0,+a[3]||0)||1)*17,sy:(+a[1]||0)-(+a[3]||0)/(Math.hypot(+a[2]||0,+a[3]||0)||1)*17, /* v28.xx (cw-cx-reticleflight): reconstruct the cosmetic origin for every received round, including machines and legacy words; a bounce stays at its impact height; no new packet fields */life:Math.min(3,Math.max(0,+a[4]||0)),tint:(/^#[0-9a-fA-F]{3,8}$/).test(a[5])?a[5]:'#ffd48a',owner:1,fx:1,elw:a[6]?1:0}); var _mzw=(a.length>=11&&isFinite(a[8])&&isFinite(a[9])&&isFinite(a[10])&&Math.abs(a[9]-a[0])<120&&Math.abs(a[10]-a[1])<120)?1:0, _fb=G.fxBullets[G.fxBullets.length-1]; if(_mzw&&(+a[8])>0&&_fb&&_fb.fx&&_fb.x===(+a[0]||0)){ var _fv=Math.hypot(_fb.vx,_fb.vy)||1; _fb.mzd=Math.min(80,+a[8]); _fb.sx=_fb.x-_fb.vx/_fv*17; _fb.sy=_fb.y-_fb.vy/_fv*17; } if(_mzw&&_fb&&_fb.fx&&_fb.x===(+a[0]||0)&&!pixOn()) _fb.ly=(a.length>=12&&isFinite(a[11])&&(+a[11])>0&&(+a[11])<60)?+a[11]:20*FIG_SCALE; /* cw-figone: the height the shooter window drew it at (field 12); 20 times the figure size from an older window */ /* v28.xx (cw-thirdsize): his tracer at the gun line of his drawn body, as in his own window */   // v28.xx (cw-muzzlenet), CLOUD HUNT 2026-10-15: a word that carries the drawn muzzle starts the tracer there, as the shooter window does
     if(!G.sim&&a[7]){ try{ spark(+a[0]||0,+a[1]||0,'#fff0c0',12,320); ricoPing(+a[0]||0,+a[1]||0); }catch(_rc){} }   // v28.xx (cw-ricoseen), CLOUD HUNT 2026-10-15: a bounce word: the ricochet spark and ping, as the shooter sees and hears it, no muzzle flash
     else if(!G.sim){ try{ if(_mzw) gfxShotFx(+a[9],+a[10]+12,Math.atan2(+a[3]||0,+a[2]||0),a[5]===ENEMY_TRACER?'#ffc27a':a[5],pixOn()?1:FIG_SCALE/0.8); /* v28.xx (cw-thirdsize): a teammate flash at the drawn muzzle is sized to his smaller gun */ else gfxShotFx(+a[0]||0,+a[1]||0,Math.atan2(+a[3]||0,+a[2]||0),a[5]===ENEMY_TRACER?'#ffc27a':a[5]); }catch(_gsx){} }   // v23.xx (gfx24): and its muzzle flash   // v28.xx (cw-cx-redtracers): the warning tint belongs to the tracer; both packet shapes keep a warm flash
     return 'fx:b';

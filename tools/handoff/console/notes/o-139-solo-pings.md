@@ -70,3 +70,16 @@ Camera repair: the earlier fold assignment changed hudOff(), which returns a cop
 Validation: mk printed written on v35.64; seven exact anchors unique under sequential replacement; patched inline game, new regression and all five complete regenerated recipes parse in Node; handoffs ASCII. No shared/tracked file edits, browser, network, queue or agents. keys.txt includes cw-cx-pingmerge after the two shipped keys.
 
 Remaining lane work: preflight/ship/ON HIS PC for cw-cx-pingmerge and camera/critic round 4 of 4. Need a valid player 2 picture receiving the real host middle mouse ping. If a broader HUD critique remains after this second follow-up without a score increase, retain round 3 and round 4 as the best-version evidence under the stopping rule; do not turn solo pings into an unrelated HUD redesign.
+
+--- codex run 2026-10-30 07:30 ---
+2026-10-30, closure audit on refreshed v36.57.
+
+All three keys are recorded in codex/work/o-139-solo-pings/shipped.txt. Final ship report o-139-solo-pings-cw-cx-pingmerge.ship.txt confirms fixture check 35.65 PASS / PASS, SHIPPED v35.65 commit 3a768723e, ON HIS PC v35.65 after 17s. console/onhispc.txt independently records the same result. DESIGN.md v35.65 contains the requested playtest watch line. Earlier notes preserve the seed fingerprint and input/lifetime/drop-sharing regression coverage.
+
+Inspected all five round-4 pictures directly. report.json confirms solo=true, smooth=true and followed=true on world, minimap and map; both party pictures are now valid raids with linked=true and counts [1,1]. Player 1 receives a real player 2 pad ping; player 2 receives a real player 1 mouse ping. This resolves the previous invalid guest-camera evidence. Existing party transport was preserved. LOCAL: no linked review; the change enables the existing local input/HUD path when alone and retains existing packets.
+
+Saved round-4 critic scores in notes/ui/accept.json: solo world 3, minimap 3, map 3. The map meets its score-3 threshold. Raid views remain below the stricter score-4 goal; do not describe them as score 4. The world score improved from 2 to 3 with the merged target name. Remaining findings include label styling and the surrounding health/hotbar/ammo/minimap/map presentation. The critic suggestion to display bots or live rank conflicts with binding rulings and is skipped; the earlier coordinator alarm already routes the broader HUD/map findings. No saved party-specific critic entries were found, so no party critic score is claimed.
+
+The lane records camrounds.txt = 4. This exhausts this job's four-round allowance after the two shipped readability follow-ups. Preserve the two best versions: notes/shots/o-139-solo-pings-recipes-3 (world 2, minimap 3, map 3, valid host, invalid guest) and notes/shots/o-139-solo-pings-recipes-4 (world 3, minimap 3, map 3, BOTH party roles valid). Full paths begin tools/handoff/console/. Round 4 is the final evidence for all requested solo views and both windows. Closing the shipped functional task at the camera cap with the visual limitation recorded, without expanding it into a whole HUD redesign.
+
+No new key, retarget or camera request this run. keys.txt retains all three shipped keys. Only private output notes changed; no game, shared repository, browser, localhost, network or agents used.

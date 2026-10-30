@@ -44,3 +44,14 @@
 - Updated the same cw-cx-rushlayout script to refresh msgLayout after the header is measured and before drawing its message lanes during the rush. This fixes the rendered first frame rather than relaxing the spacing assertion or warming up the check.
 - Strengthened the check: clear HUDTOPB before each seat draw, requiring the spacing to work without a cached previous header. The 20px minimum physical clearance assertion remains unchanged.
 - Mk prints written; all 16 edit anchors match once; the patched full game script and regression parse in Node. Lane must rerun preflight, ship, confirm ON HIS PC and capture the fourth picture round for review.
+
+--- codex run 2026-10-30 07:27 ---
+2026-10-30, HEAD v36.57 existing-feature check
+- Followed the task instruction to check HEAD first. The requested feature is already present; no new game change is needed or prepared.
+- dark_raiders.html:66628 arcadeRushOn limits the rush to a live, non-solo demo with 0 < timeLeft <= 90. arcadeRushTick at :66631 announces final rush / kills x1.05 sp once. arcadeWaveTick at :66646 shortens wave intervals by 20 percent, adds two cap slots and one extra body; :66667 makes that extra body a crawler or sentry. arcadeKill at :69013 multiplies kill SP by 1.05 in either window.
+- Original implementation: commit 9884ea1f7, v35.83. HUD clearance follow-up: bf48911af, v35.84. Both are on current HEAD. Earlier notes confirm ON HIS PC v35.83; no new ship is requested.
+- Viewed both existing linked-window photographs in tools/handoff/console/notes/shots/o-03-197-final-90s-rush-recipes-4/finalrush-host-raid-1080.jpg and finalrush-partner-raid-1080.jpg. They show the 1:30 clock, final rush callout and 105 sp per player. Earlier camera runs verified actual 105/105 awards in both real windows.
+- Existing critic scores were host 2 and partner 3; these are not passing raid scores. This run follows the explicit task branch: if already implemented on HEAD, record location/version, photograph, finish without changing the game. It does not claim that the broader HUD critic findings were fixed.
+- Kept the paired camera recipes for the lane to photograph the current build. Updated only their description to identify this existing-feature verification; no new ship key. Existing keys remain listed so the lane can skip their already-shipped entries.
+- Existing DESIGN watch is in the original draft why: check both windows announce once at 1:30, a fresh sentry kill pays 105 sp before other bonuses, and more machines appear while breathers and called extraction rings still hold waves.
+- SYNCED: shared raid clock and host wave authority. Real linked-window scoring and photographs were already exercised; no new linked review is requested for this read-only verification.

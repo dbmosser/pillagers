@@ -74,3 +74,13 @@ Changed only the new check to allow 0.05px below 48px on each dimension. It stil
 MK prints written. All seven anchors apply exactly once; patched game JavaScript, the new check, existing retarget and camera payloads parse. MK remains ASCII.
 Remaining: lane retries preflight and shipping for the same cw-cx-condition-ui2 key, confirms ON HIS PC, and obtains pictures and critic results. Existing task 211 still covers live linked payout verification.
 LINKED REVIEW NEEDED: synced for the core rewards, already assigned to task 211. This repair changes only the check tolerance.
+
+--- codex run 2026-10-30 07:26 ---
+2026-10-30, shipment confirmed on v36.57.
+Lane confirms cw-cx-condition-ui2 SHIPPED and ON HIS PC v36.57 (8802 served it 18 seconds after shipment). All three keys in keys.txt have now shipped.
+No additional game changes are needed from this run. The seven-edit presentation follow-up and its repaired regression check passed the lane gates.
+Checked available review evidence: shots contains only recipe rounds 1 and 2, both from before this shipment. Round 2 extraction pages never loaded because of the old malformed query; current recipes already fix that query. Current accept.json still points to those older pictures. There are no v36.57 pictures or new critic results to review.
+Sector and Terms previously met the score-3 target. Extraction cards still require valid post-ship pictures and critic review against the score-4 target. Current camera-recipes.json supplies corrected smooth-look stages for both roles.
+Task 211-verify-linked-condition-sp.md remains in tasks and owns the real two-window reward verification. This run cannot run Chrome or claim that verification.
+Coordinator handoff: process corrected post-ship camera recipes and critic, and complete task 211. All development and local validation for this task are complete; visual acceptance remains unverified.
+LINKED REVIEW NEEDED: synced, already tracked by task 211.

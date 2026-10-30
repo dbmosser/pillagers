@@ -578,3 +578,9 @@
 2026-10-30 07:17 o-02-172-night-pays-cash 69s ok PARTIAL in=326015 out=2490 run=1
 2026-10-30 07:19 o-02-172-night-pays-cash 76s ok PARTIAL in=809894 out=4653 run=2
 2026-10-30 07:20 o-02-172-night-pays-cash 22s ok PARTIAL in=975642 out=5459 run=3
+2026-10-30 07:26 o-02-172-night-pays-cash 62s ok PARTIAL in=1214094 out=7251 run=4
+2026-10-30 07:27 o-03-197-final-90s-rush 62s ok DONE in=241459 out=1985 run=1
+2026-10-30 07:28 o-04-155-longshot-glint 57s ok DONE in=268579 out=2093 run=1
+2026-10-30 07:30 o-139-solo-pings 110s ok DONE in=420871 out=2865 run=1
+2026-10-30 08:43 o-00z-guest-slow-home-after-extract 157s ok DONE in=366719 out=4995 run=1
+2026-10-30 10:43 o-00x-bullets-through-reticle 614s ok PARTIAL in=1528320 out=19831 run=1

@@ -1,0 +1,7 @@
+v36.58: bullets through the reticle
+
+Local, partner and hostile streaks ease from gun height to ground level over 220 world px. Muzzle flashes, sim flight, hits and impacts keep their positions.
+
+Check 36.58. Fails on v36.57.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -71,3 +71,19 @@ Best current pictures: tools/handoff/console/notes/shots/o-04-155-longshot-glint
 
 Pending: final camera report with the corrected photographed-seat assertion. All implementation and shipping work is complete, including the regression gate and ON HIS PC receipt. Do not expand this feature task into an unrelated HUD redesign.
 
+
+--- codex run 2026-10-30 07:28 ---
+2026-10-30, final review of camera round 4.
+Implementation cw-cx-longshotglint shipped v35.85; prior lane receipt confirms ON HIS PC. No new game change or key this run.
+
+Final report: all eight photographs staged successfully: p1/p2, day/night, 1080/4k. Both real linked windows report smooth=true, two glints, bodies=[true,false], phases about 0.04 seconds and ninth-field bits [4,4]. Each photographed seat has both muzzle stars inside its viewport. Reviewed p1/day and p2/night at 1080 and p1/night and p2/day at 4k. The fog-hidden body remains hidden while its white/red star is visible. These are actual paired windows.
+
+Critic round 4 scores remain p1/day 2, p1/night 3, p2/day 2, p2/night 2. The raid finish line of 4 was not reached. Rounds 3 and 4 did not improve these scores after the staging fixes; stop under the rule allowing two follow-ups without a score increase. Remaining P0/P1 findings concern inherited HUD panels, margins, hp, hotbar and extraction chips. They do not identify a glint defect. Do not expand this attack-warning job into a raid HUD redesign. The requested deletion of current pillagers conflicts with the owner's existing HUD ruling; retain the control.
+
+Two best retained versions:
+- Round 4, fully staged final composition: tools/handoff/console/notes/shots/o-04-155-longshot-glint-recipes-4/gl155-p1-night-4k.jpg and gl155-p2-day-1080.jpg. Scores 3 and 2 respectively; both warning stars are unobstructed, including the fog-side star.
+- Round 3, previous composition: tools/handoff/console/notes/shots/o-04-155-longshot-glint-recipes-3/gl155-p1-night-4k.jpg and gl155-p2-day-1080.jpg. Scores 3 and 2; photographed seat was composed correctly but an over-strict companion viewport assertion marked staging failed. Round 4 corrects that assertion without gameplay changes.
+
+Watch remains in the shipped draft why/ DESIGN handoff: readability at range in smooth/night, hidden-position reveal feeling fair, and the intended extra opportunity to dodge Longshot shots.
+LINKED REVIEW NEEDED: synced. Entity row r[8] bit 4 carries the glint. Required paired-window pictures and snapshot assertions are complete; coordinator owns any separate linked review.
+Task implementation and required camera work are complete. Close under the documented critic stop rule, without claiming the raid HUD passed.
