@@ -72,13 +72,13 @@ class Tab {
     await t.send('Emulation.setFocusEmulationEnabled', { enabled: true }).catch(() => {});
     return t;
   }
-  send(method, params = {}) {
+  send(method, params = {}, ms = 90000) {
     const id = ++this.n;
-    return new Promise((res, rej) => { const to = setTimeout(() => { this.cb.delete(id); rej(new Error('CDP timeout ' + method)); }, 90000);
+    return new Promise((res, rej) => { const to = setTimeout(() => { this.cb.delete(id); rej(new Error('CDP timeout ' + method)); }, ms);
       this.cb.set(id, d => { clearTimeout(to); d.error ? rej(new Error(d.error.message)) : res(d.result); }); this.ws.send(JSON.stringify({ id, method, params })); });
   }
-  async ev(x) {
-    const r = await this.send('Runtime.evaluate', { expression: x, awaitPromise: true, returnByValue: true });
+  async ev(x, ms = 90000) {
+    const r = await this.send('Runtime.evaluate', { expression: x, awaitPromise: true, returnByValue: true }, ms);
     if (r.exceptionDetails) throw new Error('page: ' + String((r.exceptionDetails.exception && r.exceptionDetails.exception.description) || r.exceptionDetails.text).slice(0, 300));
     return r.result.value;
   }
@@ -166,9 +166,14 @@ async function host() {
     const rep = await mbWait('reply-' + id + '.json', 25 * 60000);
     if (!rep) { let why = ''; try { why = git(['show', 'origin/spare-results:spare/DESKTOP-82BKOP4/status.txt'], R).split(String.fromCharCode(10)).map(l => l.trim()).filter(l => /^(seen|test_run)=/.test(l)).join(', '); } catch {} throw new Error('no reply code from the spare PC in 25 minutes (its runner: ' + (why || 'unknown') + ')'); }
     step(rep.reply && rep.reply.indexOf('PTY1a') === 0, 'the spare PC joined with the invite and sent a reply code (v' + rep.ver + (rep.ver === ver ? ', same build' : ', NOT the host build v' + ver) + ')');
-    await t.ev("__p2.put('partyreplyin'," + JSON.stringify(rep.reply) + "),__p2.click('partyaccept'),1");
-    const st = await t.until('__p2.two()', 45000, 'LET THEM IN to link both PCs').catch(e => null);
+    await t.ev("__p2.put('partyreplyin'," + JSON.stringify(rep.reply) + "),setTimeout(function(){ __p2.click('partyaccept'); },0),1");
+    // LET THEM IN, watched for a frozen page: the 10-30 first run across the two PCs lost the host page for over 90 s right here
+    let st = null, froze = 0, lost = 0; const a0 = Date.now();
+    while (Date.now() - a0 < 240000) { const a = Date.now(); try { st = await t.ev('__p2.two()', 5000); if (lost) { froze = Math.max(froze, Date.now() - lost); lost = 0; } } catch (e) { if (!lost) lost = a; } if (st) break; await sleep(250); }
+    if (lost) froze = Date.now() - lost;
+    if (froze > 3000) step(false, 'the host page stopped answering for ' + Math.round(froze / 1000) + ' s after LET THEM IN' + (lost ? ' and never came back in 4 minutes' : ''));
     let ns = ''; if (!st) { try { ns = JSON.stringify(await t.ev('(function(){var s=__net.state();return {status:s.status,err:s.err,links:s.links,roster:s.roster.length};})()')); } catch {} }
+    if (st) log('linked ' + Math.round((Date.now() - a0) / 1000) + ' s after LET THEM IN');
     step(!!st, 'LET THEM IN linked both PCs' + (st ? ' (roster ' + st.roster.length + ')' : ' (host party window: ' + ns + ')'));
     if (!st) throw new Error('no link');
     await t.ev('__p2.clear(),__p2.keep(true),1'); await sleep(1000);
