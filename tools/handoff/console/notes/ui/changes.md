@@ -681,3 +681,7 @@
 
 2026-10-30 | o-10-195-shared-last-5s-points | raid score clock | both contributors receive full machine SP for hits in the last 2.5 seconds; layout unchanged | before: lane capture pending | after: shared-machine-host and shared-machine-peer recipe captures pending
 
+2026-10-30 | o-10-195-shared-last-5s-points | raid score clock, host and peer | shipped v36.63: full machine SP to both recent contributors within 2.5 seconds; both staged views show 50 sp, layout unchanged | before: no valid picture (round 1 staging failed) | after: tools/handoff/console/notes/shots/o-10-195-shared-last-5s-points-recipes-2/shared-machine-host-1080.jpg and shared-machine-peer-1080.jpg
+
+2026-10-30 | o-11-157-golden-bolts-and-stays | world, career and demo | hurt golden enemies flee for 3.5 s and remain until death; smooth-look camera recipes golden-bolt-career-smooth and golden-bolt-demo-smooth; picture paths pending lane.
+

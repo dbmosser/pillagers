@@ -3912,8 +3912,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.63';
-var VER_AT='2026-10-30 13:05';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.64';
+var VER_AT='2026-10-30 13:19';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29027,7 +29027,7 @@ function raiderThrow(e,foe,fd,dt){
   if(CFG.raiderKit===0||!e||!foe||e.downed) return false;
   if(e.thrT>0) return false;   // v20.63 (H12): the clock itself runs in raiderUseKit, once a frame
 // smoke first: a hurt man breaks sight before he trades grenades.
-  if(e.hp<(e.maxhp||100)*0.45&&(e.smkT===undefined||e.smkT<=0)){
+  if(!e.golden&&e.hp<(e.maxhp||100)*0.45&&(e.smkT===undefined||e.smkT<=0)){   // v28.xx (cw-cx-goldbolt): the golden chase drops no smoke.
     e.smkT=14;
     G.smokes.push({x:e.x,y:e.y,r:smokeRad(),t:0,life:12});
     netThrSend('smoke',e.x,e.y);   // v21.98 (K8, K15): the party sees his cloud too, as the host enemies already do
@@ -32339,6 +32339,7 @@ if(e.state==='possum'){
       if(!G.sim) G.puffs.push({x:e.x,y:e.y,t:0,life:.55,c:e.kind==='raider'?'#c8452f':'#ffc04a',r:26});
       G.ents.splice(i,1); continue;
     }
+    if(goldRunTick(e,dt)) continue;   // v28.xx (cw-cx-goldbolt): fleeing owns this turn, before rolls, bites or guns.
     // A man on the floor does nothing but bleed. No AI below this line runs for
     // him, which is also what keeps him from shooting, fleeing or looting while
     // down. Reaching zero on the clock sets hp to 0 with the downed flag cleared
@@ -33039,7 +33040,7 @@ if(eb===e||eb.kind==='snitch'||eb.neutral||eb.kind==='peddler'||eb.kind==='stray
     // gunfire should not be talked out of it BY your gunfire. That was never
     // just a message bug: he was flip-flopping between fleeing and charging on
     // every hit, which is also why the movement looked wrong.
-if(e.kind==='raider'&&e.state!=='extract'&&!e.cornered&&e.hp<e.maxhp*0.3){   // v23.xx: a man who turned on the one shooting him (runnerTurns) does not bolt again
+if(e.kind==='raider'&&!e.golden&&e.state!=='extract'&&!e.cornered&&e.hp<e.maxhp*0.3){   // v23.xx: a man who turned on the one shooting him (runnerTurns) does not bolt again
       e.state='extract';
       if(!e.fled){
         e.fled=1;
@@ -33676,7 +33677,9 @@ if(longshotGlintBot(e)&&e.glint>0){ /* v28.xx (cw-cx-longshotglint): hold the sh
         // second conflates what he brought with what he came for.
         // Now it counts CONTAINERS HE OPENED THIS RAID. The spawn bag is
         // untouched, so kill rewards are exactly as they were.
-        if(!e.goal||(e.looted||0)>=(e.ghostHaul||CFG.raiderHaul)) e.state='extract';
+        // v28.xx (cw-cx-goldbolt): the golden haul stays here; no loot left means a patrol.
+        if(!e.golden&&(!e.goal||(e.looted||0)>=(e.ghostHaul||CFG.raiderHaul))) e.state='extract';
+        else if(e.golden&&!e.goal) e.state='patrol';
         e.goalT=0; e.goalD=e.goal?dist(e,e.goal):0;
         e.pathFail=false; e.path=null;   // clean slate per target, as with the bot
       }
@@ -34018,6 +34021,8 @@ e.lootT=(e.lootT||0)+dt;
     e.face+=clamp(angDiff(want,e.face),-5.5*dt,5.5*dt);
     collide(e,G.map.walls);
   }
+  // v28.xx (cw-cx-goldbolt): snapshot every golden after all AI branches, including early continues.
+  if(!flowPeer()) for(var _gh=0;_gh<G.ents.length;_gh++) if(G.ents[_gh].golden) G.ents[_gh].gHp=G.ents[_gh].hp;
 }
 
 // A round used to be pushed forward in three fixed hops and only tested for a
@@ -56666,7 +56671,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.63: Recent machine contributors each receive full kill SP. Kill counts and kill rewards still belong to the finishing player. Check 36.63 fails on v36.62',
+  now:'v36.64: Hurt golden enemies run for 3.5 seconds at 1.35 speed, then chase again with a five second cooldown. They never extract, get culled, or leave with a convoy. Only death drops the hoard. Check 36.64 fails on v36.63',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -67609,7 +67614,7 @@ function convoyLeave(ev){
   var i, k, e, kept=0;
   for(i=0;ev.d.crew&&i<ev.d.crew.length;i++){
     e=ev.d.crew[i]; k=G.ents.indexOf(e); if(k<0) continue;
-    if(evBodyAway(e)) G.ents.splice(k,1);   // v27.43 (rvw1, cloud review 10): out of the world only where nobody can see it
+    if(!e.golden&&evBodyAway(e)) G.ents.splice(k,1);   // v27.43 (rvw1, cloud review 10): out of the world only where nobody can see it
     else { e.carrier=0; kept++; }           // in view or close: he stays, an ordinary machine now
   }
   return kept;
@@ -68223,7 +68228,45 @@ function shWallDraw(c,w,LIFT){
 // GOLD.hp (3) times the health and is a tenth bigger. It is drawn gold on the HUD (a glow, an ellipse on the ground, three sparks and GOLDEN over it) wherever it is on screen.
 // WHEN IT DIES, by anyone's hand or none, it leaves a GOLDEN HOARD where it fell: three jackpot rolls and two cache rolls on a side stream, marked on the maps until opened, with
 // v28.xx (cw-cx-goldnames): the specific golden kind down in the alert. If nothing qualifies at 3 s it looks again every second. DEMO and CAREER are the same.
-var GOLD={tag:65,hp:3,big:1.1,minD:700,kinds:{crawler:1,sentry:1,raider:1,bulwark:1,howler:1,listener:1}};
+var GOLD={tag:65,hp:3,big:1.1,minD:700,runT:3.5,runCd:5,runSpd:1.35,kinds:{crawler:1,sentry:1,raider:1,bulwark:1,howler:1,listener:1}};
+// v28.xx (cw-cx-goldbolt), his g-21 and g-22: "Run, so you chase it" and "No, it stays all raid".
+function goldRunTick(e,dt){
+  if(!e.golden||flowPeer()) return false;
+  var hit=e.gHp!==undefined&&e.hp<e.gHp, men, p=null, d=Infinity, i, dd, a, offsets, x, y, step, ox, oy;
+  e.gRunCd=Math.max(0,(e.gRunCd||0)-dt);
+  if(!(e.hp>0)||e.downed) return false;
+  if(e.state==='extract'){ e.state='patrol'; e.extracting=0; }
+  men=netPlayersList();
+  for(i=0;i<men.length;i++){ dd=dist(e,men[i]); if(dd<d){ d=dd; p=men[i]; } }
+  if(hit&&p&&!(e.gRunT>0)&&!(e.gRunCd>0)){
+    e.gRunT=GOLD.runT; a=Math.atan2(e.y-p.y,e.x-p.x); offsets=[0,0.6,-0.6,1.2,-1.2];
+    e.gRunX=e.x; e.gRunY=e.y;
+    for(i=0;i<offsets.length;i++){
+      x=e.x+Math.cos(a+offsets[i])*520; y=e.y+Math.sin(a+offsets[i])*520;
+      if(spotFree(G.map,x,y,e.r+4)&&navReachable(G.map,x,y)){ e.gRunX=x; e.gRunY=y; break; }
+    }
+    if(i===offsets.length){
+      step=Math.max(0,rayHitG(e.x,e.y,Math.cos(a),Math.sin(a),520)-40);
+      x=clamp(e.x+Math.cos(a)*step,e.r+4,WORLD_W-e.r-4);
+      y=clamp(e.y+Math.sin(a)*step,e.r+4,WORLD_H-e.r-4);
+      if(spotFree(G.map,x,y,e.r+4)&&navReachable(G.map,x,y)){ e.gRunX=x; e.gRunY=y; }
+    }
+    e.path=null; e.pathT=0; e.pathFail=false; e.roll=0; e.glint=0;
+  }
+  if(!(e.gRunT>0)) return false;
+  ox=e.x; oy=e.y;
+  navSeek(e,e.gRunX,e.gRunY,e.spd*GOLD.runSpd,dt);
+  collide(e,G.map.walls);
+  e.moving=Math.hypot(e.x-ox,e.y-oy)>0.01;
+  if(e.moving) e.face=Math.atan2(e.y-oy,e.x-ox);
+  e.gRunT=Math.max(0,e.gRunT-dt);
+  if(e.gRunT<1e-7){
+    e.gRunT=0; e.gRunCd=GOLD.runCd; e.state='chase'; e.alert=2.6;
+    if(p){ e.tx=p.x; e.ty=p.y; }
+    e.path=null; e.pathT=0; e.pathFail=false;
+  }
+  return true;
+}
 function goldS(){ var S=flowS(); if(!S.gold) S.gold={ref:null,hp0:0,dead:0,tried:0}; return S.gold; }
 function goldOk(e,p){
   return !!e&&e.hp>0&&!!GOLD.kinds[e.kind]&&!e.boss&&!e.merc&&!e.friendlyPC&&!e.neutral&&!e.summoned&&!e.golden&&!(e.kind==='raider'&&!e.hostile)&&Math.hypot(e.x-p.x,e.y-p.y)>=GOLD.minD;
@@ -68238,6 +68281,7 @@ function goldPickIx(){
 }
 function goldMake(e){
   e.golden=1; e.maxhp=Math.round((e.maxhp||e.hp)*GOLD.hp); e.hp=e.maxhp; e.r=Math.round(e.r*GOLD.big);
+  e.gHp=e.hp;   // v28.xx (cw-cx-goldbolt): remember the first hit after gilding.
   return e;
 }
 // v28.xx (cw-vaultdrops), HIS ANSWER (2026-10-18, Q68): "Vault guns also drop from golden enemies and the Overseer, plus a low drop rate anywhere."
@@ -68279,7 +68323,7 @@ function goldTick(dt){
   }
   e=S.ref;
   // v28.xx (cw-cx-goldnames): retain the kind after the body is removed, for both windows.
-  if(e&&!S.dead&&(!(e.hp>0)||G.ents.indexOf(e)<0)){ S.dead=1; S.dx=e.x; S.dy=e.y; S.kind=e.kind; goldDrop(e.x,e.y,e.kind); }
+  if(e&&!S.dead&&!(e.hp>0)){ S.dead=1; S.dx=e.x; S.dy=e.y; S.kind=e.kind; goldDrop(e.x,e.y,e.kind); }   // v28.xx (cw-cx-goldbolt): only a real death pays the hoard.
 }
 // v32.xx (cw-botlook), HIS PICK a21 B: the golden enemy has a SOLID GOLD BODY with a shine sweeping across it. goldBodyBegin swaps the world canvas for a
 // scratch one around the body draw; goldBodyEnd draws a slanted white strip 5 px wide at 30 percent across the silhouette for 0.4 s of every 2 s, then
@@ -68874,7 +68918,7 @@ function arcadeCullTick(dt){
   men=arcadeCullMen(); if(!men.length) return 0;
   for(i=G.ents.length-1;i>=0;i--){
     e=G.ents[i];
-    if(!e||!e.arcWave||e.boss||!(e.hp>0)) continue;
+    if(!e||!e.arcWave||e.boss||e.golden||!(e.hp>0)) continue;   // v28.xx (cw-cx-goldbolt): a living golden stays all raid.
     if(e.state==='chase'||e.state==='alarm'||e.state==='hunt'||!arcadeCullFar(e,men,ARCADE_CULL.entFar)){ e.arcFar=0; continue; }
     e.arcFar=(+e.arcFar||0)+st;
     if(e.arcFar<ARCADE_CULL.entT) continue;

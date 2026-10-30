@@ -247,3 +247,6 @@
 2026-10-30 12:56 week=93.0% 5h=27.0% week_resets=2026-11-04 01:35 job=o-09j-players-pass-through
 2026-10-30 13:01 week=94.0% 5h=31.0% week_resets=2026-11-04 01:35 job=o-10-195-shared-last-5s-points
 2026-10-30 13:02 week=94.0% 5h=32.0% week_resets=2026-11-04 01:35 job=o-10-195-shared-last-5s-points
+2026-10-30 13:09 week=94.0% 5h=34.0% week_resets=2026-11-04 01:35 job=o-10-195-shared-last-5s-points
+2026-10-30 13:11 week=94.0% 5h=34.0% week_resets=2026-11-04 01:35 job=o-10-195-shared-last-5s-points
+2026-10-30 13:16 week=95.0% 5h=38.0% week_resets=2026-11-04 01:35 job=o-11-157-golden-bolts-and-stays

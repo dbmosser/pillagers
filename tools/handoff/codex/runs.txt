@@ -608,3 +608,6 @@
 2026-10-30 12:56 o-09j-players-pass-through 27s ok DONE in=1159915 out=6301 run=3
 2026-10-30 13:01 o-10-195-shared-last-5s-points 254s ok PARTIAL in=1311463 out=11063 run=1
 2026-10-30 13:02 o-10-195-shared-last-5s-points 61s ok PARTIAL in=1791340 out=13107 run=2
+2026-10-30 13:09 o-10-195-shared-last-5s-points 67s ok PARTIAL in=2464696 out=15169 run=3
+2026-10-30 13:11 o-10-195-shared-last-5s-points 46s ok DONE in=2678913 out=16701 run=4
+2026-10-30 13:16 o-11-157-golden-bolts-and-stays 323s ok PARTIAL in=1013197 out=11923 run=1

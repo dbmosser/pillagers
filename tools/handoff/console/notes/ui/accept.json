@@ -5038,5 +5038,37 @@
   "pic": "tools/handoff/console/notes/shots/o-09j-players-pass-through-recipes-2/pass-through-player-2-1080.jpg",
   "task": "o-09j-players-pass-through",
   "when": "2026-10-30T16:56"
+ },
+ "shared-machine-host": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "This is a raid HUD, not the shared-machine-host menu the previous review covered, so the earlier menu advice can't be judged. As a HUD it is readable and has a good ammo hero number. It is also cluttered, with five unaligned panels, a permanently open controls card, and extract distance shown twice.",
+  "findings": [
+   "P1 left controls card (x16-314, y505-800): Fold it to one 16px line at bottom-left, 24px from the edges, with 'f1 controls' in tx-2, and open it on F1. If the party list stays open, cut it to 8 rows (move, sprint, roll, fire, sights, reload, search, extract). Set the section labels to 16px #aaa498 and add 16px padding.",
+   "P1 top-centre 'extract 152m' chip and right-edge 'c 152m' arrow: Keep one. Use the top-centre teal --extract chip under the score, and delete the 'c 152m' edge pill. Keep only a teal arrow glyph at the screen edge, with no text.",
+   "P1 top-right goals panel (x1603-1900, y20-243): Show only 'goals 0/3' plus the 3 contract rows. Fold the run goals under a toggle. Right-align progress in a tabular column in --f-cond 600 at 16px tx-1. Make headers 14px tx-2. Add 16px row padding and --ui-panel #16191b at 90% opacity.",
+   "P1 HUD edge margins (roster x8, controls x16, hp bar x24, goals right 20, ammo right 10): Put all panels on one safe margin of 48px (5% of the screen), in 8px steps. Move the roster to x48,y48 and the goals to right 48,top 48. Raise the hp bar to bottom 48 and the ammo card to bottom 48.",
+   "P1 top-centre timer and score stack (x860-1060): Make one 220px panel. Timer at 56px f-cond 800 in tx-1. Under it, 'score 50 sp' at 20px, with the label in tx-2. Drop the separate box. Align the icon in the same panel at 24px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-10-195-shared-last-5s-points-recipes-2/shared-machine-host-1080.jpg",
+  "task": "o-10-195-shared-last-5s-points",
+  "when": "2026-10-30T17:10"
+ },
+ "shared-machine-peer": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "This is an in-raid HUD, not the shared-machine menu the earlier notes covered. The ammo block is a clear hero and the corners are mostly kept apart. The top half is crowded with small, dense text, and the extract distance appears twice.",
+  "findings": [
+   "P1 top-right goals panel: Fold it to 'goals 0/3' by default and show the rows only on a key press. If it stays open, set rows to 20px tx-1 with a 16px tx-2 count right-aligned in a column, put 24px between the groups, and move the weather to the clock chip.",
+   "P1 extract chip under the score, and 'c 152m' bottom-right: Keep the teal chip and the edge arrow as one element. Remove the chip's duplicate text, or the 'c 152m' label, so the distance is shown once.",
+   "P1 top-centre clock and score stack: Make the score one 56px hero or a 16px tx-2 label beside the clock, not a second card. Use one card width of 200px with 8px gaps and a single --ui-panel fill, and move the extract chip to the arrow.",
+   "P1 left controls panel: Fold it to one line at mid-bottom left with 'f1 controls'. If it stays open for the demo, cut it to 8 key pairs, use 16px tx-2 labels, and fade it out after 10 seconds.",
+   "P2 bottom-left status chips and hp bar: Use one chip style with a --ui-panel fill, a 1px --ui-line-hi border and 16px tx-1 text, with a --warn or --ok glyph only. Set the hp bar to a 24px height with 16px 'hp 100' tx-1 inside it."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-10-195-shared-last-5s-points-recipes-2/shared-machine-peer-1080.jpg",
+  "task": "o-10-195-shared-last-5s-points",
+  "when": "2026-10-30T17:10"
  }
 }

@@ -1,0 +1,7 @@
+v36.64: golden enemies bolt and stay
+
+Hurt golden enemies run for 3.5 seconds at 1.35 speed, then chase again with a five second cooldown. They never extract, get culled, or leave with a convoy. Only death drops the hoard.
+
+Check 36.64. Fails on v36.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
