@@ -2,7 +2,7 @@
 
 ## FROZEN FOR THE PARTY (his order 10-29 ~21:30, to the CEO chat): "get to a stable build and lets use that.  party is less than 48 hours away and i need some cluade usage left over for work tomorrow"
 - The party build is **v36.55**, stable since 10-29 22:13 (tag stable-v36.55). His 8802 serves it at both http://localhost:8802/ and /stable.html.
-- **No ships until Sun 11/1 01:00** (the week reset), unless he orders a fix himself. tools/handoff/console/STOP stops lanes a, b, c and o; tools/handoff/stable.freeze stops promotions. shipq.sh does NOT read STOP, so a chat must not ship by hand.
+- **No ships until Sun 11/1 01:00** (the week reset), EXCEPT his 10-30 order: "Over the next 30 hours, Make any edits you see as critical for two player play, and test them. Use Claude sparingly so as to leave me at least 5% of usage, try to blow Codex instead". Codex lane o runs unpaced on job o-00y (2 player online party); Claude lanes a, b, c are off (console/STOP-claude); other Codex jobs wait in console/hold-2p. stable.html stays v36.55 as the fallback. tools/handoff/console/STOP stops lanes a, b, c and o; tools/handoff/stable.freeze stops promotions. shipq.sh does NOT read STOP, so a chat must not ship by hand.
 - **Save Claude use:** no scheduled check-ins, no background watchers, no robot or critic runs that call Claude. The CEO cron and watcher are off. A chat answers only when he writes to it.
 - If he gives a game order now: write it into console/open-orders.md and a job in console/tasks/, do not build it, and tell him it waits until after the party.
 - At the first chat turn on or after Sun 11/1: remove STOP and stable.freeze, move after-nov1/ jobs back to tasks/, re-arm the CEO check-in (text in console/checkin-prompt.txt).
