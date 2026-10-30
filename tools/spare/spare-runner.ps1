@@ -414,6 +414,7 @@ $script:playWhy=''
 # looked away from the game for a moment and was stopped a minute later (22:10 to 22:21: seven starts while he played, his game froze
 # twice, at 22:12 and 22:20, the second at 30 fps).
 $script:fgPlayT=(Get-Date).AddDays(-1)
+$P2Want='1030a'   # 10-30: the online 2 player test this main PC hosts once (see the robot lines); a new value asks for one more run
 # 10-29 (Main PC Correspondent, from the FPS chat): the main PC game check (host-night-memory.ps1 -GameCheck, as SYSTEM, no view of his
 # screen) counts a game only at 15% of the graphics card; his 1440p game at 60 fps sits under that, so it had not seen him play since 10-28
 # 14:36 and held the VM to 50% instead of 30% while he played. While the game is in front now, or a pad was used in the last minute, this
@@ -1000,7 +1001,8 @@ while($true){
     # (Watch; under 3 at one look here), and after a memory stop nothing starts for 30 minutes. His rulings: the VM takes its memory first;
     # 4 GB stay free (his 10-28 afternoon "can we knock it down to only leave 4gb free?"; it was 6).
     $fw=FollowAway
-    $ng=$(if(VMResizeSoon){ 999 }elseif($script:working){ 3 }elseif($vmn){ 10 }else{ 6 })
+    # 10-30: while the online 2 player test is still wanted, a start needs 5 GB free (his 4 GB floor plus its one Chrome), not 6
+    $ng=$(if(VMResizeSoon){ 999 }elseif($script:working){ 3 }elseif($vmn){ 10 }elseif((GetS 'p2_done') -ne $P2Want){ 5 }else{ 6 })
     $na=$(if($script:working -or $fw -le 0){ 900 }else{ [Math]::Max(900,($fw+2)*60) })
     $grow=(-not $script:working) -and ($fw -gt 0) -and (VmGrowing)
     $lowW=(-not $script:working) -and (((Epoch)-[long]('0'+(GetS 'lowstop_t'))) -lt 1800)
@@ -1116,26 +1118,27 @@ while($true){
     # 10-28 23:55: a new robot block needs the START memory (6 GB free; 4K needs 7). Before, the next hour's robot started on the 3 GB
     # keep-going bar because the runner was still working: the 4K robot started at 4.3 GB free (17:44 and 21:23) and was stopped for memory
     # within a minute, 0 raids. Under 6 GB the runner stops working, so the next start waits for 6 GB like any other start.
-    # 10-30 (CEO, his "yes i want the auto test"): the main PC hosts the online 2 player test ONCE, in place of a robot hour while he is
-    # away 15 minutes (tools\p2online\p2.mjs host: test port 8817, Chrome 9361, never 8802; about 15 minutes; no AI). The spare PC's runner
-    # joins as player 2. Stop-Work ends it like the robots when he comes back; 3 tries at most. Its result goes out with the next status
-    # (spare\JUL26\p2-online-test.txt on spare-results). A new $p2Want asks for one more run.
-    $p2Want='1030a'
+    # 10-30 (CEO, his "yes i want the auto test", then "can you run it while I'm here?"): the main PC hosts the online 2 player test ONCE,
+    # ahead of the robot, also while he works at the PC (tools\p2online\p2.mjs host: test port 8817, Chrome 9361, never 8802; about 15
+    # minutes; no AI). The spare PC's runner joins as player 2. It starts with 5 GB free; Watch ends it like a light robot once he plays or
+    # under 4 GB at two looks; 3 tries at most. Its result goes out with the next status (spare\JUL26\p2-online-test.txt on spare-results).
+    # A new $P2Want asks for one more run.
     $p2Run=(Running 'p2\.mjs"?\s+host(\s|$)')
-    if($p2Run -eq 0 -and (GetS 'p2_done') -ne $p2Want -and (GetS 'p2_t') -and (GetS 'p2_want') -eq $p2Want){
+    if($p2Run -eq 0 -and (GetS 'p2_done') -ne $P2Want -and (GetS 'p2_t') -and (GetS 'p2_want') -eq $P2Want){
       $pf=$T+'\handoff\spare\p2-online-test.txt'; $pi=Get-Item -LiteralPath $pf -ErrorAction SilentlyContinue
       if($pi -and ([DateTimeOffset]$pi.LastWriteTime).ToUnixTimeSeconds() -gt [long](GetS 'p2_t')){
         Copy-Item -LiteralPath $pf -Destination ($Res+'\spare\'+$HostN+'\p2-online-test.txt') -Force -ErrorAction SilentlyContinue
-        PutS 'p2_done' $p2Want; Say ('online 2 player test: '+(Short ([IO.File]::ReadAllLines($pf)[0])))
+        PutS 'p2_done' $P2Want; Say ('online 2 player test: '+(Short ([IO.File]::ReadAllLines($pf)[0]))); Publish 'p2 online test'
       }
     }
-    if($p2Run -eq 0 -and (GetS 'p2_done') -ne $p2Want -and (AwaySec) -ge 900 -and (Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0 -and (FreeGB) -ge 6 -and (Test-Path -LiteralPath ($T+'\p2online\p2.mjs'))){
-      $n=$(if((GetS 'p2_want') -eq $p2Want){ [int]('0'+(GetS 'p2_tries')) }else{ 0 })
-      if($n -ge 3){ PutS 'p2_done' $p2Want; Say 'the online 2 player test did not finish in 3 tries' }
+    if($p2Run -eq 0 -and (GetS 'p2_done') -ne $P2Want -and (FreeGB) -ge 5 -and (Test-Path -LiteralPath ($T+'\p2online\p2.mjs'))){
+      $n=$(if((GetS 'p2_want') -eq $P2Want){ [int]('0'+(GetS 'p2_tries')) }else{ 0 })
+      if($n -ge 3){ PutS 'p2_done' $P2Want; Say 'the online 2 player test did not finish in 3 tries' }
       else {
-        PutS 'p2_want' $p2Want; PutS 'p2_tries' ([string]($n+1)); PutS 'p2_t' ([string](Epoch))
+        if((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -gt 0){ Stop-Work 'the online 2 player test goes first' }
+        PutS 'p2_want' $P2Want; PutS 'p2_tries' ([string]($n+1)); PutS 'p2_t' ([string](Epoch))
         Start-Process -FilePath $Node -WindowStyle Hidden -ArgumentList @(('"'+$T+'\p2online\p2.mjs"'),'host','--port','8817','--cdp','9361','--root',('"'+$R+'"')) | Out-Null
-        $p2Run=1; $script:working=$true; Say ('online 2 player test started as the host (try '+($n+1)+', test port 8817)')
+        $p2Run=1; $script:working=$true; $script:lightRun=$true; Say ('online 2 player test started as the host (try '+($n+1)+', test port 8817)')
       }
     }
     if($p2Run -eq 0 -and (Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){
