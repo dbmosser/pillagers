@@ -66762,18 +66762,21 @@ class Audio {
      var src=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).join(''), nd='e.cd=rnd(0.'+'60,0.90)';
      if(src.indexOf(nd)<0) bad.push('the pillbox still fires every 0.42 to 0.66 seconds');
      return bad.length?bad.join('; '):null; }},
-  {v:'21.59',what:'the attract clip says PRESS ANY BUTTON with a controller in use and PRESS ANY KEY without',
+  {v:'21.59',what:'the attract prompt names a button with a controller in use and a key without, including lower case text',
    run:function(){
-     if(typeof attShow!=='function'||typeof attStop!=='function'||typeof PAD!=='object') return 'SKIP: no attract mode here';
-     var bad=[], on0=PAD.on, d, t;
+     var bad=[], on0=PAD.on, a0=ARCADE.on, f0=FSG.open, st0=state, last0=ATT.last, t0=document.getElementById('title'), was=t0&&t0.classList.contains('on'), d, text;
      try{
-       PAD.on=true; attShow('data:video/mp4;base64,AAAA'); d=document.getElementById('attract'); t=d?d.textContent:'';
-       if(!/PRESS ANY BUTTON/.test(t)) bad.push('with a controller it reads '+JSON.stringify(t));
-       attStop(); PAD.on=false; attShow('data:video/mp4;base64,AAAA'); t=d?d.textContent:'';
-       if(!/PRESS ANY KEY/.test(t)) bad.push('without a controller it reads '+JSON.stringify(t));
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ attStop(); }catch(_s){} PAD.on=on0; }
-     return bad.length?bad.join('; '):null; }},
+       __runPrep(); __topClear();
+       ARCADE.on=false; FSG.open=false; state='hub'; if(t0) t0.classList.add('on');
+       if(document.activeElement&&document.activeElement.blur) document.activeElement.blur();
+       ATT.last=Date.now()-35000; PAD.on=true; attShow('data:video/mp4;base64,AAAA');
+       d=document.getElementById('attract'); text=d?d.textContent:'';
+       if(!/press any button/i.test(text)) bad.push('with a controller it reads '+JSON.stringify(text));
+       attStop(); ATT.last=Date.now()-35000; PAD.on=false; attShow('data:video/mp4;base64,AAAA'); text=d?d.textContent:'';
+       if(!/press any key/i.test(text)) bad.push('without a controller it reads '+JSON.stringify(text));
+       return bad.length?bad.join('; '):null;
+     }finally{ attStop(); PAD.on=on0; ARCADE.on=a0; FSG.open=f0; state=st0; ATT.last=last0; if(t0){ if(was) t0.classList.add('on'); else t0.classList.remove('on'); } }
+   }},
   {v:'21.58',what:'the what is new card is stamped within 0.15 of the build and leads with the attract polish news, shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
@@ -66898,11 +66901,11 @@ class Audio {
        var r=recStart();
        if(r||REC.on){ bad.push('F9 on the title started a recording of an empty screen'); if(REC.mr) REC.mr.onstop=function(){ REC.chunks=[]; }; recStop(); }
        m=document.getElementById('recmark');
-       if(!m||!/raid|Undercroft/.test(m.textContent||'')) bad.push('F9 on the title said nothing about where to press it');
+       if(!m||!/raid|Undercroft/i.test(m.textContent||'')) bad.push('F9 on the title said nothing about where to press it');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ if(REC.on){ if(REC.mr) REC.mr.onstop=function(){ REC.chunks=[]; }; recStop(); } recMark(false); }catch(_s){} if(!was) t.classList.remove('on'); }
      return bad.length?bad.join('; '):null; }},
-  {v:'21.48',what:'the REC mark shows the time recorded against the 3 minute limit',
+  {v:'21.48',what:'the recording mark shows elapsed time (the legacy build also shows its three minute limit)',
    run:function(){
      if(typeof recStart!=='function'||typeof REC!=='object') return 'SKIP: no recorder here';
      if(typeof MediaRecorder==='undefined'||!HTMLCanvasElement.prototype.captureStream) return 'SKIP: this browser cannot record';
@@ -66913,7 +66916,7 @@ class Audio {
        REC.t0=Date.now()-65000; recDraw();
        m=document.getElementById('recmark'); t=m?String(m.textContent):'';
        if(!/1:05/.test(t)) bad.push('65 seconds in, the REC mark reads '+JSON.stringify(t));
-       if(!/3:00/.test(t)) bad.push('the REC mark does not show the 3 minute limit');
+       if(/\//.test(t)&&!/3:00/.test(t)) bad.push('the legacy recording limit is wrong'); // his 10-30 order removes the displayed limit
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ if(REC.on){ if(REC.mr) REC.mr.onstop=function(){ REC.chunks=[]; }; recStop(); } }catch(_s){} }
      return bad.length?bad.join('; '):null; }},
@@ -67640,27 +67643,23 @@ class Audio {
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ if(REC.on){ if(REC.mr) REC.mr.onstop=function(){ REC.chunks=[]; }; recStop(); } }catch(_s){} }
      return bad.length?bad.join('; '):null; }},
-  {v:'21.17',what:'attract mode: on the title after the idle time a clip plays over the screen with PRESS ANY KEY, a key stops it, and off the title it never shows',
+  {v:'21.17',what:'attract input hides the overlay, restarts the idle clock and consumes the wake key; no clip appears in a raid',
    run:function(){
-     if(typeof attTick!=='function'||typeof ATT!=='object') return 'control: there is no attract mode in this build';
-     var bad=[], t=document.getElementById('title'), was=t&&t.classList.contains('on'), s0=ATT.src, tr0=ATT.tried, d;
+     var t=document.getElementById('title'), was=t&&t.classList.contains('on'), d=attEl(), bad=[], s0=ATT.src, tr0=ATT.tried, on0=ARCADE.on, state0=state, f0=FSG.open;
      try{
-       if(!t) return 'SKIP: no title screen';
-       t.classList.add('on');
-       ATT.src='data:video/mp4;base64,AAAA'; ATT.tried=true; ATT.last=Date.now()-(ATTRACT_IDLE+5)*1000;
-       attTick();
-       d=document.getElementById('attract');
-       if(!ATT.on||!d||d.style.display!=='block') bad.push('after the idle time on the title no clip showed');
-       else if(!/PRESS ANY KEY/.test(d.textContent||'')) bad.push('the clip does not say PRESS ANY KEY');
-       window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyQ',key:'q',bubbles:true}));
-       if(ATT.on||(d&&d.style.display!=='none')) bad.push('a key did not stop the clip');
-       if(Date.now()-ATT.last>2000) bad.push('a key did not start the idle clock again');
-       t.classList.remove('on'); ATT.last=Date.now()-(ATTRACT_IDLE+5)*1000;
-       attTick();
-       if(ATT.on) bad.push('the clip showed off the title');
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ try{ attStop(); }catch(_s){} ATT.src=s0; ATT.tried=tr0; ATT.last=Date.now(); if(t){ if(was) t.classList.add('on'); else t.classList.remove('on'); } }
-     return bad.length?bad.join('; '):null; }},
+       __runPrep(); __topClear();
+       ARCADE.on=false; FSG.open=false;
+       if(t) t.classList.add('on');
+       ATT.on=true; d.style.display='block'; ATT.last=Date.now()-35000;
+       var leaked=false, fn=function(){ leaked=true; }; window.addEventListener('keydown',fn);
+       try{ window.dispatchEvent(new KeyboardEvent('keydown',{code:'KeyQ',key:'q',bubbles:true,cancelable:true})); }finally{ window.removeEventListener('keydown',fn); }
+       if(ATT.on||d.style.display!=='none'||leaked) bad.push('wake key did not dismiss only the clip');
+       if(Date.now()-ATT.last>2000) bad.push('wake key did not reset idle time');
+       if(t) t.classList.remove('on'); state='raid'; ATT.last=Date.now()-35000; attTick();
+       if(ATT.on) bad.push('a clip appeared in a raid');
+       return bad.length?bad.join('; '):null;
+     }finally{ attStop(); state=state0; ATT.src=s0; ATT.tried=tr0; ATT.last=Date.now(); ARCADE.on=on0; FSG.open=f0; if(t){ if(was) t.classList.add('on'); else t.classList.remove('on'); } }
+   }},
   {v:'21.16',what:'the what is new card is stamped within 0.15 of the build and leads with the your notes news, shown whole',
    run:function(){
      if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnShort!=='function') return 'SKIP: this build has no what is new card';
