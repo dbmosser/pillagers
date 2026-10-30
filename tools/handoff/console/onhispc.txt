@@ -125,3 +125,4 @@
 10-30 06:53 v36.56 cw-cx-onlinecopy on his pc after 34s (8802 serves 36.56) week 90%
 10-30 07:24 v36.57 cw-cx-condition-ui2 on his pc after 18s (8802 serves 36.57) week 90%
 10-30 10:50 v36.58 cw-cx-reticleflight on his pc after 114s (8802 serves 36.58) week 91%
+10-30 11:53 v36.59 cw-cx-wholerun on his pc after 17s (8802 serves 36.59) week 91%

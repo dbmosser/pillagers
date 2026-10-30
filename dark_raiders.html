@@ -3912,8 +3912,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.59';
-var VER_AT='2026-10-30 11:52';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.60';
+var VER_AT='2026-10-30 12:04';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -53019,6 +53019,10 @@ function attEl(){
     '#attract .attname{position:absolute;left:0;right:0;top:9%;padding:.18em 0;background:linear-gradient(90deg,transparent,rgba(0,0,0,.62) 22%,rgba(0,0,0,.62) 78%,transparent);text-align:center;font:800 clamp(30px,5vw,240px) var(--f-cond);'+
     'letter-spacing:.14em;color:#f2e6c8;text-shadow:0 4px 0 #000,0 0 30px rgba(0,0,0,.9);opacity:.92}'+
     '@keyframes attpulse{0%,100%{opacity:1}50%{opacity:.85}}';   // v34.xx (cw-endpulse), the critic on 52 and 55: "press any key is small and dim grey" (the shot caught the pulse at .6): the faint end is .85 now   // vNN.xx (ui5q1s): the faint end of the pulse still reads (2.8:1 at .35)
+  // v28.xx (cw-cx-capturechrome): recorded labels cannot show through the title or wake prompt; the arcade keeps its own page layout.
+  st.textContent+='body #attract[data-capture-playback="1"]{background:var(--ui-void)}'+
+    'body #attract[data-capture-playback="1"] .attname{left:50%;right:auto;top:5%;width:max-content;max-width:90vw;min-width:6em;box-sizing:border-box;transform:translateX(-50%);padding:.28em .7em;background:var(--ui-void);border:1px solid var(--ui-line-hi);border-radius:var(--rad);font-size:clamp(56px,5.185185vh,224px);text-shadow:none;opacity:1}'+
+    'body #attract[data-capture-playback="1"] .attpress{left:50%;right:auto;bottom:12%;width:max-content;max-width:90vw;box-sizing:border-box;transform:translateX(-50%);padding:.25em .75em;background:var(--ui-void);border:1px solid var(--ui-line-hi);border-radius:var(--rad);font-size:clamp(32px,2.962963vh,128px);text-shadow:none}';
   document.head.appendChild(st);
   var d=document.createElement('div'); d.id='attract';
   d.innerHTML='<video muted playsinline></video><div class="attname">pillagers</div><div class="attpress">press any key</div>'; // v28.xx (cw-cx-wholerun): ended advances the playlist.
@@ -53033,6 +53037,7 @@ function attShow(src){
   clearTimeout(ATT.timer);
   ATT.src=src; ATT.pending=true; ATT.playing=false;
   var arcade=!!(typeof ARCADE==='object'&&ARCADE&&ARCADE.on);
+  d.setAttribute('data-capture-playback',arcade?'0':'1'); // v28.xx (cw-cx-capturechrome): only the recorded-footage view gets these backplates.
   var ap=d.querySelector('.attpress'); if(ap&&!arcade) ap.textContent=padOn()?'press any button':'press any key';
   if(!arcade) d.style.display='none';
   v.style.visibility='hidden'; v.loop=false; v.muted=true;
@@ -53081,7 +53086,7 @@ function attStop(){
   if(ATT.loading) ATT.tried=false;
   ATT.gen++; clearTimeout(ATT.timer);
   ATT.on=false; ATT.pending=false; ATT.playing=false; ATT.loading=false; ATT.src=null; ATT.ix=-1;
-  if(ATT.el){ ATT.el.style.display='none'; try{ var v=ATT.el.querySelector('video'); v.onplaying=v.onended=v.onerror=v.onwaiting=v.onstalled=null; v.pause(); v.removeAttribute('src'); v.load(); v.style.visibility=''; }catch(e){} }
+  if(ATT.el){ ATT.el.style.display='none'; ATT.el.removeAttribute('data-capture-playback'); try{ var v=ATT.el.querySelector('video'); v.onplaying=v.onended=v.onerror=v.onwaiting=v.onstalled=null; v.pause(); v.removeAttribute('src'); v.load(); v.style.visibility=''; }catch(e){} }
 }
 function attTick(){
   if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on){ try{ arcadeAttTick(); }catch(_aat){} return; }
@@ -53119,8 +53124,9 @@ function recTell(s,sub){ try{ if(typeof G!=='undefined'&&G&&!G.over&&!G.sim) say
 function recMark(on){
   if(!REC.mark){
     REC.mark=document.createElement('div'); REC.mark.id='recmark';
-    REC.mark.style.cssText='position:fixed;left:14px;top:14px;z-index:9001;display:none;padding:4px 10px 4px 8px;border-radius:999px;background:rgba(0,0,0,.6);'+
-      'color:#ff5a4a;font:800 15px var(--f-cond);letter-spacing:.1em;pointer-events:none';
+    // v28.xx (cw-cx-capturechrome): the elapsed badge keeps its 20px reading size at 1080p and 40px at 4K.
+    REC.mark.style.cssText='position:fixed;left:clamp(24px,2.222222vh,96px);top:clamp(24px,2.222222vh,96px);z-index:9001;display:none;padding:.4em .8em;border:1px solid var(--ui-line-hi);border-radius:var(--rad);background:var(--ui-panel);'+
+      'color:#ff5a4a;font:700 clamp(20px,1.851852vh,80px) var(--f-cond);letter-spacing:var(--track);pointer-events:none';
     REC.mark.textContent='rec 0:00'; // v28.xx (cw-cx-wholerun): elapsed time only, lower case.
     document.body.appendChild(REC.mark);
   }
@@ -56633,7 +56639,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.59: F9 saves on run end, keeps every recording, and idle title, hub and arcade playback advances through browser and disk captures. LOCAL: no linked review. Retarget checks 21.48, 21.49, 21.59 and 21.17 for elapsed-only recording, lower case, decoded video and hub playback. Check 36.59 fails on v36.58',
+  now:'v36.60: Recorded footage has opaque title and prompt backplates, a higher 32px prompt and a recording badge that scales from 20px to 40px between 1080p and 4K. LOCAL: no linked review. Check 36.60 fails on v36.59',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

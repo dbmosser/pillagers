@@ -594,3 +594,4 @@
 2026-10-30 11:29 o-00y2-2p-lifecycle-test 33s ok PARTIAL in=1914729 out=20384 run=4
 2026-10-30 11:45 o-001-capture-whole-run-attract-plays-all 978s ok PARTIAL in=1418996 out=34294 run=1
 2026-10-30 11:49 o-001-capture-whole-run-attract-plays-all 198s ok PARTIAL in=2653927 out=40253 run=2
+2026-10-30 12:01 o-001-capture-whole-run-attract-plays-all 387s ok PARTIAL in=3818849 out=51908 run=3

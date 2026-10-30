@@ -2000,3 +2000,6 @@
 2026-10-30 0.0000 o-00y2-2p-lifecycle-test
 2026-10-30 0.0000 o-001-capture-whole-run-attract-plays-all
 2026-10-30 0.0000 o-001-capture-whole-run-attract-plays-all
+2026-10-30 0.0829 critic-o-001-capture-whole-run-attract-plays-all
+2026-10-30 0.0808 critic-o-001-capture-whole-run-attract-plays-all
+2026-10-30 0.0000 o-001-capture-whole-run-attract-plays-all

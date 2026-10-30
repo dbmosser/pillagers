@@ -1,0 +1,7 @@
+v36.60: readable capture title and recording badge
+
+Recorded footage has opaque title and prompt backplates, a higher 32px prompt and a recording badge that scales from 20px to 40px between 1080p and 4K. LOCAL: no linked review.
+
+Check 36.60. Fails on v36.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

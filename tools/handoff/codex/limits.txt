@@ -233,3 +233,4 @@
 2026-10-30 11:29 week=88.0% 5h=51.0% week_resets=2026-11-04 01:35 job=o-00y2-2p-lifecycle-test
 2026-10-30 11:45 week=89.0% 5h=3.0% week_resets=2026-11-04 01:35 job=o-001-capture-whole-run-attract-plays-all
 2026-10-30 11:49 week=90.0% 5h=6.0% week_resets=2026-11-04 01:35 job=o-001-capture-whole-run-attract-plays-all
+2026-10-30 12:01 week=90.0% 5h=9.0% week_resets=2026-11-04 01:35 job=o-001-capture-whole-run-attract-plays-all

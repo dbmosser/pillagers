@@ -4878,5 +4878,37 @@
   "pic": "tools/handoff/console/notes/shots/o-00x-bullets-through-reticle-recipes-4/tracer-detail-p2-still-1080.jpg",
   "task": "o-00x-bullets-through-reticle",
   "when": "2026-10-30T15:14"
+ },
+ "capture-idle-hub-playlist": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The attract hub reads as a debug capture. The 'pillagers' title is stamped over a stale 'enter raid!' label and is hard to read. The scene has a letterbox frame with grey bars, and 'press any key' is small and low in the frame.",
+  "findings": [
+   "P0 top centre, title band at y≈90-190: Hide world station labels while the attract title is up, or move the title block to y≈120-260 on a solid scrim (--scrim rgba(6,7,8,.80)) with no overlap. Draw the title at 56px (--fs-hero) f-cond 800 in --tx-1. Drop the '!' from 'enter raid'.",
+   "P0 outer frame, left x<200 and right x>1720, top and bottom strips: Make the world render fill 1920x1080 edge to edge. Use one vignette of rgba(6,7,8,.8) on the top 160px and bottom 120px only. Remove the grey side bars (#6b6b6b-ish) and replace them with --ui-void #0b0c0d.",
+   "P1 bottom centre, 'press any key' at y≈968: Raise it to y≈900 and set it at 32px f-cond 700 in --acc on a --scrim pill (padding 8x24, radius 4). Add a 1.2s gentle bounce (--m-ease). Read 'press any key' for keyboard and 'press a' for pad.",
+   "P1 '***experimental feature may glitch***' tag at (1510,764): Remove it from the attract view. Where it must remain, show it as a 16px --warn word 'beta' in a 4px-radius chip under the label with 8px spacing, with no asterisks.",
+   "P1 station labels, 7 black pills: Anchor every label 24px above its station centre, with one fill (--ui-panel at 90% with a 1px --ui-line-hi border, radius 4), 20px f-cond 600 --tx-1, and 8x16 padding. Give every label the same opacity of 1."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-001-capture-whole-run-attract-plays-all-recipes-1/capture-idle-hub-playlist-1080.jpg",
+  "task": "o-001-capture-whole-run-attract-plays-all",
+  "when": "2026-10-30T15:55"
+ },
+ "capture-whole-run-timer": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "A readable in-raid HUD with a good ammo hero number, but it has several competing mini-panels, a capital letter on screen, mixed sizes and no shared panel language.",
+  "findings": [
+   "P1 top-right 'run info' dropdown: Change the string to 'run info'. Use the --ui-panel fill, a 1px --ui-line-hi border and a 4px radius, and inset it 5% from the screen edge. Use 16px f-cond for the label.",
+   "P1 hierarchy: top centre and left roster: Make the timer 56px f-cond 800 (--fs-hero) and keep the extract chip quiet under it. Cut the roster to 16px rows with 8px padding, put the money column in tx-1 and align it to a fixed right edge. Drop the 'value at risk' caption to tx-2 at 14px.",
+   "P1 consistency: panel styles: Use one panel fill (#16191b at 90% alpha), a 1px --ui-line-hi border and a 4px radius on every HUD element. Reserve colour for state glyphs and text only.",
+   "P1 bottom-left status cluster and hp bar: Put the bar on the 5% margin (at least 48px from the bottom). Make the bar 16px tall with the 'hp 100' label in tx-1 at 20px, outside or right-aligned. Use one chip height of 32px and set the text to --warn and --ok at 16px.",
+   "P2 contract hint, bottom-left: Shorten it to 'contract item nearby', or drop it. Put it on a solid --ui-panel chip at 16px with a 3px rarity-gold bar."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-001-capture-whole-run-attract-plays-all-recipes-1/capture-whole-run-timer-1080.jpg",
+  "task": "o-001-capture-whole-run-attract-plays-all",
+  "when": "2026-10-30T15:55"
  }
 }
