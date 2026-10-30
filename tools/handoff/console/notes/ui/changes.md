@@ -669,3 +669,5 @@
 
 2026-10-30 | o-001-capture-whole-run-attract-plays-all | recorded-footage title and prompt; rec badge | opaque title and wake backplates; title 56px minimum at top 5%; prompt 32px minimum at bottom 12%; rec badge 15px fixed to 20px at 1080p / 40px at 4K with guide panel/radius | before: tools/handoff/console/notes/shots/o-001-capture-whole-run-attract-plays-all-recipes-1/ | after: lane recipes round 2 pending
 
+2026-10-30 | o-001-capture-whole-run-attract-plays-all | captured-footage title and wake prompt | title padding to 24px and underline to 96x4px at 1080p, both scale at 4K; wake prompt bottom inset 12% to 14% | before: tools/handoff/console/notes/shots/o-001-capture-whole-run-attract-plays-all-recipes-2/capture-idle-hub-playlist-1080.jpg | after: lane recipes round 3 pending
+

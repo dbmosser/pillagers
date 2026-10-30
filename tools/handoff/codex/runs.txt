@@ -595,3 +595,4 @@
 2026-10-30 11:45 o-001-capture-whole-run-attract-plays-all 978s ok PARTIAL in=1418996 out=34294 run=1
 2026-10-30 11:49 o-001-capture-whole-run-attract-plays-all 198s ok PARTIAL in=2653927 out=40253 run=2
 2026-10-30 12:01 o-001-capture-whole-run-attract-plays-all 387s ok PARTIAL in=3818849 out=51908 run=3
+2026-10-30 12:10 o-001-capture-whole-run-attract-plays-all 147s ok PARTIAL in=4339868 out=56726 run=4

@@ -1,0 +1,7 @@
+v36.61: final capture title and wake prompt spacing
+
+Recorded-footage title padding is 24px at 1080p with a 96 by 4px underline, and the wake prompt sits 14 percent above the bottom. LOCAL: no linked review.
+
+Check 36.61. Fails on v36.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -4883,32 +4883,32 @@
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The attract hub reads as a debug capture. The 'pillagers' title is stamped over a stale 'enter raid!' label and is hard to read. The scene has a letterbox frame with grey bars, and 'press any key' is small and low in the frame.",
+  "verdict": "The title now sits in a clean black plate and 'press any key' is lime and legible, but the screen is still letterboxed with grey bars, the title is small, and the station labels and the asterisk tag are still messy.",
   "findings": [
-   "P0 top centre, title band at y≈90-190: Hide world station labels while the attract title is up, or move the title block to y≈120-260 on a solid scrim (--scrim rgba(6,7,8,.80)) with no overlap. Draw the title at 56px (--fs-hero) f-cond 800 in --tx-1. Drop the '!' from 'enter raid'.",
-   "P0 outer frame, left x<200 and right x>1720, top and bottom strips: Make the world render fill 1920x1080 edge to edge. Use one vignette of rgba(6,7,8,.8) on the top 160px and bottom 120px only. Remove the grey side bars (#6b6b6b-ish) and replace them with --ui-void #0b0c0d.",
-   "P1 bottom centre, 'press any key' at y≈968: Raise it to y≈900 and set it at 32px f-cond 700 in --acc on a --scrim pill (padding 8x24, radius 4). Add a 1.2s gentle bounce (--m-ease). Read 'press any key' for keyboard and 'press a' for pad.",
-   "P1 '***experimental feature may glitch***' tag at (1510,764): Remove it from the attract view. Where it must remain, show it as a 16px --warn word 'beta' in a 4px-radius chip under the label with 8px spacing, with no asterisks.",
-   "P1 station labels, 7 black pills: Anchor every label 24px above its station centre, with one fill (--ui-panel at 90% with a 1px --ui-line-hi border, radius 4), 20px f-cond 600 --tx-1, and 8x16 padding. Give every label the same opacity of 1."
+   "P0 outer frame, left x<200 and right x>1765, top y<45 and bottom y>975: Render the world edge to edge at 1920x1080. If the border must stay, fill it with --ui-void #0b0c0d. Add one vignette of rgba(6,7,8,.8) on the top 160px and bottom 120px.",
+   "P1 title plate (792,55)-(1128,167): Set 'pillagers' at 56px (--fs-hero) f-cond 800 in --tx-1. Use a --scrim rgba(6,7,8,.80) plate with 4px radius and 24px padding, centred at y≈120-240 so it clears the pillars. Make the underline 4px by 96px in --acc.",
+   "P1 '***experimental feature may glitch***' tag at (1387,752)-(1636,776): Remove it from the attract view. Where it must stay, show a 16px --warn chip reading 'beta', radius 4, 8px below the label, with no asterisks.",
+   "P1 'press any key' at (848,895)-(1072,950): Move it up to y≈880-930 so it clears the counter. Use a --scrim pill with 8x24 padding and 4px radius. Add a 1.2s bounce with --m-ease. Show 'press a' when a pad is in use.",
+   "P2 station labels (wirt the gambler, the mainframe, shop craft and hire, settings, the stash, fashion, the last pour): Anchor every label 24px above its station centre. Use one fill, --ui-panel at 90%, with a 1px --ui-line-hi border and 4px radius. Set 20px f-cond 600 in --tx-1 with 8x16 padding."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-001-capture-whole-run-attract-plays-all-recipes-1/capture-idle-hub-playlist-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-001-capture-whole-run-attract-plays-all-recipes-2/capture-idle-hub-playlist-1080.jpg",
   "task": "o-001-capture-whole-run-attract-plays-all",
-  "when": "2026-10-30T15:55"
+  "when": "2026-10-30T16:07"
  },
  "capture-whole-run-timer": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "A readable in-raid HUD with a good ammo hero number, but it has several competing mini-panels, a capital letter on screen, mixed sizes and no shared panel language.",
+  "verdict": "The HUD is readable, but the timer is still small, every panel is a different shape, and the 'run info' label has a capital I and sits behind the building. The earlier advice was mostly not applied.",
   "findings": [
-   "P1 top-right 'run info' dropdown: Change the string to 'run info'. Use the --ui-panel fill, a 1px --ui-line-hi border and a 4px radius, and inset it 5% from the screen edge. Use 16px f-cond for the label.",
-   "P1 hierarchy: top centre and left roster: Make the timer 56px f-cond 800 (--fs-hero) and keep the extract chip quiet under it. Cut the roster to 16px rows with 8px padding, put the money column in tx-1 and align it to a fixed right edge. Drop the 'value at risk' caption to tx-2 at 14px.",
-   "P1 consistency: panel styles: Use one panel fill (#16191b at 90% alpha), a 1px --ui-line-hi border and a 4px radius on every HUD element. Reserve colour for state glyphs and text only.",
-   "P1 bottom-left status cluster and hp bar: Put the bar on the 5% margin (at least 48px from the bottom). Make the bar 16px tall with the 'hp 100' label in tx-1 at 20px, outside or right-aligned. Use one chip height of 32px and set the text to --warn and --ok at 16px.",
-   "P2 contract hint, bottom-left: Shorten it to 'contract item nearby', or drop it. Put it on a solid --ui-panel chip at 16px with a 3px rarity-gold bar."
+   "P0 top-right 'run info' dropdown: Render the string as 'run info'. Use a --ui-panel fill, a 1px --ui-line-hi border and a 4px radius. Inset it 48px from the right and 32px from the top. Make it 16px f-cond with a 32px row height.",
+   "P1 top centre timer: Make the timer 56px f-cond 800 in tx-1. Turn the extract chip into a 16px --extract text label on a --ui-panel fill, 8px below the timer. Leave 16px between the timer and the icon.",
+   "P1 left roster panel 'current pillagers 3': Move the panel to x=48. Set the rows to 16px with 8px padding. Make the header tx-2 and the names and money tx-1. Right-align the money to one edge. Use --ui-panel, a 1px --ui-line-hi border and a 4px radius.",
+   "P1 HUD panel consistency: Use one chip style on every HUD piece: #16191b at 90% alpha, a 1px --ui-line-hi border and a 4px radius. Align the corner clusters to a 48px margin. Colour only the text or the glyph, not the fill.",
+   "P1 bottom-left hp bar and status chips: Lift the bar to y=1032 or higher, at least 48px from the bottom. Make it 16px tall. Put 'hp 100' at 20px in tx-1 on the right of the bar. Make both chips 32px high with 16px text."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-001-capture-whole-run-attract-plays-all-recipes-1/capture-whole-run-timer-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-001-capture-whole-run-attract-plays-all-recipes-2/capture-whole-run-timer-1080.jpg",
   "task": "o-001-capture-whole-run-attract-plays-all",
-  "when": "2026-10-30T15:55"
+  "when": "2026-10-30T16:07"
  }
 }

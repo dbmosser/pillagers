@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.61 - FINAL CAPTURE TITLE AND WAKE PROMPT SPACING
+
+Co-op hunt while he was away. The second critic pass still asked for more title breathing room and a higher wake prompt. This is the second and final presentation follow-up to the recording order. Watch: f9 now records your whole run; when nobody touches the game it plays all your recordings
+
+MEASURED. Check 36.61 passes, and fails on v36.60.
 ## v36.60 - READABLE CAPTURE TITLE AND RECORDING BADGE
 
 Co-op hunt while he was away. The critic found recorded station text behind the attract title and a low wake prompt; the camera found the fixed 15px badge too small at 4K. Watch: f9 now records your whole run; when nobody touches the game it plays all your recordings
