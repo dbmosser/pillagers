@@ -1,0 +1,31 @@
+p2 online test 202610301231-JUL26: PASS, host JUL26 v36.57, guest DESKTOP-82BKOP4 v36.57
+(VM hosts in a headless Chrome on a test port; the spare PC joins from its own test copy; codes by text through the p2-mailbox branch; keyboard and mouse input)
+PASS HOST A PARTY made an invite code (1157 characters)
+PASS the spare PC joined with the invite and sent a reply code (v36.57, same build)
+PASS LET THEM IN linked both PCs (roster 2)
+PASS the host ascended (the lift and the sector page)
+PASS player 2 ascended into the same raid and the host draws him
+PASS the host saw player 2 move (1390 units)
+PASS the host saw player 2 rounds land on its machines (28:120>0, 31:52>26)
+PASS the host extracted and is back in the Undercroft
+PASS the spare PC came back to the Undercroft after the extraction (hub)
+PASS player 2 fired 24 rounds on its own screen
+
+guest notes: guest page up, v36.57 | reply code in the mailbox (1129 characters) | linked to the host | answered MY LOADOUT | up top in the host raid | walked right then down | fired 24 rounds at listener 28 | extracted (each player extracts on his own) | still up top a minute after extracting | after the raid: in the Undercroft
+
+log:
+2026-10-30 12:31:34 JUL26 building the test copy of 36577aee
+2026-10-30 12:31:39 JUL26 host page up, v36.57
+2026-10-30 12:31:40 JUL26 PASS HOST A PARTY made an invite code (1157 characters)
+2026-10-30 12:31:43 JUL26 invite in the mailbox as 202610301231-JUL26; waiting for the spare PC
+2026-10-30 12:33:00 JUL26 PASS the spare PC joined with the invite and sent a reply code (v36.57, same build)
+2026-10-30 12:33:00 JUL26 linked 0 s after LET THEM IN
+2026-10-30 12:33:00 JUL26 PASS LET THEM IN linked both PCs (roster 2)
+2026-10-30 12:33:01 JUL26 host ascends through the lift and the sector page
+2026-10-30 12:33:02 JUL26 PASS the host ascended (the lift and the sector page)
+2026-10-30 12:33:02 JUL26 PASS player 2 ascended into the same raid and the host draws him
+2026-10-30 12:33:38 JUL26 PASS the host saw player 2 move (1390 units)
+2026-10-30 12:33:38 JUL26 PASS the host saw player 2 rounds land on its machines (28:120>0, 31:52>26)
+2026-10-30 12:33:41 JUL26 PASS the host extracted and is back in the Undercroft
+2026-10-30 12:34:49 JUL26 PASS the spare PC came back to the Undercroft after the extraction (hub)
+2026-10-30 12:34:49 JUL26 PASS player 2 fired 24 rounds on its own screen
