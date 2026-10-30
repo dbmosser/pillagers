@@ -611,3 +611,11 @@
 2026-10-30 13:09 o-10-195-shared-last-5s-points 67s ok PARTIAL in=2464696 out=15169 run=3
 2026-10-30 13:11 o-10-195-shared-last-5s-points 46s ok DONE in=2678913 out=16701 run=4
 2026-10-30 13:16 o-11-157-golden-bolts-and-stays 323s ok PARTIAL in=1013197 out=11923 run=1
+2026-10-30 13:23 o-11-157-golden-bolts-and-stays 59s ok PARTIAL in=1348409 out=13613 run=2
+2026-10-30 13:26 o-11-157-golden-bolts-and-stays 82s ok PARTIAL in=1840210 out=15934 run=3
+2026-10-30 13:29 o-11-157-golden-bolts-and-stays 82s ok PARTIAL in=2405546 out=18372 run=4
+2026-10-30 13:31 o-11-157-golden-bolts-and-stays 67s ok PARTIAL in=2780481 out=20325 run=5
+2026-10-30 13:34 o-12-194-unlimited-partner-pickups 145s ok PARTIAL in=403405 out=4226 run=1
+2026-10-30 13:35 o-12-194-unlimited-partner-pickups 36s ok PARTIAL in=678394 out=5218 run=2
+2026-10-30 13:38 o-12-194-unlimited-partner-pickups 56s ok DONE in=1013604 out=6693 run=3
+2026-10-30 13:45 o-13-154-machine-tells-unseen-and-open-beat 441s ok PARTIAL in=1824691 out=16378 run=1

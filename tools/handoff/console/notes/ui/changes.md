@@ -685,3 +685,7 @@
 
 2026-10-30 | o-11-157-golden-bolts-and-stays | world, career and demo | hurt golden enemies flee for 3.5 s and remain until death; smooth-look camera recipes golden-bolt-career-smooth and golden-bolt-demo-smooth; picture paths pending lane.
 
+2026-10-30 | o-11-157-golden-bolts-and-stays | career and demo world | v36.64 hurt golden crawler visibly fleeing in smooth look; final pictures tools/handoff/console/notes/shots/o-11-157-golden-bolts-and-stays-recipes-4/golden-bolt-career-smooth-1080.jpg and golden-bolt-demo-smooth-1080.jpg; critic 2/3 stalled on existing HUD findings; all camera rounds consumed.
+
+2026-10-30 | o-13-154-machine-tells-unseen-and-open-beat | raid, smooth look, host and join | hidden targeted windups paint a 14-to-78-unit tapered red streak at the feet; fourth bulwark shot paints an 8-unit lane; warden plates part and core glows during 0.9s opening; bulwark shield lowers during 1s opening | before: recipe views have no before round | after: lane camera output pending for 154-warden-open-host/join, 154-bulwark-big-host/join, 154-unseen-wall-host/join at 1080p and 4k
+

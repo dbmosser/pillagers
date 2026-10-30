@@ -1,0 +1,80 @@
+{
+    "title":  "MACHINE TELLS AND OPEN BEATS",
+    "why":  "His g-20 and g-29: a red streak at your feet and a short open beat. Watch: the bulwark big shot hits 2.5x and changes its rhythm; watch that it reads clearly, avoids cheap deaths, and the opening is noticed. Watch that the streak reads as incoming danger rather than your aim and never appears for a machine targeting somebody else.",
+    "now":  "Wardens open for 0.9s after firing. Every fourth bulwark shot charges for 0.7s, hits 2.5x, then opens its shield for 1s. Hidden machine windups warn only their target at their feet.",
+    "edits":  [
+                  {
+                      "anchor":  "var WARDEN_ARC=1.0, WARDEN_SOAK=0.4;",
+                      "replacement":  "// v28.xx (cw-cx-machineopen): his g-29, a short open beat after the cannon and every fourth bulwark shot.\nvar WARDEN_ARC=1.0, WARDEN_SOAK=0.4;\nvar WARDEN_OPEN=0.9, BULWARK_OPEN=1.0, BULWARK_SHOT_N=4;"
+                  },
+                  {
+                      "anchor":  "    var _se=G.ents[_sq];",
+                      "replacement":  "    var _se=G.ents[_sq];\n    // v28.xx (cw-cx-machineopen): one countdown per host tick, including stopped machines.\n    if(_se.openT\u003e0) _se.openT=Math.max(0,_se.openT-dt);"
+                  },
+                  {
+                      "anchor":  "              fireWeapon(e,{dmg:e.dmg,spread:.05,rng:e.rng,noise:520,tint:\u0027#ffc04a\u0027},p.x+rnd(-8,8),p.y+rnd(-8,8),false);",
+                      "replacement":  "              fireWeapon(e,{dmg:e.dmg,spread:.05,rng:e.rng,noise:520,tint:\u0027#ffc04a\u0027},p.x+rnd(-8,8),p.y+rnd(-8,8),false);\n              if(!e.boss) e.openT=WARDEN_OPEN; // v28.xx (cw-cx-machineopen): the Overseer keeps its own vent cycle."
+                  },
+                  {
+                      "anchor":  "              fireWeapon(e,{dmg:e.dmg,spread:.10,rng:e.rng,noise:340,tint:\u0027#ff9a6a\u0027},p.x+rnd(-16,16),p.y+rnd(-16,16),false);",
+                      "replacement":  "              // v28.xx (cw-cx-machineopen): no extra seeded draws; aim scatter and cooldown retain their order.\n              fireWeapon(e,{dmg:e.dmg*(e.kind===\u0027bulwark\u0027\u0026\u0026e.bigW?2.5:1),spread:.10,rng:e.rng,noise:340,tint:\u0027#ff9a6a\u0027},p.x+rnd(-16,16),p.y+rnd(-16,16),false);\n              if(e.kind===\u0027bulwark\u0027){ e.shotN=(e.shotN||0)+1; if(e.bigW) e.openT=BULWARK_OPEN; }"
+                  },
+                  {
+                      "anchor":  "            e.cd=rnd(0,.35);",
+                      "replacement":  "            e.bigW=0;\n            e.cd=rnd(0,.35);"
+                  },
+                  {
+                      "anchor":  "          e.windup=0.4;",
+                      "replacement":  "          // v28.xx (cw-cx-machineopen): a longer tell precedes every fourth actual bulwark shot.\n          e.bigW=(e.kind===\u0027bulwark\u0027\u0026\u0026((e.shotN||0)+1)%BULWARK_SHOT_N===0)?1:0;\n          e.windup=e.bigW?0.7:0.4;"
+                  },
+                  {
+                      "anchor":  "} else if((en.kind===\u0027bulwark\u0027||(xf(\u0027xfWarden\u0027)\u0026\u0026en.kind===\u0027warden\u0027\u0026\u0026!en.boss))\u0026\u0026(function(){",
+                      "replacement":  "} else if(!(en.openT\u003e0)\u0026\u0026(en.kind===\u0027bulwark\u0027||(xf(\u0027xfWarden\u0027)\u0026\u0026en.kind===\u0027warden\u0027\u0026\u0026!en.boss))\u0026\u0026(function(){"
+                  },
+                  {
+                      "anchor":  "  if(e.kind===\u0027sentry\u0027) tot=0.4; else if(e.kind===\u0027warden\u0027) tot=0.7; else return null;",
+                      "replacement":  "  if(e.kind===\u0027sentry\u0027) tot=0.4; else if(e.kind===\u0027warden\u0027) tot=0.7; else if(e.kind===\u0027bulwark\u0027\u0026\u0026e.bigW) tot=0.7; else return null;"
+                  },
+                  {
+                      "anchor":  "w:(e.kind===\u0027warden\u0027)?(e.boss?12:8):4",
+                      "replacement":  "w:(e.kind===\u0027warden\u0027)?(e.boss?12:8):(e.kind===\u0027bulwark\u0027?8:4)"
+                  },
+                  {
+                      "anchor":  "function telegraphLane(e){",
+                      "replacement":  "// v28.xx (cw-cx-machineopen): his g-20, only a local warning at the feet, never the hidden machine location.\nfunction unseenTell(e,p){\n  if(!xf(\u0027xfTell\u0027)||!e||!(e.hp\u003e0)||e.seen||!(e.windup\u003e0)||!p||p.downed||p.finished||!(p.hp\u003e0)) return null;\n  var tot=e.kind===\u0027warden\u0027?0.7:(e.kind===\u0027sentry\u0027?0.4:(e.kind===\u0027bulwark\u0027?(e.bigW?0.7:0.4):0));\n  if(!tot||!(dist(e,p)\u003ce.rng*1.2)||(NET.on\u0026\u0026netTargetFor(e)!==p)) return null;\n  var dx=e.x-p.x,dy=e.y-p.y,d=Math.sqrt(dx*dx+dy*dy);\n  if(!(d\u003e0)) return null;\n  dx/=d; dy/=d;\n  return {x1:p.x+dx*14,y1:p.y+dy*14,x2:p.x+dx*78,y2:p.y+dy*78,f:clamp(1-e.windup/tot,0,1)};\n}\nfunction drawUnseenTells(p){\n  var n=0;\n  for(var i=0;i\u003cG.ents.length;i++){\n    var t=unseenTell(G.ents[i],p); if(!t) continue;\n    var dx=(t.x2-t.x1)/64,dy=(t.y2-t.y1)/64,w=2+3*t.f;\n    wc.save(); wc.globalCompositeOperation=\u0027source-over\u0027; wc.globalAlpha=0.3+0.6*t.f;\n    wc.fillStyle=wc.strokeStyle=\u0027rgb(255,36,28)\u0027; wc.lineWidth=w;\n    wc.beginPath(); wc.moveTo(t.x1-dy*w/2,t.y1+dx*w/2); wc.lineTo(t.x2,t.y2); wc.lineTo(t.x1+dy*w/2,t.y1-dx*w/2); wc.closePath(); wc.fill();\n    wc.lineWidth=0.5; wc.beginPath(); wc.moveTo(t.x1,t.y1); wc.lineTo(t.x2,t.y2); wc.stroke(); wc.restore(); n++;\n  }\n  return n;\n}\nfunction telegraphLane(e){"
+                  },
+                  {
+                      "anchor":  "e.windup/(e.kind===\u0027warden\u0027?0.7:0.4)",
+                      "replacement":  "e.windup/((e.kind===\u0027warden\u0027||(e.kind===\u0027bulwark\u0027\u0026\u0026e.bigW))?0.7:0.4)"
+                  },
+                  {
+                      "anchor":  "  // v26.xx (ai24): the Overseer sweeping laser, a wide red beam on the ground from the machine to the first wall.",
+                      "replacement":  "  // v28.xx (cw-cx-machineopen): hidden-machine streaks share the ground pass, after visible aim lanes.\n  drawUnseenTells(p);\n  // v26.xx (ai24): the Overseer sweeping laser, a wide red beam on the ground from the machine to the first wall."
+                  },
+                  {
+                      "anchor":  "((e.glint\u003e0)?4:0),animHitAngle(e)",
+                      "replacement":  "((e.glint\u003e0)?4:0)|((e.openT\u003e0)?8:0)|((e.bigW\u0026\u0026e.windup\u003e0)?16:0),animHitAngle(e)"
+                  },
+                  {
+                      "anchor":  "  if(f\u0026512){ if(e.windup===undefined||e.windup===null) e.windup=(e.kind===\u0027warden\u0027)?0.7:0.4; } else e.windup=null;",
+                      "replacement":  "  // v28.xx (cw-cx-machineopen): ninth-field bits 8/16, preserving burn, get-up, glint and target-seat bits.\n  e.openT=(typeof bx===\u0027number\u0027\u0026\u0026(bx\u00268))?(e.kind===\u0027warden\u0027?WARDEN_OPEN:BULWARK_OPEN):0;\n  e.bigW=(typeof bx===\u0027number\u0027\u0026\u0026(bx\u002616))?1:0;\n  if(f\u0026512){ if(e.windup===undefined||e.windup===null) e.windup=(e.kind===\u0027warden\u0027||e.bigW)?0.7:0.4; } else { e.windup=null; e.bigW=0; }"
+                  },
+                  {
+                      "anchor":  "  if(PIXM.paint||!MACH_KIND[e.kind]||!pixOn()||",
+                      "replacement":  "  if(e.openT\u003e0||PIXM.paint||!MACH_KIND[e.kind]||!pixOn()||"
+                  },
+                  {
+                      "anchor":  "  // BELLY PLATE: oxide, hazard stencils\n",
+                      "replacement":  "  // v28.xx (cw-cx-machineopen): parted armour reveals a bright core during the opening.\n  if(!B\u0026\u0026e.openT\u003e0){\n    wc.fillStyle=P.ink; rrF(-15,-31,23,14,2);\n    wc.fillStyle=\u0027#ff6b32\u0027; rrF(-8,-28,9,9,2);\n    wc.fillStyle=\u0027#fff0b0\u0027; wc.fillRect(-5,-26,3,5);\n    wc.fillStyle=P.ox[1]; rrF(-18,-30,7,13,2); rrF(4,-30,7,13,2);\n    wc.fillStyle=P.och; wc.fillRect(-17,-28,5,2); wc.fillRect(5,-28,5,2);\n  } else {\n  // BELLY PLATE: oxide, hazard stencils\n"
+                  },
+                  {
+                      "anchor":  "  // THE HEAD: set low between the shoulders, a visor slit in the sensor language (the Overseer: a crown of three sensor masts and one big lens)",
+                      "replacement":  "  }\n  // THE HEAD: set low between the shoulders, a visor slit in the sensor language (the Overseer: a crown of three sensor masts and one big lens)"
+                  },
+                  {
+                      "anchor":  "  wc.save(); wc.translate(x,y-18); wc.rotate(e.face); if(Math.cos(e.face)\u003c-0.01) wc.scale(1,-1);",
+                      "replacement":  "  // v28.xx (cw-cx-machineopen): lower the slab within the existing 1.5x body transform.\n  wc.save(); wc.translate(x,y-18+(e.openT\u003e0?15:0)); wc.rotate(e.face); if(Math.cos(e.face)\u003c-0.01) wc.scale(1,-1); if(e.openT\u003e0) wc.scale(1,0.3);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027machine openings remove front soak, the fourth bulwark shot charges and hits harder, and hidden targeted windups draw a streak at the feet in both roles\u0027,\n   run:function(){\n     var g,p,e,bad=[],oFire=fireWeapon,oBoss=bossTick,oStroke=wc.stroke,oMove=wc.moveTo,oWeak=weakHit,oShot=netShotSend;\n     var nk={},k,shots=[],sent=[],start=null,near=0,cfg={w:CFG.xfWarden,t:CFG.xfTell,p:CFG.xfPix};\n     for(k in NET) nk[k]=NET[k];\n     function expect(v,s){ if(!v) bad.push(s); }\n     function step(t){ for(var i=0;i\u003cMath.ceil(t/0.01);i++) updateEnts(0.01); }\n     function hit(q,peer){\n       var hp=q.hp; g.bullets=[{x:q.x+q.r*machMul(q)+8,y:q.y,vx:-1000,vy:0,dmg:100,player:true,owner:p,tint:\u0027#ffffff\u0027,el:\u0027\u0027,thru:0,life:1,rng:500,dist:0,ox:p.x,oy:p.y}];\n       sent=[]; updateBullets(0.08); g.bullets=[];\n       return peer?(sent.length?sent[0]:-1):hp-q.hp;\n     }\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027gun_rifle\u0027],safe:null,mapIx:0,seed:4242}); g=__state(); p=g.player;\n       NET.on=false; CFG.xfWarden=1; CFG.xfTell=1; CFG.xfPix=0; xfSnap();\n       g.sim=true; g.map.walls=[]; g.map.segs=[]; g.grid=null; g.vseg=[]; g.vgrid=null; g.brl=[]; g.containers=[]; g.pCrouch=false; p.downed=0; p.hp=100; p.face=Math.PI;\n       p.x=2000; p.y=1600; bossTick=function(){}; weakHit=function(){return null;};\n       fireWeapon=function(a,w){shots.push({a:a,dmg:w.dmg});};\n       e=mkWarden(p.x-200,p.y); e.boss=0; e.face=0; e.spd=0; e.seenYou=true; e.announced=true; e.windup=0.01; e.cd=0; e.tx=e.x; e.ty=e.y; g.ents=[e];\n       updateEnts(0.02); expect(shots.length===1\u0026\u0026e.openT\u003e0,\u0027warden shot did not open\u0027);\n       step(0.3); expect(Math.abs(hit(e,false)-100)\u003c0.01,\u0027warden front round at 0.3s was soaked\u0027);\n       step(0.9); expect(Math.abs(hit(e,false)-40)\u003c0.01,\u0027warden front round at 1.2s was not soaked to 0.4\u0027);\n       e=mkBulwark(p.x-200,p.y); e.elite=0; e.affix=null; e.face=0; e.spd=0; e.state=\u0027chase\u0027; e.alert=10; e.shotN=0; e.cd=0; e.tx=e.x; e.ty=e.y; g.ents=[e]; shots=[];\n       for(var n=1;n\u003c=4;n++){\n         e.cd=0; e.windup=null; updateEnts(0.01);\n         expect(Math.abs(e.windup-(n===4?0.7:0.4))\u003c0.001,\u0027bulwark windup \u0027+n+\u0027 has wrong length\u0027);\n         if(n===4){ var lane=telegraphLane(e); expect(lane\u0026\u0026lane.w===8\u0026\u0026e.bigW,\u0027big windup has no wide lane\u0027); }\n         e.windup=0.001; updateEnts(0.01);\n         expect(shots.length===n,\u0027bulwark shot \u0027+n+\u0027 did not fire\u0027);\n         if(shots[n-1]) expect(Math.abs(shots[n-1].dmg-e.dmg*(n===4?2.5:1))\u003c0.01,\u0027bulwark shot \u0027+n+\u0027 damage\u0027);\n       }\n       expect(e.openT\u003e0\u0026\u0026!e.bigW,\u0027bulwark big shot did not open and clear windup\u0027);\n       expect(Math.abs(hit(e,false)-100)\u003c0.01,\u0027open bulwark front round was soaked\u0027);\n       step(1.01); expect(Math.abs(hit(e,false)-100*(CFG.bulwarkSoak===undefined?0.12:CFG.bulwarkSoak))\u003c0.01,\u0027bulwark shield did not close\u0027);\n       // A real row round trip preserves all three old low bits and both new bits.\n       e.openT=1; e.bigW=1; e.windup=0.5; e.glint=0.1; e.burnT=1; e.downed=1; e.getUp=1;\n       var row=netEntRow(e),copy=netEntMake(123,\u0027bulwark\u0027,e.x,e.y); netEntFlagsApply(copy,row[7],row[8]);\n       expect((row[8]\u002631)===31\u0026\u0026copy.openT\u003e0\u0026\u0026copy.bigW\u0026\u0026copy.windup===0.7\u0026\u0026copy.burnT\u003e0\u0026\u0026copy.getUp\u003e0,\u0027ninth field bits did not round trip\u0027);\n       copy.downed=0; copy.hp=1000; copy.face=0; copy.rng=620; copy.nid=123; g.ents=[copy];\n       g.sim=false; NET.on=true; NET.role=\u0027join\u0027; NET.seat=1; NET.upSeed=g.seed\u003e\u003e\u003e0; NET.entMap={123:copy};\n       netShotSend=function(q,d){sent.push(d);};\n       expect(Math.abs(hit(copy,true)-100)\u003c0.01,\u0027peer front round was soaked during open beat\u0027);\n       netEntFlagsApply(copy,0,0); expect(!copy.bigW\u0026\u0026!copy.openT\u0026\u0026copy.windup===null,\u0027snapshot did not clear opening\u0027);\n       expect(Math.abs(hit(copy,true)-100*(CFG.bulwarkSoak===undefined?0.12:CFG.bulwarkSoak))\u003c0.01,\u0027peer closed shield did not soak\u0027);\n       NET.on=false; g.sim=false; e=mkWarden(p.x-300,p.y); e.face=0; e.windup=0.35; e.seen=false; g.ents=[e];\n       var t=unseenTell(e,p); expect(t\u0026\u0026Math.abs(t.x1-(p.x-14))\u003c0.01\u0026\u0026Math.abs(t.x2-(p.x-78))\u003c0.01\u0026\u0026t.f===0.5,\u0027unseen warden streak direction or progress\u0027);\n       e.seen=true; expect(unseenTell(e,p)===null,\u0027visible machine has hidden streak\u0027); e.seen=false;\n       CFG.xfTell=0; xfSnap(); expect(unseenTell(e,p)===null,\u0027tell switch off still warns\u0027); CFG.xfTell=1; xfSnap();\n       p.downed=1; expect(unseenTell(e,p)===null,\u0027downed player warned\u0027); p.downed=0;\n       p.face=0; // machine is behind the local view; render must leave it unseen.\n       wc.moveTo=function(x,y){start={x:x,y:y};return oMove.apply(this,arguments);};\n       wc.stroke=function(){if(start\u0026\u0026String(wc.strokeStyle).replace(/\\s/g,\u0027\u0027)===\u0027#ff241c\u0027\u0026\u0026wc.lineWidth===0.5\u0026\u0026Math.hypot(start.x-p.x,start.y-p.y)\u003c80)near++;return oStroke.apply(this,arguments);};\n       render2D(0); expect(near\u003e0,\u0027ground pass did not stroke at the player feet\u0027);\n       // Target filtering in each role: a closer teammate owns the warning.\n       for(var role=0;role\u003c2;role++){\n         NET.on=true; NET.role=role?\u0027join\u0027:\u0027host\u0027; NET.seat=role?1:0; NET.max=4; NET.specG=null;\n         NET.roster=[{seat:0,name:\u0027a\u0027},{seat:1,name:\u0027b\u0027}]; NET.peers=[{seat:role?0:1,state:\u0027in\u0027}];\n         NET.up=[{seat:role?0:1,n:5,age:0,sd:g.seed\u003e\u003e\u003e0,tx:e.x+20,ty:e.y,tf:0,dn:0,mv:0}];\n         e.seen=false; e.windup=0.35;\n         expect(netTargetFor(e)!==p\u0026\u0026unseenTell(e,p)===null,\u0027wrong-target streak in \u0027+NET.role);\n         NET.up[0].tx=p.x+1200;\n         expect(netTargetFor(e)===p\u0026\u0026unseenTell(e,p)!==null,\u0027own-target streak missing in \u0027+NET.role);\n       }\n     }catch(ex){bad.push(\u0027threw: \u0027+(ex.message||ex));}\n     finally{\n       fireWeapon=oFire; bossTick=oBoss; weakHit=oWeak; netShotSend=oShot; wc.stroke=oStroke; wc.moveTo=oMove;\n       for(k in NET) if(!(k in nk)) delete NET[k]; for(k in nk) NET[k]=nk[k];\n       CFG.xfWarden=cfg.w; CFG.xfTell=cfg.t; CFG.xfPix=cfg.p; xfSnap();\n       try{__endRaid(\u0027abandon\u0027);}catch(_end){} __topClear();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null;\n   }},\n"
+}

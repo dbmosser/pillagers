@@ -130,3 +130,4 @@
 10-30 12:14 v36.61 cw-cx-capturegaps on his pc after 66s (8802 serves 36.61) week 91%
 10-30 12:30 v36.62 cw-cx-materialpuffs on his pc after 50s (8802 serves 36.62) week 91%
 10-30 13:07 v36.63 cw-cx-sharedmachine on his pc after 33s (8802 serves 36.63) week 91%
+10-30 13:21 v36.64 cw-cx-goldbolt on his pc after 66s (8802 serves 36.64) week 91%

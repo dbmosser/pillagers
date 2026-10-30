@@ -1,0 +1,6 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  unlimited-pickups-player-1             staged       5.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"ok":true,"role":"host","cycles":12,"earlyHoldSeconds":1.5,"fullHoldSeconds":3.25,"selfReviveSpent":true,"version":"36.64"}
+  unlimited-pickups-player-2             staged       4.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"ok":true,"role":"join","cycles":12,"earlyHoldSeconds":1.5,"fullHoldSeconds":3.25,"selfReviveSpent":true,"version":"36.64"}
+== 4k : window 3876x2265, viewport 3840x2160
+  unlimited-pickups-player-1             staged       5.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"ok":true,"role":"host","cycles":12,"earlyHoldSeconds":1.5,"fullHoldSeconds":3.25,"selfReviveSpent":true,"version":"36.64"}
+  unlimited-pickups-player-2             staged       5.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"ok":true,"role":"join","cycles":12,"earlyHoldSeconds":1.5,"fullHoldSeconds":3.25,"selfReviveSpent":true,"version":"36.64"}

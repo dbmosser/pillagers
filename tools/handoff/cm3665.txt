@@ -1,0 +1,7 @@
+v36.65: machine tells and open beats
+
+Wardens open for 0.9s after firing. Every fourth bulwark shot charges for 0.7s, hits 2.5x, then opens its shield for 1s. Hidden machine windups warn only their target at their feet.
+
+Check 36.65. Fails on v36.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -5070,5 +5070,69 @@
   "pic": "tools/handoff/console/notes/shots/o-10-195-shared-last-5s-points-recipes-2/shared-machine-peer-1080.jpg",
   "task": "o-10-195-shared-last-5s-points",
   "when": "2026-10-30T17:10"
+ },
+ "golden-bolt-career-smooth": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "The hud is still a set of unrelated boxes: the earlier advice about the capital in 'run Info', the 'available' typo, the doubled extraction cues, the loose hotbar and the unstyled hp bar was not followed, so it still looks like a template overlay.",
+  "findings": [
+   "P1 top-right 'run info' dropdown (x 1603-1900, y 18-54): Change the text to 'run info'. Shrink it to a 160px wide, 32px tall --ui-panel chip at 48px from the top and right edges, with a 4px radius and a 1px --ui-line-hi border. Use 16px f-cond 600 text in --tx-2. Delete the chevron or fold it into the cw-trcol 1x1 list.",
+   "P1 'extraction a available' tag (x 505-655, y 886-908) and top-centre 'extract 50m' pill: Delete the bottom tag. Keep one 16px --extract pill 'extract 50m' at the top centre, and when extraction is open change the pill text to 'extract open' and fill it with --extract at --acc-ink contrast.",
+   "P1 hp bar, bottom-left (x 24-430, y 1035-1068): Put the bar at left 48px, bottom 48px, 24px tall, with a --ui-raised track and a 1px --ui-line border, 4px radius, and an --ok fill. Use 16px 'hp' in --tx-2 and 20px '100' in --tx-1 inside the bar. Align its bottom edge with the ammo card's bottom.",
+   "P1 hotbar slots 4-9 and 0 (x 860-1470, y 970-1010): Draw all 10 slots as 56px frames with 8px gaps. Fill them with --ui-panel at 60% and a 1px --ui-line border. Put the number at 16px --tx-2 in the top-left corner. Keep the 3px lime border for slot 1 only. Remove the silhouettes. Centre the strip at 960px.",
+   "P1 left panel 'current pillagers 0' (x 8-367, y 143-260): Use 16px labels and 20px for 'you $3,200' in --tx-1. Set 'dead' in --danger at 16px. Add a 1px --ui-line divider above '0 out · 3 dead'. Use a --ui-panel fill, move the left edge to 48px, and use 8px row padding."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-11-157-golden-bolts-and-stays-recipes-4/golden-bolt-career-smooth-1080.jpg",
+  "task": "o-11-157-golden-bolts-and-stays",
+  "when": "2026-10-30T17:30"
+ },
+ "golden-bolt-demo-smooth": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The panels are tidier and the 10:00 timer leads the eye, but none of the earlier fixes landed: the 'extraction a available' string is still broken and still collides with the f1 chip, and the HUD still sits on mixed margins, sizes and fills.",
+  "findings": [
+   "P0 'f1 controls' chip and 'extraction a available' (x410-670, y865-905): Change the string to 'extraction available'. Make it a 16px --extract label on a --ui-panel chip at y840. Move the f1 controls hint to a 16px one-line chip at x96 / y1000, mid-bottom-left. Keep at least a 16px gap between the two chips.",
+   "P1 top-centre stack (timer, team score, extract chip, x825-1125, y18-257): Make one 280px --ui-panel column with 8px gaps. Give the weather icon a 40px slot inside the timer panel. Set the team score as a 16px --tx-2 label above a 32px '0 sp', then a row 'you' in amber and 'p2' in cyan, 16px each, on one baseline. Make the extract chip 280px wide and put the arrow inside it.",
+   "P1 weapon slot row (x560-1480, y965-1055): Draw all 10 slots as 64px tiles with --ui-panel fill, a 1px --ui-line-hi border and a 4px radius, with 8px gaps. Only the selected slot gets a 3px --acc border. Set the slot numbers to 16px --tx-2. Keep empty slots dimmed but still drawn as tiles.",
+   "P1 armour / hp bars (x24-430, y965-1068): Move the stack to x96 / bottom 96. Make both bars 360px by 12px with a 4px radius. Set both labels to 16px f-cond in --tx-1, placed above the bars on a --ui-panel backing. Use --ok for the hp fill and a desaturated blue for armour.",
+   "P1 ammo card (x1605-1910, y868-1017): Inset the card to right 96 / bottom 96, using --ui-panel fill and a 4px radius. Set the weapon name to 20px --tx-2. Keep the 56px hero count in --tx-1 with '/ 360' at 32px --tx-2."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-11-157-golden-bolts-and-stays-recipes-4/golden-bolt-demo-smooth-1080.jpg",
+  "task": "o-11-157-golden-bolts-and-stays",
+  "when": "2026-10-30T17:30"
+ },
+ "unlimited-pickups-player-1": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "This is an in-raid HUD, not the title screen my earlier review covered, and it is cluttered: a column of twelve stacked 'revived' toasts runs over the player, an open controls panel and a leaderboard crowd the left side, and the minimap is mostly empty black.",
+  "findings": [
+   "P0 centre column above the player: 12 stacked 'revived' toasts: Merge repeats into one line, 'revived x12', and show at most 3 lines. Send pickups to the right stack. Draw nothing over the player's head. Hold each line for 2s and fade it over 140ms.",
+   "P1 left: controls panel (move / gear / fight / raid, 'f1 full list'): Fold it to one 16px line, 'f1 controls', at x=96, bottom 96px. Open it only on F1. When open, cap it at 2 columns and 6 rows.",
+   "P1 top-left: 'current pillagers 7' leaderboard: Fold it to the header row by default, with a chevron to expand. Use one panel style for both: --ui-panel fill, 1px --ui-line-hi border, 4px radius, 16px padding. Keep rarity and player colours out of name rows. Use --tx-1 for every name.",
+   "P1 top-right: minimap and 'run info' bar: Shrink the minimap to 200x200px and crop it to the explored area. Fix the capital to 'run info'. Use the same panel token for the minimap and the bar, 8px apart, with the right edge at the 96px margin. Bring the career HUD in line with the cw-trcol vertical list.",
+   "P1 bottom-left: 'hp 40' bar: Make it a 12px-high bar with an --ui-line-hi border and a 16px 'hp' label above it. Use --ok for healthy and --danger below 30%. Put the number on the right in 20px. Align it to x=96, bottom 48px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-12-194-unlimited-partner-pickups-recipes-2/unlimited-pickups-player-1-1080.jpg",
+  "task": "o-12-194-unlimited-partner-pickups",
+  "when": "2026-10-30T17:36"
+ },
+ "unlimited-pickups-player-2": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "This is a raid HUD and not the title screen from the earlier review, and it is cluttered. Twelve stacked 'revived' tags, a large open controls card, an oversized dead leaderboard and a capital 'I' in 'run Info' all pull attention from the play area and the ammo block.",
+  "findings": [
+   "P0 centre of screen, 'revived' tag stack above the player: Keep one 'revived' toast, and collapse duplicates into a single 'revived x12' chip with a 1.5s life. Move it to the left feed, since the alert/feed rule already shows 'player 1 is back up' there. Change the colour to --ok #76b97c or --tx-1 and not --extract.",
+   "P0 top-right, 'run Info' bar under the minimap: Lower-case it to 'run info'. Set it to a 16px f-cond 600 label with --rad 4px and a 1px --ui-line-hi border, in the same fill as the leaderboard (--ui-panel). Make it collapsible with the same chevron style as the leaderboard.",
+   "P1 left, controls list card (move / gear / fight / raid): For career, fold it to one 40px line, 'f1 controls', anchored bottom-left at x=96px (5% margin). When it is open, use --ui-raised key chips and 16px labels, and give it a 1px --ui-line border. If this is the party demo, auto-fold it after 8s.",
+   "P1 top-left leaderboard 'current pillagers 0 / value at risk': Collapse the list by default to the 'you $1,770' row plus the '0 out · 7 dead' summary. Drop the repeated 'dead' suffix and use a single 16px danger-coloured dot instead. Use one --tx-2 colour for every name, and set a --ui-panel fill at 90% opacity. Move it to an 8px-grid margin of at least 24px from the edge.",
+   "P1 bottom-left 'hp 40' bar: Set the label to 16px f-cond 600 --tx-2 and the value to 32px (--fs-title) so that the 56px ammo number stays the one hero. Make the bar 12px high with a 1px --ui-line-hi border, and move it 24px above the bottom edge. Raise the 'player 1' label to 16px --tx-1."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-12-194-unlimited-partner-pickups-recipes-2/unlimited-pickups-player-2-1080.jpg",
+  "task": "o-12-194-unlimited-partner-pickups",
+  "when": "2026-10-30T17:37"
  }
 }

@@ -11,3 +11,8 @@ Rules: the seed 4242 fingerprint (ents 85/374, containers 165/593) must hold unl
 TASK DONE when it shipped; TASK PARTIAL with what is left.
 
 HIS PRIORITY 10-27 (priorities page): LOW
+
+Lane note 2026-10-30 13:31: shipped cw-cx-goldbolt and parked: only lane-side steps are left. Codex's last words:
+Shipped v36.64 and confirmed ON HIS PC. Final pictures verify visible golden flight in both modes and resolutions. Camera review is exhausted; existing HUD findings are logged.
+
+TASK PARTIAL: coordinator must complete the linked two-window review and provide one picture per window.

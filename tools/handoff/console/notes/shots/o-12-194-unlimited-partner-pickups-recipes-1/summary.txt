@@ -1,0 +1,18 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  unlimited-pickups-player-1             NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:72
+    at <anonymous>:1:2192
+    at <anonymous>:1:2268
+  unlimited-pickups-player-2             NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:72
+    at <anonymous>:1:2192
+    at <anonymous>:1:2268
+== 4k : window 3876x2265, viewport 3840x2160
+  unlimited-pickups-player-1             NOT STAGED   4.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:72
+    at <anonymous>:1:2192
+    at <anonymous>:1:2268
+  unlimited-pickups-player-2             NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:72
+    at <anonymous>:1:2192
+    at <anonymous>:1:2268

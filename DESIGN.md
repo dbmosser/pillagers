@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.65 - MACHINE TELLS AND OPEN BEATS
+
+Co-op hunt while he was away. His g-20 and g-29: a red streak at your feet and a short open beat. Watch: the bulwark big shot hits 2.5x and changes its rhythm; watch that it reads clearly, avoids cheap deaths, and the opening is noticed. Watch that the streak reads as incoming danger rather than your aim and never appears for a machine targeting somebody else.
+
+MEASURED. Check 36.65 passes, and fails on v36.64.
 ## v36.64 - GOLDEN ENEMIES BOLT AND STAY
 
 Co-op hunt while he was away. His g-21: Run, so you chase it. His g-22: No, it stays all raid. Watch: a fleeing golden may lead into machines or a dead end; slow howlers should still invite a chase and crawlers must remain catchable at sprint speed. Golden pillagers may camp near rings or walk in circles.

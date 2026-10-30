@@ -1,0 +1,6 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  golden-bolt-career-smooth              staged       5.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"golden":true,"runT":3.0754999999999995,"distance":268.7689999999993,"visible":true,"face":-0.01817016854743383,"smooth":true}
+  golden-bolt-demo-smooth                staged       5.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"golden":true,"runT":2.8437999999999994,"distance":306.3044000000002,"visible":true,"face":0.014807546289831518,"smooth":true}
+== 4k : window 3876x2265, viewport 3840x2160
+  golden-bolt-career-smooth              staged       5.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"golden":true,"runT":3.1378000000000013,"distance":258.67639999999983,"visible":true,"face":-0.04740825652500696,"smooth":true}
+  golden-bolt-demo-smooth                staged       5.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"golden":true,"runT":2.8437,"distance":306.32060000000024,"visible":true,"face":0.01480046659850829,"smooth":true}

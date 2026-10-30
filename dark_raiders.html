@@ -3912,8 +3912,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.64';
-var VER_AT='2026-10-30 13:19';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.65';
+var VER_AT='2026-10-30 13:48';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26977,7 +26977,9 @@ function searchAdvance(e){
 // from behind; a round into its optic (the weak point on its front) still pays, as the weak points are tested before the armour. The
 // Bulwark keeps its own numbers. THE OVERSEER is left unarmoured on purpose (it has its phases now, ai24). Blasts, mines and fire come
 // from no side, so they go past the armour: that is what flanking and a frag are for.
+// v28.xx (cw-cx-machineopen): his g-29, a short open beat after the cannon and every fourth bulwark shot.
 var WARDEN_ARC=1.0, WARDEN_SOAK=0.4;
+var WARDEN_OPEN=0.9, BULWARK_OPEN=1.0, BULWARK_SHOT_N=4;
 function feudFoe(a,b){
   if(CFG.raiderFeud===0) return false;
   if(G&&G.crewsHot===undefined) G.crewsHot=((G.seed>>>0)%10)<6;
@@ -32001,6 +32003,8 @@ if(G.prints){
   // who fired and then changed state stuck reading SHOOTING forever.
 for(var _sq=0;_sq<G.ents.length;_sq++){
     var _se=G.ents[_sq];
+    // v28.xx (cw-cx-machineopen): one countdown per host tick, including stopped machines.
+    if(_se.openT>0) _se.openT=Math.max(0,_se.openT-dt);
 if(!_se.downed&&!_se.finished&&!_se.neutral&&_se.maxhp&&_se.hp<_se.maxhp&&
        _se.state==='patrol'&&
        (_se.kind==='sentry'||_se.kind==='crawler'||_se.kind==='snitch'||_se.kind==='listener'||_se.kind==='bulwark')){
@@ -32868,6 +32872,7 @@ else { navSeek(e,e.tx,e.ty,e.spd,dt); wantW=Math.atan2(e.ty-e.y,e.tx-e.x); }
             e.windup=null;
             if(sees&&dw<e.rng*1.2&&!p.downed){
               fireWeapon(e,{dmg:e.dmg,spread:.05,rng:e.rng,noise:520,tint:'#ffc04a'},p.x+rnd(-8,8),p.y+rnd(-8,8),false);
+              if(!e.boss) e.openT=WARDEN_OPEN; // v28.xx (cw-cx-machineopen): the Overseer keeps its own vent cycle.
             }
             e.cd=1.7;   // 0.7 charge + 1.7 = the old 2.4 cycle
           }
@@ -33413,12 +33418,17 @@ if(longshotGlintBot(e)&&e.glint>0){ /* v28.xx (cw-cx-longshotglint): hold the sh
           if(e.windup<=0){
             e.windup=null;
             if(sees&&d<e.rng*1.15){
-              fireWeapon(e,{dmg:e.dmg,spread:.10,rng:e.rng,noise:340,tint:'#ff9a6a'},p.x+rnd(-16,16),p.y+rnd(-16,16),false);
+              // v28.xx (cw-cx-machineopen): no extra seeded draws; aim scatter and cooldown retain their order.
+              fireWeapon(e,{dmg:e.dmg*(e.kind==='bulwark'&&e.bigW?2.5:1),spread:.10,rng:e.rng,noise:340,tint:'#ff9a6a'},p.x+rnd(-16,16),p.y+rnd(-16,16),false);
+              if(e.kind==='bulwark'){ e.shotN=(e.shotN||0)+1; if(e.bigW) e.openT=BULWARK_OPEN; }
             }
+            e.bigW=0;
             e.cd=rnd(0,.35);
           }
         } else if(e.cd<=0&&sees&&d<e.rng){
-          e.windup=0.4;
+          // v28.xx (cw-cx-machineopen): a longer tell precedes every fourth actual bulwark shot.
+          e.bigW=(e.kind==='bulwark'&&((e.shotN||0)+1)%BULWARK_SHOT_N===0)?1:0;
+          e.windup=e.bigW?0.7:0.4;
           if(!G.sim) sfx('charge',e.x,e.y);
         }
       }
@@ -34228,7 +34238,7 @@ function updateBullets(dt){
                   G.tel.weakHits=(G.tel.weakHits||0)+1;
                   G.hitMark={t:0,life:.15,kill:false,weak:true};   // v23.9x (hitmark): the marker line below keeps this weak mark now
                 }
-} else if((en.kind==='bulwark'||(xf('xfWarden')&&en.kind==='warden'&&!en.boss))&&(function(){   // v26.xx (ai28): and a plain Warden
+} else if(!(en.openT>0)&&(en.kind==='bulwark'||(xf('xfWarden')&&en.kind==='warden'&&!en.boss))&&(function(){   // v26.xx (ai28): and a plain Warden
                 // THE SHIELD. A round is soaked when it arrives inside the
                 // front arc, measured from the bullet's own travel direction
                 // against the machine's facing, so it is about where YOU are,
@@ -39190,11 +39200,20 @@ function drawWardenAt(e){
     wc.strokeStyle=P.gm[2]; wc.lineWidth=1.3; wc.stroke(); wc.lineCap='butt';
     wc.fillStyle=P.och; wc.beginPath(); wc.rect(-21.6,-25,3,1.4); wc.rect(-18.6,-23.6,2.8,1.4); wc.rect(-24.6,-22,2.8,1.4); wc.fill();
   }
+  // v28.xx (cw-cx-machineopen): parted armour reveals a bright core during the opening.
+  if(!B&&e.openT>0){
+    wc.fillStyle=P.ink; rrF(-15,-31,23,14,2);
+    wc.fillStyle='#ff6b32'; rrF(-8,-28,9,9,2);
+    wc.fillStyle='#fff0b0'; wc.fillRect(-5,-26,3,5);
+    wc.fillStyle=P.ox[1]; rrF(-18,-30,7,13,2); rrF(4,-30,7,13,2);
+    wc.fillStyle=P.och; wc.fillRect(-17,-28,5,2); wc.fillRect(5,-28,5,2);
+  } else {
   // BELLY PLATE: oxide, hazard stencils
   wc.fillStyle=P.ink; rrF(-13.4,-29.4,17.4,9.4,2);
   wc.fillStyle=P.ox[1]; rrF(-12.4,-28.4,15.4,7.4,1.5);
   wc.fillStyle=P.ox[2]; wc.fillRect(-12.4,-28.4,15.4,1.2);
   wc.fillStyle=P.och; mbPoly([-10.4,-26.6,-7.6,-26.6,-9.8,-22.6,-12.4,-22.6]); mbPoly([-5.6,-26.6,-2.8,-26.6,-5,-22.6,-7.8,-22.6]);
+  }
   // THE HEAD: set low between the shoulders, a visor slit in the sensor language (the Overseer: a crown of three sensor masts and one big lens)
   var E=mbEye(e,pixMachTime());
   if(B){
@@ -39372,11 +39391,33 @@ function drawLongshotGlints(){
   }
   return n;
 }
+// v28.xx (cw-cx-machineopen): his g-20, only a local warning at the feet, never the hidden machine location.
+function unseenTell(e,p){
+  if(!xf('xfTell')||!e||!(e.hp>0)||e.seen||!(e.windup>0)||!p||p.downed||p.finished||!(p.hp>0)) return null;
+  var tot=e.kind==='warden'?0.7:(e.kind==='sentry'?0.4:(e.kind==='bulwark'?(e.bigW?0.7:0.4):0));
+  if(!tot||!(dist(e,p)<e.rng*1.2)||(NET.on&&netTargetFor(e)!==p)) return null;
+  var dx=e.x-p.x,dy=e.y-p.y,d=Math.sqrt(dx*dx+dy*dy);
+  if(!(d>0)) return null;
+  dx/=d; dy/=d;
+  return {x1:p.x+dx*14,y1:p.y+dy*14,x2:p.x+dx*78,y2:p.y+dy*78,f:clamp(1-e.windup/tot,0,1)};
+}
+function drawUnseenTells(p){
+  var n=0;
+  for(var i=0;i<G.ents.length;i++){
+    var t=unseenTell(G.ents[i],p); if(!t) continue;
+    var dx=(t.x2-t.x1)/64,dy=(t.y2-t.y1)/64,w=2+3*t.f;
+    wc.save(); wc.globalCompositeOperation='source-over'; wc.globalAlpha=0.3+0.6*t.f;
+    wc.fillStyle=wc.strokeStyle='rgb(255,36,28)'; wc.lineWidth=w;
+    wc.beginPath(); wc.moveTo(t.x1-dy*w/2,t.y1+dx*w/2); wc.lineTo(t.x2,t.y2); wc.lineTo(t.x1+dy*w/2,t.y1-dx*w/2); wc.closePath(); wc.fill();
+    wc.lineWidth=0.5; wc.beginPath(); wc.moveTo(t.x1,t.y1); wc.lineTo(t.x2,t.y2); wc.stroke(); wc.restore(); n++;
+  }
+  return n;
+}
 function telegraphLane(e){
   var tot, f, a, ux, uy, reach, t, p, d;
   if(!xf('xfTell')) return null;   // v32.xx (cw-expmenu4): switched off, no machine paints its aim
   if(!e||!(e.hp>0)||e.windup===undefined||e.windup===null) return null;
-  if(e.kind==='sentry') tot=0.4; else if(e.kind==='warden') tot=0.7; else return null;
+  if(e.kind==='sentry') tot=0.4; else if(e.kind==='warden') tot=0.7; else if(e.kind==='bulwark'&&e.bigW) tot=0.7; else return null;
   if(!(e.rng>0)||!isFinite(e.face)||!isFinite(e.x)||!isFinite(e.y)) return null;
   f=clamp(1-e.windup/tot,0,1);
   a=e.face; reach=e.rng*1.15;
@@ -39392,7 +39433,7 @@ function telegraphLane(e){
   try{ t=rayHitG(e.x,e.y,ux,uy,reach); }catch(_tl){ t=reach; }
   if(!(t>0)) return null;
   t=Math.min(t,reach);
-  return {x1:e.x+ux*e.r*0.7,y1:e.y+uy*e.r*0.7,x2:e.x+ux*t,y2:e.y+uy*t,ux:ux,uy:uy,len:t,f:f,w:(e.kind==='warden')?(e.boss?12:8):4};
+  return {x1:e.x+ux*e.r*0.7,y1:e.y+uy*e.r*0.7,x2:e.x+ux*t,y2:e.y+uy*t,ux:ux,uy:uy,len:t,f:f,w:(e.kind==='warden')?(e.boss?12:8):(e.kind==='bulwark'?8:4)};
 }
 // v32.xx (cw-machfx) a27 B (his pick): the lens glow is replaced by a CHARGING RING at the muzzle. It shrinks from 26 to 8 px over the windup,
 // 3 px #ff3b30 at alpha .4 to .95, and a 6 px white core flashes in the last 3 frames (0.05 s). Drawn only.
@@ -39400,7 +39441,7 @@ function windupRingR(wf){ return 26-18*clamp(wf,0,1); }
 function drawWindupGlow(e,gx,gy){
   if(PIXM.baking) return; // v28.xx (cw-cx-pixmachines): charging ring remains live after the body
   if(e.windup===undefined||e.windup===null) return;
-  var wf=clamp(1-e.windup/(e.kind==='warden'?0.7:0.4),0,1);
+  var wf=clamp(1-e.windup/((e.kind==='warden'||(e.kind==='bulwark'&&e.bigW))?0.7:0.4),0,1);
   wc.save();
   wc.globalCompositeOperation='source-over';
   wc.strokeStyle='#ff3b30'; wc.globalAlpha=.4+.55*wf; wc.lineWidth=3;
@@ -39847,7 +39888,8 @@ function drawBulwarkS(e){
     wc.globalCompositeOperation='source-over'; } else {  }
   }
   // THE SLAB: turned to its facing, pivoting high so its foot stands on the ground
-  wc.save(); wc.translate(x,y-18); wc.rotate(e.face); if(Math.cos(e.face)<-0.01) wc.scale(1,-1);
+  // v28.xx (cw-cx-machineopen): lower the slab within the existing 1.5x body transform.
+  wc.save(); wc.translate(x,y-18+(e.openT>0?15:0)); wc.rotate(e.face); if(Math.cos(e.face)<-0.01) wc.scale(1,-1); if(e.openT>0) wc.scale(1,0.3);
   wc.fillStyle=P.ink; rrF(7,-24,17,47.4,3);
   wc.fillStyle=P.gm[1]; rrF(8.2,-22.8,14.6,45,2.4);
   wc.fillStyle=P.gm[0]; wc.fillRect(19.6,-17.6,3.2,39.4);
@@ -41380,6 +41422,8 @@ if(!sc.seen) continue;
     wc.beginPath(); wc.arc(_tn.x2,_tn.y2,2+3*_tn.f,0,6.2832); wc.stroke();
     wc.restore();
   }
+  // v28.xx (cw-cx-machineopen): hidden-machine streaks share the ground pass, after visible aim lanes.
+  drawUnseenTells(p);
   // v26.xx (ai24): the Overseer sweeping laser, a wide red beam on the ground from the machine to the first wall.
   for(i=0;i<G.ents.length;i++){
     var _ob=G.ents[i];
@@ -54295,7 +54339,7 @@ function pixMachLive(e,p,dy){
   if(k==='snitch')pixMachAlarm(e);
 }
 function pixMachDraw(e,paint){
-  if(PIXM.paint||!MACH_KIND[e.kind]||!pixOn()||(typeof G!=='undefined'&&G&&G.sim))return false;
+  if(e.openT>0||PIXM.paint||!MACH_KIND[e.kind]||!pixOn()||(typeof G!=='undefined'&&G&&G.sim))return false;
   var T=wc.getTransform(),p=pixMachPose(e),key=p.key,s=null,near=null,oldShadow=shadowE,oldTime=PIXM.time,box,dy=0;
   if(!(T.a>0)||!(T.d>0)||T.b||T.c)return false;
   if(e.kind==='warden')paint=drawWardenS;
@@ -56671,7 +56715,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.64: Hurt golden enemies run for 3.5 seconds at 1.35 speed, then chase again with a five second cooldown. They never extract, get culled, or leave with a convoy. Only death drops the hoard. Check 36.64 fails on v36.63',
+  now:'v36.65: Wardens open for 0.9s after firing. Every fourth bulwark shot charges for 0.7s, hits 2.5x, then opens its shield for 1s. Hidden machine windups warn only their target at their feet. Check 36.65 fails on v36.64',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -64722,7 +64766,7 @@ function netEntFlags(e){
 }
 function netEntRow(e){
   var k=NET_ENT_KINDS.indexOf(e.kind), s=NET_ENT_STATES.indexOf(e.state), mh=e.maxhp||1;
-  return [e.nid,(k<0)?0:k,Math.round(e.x),Math.round(e.y),+(+e.face||0).toFixed(2),(s<0)?0:s,Math.ceil(clamp(e.hp/mh,0,1)*20),netEntFlags(e),(e.burnT>0?1:0)|((e.downed&&e.getUp>0)?2:0)|((e.glint>0)?4:0),animHitAngle(e)];  // v28.28 (cloud-coop-getup-vs-burn), CLOUD HUNT 2026-10-15: bit 8388608 is both burning and getting up, so the row carries the two apart // v28.xx (cw-cx-hitjolt): optional tenth column is a cosmetic bearing; zero is valid
+  return [e.nid,(k<0)?0:k,Math.round(e.x),Math.round(e.y),+(+e.face||0).toFixed(2),(s<0)?0:s,Math.ceil(clamp(e.hp/mh,0,1)*20),netEntFlags(e),(e.burnT>0?1:0)|((e.downed&&e.getUp>0)?2:0)|((e.glint>0)?4:0)|((e.openT>0)?8:0)|((e.bigW&&e.windup>0)?16:0),animHitAngle(e)];  // v28.28 (cloud-coop-getup-vs-burn), CLOUD HUNT 2026-10-15: bit 8388608 is both burning and getting up, so the row carries the two apart // v28.xx (cw-cx-hitjolt): optional tenth column is a cosmetic bearing; zero is valid
 }
 // A body that arrived after the build: what a linked window needs to draw and name it.
 function netEntGunWord(e){ var m=netEntNewWord(e); delete m.idn; delete m.lx; delete m.ly; return m; }  // v28.39 (cloud-coop-pillager-gun-sync), CLOUD HUNT 2026-10-15: a known body took another gun: the new word without his name tag, so player 2 keeps his place, look and state and takes the gun
@@ -64803,7 +64847,10 @@ function netEntFlagsApply(e,f,bx){  // v28.28 (cloud-coop-getup-vs-burn), CLOUD 
     if(!e.glintNet){ e.glint=GLINT_T; if(!G.sim) sfx('charge',e.x,e.y); }
     e.glintNet=1;
   } else { e.glintNet=0; e.glint=0; }
-  if(f&512){ if(e.windup===undefined||e.windup===null) e.windup=(e.kind==='warden')?0.7:0.4; } else e.windup=null;
+  // v28.xx (cw-cx-machineopen): ninth-field bits 8/16, preserving burn, get-up, glint and target-seat bits.
+  e.openT=(typeof bx==='number'&&(bx&8))?(e.kind==='warden'?WARDEN_OPEN:BULWARK_OPEN):0;
+  e.bigW=(typeof bx==='number'&&(bx&16))?1:0;
+  if(f&512){ if(e.windup===undefined||e.windup===null) e.windup=(e.kind==='warden'||e.bigW)?0.7:0.4; } else { e.windup=null; e.bigW=0; }
   e.overheat=(f&1024)?Math.max(e.overheat||0,0.3):0;
   if(f&2048){ e.goal=e; if(e.state!=='loot') e.state='loot'; } else if(e.goal===e) e.goal=null;
   if((f&4096)&&!(e.roll>0)) e.roll=0.38;

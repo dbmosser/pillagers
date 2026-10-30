@@ -250,3 +250,11 @@
 2026-10-30 13:09 week=94.0% 5h=34.0% week_resets=2026-11-04 01:35 job=o-10-195-shared-last-5s-points
 2026-10-30 13:11 week=94.0% 5h=34.0% week_resets=2026-11-04 01:35 job=o-10-195-shared-last-5s-points
 2026-10-30 13:16 week=95.0% 5h=38.0% week_resets=2026-11-04 01:35 job=o-11-157-golden-bolts-and-stays
+2026-10-30 13:23 week=95.0% 5h=39.0% week_resets=2026-11-04 01:35 job=o-11-157-golden-bolts-and-stays
+2026-10-30 13:26 week=95.0% 5h=41.0% week_resets=2026-11-04 01:35 job=o-11-157-golden-bolts-and-stays
+2026-10-30 13:29 week=95.0% 5h=42.0% week_resets=2026-11-04 01:35 job=o-11-157-golden-bolts-and-stays
+2026-10-30 13:31 week=95.0% 5h=43.0% week_resets=2026-11-04 01:35 job=o-11-157-golden-bolts-and-stays
+2026-10-30 13:34 week=96.0% 5h=44.0% week_resets=2026-11-04 01:35 job=o-12-194-unlimited-partner-pickups
+2026-10-30 13:35 week=96.0% 5h=45.0% week_resets=2026-11-04 01:35 job=o-12-194-unlimited-partner-pickups
+2026-10-30 13:38 week=96.0% 5h=47.0% week_resets=2026-11-04 01:35 job=o-12-194-unlimited-partner-pickups
+2026-10-30 13:45 week=97.0% 5h=52.0% week_resets=2026-11-04 01:35 job=o-13-154-machine-tells-unseen-and-open-beat
