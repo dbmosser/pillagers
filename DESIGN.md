@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.57 - CONDITION REWARD SPACING
+
+Co-op hunt while he was away. The second critic found a wrapped blackout bonus, small belt targets and the Terms total outside its footer. Watch: check full backpacks, keyboard and pad focus, and 1080p footer clipping.
+
+MEASURED. Check 36.57 passes, and fails on v36.56.
 ## v36.56 - ONLINE PARTY CODE MANUAL COPY
 
 Co-op hunt while he was away. The itch frame can deny clipboard access and the old fallback blurred the code without changing the copy button. Watch: if copy is blocked, copy by hand keeps the whole invite or reply selected for ctrl+c.

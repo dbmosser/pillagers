@@ -6171,6 +6171,32 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'36.57',what:'condition bonuses stay on one line, Terms total shares the footer and belt cells are 48px',
+   run:function(){
+     var bad=[],sm=document.getElementById('sectormodal'),tm=document.getElementById('termsmodal'),oldKitPick=P.kitPick;
+     try{
+       __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();__hubEnter();
+       // v28.xx (cw-cx-condition-ui2): only the own-kit choice creates belt cells; cleanProfile leaves that saved choice alone.
+       P.kitPick='mine';P.cond='night';P.wxPick='fog';renderSector();openModal('sectormodal');syncSectorCond();syncSectorWx();
+       var em=sm.querySelector('[data-wx="blackout"] em'),cells=sm.querySelectorAll('#sectorplan [data-plan]');
+       if(!em||getComputedStyle(em).whiteSpace!=='nowrap')bad.push('blackout bonus can wrap');
+       if(cells.length!==HOTBAR_N)bad.push('own-kit belt missing cells: '+cells.length+'/'+HOTBAR_N);
+       for(var ci=0;ci<cells.length;ci++){
+         var cs=getComputedStyle(cells[ci]);
+         // v28.xx (cw-cx-condition-ui2): computed CSS dimensions can round 48px down under the game UI zoom.
+         if(!(parseFloat(cs.width)>=47.95&&parseFloat(cs.height)>=47.95))bad.push('belt cell '+ci+' size '+cs.width+' x '+cs.height+' (want 48px, tolerance 0.05px)');
+       }
+       sm.classList.remove('on');P.terms=['known'];renderTerms();openModal('termsmodal');
+       var total=document.getElementById('termstotal'),foot=tm.querySelector('.ui-foot');
+       if(!foot||total.parentElement!==foot)bad.push('Terms total is outside the action footer');
+       var number=total.querySelector('b');if(!number||parseFloat(getComputedStyle(number).fontSize)!==56)bad.push('Terms total is not the 56px hero');
+       return bad.length?bad.join('; '):null;
+     }finally{
+       sm.classList.remove('on');tm.classList.remove('on');try{var g=__state();if(g&&!g.over&&g.player){g.player.downed=false;__endRaid('abandon');}}catch(e){}
+       if(oldKitPick===undefined)delete P.kitPick;else P.kitPick=oldKitPick;
+       __topClear();__resetCfg();__cleanProfile();
+     }
+   }},
   {v:'36.56',what:'cw-cx-onlinecopy: blocked iframe clipboard leaves the exact mixed-case code focused and selected, with a persistent copy by hand button; success and a new code clear that label',
    run:function(){
      var NK={}, k, saved=false, cd=Object.getOwnPropertyDescriptor(navigator,'clipboard'), ed=Object.getOwnPropertyDescriptor(document,'execCommand');

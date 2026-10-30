@@ -15,3 +15,10 @@ For each real break: a fix through the full gate (parse, the new check twice, ~8
 Candidates from hold-2p you may pull back ONLY if one breaks 2 player play: o-09j-players-pass-through, o-12-194-unlimited-partner-pickups, o-10-195-shared-last-5s-points.
 Model: Codex high. The camera critic may run, but keep pictures to the 2 player screens (party window, both raid windows).
 TASK DONE when every fix is ON HIS PC and the findings file lists all six items.
+
+Lane note 2026-10-30 07:14: shipped cw-cx-onlinecopy and parked: only lane-side steps are left. Codex's last words:
+The copy fix is ON HIS PC v36.56. All four test runs passed combat controls, healing, pickup, both revives, no team damage, and guest keyboard extraction.
+
+Corrected the harness’s run-card return flow. No additional game bug was confirmed.
+
+TASK PARTIAL: coordinator must run the corrected repeat-raid and host-disconnect tests; the lane’s two camera rounds are exhausted.

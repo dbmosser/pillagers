@@ -4766,5 +4766,53 @@
   "pic": "tools/handoff/console/notes/shots/o-00w-244-ping-after-mark-merge-recipes-2/mark-legacy-solo-1080.jpg",
   "task": "o-00w-244-ping-after-mark-merge",
   "when": "2026-10-29T18:17"
+ },
+ "online-copy-manual": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "A functional but raw form dump: a card with a close X, then a stack of identical outlined boxes with no primary action, small low-contrast text, and a huge empty lower half.",
+  "findings": [
+   "P0 invite code textarea: Hide the code. Show a single 'copy invite code' primary button (lime fill, 20px f-cond, 48px high) with a short 'copied' confirmation. If the code must be visible, use a 2-line field in --ui-raised with a 1px --ui-line-hi border, no selection highlight, and an ellipsis in the middle.",
+   "P0 whole card: Make 'let them in' the only lime-filled button (--acc, ink #11150a, 20px, 44px high). Make 'copy' and 'new invite code' secondary outlined buttons. Make 'end the party' a danger-red outline (--danger) and move it to the bottom right. Use a consistent 16px gap between buttons.",
+   "P1 copy, labels and descriptions: Delete the 'up to four' and 'turn on mic' sentences. Delete the stray 'copy by hand' heading. Shorten the paste hint to 'paste reply code' at 16px in --tx-2 or lighter. Fix the roster string to 'chec (host, you)'. Make every read text at least 16px.",
+   "P1 player roster rows: Use 56px rows with a 4px player-colour bar at the left (amber P1, cyan P2), the name at 20px f-cond 600, and a 'host' tag at 16px --tx-2. Put 'mute' as a 16px ghost button at the right with 16px padding. Use 1px --ui-line row dividers.",
+   "P1 layout and composition: Use two columns inside the card. Left: roster and mic. Right: invite code and reply code steps. Put the actions in a 72px footer row. Space the sections 24-32px apart and give them labels ('invite', 'reply') at 16px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00y-2p-online-party-critical-recipes-1/online-copy-manual-1080.jpg",
+  "task": "o-00y-2p-online-party-critical",
+  "when": "2026-10-30T10:55"
+ },
+ "online-raid-guest": {
+  "score": 2,
+  "pass": false,
+  "need": 4,
+  "verdict": "This is a different screen from the earlier raid HUD review: it is the hub with a join-in-progress banner, and it is cluttered. Two competing top-centre banners, an orange warning label and mixed type sizes mean nothing leads the eye to one action.",
+  "findings": [
+   "P0 top-centre 'join the raid in progress' banner and 'enter raid!' button: Merge them into one lime --acc plate. Primary line 'enter raid' at 32px f-cond 700, no '!'. Secondary 'raid in progress' at 16px --tx-2 beneath it, inside the same 1px --ui-line-hi panel. Delete the 'or go up at...' sentence and the amber fill.",
+   "P0 'the last pour' station, 'experimental feature may glitch' label: Remove the asterisks. Use a 16px --warn 'experimental' tag, 8px padding, inside the station label chip. Move the full warning into the station's own window.",
+   "P1 top-right money row: '$900  147 xp  stash $610 bag $0': Inset 48px. Use one 20px f-cond 600 row in --tx-1 with 16px --tx-2 labels, 24px gaps, and a 1px --ui-line divider. Drop 'xp' to a 16px label. Put the hero size only on the '$' figure if anything.",
+   "P1 hotbar, bottom-centre: Show only the equipped slots. Dim the rest to a flat 1px --ui-line outline with no icon. Mark selection only with a 2px --acc border. Slot numbers 16px --tx-2. Inset the bar 48px from the bottom.",
+   "P1 station labels (wirt the gambler, the mainframe, shop craft and hire, settings, the stash, fashion): Use one chip style: 20px f-cond 600, 8px/16px padding, 4px radius, 1px --ui-line-hi border, anchored 16px above each pad. Reduce the pad circles to a 1px ring at 30% alpha. Delete the stray orange circle by the mainframe. Keep chips clear of NPC heads."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00y-2p-online-party-critical-recipes-2/online-raid-guest-1080.jpg",
+  "task": "o-00y-2p-online-party-critical",
+  "when": "2026-10-30T11:10"
+ },
+ "online-raid-host": {
+  "score": 2,
+  "pass": false,
+  "need": 4,
+  "verdict": "The feed lines and the join toast are gone, but the full controls list is still open at the left, the roster is still a table, and hp is still a bare bar, so the screen is still crowded and has no clear first read.",
+  "findings": [
+   "P0 controls list, left mid (x16-326, y455-800): Fold it to one 16px line 'f1 controls' at x=24, y=~1000, in --tx-2. Open it only on F1, as a 90% --ui-panel card with a 4px radius and a 1px --ui-line-hi border. Chip text is 16px, with a 32px row pitch.",
+   "P1 current pillagers roster, top-left (x8-367, y143-315): Default it to a single 20px row, 'pillagers 7', with the chevron. When open, use 16px text, a 32px row pitch, 1px --ui-line dividers, and your own row in --acc. Move the left edge to x=48 and use a solid --ui-panel fill.",
+   "P1 hp, bottom-left (x24-430, y1035-1068): Put it in a --ui-panel card with a 4px radius and a 1px --ui-line-hi border, 48px from the left and 32px from the bottom. Inside the card put a 16px 'hp' label, a 56px --fs-hero number in --tx-1, and an 8px bar about 240px wide in --ok.",
+   "P1 top-centre timer, chip and arrow (x900-1030, y10-90): Put the timer in a --ui-panel plate at 32px --fs-title with 8px of padding. Align the menu icon to the plate's right edge. Make the extract chip 16px, and attach the arrow to the chip's bottom edge, 24px tall, in --extract.",
+   "P1 minimap and 'run info' (x1603-1902, y18-362): Inset it to 48px from the top and right, and add a 1px --ui-line-hi border with a 4px radius on the same --ui-panel as the other cards. Make the run info row 32px high with 16px text and 8px padding, and put the collapse chevron at 24px."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-00y-2p-online-party-critical-recipes-2/online-raid-host-1080.jpg",
+  "task": "o-00y-2p-online-party-critical",
+  "when": "2026-10-30T11:10"
  }
 }

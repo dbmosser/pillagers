@@ -49,3 +49,28 @@ Updated the SAME cw-cx-condition-ui2 key to anchor the current named list, "40% 
 No other anchors changed. MK prints written on v35.82; all seven edit anchors match once and apply in order. Patched game JS, the new check, the already-applied 32.57 retarget and all camera payloads parse. MK is ASCII.
 Fixture retarget 29bec4d2e is already applied; it passed on v35.81. No new retarget is needed.
 Remaining: preflight and ship the same key, ON HIS PC confirmation, corrected round-3 pictures and critic; linked-window verification remains the existing coordinator handoff. This anchor refresh is not another visual follow-up or critic try.
+
+--- codex run 2026-10-30 07:17 ---
+2026-10-30, resumed on HEAD v36.56.
+The core condition-SP change remains shipped (v35.79), and the first readability follow-up remains shipped (v35.81). Current HEAD still uses 1.05 per active condition, with no condition XP multiplier.
+The pending SECOND visual follow-up cw-cx-condition-ui2 had one further stale anchor: later work reduced the map exit-label font from 22px to 18px. Updated only the matching anchor, preserving the current 18px size. No extra visual follow-up was added.
+All seven draft edits apply exactly once in sequence on v36.56. MK prints written; patched game JavaScript, the new check, the already-applied 32.57 retarget and all camera recipes parse. MK is ASCII. Added the Watch line to why, as required by the current handoff rules. No tracked game or fixture file was edited.
+The same keys and corrected four camera recipes are ready for lane processing. Remaining: preflight and ship cw-cx-condition-ui2, ON HIS PC confirmation, pictures and critic. Sector and Terms previously met their score-3 finish line; extraction cards still need their first correctly staged review and score 4 or the applicable stop rule.
+LINKED REVIEW NEEDED: synced. Existing open task 211-verify-linked-condition-sp covers host Terms inherited by the guest and both payout cards. The sandbox cannot perform that check; its existing coordinator handoff is still open. Do not count fixture role stages as live linked-window evidence.
+
+--- codex run 2026-10-30 07:19 ---
+2026-10-30, preflight repair on v36.56.
+The new check failed with "belt cell is under 48px" twice. That message covered both a missing cell and a short one. Found a staging dependency: __cleanProfile does not reset P.kitPick, and syncSectorPlan removes all cells unless kitPickOf() is mine. Existing belt regression checks explicitly choose mine.
+Updated the SAME cw-cx-condition-ui2 check to set P.kitPick=mine before rendering, restore the original choice in finally, require HOTBAR_N cells, and check both computed dimensions of every cell. Any future failure now names a missing cell count or the actual cell dimensions. No CSS or reward behavior changed in this repair.
+Updated the sector camera recipe to choose mine explicitly so its belt screenshot is deterministic too.
+MK prints written; all seven edit anchors match exactly once and apply sequentially. Patched game JavaScript, new check, existing retarget and all camera payloads parse. MK is ASCII. Runtime success still requires lane preflight; no Chrome was run here.
+Remaining: retry the same key, ship and confirm ON HIS PC, then corrected pictures and critic. Existing task 211 still owns live linked payout verification.
+LINKED REVIEW NEEDED: synced for the core reward change, already handed to task 211. This repair changes only test/camera staging.
+
+--- codex run 2026-10-30 07:20 ---
+2026-10-30, second preflight repair on v36.56.
+The updated staging created the belt correctly. Preflight reports computed dimensions of 47.9888px for the declared 48px cells. The remaining failure is subpixel rounding, 0.0112px below the strict bound.
+Changed only the new check to allow 0.05px below 48px on each dimension. It still checks every cell and requires HOTBAR_N cells, so the old 34px layout fails. CSS, layout, formulas and camera recipes are unchanged.
+MK prints written. All seven anchors apply exactly once; patched game JavaScript, the new check, existing retarget and camera payloads parse. MK remains ASCII.
+Remaining: lane retries preflight and shipping for the same cw-cx-condition-ui2 key, confirms ON HIS PC, and obtains pictures and critic results. Existing task 211 still covers live linked payout verification.
+LINKED REVIEW NEEDED: synced for the core rewards, already assigned to task 211. This repair changes only the check tolerance.

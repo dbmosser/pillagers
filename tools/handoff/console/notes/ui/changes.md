@@ -660,3 +660,4 @@
 
 2026-10-30 | o-00y-2p-online-party-critical | party window | blocked copy keeps the exact code focused and selected; button and status say copy by hand, success says code copied | before: unavailable for custom RTC recipe | after: pending lane camera, online-copy-manual-1080.jpg
 
+2026-10-30 | o-00m-231-hotbar-key-9 | raid and Undercroft belts, P1/P2, 1080p/4K | shipped v36.37 adds tenth cell: 1-9 then 0; legacy key 0 assignments remain on 0 and new 9 starts empty | no pre-change image (custom recipes); verified images tools/handoff/console/notes/shots/o-00m-231-hotbar-key-9-recipes-2/hotbar9-{raid,hub}-p{1,2}-{1080,4k}.jpg | critic raid 3/2, floor 2/2; six-try stop, unresolved findings logged.

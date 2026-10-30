@@ -39,3 +39,5 @@ o-91b-report-news-style
 110-ui-demo-end-screens
 115-ui-raid-backpack
 116-ui-demo-raid-hud
+o-00m-231-hotbar-key-9
+o-02-172-night-pays-cash

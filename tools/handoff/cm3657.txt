@@ -1,0 +1,7 @@
+v36.57: condition reward spacing
+
+Pre-raid conditions have 24px more width and keep the 5% SP value on one line. Belt cells are 48px in two rows and the armour warning follows the pack. Terms rows are 100px, the total is a 56px figure in the existing footer, idle buttons have a 2px border, and focus uses one outline. Descriptions are short. Map names can move sideways as well as up and down; a keyed-room legend names the purple marker. The approved blue map remains. Watch for full backpacks, keyboard and pad focus, and 1080p footer clipping. Reward formulas and feel do not change.
+
+Check 36.57. Fails on v36.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
