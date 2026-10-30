@@ -1,0 +1,16 @@
+{
+ "id": "202610301139-VM_Oct2026",
+ "head": "p2 online test 202610301139-VM_Oct2026: PASS, host VM_Oct2026 v36.57, guest VM_Oct2026 v36.57",
+ "steps": [
+  "PASS HOST A PARTY made an invite code (1165 characters)",
+  "PASS the spare PC joined with the invite and sent a reply code (v36.57, same build)",
+  "PASS LET THEM IN linked both PCs (roster 2)",
+  "PASS the host ascended (the lift and the sector page)",
+  "PASS player 2 ascended into the same raid and the host draws him",
+  "PASS the host saw player 2 move (892 units)",
+  "PASS the host saw player 2 rounds land on its machines (14:52>0, 30:78>69, 31:78>13, 32:900>879)",
+  "PASS the host extracted and is back in the Undercroft",
+  "PASS the spare PC came back to the Undercroft after the extraction (hub)",
+  "PASS player 2 fired 24 rounds on its own screen"
+ ]
+}
