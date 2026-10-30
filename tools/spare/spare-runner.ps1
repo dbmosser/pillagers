@@ -665,9 +665,17 @@ function Sync-Attract(){
   $script:attractT=Epoch
   try{
     $PD='C:\claudecode\pillagers-party'; if(-not (Test-Path -LiteralPath ($PD+'\dark_raiders.html'))){ return }
-    $src=Join-Path $env:USERPROFILE 'Downloads'; $dst=$PD+'\attract'
-    $fs=@(Get-ChildItem -LiteralPath $src -Filter 'pillagers-attract*.webm' -File -ErrorAction SilentlyContinue)
-    if($fs.Count -eq 0 -and -not (Test-Path -LiteralPath $dst)){ if((GetS 'attract') -ne 'none'){ PutS 'attract' 'none'; Say ('attract clips: no pillagers-attract*.webm in '+$src) }; return }
+    # where his Chrome saves: the Windows Downloads folder (it can be moved, e.g. to OneDrive), each Chrome profile's own download folder,
+    # the plain Downloads and the Desktop; the newest copy of a name wins
+    $dirs=@()
+    try{ $dirs+=[string](Get-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders' -ErrorAction Stop).'{374DE290-123F-4565-9164-39C4925E467B}' }catch{}
+    try{ Get-ChildItem -LiteralPath (Join-Path $env:LOCALAPPDATA 'Google\Chrome\User Data') -Directory -ErrorAction Stop | ForEach-Object {
+      $pf=Join-Path $_.FullName 'Preferences'; if(Test-Path -LiteralPath $pf){ $m=[regex]::Match([IO.File]::ReadAllText($pf),'"default_directory"\s*:\s*"((?:[^"\\]|\\.)*)"'); if($m.Success){ $dirs+=($m.Groups[1].Value -replace '\\\\','\') } } } }catch{}
+    $dirs+=@((Join-Path $env:USERPROFILE 'Downloads'),(Join-Path $env:USERPROFILE 'Desktop'),(Join-Path $env:USERPROFILE 'OneDrive\Downloads'))
+    $dirs=@($dirs | Where-Object { $_ -and (Test-Path -LiteralPath $_) } | Select-Object -Unique); $src=($dirs -join '; '); $dst=$PD+'\attract'
+    $by=@{}; foreach($dd in $dirs){ foreach($f in @(Get-ChildItem -LiteralPath $dd -Filter 'pillagers-attract*.webm' -File -ErrorAction SilentlyContinue)){ if(-not $by.ContainsKey($f.Name) -or $by[$f.Name].LastWriteTime -lt $f.LastWriteTime){ $by[$f.Name]=$f } } }
+    $fs=@($by.Values)
+    if($fs.Count -eq 0 -and -not (Test-Path -LiteralPath $dst)){ if((GetS 'attract') -ne ('none '+$src)){ PutS 'attract' ('none '+$src); Say ('attract clips: no pillagers-attract*.webm in '+$src) }; return }
     New-Item -ItemType Directory -Force -Path $dst | Out-Null
     $nw=0
     foreach($f in $fs){ $d=Join-Path $dst $f.Name; $o=Get-Item -LiteralPath $d -ErrorAction SilentlyContinue
