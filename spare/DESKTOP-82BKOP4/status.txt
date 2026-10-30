@@ -1,6 +1,6 @@
 host=DESKTOP-82BKOP4
-seen=2026-10-30 17:47
-epoch=1793396834
+seen=2026-10-30 17:57
+epoch=1793397456
 game=4261fa52 v36.66
 test_run=paused: someone is using the PC
 robots=0
@@ -10,6 +10,6 @@ runner=D57C2E5F
 mode=full
 ram_total_gb=32
 cpu_threads=4
-cpu_pct=16
+cpu_pct=4
 cpu=Intel(R) Core(TM) i5-7600K CPU @ 3.80GHz
 paused_since=1793396833
