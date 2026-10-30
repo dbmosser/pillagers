@@ -46251,12 +46251,12 @@ class Audio {
        [['aimMode','aimTgl',0],['crouchMode','crouchHold',0],['sprintMode','sprintTgl',0]].forEach(function(w){
          var rr=rowOf(w[0]);
          if(!rr){ bad.push('ONE: Settings has no '+w[0]+' row'); return; }
-         if(CFG[w[1]]!==w[2]) bad.push('ONE: a fresh profile has '+w[1]+' '+CFG[w[1]]+', not '+w[2]);
+         var expected=w[0]==='sprintMode'?rr.opts[rr.def].cfg[w[1]]:w[2]; if(CFG[w[1]]!==expected) bad.push('ONE: a fresh profile has '+w[1]+' '+CFG[w[1]]+', not '+expected);
          if(gameOptLive(w[0])!==rr.def) bad.push('ONE: the '+w[0]+' row reads CUSTOM on a fresh profile');
          if(secOf('go_'+w[0])!=='CONTROLS') bad.push('ONE: the '+w[0]+' row sits under '+secOf('go_'+w[0])+', not CONTROLS');
-         __opts.cycle(w[0]); if(CFG[w[1]]!==1) bad.push('ONE: one click on '+w[0]+' left '+w[1]+' at '+CFG[w[1]]);
+         __opts.cycle(w[0]); if(CFG[w[1]]!==rr.opts[(rr.def+1)%rr.opts.length].cfg[w[1]]) bad.push('ONE: one click on '+w[0]+' left '+w[1]+' at '+CFG[w[1]]);
          if(typeof P.gameOpts[w[0]]!=='number') bad.push('ONE: the '+w[0]+' pick was not saved');
-         __opts.cycle(w[0]); if(CFG[w[1]]!==0) bad.push('ONE: a second click on '+w[0]+' did not come back');
+         __opts.cycle(w[0]); if(CFG[w[1]]!==rr.opts[(rr.def+2)%rr.opts.length].cfg[w[1]]) bad.push('ONE: a second click on '+w[0]+' did not reach the expected option');
        });
        P.gameOpts={}; __opts.apply();
        // TWO: aim. Hold is today (down aims, up stops); toggle holds on after the button is let go
