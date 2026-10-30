@@ -5134,5 +5134,99 @@
   "pic": "tools/handoff/console/notes/shots/o-12-194-unlimited-partner-pickups-recipes-2/unlimited-pickups-player-2-1080.jpg",
   "task": "o-12-194-unlimited-partner-pickups",
   "when": "2026-10-30T17:37"
+ },
+ "54-bulwark-big-host": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "This capture shows no HUD at all (no hp, ammo, minimap, readouts, feed or controls list), so none of last review's fixes can be confirmed and the player has no status information.",
+  "findings": [
+   "P0 whole screen: Find out whether the HUD failed to render or was hidden for this capture. If it's a bug, restore the hp bar at x=96, y=984 (12px tall, 4px radius) and the ammo card with its right edge at x=1824, y=984. If the HUD was hidden on purpose, re-shoot with it visible.",
+   "P1 bottom-left and bottom-right corners: Put hp (32px f-cond 700 number, 16px tx-2 label) at bottom-left on the 96px margin. Put ammo bottom-right with '/ 60' at 32px tx-2.",
+   "P1 player aim box (x625-1010, y515-560): Remove the fill. Keep a 2px --danger laser line at 80% alpha, or use a 1px --danger outline at 4px radius if a danger zone must be shown.",
+   "P2 bulwark enemy (x1010-1260, y290-570): Add a 12px-tall enemy health bar with a 4px radius above the bulwark, and a short --warn spark on shield hits. Keep any label to 16px tx-2, lower case.",
+   "P2 dotted aim line (x770-990, y475): Keep one cue. Make it a 2px line in tx-1 at 60% alpha, or drop the dots."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-13-154-machine-tells-unseen-and-open-beat-recipes-4/154-bulwark-big-host-1080.jpg",
+  "task": "o-13-154-machine-tells-unseen-and-open-beat",
+  "when": "2026-10-30T18:06"
+ },
+ "54-bulwark-big-join": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The clutter from the last version is gone, but so is the whole HUD: there is no health, ammo, hotbar, minimap or objective on screen, so this is a bare game view and not a finished HUD.",
+  "findings": [
+   "P0 whole screen, bottom-left and bottom-centre: If this is a capture bug, re-shoot it with the HUD drawn. If it is intentional, restore a minimal state read-out: a 12px hp bar with a 32px f-cond 700 number at x96, y1032, and ammo as the one 56px hero number at bottom-right.",
+   "P0 top-right (x1603-1900, y18-200): Draw the vertical 1x1 list at x1603 with every item 20px f-cond 600 tx-1 and 8px gaps, and keep it clear of the minimap. Re-capture to confirm.",
+   "P1 top-centre and left feed: Add one feed line at x24 on the left, 20px tx-1 on a --ui-panel row at 80%, for example 'p2 joined', and let it fade out after 3s.",
+   "P1 left controls hint (x96, y1000): Add a single 16px tx-2 'f1 controls' line at x96, y1000 that stays visible until it is first opened.",
+   "P2 screen right edge (x1790-1920, y400-600 and y960-1080): Round the corners, soften the edges, or give the patches a rim or texture."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-13-154-machine-tells-unseen-and-open-beat-recipes-4/154-bulwark-big-join-1080.jpg",
+  "task": "o-13-154-machine-tells-unseen-and-open-beat",
+  "when": "2026-10-30T18:06"
+ },
+ "54-unseen-wall-host": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "This frame shows no HUD at all, only the world with the player and a laser line. The earlier advice on the top-right cluster, controls card, scoreboard, timer and weapon slots can't be judged, and a screen named unseen-wall-host that shows nothing gives the player no state.",
+  "findings": [
+   "P0 whole screen (0-1920, 0-1080): Check that the HUD layer renders in this capture state. If the HUD is hidden on purpose for this beat, show at least the 32px f-cond timer at x=960, y=24, the hero ammo at 56px at bottom-right, and the 10-slot bar of 56px tiles at 8px gaps at the bottom centre.",
+   "P1 player and aim line (x630-870, y410-545): Use one aim cue only. Pick the aim line at gun height (y~475), draw it in --acc or the player colour at 2px and 60% opacity, and clip it at the wall hit point with a 4px end dot.",
+   "P1 player marker (x630-750, y405-545): Add a 2px --warn amber ring or foot ellipse, 48px wide, under the player. Put a 4px health bar 8px above the head, 40px wide, over a --ui-panel track.",
+   "P2 purple block (x385-440, y422-495): When the player is within 96px, show a 16px lower-case label and a 32px key chip above it. Otherwise outline it 1px in --r-elite only if it is loot.",
+   "P2 teal room tint (x0-890, y190-1080): Desaturate the room light to 15% saturation, or limit teal to the extract zone. Keep text plates on --ui-panel at 80% opacity so labels never sit on the floor colour."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-13-154-machine-tells-unseen-and-open-beat-recipes-4/154-unseen-wall-host-1080.jpg",
+  "task": "o-13-154-machine-tells-unseen-and-open-beat",
+  "when": "2026-10-30T18:06"
+ },
+ "54-unseen-wall-join": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The HUD that crowded the last version is gone and the scene now reads cleanly, but this frame has no UI at all, so there is nothing to judge for consistency, hierarchy or pad focus, and the world art itself has problems.",
+  "findings": [
+   "P1 Whole frame, HUD layer: Re-capture the same wall-join scene with the HUD on. Check the hp panel at x=96 with 48px bottom margin, the hotbar as 56px tiles with a 2px --acc selected outline, the cw-trcol list at top-right, and a one-line 'f1 controls' at mid-bottom left.",
+   "P1 Wall seam at x865-915, y0-1080: Close the seam: carry the wall strip continuously from y0 to y1080, or cap the end at y800 with a proper end tile. Extend the horizontal wall caps 8px into the strip and use the same top-face colour on both.",
+   "P2 Teal room floor against grey outdoor floor, x0-865 and x915-1920: Reduce teal saturation about 40% so it does not read as --extract #47d8c6. Soften the view-cone edge with a 24px feathered falloff. Add a 2px floor shadow along the wall base on both sides.",
+   "P2 Player aim line and dotted guide, x715-990, y470-545: Clip both guides to the first wall hit. Remove the dotted line, or use it only as a range marker inside the open floor.",
+   "P2 Purple crate at x385-440, y422-495: If it is loot, give it a 3px rarity bar in the defined colour for its tier, or use a neutral crate tone. Move it off the wall edge, or add an 8px contact shadow."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-13-154-machine-tells-unseen-and-open-beat-recipes-4/154-unseen-wall-join-1080.jpg",
+  "task": "o-13-154-machine-tells-unseen-and-open-beat",
+  "when": "2026-10-30T18:07"
+ },
+ "54-warden-open-host": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "This frame has no HUD at all (no hp, hotbar, minimap, roster, controls or money), so the earlier fixes can't be checked and the player has no readable state or prompt.",
+  "findings": [
+   "P0 whole screen, hud layer: Re-capture after the HUD's first draw. Check that the HUD layer is not hidden in this state. Needs at minimum: hp bar at x=48, y=1034 (12px tall), hotbar of 56px tiles centred at y=968-1058, and the minimap with the 1x1 currency list top-right.",
+   "P1 bottom-left, x=48, y=~1000: Draw 'f1 controls' at 16px f-cond 600 tx-2 on a --ui-panel plate at 80% opacity, left-aligned to x=48, baseline at y=1056.",
+   "P1 the warden's state, x=1020-1250, y=340-580: Add a 16px f-cond 600 lower-case label over it ('warden') and a 4px-tall hp bar 96px wide in --danger, offset 12px above the sprite. Add a 2px --acc ring only when it is targeted.",
+   "P2 world, right edge x=1790-1920, y=400-600 and y=960-1080: Give them a 1px darker outline, a texture, or crop them out of the framing. If they are zones, mark them with a 16px tx-2 label.",
+   "P2 the player's aim line, x=770-1010, y=475: Use 3px dots in --tx-1 at 70% opacity with a 1px dark outline, or --acc only while aiming."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-13-154-machine-tells-unseen-and-open-beat-recipes-4/154-warden-open-host-1080.jpg",
+  "task": "o-13-154-machine-tells-unseen-and-open-beat",
+  "when": "2026-10-30T18:07"
+ },
+ "54-warden-open-join": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "This screenshot has no HUD at all (no hp bar, minimap, scoreboard, controls list, currency strip or join prompt), so a 'warden open join' screen shows nothing the player needs, and it can't be judged as the earlier HUD.",
+  "findings": [
+   "P0 whole frame (0,0)-(1920,1080): Check the capture timing or HUD visibility flag. Render the HUD layer before the screenshot. Show a live prompt at bottom-centre, 20px f-cond 700 tx-1, e.g. 'press any button to join', 16px above the hotbar and inside the 5% safe margin.",
+   "P1 player and robot (630,340)-(1250,570): Add a 4px-radius amber (P1) ring under the player and a 24x4 hp pip bar 8px above each head. Mark hostiles with a --danger 2px outline or tick.",
+   "P2 world props (1790,400)-(1920,600) and (1790,960)-(1920,1080): Replace them with real prop art or a loot marker with a 16px tx-1 label. Add a 6% scrim vignette (--scrim at .3) around the edges to give HUD text 4.5:1 contrast."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-13-154-machine-tells-unseen-and-open-beat-recipes-4/154-warden-open-join-1080.jpg",
+  "task": "o-13-154-machine-tells-unseen-and-open-beat",
+  "when": "2026-10-30T18:07"
  }
 }

@@ -619,3 +619,8 @@
 2026-10-30 13:35 o-12-194-unlimited-partner-pickups 36s ok PARTIAL in=678394 out=5218 run=2
 2026-10-30 13:38 o-12-194-unlimited-partner-pickups 56s ok DONE in=1013604 out=6693 run=3
 2026-10-30 13:45 o-13-154-machine-tells-unseen-and-open-beat 441s ok PARTIAL in=1824691 out=16378 run=1
+2026-10-30 13:52 o-13-154-machine-tells-unseen-and-open-beat 51s ok PARTIAL in=2395420 out=17869 run=2
+2026-10-30 13:58 o-13-154-machine-tells-unseen-and-open-beat 128s ok PARTIAL in=3409674 out=21822 run=3
+2026-10-30 14:04 o-13-154-machine-tells-unseen-and-open-beat 111s ok PARTIAL in=4106701 out=25259 run=4
+2026-10-30 14:08 o-13-154-machine-tells-unseen-and-open-beat 74s ok DONE in=4703348 out=27517 run=5
+2026-10-30 14:11 o-145-pad-sprint-toggle-default 152s ok PARTIAL in=718421 out=8515 run=1

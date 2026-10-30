@@ -1,0 +1,5 @@
+## v36.66 - PAD SPRINT TOGGLE DEFAULT
+
+Co-op hunt while he was away. His 10-25 g-68: Pad defaults to toggle. Watch: click LS once to keep running; stop the stick, aim with LT, fire a shot or run out of breath to end it. Keyboard Shift stays a hold. Saved hand picks stay until the sprint row is clicked.
+
+MEASURED. Check 36.66 passes, and fails on v36.65.

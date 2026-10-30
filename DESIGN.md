@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.66 - PAD SPRINT TOGGLE DEFAULT
+
+Co-op hunt while he was away. His 10-25 g-68: Pad defaults to toggle. Watch: click LS once to keep running; stop the stick, aim with LT, fire a shot or run out of breath to end it. Keyboard Shift stays a hold. Saved hand picks stay until the sprint row is clicked.
+
+MEASURED. Check 36.66 passes, and fails on v36.65.
 ## v36.65 - MACHINE TELLS AND OPEN BEATS
 
 Co-op hunt while he was away. His g-20 and g-29: a red streak at your feet and a short open beat. Watch: the bulwark big shot hits 2.5x and changes its rhythm; watch that it reads clearly, avoids cheap deaths, and the opening is noticed. Watch that the streak reads as incoming danger rather than your aim and never appears for a machine targeting somebody else.

@@ -1,0 +1,50 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  154-warden-open-host                   NOT STAGED   4.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:154
+    at <anonymous>:1:2559
+    at <anonymous>:1:2635
+  154-bulwark-big-host                   NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:154
+    at <anonymous>:1:2559
+    at <anonymous>:1:2635
+  154-unseen-wall-host                   NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:154
+    at <anonymous>:1:2559
+    at <anonymous>:1:2635
+  154-warden-open-join                   NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:154
+    at <anonymous>:1:2559
+    at <anonymous>:1:2635
+  154-bulwark-big-join                   NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:154
+    at <anonymous>:1:2559
+    at <anonymous>:1:2635
+  154-unseen-wall-join                   NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:154
+    at <anonymous>:1:2559
+    at <anonymous>:1:2635
+== 4k : window 3876x2265, viewport 3840x2160
+  154-warden-open-host                   NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:154
+    at <anonymous>:1:2559
+    at <anonymous>:1:2635
+  154-bulwark-big-host                   NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:154
+    at <anonymous>:1:2559
+    at <anonymous>:1:2635
+  154-unseen-wall-host                   NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:154
+    at <anonymous>:1:2559
+    at <anonymous>:1:2635
+  154-warden-open-join                   NOT STAGED   4.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:154
+    at <anonymous>:1:2559
+    at <anonymous>:1:2635
+  154-bulwark-big-join                   NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:154
+    at <anonymous>:1:2559
+    at <anonymous>:1:2635
+  154-unseen-wall-join                   NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:154
+    at <anonymous>:1:2559
+    at <anonymous>:1:2635

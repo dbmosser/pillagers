@@ -1,1 +1,1 @@
-10-30 13:46 gate: shipping cw-cx-machineopen (o-13-154-machine-tells-unseen-and-open-beat, codex)
+10-30 14:13 gate: shipping cw-cx-padsprintdefault (o-145-pad-sprint-toggle-default, codex)

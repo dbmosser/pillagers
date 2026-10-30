@@ -1,0 +1,7 @@
+v36.66: pad sprint toggle default
+
+One sprint row gains hold, pad toggle as the default. Saved hold and toggle choices keep their indexes. LOCAL: no linked review.
+
+Check 36.66. Fails on v36.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

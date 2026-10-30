@@ -1,9 +1,10 @@
 Latest stable: v36.55 (2026-10-29 22:13)
-Checked: 2026-10-30 13:12
+Checked: 2026-10-30 14:13
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
+  corpus-1030-1153  v36.59  failing 93, new 3  robots 114 min/1 problems  -> 3 check(s) newly failing, e.g. v29.10 a Ctrl drag of a stack between the stash and the back | v23.12 raid details are short, never explaining sentences: t
   corpus-1030-0746  v36.57  failing 91, new 1  robots 287 min/6 problems  -> 1 check(s) newly failing, e.g. v18.78 text in the framed windows stays inside the frame: th
   corpus-1030-0631  v36.55  failing 85, new 0  robots 1191 min/2 problems  -> robots hit 2 problem(s) on it
   corpus-1029-1512  v36.55  failing 89, new 0  robots 1191 min/2 problems  -> robots hit 2 problem(s) on it
@@ -11,7 +12,8 @@ Newest test runs, newest first:
   corpus-1029-1227  v36.53  failing 91, new 2  robots 57 min/1 problems  -> 2 check(s) newly failing, e.g. v35.74 cw-meleez, his order 10-28 (can we move melee to z as | v20.76 on a controller the legends name D-UP for the ping, n
   corpus-1029-1104  v36.50  failing 88, new 0  robots 173 min/2 problems  -> robots hit 2 problem(s) on it
   corpus-1029-0843  v36.46  failing 85, new 1  robots 113 min/2 problems  -> 1 check(s) newly failing, e.g. v36.00 menus master pass 2026-10-28: the KIA card with a ful
-  corpus-1029-0712  v36.44  failing 81, new 1  robots 304 min/0 problems  -> 1 check(s) newly failing, e.g. v14.76 the stash hover row offers every key for every item: 
 
 Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
   v18.78 text in the framed windows stays inside the frame: the text lines of the
+  v29.10 a Ctrl drag of a stack between the stash and the backpack asks how many (
+  v23.12 raid details are short, never explaining sentences: the gun key reads [5]

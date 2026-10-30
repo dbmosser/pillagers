@@ -3912,8 +3912,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.65';
-var VER_AT='2026-10-30 13:48';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.66';
+var VER_AT='2026-10-30 14:14';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -29878,15 +29878,23 @@ if(mouse.down&&p.wep&&p.wep.auto) p.fireHold=(p.fireHold||0)+dt;
   var _shHeld=!!(keys['ShiftLeft']||keys['ShiftRight']);
   // v28.xx (cw-cx-shotendssprint): releasing the physical sprint input permits a fresh sprint after a gunshot; time alone never does.
   if(!_shHeld) p.shotSprintRelease=false;
-  // v26.xx (settings2), HIS ORDER 2026-10-14: SPRINT TOGGLE. With the SPRINT row on TOGGLE a fresh press of the key (or of the pad stick click, which holds
-  // the same key) turns sprint on, the next press turns it off, and it also ends when you stop moving, go down or run out of breath (the lock then
-  // needs a new press, as a held key needs letting go). On HOLD, the default, none of this runs and the key is read as it always was.
-  if(CFG.sprintTgl===1){
-    if(_shHeld&&!G.shWas&&!p.downed) G.sprintOn=!G.sprintOn;
+  // v28.xx (cw-cx-padsprintdefault): g-68, keys hold and the local pad stick click toggles by default; no hub input change.
+  var _padSh=!!(PAD.on&&PAD.held&&PAD.held.ShiftLeft);
+  if(CFG.sprintTgl===2){
+    if(_padSh&&!G.shWasPad&&!p.downed) G.sprintOn=!G.sprintOn;
+    G.shWasPad=_padSh;
     G.shWas=_shHeld;
-    if(G.sprintOn&&(mg===0||p.downed||p.ads||p.stam<=2||p.stamLock||p.stamRelease)) G.sprintOn=false;
-    _shHeld=!!G.sprintOn;
-  } else { G.sprintOn=false; G.shWas=_shHeld; }
+    if(G.sprintOn&&(mg===0||p.downed||p.ads||p.stam<=2||p.stamLock||p.stamRelease||p.shotSprintRelease)) G.sprintOn=false;
+    _shHeld=(_shHeld&&!_padSh)||!!G.sprintOn;
+  } else {
+    G.shWasPad=_padSh;
+    if(CFG.sprintTgl===1){
+      if(_shHeld&&!G.shWas&&!p.downed) G.sprintOn=!G.sprintOn;
+      G.shWas=_shHeld;
+      if(G.sprintOn&&(mg===0||p.downed||p.ads||p.stam<=2||p.stamLock||p.stamRelease)) G.sprintOn=false;
+      _shHeld=!!G.sprintOn;
+    } else { G.sprintOn=false; G.shWas=_shHeld; }
+  }
   // v28.xx (cw-cx-shotendssprint): apply the shot latch before crouch, scent, movement and stamina read the sprint request.
   if(p.shotSprintRelease){ G.sprintOn=false; _shHeld=false; }
   if(!_shHeld) p.stamRelease=0;
@@ -56715,7 +56723,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.65: Wardens open for 0.9s after firing. Every fourth bulwark shot charges for 0.7s, hits 2.5x, then opens its shield for 1s. Hidden machine windups warn only their target at their feet. Check 36.65 fails on v36.64',
+  now:'v36.66: One sprint row gains hold, pad toggle as the default. Saved hold and toggle choices keep their indexes. LOCAL: no linked review. Check 36.66 fails on v36.65',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -74171,12 +74179,14 @@ var GAMEOPTS=[
      {n:'TOGGLE', cfg:{crouchHold:0}},
      {n:'HOLD',   cfg:{crouchHold:1}}
    ], def:0},
+  // v28.xx (cw-cx-padsprintdefault): his 10-25 g-68, "Pad defaults to toggle"; saved choices 0 and 1 keep their meaning.
   {k:'sprintMode', label:'SPRINT', sec:'CONTROLS',
-   hint:'Hold: run while the key is down. Toggle: press once to run, until you stop or tire. The pad stick click too.',
+   hint:'hold: run while held. toggle: click once to run. hold, pad toggle: keys hold, the stick click toggles.',
    opts:[
      {n:'HOLD',   cfg:{sprintTgl:0}},
-     {n:'TOGGLE', cfg:{sprintTgl:1}}
-   ], def:0},
+     {n:'TOGGLE', cfg:{sprintTgl:1}},
+     {n:'hold, pad toggle', cfg:{sprintTgl:2}}
+   ], def:2},
   // v26.xx (settings3), HIS ORDER 2026-10-14 ("ok add all this stuff to settings"): MOUSE SENSITIVITY, for the hip and for aiming down sights.
   // The mouse is the cursor, so the sensitivity is how far the AIM TURNS for a move of the mouse: the angle of the cursor round the player is
   // scaled (2x turns twice as far, 0.5x half as far) and the distance is left as it is. 100% is the cursor exactly as it was. See msMove.
