@@ -1122,6 +1122,9 @@ while($true){
     }
   } else {
     if((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -eq 0){ Start-Robot 9331 'fixture-soak-spare1.html' }
+    # 10-30, his "yes i want the auto test": the online 2 player test joins from here. tools\p2online\p2.mjs guest-daemon looks in the
+    # p2-mailbox branch every 20 s for an invite from the VM and plays player 2 in a headless Chrome on 9362 (it calls no AI).
+    if((Test-Path -LiteralPath ($T+'\p2online\p2.mjs')) -and (Running 'p2\.mjs.*guest-daemon') -eq 0){ Start-Process -FilePath $Node -ArgumentList @(('"'+$T+'\p2online\p2.mjs"'),'guest-daemon','--root',('"'+$R+'"')) -WindowStyle Hidden | Out-Null }
     # 10-22: Start-Robot takes a screen size (fuzz.ps1 -Size), but both robots here stay at 1080p. A 4K robot on the main PC reads as "he is gaming"
     # to its game check (a program at 15% of the graphics card, 22:38 that night), which holds the VM to 30% of its processors; the VM plays the 4K robot.
     # 10-26: on the spare (4 threads) a full run plus two robots choked the robots. 10-28 (CEO): two robots alone choke it too: 4 game windows at
