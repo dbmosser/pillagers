@@ -517,7 +517,8 @@ function Stop-Work([string]$why,[switch]$Refund){
   if($Idle){
     $n=0
     Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessId -ne $PID -and $_.CommandLine -and (
-      ($_.CommandLine -match 'PillagersIdle' -and $_.CommandLine -match 'fuzz\.ps1|corpq\.sh|corpus-slices\.sh') -or
+      ($_.CommandLine -match 'PillagersIdle' -and $_.CommandLine -match 'fuzz\.ps1|corpq\.sh|corpus-slices\.sh|p2\.mjs') -or
+      ($_.Name -eq 'chrome.exe' -and $_.CommandLine -match 'pillagers-p2online') -or
       ($_.Name -eq 'chrome.exe' -and $_.CommandLine -match 'remote-debugging-port=(9344|9331|9332)(\s|$)' -and $_.CommandLine -match 'pillagers-cdp')) } |
       ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue; $n++ }
     $script:working=$false
@@ -1115,7 +1116,29 @@ while($true){
     # 10-28 23:55: a new robot block needs the START memory (6 GB free; 4K needs 7). Before, the next hour's robot started on the 3 GB
     # keep-going bar because the runner was still working: the 4K robot started at 4.3 GB free (17:44 and 21:23) and was stopped for memory
     # within a minute, 0 raids. Under 6 GB the runner stops working, so the next start waits for 6 GB like any other start.
-    if((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){
+    # 10-30 (CEO, his "yes i want the auto test"): the main PC hosts the online 2 player test ONCE, in place of a robot hour while he is
+    # away 15 minutes (tools\p2online\p2.mjs host: test port 8817, Chrome 9361, never 8802; about 15 minutes; no AI). The spare PC's runner
+    # joins as player 2. Stop-Work ends it like the robots when he comes back; 3 tries at most. Its result goes out with the next status
+    # (spare\JUL26\p2-online-test.txt on spare-results). A new $p2Want asks for one more run.
+    $p2Want='1030a'
+    $p2Run=(Running 'p2\.mjs"?\s+host(\s|$)')
+    if($p2Run -eq 0 -and (GetS 'p2_done') -ne $p2Want -and (GetS 'p2_t') -and (GetS 'p2_want') -eq $p2Want){
+      $pf=$T+'\handoff\spare\p2-online-test.txt'; $pi=Get-Item -LiteralPath $pf -ErrorAction SilentlyContinue
+      if($pi -and ([DateTimeOffset]$pi.LastWriteTime).ToUnixTimeSeconds() -gt [long](GetS 'p2_t')){
+        Copy-Item -LiteralPath $pf -Destination ($Res+'\spare\'+$HostN+'\p2-online-test.txt') -Force -ErrorAction SilentlyContinue
+        PutS 'p2_done' $p2Want; Say ('online 2 player test: '+(Short ([IO.File]::ReadAllLines($pf)[0])))
+      }
+    }
+    if($p2Run -eq 0 -and (GetS 'p2_done') -ne $p2Want -and (AwaySec) -ge 900 -and (Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0 -and (FreeGB) -ge 6 -and (Test-Path -LiteralPath ($T+'\p2online\p2.mjs'))){
+      $n=$(if((GetS 'p2_want') -eq $p2Want){ [int]('0'+(GetS 'p2_tries')) }else{ 0 })
+      if($n -ge 3){ PutS 'p2_done' $p2Want; Say 'the online 2 player test did not finish in 3 tries' }
+      else {
+        PutS 'p2_want' $p2Want; PutS 'p2_tries' ([string]($n+1)); PutS 'p2_t' ([string](Epoch))
+        Start-Process -FilePath $Node -WindowStyle Hidden -ArgumentList @(('"'+$T+'\p2online\p2.mjs"'),'host','--port','8817','--cdp','9361','--root',('"'+$R+'"')) | Out-Null
+        $p2Run=1; $script:working=$true; Say ('online 2 player test started as the host (try '+($n+1)+', test port 8817)')
+      }
+    }
+    if($p2Run -eq 0 -and (Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){
       $sf=FreeGB
       if($sf -lt 6){ Stop-Work 'under 6 GB free for a new robot' }
       else { $atPc=((AwaySec) -lt 900); $script:gcAtStart=(GameChrome); Start-Robot 9332 'fixture-soak-spare2.html' $(if($atPc -or $script:gcAtStart -or $sf -lt 7 -or (GetS 'no4k') -eq (Get-Date).ToString('yyyy-MM-dd')){ '' }else{ '3840x2160' }) -Low:$atPc }
