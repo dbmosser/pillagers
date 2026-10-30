@@ -1,0 +1,10 @@
+{
+ "id": "202610301146-VM_Oct2026",
+ "head": "p2 online test 202610301146-VM_Oct2026: FAIL (2), host VM_Oct2026 v36.57, guest ?",
+ "steps": [
+  "PASS HOST A PARTY made an invite code (1169 characters)",
+  "PASS the spare PC joined with the invite and sent a reply code (v36.57, same build)",
+  "FAIL LET THEM IN linked both PCs",
+  "FAIL stopped: no link"
+ ]
+}
