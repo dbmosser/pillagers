@@ -1,0 +1,7 @@
+run 1 {"pass":false,"bad":["the player 2 window does not say it is player 2 on its title","timed out after 20000 ms waiting for both rosters to show two"],"trade":0,"drop":0,"relink":0,"ban":0,"cfg":"","ended":"","endA":0,"endC":0,"sl":[]}
+run 2 {"pass":false,"bad":["the player 2 window does not say it is player 2 on its title","timed out after 20000 ms waiting for both rosters to show two"],"trade":0,"drop":0,"relink":0,"ban":0,"cfg":"","ended":"","endA":0,"endC":0,"sl":[]}
+run 3 {"pass":false,"bad":["the player 2 window does not say it is player 2 on its title","timed out after 20000 ms waiting for both rosters to show two"],"trade":0,"drop":0,"relink":0,"ban":0,"cfg":"","ended":"","endA":0,"endC":0,"sl":[]}
+run 4 {"pass":false,"bad":["the player 2 window does not say it is player 2 on its title","timed out after 20000 ms waiting for both rosters to show two"],"trade":0,"drop":0,"relink":0,"ban":0,"cfg":"","ended":"","endA":0,"endC":0,"sl":[]}
+run 5 {"pass":false,"bad":["the player 2 window does not say it is player 2 on its title","timed out after 20000 ms waiting for both rosters to show two"],"trade":0,"drop":0,"relink":0,"ban":0,"cfg":"","ended":"","endA":0,"endC":0,"sl":[]}
+run 6 {"pass":false,"bad":["the player 2 window does not say it is player 2 on its title","timed out after 20000 ms waiting for both rosters to show two"],"trade":0,"drop":0,"relink":0,"ban":0,"cfg":"","ended":"","endA":0,"endC":0,"sl":[]}
+DONE
