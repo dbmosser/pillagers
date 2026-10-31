@@ -389,7 +389,7 @@ function Load-Hold(){
 $script:fakeLow=$false
 function FreeGB(){
   $script:fakeLow=$false
-  try{ $t=[IO.File]::ReadAllText((Join-Path $env:LOCALAPPDATA 'PillagersBridgeshareake-lowram.txt')); if($t -match 'until=(d+)' -and [long]$Matches[1] -gt (Epoch)){ $script:fakeLow=$true; return 1.0 } }catch{}
+  try{ $t=[IO.File]::ReadAllText((Join-Path $env:LOCALAPPDATA 'PillagersBridge\share\fake-lowram.txt')); if($t -match 'until=(\d+)' -and [long]$Matches[1] -gt (Epoch)){ $script:fakeLow=$true; return 1.0 } }catch{}
   $os=Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue; if(-not $os){ return 0 }; return [Math]::Min($os.FreePhysicalMemory,$os.FreeVirtualMemory)/1MB }
 # 10-22 the VM's nights: the main PC's "VM night memory up" task (tools/migrate/host-night-memory.ps1) lends the VM up to 6 GB more at 23:00,
 # sized once from what is free right then, and takes it back from 06:00. Measured 10-20 and 10-21: 12.1 and 12.5 GB free at 23:00, VM 10 -> 16.
@@ -529,8 +529,8 @@ function Stop-Work([string]$why,[switch]$Refund,[switch]$LowRam){
     # 10-31: a stop for low RAM is an abort, not a game failure: fuzz.log gets a FUZZ ABORT line (tools/stable.mjs leaves out the raids
     # that ended in the 3 minutes before it), and a stopped online 2 player test gets its try back
     if($LowRam){
-      if((Running 'fuzz.ps1.*-Port 9332(s|$)') -gt 0){ try{ [IO.File]::AppendAllText($FzOut+'uzz.log',(Get-Date).ToString('yyyy-MM-dd HH:mm:ss')+' FUZZ ABORT reason=low ram ('+[Math]::Round((FreeGB),1)+' GB free'+$(if($script:fakeLow){ ', a self-test' }else{ '' })+'), not a game failure'+"`r`n",$Enc) }catch{} }
-      if((Running 'p2.mjs"?s+host(s|$)') -gt 0 -and (GetS 'p2_want') -eq $P2Want){ $tr=[int]('0'+(GetS 'p2_tries')); if($tr -gt 0){ PutS 'p2_tries' ([string]($tr-1)) } }
+      if((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -gt 0){ try{ [IO.File]::AppendAllText($FzOut+'\fuzz.log',(Get-Date).ToString('yyyy-MM-dd HH:mm:ss')+' FUZZ ABORT reason=low ram ('+[Math]::Round((FreeGB),1)+' GB free'+$(if($script:fakeLow){ ', a self-test' }else{ '' })+'), not a game failure'+"`r`n",$Enc) }catch{} }
+      if((Running 'p2\.mjs"?\s+host(\s|$)') -gt 0 -and (GetS 'p2_want') -eq $P2Want){ $tr=[int]('0'+(GetS 'p2_tries')); if($tr -gt 0){ PutS 'p2_tries' ([string]($tr-1)) } }
     }
     $n=0
     Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessId -ne $PID -and $_.CommandLine -and (
@@ -951,11 +951,11 @@ function Start-Corpus(){
 function Tidy-Profiles(){
   if(-not $Idle){ return }
   try{
-    $own=@{ '9331'=((Running 'fuzz.ps1.*-Port 9331(s|$)') -gt 0); '9332'=((Running 'fuzz.ps1.*-Port 9332(s|$)') -gt 0); 'p2'=((Running 'p2.mjs"?s+host(s|$)') -gt 0) }
+    $own=@{ '9331'=((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -gt 0); '9332'=((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -gt 0); 'p2'=((Running 'p2\.mjs"?\s+host(\s|$)') -gt 0) }
     $k=0
     Get-CimInstance Win32_Process -Filter "Name='chrome.exe'" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine } | ForEach-Object {
       $c=$_.CommandLine; $o=$null
-      if($c -match 'pillagers-p2online'){ $o='p2' } elseif($c -match 'pillagers-cdp' -and $c -match 'remote-debugging-port=(9331|9332)(s|$)'){ $o=$Matches[1] }
+      if($c -match 'pillagers-p2online'){ $o='p2' } elseif($c -match 'pillagers-cdp' -and $c -match 'remote-debugging-port=(9331|9332)(\s|$)'){ $o=$Matches[1] }
       if($o -and -not $own[$o]){ Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue; $k++ } }
     if($k){ Say ('ended '+$k+' left-over test Chrome parts') }
     if(-not ($own['9331'] -or $own['9332'] -or $own['p2'])){
