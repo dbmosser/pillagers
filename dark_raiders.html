@@ -3929,8 +3929,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.85';
-var VER_AT='2026-10-31 09:46';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.86';
+var VER_AT='2026-10-31 09:52';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14218,7 +14218,7 @@ function bakeGround(map){
   }
   for(i=0;i<map.buildings.length;i++){
     var b3=map.buildings[i],D3=DISTRICTS[b3.d];
-    var _bf=(_px&&b3.kind)?bldKindFloor(b3):bldFloor(b3);   // v34.xx (cw-bldkinds): the pixel look floors by kind, the vector bake keeps its own
+    var _bf=b3.kind?bldKindFloor(b3):bldFloor(b3);   // v34.xx (cw-bldkinds), v36.xx (cw-bldsmooth) his priorities note 10-20 (is this a house, an office, a warehouse): the smooth look floors by kind too, not only the pixel look
     var _ix=b3.x+8,_iy=b3.y+8,_iw=b3.w-16,_ih=b3.h-16;
     c.fillStyle='rgba(0,0,0,.30)'; c.fillRect(b3.x,b3.y,b3.w,b3.h);
     // same fault as the roads: building interiors stayed night-dark while the
@@ -14269,7 +14269,7 @@ function bakeGround(map){
       c.restore();
     }
     // v34.xx (cw-bldkinds): flat details of the kind, painted into the ground only (no wall, collider or sight entry)
-    if(_px&&b3.kind) pixKindDetail(c,b3,_ix,_iy,_iw,_ih,_lw);
+    if(b3.kind) pixKindDetail(c,b3,_ix,_iy,_iw,_ih,_lw);   // v36.xx (cw-bldsmooth): both looks, so a house, an office and a warehouse read apart in the smooth look
     // The number stays on all five: it is how he tells one shed from another on
     // the sector map, and taking it away would trade one kind of samey for another.
     c.save(); c.globalAlpha=(_bf===2?.18:.13)*(_px?2.4:1); c.fillStyle=D3.wallTop;   // v28.xx (cw-cx-pixground): the shed number must still be a step darker after the snap
@@ -56975,7 +56975,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.85: The racks page shows built and empty slots, usable and unusable buttons, and the parts you are short of, at a glance. Check 36.85 fails on v36.84',
+  now:'v36.86: Houses, offices, warehouses, shops and workshops now have their own floors and details in the smooth look too. Check 36.86 fails on v36.85',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

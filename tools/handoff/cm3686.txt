@@ -1,0 +1,7 @@
+v36.86: buildings read in the smooth look
+
+Houses, offices, warehouses, shops and workshops now have their own floors and details in the smooth look too.
+
+Check 36.86. Fails on v36.85.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,5 @@
+## v36.86 - BUILDINGS READ IN THE SMOOTH LOOK
+
+Co-op hunt while he was away. His priorities note of 10-20 asks whether you can tell a house, an office and a warehouse apart. Since v34.81 the smooth look is the default, and the kind floors and flat details (v34.49) were baked only in the pixel look. Both looks now floor each building by its kind (house open floor with a rug, office tiled with papers, warehouse racking or dock with pallets and oil, shop tiled with shelf lines, workshop grid with plates and stains). Ground only: no wall, collider, sight line or seeded draw changes.
+
+MEASURED. Check 36.86 passes, and fails on v36.85.

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.86 - BUILDINGS READ IN THE SMOOTH LOOK
+
+Co-op hunt while he was away. His priorities note of 10-20 asks whether you can tell a house, an office and a warehouse apart. Since v34.81 the smooth look is the default, and the kind floors and flat details (v34.49) were baked only in the pixel look. Both looks now floor each building by its kind (house open floor with a rug, office tiled with papers, warehouse racking or dock with pallets and oil, shop tiled with shelf lines, workshop grid with plates and stains). Ground only: no wall, collider, sight line or seeded draw changes.
+
+MEASURED. Check 36.86 passes, and fails on v36.85.
 ## v36.85 - THE RACKS PAGE READS AT A GLANCE
 
 Co-op hunt while he was away. The critic scored the mainframe racks page 2: a part you could not use looked the same as one you could, the counter was teal, empty slots looked like built ones, rows and columns did not line up and the cost text was small. Disabled buttons are now dashed and empty, built slots are solid green and empty ones dashed, the counter is the text colour, the slots span the build column and the count starts where the friend column starts, and the cost parts are 20px with a short part in red.

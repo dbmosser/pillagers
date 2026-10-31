@@ -179,17 +179,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "Two columns, a bigger rack counter and bigger tiles give the racks tab a real structure, but it still has no focus state, a lot of explaining text and an empty bottom half.",
+  "verdict": "The red cost line and the quieter count header are small steps forward, but the screen is still a thin block of content pinned to the top with the bottom 40% empty, flat dashed buttons with no focus, and a joke paragraph that is still there.",
   "findings": [
-   "P1 build a rack, fold, slot a data core: Show a lime outline or fill on the focused or first available button. Make disabled text at least #aaa498 and show the missing cost in the button itself, for example 'need 12 scrap'.",
-   "P1 both explaining paragraphs: Delete the import paragraph or cut it to 'import a run report'. Turn the cost into four small chips (icon, 12/0) at 16px, in --danger when short.",
-   "P1 the whole content area, y 600 to 1020: Move the rack grid into the empty lower area or make it a 5x2 grid of 96px tiles with rack names. Vertically centre the content or add a detail pane on the right in --ui-raised.",
-   "P2 racks counter and tiles: Use tx-1 for the number, or lime when it is above 0. Draw empty tiles with a 1px --ui-line-hi border and built ones with a 3px lime top bar.",
-   "P2 layout, columns: Align the left column to the header margin (x 119), or use a wider 2/3 and 1/3 split. Put 'import a friend' in its own titled panel at 16px label size."
+   "P1 import paragraph, right column y 380-435: Delete it. At most keep a 16px tx-2 label 'import a run report'. Put 'import a friend' in its own titled panel.",
+   "P1 build a rack, fold, slot a data core buttons: Use a solid 1px --ui-line-hi border on --ui-panel, text in --tx-2 (#aaa498). Put a lime focus bar and outline on the first button. Add the reason inside the button, for example 'need 12 scrap'. Delete the dashed style.",
+   "P1 whole content area, y 660-1020: Make the racks a 5x2 grid of 96px tiles with a 3px lime top bar on the built ones. Put the build and fold actions under it, or add a --ui-raised detail pane on the right. Vertically centre the block or fill the card.",
+   "P1 cost block, y 380-490: Replace it with four chips (icon, held/need, for example 0/12) at 16px, each in --danger only if short. Delete the flavour line and the wrapped paragraph. Keep 'pays $200 per extract' as one 16px tx-2 label.",
+   "P2 racks count header, x 984 y 240: Put the count directly above or beside the tile grid. Make it tx-1 and lime when above 0. Start the right column with its own heading."
   ],
-  "pic": "tools/handoff/console/notes/shots/99-after2/14-mainframe-racks-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/0p08-219-after/14-mainframe-racks-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T14:46"
+  "when": "2026-10-31T13:48"
  },
  "16-bar-last-pour": {
   "score": 3,
