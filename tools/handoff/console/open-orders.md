@@ -87,3 +87,5 @@ SHIPPED 10-28 v35.66: 201 air strike needs 3000 damage (was 1500). On his PC 168
 - HIS QUESTION 10-31: timelord mode turns on by itself. Cause: one tap of the key left of 1 flips it and saves it, even in the demo. Job tasks/o-00y-246-timelord-key-no-accidents.md (hold to toggle, off limits in the demo); party relevant, CEO decides under his 10-30 order.
 
 - HIS ORDER 10-31: no weapon card after a Forge upgrade; only on hotbar hover. Parked as after-nov1/o-01b-247-no-gun-card-after-upgrade.md.
+
+- HIS ORDER 10-31: text size defaults to 100% (was 150% TV size from Q21, demo included). Job tasks/o-00y3-248-text-size-default-100.md; party relevant, CEO decides.
