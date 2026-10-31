@@ -259,17 +259,17 @@
   "score": 2,
   "pass": false,
   "need": 4,
-  "verdict": "The new raid hud is effectively the old one with different contract text and a different toast; it is still a cluttered stack of small, low-contrast corner boxes with an always-open key legend and no clear focal point.",
+  "verdict": "The only changes are small margin shifts and a panel behind the clock, while the open key legend, the 12px scoreboard text, the empty-slot clutter and the oversized hp bar are all still there, so the earlier advice was mostly not followed.",
   "findings": [
-   "P0 Raid HUD overall hierarchy: Close the key legend by default (show it for 10s on raid start, then f1 only). Keep the ammo as the one hero at 56px. Drop the stamina and hp bars to 12px thin bars with a 16px label, and keep the hp number at 32px max.",
-   "P0 top-left 'current pillager bots' scoreboard and top-right cash/run info/contracts stack: Use one panel style: --ui-panel at 90%, 1px --ui-line-hi border, 4px radius, 16px padding, 20px row names and 16px labels. Give the right column one fixed width (320px), 16px gaps and a 48px margin. Keep scores and contracts at 16px minimum. Put 'no downs yet' under a 'bonus' label in tx-2.",
-   "P1 bottom-left toasts ('codex entry · scav pistol · common', 'running slowly'): Make every toast the same: a 3px left bar (warn for hints, tx-2 for info), 16px f-cond 600 in tx-1 on a --ui-panel pill at 90%, 8px gap between toasts. Put the status text at tx-1 (not 50% grey) so it reaches 4.5:1.",
-   "P1 center-bottom controls legend: Collapse it into a one-line footer hint ('f1 controls', 14px, tx-2) after the first raid. If it must stay, use two aligned columns on a 480px panel at 16px with 24px row height.",
-   "P1 hotbar and weapon tag: Hide empty slots, or draw them as 1px outlines without silhouettes. Use one focus treatment (the lime --acc 2px border on the active slot only). Slot numbers 16px. Make both hints the same chip style."
+   "P0 left-middle controls legend (x18-317, y517-815): Fold it to a single 16px line ('f1 controls', tx-2) at bottom-left, shown open for 10s at raid start only. If it stays open, make it 480x200 with two 16px columns on --ui-panel at 90% opacity.",
+   "P0 top-left 'current pillagers' scoreboard (x19-317, y119-201): Use 16px labels and 20px row names, a 16px 'you' row in --acc, 16px padding and a 4px radius. Use --ui-panel at 90% opacity with a 1px --ui-line-hi border, and give it the same left margin as the other panels (48px).",
+   "P1 top-center clock panel (x899-1021, y6-83): Make the timer 32px at weight 800 and 'extract 152m' 16px --extract, with 16px padding. Put the whole HUD on one 48px margin and a shared 4px radius, so the top row lines up.",
+   "P1 top-right 'run info' bar and 'c 152m' chip (x1652-1900): Use one panel recipe for the run info bar, the chip and the cache tag: --ui-panel at 90% opacity, a 1px --ui-line-hi border, a 4px radius and 16px f-cond 600 text. Set the bar to 320x40 at a 48px margin. Put the extract chip under the clock, not on the far right.",
+   "P1 hotbar (x552-1480, y968-1062): Draw empty slots as 1px --ui-line outlines with no silhouettes, or hide them. Use 16px slot numbers, put the lime --acc 2px border on the active slot only, and use one chip style for the 'f' and 'b / i backpack' hints."
   ],
-  "pic": "tools/handoff/console/notes/shots/103-final/21-raid-hud-calm-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/0p01-after/21-raid-hud-calm-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T17:30"
+  "when": "2026-10-31T13:09"
  },
  "22-raid-map-open": {
   "score": 3,

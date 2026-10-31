@@ -1,0 +1,5 @@
+## v36.74 - THE EXTRACTION COUNTDOWN STANDS ON A PLATE AND SAYS EACH FACT ONCE
+
+Co-op hunt while he was away. The critic on o-120g (P0s): the landed-ship countdown (extract in progress, ring letter, seconds left) had no plate on busy ground and the band repeated the distance the pill already shows. Now the line stands on a plate measured to its words both inbound and landed, the ring letter is ringed so it reads as the ring name, the band no longer draws its own arrow and metres (the top pill is the one distance), and the centre hold line stays the one action. His words (extract in progress) are unchanged. The o-132 P0: damage numbers step up over the name tags the stack pass placed, so a stacked name tag is never under a number. Name tags already move for cache labels (v36.12); this adds the shared box kind so the check proves it. Watch: whether the countdown is easy to read in both party windows, and the ringed letter looks like a ring name.
+
+MEASURED. Check 36.74 passes, and fails on v36.73.

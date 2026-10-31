@@ -1,0 +1,7 @@
+v36.74: the extraction countdown stands on a plate and says each fact once
+
+The extraction countdown stands on a plate with its ring name ringed, the distance shows once, and damage numbers keep clear of name tags.
+
+Check 36.74. Fails on v36.73.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

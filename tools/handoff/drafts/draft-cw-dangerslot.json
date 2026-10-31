@@ -1,0 +1,68 @@
+{
+    "title":  "ONE DANGER AT A TIME, LOWER ON THE SCREEN",
+    "why":  "His note: too many messages coming in to the player. The research rule: the danger banner stands at about 27 percent of the screen height, in the middle where eyes are in a fight, one line on a plate that scales in over 0.2 s and lasts 3 s (4 s for a down). A danger replaces extraction news at once, a second danger waits, the same keyed danger does not show again for 10 s, and one that cannot show within 1.5 s is dropped and never written to the feed. A teammate down draws in the teammate colour. The final rush callout keeps its place.",
+    "now":  "Danger callouts stand at 27 percent of the height, one at a time, and a repeated warning is quiet for 10 s.",
+    "edits":  [
+                  {
+                      "anchor":  "var ALERTMIN=2.0, ALERTWAIT=2.5;",
+                      "replacement":  "var ALERTMIN=2.0, ALERTWAIT=2.5;\n// v36.73 (cw-dangerslot), the research rule of 2026-10-27 (his \"too many messages coming in to the player\"): ONE DANGER AT A TIME, LOWER ON THE SCREEN. The alert banner stood at\n// 16 percent of the height, where eyes rarely go in a fight. It now stands at 27 percent (the top of the zone where most fixations land), scales in over 0.2 s and lasts\n// 3 s (4 s for a down). A danger (crit, warn) replaces extraction news at once (the extraction line goes back to wait); the same danger and key do not show again for\n// 10 s; a danger that cannot show within 1.5 s is dropped and is never written to the feed. The final rush callout keeps its place under the clock stack.\nvar ALERTDROP=1.5, ALERTAGAIN=10, ALERTYF=0.27, ALERTIN=0.2, ALERTLIFE=3, ALERTLIFEDN=4;\nfunction alertDanger(k){ return k===\u0027crit\u0027||k===\u0027warn\u0027; }\nfunction alertId(m,key){ return String(m)+\u0027|\u0027+String(key||\u0027\u0027); }\nfunction alertLife(m,k,o){ if(o\u0026\u0026o.life\u003e0) return o.life; if(!alertDanger(k)) return MSGK[k].life; return (/\\bdown\\b/i).test(String(m))?ALERTLIFEDN:ALERTLIFE; }\nfunction alertMark(a,now){ if(a\u0026\u0026alertDanger(a.k)\u0026\u0026G) (G.alertSeen=G.alertSeen||{})[alertId(a.m,a.key)]=now; }   // the last time this danger was on screen\nfunction alertRepeat(m,k,o,now){   // a danger said again within 10 s of being on screen (a teammate going down is always new)\n  var key=(o\u0026\u0026o.key)||\u0027\u0027, s=G\u0026\u0026G.alertSeen, id=alertId(m,key);\n  if(!alertDanger(k)||(/^tmdown/).test(key)) return false;\n  return !!(s\u0026\u0026s.hasOwnProperty(id)\u0026\u0026now-s[id]\u003cALERTAGAIN);\n}\nfunction alertWaitMax(e){ if(e.back\u0026\u0026e.o\u0026\u0026e.o.hold) return 8; if(alertDanger(e.k)) return ALERTDROP; return e.back?5:ALERTWAIT; }\nfunction alertSlotY(){ return Math.max(ALERTY||LH(96),Math.round(H*ALERTYF/((HUDZ.msg||1)*hudRes()*hudUserZ(\u0027msg\u0027)))); }   // the top of the danger plate, before the message scale"
+                  },
+                  {
+                      "anchor":  "G.alert={m:m,k:k,sub:(o\u0026\u0026o.sub)||\u0027\u0027,key:(o\u0026\u0026o.key)||\u0027\u0027,hold:(o\u0026\u0026o.hold)||null,icon:(o\u0026\u0026o.icon)||\u0027\u0027,c:(o\u0026\u0026o.c)||\u0027\u0027,\n           T:(o\u0026\u0026o.life\u003e0)?o.life:MSGK[k].life,at:now};",
+                      "replacement":  "G.alert={m:m,k:k,sub:(o\u0026\u0026o.sub)||\u0027\u0027,key:(o\u0026\u0026o.key)||\u0027\u0027,hold:(o\u0026\u0026o.hold)||null,icon:(o\u0026\u0026o.icon)||\u0027\u0027,c:(o\u0026\u0026o.c)||\u0027\u0027,col:(o\u0026\u0026o.col)||\u0027\u0027,\n           T:alertLife(m,k,o),at:now};   // v36.73 (cw-dangerslot): 3 s, 4 s for a down; col is the teammate colour of a teammate down\n  alertMark(G.alert,now);"
+                  },
+                  {
+                      "anchor":  "alertEnq(a.m,a.k,{sub:a.sub,key:a.key,hold:a.hold,icon:a.icon,c:a.c,life:",
+                      "replacement":  "alertEnq(a.m,a.k,{sub:a.sub,key:a.key,hold:a.hold,icon:a.icon,c:a.c,col:a.col,life:"
+                  },
+                  {
+                      "anchor":  "function alertToFeed(e){ var o=e.o||{}; ",
+                      "replacement":  "function alertToFeed(e){ var o=e.o||{}; if(alertDanger(e.k)) return;   // v36.73 (cw-dangerslot): a danger that could not show in time is dropped, never moved to the feed\n  "
+                  },
+                  {
+                      "anchor":  "a.T=Math.max(a.T,(o\u0026\u0026o.life\u003e0)?o.life:MSGK[k].life); alertQDrop(m,key); return;",
+                      "replacement":  "a.T=Math.max(a.T,alertLife(m,k,o)); alertMark(a,now); alertQDrop(m,key); return;"
+                  },
+                  {
+                      "anchor":  "if(!a||k===\u0027crit\u0027||(MSGK[k].r\u003e=MSGK[msgKind(a.k)].r\u0026\u0026now-a.at\u003e=ALERTMIN)){ alertQDrop(m,key); alertShow(m,k,o,now); return; }",
+                      "replacement":  "if(alertRepeat(m,k,o,now)) return;   // v36.73 (cw-dangerslot): the same danger and key do not show again for 10 s\n  if(!a||k===\u0027crit\u0027||(k===\u0027warn\u0027\u0026\u0026msgKind(a.k)===\u0027ext\u0027)||(MSGK[k].r\u003e=MSGK[msgKind(a.k)].r\u0026\u0026now-a.at\u003e=ALERTMIN)){ alertQDrop(m,key); alertShow(m,k,o,now); return; }   // v36.73 (cw-dangerslot): a warn replaces extraction news at once"
+                  },
+                  {
+                      "anchor":  "if(a\u0026\u0026a.T\u003e0){ a.T-=dt; if(a.T\u003c0.4\u0026\u0026alertHeld(a)\u0026\u0026now-a.at\u003c8) a.T=0.4; }",
+                      "replacement":  "if(a\u0026\u0026a.T\u003e0){ a.T-=dt; if(a.T\u003c0.4\u0026\u0026alertHeld(a)\u0026\u0026now-a.at\u003c8) a.T=0.4; alertMark(a,now); }"
+                  },
+                  {
+                      "anchor":  "if(now-e.t\u003e(e.back?((e.o\u0026\u0026e.o.hold)?8:5):ALERTWAIT)) alertToFeed(q.splice(i,1)[0]);",
+                      "replacement":  "if(now-e.t\u003ealertWaitMax(e)) alertToFeed(q.splice(i,1)[0]);   // v36.73 (cw-dangerslot): a danger waits 1.5 s and is dropped; extraction news waits 2.5 s (5 s displaced) and goes to the feed"
+                  },
+                  {
+                      "anchor":  "return {a:a,hl:hl,sl:sl,bl:bl,hf:hf,lf:lf,hp:hp,gs:gs,w:Math.max(LH(320)",
+                      "replacement":  "return {a:a,hl:hl,sl:sl,bl:bl,hf:hf,lf:lf,hp:hp,gs:gs,slot:0,y:ALERTY||LH(96),w:Math.max(LH(320)"
+                  },
+                  {
+                      "anchor":  "return {a:a,hl:hl,sl:sl,bl:bl,hf:hf,lf:lf,hp:hp,gs:gs,w:Math.ceil(LH(12)+gs",
+                      "replacement":  "return {a:a,hl:hl,sl:sl,bl:bl,hf:hf,lf:lf,hp:hp,gs:gs,slot:1,y:alertSlotY(),w:Math.ceil(LH(12)+gs"
+                  },
+                  {
+                      "anchor":  "if(al){ ALERTL=al; HUDALERTB=Math.round((ALERTY+al.h)*z); HUDFEEDT=ALERTY+al.h+LH(4); }",
+                      "replacement":  "if(al){ ALERTL=al; HUDALERTB=Math.round((al.y+al.h)*z); HUDFEEDT=al.slot?ALERTY:ALERTY+al.h+LH(4); }   // v36.73 (cw-dangerslot): the danger plate stands at 27 percent, so nothing under the clock stack moves down for it"
+                  },
+                  {
+                      "anchor":  "al=Math.max(0,Math.min(1,(now-a.at)/0.12,a.T/0.4)), col=HUDC[a.c]",
+                      "replacement":  "rm=Math.min(1,(now-a.at)/(L.slot?ALERTIN:0.12)), al=Math.max(0,Math.min(rm,a.T/0.4)), col=a.col||HUDC[a.c]"
+                  },
+                  {
+                      "anchor":  "y0=ALERTY||LH(96), gx=x0+LH(12)",
+                      "replacement":  "y0=L.y, sc, gx=x0+LH(12)"
+                  },
+                  {
+                      "anchor":  "ctx.save(); ctx.translate(0,Math.round((1-Math.min(1,(now-a.at)/0.12))*-LH(10)));",
+                      "replacement":  "ctx.save();\n  if(L.slot){ sc=0.86+0.14*(1-(1-rm)*(1-rm)); ctx.translate(W/2,y0+L.h/2); ctx.scale(sc,sc); ctx.translate(-W/2,-(y0+L.h/2)); }   // v36.73 (cw-dangerslot): it scales in over 0.2 s\n  else ctx.translate(0,Math.round((1-rm)*-LH(10)));"
+                  },
+                  {
+                      "anchor":  "key:\u0027tmdown\u0027+s,icon:\u0027party\u0027,",
+                      "replacement":  "key:\u0027tmdown\u0027+s,icon:\u0027party\u0027,col:mapSeatColor(s|0),"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a danger stands at 27 percent of the height; a second danger does not draw over it; the same keyed danger does not show again for 10 s; a danger that waited over 1.5 s is dropped and not fed\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026typeof __frame===\u0027function\u0027)||typeof alertSay!==\u0027function\u0027) return \u0027SKIP: no alert fixture\u0027;\n     var PR=CanvasRenderingContext2D.prototype, of=PR.fillText, g=null, bad=[], ys=[], second=0, z, i, rows, hit;\n     function quiet(){ g.alert=null; g.alertQ=[]; g.alertSeen={}; g.msgLog=[]; g.fd=null; g.msgQ=[]; g.msgQM=[]; g.loc=null; }\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||g.sim||!g.player) return \u0027SKIP: no live raid\u0027;\n       g.ents=[]; g.bagOpen=false; g.mapOpen=false; g.paused=false;\n       // 1. the draw: where the headline stands on the screen\n       quiet(); alertSay(\u0027TEST DANGER ALPHA\u0027,\u0027warn\u0027,{key:\u0027t-alpha\u0027}); if(g.alert) g.alert.at=(g.t||0)-1;\n       PR.fillText=function(s,x,y){ var t=String(s).toLowerCase(), m=this.getTransform();\n         if(t===\u0027test danger alpha\u0027) ys.push(m.f+y*m.d);\n         if(t===\u0027test danger beta\u0027) second++;\n         return of.apply(this,arguments); };\n       __frame(); __frame();\n       PR.fillText=of;\n       if(!ys.length) bad.push(\u0027the danger headline was not drawn\u0027);\n       else if(ys[0]\u003cH*0.27-6||ys[0]\u003eH*0.27+H*0.08) bad.push(\u0027the danger headline stands at \u0027+Math.round(ys[0]/H*100)+\u0027 percent of the height, not 27\u0027);\n       // 2. one at a time: a second danger waits, and a danger replaces extraction news at once\n       quiet(); alertSay(\u0027TEST DANGER ALPHA\u0027,\u0027warn\u0027,{key:\u0027t-alpha\u0027}); g.alert.at=(g.t||0)-0.5; alertSay(\u0027TEST DANGER BETA\u0027,\u0027warn\u0027,{key:\u0027t-beta\u0027});\n       if(!g.alert||g.alert.m!==\u0027TEST DANGER ALPHA\u0027) bad.push(\u0027a second danger drew over the first\u0027);\n       quiet(); alertSay(\u0027TEST EXTRACTION NEWS\u0027,\u0027ext\u0027,{key:\u0027t-ext\u0027}); g.alert.at=(g.t||0)-0.5; alertSay(\u0027TEST DANGER BETA\u0027,\u0027warn\u0027,{key:\u0027t-beta\u0027});\n       if(!g.alert||g.alert.m!==\u0027TEST DANGER BETA\u0027) bad.push(\u0027a danger waited behind extraction news\u0027);\n       // 3. the same keyed danger said again within 10 s shows once\n       quiet(); alertSay(\u0027TEST DANGER GAMMA\u0027,\u0027warn\u0027,{key:\u0027t-gamma\u0027}); g.alert.T=0; g.t=(g.t||0)+4; alertSay(\u0027TEST DANGER GAMMA\u0027,\u0027warn\u0027,{key:\u0027t-gamma\u0027});\n       if(alertUp()) bad.push(\u0027the same keyed danger showed again 4 s after it\u0027);\n       g.alertSeen[\u0027TEST DANGER GAMMA|t-gamma\u0027]=(g.t||0)-11; alertSay(\u0027TEST DANGER GAMMA\u0027,\u0027warn\u0027,{key:\u0027t-gamma\u0027});\n       if(!alertUp()) bad.push(\u0027the same keyed danger did not show again after 11 s\u0027);\n       // 4. a danger that waited over 1.5 s is dropped and is not in the feed\n       quiet(); g.alert={m:\u0027TEST BLOCKER\u0027,k:\u0027crit\u0027,sub:\u0027\u0027,key:\u0027t-blocker\u0027,T:20,T0:20,at:g.t||0};\n       alertSay(\u0027TEST DANGER DELTA\u0027,\u0027warn\u0027,{key:\u0027t-delta\u0027});\n       if(!g.alertQ.length) bad.push(\u0027the waiting danger was not queued\u0027);\n       g.t=(g.t||0)+1.6; alertTick(0.01);\n       if(g.alertQ.length) bad.push(\u0027a danger that waited 1.6 s is still waiting\u0027);\n       g.t=(g.t||0)+10; alertTick(0.01);\n       rows=(g.fd\u0026\u0026g.fd.lines)||[]; hit=false;\n       for(i=0;i\u003crows.length;i++) if(/test danger delta/i.test(String(rows[i].txt))) hit=true;\n       if(hit) bad.push(\u0027a dropped danger was moved to the feed\u0027);\n       return bad.length?bad.join(\u0027; \u0027):null;\n     } finally {\n       PR.fillText=of;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}

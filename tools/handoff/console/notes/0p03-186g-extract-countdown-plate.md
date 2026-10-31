@@ -1,0 +1,6 @@
+# 0p03-186g notes (lane b, 10-31)
+
+- Cause 1: the landed-ship line ("extract in progress! a 26s left") skipped its plate (`if(!holding)` before extBanPlate). Out of the ring the band also drew its own arrow + metres under it, repeating the top pill's distance. The big centre "hold [x] to extract" is the one action line (kept).
+- Cause 2/3: v36.12 (cw-cx-tagstack) already stacks name tags above cache labels, so the o-120g picture (v35.58) predates it. Gap left: damage numbers measured the unstacked name top, so a tag lifted by the stack pass sat under a neighbour's number. Name boxes are now flagged k='n' (cache/station labels 'c') in WLTEXT and dmgNumLayout steps a number up over any name box. Cache label, loot and timing untouched.
+- Build cw-xcountplate: plate always (measured to the lowercase words), ring letter ringed (badge, wording unchanged: his "extract in progress"), band metres row removed, damage numbers clear of name tags. Check 36.74 (staged: in the ring, 200 m out, name over cache label, damage numbers).
+- Inbox: the lines that name the duplicate extraction distance and the name/number overlap are FOLDED here (3, 7 done by 186f; 17, 30, 36 duplicate extraction distance).
