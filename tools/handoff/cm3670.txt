@@ -1,0 +1,7 @@
+v36.70: text starts at 100 percent
+
+Text size now starts at 100 percent for new players and in the demo. Settings and the minus and equals keys still change it.
+
+Check 36.70. Fails on v36.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

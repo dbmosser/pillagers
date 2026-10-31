@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.70 - TEXT STARTS AT 100 PERCENT
+
+Co-op hunt while he was away. His 10-31 order: text size should default to 100 percent. A new profile and both arcade demo windows start at 100 percent text with the matching menu zoom, no longer the TV size. Saves keep their own size. Watch: text starts at 100%.
+
+MEASURED. Check 36.70 passes, and fails on v36.69.
 ## v36.69 - TIMELORD KEY NEEDS A HOLD
 
 Co-op hunt while he was away. His 10-31 report: brushing the key left of 1 switches timelord mode on and saves it. Watch: timelord mode needs a held key and is off limits in the demo.

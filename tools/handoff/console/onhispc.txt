@@ -135,3 +135,4 @@
 10-30 14:15 v36.66 cw-cx-padsprintdefault on his pc after 17s (8802 serves 36.66) week 91%
 10-31 04:34 v36.67 cw-cardstamp on his pc after 18s (8802 serves 36.67) week 93%
 10-31 04:39 v36.68 cw-autorec on his pc after 33s (8802 serves 36.68) week 93%
+10-31 05:20 v36.69 cw-cx-timelordhold on his pc after 66s (8802 serves 36.69) week 93%

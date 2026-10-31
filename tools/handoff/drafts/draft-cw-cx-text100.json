@@ -1,0 +1,20 @@
+{
+    "title":  "TEXT STARTS AT 100 PERCENT",
+    "why":  "His 10-31 order: text size should default to 100 percent. A new profile and both arcade demo windows start at 100 percent text with the matching menu zoom, no longer the TV size. Saves keep their own size. Watch: text starts at 100%.",
+    "now":  "Text size now starts at 100 percent for new players and in the demo. Settings and the minus and equals keys still change it.",
+    "edits":  [
+                  {
+                      "anchor":  "cfg:null,menuZoom:1.3,lastSim:null,",
+                      "replacement":  "cfg:null,menuZoom:1,uiScale:1,/* v36.xx (cw-cx-text100), his 10-31 order: text size starts at 100 percent. Only this literal (a NEW profile) changes; a save replaces P whole and keeps its own size */lastSim:null,"
+                  },
+                  {
+                      "anchor":  "var SLOT=(function()",
+                      "replacement":  "var P_BORN={uiScale:P.uiScale,menuZoom:P.menuZoom};   // v36.xx (cw-cx-text100): what a new profile is born with, kept so a check can read it after P is replaced by a save\nvar SLOT=(function()"
+                  },
+                  {
+                      "anchor":  "crashes:[],uiScale:1.5,menuZoom:1.25};",
+                      "replacement":  "crashes:[],uiScale:1,menuZoom:1};   // v36.xx (cw-cx-text100), his 10-31 order \"text size should default to 100%\": the demo starts at 100 percent text (UISCALES step 0 with its menu zoom), no longer the TV size of cw-tvtext (monitors tonight)."
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027text size starts at 100 percent for a new profile and for both demo windows; a save that chose 175 percent keeps it\u0027,\n   run:function(){\n     if(window.storage\u0026\u0026window.storage.set) return \u0027SKIP: this host saves through window.storage, not localStorage\u0027;\n     if(typeof P_BORN!==\u0027object\u0027||!P_BORN) return \u0027no record of what a new profile is born with (still the old text size)\u0027;\n     var bad=[], snap=JSON.stringify(P), oS=storeSet, oV=saveProfile, j, u;\n     try{\n       storeSet=function(){}; saveProfile=function(){};\n       if(P_BORN.uiScale!==1||P_BORN.menuZoom!==1) bad.push(\u0027a new profile is born at \u0027+P_BORN.uiScale+\u0027 / \u0027+P_BORN.menuZoom+\u0027, not 1 / 1\u0027);\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       for(j=0;j\u003c2;j++){\n         if(!arcadeSandboxIn(j?\u0027p2\u0027:\u0027host\u0027)){ bad.push(\u0027the demo did not open\u0027); break; }\n         u=uiScale();\n         if(Math.abs(u-1)\u003e0.001||Math.abs((P.menuZoom||0)-1)\u003e0.001) bad.push(\u0027the demo (\u0027+(j?\u0027player 2\u0027:\u0027player 1\u0027)+\u0027) starts at text \u0027+u+\u0027 / menu zoom \u0027+P.menuZoom+\u0027, not 1 / 1\u0027);\n         arcadeSandboxOut();\n       }\n       var s2=JSON.parse(snap); s2.uiScale=1.75; s2.menuZoom=1.4;\n       applyLoadedProfile({value:JSON.stringify(s2)});\n       if(P.uiScale!==1.75||Math.abs(uiScale()-1.75)\u003e0.001||P.menuZoom!==1.4) bad.push(\u0027a save that chose 175 percent came back as \u0027+P.uiScale+\u0027 / \u0027+P.menuZoom);\n       s2=JSON.parse(snap); delete s2.uiScale;\n       applyLoadedProfile({value:JSON.stringify(s2)});\n       if(Object.prototype.hasOwnProperty.call(P,\u0027uiScale\u0027)) bad.push(\u0027a save with no text size choice was given one\u0027);\n     }catch(x){ bad.push(\u0027threw: \u0027+(x\u0026\u0026x.message||x)); }\n     finally{ try{ if(typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE.on) arcadeLeave(); }catch(_l){} storeSet=oS; saveProfile=oV; try{ applyLoadedProfile({value:snap}); }catch(_r){} __topClear(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

@@ -3912,8 +3912,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.69';
-var VER_AT='2026-10-31 05:18';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.70';
+var VER_AT='2026-10-31 05:25';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5127,7 +5127,8 @@ var P={credits:900,stash:[],weapons:['pistol'],equipped:'fists',runs:0,ext:0,die
   // save exists, so a player who has never saved had no name at all and the
   // character screen read "undefined" beside his first raid.
   pname:'PILLAGER',
-  log:[],pack:0,contracts:[],cfg:null,menuZoom:1.3,lastSim:null,autoExport:true,autoDownload:false,shareRuns:false,iid:null,lastReport:'',cond:'day',crashes:[]};
+  log:[],pack:0,contracts:[],cfg:null,menuZoom:1,uiScale:1,/* v36.xx (cw-cx-text100), his 10-31 order: text size starts at 100 percent. Only this literal (a NEW profile) changes; a save replaces P whole and keeps its own size */lastSim:null,autoExport:true,autoDownload:false,shareRuns:false,iid:null,lastReport:'',cond:'day',crashes:[]};
+var P_BORN={uiScale:P.uiScale,menuZoom:P.menuZoom};   // v36.xx (cw-cx-text100): what a new profile is born with, kept so a check can read it after P is replaced by a save
 var SLOT=(function(){ try{ return localStorage.getItem('salvagerun:activeSlot')||'1'; }catch(e){ return '1'; } })();
 var SKEY=(SLOT==='1')?'salvagerun:profile':('salvagerun:profile:'+SLOT);
 // v15.74, HIS ORDER OF 2026-09-25 (multiplayer, build 1): TWO COPIES ON ONE PC KEEP TWO SAVES. Two copies of the game on one
@@ -56808,7 +56809,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.69: A tap does nothing. Hold the key left of 1 for 0.6 seconds to switch timelord mode once. The demo ignores the shortcut; Shift still opens tuning. LOCAL: no linked review. Check 36.69 fails on v36.68',
+  now:'v36.70: Text size now starts at 100 percent for new players and in the demo. Settings and the minus and equals keys still change it. Check 36.70 fails on v36.69',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -66041,7 +66042,7 @@ function netHostGone(why){
 // mid-arcade therefore leaves the save as it was before the arcade began. Later builds add the raid, the pads and the attract.
 var ARCADE={on:0,role:'',realJs:null,cfg0:null,mapIx:0};
 var ARCADE_SBX={weapons:['rifle'],equipped:'rifle',equippedSec:'none',kitChosen:1,dropKit:[],stash:[],kit:[],hotAssign:null,
-  merc:null,mercOut:null,intel:0,terms:[],contracts:[],gunPiled:[],raidSpliced:[],notoriety:0,runs:0,autoloot:1,keymap:{},keymapV:3,crashes:[],uiScale:1.5,menuZoom:1.25};   // v28.xx (cw-tvtext), his answer Q21 (2026-10-18): "TV-size text is on by default in the demo". The party plays on two TVs 6 to 10 ft away: HUD size 150 percent (UISCALES step 3) with the matching menu zoom (1.5 / 1.2), the pair hudSizeStep sets. Settings can still change it for the night; arcadeSandboxOut puts his own profile back
+  merc:null,mercOut:null,intel:0,terms:[],contracts:[],gunPiled:[],raidSpliced:[],notoriety:0,runs:0,autoloot:1,keymap:{},keymapV:3,crashes:[],uiScale:1,menuZoom:1};   // v36.xx (cw-cx-text100), his 10-31 order "text size should default to 100%": the demo starts at 100 percent text (UISCALES step 0 with its menu zoom), no longer the TV size of cw-tvtext (monitors tonight).   // v28.xx (cw-tvtext), his answer Q21 (2026-10-18): "TV-size text is on by default in the demo". The party plays on two TVs 6 to 10 ft away: HUD size 150 percent (UISCALES step 3) with the matching menu zoom (1.5 / 1.2), the pair hudSizeStep sets. Settings can still change it for the night; arcadeSandboxOut puts his own profile back
 // v23.27 (arcfixb), from the review of the arcade core: EVERY DIAL IS PUT BACK WHEN THE ARCADE IS LEFT. The sandbox kept his profile
 // aside but not the live dials (CFG), and only the two arcade overlay dials were put back at leave. A guest who opened Settings
 // from the pause box (damage, kid mode, volume, text size, a preset) or moved a tuning console slider changed the live dials, and

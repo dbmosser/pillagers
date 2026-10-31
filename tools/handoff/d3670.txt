@@ -1,0 +1,5 @@
+## v36.70 - TEXT STARTS AT 100 PERCENT
+
+Co-op hunt while he was away. His 10-31 order: text size should default to 100 percent. A new profile and both arcade demo windows start at 100 percent text with the matching menu zoom, no longer the TV size. Saves keep their own size. Watch: text starts at 100%.
+
+MEASURED. Check 36.70 passes, and fails on v36.69.
