@@ -83,3 +83,5 @@ SHIPPED 10-28 v35.66: 201 air strike needs 3000 damage (was 1500). On his PC 168
 - His order 10-31 ~04:40 (verbatim, to the CEO chat): "can you please set up the main pc to just record all my in-raid gameplay and use that as the idle screen? I cant be bothered to remember to click record each time". Job in-session/250-auto-record-every-raid.md, built by a Claude agent in the CEO chat before the 12:00 freeze.
 
 - HIS ORDER 10-31: Undercroft draw order backwards (his pillager drawn over a bot standing in front of him). Parked as after-nov1/o-01a-245-undercroft-crowd-draw-order.md (the crowd is drawn in its own pass behind him instead of in the y-sort).
+
+- HIS QUESTION 10-31: timelord mode turns on by itself. Cause: one tap of the key left of 1 flips it and saves it, even in the demo. Job tasks/o-00y-246-timelord-key-no-accidents.md (hold to toggle, off limits in the demo); party relevant, CEO decides under his 10-30 order.
