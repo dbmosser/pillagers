@@ -1,0 +1,5 @@
+23.87: DAMAGE TAKEN does not total the sentry at 60: HOW IT WENTTIMEWHAT HIT YOUDAMAGEHEALTH0:00SENTRY x2-4258 left0:00SweatLordSupreme-751 leftDAMAGE TAKENSENTRY   ú   AUTOCANNON-422 HITSSWEATLORDSUPREME   ú   CO
+29.47: Run over is 32px, not 32px x 0.901
+31.77: the label is 20px under a 50.456px figure
+36.00: PASS
+ALL DONE

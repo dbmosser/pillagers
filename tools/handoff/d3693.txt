@@ -1,0 +1,5 @@
+## v36.93 - MEDAL ROW CLEAR OF THE CONTROLS CHIP
+
+Co-op hunt while he was away. In a short window the medal row (as wide as the feed, his o-209 order) reached down over the folded f1 controls chip (his 10-25 corner note). The row and the feed above it now lift just over the chip when they would meet.
+
+MEASURED. Check 36.93 passes, and fails on v36.92.

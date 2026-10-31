@@ -1,19 +1,30 @@
 Latest stable: v36.55 (2026-10-29 22:13)
-Checked: 2026-10-31 10:45
+Checked: 2026-10-31 11:47
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1031-0632  v36.71  failing 87, new 3  robots 405 min/0 problems  -> 3 check(s) newly failing, e.g. v31.04 cw-shkey, his note (2026-10-18) "superhot mode needs  | v23.12 raid details are short, never explaining sentences: t
+  corpus-1031-1034  v36.89  failing 102, new 18  robots 36 min/0 problems  -> 18 check(s) newly failing, e.g. v8.93 a HUD panel can be resized by its corner grip, and the | v36.30 forge and seal world labels keep their whole shared p
+  corpus-1031-0632  v36.71  failing 87, new 3  robots 423 min/0 problems  -> 3 check(s) newly failing, e.g. v31.04 cw-shkey, his note (2026-10-18) "superhot mode needs  | v23.12 raid details are short, never explaining sentences: t
   corpus-1030-2155  v36.66  failing 86, new 3  robots 1397 min/1 problems  -> 3 check(s) newly failing, e.g. v23.12 raid details are short, never explaining sentences: t | v18.78 text in the framed windows stays inside the frame: th
   corpus-1030-1753  v36.66  failing 86, new 3  robots 1397 min/1 problems  -> 3 check(s) newly failing, e.g. v23.12 raid details are short, never explaining sentences: t | v18.78 text in the framed windows stays inside the frame: th
   corpus-1030-1445  v36.66  failing 91, new 4  robots 1397 min/1 problems  -> 4 check(s) newly failing, e.g. v23.12 raid details are short, never explaining sentences: t | v20.69 ESC or TAB in the stash search box clears the words f
   corpus-1030-1316  v36.63  failing 90, new 4  robots 57 min/1 problems  -> 4 check(s) newly failing, e.g. v23.12 raid details are short, never explaining sentences: t | v20.69 ESC or TAB in the stash search box clears the words f
   corpus-1030-1153  v36.59  failing 93, new 3  robots 114 min/1 problems  -> 3 check(s) newly failing, e.g. v29.10 a Ctrl drag of a stack between the stash and the back | v23.12 raid details are short, never explaining sentences: t
   corpus-1030-0746  v36.57  failing 91, new 1  robots 287 min/6 problems  -> 1 check(s) newly failing, e.g. v18.78 text in the framed windows stays inside the frame: th
-  corpus-1030-0631  v36.55  failing 85, new 0  robots 1191 min/2 problems  -> robots hit 2 problem(s) on it
 
 Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
   v18.78 text in the framed windows stays inside the frame: the text lines of the
   v23.12 raid details are short, never explaining sentences: the gun key reads [5]
   v31.04 cw-shkey, his note (2026-10-18) "superhot mode needs a toggle key": the k
+  v8.93 a HUD panel can be resized by its corner grip, and the default dropped to
+  v36.30 forge and seal world labels keep their whole shared panel inside the view
+  v35.84 final rush HUD gives its banner 416px and 24px clearance, moves navigatio
+  v35.83 two player demo final 90 seconds: 1.05x kill SP in both seats, faster mac
+  v34.41 cw-downedcard2: on the downed card the word down is the title size (26 px
+  v32.12 the extract distance line sits on a plate: a plate fill is drawn right be
+  v31.25 the career corner readout is one row: credits, XP, stash and bag sit on t
+  v30.75 the arcade and Undercroft prompts that named both devices follow the last
+  v30.73 the gun card is drawn plain with no lime tab and no raid panel has one (t
+  v26.69 flow1, his yes to the Raid Director: a hard hit puts the raid in a breath
+  v26.59 his yes (suggestion 21): a pillager has a role from his gun and rig (rush

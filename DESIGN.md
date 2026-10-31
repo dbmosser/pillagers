@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.93 - MEDAL ROW CLEAR OF THE CONTROLS CHIP
+
+Co-op hunt while he was away. In a short window the medal row (as wide as the feed, his o-209 order) reached down over the folded f1 controls chip (his 10-25 corner note). The row and the feed above it now lift just over the chip when they would meet.
+
+MEASURED. Check 36.93 passes, and fails on v36.92.
 ## v36.92 - SECTOR MAP CHIPS
 
 Co-op hunt while he was away. His 10-31 party polish order. The critic held the M map at 3: map labels sit straight on busy room linework. Render only. Watch: every word on the sector map now has a dark chip behind it.

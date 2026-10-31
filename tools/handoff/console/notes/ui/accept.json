@@ -275,17 +275,17 @@
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "Only the contract rows changed, and the new set adds a green 'holding' tag; the earlier advice on progress bars, map label chips, the strongbox cluster and the extract b cluster was not applied, so the screen is still a competent but flat 3.",
+  "verdict": "Only the contract list text changed and a few map labels got dark chips, so the earlier hierarchy, progress-bar, label-size and strongbox-crowding problems are still there.",
   "findings": [
-   "P1 contracts panel rows (x 1195-1730, y 200-930): Make each track 4px in --ui-line with an --acc fill proportional to progress. Set names in --tx-1 at 20px. Set rewards in --tx-2 at 16px. Give every row the same '0/1' count slot at the left of the bar.",
-   "P1 contracts, first row 'no kills' (y 215-255): Use one status slot for every row: '0/1' for counted rows, and 'holding' as a 16px --ok tag in the same position. Add a full-width --ok bar fill on this row.",
-   "P1 map labels (extract c/b/a, zone names, POI labels): Extract labels 20px --extract. POI labels 16px --tx-1 on a 60% --ui-void chip with 6px/4px padding. Zone names 16px --tx-2 with a 1px dark outline, at 4.5:1 or better. Show 'locked' as a --warn glyph.",
-   "P1 strongbox cluster (x 1015-1150, y 400-480): Put the label 12px to the right of or below the icon, on a chip. Move 'blast freezer · locked' at least 24px left. Make the icon 28px.",
-   "P2 extract b cluster (x 1050-1150, y 485-570): Centre the labels under the marker on a chip. Keep them 16px clear of 'chill row' and the room edge."
+   "P1 contracts panel rows (x 1195-1730, y 200-930): Make each track 4px in --ui-line with an --acc fill in proportion to progress. Put a 16px --tx-2 '0/2' count at the left of the bar. Make names --tx-1 at 20px and rewards --tx-2 at 16px, on one line with the name. Cut the row pitch from 91px to about 64px.",
+   "P1 map labels: extract c/b/a, zone names, POI labels: Set extract labels to 20px --extract and their sublines to 16px. Set poi labels to 16px --tx-1 on a 60% --ui-void chip with 6px/4px padding. Set zone names to 16px --tx-2 with a 1px dark outline and at least 4.5:1 contrast. Apply the chips to every label.",
+   "P1 strongbox cluster (x 1015-1150, y 400-480): Make the icon 28px. Put the label on a chip 12px below or to the right of the icon. Move 'blast freezer · locked' at least 24px left of the strongbox label. Show 'locked' as a --warn glyph.",
+   "P2 extract b cluster (x 1050-1150, y 485-570): Centre both labels under the marker on a chip. Keep them 16px clear of 'chill row' and the room edge.",
+   "P2 contracts header (y 160-180): Set the title to 20px --tx-1 and the '0 of 8 done' summary to 16px --tx-2. Add a 4px overall bar below the header with an --acc fill."
   ],
-  "pic": "tools/handoff/console/notes/shots/0p16-after/22-raid-map-open-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/0p16-after2/22-raid-map-open-1080.jpg",
   "task": "manual",
-  "when": "2026-10-31T15:18"
+  "when": "2026-10-31T15:26"
  },
  "23-raid-backpack-open": {
   "score": 3,

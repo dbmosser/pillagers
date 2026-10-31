@@ -1,0 +1,7 @@
+v36.93: medal row clear of the controls chip
+
+In a short window the medal row stays above the folded controls chip, still as wide as the feed.
+
+Check 36.93. Fails on v36.92.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

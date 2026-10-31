@@ -71,3 +71,12 @@ Same blocker. notes/95/ still missing; codex measurements folder still only raw-
 
 --- claude lane b run 2026-10-31 (0p15 requeue, 5th check) ---
 Same blocker. notes/95/ still missing; codex measurements folder still only raw-camera-shared-t1.json. No split, pid or stall-after files, so step 1 cannot say go. No game edits, no ship key. Stopped per the requeue rule.
+
+--- claude lane a run 2026-10-31 (0p15 requeue, 6th check, task 0p15-95-p2-own-process) ---
+Same blocker, rechecked. notes/95/ still does not exist; notes/coord-07/ holds only c-stage.js, c7.sh, meas.js and two raw-A files (no split, pid or stall-after files); my command list cannot run measure95.mjs or run-measure95.ps1 (they need CDP Target.getTargets from outside the page) and cannot list the codex folder. No game edits, no ship key. Stopped per the requeue rule (same blocker, no burned tries). Needs the coordinator to run run-measure95.ps1 and copy the raw split numbers into notes/95/.
+
+--- claude lane a run 2026-10-31 (0p15 requeue, 7th check) ---
+Same blocker, rechecked. notes/95/ still missing; codex measurements folder still only raw-camera-shared-t1.json (shared baseline, P2 stall gap about 2010 ms). No split, pid or stall-after files, so step 1 cannot say go. My command list cannot run measure95.mjs or run-measure95.ps1. No game edits, no ship key. Stopped per the requeue rule.
+
+--- claude lane a run 2026-10-31 (0p15 requeue, 8th check) ---
+Same blocker. notes/95/ still missing; codex measurements folder still only raw-camera-shared-t1.json. No split, pid or stall-after files, so step 1 cannot say go. No game edits, no ship key. Stopped per the requeue rule. Coordinator: please stop requeuing this until run-measure95.ps1 has been run and its raw files are in notes/95/.
