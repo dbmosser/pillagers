@@ -995,17 +995,17 @@
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "The down card is a clear focal point with a big timer and a lime key hint, but the HUD around it is a pile of competing boxes in mixed styles and sizes, and the toast stack at bottom-left has a duplicate and an overlap.",
+  "verdict": "The duplicate toast row is gone, the contract banner no longer sits in the bottom-left corner, and the player list is larger and easier to read, but the down card, the HUD panel styles and the world labels under the stacked item labels are unchanged.",
   "findings": [
-   "P1 toast stack, bottom-left (new version): Remove the duplicate from the toast stack. Keep the pill, or show it once with the same row component (3px bar, icon, 20px label, 8px gap). Stop world labels drawing under toast rows, or push the labels to 40% alpha behind a 16px offset.",
-   "P1 HUD panels, overall: Give every HUD panel the same fill (--ui-panel at 90%), a 1px --ui-line-hi border and a 4px radius. Allow only one left-edge tab style, 3px, in lime for the main item or tx-2 for the rest. Remove the extra bar colours.",
-   "P1 top-right career and run info panels: Pending cw-trcol, set both panels to the same 24px padding and 8px row gap. Make the contract lines tx-1 at 16px with a lime progress count, and lift tx-2 to at least 4.5:1 on the panel fill.",
-   "P2 down card, centre: Remove the corner notch or make it a full 3px danger top tab, 36px wide. Colour the progress fill --danger. Set the title to 32px f-cond 700 and the timer to 56px 800, with a 16px gap between them.",
-   "P2 bottom-left down badge, stamina and hp bars: Align all three to the same left edge and width (430px). Give them the same 4px radius and fill treatment. Make the '-40' tx-1. Tone stamina down to tx-2 on a --ui-line track."
+   "P1 top-right run info panel: Give the panel 16px padding and an 8px row gap. Set the contract text to tx-1 at 16px and the counts to lime. Shorten each contract to one line ('containers 2/3'). Make the section labels ('dawn', 'contracts') tx-2 at 14px. Use the same fill, border and radius as the player list.",
+   "P1 HUD panels overall (player list, run info, item stack, ammo, timer): Use --ui-panel at 90%, a 1px --ui-line-hi border and a 4px radius on every panel. Allow one 3px left tab, lime on the main item and tx-2 on the rest. Remove the extra bar colours.",
+   "P1 centre down card: Replace the notch with a full 3px --danger top tab. Colour the progress fill --danger. Set the title to 32px 700 and the timer to 56px 800 with a 16px gap. Centre the f chip and text as one group. Add 24px padding.",
+   "P2 world labels under 'cracked cell $95' and 'scrap metal $34': Offset stacked labels by 16px vertically, or hide the second one. Lower the alpha to 40% while the player is down.",
+   "P2 bottom-left status cluster (down badge, status icons, hp bar): Align all three to the same 24px left edge and a 430px width. Use the same 4px radius and put '-28' in tx-1. Lift the whole cluster to a 24px bottom margin."
   ],
-  "pic": "tools/handoff/console/notes/shots/109-r7b/34-raid-downed-pickups-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/0p04-186d-danger-slot-after2/34-raid-downed-pickups-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T20:25"
+  "when": "2026-10-31T13:29"
  },
  "36-raid-low-health": {
   "score": 2,

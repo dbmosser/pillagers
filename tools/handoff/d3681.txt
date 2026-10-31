@@ -1,0 +1,5 @@
+## v36.81 - ONE NAME FOR THE NUMBER KEYS
+
+Co-op hunt while he was away. His word in every 10-27 order is hotbar ("items on the hotbar", "hotbar swap"). The row of number keys was named three ways: hotbar on the stash row, belt on the lift and the callouts, tactical belt on the older screens. It is hotbar now on every surface a player reads.
+
+MEASURED. Check 36.81 passes, and fails on v36.80.

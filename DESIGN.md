@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.81 - ONE NAME FOR THE NUMBER KEYS
+
+Co-op hunt while he was away. His word in every 10-27 order is hotbar ("items on the hotbar", "hotbar swap"). The row of number keys was named three ways: hotbar on the stash row, belt on the lift and the callouts, tactical belt on the older screens. It is hotbar now on every surface a player reads.
+
+MEASURED. Check 36.81 passes, and fails on v36.80.
 ## v36.80 - THE DOWNED CARD SELF-REVIVE KEY IS A KEYCAP
 
 Co-op hunt while he was away. Critic on the downed screen (P1): self-revive is the primary action but has no key chip. The key now stands on the shared keycap (hudKey), the same chip the prompts and the controls list use, with the words beside it.

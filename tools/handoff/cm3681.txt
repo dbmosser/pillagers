@@ -1,0 +1,7 @@
+v36.81: one name for the number keys
+
+the number key row says hotbar everywhere: the backpack panel, the lift, the pad legends, the raid callouts and the stash words
+
+Check 36.81. Fails on v36.80.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

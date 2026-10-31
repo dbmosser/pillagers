@@ -3501,13 +3501,13 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
      other thing down here is a station you walk to. -->
 <div class="modal" id="carrymodal">
   <h3>BACKPACK</h3>
-  <div class="msub">Your inventory is your backpack plus your tactical belt. An item is in one or the other, never both.</div>
+  <div class="msub">Your inventory is your backpack plus your hotbar. An item is in one or the other, never both.</div>
   <div class="panel" style="margin-top:10px">
     <h2>Backpack <em id="carrybpct"></em></h2>
     <div class="invgrid" id="carrybp" style="min-height:96px"></div>
   </div>
   <div class="panel" style="margin-top:10px">
-    <h2>Tactical belt</h2>
+    <h2>Hotbar</h2>
     <div id="carrybelt" style="display:flex;gap:6px;flex-wrap:wrap;padding:10px"></div>
   </div>
   <div style="display:flex;gap:8px;margin-top:12px">
@@ -3912,8 +3912,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.80';
-var VER_AT='2026-10-31 09:27';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.81';
+var VER_AT='2026-10-31 09:29';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4983,7 +4983,7 @@ var DISTRICTS=[
 // rather than rewritten where they are stored. A run logged before the rename
 // holds the old string; mapping at display leaves his exports readable and needs
 // no one-shot migration stamp, which is its own defect class.
-var TAGFWD={'Hotbar worked well':'Tactical belt worked well'};
+var TAGFWD={'Tactical belt worked well':'Hotbar worked well'};   // v28.xx (cw-onehotbar), his word in every 10-27 order: "items on the hotbar", "hotbar swap". The row of number keys is the hotbar on every surface.
 function tagText(t){ return TAGFWD[t]||t; }
 function tagList(a){ var o=[],i; for(i=0;i<(a||[]).length;i++) o.push(tagText(a[i])); return o; }
 var TAGS=[
@@ -4994,7 +4994,7 @@ var TAGS=[
   // The overall feel.
   'Felt great','Too easy','Too hard','Too dark',
   // The things carried and the room they live in.
-  'Inventory fiddly','Tactical belt worked well','Loot boring','Loot exciting',
+  'Inventory fiddly','Hotbar worked well','Loot boring','Loot exciting',
   'Nothing worth carrying','Ran out of ammo','Undercroft confusing',
   // Who is up there.
   'Pillagers felt human','Pillagers felt dumb','Machines too tough',
@@ -5318,7 +5318,7 @@ function txFill(pat,nums){
 // v28.xx (cw-cleanwords), HIS ANSWER (2026-10-18, Q76): clean the swearing out of on-screen lines and keep the attitude. Three of his baked lines
 // (Q8: a changed line gets its reason in notes/ui/changes.md): "You cheap bastard." is now "You cheapskate.", "Shit's about to get real." is now
 // "Things are about to get real.", and "This is some shit Claude came up with." is now "This is some wild idea Claude came up with."
-var TXSHIP={"No refunds, no complaints, no telling you first.":"Wirt has wares if you have coin.  Items purchased through gambling go directly to your inventory.","Most of it is rubbish. That is why the good one feels good.":"Wirt has wares if you have coin.  Items purchased through gambling go directly to your inventory.","You hold $375,700  ·  $2,500 per roll":"Current credits: $375,700  ·  Gambling costs $2,500 per roll","Gamble with Wirt. No refunds, no complaints.":"Wirt has wares if you have coin.  Items purchased through gambling go directly to your inventory.","New item in 4 minutes":"New limited time offer arrives in 4 minutes","XP comes from selling salvage in the Undercroft.":"Shop before you drop.","Refills a magazine from your backpack.":"Think ammo is expensive?  Try living without it.","Thrown. Goes on a tactical belt key.":"Belt consumables ftw. ","Ten seconds of unlimited stamina and a fifth more speed.":"Ooooh yeeah that's the stuff.","Restores 20 armour.":"Restores 20 armour.  Armour plates don't auto equip; you must put them in during the raid.","The Whisper and the Meridian Lance are not stocked by anyone down here. Wirt puts one on his counter now and again, and otherwise they are found up top or not at all.":" ","The Carbine, the Scattergun and the Support MG are not stocked here. Wirt deals them, and anything can turn up in a container. ":"Better guns are found at Wirt and in raids.","plates, medkits, smoke, decoys and frags":"Needed to craft plates, medkits, smoke, decoys and frags.","Thrown. Goes on a tactical belt key. Makes 2.":"Belt consumables ftw.","***EXPERIMENTAL***":"***EXPERIMENTAL FEATURE MAY GLITCH***","One run, paid up front. He loots for himself, and if you BOTH get out you take ten percent of what he carried. If YOU do not make it you get nothing. If HE does not make it you owe his family $3,400 on top of the fee. On the surface B cycles his orders. Your shots cannot hurt him. If you go down, he comes for you.":"Buy a friend.","THE DEAL":" ","A free shop. Click a thing and it will be transferred to your stash. No judgment.":"Cmon you dirty cheating cheater, just take it all, why don'tcha?","Selling salvage here pays XP equal to the price. Finishing a raid pays XP too. The Peddler in the field pays Credits only.":"Selling salvage here pays XP equal to the price.","Go up with issued gear instead of your own. A Scav Pistol, two Bandages, one Frag Charge and one Armour Plate.":"Go up with issued gear instead of your own. A Scav Pistol, two Bandages, one Frag Charge and one Armour Plate.  You cheapskate.","Double vision, then triple. Every glass stacks on the last, and your hands slow with your legs.  Each lasts 3 min.":"We're going streaking!","The surface stops agreeing with itself. Every tab makes it worse, up to the ten your body can hold.  Each lasts 3 min.":"Cast off the paltry limitations of ego that reinforce your sad existence.","No tab, no credit. Every dose stacks on the last, and the bar cuts you off at ten. While a dose is in your blood, every XP a raid pays you is 2.5% more per dose.":"Things are about to get real.","THE RAID rows below change how the game plays, and every option named Standard is how it plays out of the box. Everything under them is presentation and changes nothing.":"So you are too good for default settings, eh?","Turns every line of text in the game into something you can click and type over. Click a word anywhere, in a menu or on the screen during a raid, and rewrite it. Clear the box and press Enter to put the original back. Your wording is saved with your profile and follows the phrase everywhere it appears.":"Don't use this unless you know what you are doing!","Time only moves when you act. Stand still and it stops dead; any key, click or trigger runs it, and holding E runs it at full speed.":"Time only moves when you act.","Human-shaped rivals looting the same map. They fight each other and the machines as well as you.":"Make some friends.","Sentries and crawlers. They own the surface and they are what usually kills you.":"Make some enemies.","Damage taken from everything on the surface. Standard is how the game has always actually played; Hardened is the old design intent, a fifth harder.":"Are you scared?","How hard they hit":"Damage","How long you have before the surface stops being survivable at all.":"Too much time on your hands?","What everything is WORTH, including the stash you have already banked. The same items still turn up just as often.":"Value is relative.","How much of the map comes to the extraction ring once the beacon is up.":"Turn down for what?","Scales every string on every canvas and in every panel.":"Since Claude can't seem to figure this out on its own...","Ten arrangements of the stash and backpack grids. Lower numbers are roomier cells and fewer of them; higher numbers pack more items on screen. 6 is the default.":"Clade came up with this.","A faint 16-bit loop, five pieces, one picked at random each time you come back down. UNDERCROFT plays it, OFF is silence. The surface is deliberately silent either way.":"Wake up, Crono!","The cursor hides while you are aiming and returns with the backpack. BACKSPACE forces it back at any time.":"If the cursor disappears (known glitch), this brings it back","Every dial the rows above set, and the rest of them, as live sliders. A slider you move is yours until you click its row again. SHIFT and the backquote key open it too.":"For the choosiest.","Puts the DEV CHEAT BOX on the Undercroft floor. Off, nobody finds it.":"Adds the DEV CHEAT BOX to the Undercroft. You dirty cheating cheater.","copy the raid log":"copy the raid log","Paste a RESTORE CODE from the end of a run report. It REPLACES the save you are playing. Read it first: the game will tell you whose character it is before anything is written.":"Paste a RESTORE CODE from the end of a run report (above). WARNING: this will REPLACE the save you are playing.","Work you have signed for. Contracts pay on top of your haul, and they do not expire while you are down here.":"Stuff for you to do.","Kills, loot, doors, selling and extracting all pay XP. Dying pays half. A hundred rewards, claimed in order, and nothing here ever resets.":"This is like a season pass.  More stuff to do.","The mainframe pays per extraction, every extraction, for as long as it is running.":"BUILD THE MAINFRAME.  The mainframe pays per extraction, every extraction, for as long as it is running.","A rack costs 12 Scrap Metal (1 held), 9 Copper Wire (0 held), 6 Cracked Cell (0 held), 6 Circuit Board (3 held). Each pays $200 every time you extract alive. Junk becomes infrastructure.":"A rack costs 12 Scrap Metal (1 held), 9 Copper Wire (0 held), 6 Cracked Cell (0 held), 6 Circuit Board (3 held).","Ten racks fold into one Array. An Array pays $2,600 an extraction against the $2,000 those racks paid, and it clears the wall so you can build ten more behind it. There is no limit on Arrays.":"Ten racks become one Array. There is no limit on Arrays.","Spend a Data Core ($520 on the shelf) and your next raid deploys knowing things: every locked-room key location and every elite, live on the M map. None in the stash right now.":"Spend a Data Core for better map info. Every locked-room keycard location and every elite will be live on the M map.","A friend sends you their exported run report, the same file Share runs makes. Name them, pick the file, and a pillager wearing their name, their favourite gun and their real habits joins your raids. Blue on the board.":"This is some wild idea Claude came up with.  A friend sends you their exported run report, the same file Share runs makes. Name them, pick the file, and a pillager wearing their name, their favourite gun and their real habits joins your raids. Blue on the board.","Nobody out there has a problem with you. Starting a fight with someone who was not fighting you is what earns it: the Peddler, an unarmed survivor, or a pillager who had not raised a hand to you.":" Starting a fight with someone who was not fighting you earns Notoriety.","Quiet, then lethal. Long holds down tight aisles where nothing happens for minutes and then all of it happens at once, and machines account for almost every death here.":" ","Quiet, then lethal, by the mile. Two arterials quarter the complex and every crossing is a toll - a gate, a kill-lane, a long look down someone else's sightline. Tight aisles, long holds, and the cold keeps the machines honest.":" ","you: 2 runs here  ·  420 by 340 metres, 14.3 hectares  ·  5 named zones  ·  2 keyed rooms  ·  the test robot extracts 39.2% of its raids here  ·  first contact ~35s  ·  5.2 containers a raid  ·  median haul $1,865":"you: 2 runs here  ·  420 by 340 metres, 14.3 hectares  ·  5 named zones  ·  2 keyed rooms  ·  the test robot extracts in 39.2% of its raids in Cold Storage.","YOU HAVE NEVER RAIDED HERE  ·  900 by 760 metres, 68.4 hectares  ·  12 named zones  ·  8 keyed rooms  ·  the test robot extracts 38.3% of its raids here  ·  first contact ~37s  ·  5.5 containers a raid  ·  median haul $1,690":"YOU HAVE NEVER RAIDED HERE  ·  900 by 760 metres, 68.4 hectares  ·  12 named zones  ·  8 keyed rooms  ·  the test robot extracts 38.3% of its raids in The Cold Mile.","Clear. No bonus for an easy sky.":" ","Rainy. Harder going, so XP pays 1.1x.":"XP multiplier = 1.1x","Foggy. Harder going, so XP pays 1.1x.":"XP multiplier = 1.1x","Blackout. Only harder if the lamps were on, and in daylight that depends on the hour you land at.":"XP multiplier = 1.1x (only at night)","Storming. Harder going, so XP pays 1.1x.":"XP multiplier = 1.1x","no armour on":"no armour equipped","The freebie kit":"The Freebie Kit","Please provide feedback anything that went or felt wrong.":"Please provide feedback -- tell us anything that went or felt wrong.","5 items that you had in your loadout before choosing the freebie kit have been restored.":"The items in your loadout before choosing the freebie kit have been restored.","Next: Bandages and ammo, reward 1 of 100, 6,925 XP away. Claim it at the Mainframe.":" ","Run abandoned. $530 left behind.":"Run abandoned. $530 in loot left behind.","+42 XP (75% penalty for backing out)  ·  275 of 1,200,000":"+42 XP (75% penalty for backing out)  ·  Total XP: 275 of 1,200,000","CLOSEST YOU CAME TO EXTRACTION: 178M":" ","full raid log on your clipboard":" ","\n      The elites left the surface to the machines and went somewhere better.\n      You go up, you take what is worth taking, and you come back down.\n    ":"The elites left you for dead. You live underground.  The machines control the surface.  Nothing left to do now except pillage what remains.","\n          Hold E on anything worth opening. Beware of hostile robots and fellow pillagers.":"          Loot all the things. Beware of hostile robots and fellow pillagers.","\n          Stand in a ring and hold E to call for extraction. Die out there and it is all gone.":"    Die out there and it is all gone.","\n          Take the lift up with whatever you dare carry. What you bring, you can lose.":"          Take the lift up with whatever you dare carry. "};
+var TXSHIP={"No refunds, no complaints, no telling you first.":"Wirt has wares if you have coin.  Items purchased through gambling go directly to your inventory.","Most of it is rubbish. That is why the good one feels good.":"Wirt has wares if you have coin.  Items purchased through gambling go directly to your inventory.","You hold $375,700  ·  $2,500 per roll":"Current credits: $375,700  ·  Gambling costs $2,500 per roll","Gamble with Wirt. No refunds, no complaints.":"Wirt has wares if you have coin.  Items purchased through gambling go directly to your inventory.","New item in 4 minutes":"New limited time offer arrives in 4 minutes","XP comes from selling salvage in the Undercroft.":"Shop before you drop.","Refills a magazine from your backpack.":"Think ammo is expensive?  Try living without it.","Thrown. Goes on a hotbar key.":"Hotbar consumables ftw. ","Ten seconds of unlimited stamina and a fifth more speed.":"Ooooh yeeah that's the stuff.","Restores 20 armour.":"Restores 20 armour.  Armour plates don't auto equip; you must put them in during the raid.","The Whisper and the Meridian Lance are not stocked by anyone down here. Wirt puts one on his counter now and again, and otherwise they are found up top or not at all.":" ","The Carbine, the Scattergun and the Support MG are not stocked here. Wirt deals them, and anything can turn up in a container. ":"Better guns are found at Wirt and in raids.","plates, medkits, smoke, decoys and frags":"Needed to craft plates, medkits, smoke, decoys and frags.","Thrown. Goes on a hotbar key. Makes 2.":"Hotbar consumables ftw.","***EXPERIMENTAL***":"***EXPERIMENTAL FEATURE MAY GLITCH***","One run, paid up front. He loots for himself, and if you BOTH get out you take ten percent of what he carried. If YOU do not make it you get nothing. If HE does not make it you owe his family $3,400 on top of the fee. On the surface B cycles his orders. Your shots cannot hurt him. If you go down, he comes for you.":"Buy a friend.","THE DEAL":" ","A free shop. Click a thing and it will be transferred to your stash. No judgment.":"Cmon you dirty cheating cheater, just take it all, why don'tcha?","Selling salvage here pays XP equal to the price. Finishing a raid pays XP too. The Peddler in the field pays Credits only.":"Selling salvage here pays XP equal to the price.","Go up with issued gear instead of your own. A Scav Pistol, two Bandages, one Frag Charge and one Armour Plate.":"Go up with issued gear instead of your own. A Scav Pistol, two Bandages, one Frag Charge and one Armour Plate.  You cheapskate.","Double vision, then triple. Every glass stacks on the last, and your hands slow with your legs.  Each lasts 3 min.":"We're going streaking!","The surface stops agreeing with itself. Every tab makes it worse, up to the ten your body can hold.  Each lasts 3 min.":"Cast off the paltry limitations of ego that reinforce your sad existence.","No tab, no credit. Every dose stacks on the last, and the bar cuts you off at ten. While a dose is in your blood, every XP a raid pays you is 2.5% more per dose.":"Things are about to get real.","THE RAID rows below change how the game plays, and every option named Standard is how it plays out of the box. Everything under them is presentation and changes nothing.":"So you are too good for default settings, eh?","Turns every line of text in the game into something you can click and type over. Click a word anywhere, in a menu or on the screen during a raid, and rewrite it. Clear the box and press Enter to put the original back. Your wording is saved with your profile and follows the phrase everywhere it appears.":"Don't use this unless you know what you are doing!","Time only moves when you act. Stand still and it stops dead; any key, click or trigger runs it, and holding E runs it at full speed.":"Time only moves when you act.","Human-shaped rivals looting the same map. They fight each other and the machines as well as you.":"Make some friends.","Sentries and crawlers. They own the surface and they are what usually kills you.":"Make some enemies.","Damage taken from everything on the surface. Standard is how the game has always actually played; Hardened is the old design intent, a fifth harder.":"Are you scared?","How hard they hit":"Damage","How long you have before the surface stops being survivable at all.":"Too much time on your hands?","What everything is WORTH, including the stash you have already banked. The same items still turn up just as often.":"Value is relative.","How much of the map comes to the extraction ring once the beacon is up.":"Turn down for what?","Scales every string on every canvas and in every panel.":"Since Claude can't seem to figure this out on its own...","Ten arrangements of the stash and backpack grids. Lower numbers are roomier cells and fewer of them; higher numbers pack more items on screen. 6 is the default.":"Clade came up with this.","A faint 16-bit loop, five pieces, one picked at random each time you come back down. UNDERCROFT plays it, OFF is silence. The surface is deliberately silent either way.":"Wake up, Crono!","The cursor hides while you are aiming and returns with the backpack. BACKSPACE forces it back at any time.":"If the cursor disappears (known glitch), this brings it back","Every dial the rows above set, and the rest of them, as live sliders. A slider you move is yours until you click its row again. SHIFT and the backquote key open it too.":"For the choosiest.","Puts the DEV CHEAT BOX on the Undercroft floor. Off, nobody finds it.":"Adds the DEV CHEAT BOX to the Undercroft. You dirty cheating cheater.","copy the raid log":"copy the raid log","Paste a RESTORE CODE from the end of a run report. It REPLACES the save you are playing. Read it first: the game will tell you whose character it is before anything is written.":"Paste a RESTORE CODE from the end of a run report (above). WARNING: this will REPLACE the save you are playing.","Work you have signed for. Contracts pay on top of your haul, and they do not expire while you are down here.":"Stuff for you to do.","Kills, loot, doors, selling and extracting all pay XP. Dying pays half. A hundred rewards, claimed in order, and nothing here ever resets.":"This is like a season pass.  More stuff to do.","The mainframe pays per extraction, every extraction, for as long as it is running.":"BUILD THE MAINFRAME.  The mainframe pays per extraction, every extraction, for as long as it is running.","A rack costs 12 Scrap Metal (1 held), 9 Copper Wire (0 held), 6 Cracked Cell (0 held), 6 Circuit Board (3 held). Each pays $200 every time you extract alive. Junk becomes infrastructure.":"A rack costs 12 Scrap Metal (1 held), 9 Copper Wire (0 held), 6 Cracked Cell (0 held), 6 Circuit Board (3 held).","Ten racks fold into one Array. An Array pays $2,600 an extraction against the $2,000 those racks paid, and it clears the wall so you can build ten more behind it. There is no limit on Arrays.":"Ten racks become one Array. There is no limit on Arrays.","Spend a Data Core ($520 on the shelf) and your next raid deploys knowing things: every locked-room key location and every elite, live on the M map. None in the stash right now.":"Spend a Data Core for better map info. Every locked-room keycard location and every elite will be live on the M map.","A friend sends you their exported run report, the same file Share runs makes. Name them, pick the file, and a pillager wearing their name, their favourite gun and their real habits joins your raids. Blue on the board.":"This is some wild idea Claude came up with.  A friend sends you their exported run report, the same file Share runs makes. Name them, pick the file, and a pillager wearing their name, their favourite gun and their real habits joins your raids. Blue on the board.","Nobody out there has a problem with you. Starting a fight with someone who was not fighting you is what earns it: the Peddler, an unarmed survivor, or a pillager who had not raised a hand to you.":" Starting a fight with someone who was not fighting you earns Notoriety.","Quiet, then lethal. Long holds down tight aisles where nothing happens for minutes and then all of it happens at once, and machines account for almost every death here.":" ","Quiet, then lethal, by the mile. Two arterials quarter the complex and every crossing is a toll - a gate, a kill-lane, a long look down someone else's sightline. Tight aisles, long holds, and the cold keeps the machines honest.":" ","you: 2 runs here  ·  420 by 340 metres, 14.3 hectares  ·  5 named zones  ·  2 keyed rooms  ·  the test robot extracts 39.2% of its raids here  ·  first contact ~35s  ·  5.2 containers a raid  ·  median haul $1,865":"you: 2 runs here  ·  420 by 340 metres, 14.3 hectares  ·  5 named zones  ·  2 keyed rooms  ·  the test robot extracts in 39.2% of its raids in Cold Storage.","YOU HAVE NEVER RAIDED HERE  ·  900 by 760 metres, 68.4 hectares  ·  12 named zones  ·  8 keyed rooms  ·  the test robot extracts 38.3% of its raids here  ·  first contact ~37s  ·  5.5 containers a raid  ·  median haul $1,690":"YOU HAVE NEVER RAIDED HERE  ·  900 by 760 metres, 68.4 hectares  ·  12 named zones  ·  8 keyed rooms  ·  the test robot extracts 38.3% of its raids in The Cold Mile.","Clear. No bonus for an easy sky.":" ","Rainy. Harder going, so XP pays 1.1x.":"XP multiplier = 1.1x","Foggy. Harder going, so XP pays 1.1x.":"XP multiplier = 1.1x","Blackout. Only harder if the lamps were on, and in daylight that depends on the hour you land at.":"XP multiplier = 1.1x (only at night)","Storming. Harder going, so XP pays 1.1x.":"XP multiplier = 1.1x","no armour on":"no armour equipped","The freebie kit":"The Freebie Kit","Please provide feedback anything that went or felt wrong.":"Please provide feedback -- tell us anything that went or felt wrong.","5 items that you had in your loadout before choosing the freebie kit have been restored.":"The items in your loadout before choosing the freebie kit have been restored.","Next: Bandages and ammo, reward 1 of 100, 6,925 XP away. Claim it at the Mainframe.":" ","Run abandoned. $530 left behind.":"Run abandoned. $530 in loot left behind.","+42 XP (75% penalty for backing out)  ·  275 of 1,200,000":"+42 XP (75% penalty for backing out)  ·  Total XP: 275 of 1,200,000","CLOSEST YOU CAME TO EXTRACTION: 178M":" ","full raid log on your clipboard":" ","\n      The elites left the surface to the machines and went somewhere better.\n      You go up, you take what is worth taking, and you come back down.\n    ":"The elites left you for dead. You live underground.  The machines control the surface.  Nothing left to do now except pillage what remains.","\n          Hold E on anything worth opening. Beware of hostile robots and fellow pillagers.":"          Loot all the things. Beware of hostile robots and fellow pillagers.","\n          Stand in a ring and hold E to call for extraction. Die out there and it is all gone.":"    Die out there and it is all gone.","\n          Take the lift up with whatever you dare carry. What you bring, you can lose.":"          Take the lift up with whatever you dare carry. "};
 var TXPSHIP={}, TXPSHIPANY=0;
 (function(){
   for(var _tk in TXSHIP){
@@ -20859,7 +20859,7 @@ function padRaidAxes(ax){
   if(P.padSticks!=='swap'||state!=='raid'||!G||G.over||padOpenModal()||(typeof ATT==='object'&&ATT&&ATT.on)) return ax;
   var a=[].slice.call(ax); a[0]=ax[2]||0; a[1]=ax[3]||0; a[2]=ax[0]||0; a[3]=ax[1]||0; return a;
 }
-var PAD_PICTURE_ACTIONS=['roll','crouch','reload / search','ring search','belt -','belt +','focus','fire','bag / status','pause','sprint','crowbar','mark / map','item wheel','aim -','aim +'];
+var PAD_PICTURE_ACTIONS=['roll','crouch','reload / search','ring search','hotbar -','hotbar +','focus','fire','bag / status','pause','sprint','crowbar','mark / map','item wheel','aim -','aim +'];
 function padPictureLabel(button){
   var m=padMapArr(), i; for(i=0;i<16;i++) if(m[i]===button) return PAD_PICTURE_ACTIONS[i]; return '';
 }
@@ -20947,7 +20947,7 @@ function padLegendBuild(){
   return [
     ['MOVE',[[(P.padSticks==='swap'?'R STICK':'L STICK'),'move, analog'],[n(10),'sprint'],[n(1),'crouch'],[n(0),'dodge roll']]],
     ['FIGHT',[[(P.padSticks==='swap'?'L STICK':'R STICK'),'aim'],[n(7),'fire / use selected'],[n(6),'focus aim (hold)'],[n(11),'melee (crowbar)'],[(dl==='D-LEFT'&&dr==='D-RIGHT')?'D-LEFT/RIGHT':(dl+' / '+dr),'aim distance'],[n(2),'reload']]],
-    ['GEAR',[[n(4)+'/'+n(5)+' tap','change tactical belt slot'],[n(4)+'/'+n(5)+' hold','zoom out / in'],[n(13),'item wheel (hold), revive when down'],[n(8)+' tap','backpack'],[n(8)+' hold','goals / raid status']]],
+    ['GEAR',[[n(4)+'/'+n(5)+' tap','change hotbar slot'],[n(4)+'/'+n(5)+' hold','zoom out / in'],[n(13),'item wheel (hold), revive when down'],[n(8)+' tap','backpack'],[n(8)+' hold','goals / raid status']]],
     ['WORLD',[[n(2),'search / open / call for extraction'],[n(3),'search in a ring; hold to finish a pillager'],[n(12),'mark; hold: map'],[n(9),'pause']]],
     ['TEAM',[[n(3),'backpack open: drop an item for a teammate'],[n(12),'mark']]]
   ];
@@ -20955,7 +20955,7 @@ function padLegendBuild(){
 function padMiniBuild(){
   var b=pbn, dl=b(14), dr=b(15);
   return [[(P.padSticks==='swap'?'R STICK':'L STICK'),'move'],[b(10),'sprint'],[b(1),'crouch'],[b(0),'roll'],[b(7),'fire / use'],[b(6),'focus aim'],[b(11),'crowbar'],[b(2),'reload'],
-    [(dl==='D-LEFT'&&dr==='D-RIGHT')?'D-L / D-R':(dl+' / '+dr),'aim distance'],[b(4)+' / '+b(5),'tactical belt'],[b(8)+' tap','backpack'],[b(8)+' hold','goals / status'],[b(12),'mark, hold: map'],[b(9),'pause']];
+    [(dl==='D-LEFT'&&dr==='D-RIGHT')?'D-L / D-R':(dl+' / '+dr),'aim distance'],[b(4)+' / '+b(5),'hotbar'],[b(8)+' tap','backpack'],[b(8)+' hold','goals / status'],[b(12),'mark, hold: map'],[b(9),'pause']];
 }
 function padLabelsApply(){
   var sig=padMapArr().join(',')+'|'+(P.padSticks||''), m, k; // v28.xx (cw-cx-padpresets): legends follow the sticks too.
@@ -21311,7 +21311,7 @@ function cycleThrow(){
   if(!cs.length){
     var _any=false;
     for(i=0;i<THROWKEYS.length;i++) if(throwHave(THROWKEYS[i])>0) _any=true;
-    say(_any?'NO THROWABLE ON THE TACTICAL BELT':'NO THROWABLES LEFT');   // v22.xx (R52)
+    say(_any?'NO THROWABLE ON THE HOTBAR':'NO THROWABLES LEFT');   // v22.xx (R52)
     return;
   }
   for(i=0;i<cs.length;i++) if(cs[i].tk===cur) at=i;
@@ -24860,7 +24860,7 @@ function medSelIx(sl){
 // J: the next non-empty medical key, round, as U does for the grenades.
 function cycleHeal(){
   var sl=hotbarSlots(), cs=medCells(sl), cur=medSelIx(sl), at=-1, i, nx;
-  if(!cs.length){ say((findHeal()>=0)?'NO HEAL ON BELT':'NO MEDICAL SUPPLIES'); return false; }
+  if(!cs.length){ say((findHeal()>=0)?'NO HEAL ON HOTBAR':'NO MEDICAL SUPPLIES'); return false; }
   for(i=0;i<cs.length;i++) if(cs[i]===cur) at=i;
   nx=cs[(at+1)%cs.length];
   G.msel=sl[nx].itemKey;
@@ -24876,7 +24876,7 @@ function useBeltHeal(ix){
   if(c&&c.kind==='stim'&&(c.count>0)&&ITEMS[c.itemKey]) return useStim(G.bag.indexOf(c.itemKey));
   if(reach>=p.maxhp){ say((p.healQ>0)?'ALREADY HEALING':'HEALTH FULL'); return false; }
   if(!c||c.kind!=='heal'||!(c.count>0)||!ITEMS[c.itemKey]){
-    if(findHeal()>=0){ say('NO HEAL ON BELT','info',{sub:(padOn()?padB(pbn(8)+'  BACKPACK'):('['+keyLabel('KeyB','B')+'] BACKPACK'))}); return false; }  // v27.70 (cloud-menus-pad-prompts-follow-binds), CLOUD HUNT 2026-10-15: the NO HEAL ON BELT line named VIEW for the backpack after CHANGE PAD BUTTONS moved it; it names the button the backpack is on
+    if(findHeal()>=0){ say('NO HEAL ON HOTBAR','info',{sub:(padOn()?padB(pbn(8)+'  BACKPACK'):('['+keyLabel('KeyB','B')+'] BACKPACK'))}); return false; }  // v27.70 (cloud-menus-pad-prompts-follow-binds), CLOUD HUNT 2026-10-15: the NO HEAL ON BELT line named VIEW for the backpack after CHANGE PAD BUTTONS moved it; it names the button the backpack is on
     say('NO MEDICAL SUPPLIES');
     return false;
   }
@@ -30489,7 +30489,7 @@ if(!p.fired||p.wep.auto){
             // v22.43, his order of 2026-10-09 (the shooter voice), from the review of the four-gun belt (build 3): the line said he put it
             // in your hands, and since v21.93 the item goes into the backpack (a gun onto a free gun key). It names where it went.
             var _rpKy=-1; for(var _rpa in (G.hotAssign||{})) if(G.hotAssign[_rpa]===_rpk){ _rpKy=+_rpa; break; }
-            say((ITEMS[_rpk].name+' received').toUpperCase(),'info',{sub:_rpKy>=0?('SLOT '+slotKeyName(_rpKy)):(ITEMS[_rpk].use==='throw'?'ON BELT':'IN BACKPACK')});   // v22.xx (R52): the slot word
+            say((ITEMS[_rpk].name+' received').toUpperCase(),'info',{sub:_rpKy>=0?('SLOT '+slotKeyName(_rpKy)):(ITEMS[_rpk].use==='throw'?'ON HOTBAR':'IN BACKPACK')});   // v22.xx (R52): the slot word
             label(downRdr.x,downRdr.y-34,'+'+ITEMS[_rpk].name.toUpperCase(),'#ffc04a',0.35,false);
           }
         }
@@ -35795,7 +35795,7 @@ var _cdone=contractExtract(G.bag,haul);
     hubBagG=null;
     if(_kbn) lines.push('<span style="color:var(--coolant)">The '+_kbn+' item'+(_kbn===1?'':'s')+
       ' you had packed before choosing the freebie kit '+(_kbn===1?'is':'are')+
-      ' in your stash. You come back down with an empty backpack and belt.</span>');
+      ' in your stash. You come back down with an empty backpack and hotbar.</span>');
   }
   P.kitBeforeFree=null; P.hotBeforeFree=null; P.gunBeforeFree=null;
   if((how==='dead'||how==='abandon')&&P.buzz&&P.buzz.length){
@@ -47598,7 +47598,7 @@ var LEGEND_MINI_PAD=[
   ['B','crouch'],['A','roll'],
   ['RT','fire / use'],['LT','focus aim'],['RS','crowbar'],
   ['X','reload'],['D-L / D-R','aim distance'],
-  ['LB / RB','tactical belt'],['VIEW tap','backpack'],['VIEW hold','goals / status'],
+  ['LB / RB','hotbar'],['VIEW tap','backpack'],['VIEW hold','goals / status'],
   ['D-UP','mark, hold: map'],['MENU','pause']
 ];   // v17.78: his layout of v16.72 (A roll, B crouch, RT fire, X reload); it had said B roll, A fire, Y reload
 // v11.08, HIS NOTE 21: BUILT FROM THE COLOUR TABLE, never typed beside it. Two of
@@ -47621,7 +47621,7 @@ var SOUNDKEY=[
 var LEGEND_PAD=[
   ['MOVE',[['L STICK','move, analog'],['LS CLICK','sprint'],['B','crouch'],['A','dodge roll']]],
   ['FIGHT',[['R STICK','aim'],['RT','fire / use selected'],['LT','focus aim (hold)'],['RS CLICK','melee (crowbar)'],['D-LEFT/RIGHT','aim distance'],['X','reload']]],
-  ['GEAR',[['LB/RB tap','change tactical belt slot'],['LB/RB hold','zoom out / in'],['D-DOWN','item wheel (hold), revive when down'],['VIEW tap','backpack'],['VIEW hold','goals / raid status']]],
+  ['GEAR',[['LB/RB tap','change hotbar slot'],['LB/RB hold','zoom out / in'],['D-DOWN','item wheel (hold), revive when down'],['VIEW tap','backpack'],['VIEW hold','goals / raid status']]],
   ['WORLD',[['X','search / open / call for extraction'],['Y','search in a ring; hold to finish a pillager'],['DPAD UP','ping (twice: danger); hold: map'],['MENU','pause']]],
   // v20.76, from the whole-game bug hunt of 2026-10-08 (H46): THE PING IS D-UP ON A CONTROLLER. This row said LB + RB, but both
   // bumpers together walk the belt and zoom and have not pinged since v16.46 moved the ping to D-UP, so the row taught a button
@@ -50053,7 +50053,7 @@ function drawHubBagCard(){
     G.hubBagBeltBottom=G.bagFoot.y-24*s;G.hubBagBeltLeft=left;G.hubBagBeltWidth=lw; // v28.xx (cw-cx-hubbagreadability): the belt and its label share the grid edge.
     drawBelt();
     var beltTop=G.hotCells.length?G.hotCells[0].y:G.hubBagBeltBottom-100*s;
-    text('tactical belt',left,beltTop-16*s,20,'#aaa498');
+    text('hotbar',left,beltTop-16*s,20,'#aaa498');
     ctx.fillStyle='#1e2225';mapRR(left,top,lw,128*s,4*s);ctx.fill();
     text('equipped',left+24*s,top+28*s,20,'#aaa498');
     drawIconSprite(ctx,G.player.wep.id,left+72*s,top+80*s,72*s,1);
@@ -50113,7 +50113,7 @@ function drawHubBagCard(){
         }
       }
     }
-    var hints=padOn()?[['DPAD','move'],['A','pick up or place'],['Y','drop']]:[['','drag to tactical belt']];
+    var hints=padOn()?[['DPAD','move'],['A','pick up or place'],['Y','drop']]:[['','drag to hotbar']];
     var hx=left,fy=G.bagFoot.y+40*s;
     for(i=0;i<hints.length;i++){
       var label=hints[i][0]?padB(hints[i][0]):'',ww=0;font(20);
@@ -50301,7 +50301,7 @@ function drawBag(){
   for(var _ci=0;_ci<G.bag.length;_ci++){ var _ck2=G.bag[_ci];
     if(_clm[_ck2]>0){ _clm[_ck2]--; _bltN++; } else _bpN++; }
   ctx.fillText('Integrity '+Math.round(p.hp)+'/'+p.maxhp+'    Armour '+Math.round(p.armor)+
-    '    BACKPACK '+_bpN+'    BELT '+_bltN,x+11,cy);   // v8.34, split at v8.78
+    '    BACKPACK '+_bpN+'    HOTBAR '+_bltN,x+11,cy);   // v8.34, split at v8.78
   cy+=LH(8)*BZ;
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+11,cy); ctx.lineTo(x+PW-11,cy); ctx.stroke();
   cy+=LH(10)*BZ;
@@ -50401,11 +50401,11 @@ function drawBag(){
     // D-pad. Only the mouse drag onto the tactical belt works on the floor, so on the floor the line names only that, and with a
     // controller it names nothing. state is 'raid' in a raid, so the raid hint is untouched. No number and no seeded draw moved.
     G.bagFoot={x:x+11,y:_ry+LH(6)*BZ-LH(14)*BZ,w:PW-22,h:LH(18)*BZ*2};   // v32.xx (cw-bagpadcards): the footer hint row (room for two lines)
-    bagHintDraw((state==='hub')?(padOn()?padB('DPAD move   A pick up or place   Y drop   B close'):'drag to tactical belt') // v28.xx (cw-cx-floorbag): J5 controls in the existing hint row.
+    bagHintDraw((state==='hub')?(padOn()?padB('DPAD move   A pick up or place   Y drop   B close'):'drag to hotbar') // v28.xx (cw-cx-floorbag): J5 controls in the existing hint row.
       // v20.79, from the whole-game bug hunt of 2026-10-08 (H49): THE PAD WORDS GO THROUGH padB, so a PlayStation pad reads CROSS and
       // CIRCLE here, as the header of this same panel already did.
-      :padOn()?padB('DPAD move, past the ends to the tactical belt   A pick up or place   B close')   // v16.79, his order: D-LEFT no longer drops on a pad
-      :('ARROWS move   '+keyName(keysOf('KeyZ'))+' drop one   drag to tactical belt'
+      :padOn()?padB('DPAD move, past the ends to the hotbar   A pick up or place   B close')   // v16.79, his order: D-LEFT no longer drops on a pad
+      :('ARROWS move   '+keyName(keysOf('KeyZ'))+' drop one   drag to hotbar'
         +(isGun?'   ENTER equip   SHIFT+ENTER to back':'')
         ),x+11,_ry+LH(6)*BZ,PW-22);   // v28.xx (cw-bagpolish): the hints wrap to the panel width
     // v23.xx (feat2c), HIS #17 and his answer 34 (2026-10-12): THE STAT CARD IN THE BACKPACK. A gun under the mouse (keyboard and
@@ -52219,9 +52219,9 @@ function askKit(then,mate){   // v16.37: then, what an answer leads to; mate, a 
   // standardKit works on a copy, so counting it here moves nothing.
   var autoN=0; if(!kitN){ try{ autoN=standardKit().length; }catch(_sk){ autoN=0; } }
   if(ss) ss.innerHTML='<b>Your loadout</b>: '+
-    (kitN?('the '+kitN+' item'+(kitN===1?'':'s')+' you packed, plus your current tactical belt and backpack.')
+    (kitN?('the '+kitN+' item'+(kitN===1?'':'s')+' you packed, plus your current hotbar and backpack.')
          :(autoN?('nothing is packed, so '+autoN+' item'+(autoN===1?' goes':'s go')+' auto-packed from your stash: grenades, plates, ammo and heals. Anything you take up can be lost.')
-                :'your current tactical belt and backpack.'))+
+                :'your current hotbar and backpack.'))+
     '<br><br><b>The freebie kit</b>: '+escHtml(freeKitText());
   // v22.29, from the whole-game bug hunt of 2026-10-08 (K43): A TEAMMATE IS TOLD HIS PARTY GOES UP WITHOUT HIM ANSWERING. On a
   // teammate's card Not yet sent nothing to the host, whose timer (NET_KIT_WAIT, v16.37) takes the whole party up anyway, so a
@@ -56897,7 +56897,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.80: The downed card shows the self-revive key on a keycap chip. Check 36.80 fails on v36.79',
+  now:'v36.81: the number key row says hotbar everywhere: the backpack panel, the lift, the pad legends, the raid callouts and the stash words Check 36.81 fails on v36.80',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -58066,7 +58066,7 @@ function renderKitCol(){
         P.kit.push(key);
       }
       saveProfile(); try{ sfx('pick'); }catch(e){}
-      say2((ITEMS[key]?ITEMS[key].name:key)+' off the tactical belt and into the backpack.');
+      say2((ITEMS[key]?ITEMS[key].name:key)+' off the hotbar and into the backpack.');
       renderHub();
       return;
     }
@@ -58837,7 +58837,7 @@ try{ renderFreeKit(); }catch(_fk){}
           delete P.hotAssign[ix]; saveProfile(); renderHub();
         } else {
           // v20.79, from the whole-game bug hunt of 2026-10-08 (H49): through padB, so a PlayStation pad is told CROSS, not A.
-          say2(padOn()?padB('TACTICAL BELT \u00b7 PICK UP AN ITEM WITH A, THEN A HERE'):'TACTICAL BELT \u00b7 HOVER AN ITEM + PRESS 1-9 OR 0');   // v22.51: the shooter HUD voice, his name for the belt kept (v10.26)   // v16.80: a pad player is told the pad way
+          say2(padOn()?padB('HOTBAR \u00b7 PICK UP AN ITEM WITH A, THEN A HERE'):'HOTBAR \u00b7 HOVER AN ITEM + PRESS 1-9 OR 0');   // v22.51: the shooter HUD voice, his name for the belt kept (v10.26)   // v16.80: a pad player is told the pad way
         }
       };
       // v8.72, HIS REPORT: you can drag an item OFF the belt now. These cells have
@@ -60409,7 +60409,7 @@ function itemStatsHTML(k){
   var it=ITEMS[k]; if(!it) return '';
   if(it.use==='heal') return 'Heals you in the field.';
   if(it.use==='armor') return 'Restores '+(it.amt||0)+' armour.';
-  if(it.use==='throw') return 'Thrown. Goes on a tactical belt key.';
+  if(it.use==='throw') return 'Thrown. Goes on a hotbar key.';
   if(it.use==='ammo') return 'Refills a magazine from your backpack.';
   if(it.use==='stim') return 'Ten seconds of unlimited stamina and a fifth more speed.';   // v11.83
   if(it.use==='gun') return 'A gun. Equip it from the stash, or sell it at the terminal.';   // v12.18: the bench makes these now
@@ -73256,7 +73256,7 @@ function syncSectorPlan(){
   if(el.parentNode!==sp) sp.appendChild(el);   // inside the pack box, so the ascend plate keeps its one column gap (34.84)
   if(kitPickOf()!=='mine'){ el.style.display='none'; el.innerHTML=''; return; }
   el.style.display=''; el.setAttribute('data-pan','b');   // cw-hotfix2: the belt is its own pad panel
-  el.innerHTML='<div class="srph"><b>belt</b><span id="srplanmsg"></span></div>'+hotPlanHTML('sector');
+  el.innerHTML='<div class="srph"><b>hotbar</b><span id="srplanmsg"></span></div>'+hotPlanHTML('sector');
   rr=function(){ try{ syncSectorKit(); }catch(_r1){} try{ refreshInv(); }catch(_r2){} };
   Array.prototype.forEach.call(el.querySelectorAll('[data-plan]'),function(c){
     var ix=+c.getAttribute('data-plan'), pk=(P.hotAssign||{})[ix];
@@ -74273,7 +74273,7 @@ var GAMEOPTS=[
      {n:'OFF',  cfg:{fxInt:0}}
    ], def:0},
   {k:'hudTv', label:'HUD SIZE',
-   hint:'Large for tv: bigger raid panels, minimap and belt.', // v28.xx (cw-cx-hudtv): say what the existing choice now changes.
+   hint:'Large for tv: bigger raid panels, minimap and hotbar.', // v28.xx (cw-cx-hudtv): say what the existing choice now changes.
    opts:[
      {n:'STANDARD',     cfg:{hudTv:0}},
      {n:'LARGE FOR TV', cfg:{hudTv:1}}
