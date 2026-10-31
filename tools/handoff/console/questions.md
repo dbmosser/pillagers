@@ -124,3 +124,6 @@ the raid shows an alert twice: the red banner and a row in the left feed ("the p
 2026-10-29 o-00v-no-caches-on-map: skipped the map critic suggestion to replace locked/open words with a glyph. His current task explicitly keeps locked-room names and LOCKED/OPEN words. Those words remain. No answer needed.
 2026-10-30 o-00y-2p-online-party-critical: ruling conflict logged once, no answer needed. The critic asks to hide the raw party code and remove its selection highlight. His explicit risk 1 requires a visible or selected code for copying by hand when iframe clipboard access fails. The visible selected exact code is retained. Other critic restyles are outside his current only-critical-two-player-fixes scope.
 
+
+## 10-31 box in reach outline (v36.82)
+The order asked for an outline on things you can use. His 10-15 order says no shining circle on items. I drew only a thin faint lime rectangle on the one box E would search (no glow, nothing on other boxes). Keep it, or drop it?

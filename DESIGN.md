@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.83 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v36.67 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
+
+MEASURED. Check 36.83 passes, and fails on v36.82.
 ## v36.82 - ONE THIN OUTLINE IN A FIXED ORDER: PARTNER, GOLDEN, CREWS, THE BOX IN REACH
 
 Co-op hunt while he was away. His pick 81 (outline hierarchy), priorities page r-outlines: a busy 4K fight has to stay readable. Before this the partner had only a ground ring, crews only a plate colour, the golden enemy only its gold body and the box in reach nothing. They now share one thin outline made by the elite rim stamp, in a fixed order of strength: partner (his seat colour, strongest), golden enemy (gold), pillager crews (their crew colour), the one box in reach (lime, faintest). Plain machines and hired pillagers get none, the elite affix rim is unchanged.
