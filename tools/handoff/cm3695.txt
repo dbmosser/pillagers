@@ -1,0 +1,7 @@
+v36.95: the ship glow never crashes the frame
+
+The ship glow cannot throw when the countdown is longer than the extract wait.
+
+Check 36.95. Fails on v36.94.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

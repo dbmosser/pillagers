@@ -6171,6 +6171,21 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'36.95',what:'cw-urgclamp: an inbound ship whose countdown is longer than the extract wait still draws the frame (the beacon glow radius never goes negative); check 34.89 staged 40 against a wait of 20 and threw an arc radius of -10',
+   run:function(){
+     if(!window.__deploy||!window.__endRaid||typeof __frame!=='function') return 'SKIP: no raid staging in this fixture';
+     var err=null, g, z;
+     __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile(); __pinDPR(1);
+     try{
+       __forceSize(1920,1080);
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
+       z=g&&g.zones&&g.zones[0];
+       if(!z) return 'SKIP: no zone to call a ship to';
+       g.active=z; z.open=true; z.beaconT=CFG.extractWait*2; g.beaconT=CFG.extractWait*2;
+       for(var q=0;q<4;q++) __frame(0.016);
+     }catch(e){ err='the frame threw with the countdown at twice the extract wait: '+(e&&e.message||e); }
+     finally{ try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e){} try{ __topClear(); }catch(_t){} }
+     return err; }},
   {v:'36.94',what:'ALARMS VOLUME (his 10-25 g-81): a row in AUDIO that scales the alarms, warnings and the raid clock (OFF silences them, guns and steps stay), the clock leaves UI VOLUME; and a light lowmag tick under the shot on the last quarter of a magazine (g-82)',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__opts&&window.__opts.apply&&window.__opts.cycle&&window.__opts.rows&&window.__sim&&window.__blipCount)) return 'SKIP: this fixture cannot deploy, step or reach the Settings rows';

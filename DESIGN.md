@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.95 - THE SHIP GLOW NEVER CRASHES THE FRAME
+
+Co-op hunt while he was away. The inbound ship glow radius is 60 plus 70 times how far the countdown has run. With the extract wait cut from 30 to 20 on 10-28, a countdown longer than the wait made that number negative and the canvas threw, which stops the whole frame. Clamped to 0 to 1. Found by check 34.89, which staged 40 against a wait of 20.
+
+MEASURED. Check 36.95 passes, and fails on v36.94.
 ## v36.94 - ALARMS VOLUME ROW AND A LIGHT TICK ON YOUR LAST ROUNDS
 
 Co-op hunt while he was away. His 10-25 answers g-81 ("Yes, their own row") and g-82 ("Add a lighter click near empty"). Harsh sound is his worst party problem and the 5 minute alarm was still too loud, so AUDIO gets an ALARMS VOLUME row (OFF, 25%, 50%, 75%, FULL; FULL is today) that scales the machine alarm, the siege and extraction alarms, the lock-on siren, the raid clock, the crit and warn stings, the teammate down alert and the two and one minute cues. The clock moved off UI VOLUME so one row controls it (the UI VOLUME hint no longer says the clock). The last quarter of a magazine now gets a light tick just after the shot, about half the dry click, heard only in your own window. WATCH on the next play: at FULL nothing should sound different; at OFF the raid clock, siege and extraction alarms, lock-on siren and alert stings go quiet while guns, steps and good-news stings stay; UI VOLUME no longer moves the clock ticks; the low magazine tick must read under the gunshot without nagging (the Support MG ticks for its last 15, the Auto Rifle for its last 6).

@@ -1,0 +1,5 @@
+## v36.95 - THE SHIP GLOW NEVER CRASHES THE FRAME
+
+Co-op hunt while he was away. The inbound ship glow radius is 60 plus 70 times how far the countdown has run. With the extract wait cut from 30 to 20 on 10-28, a countdown longer than the wait made that number negative and the canvas threw, which stops the whole frame. Clamped to 0 to 1. Found by check 34.89, which staged 40 against a wait of 20.
+
+MEASURED. Check 36.95 passes, and fails on v36.94.
