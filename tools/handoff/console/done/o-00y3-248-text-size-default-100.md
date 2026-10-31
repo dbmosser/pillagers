@@ -11,3 +11,5 @@ Rules: take pictures (uishots: raid HUD and a menu at 100%, 1080p and 4K) and lo
 TASK DONE when it shipped and is ON HIS PC.
 
 CEO 10-31 05:05: party relevant (two PCs on monitors tonight), so Codex builds it right after o-00y-246, past its reserve. Must be ON HIS PC before Sat 12:00; if it cannot pass the gate by 11:30, ship nothing.
+
+DONE 10-31 05:3x: shipped v36.70, ON HIS PC v36.70.

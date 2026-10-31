@@ -13,3 +13,5 @@ Rules: seed 4242 fingerprint must hold; both windows; never touch the pickup sta
 TASK DONE when it shipped and is ON HIS PC.
 
 CEO 10-31 05:15: party relevant (a false red danger line misleads players), so Codex builds it third, after o-00y-246 and o-00y3-248, past its reserve. Must be ON HIS PC before Sat 12:00; if it cannot pass the gate by 11:30, ship nothing.
+
+DONE 10-31 05:3x: shipped v36.71, ON HIS PC v36.71.
