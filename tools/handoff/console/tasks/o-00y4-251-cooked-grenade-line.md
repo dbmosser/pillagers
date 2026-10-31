@@ -1,4 +1,6 @@
 # o-00y4-251 cooked-grenade-line : the "cooked grenade! throw grenade now x6" line never shows when you are not holding a live grenade
+party-breaking: yes
+camera: 1
 HIS WORDS 10-31 (in the Gameplay Edit Intaker chat), with a screenshot of a red danger line "cooked grenade! throw grenade now x6": "this si a glitch, i am not near any cooked grenades"
 PARTY RELEVANT (a false red danger line in the demo); CEO decides under his 10-30 order.
 
@@ -9,3 +11,5 @@ Build:
 Check (must FAIL on v36.55): cook a frag past its last second and throw: no feed line contains "cooked grenade"; the over-the-head shout still flashes while held; player 2 cooking never shows a shout in the host's feed.
 Rules: seed 4242 fingerprint must hold; both windows; never touch the pickup stack, loot sounds or loot rows. Retarget the cw-feedall check that expects the feed copy (fixq). DESIGN.md watch line: "the cooked grenade warning stays over your head only". Model: Codex or Sonnet 5.5 high.
 TASK DONE when it shipped and is ON HIS PC.
+
+CEO 10-31 05:15: party relevant (a false red danger line misleads players), so Codex builds it third, after o-00y-246 and o-00y3-248, past its reserve. Must be ON HIS PC before Sat 12:00; if it cannot pass the gate by 11:30, ship nothing.
