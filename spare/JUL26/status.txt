@@ -1,6 +1,6 @@
 host=JUL26
-seen=2026-10-31 17:20
-epoch=1793481652
+seen=2026-10-31 17:31
+epoch=1793482260
 game=67cbb5dc v36.95
 test_run=idle
 robots=1
@@ -13,7 +13,7 @@ cpu_threads=16
 cpu_pct=9
 cpu=AMD Ryzen 7 5800X3D 8-Core Processor
 soak=soak v36.95: 0 of 6 passed
-spare_pc=not answering (192.168.1.246), 17:18
+spare_pc=not answering (192.168.1.246), 17:28
 party=36.95 67cbb5dc
 play8802=C:\claudecode\pillagers-party v36.95
 receiver8799=up, last report 04:41, last note 10-28 07:56
