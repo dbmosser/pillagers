@@ -1,0 +1,7 @@
+v36.89: the frame loop makes less garbage
+
+Same picture and same auto resolution decisions, less memory churn every frame.
+
+Check 36.89. Fails on v36.88.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.89 - THE FRAME LOOP MAKES LESS GARBAGE
+
+Co-op hunt while he was away. Job 120k: the 2 player frame grew since v34.18. Two blind per frame costs the brief named are cut with the look unchanged: the auto resolution window was copied and sorted twice a frame with array sorts (five new arrays a frame), and the edge darkening gradient was rebuilt every frame. The window now sorts in two reused number buffers and the gradient is kept until the canvas size or strength changes.
+
+MEASURED. Check 36.89 passes, and fails on v36.88.
 ## v36.88 - THE PARTNER AND THE MACHINES GLIDE ON THE OTHER SCREEN
 
 Co-op hunt while he was away. His answer 2.27 b (no more than 50 ms extra for player 2, with prediction). Every body is sent ten times a second, and the receiving window chased the newest spot with a plain ease, so a walking partner or machine surged to 1.55 times its speed and stalled to 0.57 times inside each tenth of a second, and sat about 130 ms behind. The receiving window now reads each body speed from its last two samples, aims a little ahead of the newest spot (at most 0.12 s, never into a wall) and moves the body at that speed while it eases out the error. Nothing that is sent changes, so the host and the shared thread do no extra work. A body that stops, jumps or rolls fast gets no lead. WATCH IN A PLAYTEST (player 2 screen and the partner on both screens): a body that slides a little past a corner or a stop, then settles back, or a small hop when a machine turns or a door opens; the glide should look steady, with no surge and stall ten times a second.

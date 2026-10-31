@@ -1,0 +1,5 @@
+## v36.89 - THE FRAME LOOP MAKES LESS GARBAGE
+
+Co-op hunt while he was away. Job 120k: the 2 player frame grew since v34.18. Two blind per frame costs the brief named are cut with the look unchanged: the auto resolution window was copied and sorted twice a frame with array sorts (five new arrays a frame), and the edge darkening gradient was rebuilt every frame. The window now sorts in two reused number buffers and the gradient is kept until the canvas size or strength changes.
+
+MEASURED. Check 36.89 passes, and fails on v36.88.

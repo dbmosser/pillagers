@@ -3929,8 +3929,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.88';
-var VER_AT='2026-10-31 10:00';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.89';
+var VER_AT='2026-10-31 10:03';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36696,10 +36696,24 @@ function gfxqEase(dt){
 }
 function gfxqRainCount(n){ return Math.round(n*(0.5+0.5*GFXQ.detail)); }
 function gfxqFogWeight(i){ return i<3?1:GFXQ.detail; }
+// v36.87 (cw-framegarbage): the 2 s frame window sorted without garbage. drsTick used to map and sort it twice a frame with a comparator.
+var DRSBUF=[new Float64Array(512),new Float64Array(512)];
+function drsSortCol(w,c,b){
+  var n=w.length, a=DRSBUF[b], i;
+  if(a.length<n) a=DRSBUF[b]=new Float64Array(n*2);
+  for(i=0;i<n;i++) a[i]=w[i][c];
+  return a.subarray(0,n).sort();
+}
+// v36.87 (cw-framegarbage): the edge darkening gradient is built once per canvas size and strength, not every frame (a gradient and two colour stops a frame, on both windows).
+var VIGC={ctx:null,w:0,h:0,d:-1,g:null};
 function gfxqVignette(){
   if(!(GFXQ.detail>0)) return false;
-  var vg=ctx.createRadialGradient(W/2,H/2,H*.42,W/2,H/2,H*.85);
-  vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,'+(0.45*GFXQ.detail).toFixed(3)+')');
+  var vg=VIGC.g;
+  if(!vg||VIGC.ctx!==ctx||VIGC.w!==W||VIGC.h!==H||VIGC.d!==GFXQ.detail){
+    vg=ctx.createRadialGradient(W/2,H/2,H*.42,W/2,H/2,H*.85);
+    vg.addColorStop(0,'rgba(0,0,0,0)'); vg.addColorStop(1,'rgba(0,0,0,'+(0.45*GFXQ.detail).toFixed(3)+')');
+    VIGC.g=vg; VIGC.ctx=ctx; VIGC.w=W; VIGC.h=H; VIGC.d=GFXQ.detail;
+  }
   ctx.fillStyle=vg; ctx.fillRect(0,0,W,H); return true;
 }
 function gfxqSync(){
@@ -36751,8 +36765,9 @@ var VSYNC={last:0,ms:0,g:[],n:0,best:0};   /* v28.xx (cw-drscap): the screen rat
   if(w.length&&(now<=w[w.length-1][0]||now-w[w.length-1][0]>250)){ w.length=0; DRS.slowT=0; DRS.fastT=0; DRS.recoverT=0; }
   w.push([now,gapMs,Math.max(0,workMs)]);
   while(w.length>1&&w[1][0]<=now-2000) w.shift();
-  var gaps=w.map(function(f){ return f[1]; }).sort(function(a,b){ return a-b; });
-  var works=w.map(function(f){ return f[2]; }).sort(function(a,b){ return a-b; });
+  // v36.87 (cw-framegarbage): the 2 s window was copied out twice a frame (map) and sorted twice with a comparator, five new arrays a frame at 120 Hz. It now fills two reused number buffers and sorts them natively; same numbers, no garbage.
+  var gaps=drsSortCol(w,1,0);
+  var works=drsSortCol(w,2,1);
   DRS.gap95=gaps[Math.ceil(gaps.length*0.95)-1]; DRS.gap50=gaps[Math.ceil(gaps.length*0.5)-1];
   DRS.work95=works[Math.ceil(works.length*0.95)-1]; DRS.ema=DRS.gap95;
   var slow=DRS.gap95>20*budget/16.7, clear=DRS.gap95<17.5*budget/16.7&&DRS.work95<10; DRS.chase=chase; if(chase>0){ DRS.gapT=drsTrim(gaps); slow=slow||DRS.gapT>chase*1.1; clear=clear&&DRS.gapT<chase*1.04&&DRS.work95<10*chase/16.7; }   /* v28.xx (cw-drscap): the 60 rules still hold, and a chased cap also steps down when the frames fall a tenth short of it and only climbs back with the same headroom the 60 rule asks (own work under 0.6 of a frame) */
@@ -56975,7 +56990,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.88: In a two player raid, the partner and the machines on the other screen glide at a steady speed instead of surging and stalling, and sit closer to where they really are. Check 36.88 fails on v36.87',
+  now:'v36.89: Same picture and same auto resolution decisions, less memory churn every frame. Check 36.89 fails on v36.88',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
