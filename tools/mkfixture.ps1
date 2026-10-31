@@ -31161,7 +31161,7 @@ class Audio {
      if(typeof INDEV!=='object'||!INDEV||typeof indevPadTick!=='function') return 'prompts do not follow the last input device (no INDEV tracker)';
      if(typeof pollPad!=='function'||typeof drawHUD!=='function'||typeof PAD!=='object'||!PAD||typeof NET!=='object'||!NET||!window.__deploy||!window.__endRaid) return 'SKIP: no pad or raid code here';
      var NG=navigator.getGamepads, ownNG=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'), pad=null, bad=[], g, seen=[], t1, t2, t3, t4, cs,
-         on0=PAD.on, br0=PAD.brand, an0=PAD.announced, mx0=mouse.x, my0=mouse.y, lg0=INDEV.legacy, dv0=INDEV.dev, ns0=NET.same,
+         on0=PAD.on, br0=PAD.brand, an0=PAD.announced, co0=PAD.curOwn, ai0=PAD.aimA, rc0=PAD.reach, tr0=PAD.trail, mx0=mouse.x, my0=mouse.y, lg0=INDEV.legacy, dv0=INDEV.dev, ns0=NET.same,
          hadT=Object.prototype.hasOwnProperty.call(ctx,'fillText'), oFT=ctx.fillText;
      function mk(btn,ax){ var bt=[], j; for(j=0;j<17;j++) bt.push({pressed:(j===btn),value:(j===btn)?1:0,touched:(j===btn)}); return {connected:true,id:'glyph check pad',index:0,mapping:'standard',timestamp:1,buttons:bt,axes:ax||[0,0,0,0]}; }
      function poll(btn,ax){ pad=mk(btn,ax); pollPad(); }
@@ -31227,6 +31227,7 @@ class Audio {
        keys={}; try{ padRelease(); }catch(_pr){}
        INDEV.legacy=lg0; INDEV.dev=dv0; INDEV.pb=[]; INDEV.pa=[]; INDEV.ax=null; INDEV.ay=null; INDEV.lx=null; INDEV.ly=null; NET.same=ns0;
        PAD.on=on0; PAD.brand=br0; PAD.announced=an0; PAD.prev=[]; mouse.x=mx0; mouse.y=my0;
+       PAD.curOwn=co0; PAD.aimA=ai0; PAD.reach=rc0; PAD.trail=tr0;   // 0p19-240: the stub stick push left the pad owning the crosshair (padCursorPut sets curOwn), which moved the camera and the mouse for the next check (30.62 failed in its slice)
        try{ padBodyCls(); }catch(_bc){}
        try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
        __topClear();
@@ -31303,6 +31304,7 @@ class Audio {
        __deploy({kit:['gun_shotgun','gun_rifle'],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: staging: no raid';
        g.bagOpen=false; g.mapOpen=false; g.paused=false; keys={}; mouse.down=false; mx0=mouse.x; my0=mouse.y;
+       if(typeof PAD==='object'&&PAD) PAD.curOwn=0;   // 0p19-240: the mouse owns the crosshair here, whatever a pad check before left behind
        __frame(0.016);
        for(kk in HUDZ){ if(HUDBOX[kk]&&!hudOff(kk).c&&HUDBOX[kk].w>40&&HUDBOX[kk].h>40){ k=kk; B=HUDBOX[kk]; break; } }
        if(!B) return 'SKIP: no resizable panel on screen';
