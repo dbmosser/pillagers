@@ -15706,7 +15706,7 @@ class Audio {
      function frame(g){ var p=g.player, q; if(p.wep&&p.wep.mag>0){ p.ammo=p.wep.mag; p.reloading=0; p.jam=0; } hook(); try{ __frame(0.016); } finally { q=unhook(); } return q; }
      function vitals(r){ var v=[], i, b; for(i=0;i<r.bars.length;i++){ b=r.bars[i]; if(b.x<W*0.3&&b.y>H*0.6) v.push(b); } for(i=0;i<r.panels.length;i++){ b=r.panels[i]; if(b.pl&&b.x<W*0.03&&b.y>H*0.75) v.push(b); } return v; }
      function capStrip(r){ var i, b; for(i=0;i<r.rects.length;i++){ b=r.rects[i]; if(b.c==='rgba(17, 19, 21, 0.72)'&&Math.abs(b.x+b.w/2-W/2)<=2&&b.y>H*0.7) return b; } return null; }
-     function cardOf(r){ var i, b, c=null, z=(HUDZ.gear||1)*hudRes()*hudUserZ('gear'); for(i=0;i<r.panels.length;i++){ b=r.panels[i]; if(b.a===0.88&&Math.abs(b.x+b.w-(W-8))<=3*z&&b.y+b.h>H*0.8&&b.x>W*0.6&&(!c||b.y+b.h>c.y+c.h)) c=b; } return c; }
+     function cardOf(r){ var i, b, c=null, z=(HUDZ.gear||1)*hudRes()*hudUserZ('gear'); for(i=0;i<r.panels.length;i++){ b=r.panels[i]; if(b.a===0.88&&Math.abs(b.x+b.w-(W-(typeof hudIns==='function'?hudIns():8)))<=3*z&&b.y+b.h>H*0.8&&b.x>W*0.6&&(!c||b.y+b.h>c.y+c.h)) c=b; } return c; }   /* retarget (0p18-221): since v36.73 the card's right edge stands hudIns() in from the screen edge (16 at 1080), not 8 */
      function mw(f,s){ var w; ctx.save(); try{ ctx.font=f; w=ctx.measureText(String(s)).width; } finally { ctx.restore(); } return w; }
      function wide(f,s){ var q, w, b=-1, d='0'; for(q=0;q<10;q++){ w=mw(f,String(q)); if(w>b){ b=w; d=String(q); } } return String(s).replace(/[0-9]/g,d); }
      // the widest each row of the card can read with this gun in hand (card units): the name with its aim word, the rounds as a full
