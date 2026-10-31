@@ -1,0 +1,5 @@
+## v36.75 - ONE DANGER AT A TIME, LOWER ON THE SCREEN
+
+Co-op hunt while he was away. His note: too many messages coming in to the player. The research rule: the danger banner stands at about 27 percent of the screen height, in the middle where eyes are in a fight, one line on a plate that scales in over 0.2 s and lasts 3 s (4 s for a down). A danger replaces extraction news at once, a second danger waits, the same keyed danger does not show again for 10 s, and one that cannot show within 1.5 s is dropped and never written to the feed. A teammate down draws in the teammate colour. The final rush callout keeps its place.
+
+MEASURED. Check 36.75 passes, and fails on v36.74.

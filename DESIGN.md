@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.75 - ONE DANGER AT A TIME, LOWER ON THE SCREEN
+
+Co-op hunt while he was away. His note: too many messages coming in to the player. The research rule: the danger banner stands at about 27 percent of the screen height, in the middle where eyes are in a fight, one line on a plate that scales in over 0.2 s and lasts 3 s (4 s for a down). A danger replaces extraction news at once, a second danger waits, the same keyed danger does not show again for 10 s, and one that cannot show within 1.5 s is dropped and never written to the feed. A teammate down draws in the teammate colour. The final rush callout keeps its place.
+
+MEASURED. Check 36.75 passes, and fails on v36.74.
 ## v36.74 - THE EXTRACTION COUNTDOWN STANDS ON A PLATE AND SAYS EACH FACT ONCE
 
 Co-op hunt while he was away. The critic on o-120g (P0s): the landed-ship countdown (extract in progress, ring letter, seconds left) had no plate on busy ground and the band repeated the distance the pill already shows. Now the line stands on a plate measured to its words both inbound and landed, the ring letter is ringed so it reads as the ring name, the band no longer draws its own arrow and metres (the top pill is the one distance), and the centre hold line stays the one action. His words (extract in progress) are unchanged. The o-132 P0: damage numbers step up over the name tags the stack pass placed, so a stacked name tag is never under a number. Name tags already move for cache labels (v36.12); this adds the shared box kind so the check proves it. Watch: whether the countdown is easy to read in both party windows, and the ringed letter looks like a ring name.

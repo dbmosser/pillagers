@@ -1,0 +1,7 @@
+v36.75: one danger at a time, lower on the screen
+
+Danger callouts stand at 27 percent of the height, one at a time, and a repeated warning is quiet for 10 s.
+
+Check 36.75. Fails on v36.74.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
