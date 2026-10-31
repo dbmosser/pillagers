@@ -3912,8 +3912,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.68';
-var VER_AT='2026-10-31 04:37';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.69';
+var VER_AT='2026-10-31 05:18';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -18223,6 +18223,29 @@ if(G.wx.id!=='clear'&&G.wx.cap) say(G.wx.cap,'chat',{sub:G.wx.sub||''});   // v2
 
 // ================================================================ input
 var keys={},mouse={x:0,y:0,down:false},pauseOpen=false,tuneOpen=false;
+// v28.xx (cw-cx-timelordhold), his 10-31 report: "sometimes the game randomly cuts timelord mode on". A continuous 0.6 s hold, once per release; no demo shortcut.
+var SHKEY={down:false,done:false,at:0,g:null,scene:''};
+function shKeyCancel(){ SHKEY.down=false; SHKEY.done=false; SHKEY.g=null; }
+function shKeyStart(e){
+  if(e.repeat||SHKEY.down||demoKeysOn()) return;
+  SHKEY.down=true; SHKEY.done=false; SHKEY.at=statusNow(); SHKEY.g=G; SHKEY.scene=state;
+}
+function shKeyProgress(){
+  if(!SHKEY.down||SHKEY.done||demoKeysOn()||SHKEY.g!==G||SHKEY.scene!==state) return -1;
+  return clamp((statusNow()-SHKEY.at)/0.6,0,1);
+}
+function shKeyTick(){
+  if(!SHKEY.down) return;
+  var el=document.activeElement, tag=(el&&el.tagName)||'';
+  if(demoKeysOn()||SHKEY.g!==G||SHKEY.scene!==state||document.hidden||tag==='INPUT'||tag==='TEXTAREA'){ shKeyCancel(); return; }
+  if(SHKEY.done||statusNow()-SHKEY.at<0.6) return;
+  SHKEY.done=true;
+  if(cycleGameOpt('superhot')===false) return;
+  try{ var sm=document.getElementById('settingsmodal'); if(sm&&sm.classList.contains('on')) renderSettings(); }catch(_shkr){}
+  shSay(CFG.superhot);
+}
+window.addEventListener('keyup',function(e){ if(e.code==='Backquote') shKeyCancel(); },true);
+window.addEventListener('keydown',function(e){ if(e.code==='ShiftLeft'||e.code==='ShiftRight') shKeyCancel(); },true);
 // v30.xx (cw-glyphs), HIS ORDER (2026-10-18): "player should get key prompts if that is the last input they used -- xbox controller
 // prompts should only pop up if player is actively using the controller -- e.g. real time glyph switching -- fortnite does a great
 // job with this". INDEV.dev is the last input device THIS window saw: 'kb' (a key press, a mouse click or wheel turn, or a mouse move
@@ -18279,20 +18302,9 @@ window.addEventListener('keydown',function(e){
   e=keyRemapEvent(e);   // v17.75: the key pressed becomes the key the game reads
   ac(); // a keypress is a user gesture, so it is a chance to wake suspended audio
   if(e.code==='Backquote'){ e.preventDefault();
-    if(e.shiftKey){ toggleTune(); return; }
-    if(!e.repeat){
-      if(cycleGameOpt('superhot')===false) return;   // v16.74, his order: on a linked window the host word rules; cycleGameOpt said so, and there is no dial of its own to report
-      // v15.15, dials audit finding 7: THE SUPERHOT KEY REDRAWS AN OPEN SETTINGS ROW. The Settings rows are drawn only by
-      // renderSettings, and this key moved the dial, saved and said so without calling it, so with Settings open the Superhot
-      // row kept its old word. Closed on Off, the next raid ran in Superhot. Clicked to turn it on, the row steps from the live
-      // dial, so the click turned Superhot off and the row redrew as Off, as if the click did nothing. Redrawn only while the
-      // window is open, the same guard toggleTune uses when the console closes over Settings.
-      try{ var _smB=document.getElementById('settingsmodal'); if(_smB&&_smB.classList.contains('on')) renderSettings(); }catch(_rsB){}
-      // v30.xx (cw-shkey), HIS NOTE (2026-10-18): "superhot mode needs a toggle key." The key left of 1 has toggled Superhot since v7.23, but nothing on screen named it
-      // (only CHANGE KEYS did), and its line could read the wrong state: the lines it said were not replaced, so on, off, on within a second left OFF on top and OFF
-      // last in the feed with Superhot on. shSay keeps one line, the state just set; the key is named on the F1 list and beside the Settings row.
-      shSay(CFG.superhot);
-    }
+    // v28.xx (cw-cx-timelordhold): Shift keeps its tuning chord; a tap never reaches the saved dial.
+    if(e.shiftKey){ shKeyCancel(); toggleTune(); return; }
+    shKeyStart(e);
     return;
   }
   // v8.75: BACKSPACE works ANYWHERE, which is what its own hint promises and what
@@ -20729,7 +20741,7 @@ function keysListBody(){
 }
 // v26.xx (settings11): THE KEYS THAT CANNOT MOVE, listed under the others so the window names every key the game answers. 1 to 9 pick a gun (the stash sets which gun is on which),
 // P and TAB pause or back out, ESC closes a window, BACKSPACE puts the cursor back, the key left of 1 is Superhot and F11 is fullscreen.
-var KEYS_LOCKED=[['SELECT A GUN','1 - 9, 0'],['PAUSE','P'],['PAUSE, OR BACK OUT','TAB'],['CLOSE A WINDOW','ESC'],['PUT THE CURSOR BACK','BACKSPACE'],['timelord mode','LEFT OF 1'],['FULLSCREEN','F11']];
+var KEYS_LOCKED=[['SELECT A GUN','1 - 9, 0'],['PAUSE','P'],['PAUSE, OR BACK OUT','TAB'],['CLOSE A WINDOW','ESC'],['PUT THE CURSOR BACK','BACKSPACE'],['timelord mode','HOLD LEFT OF 1'],['FULLSCREEN','F11']];
 if(DEV_LOCAL) KEYS_LOCKED.push(['EDIT THE WORDS','F2']);   // v28.xx (cw-cx-demoplain): keysFixedHtml sets the current demo chord.
 if(DEV_LOCAL) KEYS_LOCKED.push(['SNIP THE SCREEN','F8']);   // v28.xx (cw-cx-demoplain): keysFixedHtml sets the current demo chord.
 function keysFixedHtml(){
@@ -23868,7 +23880,8 @@ function ansSay(m,o){
 }
 function ansUp(){ var A=G&&G.ans; return (A&&statusNow()-A.at<ANSLIFE)?A:null; }
 function ansDraw(){
-  var A=ansUp(), p=G&&G.player, ps, hr, f, px, t, tw, al, x, y, bw, bh, k;
+  // v28.xx (cw-cx-timelordhold): a transient preview uses the existing status bubble without saving or saying anything on a tap.
+  var hold=shKeyProgress(), A=hold>=0?{m:'timelord '+(CFG.superhot?'on':'off'),at:statusNow()-0.2}:ansUp(), p=G&&G.player, ps, hr, f, px, t, tw, al, x, y, bw, bh, k;
   ANSBOX.on=0;
   if(!A||!p||G.mapOpen||G.bagOpen||G.over) return false;
   ps=w2s(p.x,0,p.y); if(!ps) return false;
@@ -23880,13 +23893,15 @@ function ansDraw(){
   ctx.save();
   try{
     ctx.font=f; ctx.textAlign='center'; ctx.globalAlpha=al;
-    tw=ctx.measureText(TX(t)).width; bw=Math.round(tw+LH(16)*hr); bh=Math.round(px*1.45);
+    tw=ctx.measureText(TX(t)).width; bw=Math.round(tw+LH(16)*hr+(hold>=0?LH(64)*hr:0)); bh=Math.round(px*1.45);
     x=Math.round(ps.x); y=Math.round(ps.y+ANSOFF*hr);
     if(y>H-LH(150)*hr) y=Math.round(ps.y-LH(100)*hr);   // the character low on the screen (a short window): over the head, never on the belt
     x=clamp(x,bw/2+LH(8)*hr,W-bw/2-LH(8)*hr); y=clamp(y,bh,H-LH(150)*hr);
     hudPlate(Math.round(x-bw/2),Math.round(y-bh/2),bw,bh,null,HUDC.plate);
     ctx.fillStyle=HUDC.text;
-    hudText(t,x,Math.round(y+px*0.36));
+    hudText(t,x-(hold>=0?LH(32)*hr:0),Math.round(y+px*0.36));
+    // v28.xx (cw-cx-timelordhold): a short fill bar beside the current state; the state changes only when the hold completes.
+    if(hold>=0){ ctx.fillStyle='#4a5257'; ctx.fillRect(x+bw/2-LH(56)*hr,y-2*hr,LH(40)*hr,4*hr); ctx.fillStyle='#e6ff3d'; ctx.fillRect(x+bw/2-LH(56)*hr,y-2*hr,LH(40)*hr*hold,4*hr); }
     ANSBOX.on=1; ANSBOX.x=x-bw/2; ANSBOX.y=y-bh/2; ANSBOX.w=bw; ANSBOX.h=bh; ANSBOX.px=px; ANSBOX.t=t;
   } finally { ctx.restore(); }
   return true;
@@ -47467,7 +47482,7 @@ var LEGEND=[
   // v27.65 (cloud-menus-keys-x-no-board), CLOUD HUNT 2026-10-15: the controls card X row said call for extraction, then board; board is a retired word, so it says call for extraction, then extract
 ['WORLD',[['E','search, use, open'],['X','call for extraction, then extract'],['M','map'],['F1','cycle this list'],['P','pause'],['TAB','pause, or back out of a menu'],['O','order your hire']]],
   ['TEAM',[['V','drop an item for a teammate'],['N','ping, twice for danger']]],   // v18.27: his order, trading is dropping
-  ['ALSO',[['CAPS','walk on, hands free'],['NUM + -','zoom'],['- =','HUD size'],['0','reset zoom'],['F9','record your play for the title'],['LEFT OF 1','timelord on/off']]]   // v30.xx (cw-shkey), HIS NOTE (2026-10-18): "superhot mode needs a toggle key." The key left of 1 is named here   // v21.56: the recorder (v21.18) was named only on the what is new card
+  ['ALSO',[['CAPS','walk on, hands free'],['NUM + -','zoom'],['- =','HUD size'],['0','reset zoom'],['F9','record your play for the title'],['HOLD LEFT OF 1','timelord on/off']]]   // v30.xx (cw-shkey), HIS NOTE (2026-10-18): "superhot mode needs a toggle key." The key left of 1 is named here   // v21.56: the recorder (v21.18) was named only on the what is new card
 ];
 // SPEC 10.3: the colour language has to be learnable, so it is stated.
 // The thirteen keys a player actually presses, two columns, no headings. Anything
@@ -53414,6 +53429,7 @@ function showScreen(s){
 // latch is what leaves sprint or crouch stuck on, which has bitten this file
 // before. Every key is now released whenever focus or visibility goes.
 function releaseAllKeys(soft){
+  shKeyCancel(); // v28.xx (cw-cx-timelordhold): focus loss, hiding and cursor reset cancel an unfinished hold.
   keys={}; try{ HHOLD.arm=0; }catch(_hh){} mouse.down=false; if(G) G.sprinting=false; if(G&&CFG.crouchHold===1) G.crouchTog=false; /* v26.xx (settings2): a held crouch is let go with the keys */ if(G) G.wheel=null; /* v26.xx (wheel2) */
   if(G&&G.player&&CFG.aimTgl!==1) G.player.ads=false;   // v27.63 (cloud-menus-held-aim-blur), CLOUD HUNT 2026-10-15: with AIM on HOLD a right button held when the window lost focus never sends its mouseup here, so the aim (slow walk) stayed on until the next right click; a toggled aim stays
   // The reticle also hides for an open bag, and alt-tabbing with the bag open
@@ -56131,6 +56147,7 @@ function hidStart(){
   }catch(_hw){ HID.w=null; return false; }
 }
 function loop(ts){
+  try{ shKeyTick(); }catch(_shkt){ shKeyCancel(); } // v28.xx (cw-cx-timelordhold): wall time, before the frame cap or timelord slows the simulation.
   DRS.frameStart=performance.now(); // v28.xx (cw-cx-ladderwindow): own work starts before frame setup and simulation.
   try{ hbTick(); }catch(_hbt){}   // v28.xx (cw-tagloop): the raid heartbeat, once a second
   if(!HID.fromWorker){ requestAnimationFrame(loop); HID.lastRaf=(typeof performance!=='undefined')?performance.now():Date.now(); if(!HID.w) hidStart(); }
@@ -56791,7 +56808,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.68: Frame cost, VM test Chrome 1882x973 (software, about 32 frames a second), two runs each: game work a frame off 3.86 and 4.35 ms, on 3.76 and 4.28 ms; the copy into the recording adds 0.33 to 0.36 ms a frame; frame gaps unchanged at 31.3 ms. Under the 1.5 ms limit, so 1600 wide at 30 frames a second stays. Codec: video/mp4 avc1 (H.264) first, then webm h264, vp8, vp9 last; 2.5 Mbps. The copy runs 30 times a second whatever the screen rate. Auto clips: no download, under 60 s not kept, newest 15 and 3 GB kept. P2 window and test pages never record. Check 36.68 fails on v36.67',
+  now:'v36.69: A tap does nothing. Hold the key left of 1 for 0.6 seconds to switch timelord mode once. The demo ignores the shortcut; Shift still opens tuning. LOCAL: no linked review. Check 36.69 fails on v36.68',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -72299,7 +72316,7 @@ document.getElementById('pausesetbtn').onclick=function(){ openSettings(); };
     dt.classList.toggle('daily-restore-detail',restoreRow);
     if(restoreRow) html=dailySaveDetailHtml(r);
     // v30.xx (cw-shkey), HIS NOTE (2026-10-18): "superhot mode needs a toggle key." The pane that explains a row also names the key that does what the row does.
-    if(v&&v.id==='go_superhot') html+='<div class="sdh sdkey">key: left of 1</div>';   // cw-shkey2: in words, the tick alone was hard to see
+    if(v&&v.id==='go_superhot') html+='<div class="sdh sdkey">key: hold left of 1</div>';   // cw-shkey2: in words, the tick alone was hard to see
     // v28.xx (cw-cx-expui): group the effect, next-raid timing and fixed host choice under the focused experimental setting.
     if(SETSUB==='exp'&&v&&/^go_xf/.test(v.id||'')){
       html+='<div class="expnote">starts next raid</div>';

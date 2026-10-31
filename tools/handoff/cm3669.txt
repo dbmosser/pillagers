@@ -1,0 +1,7 @@
+v36.69: timelord key needs a hold
+
+A tap does nothing. Hold the key left of 1 for 0.6 seconds to switch timelord mode once. The demo ignores the shortcut; Shift still opens tuning. LOCAL: no linked review.
+
+Check 36.69. Fails on v36.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

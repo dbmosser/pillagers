@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.69 - TIMELORD KEY NEEDS A HOLD
+
+Co-op hunt while he was away. His 10-31 report: brushing the key left of 1 switches timelord mode on and saves it. Watch: timelord mode needs a held key and is off limits in the demo.
+
+MEASURED. Check 36.69 passes, and fails on v36.68.
 ## v36.68 - RECORD EVERY RAID
 
 Co-op hunt while he was away. His order 10-31: set up the main pc to just record all my in-raid gameplay and use that as the idle screen. Watch: your raids now record themselves; watch the frame rate. A small dim rec dot sits in the top left corner while it records. Settings, the raid section, record every raid turns it off.

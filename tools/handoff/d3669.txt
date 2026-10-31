@@ -1,0 +1,5 @@
+## v36.69 - TIMELORD KEY NEEDS A HOLD
+
+Co-op hunt while he was away. His 10-31 report: brushing the key left of 1 switches timelord mode on and saves it. Watch: timelord mode needs a held key and is off limits in the demo.
+
+MEASURED. Check 36.69 passes, and fails on v36.68.
