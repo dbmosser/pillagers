@@ -15932,7 +15932,7 @@ class Audio {
          g2.legendOn=0; done++;
        }
        if(!done) return 'SKIP: no raid could be staged';
-     }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
+     }catch(e){ bad.push('threw: '+(e&&e.message||e)+' @ '+String((e&&e.stack)||'').split('\n').slice(1,5).join(' < ')); }
      finally{ down(); say=oSay; P.runs=r0; try{ if(hud0===undefined) delete P.hud; else P.hud=JSON.parse(hud0); _legBase=null; _legAnchorY=null; __runPrep(); __topClear(); }catch(_c){} }
      return bad.length?bad.join('; '):null;
    }},
