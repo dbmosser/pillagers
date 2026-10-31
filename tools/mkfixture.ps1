@@ -31229,7 +31229,8 @@ class Audio {
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        had=Object.prototype.hasOwnProperty.call(P,'uiScale'); us0=P.uiScale; P.uiScale=1.2;
        if(!arcadeSandboxIn('host')) return 'arcadeSandboxIn failed';
-       if(Math.abs(uiScale()-1.5)>0.001) bad.push('inside the demo the HUD size is '+uiScale()+', not 1.5');
+       var want=(typeof P_BORN==='object')?1.0:1.5;   /* v36.70 (cw-cx-text100): the demo starts at 100 percent now; the older build still reads 150 */
+       if(Math.abs(uiScale()-want)>0.001) bad.push('inside the demo the HUD size is '+uiScale()+', not '+want);
        arcadeSandboxOut();
        if(Math.abs(uiScale()-1.2)>0.001) bad.push('after leaving the demo the HUD size is '+uiScale()+', not his 1.2');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
