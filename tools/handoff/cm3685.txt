@@ -1,0 +1,7 @@
+v36.85: the racks page reads at a glance
+
+The racks page shows built and empty slots, usable and unusable buttons, and the parts you are short of, at a glance.
+
+Check 36.85. Fails on v36.84.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

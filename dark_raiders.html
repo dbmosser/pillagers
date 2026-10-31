@@ -2852,6 +2852,20 @@ body:has(#gamblemodal.on) #hubtoast,body:has(#opmodal.on #opane_rec[style*="disp
 #root #opane_mf #mfbuild:not(:disabled){background:var(--acc);color:var(--acc-ink);border-color:var(--acc);}
 #root #opane_mf #mfbuild:not(:disabled):hover,#root #opane_mf #mfbuild:not(:disabled):focus-visible{background:var(--acc-hover);}
 #root #opane_mf button:not(#mfbuild):focus-visible{box-shadow:inset 3px 0 0 var(--acc);background:var(--ui-raised);}
+/* v28.xx (cw-rackpolish) o-09g critic on 14, all scores 2: (1) a part you cannot use looked the same as one you can: a disabled button is now an empty dashed outline in the dim text colour, an enabled one a raised fill with a solid border and bright text; (2) the rack counter was teal (extract only, style guide section 1): now tx-1, and the array count and the pay line lose their purple and lime for the same reason; (3) empty rack slots were styled like built ones: an empty slot is a dashed outline with no fill, a built one is solid ok green; (4) rows and columns did not line up: the ten slots now span exactly the left column (the build button column) and the count starts where the friend column starts; (5) the cost text was 16px grey: the parts are 20px tx-1, a part you are short of is in the danger colour. */
+#root #opane_mf > #mfstatus{display:grid;grid-template-columns:repeat(10,calc((100% - var(--sp-5)) / 20 - 7.2px)) 1fr;column-gap:8px;align-items:center;}
+#root #opane_mf #mfstatus > span.rkslot{width:auto !important;height:48px !important;border-radius:var(--rad);}
+#root #opane_mf #mfstatus > span.rkslot.rkoff{background:transparent;border:1px dashed var(--ui-line-hi);}
+#root #opane_mf #mfstatus > span.rkslot.rkon{background:var(--ok);border:1px solid var(--ok);}
+#root #opane_mf #mfstatus .rkinfo{display:flex;flex-wrap:wrap;align-items:baseline;column-gap:var(--sp-2);margin-left:calc(var(--sp-5) - 8px);}
+#root #opane_mf #mfstatus .rkinfo b{margin-left:0;color:var(--tx-1);}
+#root #opane_mf #mfstatus .rkinfo .rkpay{font-size:var(--fs-body);color:var(--tx-2);}
+#root #opane_mf button:disabled{background:transparent;color:var(--tx-3);border:1px dashed var(--ui-line);}
+#root #opane_mf button:not(:disabled):not(#mfbuild){background:var(--ui-raised);color:var(--tx-1);border:1px solid var(--ui-line-hi);}
+#root #opane_mf button:not(:disabled):not(#mfbuild):hover{background:var(--ui-hover);}
+#root #opane_mf #mfhint .rkparts{display:block;margin:var(--sp-1) 0;}
+#root #opane_mf #mfhint .rkp{font-size:var(--fs-body);color:var(--tx-1);}
+#root #opane_mf #mfhint .rkp.short{color:var(--danger);}
 /* v28.xx (cw-rackrew): a toast may cross the outer margin (style guide section 3): on these two tabs it sits above the card, clear of its bottom border */
 body:has(#opmodal.on #opane_rew[style*="display: flex"]) #hubtoast,body:has(#opmodal.on #opane_mf[style*="display: flex"]) #hubtoast{top:4px;bottom:auto;padding:6px 16px;font-size:18px;line-height:1.2;background:var(--ui-raised);}
 </style>
@@ -3915,8 +3929,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.84';
-var VER_AT='2026-10-31 09:44';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.85';
+var VER_AT='2026-10-31 09:46';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -56669,6 +56683,12 @@ function rackCostLine(){
   for(var k in RACK_COST) parts.push(RACK_COST[k]+' '+(ITEMS[k]?ITEMS[k].name:k)+' ('+(c[k]||0)+' held)');
   return parts.join(', ');
 }
+// v28.xx (cw-rackpolish): the same line as rackCostLine, each part in its own span; a part you hold too few of is marked short
+function rackCostHtml(){
+  var c=stashCounts(),parts=[];
+  for(var k in RACK_COST) parts.push('<span class="rkp'+((c[k]||0)<RACK_COST[k]?' short':'')+'">'+RACK_COST[k]+' '+(ITEMS[k]?ITEMS[k].name:k)+' ('+(c[k]||0)+' held)</span>');
+  return parts.join(', ')+'. ';
+}
 function buildRack(){
   if((P.racks||0)>=RACK_CAP){ say('mainframe wall full'); /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */ return; }
   if(!rackAfford()){ say('not enough parts'); /* v28.xx (cw-cx-rack-short-answer): his short-callout rule; the rack cost row already shows the parts. */ /* v28.xx (cw-cx-sentence-callouts): his 10-28 audit order, short callouts without periods. */ return; }
@@ -56829,11 +56849,11 @@ function renderMainframe(){
   var r=P.racks||0;
   var bars='';
   for(var i=0;i<RACK_CAP;i++)
-    bars+='<span style="display:inline-block;width:34px;height:12px;margin-right:5px;border:1px solid var(--steel-hi);background:'+(i<r?'rgba(53,214,200,.35)':'rgba(0,0,0,.3)')+'"></span>';
+    bars+='<span class="rkslot '+(i<r?'rkon':'rkoff')+'"></span>';   // v28.xx (cw-rackpolish): built and empty slots are classes now (solid ok green, dashed empty outline), not one inline teal
   var _ar=arrayCount();
-  st.innerHTML=bars+'  <b style="color:var(--coolant)">'+r+' of '+RACK_CAP+' racks</b>'+
-    (_ar>0?'  <b style="color:#b9a8ff">'+_ar+' array'+(_ar===1?'':'s')+'</b>':'')+
-    (mfPayPer()>0?'  <span style="color:var(--amber)">+$'+mfPayPer().toLocaleString()+' per extraction</span>':'');
+  st.innerHTML=bars+'<div class="rkinfo"><b class="rkcount">'+r+' of '+RACK_CAP+' racks</b>'+
+    (_ar>0?'<b class="rkarr">'+_ar+' array'+(_ar===1?'':'s')+'</b>':'')+
+    (mfPayPer()>0?'<span class="rkpay">+$'+mfPayPer().toLocaleString()+' per extraction</span>':'')+'</div>';
   var bt=document.getElementById('mfbuild'), hn=document.getElementById('mfhint');
   if(bt){ bt.disabled=(r>=RACK_CAP)||!rackAfford(); bt.textContent=(r>=RACK_CAP)?'THE WALL IS FULL':'BUILD A RACK'; }
   // v6.76: the wall being full is now a step rather than the end of the road.
@@ -56845,8 +56865,8 @@ function renderMainframe(){
   }
   if(ah){ ah.textContent='Ten racks fold into one Array. An Array pays $'+ARRAY_PAY.toLocaleString()+
     ' an extraction against the $'+(ARRAY_RACKS*RACK_PAY).toLocaleString()+' those racks paid, and it clears the wall so you can build ten more behind it. There is no limit on Arrays.'; }
-  if(hn){ hn.textContent=(r>=RACK_CAP)?('The wall is full at '+RACK_CAP+' racks, paying $'+(RACK_CAP*RACK_PAY).toLocaleString()+' an extraction. Fold them into an Array to clear it and earn more.')
-    :('A rack costs '+rackCostLine()+'. Each pays $'+RACK_PAY+' every time you extract alive. Junk becomes infrastructure.'); }
+  if(hn){ hn.innerHTML=(r>=RACK_CAP)?('The wall is full at '+RACK_CAP+' racks, paying $'+(RACK_CAP*RACK_PAY).toLocaleString()+' an extraction. Fold them into an Array to clear it and earn more.')
+    :('A rack costs <span class="rkparts">'+rackCostHtml()+'</span>Each pays $'+RACK_PAY+' every time you extract alive. Junk becomes infrastructure.'); }
   var sb=document.getElementById('mfslot'), sh2=document.getElementById('mfslothint');
   if(sb){
     var haveCore=P.stash.indexOf('core')>=0;
@@ -56955,7 +56975,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.84: the undercroft hub reads cleanly: soft station glow, the toast under the title, one money style, one sign plate for the bar. Check 36.84 fails on v36.83',
+  now:'v36.85: The racks page shows built and empty slots, usable and unusable buttons, and the parts you are short of, at a glance. Check 36.85 fails on v36.84',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

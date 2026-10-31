@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.85 - THE RACKS PAGE READS AT A GLANCE
+
+Co-op hunt while he was away. The critic scored the mainframe racks page 2: a part you could not use looked the same as one you could, the counter was teal, empty slots looked like built ones, rows and columns did not line up and the cost text was small. Disabled buttons are now dashed and empty, built slots are solid green and empty ones dashed, the counter is the text colour, the slots span the build column and the count starts where the friend column starts, and the cost parts are 20px with a short part in red.
+
+MEASURED. Check 36.85 passes, and fails on v36.84.
 ## v36.84 - UNDERCROFT HUB POLISH
 
 Co-op hunt while he was away. Critic on the o-00l pictures (hub 2 of 5): glow discs with hard rims, a welcome toast stacked on the station prompt and the stash sign, three money styles in the corner, a second plate for the experimental caption. Watch: the glow around each station fades out, the welcome toast sits under the title, the stash and bag $ figures are as big as the credits, the experimental caption is inside the last pour sign.

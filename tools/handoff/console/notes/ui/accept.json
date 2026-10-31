@@ -19,17 +19,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The new floor has a clear hierarchy, with a lime 'enter raid!' and quiet station chips, and the title now sits in a real panel. It still reads as a debug-looking overlay, though, because of the 'experimental' banner with its stars, the tiny 14-16px text, the exclamation mark and the loose key-hint chips.",
+  "verdict": "The hub reads clearly and the lime 'enter raid' call-out is the right focal point, but the earlier fixes were mostly ignored: the experimental-feature sentence is still there, the chips are tiny and inconsistent, the title panel is off-margin, and the screen is cluttered with wall-to-wall NPCs.",
   "findings": [
-   "P1 the last pour station, '***experimental feature may glitch***' tag: Delete the sentence. If a warning is needed, use a 16px '--warn' amber 'beta' tag inside the name chip, with no asterisks.",
-   "P1 station name chips (wirt the gambler, shop craft and hire, settings, the stash, fashion): Set station names to 20px f-cond 600 at the 16px minimum, with 8px/16px padding. Add a 1px --ui-line-hi border and a key chip ('e') on the nearest station only, to create focus.",
-   "P1 enter raid! chip: Use --fs-title 32px f-cond 800 in --acc on a --ui-panel chip with a 3px lime bottom bar. Drop the '!' and say 'enter raid'. Add the 'e' key chip.",
-   "P2 bottom hint stack (welcome toast + wasd/shift/e legend) above the hotbar: Remove the welcome sentence, or auto-dismiss it after 4s. Make the legend one 16px row, with 16px gaps and the same --ui-panel fill and border as the other chips. Keep a 16px clearance above the hotbar.",
-   "P2 top-left title panel 'the undercroft': Align it to the 96px (5%) margin to match the top-right group. Drop the repeated sub-line, or set it to 16px --tx-2. Make the panel height match the top-right currency row."
+   "P1 the last pour chip, bottom right: Delete the sentence and the asterisks. If a warning is needed, put a 16px --warn 'beta' tag inline in the chip. Make this chip the same 40px height as the other chips.",
+   "P1 station name chips (wirt the gambler, the mainframe, shop craft and hire, settings, the stash, fashion): Set the text to 20px f-cond 600 in --tx-1, padding 8px 16px, 1px --ui-line-hi border, 4px radius, on --ui-panel. Centre each chip 16px above its station pad. Give the nearest station a lime 'e' key chip and a 2px --acc border.",
+   "P1 'enter raid!' chip, top centre: Say 'enter raid' with no '!'. Use 32px f-cond 800 in --acc on a --ui-panel plate with a 1px --ui-line-hi border and a 3px --acc bottom bar. Add an 'e' key chip at 16px to the right, and keep 16px clear of the pillars.",
+   "P2 top-left title panel and welcome toast: Align both groups to the 96px margin. Drop the toast, or auto-dismiss it after 4s. Reduce the sub-line to 16px --tx-2. Match the panel height to the top-right row (56px).",
+   "P2 top-right currency row: Put the row on a --ui-panel plate with a 1px border and 8px/16px padding. Set the labels to 16px --tx-2 and the numbers to 20px f-cond 700 --tx-1. Use 24px gaps. Keep $900 as the single heavy number."
   ],
-  "pic": "tools/handoff/console/notes/shots/89-hub-floor-after/03-hub-floor-1080.jpg",
-  "task": "89-hub-floor",
-  "when": "2026-10-22T10:05"
+  "pic": "tools/handoff/console/notes/shots/0p07-239-after/03-hub-floor-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-31T13:46"
  },
  "04-stash-terminal": {
   "score": 3,

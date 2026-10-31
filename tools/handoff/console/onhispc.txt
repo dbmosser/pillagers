@@ -150,3 +150,4 @@
 10-31 09:31 v36.81 cw-onehotbar on his pc after 67s (8802 serves 36.81) week 93%
 10-31 09:37 v36.82 cw-outlineorder on his pc after 51s (8802 serves 36.82) week 93%
 10-31 09:42 v36.83 cw-cardstamp on his pc after 18s (8802 serves 36.83) week 93%
+10-31 09:45 v36.84 cw-hubpolish on his pc after 34s (8802 serves 36.84) week 93%

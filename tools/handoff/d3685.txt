@@ -1,0 +1,5 @@
+## v36.85 - THE RACKS PAGE READS AT A GLANCE
+
+Co-op hunt while he was away. The critic scored the mainframe racks page 2: a part you could not use looked the same as one you could, the counter was teal, empty slots looked like built ones, rows and columns did not line up and the cost text was small. Disabled buttons are now dashed and empty, built slots are solid green and empty ones dashed, the counter is the text colour, the slots span the build column and the count starts where the friend column starts, and the cost parts are 20px with a short part in red.
+
+MEASURED. Check 36.85 passes, and fails on v36.84.
