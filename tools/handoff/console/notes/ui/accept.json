@@ -434,18 +434,18 @@
  "50-arcade-hud-live": {
   "score": 3,
   "pass": false,
-  "verdict": "The raid hud is cleaner than a typical amateur one, with a clear hero ammo number and an all-lower-case hotbar. But the corner widgets use different panel styles, the type sizes are scattered, and the hp, armour and stamina bars are all the same weight, so the screen still reads as parts from several different screens.",
+  "need": 4,
+  "verdict": "The HUD is a little more legible, with dark plates behind the timer, score and extract chip and a visible hp track, but the earlier structural advice was not followed: it still reads as stacked separate boxes with the same bar weights and no consistent margins.",
   "findings": [
-   "P1 top-centre score/timer plate: Use one panel: a 16px top margin, 1px --ui-line-hi border, 4px radius. Make the timer the 56px f-cond 800 hero and drop the score to 20px tx-2. Put the extract chip inside the panel on its own 16px row, and move the arrow into that row.",
-   "P1 bottom-left hp/armour/stamina bars: Hp is the one hero bar: 28px tall, 20px label. Armour and stamina are 10px slim bars, tx-2 labels at 16px, set outside the fill. Keep a 5% margin (96px left, 48px bottom). Put a 1px --ui-void backing under each bar so they hold up on any floor colour.",
-   "P1 right column: minimap, run info, ammo: Use one panel recipe on all three: --ui-panel 90% fill, 1px --ui-line-hi border, 4px radius, 24px padding, 16px gap, and one shared width of 320px aligned to the same right margin. Drop the 'run info' heading. Set the goals as 16px rows with 8px gaps, tx-1 for the goal name and tx-2 for progress and reward.",
-   "P1 left status chips: f1 controls, fog, stronghold, golden enemy: Use one chip style: 16px f-cond 600, 32px tall, --ui-panel fill, 1px border, 8px gap. Remove the info icons. Fold 'standing' into the same chip. Group the chips in one left-aligned stack with a 48px margin.",
-   "P2 hotbar and weapon hint strip: Give the active slot one lime 2px border with --ui-raised fill and no other highlight. Use rarity only as a 3px bottom bar. Set slot numbers to 16px tx-2. Dim empty icons to 40% opacity. Put the weapon name and the hints on one flat strip at 16px."
+   "P1 top-centre timer, score and extract plates: Merge them into one plate, 16px from the top, with a 1px --ui-line-hi border and a 4px radius. Make the timer the 56px f-cond 800 hero. Set the score at 20px tx-2 and drop the 'score' label. Put the extract chip and its arrow on one 16px row inside the plate, and move the weather icon into the plate too.",
+   "P1 bottom-left hp and armour bars: Make hp the single hero bar, 28px tall with a 20px label. Make armour and stamina 10px slim bars with 16px tx-2 labels placed outside the fill. Move the stack to 96px from the left and 48px from the bottom. Back each bar with a 1px --ui-void line.",
+   "P1 ammo plate and goals dropdown (right side): Give both the same recipe: --ui-panel fill, 1px --ui-line-hi border, 4px radius and 24px padding. Set both to 320px wide on the same 48px right margin. Set the weapon name to 16px tx-2 and keep the 56px ammo count. Replace the chevron with a plain 16px 'goals 0/3' label.",
+   "P2 hotbar: Dim empty icons to 25% or remove them. Give the active slot a 2px --acc border and an --ui-raised fill. Set the slot numbers to 16px tx-2. Put the 'f' badge in a 16px corner chip that does not cover the icon.",
+   "P2 f1 controls chip: Use a 32px-tall chip with 16px f-cond 600 text, --ui-panel fill and a 1px border. Anchor it above the hp stack at 96px from the left, 16px above the armour bar."
   ],
-  "pic": "tools/handoff/console/notes/shots/c-02-r21/50-arcade-hud-live-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/0p01-after2/50-arcade-hud-live-1080.jpg",
   "task": "manual",
-  "when": "2026-10-20T05:38",
-  "need": 4
+  "when": "2026-10-31T13:18"
  },
  "52-arcade-run-over": {
   "score": 3,

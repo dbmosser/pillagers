@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.77 - THE RING NAME BADGE HUGS ITS LETTER
+
+Co-op hunt while he was away. The picture of v36.74 (screen 37) showed the new round badge around the ring letter touching the letters either side on the one-space inbound line. It is now an oval measured to the letter. Drawing only. Watch: the ring letter in the extract line reads as a name, not a smudge.
+
+MEASURED. Check 36.77 passes, and fails on v36.76.
 ## v36.76 - THE PILLAGER BOARD READS AT 16 PX
 
 Co-op hunt while he was away. The Codex critic on the raid HUD (o-120d, o-01, o-09f, o-137): the current pillagers rows were about 14 px on the screen at one weight, under the 16 px floor of the style guide, a dense block that competed with the rest of the HUD. The title and the rows go to the label size (about 16.8 px on the screen), the row pitch and the panel width grow to hold them. You stay the bright row, the rivals sit one step back (v36.73).

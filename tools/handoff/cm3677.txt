@@ -1,0 +1,7 @@
+v36.77: the ring name badge hugs its letter
+
+The ring name badge on the extraction countdown hugs its letter.
+
+Check 36.77. Fails on v36.76.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

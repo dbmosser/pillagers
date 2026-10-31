@@ -3912,8 +3912,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.76';
-var VER_AT='2026-10-31 09:15';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.77';
+var VER_AT='2026-10-31 09:18';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46756,7 +46756,8 @@ ctx.restore();
     hudText(_exS,W/2,_exBan);   // v16.30, his word: inbound
     // v36.xx (cw-xcountplate): the letter is the ring's name (his words stay: extract in progress), so it is ringed like a badge. The distance is the pill's job (top centre, once), the action is the centre line (once).
     try{ var _exPre=TX(holding?'EXTRACT IN PROGRESS!  ':'EXTRACT '), _exFp=parseFloat((/([\d.]+)px/.exec(ctx.font)||[0,24])[1]), _exCx=W/2-hudRawW(TX(_exS))/2+hudRawW(_exPre)+hudRawW(TX(_exL))/2;
-      ctx.save(); ctx.lineWidth=Math.max(1.5,_exFp*0.07); ctx.strokeStyle=ctx.fillStyle; ctx.beginPath(); ctx.arc(_exCx,_exBan-_exFp*0.3,_exFp*0.52,0,6.2832); ctx.stroke(); ctx.restore(); }catch(_exRg){}
+      // v36.xx (cw-xcountplate2), the critic's eye on the picture (screen 37): the round badge touched the letters either side on the one-space inbound line. It is an oval that hugs the letter (its width plus 0.1 of the type size each side, a single space is 0.25).
+      ctx.save(); ctx.lineWidth=Math.max(1.5,_exFp*0.07); ctx.strokeStyle=ctx.fillStyle; ctx.beginPath(); ctx.ellipse(_exCx,_exBan-_exFp*0.3,hudRawW(TX(_exL))/2+_exFp*0.1,_exFp*0.5,0,0,6.2832); ctx.stroke(); ctx.restore(); }catch(_exRg){}
     {
       // count what is actually converging, because a number climbing while you
       // stand still is the tension the wait was missing
@@ -56891,7 +56892,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.76: The pillager board text is bigger and easier to read. Check 36.76 fails on v36.75',
+  now:'v36.77: The ring name badge on the extraction countdown hugs its letter. Check 36.77 fails on v36.76',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

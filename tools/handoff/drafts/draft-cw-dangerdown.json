@@ -1,0 +1,24 @@
+{
+    "title":  "A DANGER STANDS OVER THE DOWNED CARD",
+    "why":  "Follow-up to v36.75: the danger plate now stands at 27 percent of the height, and the downed card (lifted off the player in v35.xx) stands at the same height, so a danger said while you are down would draw on the card. While you are down the plate now stands on top of the card, clear of it.",
+    "now":  "A danger said while you are down stands over the downed card, never on it.",
+    "edits":  [
+                  {
+                      "anchor":  "var DOWNGAP=64, DOWNLIFT=0;",
+                      "replacement":  "var DOWNGAP=64, DOWNLIFT=0, DOWNTOP=0;   // v36.77 (cw-dangerdown): DOWNTOP is the top of the downed card on the screen, in px, as last drawn"
+                  },
+                  {
+                      "anchor":  "DOWNLIFT=_dLift; }catch(_dlf){}",
+                      "replacement":  "DOWNLIFT=_dLift; DOWNTOP=Math.round(H/2+_dwz*((_dpR.y-_dLift)-H/2)); }catch(_dlf){}"
+                  },
+                  {
+                      "anchor":  "function alertSlotY(){ return Math.max(ALERTY||LH(96),Math.round(H*ALERTYF/((HUDZ.msg||1)*hudRes()*hudUserZ(\u0027msg\u0027)))); }   // the top of the danger plate, before the message scale",
+                      "replacement":  "function alertSlotY(hh){   // the top of the danger plate, before the message scale\n  var z=(HUDZ.msg||1)*hudRes()*hudUserZ(\u0027msg\u0027), y=Math.max(ALERTY||LH(96),Math.round(H*ALERTYF/z)), p=G\u0026\u0026G.player;\n  // v36.77 (cw-dangerdown): while you are down the downed card stands at the same height (it was lifted off the player, v35.xx cw-clockcard), so the danger plate stands on top of it\n  if(p\u0026\u0026p.downed\u0026\u0026!G.over\u0026\u0026DOWNTOP\u003e0) y=Math.max(ALERTY||LH(96),Math.min(y,Math.floor(DOWNTOP/z-hh-LH(8))));\n  return y;\n}"
+                  },
+                  {
+                      "anchor":  "slot:1,y:alertSlotY(),",
+                      "replacement":  "slot:1,y:alertSlotY(y+Math.round((sl.length?lp:hp)*0.3)+LH(5)),"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a danger said while you are down stands over the downed card, never on it\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid\u0026\u0026typeof __frame===\u0027function\u0027)||typeof alertSay!==\u0027function\u0027) return \u0027SKIP: no alert fixture\u0027;\n     var PR=CanvasRenderingContext2D.prototype, of=PR.fillRect, g=null, p=null, tabs=[], z, bad=[], al;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||g.over||g.sim||!g.player) return \u0027SKIP: no live raid\u0027;\n       p=g.player; g.ents=[]; g.bagOpen=false; g.mapOpen=false; g.paused=false;\n       g.alert=null; g.alertQ=[]; g.alertSeen={};\n       p.downed=true; p.downT=(CFG.downTime||30)*0.8; p.revived=false;\n       __frame(); __frame();\n       alertSay(\u0027TEST DANGER OVER CARD\u0027,\u0027warn\u0027,{key:\u0027t-card\u0027}); if(g.alert) g.alert.at=(g.t||0)-1;\n       PR.fillRect=function(x,y,w,h){ var m=this.getTransform(); if(w===36\u0026\u0026h===3) tabs.push(m.f+y*m.d); return of.apply(this,arguments); };\n       __frame(); __frame();\n       PR.fillRect=of;\n       z=(HUDZ.msg||1)*hudRes()*hudUserZ(\u0027msg\u0027); al=ALERTL;\n       if(!tabs.length) return \u0027the downed card tab was not drawn\u0027;\n       if(!al||!al.a||al.a.m!==\u0027TEST DANGER OVER CARD\u0027) return \u0027the danger plate was not laid out while down\u0027;\n       if((al.y+al.h)*z\u003etabs[tabs.length-1]) bad.push(\u0027the danger plate ends at \u0027+Math.round((al.y+al.h)*z)+\u0027, under the top of the downed card at \u0027+Math.round(tabs[tabs.length-1]));\n       return bad.length?bad.join(\u0027; \u0027):null;\n     } finally {\n       PR.fillRect=of;\n       try{ p.downed=false; }catch(_e0){}\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}
