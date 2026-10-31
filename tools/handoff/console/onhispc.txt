@@ -147,3 +147,4 @@
 10-31 09:23 v36.78 cw-dangerdown on his pc after 66s (8802 serves 36.78) week 93%
 10-31 09:26 v36.79 cw-xcountplate3 on his pc after 67s (8802 serves 36.79) week 93%
 10-31 09:28 v36.80 cw-downedpolish on his pc after 17s (8802 serves 36.80) week 93%
+10-31 09:31 v36.81 cw-onehotbar on his pc after 67s (8802 serves 36.81) week 93%

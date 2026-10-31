@@ -1,0 +1,5 @@
+## v36.82 - ONE THIN OUTLINE IN A FIXED ORDER: PARTNER, GOLDEN, CREWS, THE BOX IN REACH
+
+Co-op hunt while he was away. His pick 81 (outline hierarchy), priorities page r-outlines: a busy 4K fight has to stay readable. Before this the partner had only a ground ring, crews only a plate colour, the golden enemy only its gold body and the box in reach nothing. They now share one thin outline made by the elite rim stamp, in a fixed order of strength: partner (his seat colour, strongest), golden enemy (gold), pillager crews (their crew colour), the one box in reach (lime, faintest). Plain machines and hired pillagers get none, the elite affix rim is unchanged.
+
+MEASURED. Check 36.82 passes, and fails on v36.81.

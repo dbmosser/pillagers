@@ -3912,8 +3912,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.81';
-var VER_AT='2026-10-31 09:29';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.82';
+var VER_AT='2026-10-31 09:36';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -26887,7 +26887,7 @@ function affixMend(e){
 // to the world canvas under and over the unchanged sprite. The ground ring is one thin ring now. Cosmetic code: it draws no random
 // number, and a machine that is not an elite is drawn exactly as before.
 var RIM={ca:null,cb:null,xa:null,xb:null,on:0,h:null,n:0};
-function rimOpen(e,col){
+function rimOpen(e,col,sp){   // v36.80 (cw-outlineorder): sp (an OUTLN row) asks for the one thin outline instead of the elite two-layer rim
   var T, cx, cy, hw, up, dn, sx, sy, w, h, h1, k;
   if(!e||!col||RIM.on||typeof wc==='undefined'||!wc||!wc.getTransform||(typeof G!=='undefined'&&G&&G.sim)) return null;
   try{
@@ -26903,7 +26903,7 @@ function rimOpen(e,col){
     if(RIM.ca.height<h){ RIM.ca.height=h; RIM.cb.height=h; }
     RIM.xa.setTransform(1,0,0,1,0,0); RIM.xa.globalAlpha=1; RIM.xa.globalCompositeOperation='source-over'; RIM.xa.clearRect(0,0,w,h);
     RIM.xa.setTransform(T.a,0,0,T.d,T.e-sx,T.f-sy);
-    h1={w0:wc,sh0:shadowE,col:col,sx:sx,sy:sy,w:w,h:h,u:T.a,e:e};
+    h1={w0:wc,sh0:shadowE,col:col,sp:sp,sx:sx,sy:sy,w:w,h:h,u:T.a,e:e};
     RIM.on=1; RIM.h=h1;
     shadowE=function(x,y,rx,ry,a){ var w1=wc, M=(w1===RIM.xa)?w1.getTransform():null; wc=h1.w0; wc.save(); try{ if(M) wc.setTransform(M.a,M.b,M.c,M.d,M.e+h1.sx,M.f+h1.sy); h1.sh0(x,y,rx,ry,a); } finally{ wc.restore(); wc=w1; } };   // the ground shadow stays on the world canvas, out of the outline   // v28.xx (cw-thirdsize): drawn with the transform the body is drawn with (the figure scale), so the smaller body stands on its own shadow
     wc=RIM.xa;
@@ -26915,10 +26915,46 @@ function rimAbort(){
   if(h){ wc=h.w0; shadowE=h.sh0; }
   RIM.on=0; RIM.h=null;
 }
+// v36.80 (cw-outlineorder), HIS PICK 81 (2026-10-14, outline hierarchy), priorities page r-outlines: ONE thin outline for everything that has to stand out in a busy
+// fight, in a fixed order of strength: the partner first, then the golden enemy, then the pillager crews, then the one box in reach. Plain machines get none.
+// w is in world units (never under 1 device pixel), a is the alpha; the order of a is the order of the rows. Cosmetic: no random draw, nothing the sim reads.
+var OUTLN={partner:{w:1.0,a:1.0},golden:{w:0.7,a:0.9,c:'#ffd452'},crew:{w:0.55,a:0.7},use:{w:0.55,a:0.5,c:'#e6ff3d'}};
+var OUTLN_CREW=['#c8452f','#4a90c2','#c2a54a','#7a4ac2'];
+function outlineFor(e){   // the outline row and colour a machine or pillager wears, or null (a plain machine, a hired pillager)
+  if(!e||!(e.hp>0)) return null;
+  if(e.golden) return {c:OUTLN.golden.c,sp:OUTLN.golden};
+  if(e.kind==='raider'&&!e.merc&&!e.friendlyPC&&CFG.raiderFeud!==0&&e.crew!==undefined) return {c:OUTLN_CREW[e.crew%4],sp:OUTLN.crew};
+  return null;
+}
+function outlinePartnerOpen(g){   // the partner in a co-op raid wears his seat colour; an opponent in pvp wears nothing
+  if(!g||(typeof NET!=='undefined'&&NET.mode==='pvp')) return null;
+  return rimOpen({x:g.x,y:g.y,r:12,kind:'raider'},SEATCOL[(+g.seat||0)&3],OUTLN.partner);
+}
+function drawUseOutline(ct,w,lift,d2){   // the box in reach (the one E searches): a thin lime rectangle, no glow
+  var sp=OUTLN.use;
+  if(!ct||ct.opened||ct.type==='body'||!G||G.sim||G.nearContainer!==ct||G.searching===ct) return;
+  wc.save();
+  try{ wc.strokeStyle=hexA(sp.c,sp.a); wc.lineWidth=sp.w; wc.lineJoin='round'; wc.strokeRect(ct.x-w/2-0.5,ct.y-lift-d2-0.5,w+1,lift+d2+1); }
+  finally{ wc.restore(); }
+}
+function rimStamp(h){   // the thin outline: the body grown one step in eight directions in the row colour, then the body over it
+  var sp=h.sp, xb=RIM.xb, d=Math.max(1,Math.round(h.u*sp.w)), k, dx, dy;
+  try{
+    xb.setTransform(1,0,0,1,0,0); xb.globalCompositeOperation='source-over'; xb.clearRect(0,0,h.w,h.h);
+    for(k=0;k<8;k++){ dx=Math.round(Math.cos(k*0.7854)*d); dy=Math.round(Math.sin(k*0.7854)*d); xb.drawImage(RIM.ca,0,0,h.w,h.h,dx,dy,h.w,h.h); }
+    xb.globalCompositeOperation='source-in'; xb.fillStyle=hexA(h.col,sp.a); xb.fillRect(0,0,h.w,h.h); xb.globalCompositeOperation='source-over';
+    wc.save(); wc.setTransform(1,0,0,1,0,0);
+    wc.drawImage(RIM.cb,0,0,h.w,h.h,h.sx,h.sy,h.w,h.h);
+    wc.drawImage(RIM.ca,0,0,h.w,h.h,h.sx,h.sy,h.w,h.h);
+    wc.restore();
+    RIM.n++;
+  }catch(_rs){ try{ wc.restore(); }catch(_r2){} }
+}
 function rimClose(h){
   var k, d, dx, dy, m, pu, xa=RIM.xa, xb=RIM.xb;
   if(!h) return;
   wc=h.w0; shadowE=h.sh0; RIM.on=0; RIM.h=null;
+  if(h.sp){ rimStamp(h); return; }   // v36.80 (cw-outlineorder)
   try{
     pu=0.5+0.5*Math.sin(((typeof G!=='undefined'&&G)?(G.t||0):0)*3.2+h.e.x*0.02);
     xa.setTransform(1,0,0,1,0,0); xa.globalCompositeOperation='source-atop'; xa.fillStyle=hexA(h.col,0.12+0.05*pu); xa.fillRect(0,0,h.w,h.h); xa.globalCompositeOperation='source-over';
@@ -40716,6 +40752,7 @@ if(ct.bot&&WRECKDRAW[ct.bot]){
   if(!pwE) pwPaint(); else if(pwE.smoke) wreckSmoke(ct,pwE.smoke);
   wc.globalAlpha=1;
   if(ct.dropped&&!ct.opened&&!G.sim&&ct.best){ try{ lootShaft(ct,lift); }catch(_ls){} }   // v28.xx (cw-ascent), his pick 75
+  drawUseOutline(ct,w,lift,d2);   // v36.80 (cw-outlineorder): the box in reach wears the thin use outline
   // SPEC 7.4: partial progress is shown ON the container, so a half opened
   // crate you left behind is legible from across the room and worth returning to.
   // v8.99: not while you are searching THIS one. The cursor already carries a
@@ -42414,6 +42451,7 @@ var SHD=G.shells[i];
       machScaleEnd(_em);
       var _rm=null, _tlf=0, _tlh=0, _gb=null;   // v32.xx (cw-botlook): the body tell and the golden body
       if(!_pm&&e2.elite&&e2.affix&&AFFIX[e2.affix]) _rm=rimOpen(e2,AFFIX[e2.affix].c);   // v26.xx (aip1): the elite outline
+      else if(!_pm){ var _ol=outlineFor(e2); if(_ol) _rm=rimOpen(e2,_ol.c,_ol.sp); }   // v36.80 (cw-outlineorder): the golden enemy and the pillager crews wear the one thin outline
       _gb=goldBodyBegin(e2);   // v32.xx (cw-botlook) a21 B: the golden enemy is drawn inside the gold filter with a shine sweeping across it
       if(e2.kind==='choir') drawChoirS(e2);
       else if(e2.kind==='warden') drawWardenAt(e2);   // v17.49: the boss is drawn to its size
@@ -56897,7 +56935,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.81: the number key row says hotbar everywhere: the backpack panel, the lift, the pad legends, the raid callouts and the stash words Check 36.81 fails on v36.80',
+  now:'v36.82: The partner, the golden enemy, pillager crews and the box in reach wear one thin outline, strongest to faintest in that order. Check 36.82 fails on v36.81',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -63106,7 +63144,7 @@ function netUpDraw(DR){
 // rolling, sprinting or down as he said, lifted by the deck he stands on. Wrapped, because a fault in one body must never
 // cost the frame.
 function netUpDrawOne(g){
-  var lk, fit, lift=0, mode, wp=null;
+  var lk, fit, lift=0, mode, wp=null, _pr=null;
   try{
     lk=g.lk||{}; fit=FITCOL[lk.fit]||FITCOL.slate;
     if(g.w&&Object.prototype.hasOwnProperty.call(WEAPONS,g.w)&&WEAPONS[g.w]&&WEAPONS[g.w].id) wp=WEAPONS[g.w];
@@ -63121,14 +63159,16 @@ function netUpDrawOne(g){
     if(typeof g._hpSeen==='number'&&g.hp<g._hpSeen-0.5) g._hitAt=G.t;
     g._hpSeen=g.hp;
     if(typeof g._hitAt==='number'){ _ha=G.t-g._hitAt; if(_ha>=0&&_ha<0.4) _hg=0.4-_ha; else _ha=9; }
+    _pr=outlinePartnerOpen(g);   // v36.80 (cw-outlineorder): the partner is the strongest outline, in his seat colour
     drawOp(g.x,g.y,g.f,(g.roll>0)?(1-g.roll/0.38)*12.6:g.bob,fit[1],0,0,mode,0,
       {hero:0,own:g,team:(NET.mode==='pvp')?'foe':'ally',moving:!!g.mv,sprint:!!g.sp,ads:false,hurt:_hg,hurtAge:_ha,rl:0,bulk:0,
        skin:lk.skin,hair:lk.hair,hat:lk.hat,cut:lk.cut,beard:lk.beard,eyes:lk.eyes,faceMark:lk.face,boots:lk.boots,
        gloves:lk.gloves,pack:lk.pack,patch:lk.patch,tattoo:lk.tattoo,outfit:lk.outfit,build:lk.build,scheme:lk.scheme,vest:lk.vest,pads:lk.pads});
+    rimClose(_pr); _pr=null;   // v36.80 (cw-outlineorder)
     if(g.sh&&G&&G.arcade) arcadeShieldRing(g.x,g.y,0);   // v23.30 (arcade9)
     if(g.pb&&G&&(G.arcade||G.career)) pwrBubbleUp(g);   // v28.48 (cloud-coop-teammate-shield-bubble), CLOUD HUNT 2026-10-15: his SHIELD BUBBLE, drawn round him as his own window draws it
     if(g.fk) forgeGlow(g.x,g.y,g.f,{fk:g.fk,el:g.el},g.dn);   // v23.xx (forge8): his forged gun glows too
-  }catch(e){}
+  }catch(e){ if(_pr) rimAbort(); }   // v36.80 (cw-outlineorder): a throw inside the partner body puts the world canvas back
   if(lift>0){ try{ wc.restore(); }catch(e2){} }
 }
 // Their names over their heads, drawn in the world beside the pillager nameplates.

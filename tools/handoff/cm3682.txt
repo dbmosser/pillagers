@@ -1,0 +1,7 @@
+v36.82: one thin outline in a fixed order: partner, golden, crews, the box in reach
+
+The partner, the golden enemy, pillager crews and the box in reach wear one thin outline, strongest to faintest in that order.
+
+Check 36.82. Fails on v36.81.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

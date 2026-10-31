@@ -1,0 +1,12 @@
+9.89: PASS
+9.90: PASS
+10.26: PASS
+12.90: PASS
+15.59: PASS
+16.16: PASS
+22.51: PASS
+25.95: SKIP: wheel4 - the bar holds nine guns only and every item went to the wheel, so the class keys, their groups, keycaps and picks are gone (the wheel checks cover the use)
+34.07: PASS
+36.81: PASS
+35.12: PASS
+ALL DONE
