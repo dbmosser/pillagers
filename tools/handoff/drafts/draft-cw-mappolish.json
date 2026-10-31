@@ -1,0 +1,52 @@
+{
+    "title":  "SECTOR MAP POLISH",
+    "why":  "His 10-31 party polish order. The critic held the M map at 3: contract hierarchy and tracks, zone name contrast, and the strongbox word floating off its icon at 4K. Render only. Watch: the strongbox word sits close to its icon, zone names are brighter, contract rewards are brighter and the progress tracks are thicker.",
+    "now":  "Sector map: the strongbox word is placed first so it sits right beside its icon, zone names are brighter, the contract reward uses the main text colour and the progress track is 5 px (10 px at 4K). No caches, no new features. LOCAL: no linked review. Retarget: check 31.48 accepts zone names up to 82 percent.",
+    "edits":  [
+                  {
+                      "anchor":  "function hits(a,ic,own){ var _ax=16*_mz, _ay=16*_mz;",
+                      "replacement":  "var _rx=1;   /* v28.xx (cw-mappolish): air scale; an anchored tag that finds no strict spot beside its icon tries again with half the air before it is sent across the map (the strongbox word floated 70 px off at 4K) */ function hits(a,ic,own){ var _ax=16*_mz*_rx, _ay=16*_mz*(_rx\u003c1?0.375:1);"
+                  },
+                  {
+                      "anchor":  "if(a.l\u003cb2.r+12*_mz\u0026\u0026b2.l\u003ca.r+12*_mz\u0026\u0026a.t\u003cb2.b+12*_mz\u0026\u0026b2.t\u003ca.b+12*_mz) return true;",
+                      "replacement":  "var _im=12*_mz*_rx; if(a.l\u003cb2.r+_im\u0026\u0026b2.l\u003ca.r+_im\u0026\u0026a.t\u003cb2.b+_im\u0026\u0026b2.t\u003ca.b+_im) return true;"
+                  },
+                  {
+                      "anchor":  "_pass\u003c(g.items[0].mark?1:2)\u0026\u0026!ok",
+                      "replacement":  "_pass\u003c2\u0026\u0026!ok"
+                  },
+                  {
+                      "anchor":  "if(!hits(r,_pass===0,(!g.items[0].mark\u0026\u0026dy\u003c=0)?g.own:null)){",
+                      "replacement":  "_rx=(g.items[0].mark\u0026\u0026_pass===1)?0.5:1; if(!(g.items[0].mark\u0026\u0026tries[k][3]\u003e22*_mz)\u0026\u0026!hits(r,(g.items[0].mark||_pass===0),(!g.items[0].mark\u0026\u0026dy\u003c=0)?g.own:null)){"
+                  },
+                  {
+                      "anchor":  "if(!ok\u0026\u0026g.items[0].mark){",
+                      "replacement":  "_rx=1; if(!ok\u0026\u0026g.items[0].mark){"
+                  },
+                  {
+                      "anchor":  "dy=Math.max(0,I.t-(g.r.b+q[1]),g.r.t+q[1]-I.b); return (dx*dx+dy*dy)*1000+q[0]*q[0]+q[1]*q[1]; }",
+                      "replacement":  "dy=Math.max(0,I.t-(g.r.b+q[1]),g.r.t+q[1]-I.b); q[3]=Math.sqrt(dx*dx+dy*dy); return (dx*dx+dy*dy)*1000+q[0]*q[0]+q[1]*q[1]; }"
+                  },
+                  {
+                      "anchor":  "clusterMarks.forEach(function(I){ localX.push(I.l-12*_mz-g.r.r,I.r+12*_mz-g.r.l); localY.push(I.t-12*_mz-g.r.b,I.b+12*_mz-g.r.t); });",
+                      "replacement":  "clusterMarks.forEach(function(I){ localX.push(I.l-12*_mz-g.r.r,I.r+12*_mz-g.r.l,I.l-6*_mz-g.r.r,I.r+6*_mz-g.r.l); localY.push(I.t-12*_mz-g.r.b,I.b+12*_mz-g.r.t,I.t-6*_mz-g.r.b,I.b+6*_mz-g.r.t); });"
+                  },
+                  {
+                      "anchor":  "localX.push(B.l-xpad-g.r.r,B.r+xpad-g.r.l); localY.push(B.t-ypad-g.r.b,B.b+ypad-g.r.t);",
+                      "replacement":  "localX.push(B.l-xpad-g.r.r,B.r+xpad-g.r.l,B.l-xpad/2-g.r.r,B.r+xpad/2-g.r.l); localY.push(B.t-ypad-g.r.b,B.b+ypad-g.r.t,B.t-ypad*0.375-g.r.b,B.b+ypad*0.375-g.r.t);"
+                  },
+                  {
+                      "anchor":  "ctx.fillStyle=mapFirstOn()?UIC.tx_2:\u0027rgba(239,233,220,.66)\u0027;",
+                      "replacement":  "ctx.fillStyle=mapFirstOn()?UIC.tx_2:\u0027rgba(239,233,220,.78)\u0027;   /* v28.xx (cw-mappolish): zone names a step brighter on the sector map (the critic: zone label contrast) */"
+                  },
+                  {
+                      "anchor":  "if(txt){ ctx.font=rewFont; ctx.fillStyle=mapFirstOn()?UIC.tx_1:UIC.tx_2;",
+                      "replacement":  "if(txt){ ctx.font=rewFont; ctx.fillStyle=UIC.tx_1; /* v28.xx (cw-mappolish): the reward is the main text colour on both maps, the name and the count stay quiet (the critic: contracts hierarchy) */"
+                  },
+                  {
+                      "anchor":  "bh=Math.max(3,Math.round(4*z))",
+                      "replacement":  "bh=Math.max(4,Math.round(5*z))/* v28.xx (cw-mappolish): the progress track is a step thicker so it reads as a track (the critic: progress tracks) */"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-mappolish: on the seed 4242 Cold Storage map at 1080p and 4K no two map labels touch, the strongbox word sits beside its icon (4 to 16 px clear), zone names are brighter, the contract reward is main text and the progress track is thicker\u0027,\n   run:function(){\n     var g, bad=[], os=MAPFIRST.skip, ow=W, oh=H, oi=mapIcon, proto=CanvasRenderingContext2D.prototype, oFT=proto.fillText, oFR=proto.fillRect, icons, n, f, z, ent, cd, sb, zn, zfs, rews, tracks, i, j;\n     function a(s){ var m=/^rgba?\\(([\\d.]+),\\s*([\\d.]+),\\s*([\\d.]+)(?:,\\s*([\\d.]+))?\\)$/.exec(String(s)); return m?(m[4]===undefined?1:+m[4]):1; }\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile(); MAPFIRST.skip=1;\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state(); if(!g||g.over) return \u0027SKIP: no raid\u0027;\n       P.contracts=[{type:\u0027kill\u0027,tgt:\u0027crawler\u0027,n:5,prog:3,reward:4321,desc:\u0027Destroy 5 crawlers\u0027,tier:\u0027std\u0027},{type:\u0027open\u0027,ct:\u0027crate\u0027,n:4,prog:4,reward:777,desc:\u0027Search 4 crates\u0027,tier:\u0027std\u0027},{type:\u0027conduct\u0027,ck:\u0027clean\u0027,n:1,prog:0,reward:1234,desc:\u0027Extract without using a single heal\u0027,tier:\u0027std\u0027},{type:\u0027kill\u0027,tgt:\u0027crawler\u0027,n:3,prog:0,reward:500,desc:\u0027Destroy 3 crawlers\u0027,tier:\u0027std\u0027},{type:\u0027open\u0027,ct:\u0027crate\u0027,n:5,prog:0,reward:350,desc:\u0027Search 5 crates\u0027,tier:\u0027std\u0027},{type:\u0027kill\u0027,tgt:\u0027raider\u0027,n:2,prog:0,reward:520,desc:\u0027Eliminate 2 pillagers\u0027,tier:\u0027std\u0027}];\n       g.mapOpen=true; g.bagOpen=false; g.paused=false; keys={}; mouse.down=false;\n       sb=g.containers.filter(function(v){ return v.strong\u0026\u0026!v.opened; })[0];\n       zn=((g.map\u0026\u0026g.map.zones)||[]).map(function(q){ return String(q.name||\u0027\u0027).toLowerCase(); }).filter(function(s){ return s; });\n       if(!sb) return \u0027staging: no strongbox\u0027;\n       for(n=0;n\u003c2;n++){\n         W=n?3840:1920; H=n?2160:1080; z=Math.max(1,hudRes());\n         for(f=0;f\u003c2;f++){\n           g.mapFirst=f; g.intel=1; zfs=[]; rews=[]; tracks=[];\n           proto.fillText=function(s){ var k=String(s).toLowerCase(); if(zn.indexOf(k)\u003e=0) zfs.push(this.fillStyle); if(/^\\$4,321$/.test(k)) rews.push(this.fillStyle); return oFT.apply(this,arguments); };\n           proto.fillRect=function(x,y,w,h){ tracks.push([x,y,w,h]); return oFR.apply(this,arguments); };\n           icons=[]; mapIcon=function(x,y,r){ icons.push([x,y,r]); return oi.apply(this,arguments); };\n           try{ ent=txRecord(function(){ drawMapOverlay(); }); } finally { proto.fillText=oFT; proto.fillRect=oFR; mapIcon=oi; }\n           cd=mapCard();\n           var m=mapProj(), tag=\u0027z\u0027+z+(f?\u0027 start\u0027:\u0027 map\u0027);\n           var bx=ent.filter(function(h){ var b=txBox(h), cx=b.x+b.w/2, cy=b.y+b.h/2; return cx\u003em.ox\u0026\u0026cx\u003cm.ox+WORLD_W*m.sc\u0026\u0026cy\u003em.oy\u0026\u0026cy\u003cm.oy+WORLD_H*m.sc; }).map(function(h){ var b=txBox(h); return {t:String(h.t),l:b.x,r:b.x+b.w,tp:b.y,bt:b.y+b.h}; });\n           var mg=1e9, ov=[], c, gx, gy, d;\n           for(i=0;i\u003cbx.length;i++) for(j=i+1;j\u003cbx.length;j++){ c=bx[i]; d=bx[j]; gx=Math.max(c.l-d.r,d.l-c.r); gy=Math.max(c.tp-d.bt,d.tp-c.bt); if(gx\u003c0\u0026\u0026gy\u003c0) ov.push(c.t+\u0027|\u0027+d.t); else mg=Math.min(mg,Math.max(gx,gy)); }\n           if(ov.length) bad.push(tag+\u0027: labels overlap \u0027+ov.join(\u0027, \u0027));\n           if(mg\u003c6*z-0.5) bad.push(tag+\u0027: two labels are only \u0027+mg.toFixed(1)+\u0027 px apart\u0027);\n           if(bx.length\u003c20) bad.push(tag+\u0027: only \u0027+bx.length+\u0027 labels drawn\u0027);\n           if(!f){\n             var sw=bx.filter(function(b){ return /^strongbox$/i.test(b.t); })[0], ix=m.ox+sb.x*m.sc, iy=m.oy+sb.y*m.sc, r=15*z, sg;\n             if(!sw) bad.push(tag+\u0027: the strongbox word is missing\u0027);\n             else{ sg=Math.max(sw.l-(ix+r),(ix-r)-sw.r,sw.tp-(iy+r),(iy-r)-sw.bt); if(sg\u003c4) bad.push(tag+\u0027: the strongbox word is only \u0027+sg.toFixed(1)+\u0027 px from its icon\u0027); if(sg\u003e16*z) bad.push(tag+\u0027: the strongbox word floats \u0027+sg.toFixed(1)+\u0027 px off its icon (over \u0027+(16*z)+\u0027) DIAG icons=\u0027+icons.filter(function(c){ return Math.abs(c[0]-ix)\u003c300\u0026\u0026Math.abs(c[1]-iy)\u003c300; }).map(function(c){ return Math.round(c[0])+\u0027,\u0027+Math.round(c[1])+\u0027r\u0027+Math.round(c[2]); }).join(\u0027 \u0027)+\u0027 box=\u0027+Math.round(m.ox)+\u0027-\u0027+Math.round(m.ox+WORLD_W*m.sc)); }\n             if(!zfs.length||Math.min.apply(null,zfs.map(a))\u003c0.74) bad.push(tag+\u0027: zone names are drawn under 74 percent\u0027);\n             if(!rews.length||rews.some(function(s){ return String(s).toLowerCase()!==String(UIC.tx_1).toLowerCase(); })) bad.push(tag+\u0027: the contract reward is not the main text colour\u0027);\n             var q=Math.round(20*cd.u), tk=tracks.filter(function(t){ return cd.col\u0026\u0026Math.abs(t[0]-(cd.col.x+q))\u003c1.1\u0026\u0026Math.abs(t[2]-(cd.col.w-2*q))\u003c1.1; });\n             if(!tk.length||Math.min.apply(null,tk.map(function(t){ return t[3]; }))\u003c5*z-0.6) bad.push(tag+\u0027: the progress tracks are under \u0027+(5*z)+\u0027 px thick (\u0027+(tk[0]?tk[0][3]:\u0027none\u0027)+\u0027)\u0027);\n           }\n         }\n       }\n       return bad.length?bad.join(\u0027; \u0027):null;\n     }finally{\n       proto.fillText=oFT; proto.fillRect=oFR; mapIcon=oi; W=ow; H=oh; MAPFIRST.skip=os;\n       try{ if(g){ g.mapFirst=0; g.mapOpen=false; } __endRaid(\u0027abandon\u0027); }catch(e){} __topClear(); __resetCfg(); __cleanProfile();\n     }\n   }},"
+}

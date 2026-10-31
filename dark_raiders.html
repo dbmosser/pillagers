@@ -3929,8 +3929,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.90';
-var VER_AT='2026-10-31 10:58';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.91';
+var VER_AT='2026-10-31 11:15';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50651,7 +50651,7 @@ function mapStartFont(font,z,min){
 }
 function mapContractsDraw(cd,rows){
   var c=cd.col, z=cd.z, u=cd.u, q=Math.round(20*u), th=Math.round(52*u), r=Math.max(2,Math.round(4*z)), lw=Math.max(1,Math.round(z)), n=rows.length, nd=0, i, row, ry, pitch, two,
-      y0, avail, nat=Math.round(76*u), mid, mid2, wRew, wCnt, maxW, barW, bh=Math.max(3,Math.round(4*z)), txt, cnt, cc, ch, fr, fcol,
+      y0, avail, nat=Math.round(76*u), mid, mid2, wRew, wCnt, maxW, barW, bh=Math.max(4,Math.round(5*z))/* v28.xx (cw-mappolish): the progress track is a step thicker so it reads as a track (the critic: progress tracks) */, txt, cnt, cc, ch, fr, fcol,
       nameFont=FSz('600 15.4px '+HUDF,z), cntFont=mapStartFont(FSz(TYPE.label,z),z), rewFont=mapStartFont(FSz(TYPE.label,z),z,20);
   if(mapFirstOn()) bh=Math.max(1,Math.round(z));   // v28.xx (cw-cx-mapstart-clear): quiet idle tracks keep all eight contracts visible.
   for(i=0;i<n;i++) if(rows[i].done) nd++;
@@ -50679,7 +50679,7 @@ function mapContractsDraw(cd,rows){
       maxW=c.w-2*q-(wRew?(wRew+q):0)-(two?0:(wCnt+q));
       ctx.font=nameFont; ctx.fillStyle=row.done?UIC.ok:(mapFirstOn()?UIC.tx_1:UIC.tx_2); ctx.textAlign='left'; ctx.fillText(mapFit(row.name,maxW),c.x+q,mid);
       if(mapFirstOn()&&row.rule==='holding'){ ctx.fillStyle=UIC.ok; ctx.fillRect(c.x+Math.round(8*z),ry+Math.round(12*z),Math.max(1,Math.round(3*z)),pitch-Math.round(24*z)); }   // v28.xx (cw-cx-mapstart-plates): a status mark, with no invented selection or new control.
-      if(txt){ ctx.font=rewFont; ctx.fillStyle=mapFirstOn()?UIC.tx_1:UIC.tx_2; ctx.textAlign='right'; ctx.fillText(txt,c.x+c.w-q,mid); ctx.textAlign='left'; }
+      if(txt){ ctx.font=rewFont; ctx.fillStyle=UIC.tx_1; /* v28.xx (cw-mappolish): the reward is the main text colour on both maps, the name and the count stay quiet (the critic: contracts hierarchy) */ ctx.textAlign='right'; ctx.fillText(txt,c.x+c.w-q,mid); ctx.textAlign='left'; }
       if(two){
         barW=c.w-2*q;   // v28.xx (cw-cx-mapquiet-o03): one right edge for reward, status and track.
         ctx.fillStyle=mapFirstOn()?UIC.ui_line:UIC.ui_line_hi; ctx.fillRect(c.x+q,mid2-bh/2,barW,bh);
@@ -50838,8 +50838,8 @@ function mapPlaceLabels(Q,hdrY,fn){
   /* v31.xx (cw-mapstyle3): the mark a tag is anchored to (the tag sits just above it) is no obstacle for that tag, so the tag keeps its place at the mark and is not pushed off it (the critic: labels float away from their icons) */
   var _mz=(typeof hudRes==='function')?hudRes():1;
   G2.forEach(function(g){ var L0=g.items[0], sx=L0.x*L0.m.a+L0.m.e, sy=L0.y*L0.m.d+L0.m.f, q, I; g.own=[]; for(q=0;q<MAPICONS.length;q++){ I=MAPICONS[q]; if(sx>=I.l&&sx<=I.r&&sy>=I.t-30*_mz&&sy<=(I.t+I.b)/2) g.own.push(q); } });
-  function hits(a,ic,own){ var _ax=16*_mz, _ay=16*_mz; for(var h=0;h<placed.length;h++){ var b=placed[h]; if(a.l<b.r+_ax&&b.l<a.r+_ax&&a.t<b.b+_ay&&b.t<a.b+_ay) return true; }   /* v31.xx (cw-mapstyle3): a tag keeps a third of its height of air from a tag beside it (blast freezer, locked touched strongbox) */
-    if(ic) for(var h2=0;h2<MAPICONS.length;h2++){ if(own&&own.indexOf(h2)>=0) continue; var b2=MAPICONS[h2]; if(a.l<b2.r+12*_mz&&b2.l<a.r+12*_mz&&a.t<b2.b+12*_mz&&b2.t<a.b+12*_mz) return true; }   // v31.xx (cw-mapstyle): a label never sits on a mark
+  var _rx=1;   /* v28.xx (cw-mappolish): air scale; an anchored tag that finds no strict spot beside its icon tries again with half the air before it is sent across the map (the strongbox word floated 70 px off at 4K) */ function hits(a,ic,own){ var _ax=16*_mz*_rx, _ay=16*_mz*(_rx<1?0.375:1); for(var h=0;h<placed.length;h++){ var b=placed[h]; if(a.l<b.r+_ax&&b.l<a.r+_ax&&a.t<b.b+_ay&&b.t<a.b+_ay) return true; }   /* v31.xx (cw-mapstyle3): a tag keeps a third of its height of air from a tag beside it (blast freezer, locked touched strongbox) */
+    if(ic) for(var h2=0;h2<MAPICONS.length;h2++){ if(own&&own.indexOf(h2)>=0) continue; var b2=MAPICONS[h2]; var _im=12*_mz*_rx; if(a.l<b2.r+_im&&b2.l<a.r+_im&&a.t<b2.b+_im&&b2.t<a.b+_im) return true; }   // v31.xx (cw-mapstyle): a label never sits on a mark
     return false; }
   // v19.31, seen on the 4K map screenshot (2026-10-08): a label moved off a clash could be moved anywhere, so RECEIVING APRON went up
   // past the SECTOR MAP line and half off the top of the screen. A moved label now stays on the screen and below the header line.
@@ -50865,16 +50865,16 @@ function mapPlaceLabels(Q,hdrY,fn){
       }
       // v28.xx (cw-cx-sectorhold-o03): include exact clearances around nearby labels and icons; whole-row jumps can miss a usable gap of only a few pixels.
       var localX=[0,leftX,rightX,clusterLeft,clusterRight,_bL-g.r.l,_bW-g.r.r], localY=[0,sideY], xpad=16*_mz, ypad=16*_mz;
-      clusterMarks.forEach(function(I){ localX.push(I.l-12*_mz-g.r.r,I.r+12*_mz-g.r.l); localY.push(I.t-12*_mz-g.r.b,I.b+12*_mz-g.r.t); });
-      placed.forEach(function(B){ if(Math.abs((B.l+B.r)/2-px)<gw+80*_mz&&Math.abs((B.t+B.b)/2-py)<gh+80*_mz){ localX.push(B.l-xpad-g.r.r,B.r+xpad-g.r.l); localY.push(B.t-ypad-g.r.b,B.b+ypad-g.r.t); } });
+      clusterMarks.forEach(function(I){ localX.push(I.l-12*_mz-g.r.r,I.r+12*_mz-g.r.l,I.l-6*_mz-g.r.r,I.r+6*_mz-g.r.l); localY.push(I.t-12*_mz-g.r.b,I.b+12*_mz-g.r.t,I.t-6*_mz-g.r.b,I.b+6*_mz-g.r.t); });
+      placed.forEach(function(B){ if(Math.abs((B.l+B.r)/2-px)<gw+80*_mz&&Math.abs((B.t+B.b)/2-py)<gh+80*_mz){ localX.push(B.l-xpad-g.r.r,B.r+xpad-g.r.l,B.l-xpad/2-g.r.r,B.r+xpad/2-g.r.l); localY.push(B.t-ypad-g.r.b,B.b+ypad-g.r.t,B.t-ypad*0.375-g.r.b,B.b+ypad*0.375-g.r.t); } });
       localX.forEach(function(x){ localY.forEach(function(y){ if(g.r.l+x>=_bL&&g.r.r+x<=_bW&&g.r.t+y>=_bT&&g.r.b+y<=_bH) tries.push([x,y]); }); });
       // v28.xx (cw-cx-sectorhold-o03): stay next to the marker group first, then minimize movement; the connector still identifies this tag's exact icon.
-      function nearScore(q){ var I={l:px-8*_mz,r:px+8*_mz,t:py-8*_mz,b:py+8*_mz}, dx=Math.max(0,I.l-(g.r.r+q[0]),g.r.l+q[0]-I.r), dy=Math.max(0,I.t-(g.r.b+q[1]),g.r.t+q[1]-I.b); return (dx*dx+dy*dy)*1000+q[0]*q[0]+q[1]*q[1]; }
+      function nearScore(q){ var I={l:px-8*_mz,r:px+8*_mz,t:py-8*_mz,b:py+8*_mz}, dx=Math.max(0,I.l-(g.r.r+q[0]),g.r.l+q[0]-I.r), dy=Math.max(0,I.t-(g.r.b+q[1]),g.r.t+q[1]-I.b); q[3]=Math.sqrt(dx*dx+dy*dy); return (dx*dx+dy*dy)*1000+q[0]*q[0]+q[1]*q[1]; }
       tries.forEach(function(q){ q[2]=nearScore(q); }); tries.sort(function(a,b){ return a[2]-b[2]; });
     }
-    for(var _pass=0;_pass<(g.items[0].mark?1:2)&&!ok;_pass++) for(k=0;k<tries.length&&!ok;k++){ dx=tries[k][0]; dy=tries[k][1]; r={l:g.r.l+dx,t:g.r.t+dy,r:g.r.r+dx,b:g.r.b+dy}; if(r.t<_bT||r.b>_bH||r.l<_bL||r.r>_bW) continue; if(!hits(r,_pass===0,(!g.items[0].mark&&dy<=0)?g.own:null)){ ok=true; g.dx=dx; g.dy=dy; placed.push(r); out.push(g); } }   // v31.xx (cw-mapstyle): first clear of the marks too, then clear of the other labels only
+    for(var _pass=0;_pass<2&&!ok;_pass++) for(k=0;k<tries.length&&!ok;k++){ dx=tries[k][0]; dy=tries[k][1]; r={l:g.r.l+dx,t:g.r.t+dy,r:g.r.r+dx,b:g.r.b+dy}; if(r.t<_bT||r.b>_bH||r.l<_bL||r.r>_bW) continue; _rx=(g.items[0].mark&&_pass===1)?0.5:1; if(!(g.items[0].mark&&tries[k][3]>22*_mz)&&!hits(r,(g.items[0].mark||_pass===0),(!g.items[0].mark&&dy<=0)?g.own:null)){ ok=true; g.dx=dx; g.dy=dy; placed.push(r); out.push(g); } }   // v31.xx (cw-mapstyle): first clear of the marks too, then clear of the other labels only
     // v28.xx (cw-cx-sectorhold-o03): exhaust the map for an anchored tag instead of deliberately painting it across another label.
-    if(!ok&&g.items[0].mark){
+    _rx=1; if(!ok&&g.items[0].mark){
       var best=null, score=Infinity, step=gh+16*_mz;
       for(var yy=_bT;yy+gh<=_bH;yy+=step) for(var xx=_bL;xx+gw<=_bW;xx+=8*_mz){
         var box={l:xx,t:yy,r:xx+gw,b:yy+gh}, dist2=Math.pow(xx-g.r.l,2)+Math.pow(yy-g.r.t,2);
@@ -51050,7 +51050,7 @@ function drawMapOverlayRaw(){
     var zx=ox+(80+(Z2.mc+0.5)*G.map.cw)*sc;
     var zy=oy+(80+(Z2.mr+0.5)*G.map.ch)*sc-G.map.ch*sc*0.34;
     ctx.font=FS(TYPE.label);   // v31.xx (cw-mapstyle3): zone names at the label size, under the extraction names (the critic: still too loud against the marks)
-    ctx.fillStyle=mapFirstOn()?UIC.tx_2:'rgba(239,233,220,.66)';   // v28.xx (cw-cx-mapstart-clear): opaque secondary text over the existing dark halo.
+    ctx.fillStyle=mapFirstOn()?UIC.tx_2:'rgba(239,233,220,.78)';   /* v28.xx (cw-mappolish): zone names a step brighter on the sector map (the critic: zone label contrast) */   // v28.xx (cw-cx-mapstart-clear): opaque secondary text over the existing dark halo.
     ctx.fillText(Z2.name||DISTRICTS[Z2.d].name,zx,zy);
   }
   ctx.textAlign='left';
@@ -56990,7 +56990,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.90: If the player 2 window closes or crashes in the 2 player demo, the host reopens it by itself within a few seconds and player 2 can press A to rejoin. Check 36.90 fails on v36.89',
+  now:'v36.91: Sector map: the strongbox word is placed first so it sits right beside its icon, zone names are brighter, the contract reward uses the main text colour and the progress track is 5 px (10 px at 4K). No caches, no new features. LOCAL: no linked review. Retarget: check 31.48 accepts zone names up to 82 percent. Check 36.91 fails on v36.90',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

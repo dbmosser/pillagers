@@ -1,0 +1,7 @@
+v36.91: sector map polish
+
+Sector map: the strongbox word is placed first so it sits right beside its icon, zone names are brighter, the contract reward uses the main text colour and the progress track is 5 px (10 px at 4K). No caches, no new features. LOCAL: no linked review. Retarget: check 31.48 accepts zone names up to 82 percent.
+
+Check 36.91. Fails on v36.90.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

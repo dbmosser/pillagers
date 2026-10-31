@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.91 - SECTOR MAP POLISH
+
+Co-op hunt while he was away. His 10-31 party polish order. The critic held the M map at 3: contract hierarchy and tracks, zone name contrast, and the strongbox word floating off its icon at 4K. Render only. Watch: the strongbox word sits close to its icon, zone names are brighter, contract rewards are brighter and the progress tracks are thicker.
+
+MEASURED. Check 36.91 passes, and fails on v36.90.
 ## v36.90 - A DEAD PLAYER 2 WINDOW COMES BACK IN THE 2 PLAYER DEMO
 
 Co-op hunt while he was away. His round 2 and 3 answers 2.1 and 3.9: if a window dies mid run the other player carries on alone, the dead window reloads by itself and the next demo run is 2 player again. On HEAD the host already played on alone when the link dropped and a player 2 window that boots re-links by itself, but nothing opened the window again, so a closed or crashed TV 2 stayed dark for the rest of the night. Now the host opens it again 3 seconds after the link is gone (reloads a window that is open but dead after 10 seconds), at the same pair address, so it links at boot and player 2 can press A to join the live run or the next one. A browser opens a window only for a key press, so if it blocks the open the host tries again every 2.5 seconds and the next key press of player 1 gets through. WATCH FOR: close the player 2 window mid run; the feed says player 2 window reopening, the window comes back within a few seconds on any screen Chrome picks (the party launcher puts it back full screen on TV 2), and player 2 presses A to rejoin. If the window does not come back, it was blocked: press a movement key in the player 1 window. Player 1 window dying is not covered here: the game cannot reopen its own opener (the launcher would have to).

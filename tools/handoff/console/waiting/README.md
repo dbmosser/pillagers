@@ -23,3 +23,4 @@
 - 10-25 12:50 coordinator: 128, 129, 130 held until job 120k measures the 2-player frame cost (gameplay idea 2: each adds drawing every frame). Then back to tasks/, smooth look first.
 - 10-25 12:50 coordinator: 123-gfx-pixel-reload-forged closed: his 10-25 order turned the pixel look off ("I want the graphics smooth"); the pixel reload has no player left.
 - 127-gfx-glow-pools.md closed 10-26 05:30 by the coordinator: glow pictures taken (camera screens 81 to 92), see-through-walls bug fixed in v34.87; the 4K two-window frame time moved into job 120k.
+- 0p14-94-ladder-sheds-sooner.md (parked 10-31 11:06 by lane b): coordinator run the coord-07 measure-A.sh and measure-C.sh (then measure-summary.ps1) on a lane port so the new numbers can be written beside the old ones in notes/coord-07/94-ladder-after

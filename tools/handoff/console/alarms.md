@@ -565,3 +565,4 @@ HUD handoff from the same task: final demo picture tools/handoff/console/notes/s
 
 ## 10-31 0p06-188-outline-order
 No camera stage shows a 2 player fight, a pillager crew or a golden enemy, so the 4K before and after pictures (screen 33) hold only machines and look the same by design. Need a stage with a partner window, a crew and a golden enemy at 4K.
+10-31 11:06 0p14-94-ladder-sheds-sooner (lane b) waits on the coordinator: coordinator run the coord-07 measure-A.sh and measure-C.sh (then measure-summary.ps1) on a lane port so the new numbers can be written beside the old ones in notes/coord-07/94-ladder-after

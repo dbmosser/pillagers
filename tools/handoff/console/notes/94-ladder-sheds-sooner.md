@@ -80,3 +80,9 @@ Watch on the next play: a raid that turns softer or loses sparks while nothing i
 Re-queued run; read the notes and log first. Same blocker stands, so stopped without burning a try: ladder code is shipped (v34.13 to v34.16, steps 1 to 6). Only the A-t4 / C-t4 re-measure is open: runA.sh, runC.sh and the Chrome scripts are not on my command list, and notes/coord-07/94-ladder-after is absent. No numbers invented. Old: A-t4 p50 40.8 / p95 50.1; C-t4 p1 148.5 / 187.1, p2 146.7 / 217.6.
 Needs the coordinator: run notes/coord-07 measure-A.sh and measure-C.sh (then measure-summary.ps1) on a lane port, and the 2-player C-t4 on the spare PC.
 Watch on the next play: a raid that turns softer or loses sparks while nothing is happening, or sparks or haze that come and go; the first 20 seconds of each raid should look like the rest.
+
+--- claude run 2026-10-31 (lane b, 0p14, third) ---
+Same blocker, stopped at once: notes/coord-07/94-ladder-after still absent; runA.sh / runC.sh are not on my command list. Code is shipped (v34.13 to v34.16). No numbers invented.
+
+--- claude run 2026-10-31 (lane b, 0p14, fourth, HEAD v36.90) ---
+Same blocker, stopped at once: notes/coord-07/94-ladder-after still absent; the re-measure scripts are not on my command list. Code shipped (v34.13 to v34.16). No numbers invented.

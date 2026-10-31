@@ -1,0 +1,5 @@
+## v36.91 - SECTOR MAP POLISH
+
+Co-op hunt while he was away. His 10-31 party polish order. The critic held the M map at 3: contract hierarchy and tracks, zone name contrast, and the strongbox word floating off its icon at 4K. Render only. Watch: the strongbox word sits close to its icon, zone names are brighter, contract rewards are brighter and the progress tracks are thicker.
+
+MEASURED. Check 36.91 passes, and fails on v36.90.
