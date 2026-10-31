@@ -17,3 +17,5 @@ Build:
 Check (must FAIL on v36.66): with the setting on under a DEV_LOCAL fixture, starting a raid starts REC with no key press; extract saves one clip and fires no download; a 40 s run saves none; a 16th clip prunes the oldest.
 Rules: render and HUD only, no sim; seed 4242 fingerprint; both windows (P2 never records); never the pickup stack, loot sounds or loot rows. DESIGN.md watch line: "your raids now record themselves; watch the frame rate". Ship through the ship queue like any lane (RULES.md "How a change ships").
 TASK DONE when it is ON HIS PC (the ON HIS PC line).
+
+DONE 10-31 04:39: v36.68 cw-autorec shipped, ON HIS PC v36.68. Record every raid row (on for his PCs), auto start in P1 only, no download, under 60 s not kept, newest 15 / 3 GB, H.264 mp4 first, 1600 wide 30 fps, small dim rec dot. VM frame cost about 0.35 ms a frame. Also shipped v36.67 card stamp first (the stale stamp blocked the gate).
