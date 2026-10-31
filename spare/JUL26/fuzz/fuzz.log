@@ -2362,3 +2362,4 @@
 2026-10-31 09:00:08 raid 5 demo2p raidSeed=1282073142 map=0 god=0 sec=305 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9254 score=0 ents=52 travelPx=26592 fires=246 menuPct=11 heapMB=67 p2=link_2s_join_3s_pad_own gfx=18068/16.75/16.75/1/1 gfx2=18024/16.75/16.75/1/1 work=18278/3.25/5.25/6.25 work2=18283/2.75/4.75/5.75 build=36.71
 2026-10-31 09:05:20 raid 6 demo2p raidSeed=608860522 map=0 god=1 sec=305 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=9481 score=0 ents=50 travelPx=30185 fires=235 menuPct=21 heapMB=64 p2=link_2s_join_4s_pad_own gfx=18105/16.75/16.75/12/1 gfx2=18035/16.75/16.75/14/1 work=18267/3.75/5.75/7.25 work2=18293/3.25/5.25/6.25 build=36.71
 2026-10-31 09:08:00 FUZZ ABORT reason=low ram (4 GB free), not a game failure
+2026-10-31 11:40:40 FUZZ START seed=197712507 minutes=60 raidsec=300 port=9332 srv=8806 build=36.92 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
