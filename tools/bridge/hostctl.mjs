@@ -82,7 +82,7 @@ function request(opt, key) {
 
 async function main() {
   const opt = parse(process.argv.slice(2));
-  if (!opt.job) { console.error('usage: node hostctl.mjs <ping|stats|kit|share-list|share-get|share-put> [key=value ...]  (see the top of this file)'); process.exit(2); }
+  if (!opt.job) { console.error('usage: node hostctl.mjs <ping|stats|top-mem|main-status|kit|share-list|share-get|share-put> [key=value ...]  (see the top of this file)'); process.exit(2); }
   const key = readKey();
   if (!key) { console.error('no shared key in ' + keyFile() + '. Copy key.txt from the main PC into ' + dataDir() + ' in this VM (setup-key.ps1 -Show prints it on the main PC).'); process.exit(1); }
   let r;

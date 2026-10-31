@@ -119,6 +119,26 @@ export const JOBS = {
     return data ? { ok: true, stats: data } : { ok: false, error: 'could not read stats', raw: r.out.slice(0, 500) + r.err.slice(0, 500) };
   },
 
+  // 10-31 (Reporter, his "cant you improve your link to the main pc somehow"): what holds the memory, read only. The top 10 programs by
+  // memory (all their processes added up, with a count and the biggest pid) and the top 10 single processes, plus free and total and the
+  // VM's size as the main PC's minute check last wrote it (gaming.txt vmgb; a Hyper-V VM's memory belongs to no listed process).
+  async ['top-mem'](_args, ctx) {
+    const script = [
+      '$os=Get-CimInstance Win32_OperatingSystem; $p=@(Get-Process -ErrorAction SilentlyContinue);',
+      '$g=@($p | Group-Object ProcessName | ForEach-Object { $m=($_.Group | Measure-Object WorkingSet64 -Sum).Sum; $b=$_.Group | Sort-Object WorkingSet64 -Descending | Select-Object -First 1;',
+      '  [pscustomobject]@{name=$_.Name; gb=[math]::Round($m/1GB,2); count=$_.Count; pid=$b.Id} } | Sort-Object gb -Descending | Select-Object -First 10);',
+      '$s=@($p | Sort-Object WorkingSet64 -Descending | Select-Object -First 10 | ForEach-Object { [pscustomobject]@{name=$_.ProcessName; gb=[math]::Round($_.WorkingSet64/1GB,2); pid=$_.Id} });',
+      '[pscustomobject]@{ freeGB=[math]::Round($os.FreePhysicalMemory/1MB,1); totalGB=[math]::Round($os.TotalVisibleMemorySize/1MB,1);',
+      '  listedGB=[math]::Round((($p | Measure-Object WorkingSet64 -Sum).Sum)/1GB,1); programs=$g; processes=$s } | ConvertTo-Json -Depth 4 -Compress',
+    ].join(' ');
+    const r = await ps(script, { timeoutMs: 30000 });
+    let data = null; try { data = JSON.parse(r.out.trim()); } catch { /* leave raw */ }
+    if (!data) return { ok: false, error: 'could not read the process list', raw: r.out.slice(0, 500) + r.err.slice(0, 500) };
+    let vmGB = null, vmAt = '';
+    try { const t = fs.readFileSync(path.join(ctx.shareDir, 'gaming.txt'), 'utf8'); const m = t.match(/^vmgb=([0-9.]+)/m); if (m) vmGB = +m[1]; const c = t.match(/^checked=(.+)$/m); if (c) vmAt = c[1].trim(); } catch { /* no minute check */ }
+    return { ok: true, ...data, vmGB, vmAt, note: 'gb is working set; the VM size comes from the main PC minute check (gaming.txt), not the process list' };
+  },
+
   // run one of the allowlisted move-kit scripts. args.key picks it; no other arguments reach the script.
   async kit(args, ctx) {
     const entry = KIT[String(args && args.key)];
