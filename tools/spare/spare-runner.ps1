@@ -531,11 +531,12 @@ function Stop-Work([string]$why,[switch]$Refund,[switch]$LowRam){
     if($LowRam){
       if((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -gt 0){ try{ [IO.File]::AppendAllText($FzOut+'\fuzz.log',(Get-Date).ToString('yyyy-MM-dd HH:mm:ss')+' FUZZ ABORT reason=low ram ('+[Math]::Round((FreeGB),1)+' GB free'+$(if($script:fakeLow){ ', a self-test' }else{ '' })+'), not a game failure'+"`r`n",$Enc) }catch{} }
       if((Running 'p2\.mjs"?\s+host(\s|$)') -gt 0 -and (GetS 'p2_want') -eq $P2Want){ $tr=[int]('0'+(GetS 'p2_tries')); if($tr -gt 0){ PutS 'p2_tries' ([string]($tr-1)) } }
+      if((Running 'soak-run\.ps1') -gt 0 -and (GetS 'soak_want') -eq (GetS 'fx_blob')){ $tr=[int]('0'+(GetS 'soak_tries')); if($tr -gt 0){ PutS 'soak_tries' ([string]($tr-1)) } }
     }
     $n=0
     Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessId -ne $PID -and $_.CommandLine -and (
-      ($_.CommandLine -match 'PillagersIdle' -and $_.CommandLine -match 'fuzz\.ps1|corpq\.sh|corpus-slices\.sh|p2\.mjs') -or
-      ($_.Name -eq 'chrome.exe' -and $_.CommandLine -match 'pillagers-p2online') -or
+      ($_.CommandLine -match 'PillagersIdle' -and $_.CommandLine -match 'fuzz\.ps1|corpq\.sh|corpus-slices\.sh|p2\.mjs|soak-run\.ps1|soakloop\.ps1|cdp\.ps1.*-Port 9335|serve\.mjs.*8809') -or
+      ($_.Name -eq 'chrome.exe' -and $_.CommandLine -match 'pillagers-p2online|pillagers-soak') -or
       ($_.Name -eq 'chrome.exe' -and $_.CommandLine -match 'remote-debugging-port=(9344|9331|9332)(\s|$)' -and $_.CommandLine -match 'pillagers-cdp')) } |
       ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue; $n++ }
     $script:working=$false
@@ -596,7 +597,7 @@ function Stop-Work([string]$why,[switch]$Refund,[switch]$LowRam){
 # the test scripts this runner's copies started (the same match Stop-Work uses)
 function IdleWork(){
   @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessId -ne $PID -and $_.CommandLine -and
-    $_.CommandLine -match 'PillagersIdle' -and $_.CommandLine -match 'fuzz\.ps1|corpq\.sh|corpus-slices\.sh' }).Count
+    $_.CommandLine -match 'PillagersIdle' -and $_.CommandLine -match 'fuzz\.ps1|corpq\.sh|corpus-slices\.sh|soak-run\.ps1' }).Count
 }
 # SPARE-PRESENCE-PAUSE: someone came to the spare PC during this round (a fetch, a test copy build or a push can take a minute), so it
 # starts nothing more; the next round pauses. Always false in IDLE MODE.
@@ -1005,6 +1006,7 @@ function Write-Status([string]$corpus,[int]$robots){
   $L=@(('host='+$HostN),('seen='+(Get-Date).ToString('yyyy-MM-dd HH:mm')),('epoch='+(Epoch)),('game='+(G -C $R rev-parse --short=8 HEAD)+' v'+(GameVer)),
     ('test_run='+$corpus),('robots='+$robots),('ram_free_gb='+$free),('push_ok='+(GetS 'push_ok')),('runner='+$SelfHash.Substring(0,8)),('mode='+$(if($Idle){ 'idle' }else{ 'full' })),
     ('ram_total_gb='+$tot),('cpu_threads='+$thr),('cpu_pct='+$pct),('cpu='+$cpuN))
+  if($Idle -and (GetS 'soak_line')){ $L+=('soak='+(GetS 'soak_line')) }
   # SPARE-PRESENCE-PAUSE: on the spare PC, when its pause began (epoch), for whoever reads the status; the VM goes by test_run=paused alone
   if($Idle){ $L+=('spare_pc='+(SparePC)); $L+=('party='+(GetS 'party_ver')+' '+(GetS 'party_head')); $L+=('play8802='+(Play8802)); $L+=('receiver8799='+(Receiver8799)) } else {
     if($corpus -like 'paused*' -and (GetS 'pause_t')){ $L+=('paused_since='+(GetS 'pause_t')) }
@@ -1209,7 +1211,35 @@ while($true){
         $p2Run=1; $script:working=$true; $script:lightRun=$true; Say ('online 2 player test started as the host (try '+($n+1)+', test port 8817)')
       }
     }
-    if($p2Run -eq 0 -and (Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){
+    # 10-31 (the main PC's Claude and the CEO): the two-window soak (tools\spare\soak-run.ps1 runs tools\handoff\soakloop.ps1: 6 runs of
+    # the 2 player net test with a 120 s soak; its own headless Chrome on 9335 with a temp profile and downloads kept out of his Downloads,
+    # its own test server on 8809; never 8802) once per new robot build, only while he is away (15 minutes, the game not in front) with
+    # 6 GB free. Watch ends it like a full robot when he comes back or under 4 GB at two looks (an abort, not a fail: a low RAM stop gives
+    # the try back). 3 tries and 8 starts a build at most. The result (a line per run, then DONE) goes out with the next status as
+    # spare\JUL26\soak-last.txt, and runner.log and the status get "soak vX: N of M passed".
+    $skRun=(Running 'soak-run\.ps1'); $kb=GetS 'fx_blob'; $kf=$W+'\soak-last.txt'
+    if($skRun -eq 0 -and $kb -and (GetS 'soak_done') -ne $kb -and (GetS 'soak_want') -eq $kb -and (GetS 'soak_t')){
+      $ki=Get-Item -LiteralPath $kf -ErrorAction SilentlyContinue
+      if($ki -and ([DateTimeOffset]$ki.LastWriteTime).ToUnixTimeSeconds() -gt [long](GetS 'soak_t') -and @([IO.File]::ReadAllLines($kf)) -contains 'DONE'){
+        $kr=@([IO.File]::ReadAllLines($kf) | Where-Object { $_ -match '^run \d+ ' }); $kp=@($kr | Where-Object { $_ -match '"pass":true' }).Count
+        $kn=@($kr | Where-Object { $_ -match 'NOT FINISHED' }).Count
+        $ks='soak v'+(GameVer)+': '+$kp+' of '+$kr.Count+' passed'+$(if($kn){ ', '+$kn+' not finished' }else{ '' })
+        Copy-Item -LiteralPath $kf -Destination ($Res+'\spare\'+$HostN+'\soak-last.txt') -Force -ErrorAction SilentlyContinue
+        PutS 'soak_done' $kb; PutS 'soak_line' $ks; Say $ks; Publish 'two-window soak'
+      }
+    }
+    if($skRun -eq 0 -and $p2Run -eq 0 -and $kb -and (GetS 'soak_done') -ne $kb -and (AwaySec) -ge 900 -and -not (GameChrome) -and (FreeGB) -ge 6 -and
+       (Test-Path -LiteralPath ($T+'\spare\soak-run.ps1')) -and (Test-Path -LiteralPath ($T+'\fixture.html'))){
+      $n=$(if((GetS 'soak_want') -eq $kb){ [int]('0'+(GetS 'soak_tries')) }else{ 0 }); $ns=$(if((GetS 'soak_want') -eq $kb){ [int]('0'+(GetS 'soak_starts')) }else{ 0 })
+      if($n -ge 3 -or $ns -ge 8){ PutS 'soak_done' $kb; PutS 'soak_line' ('soak v'+(GameVer)+': did not finish'); Say ('the two-window soak did not finish on v'+(GameVer)+' ('+$ns+' starts)') }
+      else {
+        if((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -gt 0){ Stop-Work 'the two-window soak goes first' }
+        Tidy-Profiles; PutS 'soak_want' $kb; PutS 'soak_tries' ([string]($n+1)); PutS 'soak_starts' ([string]($ns+1)); PutS 'soak_t' ([string](Epoch))
+        Start-Process -FilePath 'powershell.exe' -WindowStyle Hidden -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-File',('"'+$T+'\spare\soak-run.ps1"'),'-Root',('"'+$R+'"'),'-Out',('"'+$kf+'"')) | Out-Null
+        $skRun=1; $script:working=$true; $script:lightRun=$false; Say ('two-window soak started on v'+(GameVer)+' (try '+($n+1)+', test port 8809)')
+      }
+    }
+    if($p2Run -eq 0 -and $skRun -eq 0 -and (Running 'fuzz\.ps1.*-Port 9332(\s|$)') -eq 0){
       $sf=FreeGB
       if($sf -lt 6){ Stop-Work 'under 6 GB free for a new robot' }
       else { $atPc=((AwaySec) -lt 900); $script:gcAtStart=(GameChrome); Start-Robot 9332 'fixture-soak-spare2.html' $(if($atPc -or $script:gcAtStart -or $sf -lt 7 -or (GetS 'no4k') -eq (Get-Date).ToString('yyyy-MM-dd')){ '' }else{ '3840x2160' }) -Low:$atPc }
