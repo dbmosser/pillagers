@@ -29,10 +29,10 @@ PLAN_TARGET=80
 # 10-28 16:55, his "focus for the remaining 17% of weekly usage should be to polish the game as much as possible before Saturday night
 # party": the line now climbs evenly from 83% (now) to 99% at Sat 10/31 22:00 local, all of it polish.
 # PLAN_TARGET stays the standing weekly goal: once these times fall outside the week, next week is the even line to it again.
-PLAN_LINE_START=2026-10-28T20:55:00Z
-PLAN_LINE_FROM=83
-PLAN_LINE_TARGET=99
-PLAN_LINE_END=2026-11-01T02:00:00Z
+PLAN_LINE_START=2026-10-31T09:45:00Z
+PLAN_LINE_FROM=93
+PLAN_LINE_TARGET=96
+PLAN_LINE_END=2026-10-31T18:15:00Z
 PLAN_BURN_UNTIL=2026-10-25T05:00:00Z
 PLAN_WEEK_MAX=99
 PLAN_SESSION_MAX=85
@@ -50,3 +50,4 @@ LOCAL_AI=0
 # 10-25 05:30 (coordinator): summarizing OFF. CLI_COMPACT=150000 made helpers summarize at about 50k, not 117k: 114 and 115 stopped 3 times with "Autocompact is thrashing" (05:11 to 05:21, $1.91). 1000000 = the model default (no early summary).
 # 10-25 15:15 (coordinator): his "switch to 400k" (Sun 10-25 about 15:05, from his phone): helpers get a 400k summary window instead of the 1M model default. 150000 summarized at about 50k and thrashed (05:11); 400000 sits far above the 52k a helper starts with.
 CLI_COMPACT=400000
+# 10-31 05:45 his order: "spend to 96% of usage between now and noon to polish the game for the party" then "between now and 3pm, rather": line 93 -> 96 by 14:15 local; party-window.txt stops new lane jobs at 14:15.

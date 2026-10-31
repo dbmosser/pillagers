@@ -1,3 +1,3 @@
-START=1793462400
+START=1793470500
 END=1793530800
-# party freeze Sat 10/31 12:00 to Sun 11/1 06:00 local (CEO 10-31; survives a Claude restart)
+# party freeze: no new lane jobs from Sat 10/31 14:15 (ships done by 15:00, his "between now and 3pm") to Sun 11/1 06:00 local

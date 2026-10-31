@@ -50,6 +50,7 @@ ALLOW=( "Read" "Grep" "Glob"
 mkdir -p "$C/tasks" "$C/done" "$C/failed" "$C/log" "$C/notes"
 [ -f "$C/STOP" ] && { echo "$(date '+%m-%d %H:%M') paused (STOP file)" > "$C/status-$L.txt"; exit 0; }
 [ -f "$C/STOP-claude" ] && { echo "$(date '+%m-%d %H:%M') paused (STOP-claude: his 10-30 order, Codex only for 2 player fixes)" > "$C/status-$L.txt"; exit 0; }
+if [ -f "$C/party-window.txt" ]; then _n=$(date +%s); pws=$(grep -m1 "^START=" "$C/party-window.txt" | tr -dc 0-9); pwe=$(grep -m1 "^END=" "$C/party-window.txt" | tr -dc 0-9); if [ -n "$pws" ] && [ -n "$pwe" ] && [ "$_n" -ge "$pws" ] && [ "$_n" -lt "$pwe" ]; then echo "$(date '+%m-%d %H:%M') paused (party freeze until Sun 06:00)" > "$C/status-$L.txt"; exit 0; fi; fi
 cap(){ v=$(grep -m1 "^$1=" "$C/caps.txt" 2>/dev/null | cut -d= -f2 | tr -d '\r '); echo "${v:-$2}"; }
 RUN_USD=$(cap RUN_USD 4); DAY_USD=$(cap DAY_USD 15); today=$(date +%F)
 spent=$(awk -v d="$today" '$1==d {s+=$2} END {printf "%.2f", s+0}' "$C/spend.txt" 2>/dev/null); spent=${spent:-0}
