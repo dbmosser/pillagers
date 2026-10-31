@@ -3912,8 +3912,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.75';
-var VER_AT='2026-10-31 09:13';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.76';
+var VER_AT='2026-10-31 09:15';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -48202,7 +48202,7 @@ function hudPanel(x,y,w,h,a,plain){
   // same width as "Kite" and a fixed column cannot hold both.
   var HOr=hudOff('raiders');
   var PADX=14,y0=LH(96);
-  var LW=LH(214),LH1=LH(11);
+  var LW=LH(230),LH1=LH(14);   // v28.xx (cw-hudroster), the critic (o-120d, o-01, o-09f): "eight rows of 14-15px text set at equal weight form a dense block", "rows are about 12px, unreadable from a couch". The rows go to the label size (about 16.8 px on screen, the style guide floor is 16; they were 14), the pitch and the panel width follow it (was 214 wide and 11 a row)
   // v10.42: THE DRAG IS SCREEN PIXELS AND THIS SPACE IS SCALED. The board is
   // drawn at _rz about the top left corner, so a screen drag of dx is worth
   // dx/_rz here; adding it raw moved the board 113 pixels for a 100 pixel
@@ -48233,7 +48233,7 @@ function hudPanel(x,y,w,h,a,plain){
   var _rShown=rows.length+(_rHid?1:0);
   var boxH=HOr.c?LH(18):(LH(20)+(_rShown+_rSum)*LH1-LH(3));   // v21.55, from the 4K visual pass (V-B11): the board ended a full empty row under the last name; now the room under it matches the room over the heading
   hudPanel(PADX-8,y0-LH(13),LW,boxH,undefined,1);   // v18.13: the one HUD panel
-  ctx.font=FS(TYPE.micro);
+  ctx.font=FS(TYPE.label);   // v28.xx (cw-hudroster): the title and every row at the label size (was micro)
   ctx.fillStyle=HUDC.text;   // v28.xx (cw-hudquiet), the critic: the board title was amber while the run info title is cream; one title colour, amber stays for focus and warnings
   ctx.fillText('CURRENT PILLAGERS  '+live,PADX,y0-LH(2));   // v35.xx (cw-clockcard), HIS ORDER (2026-10-28): "This should say 'current pillagers'  and then 'value at risk'"
   if(!HOr.c){ ctx.save(); ctx.textAlign='right'; ctx.fillStyle=UIC.tx_2; ctx.fillText('VALUE AT RISK',PADX-8+LW-LH(26),y0-LH(2)); ctx.restore(); }   // the money column's head, left of the chevron
@@ -56891,7 +56891,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.75: Danger callouts stand at 27 percent of the height, one at a time, and a repeated warning is quiet for 10 s. Check 36.75 fails on v36.74',
+  now:'v36.76: The pillager board text is bigger and easier to read. Check 36.76 fails on v36.75',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

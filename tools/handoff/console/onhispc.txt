@@ -141,3 +141,4 @@
 10-31 09:00 v36.72 cw-hudbigfit on his pc after 33s (8802 serves 36.72) week 93%
 10-31 09:07 v36.73 cw-hudinset on his pc after 68s (8802 serves 36.73) week 93%
 10-31 09:12 v36.74 cw-xcountplate on his pc after 34s (8802 serves 36.74) week 93%
+10-31 09:15 v36.75 cw-dangerslot on his pc after 67s (8802 serves 36.75) week 93%

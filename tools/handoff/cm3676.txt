@@ -1,0 +1,7 @@
+v36.76: the pillager board reads at 16 px
+
+The pillager board text is bigger and easier to read.
+
+Check 36.76. Fails on v36.75.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

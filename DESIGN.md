@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.76 - THE PILLAGER BOARD READS AT 16 PX
+
+Co-op hunt while he was away. The Codex critic on the raid HUD (o-120d, o-01, o-09f, o-137): the current pillagers rows were about 14 px on the screen at one weight, under the 16 px floor of the style guide, a dense block that competed with the rest of the HUD. The title and the rows go to the label size (about 16.8 px on the screen), the row pitch and the panel width grow to hold them. You stay the bright row, the rivals sit one step back (v36.73).
+
+MEASURED. Check 36.76 passes, and fails on v36.75.
 ## v36.75 - ONE DANGER AT A TIME, LOWER ON THE SCREEN
 
 Co-op hunt while he was away. His note: too many messages coming in to the player. The research rule: the danger banner stands at about 27 percent of the screen height, in the middle where eyes are in a fight, one line on a plate that scales in over 0.2 s and lasts 3 s (4 s for a down). A danger replaces extraction news at once, a second danger waits, the same keyed danger does not show again for 10 s, and one that cannot show within 1.5 s is dropped and never written to the feed. A teammate down draws in the teammate colour. The final rush callout keeps its place.
