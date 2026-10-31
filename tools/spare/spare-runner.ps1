@@ -750,11 +750,25 @@ function Refresh-Party(){
 # raiders) or the bridge files changed since it started, it is restarted from here. If the new one does not listen on 8830 within 10 s,
 # the old one is started again and the next try is in 30 minutes.
 $script:brT=0; $script:lastMaster=''; $script:tookMaster=''
+# 10-31 (his "make sure the allocation of ram between the vm and main pc is happening as efficiently as possible"): the new memory rule in
+# tools\migrate\host-night-memory.ps1 runs as SYSTEM, so only his own double-click of night-memory-setup.cmd (and Yes) installs it. Until
+# gaming.txt says memrule=1031, his desktop has a "Pillagers memory setup" shortcut to this copy's setup; once installed it goes away.
+function Memory-Setup-Link(){
+  try{
+    $g=ShareGaming; if(-not $g){ return }
+    $lnk=Join-Path ([Environment]::GetFolderPath('Desktop')) 'Pillagers memory setup.lnk'; $cmd=$T+'\migrate\night-memory-setup.cmd'
+    if($g -match '(?m)^memrule=1031'){ if(Test-Path -LiteralPath $lnk){ Remove-Item -LiteralPath $lnk -Force; Say 'the new memory rule is installed: the desktop setup shortcut is gone' }; return }
+    if((Test-Path -LiteralPath $lnk) -or -not (Test-Path -LiteralPath $cmd)){ return }
+    $s=(New-Object -ComObject WScript.Shell).CreateShortcut($lnk); $s.TargetPath=$cmd; $s.WorkingDirectory=($T+'\migrate'); $s.Description='Pillagers: install the new VM memory rule (click Yes)'; $s.Save()
+    Say 'his desktop has a "Pillagers memory setup" shortcut: one double-click and Yes installs the new memory rule'
+  }catch{}
+}
 function Ensure-Bridge(){
   if(-not $Idle){ return }
   try{
     if(((Epoch)-$script:brT) -lt 60){ return }
     $script:brT=Epoch
+    Memory-Setup-Link
     $want=$T+'\bridge\host-agent.mjs'
     if(-not (Test-Path -LiteralPath $want) -or -not (Test-Path -LiteralPath ($env:LOCALAPPDATA+'\PillagersBridge\key.txt'))){ return }
     $h=(@('host-agent.mjs','jobs.mjs','bridge-common.mjs','gate-test.mjs','main-status.ps1') | ForEach-Object { $f=$T+'\bridge\'+$_; if(Test-Path -LiteralPath $f){ (Get-FileHash -LiteralPath $f -Algorithm SHA256).Hash.Substring(0,8) } }) -join '-'

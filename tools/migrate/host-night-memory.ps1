@@ -40,13 +40,15 @@
 #   -Up / -Down / -Snapshot / -GameCheck  what the tasks run
 #   -MaxGB N (default 16)  -KeepFreeGB N (default 4)  -VMName NAME (default Pillagers_Oct26)  -KeepSnapshots N (2)  -Gpu3DPct N (15)  -GameCpuPct N (30)
 #   -AtPcCpuPct N (50)  -AtPcIdleMin N (10)  -IdleWatch  what the idle watch task runs (a loop, as him)  -NotesSrc PATH (the copy's exports)
-#   -AwayMin N (30) minutes away before the VM grows   -VmKeepGB N (3) what the VM keeps free while it hands memory back
+#   -AwayMin N (15) minutes away before the VM grows   -VmKeepGB N (2) what the VM keeps free while it hands memory back
+#   -MinGB N (8) the least the VM goes to (party night; or while he is here and this PC is short)   -AwayHeadGB N (7) what the VM gets on
+#   top of what it uses while he is away   -HereHeadGB N (2) the headroom over -KeepFreeGB this PC should have while he is here
 # Exit codes: 0 done, 2 refused or nothing could be done (see the log line), 3 needs an administrator window. ASCII only. PowerShell 5.1 and 7.
 param(
   [switch]$Install, [switch]$Undo, [switch]$Status, [switch]$DryRun, [switch]$Up, [switch]$Down, [switch]$Snapshot, [switch]$GameCheck, [switch]$IdleWatch,
   [string]$VMName = 'Pillagers_Oct26', [int]$MaxGB = 16, [int]$KeepFreeGB = 4, [int]$DayGB = 0,
   [int]$KeepSnapshots = 2, [int]$Gpu3DPct = 15, [int]$GameCpuPct = 30, [int]$AtPcCpuPct = 50, [int]$AtPcIdleMin = 10,
-  [int]$AwayMin = 30, [int]$VmKeepGB = 3,
+  [int]$AwayMin = 15, [int]$VmKeepGB = 2, [int]$MinGB = 8, [int]$AwayHeadGB = 7, [int]$HereHeadGB = 2,
   [string]$BaseDir = '', [string]$NotesSrc = 'C:\claudecode\pillagers-party\exports'
 )
 $ErrorActionPreference = 'Continue'
@@ -74,6 +76,8 @@ function ReadDayGB {
   return 10
 }
 function GetVm { try { return Get-VM -Name $VMName -ErrorAction Stop } catch { return $null } }
+# 10-31 (CEO, his party): Sat 10/31 17:00 to Sun 11/1 06:00 the VM goes to -MinGB and stays there
+function PartyNight { $n = Get-Date; return ($n -ge [datetime]'2026-10-31 17:00' -and $n -lt [datetime]'2026-11-01 06:00') }
 
 # ------------------------------------------------------------------ -Up : lend memory for the night
 if ($Up) {
@@ -205,37 +209,66 @@ function MemFollow($vm, [bool]$away, [int]$idle) {
   if (-not $vm -or $vm.State -ne 'Running') { $script:MemSay = 'the VM is not running'; return }
   if ($vm.DynamicMemoryEnabled) { $script:MemSay = 'the VM uses dynamic memory: left alone'; return }
   $asg = [math]::Round($vm.MemoryAssigned / 1GB, 1); $cur = [int][math]::Round($asg); $script:VmGB = $asg
-  if ($away) {
-    $free = HostFreeGB
-    $target = [int][math]::Min($MaxGB, [math]::Floor($cur + $free - $KeepFreeGB))
-    if ($free -lt 0 -or $target -lt $cur + 1) { $script:MemSay = 'away, VM ' + $asg + ' GB (' + $(if ($cur -ge $MaxGB) { 'its most' } else { 'no more room: this PC has ' + $free + ' GB free and keeps ' + $KeepFreeGB }) + ')'; return }
-    if ($DryRun) { $script:MemSay = 'away: would give the VM ' + $target + ' GB (now ' + $asg + ')'; return }
-    try {
-      Set-VMMemory -VMName $VMName -StartupBytes ([int64]$target * 1GB) -ErrorAction Stop
-      $script:MemSay = 'away, VM ' + $cur + ' -> ' + $target + ' GB'
-      LogLine ('away: VM ' + $cur + ' -> ' + $target + ' GB (no keyboard or mouse here for ' + $(if ($idle -ge 0) { [string]$idle + ' min' } else { 'an unknown time, night hours' }) + ' and no game; this PC had ' + $free + ' GB free)')
-    } catch { $script:MemSay = 'away, Hyper-V refused ' + $target + ' GB'; LogLine ('away: Hyper-V refused ' + $target + ' GB: ' + ($_.Exception.Message -replace '\s+', ' ')) }
-    return
+  # 10-31 (his "make sure the allocation of ram between the vm and main pc is happening as efficiently as possible given my usage
+  # patterns"). Measured 10-24..10-31 (night-memory.log, the main PC tester's status history): the give-back went 1 GB a step, up to
+  # 100 minutes apart, and stalled 2 GB above the day size (VM 12 GB from 10-29 09:21 to 10-30 09:26 while he was here), because the VM
+  # used about 8-9 GB and kept 3 free; this PC was under 4 GB free in 25 of 153 looks on 10-30 (1.0 GB at 07:34 and 12:06). Away, the
+  # VM went to 16 GB and still had 5.7-8.1 GB free when he came back. So now:
+  #   away: the VM gets what it uses plus -AwayHeadGB (7: a VM helper starts at 7 GB free), up to -MaxGB, this PC keeping -KeepFreeGB;
+  #         more than that goes back to this PC (its own tests use it), one step per new VM report.
+  #   here: back to the day size keeping -VmKeepGB (2) free in the VM, and when this PC has under -KeepFreeGB plus -HereHeadGB free, the
+  #         VM keeps only 1 GB free and may go down to -MinGB; it grows back to its day size once this PC has room again.
+  #   party night (Sat 10/31 17:00 to Sun 11/1 06:00): the VM goes to -MinGB as fast as it can free memory and never grows.
+  $free = HostFreeGB; $r = VmMemReport; $rok = $r -and [math]::Abs($r.age) -lt 180
+  $party = PartyNight
+  $lastEp = [int64]0; try { $lastEp = [int64]((Get-Content -LiteralPath $FollowFile -Raw -ErrorAction Stop).Trim()) } catch { }
+  $why = ''; $to = $cur; $mark = [int64]0
+  if ($away -and -not $party) {
+    $room = [int][math]::Floor($cur + $free - $KeepFreeGB)
+    $want = $(if ($rok) { [int][math]::Ceiling($asg - $r.freeGB + $AwayHeadGB) } else { $MaxGB })
+    $target = [int][math]::Min($MaxGB, [math]::Min($room, [math]::Max($day, $want)))
+    if ($free -ge 0 -and $target -ge $cur + 1) {
+      if ($DryRun) { $script:MemSay = 'away: would give the VM ' + $target + ' GB (now ' + $asg + ')'; return }
+      try {
+        Set-VMMemory -VMName $VMName -StartupBytes ([int64]$target * 1GB) -ErrorAction Stop
+        $script:MemSay = 'away, VM ' + $cur + ' -> ' + $target + ' GB'
+        LogLine ('away: VM ' + $cur + ' -> ' + $target + ' GB (no keyboard or mouse here for ' + $(if ($idle -ge 0) { [string]$idle + ' min' } else { 'an unknown time, night hours' }) + ' and no game; this PC had ' + $free + ' GB free' + $(if ($rok) { ', the VM uses ' + [math]::Round($asg - $r.freeGB, 1) + ' GB' } else { '' }) + ')')
+      } catch { $script:MemSay = 'away, Hyper-V refused ' + $target + ' GB'; LogLine ('away: Hyper-V refused ' + $target + ' GB: ' + ($_.Exception.Message -replace '\s+', ' ')) }
+      return
+    }
+    if (-not ($rok -and $r.epoch -gt $lastEp -and $target -le $cur - 2 -and [math]::Floor($r.freeGB - $VmKeepGB) -ge 2)) {
+      $script:MemSay = 'away, VM ' + $asg + ' GB (' + $(if ($cur -ge $MaxGB) { 'its most' } elseif ($target -le $cur) { 'what it uses plus ' + $AwayHeadGB } else { 'no more room: this PC has ' + $free + ' GB free and keeps ' + $KeepFreeGB }) + ')'; return }
+    $to = [int][math]::Max($target, $cur - [int][math]::Floor($r.freeGB - $VmKeepGB)); $mark = $r.epoch
+    $why = 'away and the VM used only ' + [math]::Round($asg - $r.freeGB, 1) + ' GB; the rest goes to this PC'
+  } else {
+    $tight = ($free -ge 0 -and $free -lt $KeepFreeGB + $HereHeadGB)
+    $low = $(if ($party -or $tight) { $MinGB } else { $day }); $keep = $(if ($party -or $tight) { 1 } else { $VmKeepGB })
+    if (-not $party -and -not $tight -and $cur -lt $day) {
+      $to = [int][math]::Min($day, [math]::Floor($cur + $free - $KeepFreeGB - $HereHeadGB))
+      if ($to -ge $cur + 1 -and -not $DryRun) {
+        try { Set-VMMemory -VMName $VMName -StartupBytes ([int64]$to * 1GB) -ErrorAction Stop; LogLine ('back up: VM ' + $cur + ' -> ' + $to + ' GB (this PC has room again: ' + $free + ' GB free)') } catch { }
+      }
+      $script:MemSay = 'here, VM ' + $asg + ' GB, under its day size while this PC was short'; return
+    }
+    if ($asg -le $low + 0.5) { $script:MemSay = $(if ($party) { 'party night, VM at its least (' + $asg + ' GB)' } else { 'here, VM at ' + $asg + ' GB' + $(if ($tight) { ' (this PC is short: ' + $free + ' GB free)' } else { ', its day size' }) }); return }
+    $script:VmBack = $true
+    if ($rok) {
+      if ($r.epoch -le $lastEp) { $script:MemSay = 'here, VM ' + $asg + ' GB, waiting for its next memory report'; return }
+      $give = [int][math]::Floor($r.freeGB - $keep)
+      if ($give -lt 1) { $script:MemSay = 'here, VM ' + $asg + ' GB with ' + [math]::Round($r.freeGB, 1) + ' GB free (it keeps ' + $keep + '): waiting for its work to finish'; return }
+      $to = [int][math]::Max($low, $cur - $give); $mark = $r.epoch
+    } elseif ((-not $r) -or [math]::Abs($r.age) -ge 900) { $to = $day; $mark = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() }
+    else { $script:MemSay = 'here, VM ' + $asg + ' GB, its memory report is ' + $r.age + ' s old: waiting'; return }
+    $why = $(if ($party) { 'party night: the VM stays at its least' } else { 'he is at this PC or playing' }) + '; ' + $(if ($rok) { 'the VM had ' + [math]::Round($r.freeGB, 1) + ' GB free and keeps ' + $keep } else { 'no memory report from the VM for 15 minutes' }) + $(if ($tight) { '; this PC had ' + $free + ' GB free' } else { '' })
   }
-  if ($asg -le $day + 0.5) { $script:MemSay = 'here, VM at its day size (' + $asg + ' GB)'; return }
-  $script:VmBack = $true
-  $r = VmMemReport; $lastEp = [int64]0
-  try { $lastEp = [int64]((Get-Content -LiteralPath $FollowFile -Raw -ErrorAction Stop).Trim()) } catch { }
-  if ($r -and [math]::Abs($r.age) -lt 180) {
-    if ($r.epoch -le $lastEp) { $script:MemSay = 'here, VM ' + $asg + ' GB, waiting for its next memory report'; return }
-    $give = [int][math]::Floor($r.freeGB - $VmKeepGB)
-    if ($give -lt 1) { $script:MemSay = 'here, VM ' + $asg + ' GB with ' + [math]::Round($r.freeGB, 1) + ' GB free (it keeps ' + $VmKeepGB + '): waiting for its work to finish'; return }
-    $to = [int][math]::Max($day, $cur - $give); $mark = $r.epoch
-  } elseif ((-not $r) -or [math]::Abs($r.age) -ge 900) { $to = $day; $mark = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() }
-  else { $script:MemSay = 'here, VM ' + $asg + ' GB, its memory report is ' + $r.age + ' s old: waiting'; return }
-  if ($to -ge $cur) { $script:MemSay = 'here, VM ' + $asg + ' GB, nothing to hand back yet'; return }
-  if ($DryRun) { $script:MemSay = 'here: would take the VM from ' + $asg + ' to ' + $to + ' GB'; return }
+  if ($to -ge $cur) { $script:MemSay = 'VM ' + $asg + ' GB, nothing to hand back yet'; return }
+  if ($DryRun) { $script:MemSay = 'would take the VM from ' + $asg + ' to ' + $to + ' GB (' + $why + ')'; return }
   try { Set-Content -LiteralPath $FollowFile -Value ([string]$mark) -Encoding ASCII } catch { }
   try {
     Set-VMMemory -VMName $VMName -StartupBytes ([int64]$to * 1GB) -ErrorAction Stop
-    $script:MemSay = 'here, VM ' + $cur + ' -> ' + $to + ' GB'
-    LogLine ('back: VM ' + $cur + ' -> ' + $to + ' GB (he is at this PC or playing; ' + $(if ($r -and [math]::Abs($r.age) -lt 180) { 'the VM had ' + [math]::Round($r.freeGB, 1) + ' GB free and keeps ' + $VmKeepGB } else { 'no memory report from the VM for 15 minutes' }) + ')')
-  } catch { $script:MemSay = 'here, the VM handed back part of it'; LogLine ('back: Hyper-V handed back only part of ' + $cur + ' -> ' + $to + ' GB (the next try is in a minute): ' + ($_.Exception.Message -replace '\s+', ' ')) }
+    $script:MemSay = 'VM ' + $cur + ' -> ' + $to + ' GB'
+    LogLine ('back: VM ' + $cur + ' -> ' + $to + ' GB (' + $why + ')')
+  } catch { $script:MemSay = 'the VM handed back part of it'; LogLine ('back: Hyper-V handed back only part of ' + $cur + ' -> ' + $to + ' GB (the next try is in a minute): ' + ($_.Exception.Message -replace '\s+', ' ')) }
 }
 
 if ($GameCheck) {
@@ -285,6 +318,7 @@ if ($GameCheck) {
         if ($idle -ge 0) { $lines += ('atpc=' + $(if ($atpc) { '1' } else { '0' })) }
         # 10-24: follow=away tells the VM and the main PC tester that the memory follows him (item 8); vmback=1 holds new helpers in the VM
         $lines += @('follow=away', ('awaymin=' + $AwayMin), ('vmgb=' + $VmGB), ('vmback=' + $(if ($VmBack) { '1' } else { '0' })), ('mem=' + $MemSay))
+        $lines += @(('hostfree=' + (HostFreeGB)), ('party=' + $(if (PartyNight) { '1' } else { '0' })), 'memrule=1031')   # 10-31: memrule tells the VM this copy has the 10-31 memory rule
         # 10-20 evening: tells the VM this copy has the note copying (item 7), so it never has to ask him whether the setup was run again
         $lines += ('notes=' + $(if (Test-Path -LiteralPath $NotesSrc) { 'on, ' + @(Get-ChildItem -LiteralPath $NotesSrc -File -ErrorAction SilentlyContinue | Where-Object { $_.Name -like 'feedback-*' -or $_.Name -like 'run-*' }).Count + ' notes and run reports in ' + $NotesSrc } else { 'on, ' + $NotesSrc + ' is not there' }))
         Set-Content -Path $GameFile -Encoding ASCII -Value $lines } catch { }
@@ -334,7 +368,7 @@ if ($vm.DynamicMemoryEnabled) { Say 'The VM uses dynamic memory; this setup only
 # have recorded the night size (up to -MaxGB) as the day size.
 $day = if ($DayGB -gt 0) { $DayGB } elseif (Test-Path $StateFile) { ReadDayGB } else { [int][math]::Round($vm.MemoryStartup / 1GB) }
 $free = HostFreeGB; $tonight = [int][math]::Min($MaxGB, [math]::Floor($day + $free - $KeepFreeGB))
-Say ('VM ' + $VMName + ': ' + $day + ' GB while you use this PC. When nobody has touched the keyboard or mouse here for ' + $AwayMin + ' minutes and no game runs, it gets up to ' + $MaxGB + ' GB (as much as fits while this PC keeps ' + $KeepFreeGB + ' GB free; right now that would be ' + [math]::Max($day, $tonight) + ' GB). When you are back it goes back to ' + $day + ' GB, as fast as the VM can free it.')
+Say ('VM ' + $VMName + ': ' + $day + ' GB while you use this PC. When nobody has touched the keyboard or mouse here for ' + $AwayMin + ' minutes and no game runs, it gets what its work uses plus ' + $AwayHeadGB + ' GB, up to ' + $MaxGB + ' GB (as much as fits while this PC keeps ' + $KeepFreeGB + ' GB free). When you are back it goes back to ' + $day + ' GB as fast as the VM can free it, and down to ' + $MinGB + ' GB if this PC has under ' + ($KeepFreeGB + $HereHeadGB) + ' GB free. Party night (Sat 17:00 to Sun 06:00): ' + $MinGB + ' GB.')
 $noCk = ([string]$vm.CheckpointType -eq 'Disabled')   # 10-20: the graphics card share needs checkpoints off, and then every weekly try failed
 if (-not $noCk) { Say ('Every Sunday at 05:00 it makes a safety checkpoint of the VM (keeps the newest ' + $KeepSnapshots + ').') }
 Say ('Every minute it checks for a game: while one works the graphics card, the VM is held to ' + $GameCpuPct + '% of its processors and starts nothing new. While you use this PC (keyboard or mouse in the last ' + $AtPcIdleMin + ' minutes) it is held to ' + $AtPcCpuPct + '% and starts no long job; when you are away it gets them all.')
@@ -343,7 +377,7 @@ New-Item -ItemType Directory -Force -Path $Share | Out-Null
 Copy-Item -LiteralPath $PSCommandPath -Destination $Copy -Force
 Set-Content -Path $StateFile -Value ('dayGB=' + $day) -Encoding ASCII
 $ps = Join-Path $env:SystemRoot 'System32\WindowsPowerShell\v1.0\powershell.exe'
-$common = '-NoProfile -ExecutionPolicy Bypass -File "' + $Copy + '" -VMName "' + $VMName + '" -MaxGB ' + $MaxGB + ' -KeepFreeGB ' + $KeepFreeGB + ' -DayGB ' + $day + ' -BaseDir "' + $BaseDir + '" -KeepSnapshots ' + $KeepSnapshots + ' -Gpu3DPct ' + $Gpu3DPct + ' -GameCpuPct ' + $GameCpuPct + ' -AtPcCpuPct ' + $AtPcCpuPct + ' -AtPcIdleMin ' + $AtPcIdleMin + ' -AwayMin ' + $AwayMin + ' -VmKeepGB ' + $VmKeepGB
+$common = '-NoProfile -ExecutionPolicy Bypass -File "' + $Copy + '" -VMName "' + $VMName + '" -MaxGB ' + $MaxGB + ' -KeepFreeGB ' + $KeepFreeGB + ' -DayGB ' + $day + ' -BaseDir "' + $BaseDir + '" -KeepSnapshots ' + $KeepSnapshots + ' -Gpu3DPct ' + $Gpu3DPct + ' -GameCpuPct ' + $GameCpuPct + ' -AtPcCpuPct ' + $AtPcCpuPct + ' -AtPcIdleMin ' + $AtPcIdleMin + ' -AwayMin ' + $AwayMin + ' -VmKeepGB ' + $VmKeepGB + ' -MinGB ' + $MinGB + ' -AwayHeadGB ' + $AwayHeadGB + ' -HereHeadGB ' + $HereHeadGB
 $principal = New-ScheduledTaskPrincipal -UserId 'SYSTEM' -LogonType ServiceAccount -RunLevel Highest
 # 10-24: the minute check moves the memory now (item 8), so the clock tasks of 10-20 go; -Up and -Down still work by hand
 foreach ($n in $TaskUp, $TaskDown) {
@@ -387,6 +421,6 @@ try {
   Set-Content -Path (Join-Path $desktop $LinkName) -Value ("[InternetShortcut]`r`nURL=" + $u + "`r`n") -Encoding ASCII
   Say ('desktop shortcut "' + $LinkName + '" made: the live dashboard from the VM (it refreshes itself every 30 seconds)') 'OK'
 } catch { Say ('could not make the desktop shortcut: ' + $_.Exception.Message) 'WARN' }
-LogLine ('install: ' + $day + ' GB while he is here, up to ' + $MaxGB + ' GB after ' + $AwayMin + ' min away, this PC keeps ' + $KeepFreeGB + ' GB free, the VM keeps ' + $VmKeepGB + ' GB free while it hands memory back')
+LogLine ('install: ' + $day + ' GB while he is here, up to ' + $MaxGB + ' GB after ' + $AwayMin + ' min away, this PC keeps ' + $KeepFreeGB + ' GB free, the VM keeps ' + $VmKeepGB + ' GB free while it hands memory back; 10-31 rule: away it gets what it uses plus ' + $AwayHeadGB + ', here down to ' + $MinGB + ' when this PC has under ' + ($KeepFreeGB + $HereHeadGB) + ' free, party night ' + $MinGB)
 Say 'DONE. Nothing else to do. To undo it: night-memory-setup.cmd undo' 'OK'
 exit 0
