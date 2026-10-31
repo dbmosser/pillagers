@@ -95,3 +95,4 @@ SHIPPED 10-28 v35.66: 201 air strike needs 3000 damage (was 1500). On his PC 168
 - HIS ORDER 10-31: no golden pillager bots (bots stand in for live players). Parked as after-nov1/o-01d-250-no-golden-pillager-bots.md. Open question for after the party: the bounty pillager bot event is the same kind of buff.
 
 - HIS REPORT 10-31: false "cooked grenade! throw grenade now x6" danger line. Job tasks/o-00y4-251-cooked-grenade-line.md (feed copy goes; shout only over your head while holding it); party relevant, CEO decides.
+- His order 10-31 ~05:40 (verbatim, to the CEO chat): "spend to 96% of usage between now and noon to polish the game for the party", then "between now and 3pm, rather". Claude lanes a, b and c on: 12 party polish jobs (tasks/0p01..0p12); line 93 -> 96 by 14:15; no new jobs after 14:15 (party-window.txt); non-polish jobs parked in after-nov1.
