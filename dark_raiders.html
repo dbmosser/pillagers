@@ -3929,8 +3929,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.87';
-var VER_AT='2026-10-31 09:57';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.88';
+var VER_AT='2026-10-31 10:00';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -56975,7 +56975,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.87: In the demo the first pack of machines now comes in a few seconds and lands close, so the first fight starts about 15 to 20 seconds in. Check 36.87 fails on v36.86',
+  now:'v36.88: In a two player raid, the partner and the machines on the other screen glide at a steady speed instead of surging and stalling, and sit closer to where they really are. Check 36.88 fails on v36.87',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -61596,6 +61596,43 @@ function netRefresh(){ try{ netLateBtn(); }catch(_nlb){} var m=document.getEleme
 // SOLO PLAY IS UNTOUCHED. The floor calls in here only while NET.on, so a solo frame draws, sends and changes nothing new.
 // Nothing here draws from the seeded stream (rr, rnd, ri, pick, rollTable) or reads G.
 var NET_HUB_STEP=0.1, NET_HUB_SNAP=160, NET_HUB_STALE=3, NET_HUB_EASE=12;
+// v36.xx (cw-coopsmooth), HIS ANSWER 2.27 b ("no more than 50 ms extra for player 2, with prediction"): the partner and the machines on the other screen
+// used to chase the newest 10 Hz sample with a plain exponential ease, which moved a walking body 1.55x, then 0.57x its speed inside each 100 ms and kept
+// it about 130 ms behind. Now the receiving window reads each body speed from its last two samples (netLeadSample), aims at the sample plus that speed
+// times the time since it came (at most NET_LEAD_CAP, so a lost word never runs a body far) and moves the body at that speed while it eases out the
+// error (netLeadStep). Nothing that is sent changes. A body that stopped, jumped, rolled fast or would be led into a wall gets no lead and eases as before.
+var NET_LEAD_CAP=0.12, NET_LEAD_VMAX=700;
+function netLeadClear(x,y){
+  var ws=(typeof G==='object'&&G&&G.map)?G.map.walls:null, i, w;
+  if(!ws) return 1;
+  if(G.wgrid&&G.wgrid.walls===ws) ws=wallsNear(G.wgrid,x,y,10);
+  for(i=0;i<ws.length;i++){ w=ws[i]; if(x>w.x-8&&x<w.x+w.w+8&&y>w.y-8&&y<w.y+w.h+8) return 0; }
+  return 1;
+}
+// A new sample (x, y) came age seconds after the one at (px, py). Returns 1 when the body gets a lead.
+function netLeadSample(o,x,y,px,py,age){
+  var dx=x-px, dy=y-py, d=Math.sqrt(dx*dx+dy*dy), gap, vx, vy;
+  if(!(age>=0.04)) return o.nlead?1:0;   // two words in one frame say nothing about speed; keep what was read
+  o.nlead=0;
+  if(age>0.3||!(d>=0.6)||d>NET_HUB_SNAP){ o.nvx=0; o.nvy=0; return 0; }   // stopped, a long silence or a jump
+  gap=Math.max(age,0.07);
+  vx=dx/gap; vy=dy/gap;
+  if(o.nvx||o.nvy){ vx=(vx+o.nvx)*0.5; vy=(vy+o.nvy)*0.5; }
+  if(Math.sqrt(vx*vx+vy*vy)>NET_LEAD_VMAX){ vx=0; vy=0; }
+  o.nvx=vx; o.nvy=vy;
+  if((vx||vy)&&netLeadClear(x+vx*NET_LEAD_CAP*0.5,y+vy*NET_LEAD_CAP*0.5)&&netLeadClear(x+vx*NET_LEAD_CAP,y+vy*NET_LEAD_CAP)) o.nlead=1;
+  return o.nlead;
+}
+// One frame: moves o toward (tx, ty) plus the lead, at its read speed, and leaves how far it moved in nmx, nmy.
+function netLeadStep(o,tx,ty,age,dt,k){
+  var ox=o.x, oy=o.y, a;
+  if(o.nlead){
+    a=Math.min(age,NET_LEAD_CAP); tx+=o.nvx*a; ty+=o.nvy*a;
+    if(age<NET_LEAD_CAP){ o.x+=o.nvx*dt; o.y+=o.nvy*dt; }
+  }
+  o.x+=(tx-o.x)*k; o.y+=(ty-o.y)*k;
+  o.nmx=o.x-ox; o.nmy=o.y-oy;
+}
 var NET_LOOK=['hair','hat','skin','fit','cut','beard','eyes','face','boots','gloves','pack','patch','tattoo','outfit','build','scheme','vest','pads'];   // v20.03, his answer (2026-10-08): everyone sees your build
 // What he is wearing, one rack id per kind, read the way his own body is drawn.
 function netLook(){
@@ -61648,6 +61685,7 @@ function netOnState(peer,m){
   L=up?NET.up:NET.floor; g=L[s]||null;   // v15.79: up top and the floor are two lists; a word from up top never moves a man on the floor
   if(!g){ g={seat:s,x:x,y:y,f:f,tx:x,ty:y,tf:f,mv:0,roll:0,bob:0,age:0,n:0,lk:null,cr:0,sp:0,dn:0,w:'',sd:0,wep:null}; L[s]=g; }   // v15.79: filed on the list the word names
   else if(g.age>=NET_HUB_STALE||Math.sqrt((x-g.x)*(x-g.x)+(y-g.y)*(y-g.y))>NET_HUB_SNAP){ g.x=x; g.y=y; g.f=f; }
+  if(up) netLeadSample(g,x,y,g.tx,g.ty,g.age);   // v36.xx (cw-coopsmooth): his speed from this word and the last; read before the new spot is filed
   g.tx=x; g.ty=y; g.tf=f; g.mv=m.m?1:0; g.roll=clamp(+m.r||0,0,0.38); g.age=0; g.n++;
   // v17.68: A TEAMMATE GOING DOWN IS SAID AND FELT. The word that first carries his downed flag, in the raid this window is up
   // in, says who is down and asks for the pick-up, and gives the controller a rumble; nothing on screen said it before, and a
@@ -63090,8 +63128,7 @@ function netUpTick(dt){
     g=NET.up[i]; if(!g) continue;
     if(g.seat===NET.seat||netSeatName(g.seat)===null){ NET.up[i]=null; continue; }
     g.age+=dt;
-    dx=(g.tx-g.x)*k; dy=(g.ty-g.y)*k;
-    g.x+=dx; g.y+=dy;
+    netLeadStep(g,g.tx,g.ty,g.age,dt,k); dx=g.nmx; dy=g.nmy;   // v36.xx (cw-coopsmooth): a steady glide at his read speed, not a chase of a 10 Hz staircase
     da=g.tf-g.f;
     if(da>Math.PI) da-=6.2832; else if(da<-Math.PI) da+=6.2832;
     g.f+=da*k; g.f=g.f-6.2832*Math.floor(g.f/6.2832);
@@ -65145,6 +65182,7 @@ function netEntsApply(peer,m){
     if(!e){ e=netEntMake(id,kind,x,y); NET.entMap[id]=e; }
     if(!e.nIn){ e.nIn=1; G.ents.push(e); }
     if(!e.nT||e.nAge>=NET_ENT_STALE||Math.sqrt((x-e.x)*(x-e.x)+(y-e.y)*(y-e.y))>NET_HUB_SNAP){ e.x=x; e.y=y; e.face=f; }
+    netLeadSample(e,x,y,e.nT?e.ntx:x,e.nT?e.nty:y,e.nAge);   // v36.xx (cw-coopsmooth): its speed from this row and the last; read before the new spot is filed
     e.nT=1; e.ntx=x; e.nty=y; e.ntf=f; e.nAge=0;
     e.state=NET_ENT_STATES[st]||'patrol';
     e.hp=Math.round(clamp(hb,0,20)/20*(e.maxhp||1));
@@ -65257,7 +65295,7 @@ function netEntsEase(dt){
     if(e.nAge>=NET_ENT_STALE){ e.nIn=0; G.ents.splice(i,1); continue; }
     if(e.nT){
       if(!isFinite(e.x)||!isFinite(e.y)||!isFinite(e.face)){ e.x=e.ntx; e.y=e.nty; e.face=e.ntf; }   // v34.xx (cw-p2nan): robot report p2:nan, machines at a broken spot in the player 2 window; the easing and the snap test both stay broken on it, so it never came back
-      dx=(e.ntx-e.x)*k; dy=(e.nty-e.y)*k; e.x+=dx; e.y+=dy;
+      netLeadStep(e,e.ntx,e.nty,e.nAge,dt,k); dx=e.nmx; dy=e.nmy;   // v36.xx (cw-coopsmooth): a steady glide at its read speed, not a chase of a 10 Hz staircase
       da=e.ntf-e.face; if(da>Math.PI) da-=6.2832; else if(da<-Math.PI) da+=6.2832; e.face+=da*k;
       tr=Math.sqrt(dx*dx+dy*dy); if(e.moving) e.step=(e.step||0)+tr*.05;
     }

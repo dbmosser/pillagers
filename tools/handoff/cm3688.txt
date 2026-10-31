@@ -1,0 +1,7 @@
+v36.88: the partner and the machines glide on the other screen
+
+In a two player raid, the partner and the machines on the other screen glide at a steady speed instead of surging and stalling, and sit closer to where they really are.
+
+Check 36.88. Fails on v36.87.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

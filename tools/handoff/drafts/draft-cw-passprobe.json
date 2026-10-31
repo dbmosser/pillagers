@@ -1,0 +1,12 @@
+{
+    "title":  "PROBE ONLY",
+    "why":  "Measures the draw pass times for job 120k. Never shipped.",
+    "now":  "Nothing.",
+    "edits":  [
+                  {
+                      "anchor":  "var DRSSESSION={raid:null,settled:null};\n",
+                      "replacement":  "var DRSSESSION={raid:null,settled:null};   // probe only: never shipped\n"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027PROBE ONLY (never shipped): prints the draw pass times of one seed 4242 raid\u0027,\n   run:function(){\n     if(typeof __frame!==\u0027function\u0027||typeof GFXP===\u0027undefined\u0027) return \u0027SKIP: no frame helper\u0027;\n     var out=[], i, k, t0, ms, p0, p1, h0, h1, post, pass, n=150, rep, hm=(performance\u0026\u0026performance.memory);\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       if(!__state()||!__state().player) return \u0027SKIP: no raid\u0027;\n       for(i=0;i\u003c20;i++) __frame();\n       for(rep=0;rep\u003c2;rep++) for(post=1;post\u003e=0;post--){\n         CFG.gfxPost=post; GFXT.g=null;\n         t0=performance.now(); h0=hm?hm.usedJSHeapSize:0;\n         for(i=0;i\u003cn;i++){ GFXP.k=14; __frame(); }\n         ms=(performance.now()-t0)/n; h1=hm?hm.usedJSHeapSize:0;\n         pass=GFXT.ps||{}; k=[]; for(var nm in pass) k.push(nm+\u0027 \u0027+(pass[nm]/Math.max(1,GFXT.pn)).toFixed(2));\n         out.push(\u0027post\u0027+post+\u0027 frame \u0027+ms.toFixed(2)+\u0027ms [\u0027+k.join(\u0027 \u0027)+\u0027] heapKB/frame \u0027+((h1-h0)/n/1024).toFixed(1));\n       }\n       return \u0027PROBE \u0027+out.join(\u0027 | \u0027)+\u0027 | W\u0027+W+\u0027xH\u0027+H+\u0027 dpr\u0027+DPR+\u0027 q\u0027+DRS.q+\u0027 scale\u0027+DRS.scale;\n     } finally { try{ __endRaid(\u0027abandon\u0027); }catch(_e){} __topClear(); } }},"
+}

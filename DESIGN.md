@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.88 - THE PARTNER AND THE MACHINES GLIDE ON THE OTHER SCREEN
+
+Co-op hunt while he was away. His answer 2.27 b (no more than 50 ms extra for player 2, with prediction). Every body is sent ten times a second, and the receiving window chased the newest spot with a plain ease, so a walking partner or machine surged to 1.55 times its speed and stalled to 0.57 times inside each tenth of a second, and sat about 130 ms behind. The receiving window now reads each body speed from its last two samples, aims a little ahead of the newest spot (at most 0.12 s, never into a wall) and moves the body at that speed while it eases out the error. Nothing that is sent changes, so the host and the shared thread do no extra work. A body that stops, jumps or rolls fast gets no lead. WATCH IN A PLAYTEST (player 2 screen and the partner on both screens): a body that slides a little past a corner or a stop, then settles back, or a small hop when a machine turns or a door opens; the glide should look steady, with no surge and stall ten times a second.
+
+MEASURED. Check 36.88 passes, and fails on v36.87.
 ## v36.87 - THE FIRST DEMO FIGHT COMES ABOUT 15 TO 20 SECONDS IN
 
 Co-op hunt while he was away. His round 2 answer 2.62 b: the first fight comes after about 15 to 20 seconds, a short walk and then the first machines notice you. Measured on 40 demo seeds with a player standing at the start, the first pack came at 22 s and landed 770 to 1060 away, and the median first contact was about 89 s (19 of 40 seeds met nothing in 100 s). Two things held it back: the pack landed far, and a ring called by an AI pillager far away froze the wave clock for the whole start. The first pack of a demo run now comes after 11 s, lands 480 to 640 away, and only a called ring within 1000 of a player holds it. Every later pack and every career raid is as before.

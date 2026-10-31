@@ -153,3 +153,4 @@
 10-31 09:45 v36.84 cw-hubpolish on his pc after 34s (8802 serves 36.84) week 93%
 10-31 09:47 v36.85 cw-rackpolish on his pc after 17s (8802 serves 36.85) week 93%
 10-31 09:53 v36.86 cw-bldsmooth on his pc after 34s (8802 serves 36.86) week 93%
+10-31 10:00 v36.87 cw-firstfight on his pc after 67s (8802 serves 36.87) week 93%
