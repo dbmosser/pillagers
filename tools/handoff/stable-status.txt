@@ -1,19 +1,19 @@
 Latest stable: v36.55 (2026-10-29 22:13)
-Checked: 2026-10-31 04:35
+Checked: 2026-10-31 08:41
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1030-2155  v36.66  failing 86, new 3  robots 1389 min/1 problems  -> 3 check(s) newly failing, e.g. v23.12 raid details are short, never explaining sentences: t | v18.78 text in the framed windows stays inside the frame: th
-  corpus-1030-1753  v36.66  failing 86, new 3  robots 1389 min/1 problems  -> 3 check(s) newly failing, e.g. v23.12 raid details are short, never explaining sentences: t | v18.78 text in the framed windows stays inside the frame: th
-  corpus-1030-1445  v36.66  failing 91, new 4  robots 1389 min/1 problems  -> 4 check(s) newly failing, e.g. v23.12 raid details are short, never explaining sentences: t | v20.69 ESC or TAB in the stash search box clears the words f
+  corpus-1031-0632  v36.71  failing 87, new 3  robots 270 min/0 problems  -> 3 check(s) newly failing, e.g. v31.04 cw-shkey, his note (2026-10-18) "superhot mode needs  | v23.12 raid details are short, never explaining sentences: t
+  corpus-1030-2155  v36.66  failing 86, new 3  robots 1397 min/1 problems  -> 3 check(s) newly failing, e.g. v23.12 raid details are short, never explaining sentences: t | v18.78 text in the framed windows stays inside the frame: th
+  corpus-1030-1753  v36.66  failing 86, new 3  robots 1397 min/1 problems  -> 3 check(s) newly failing, e.g. v23.12 raid details are short, never explaining sentences: t | v18.78 text in the framed windows stays inside the frame: th
+  corpus-1030-1445  v36.66  failing 91, new 4  robots 1397 min/1 problems  -> 4 check(s) newly failing, e.g. v23.12 raid details are short, never explaining sentences: t | v20.69 ESC or TAB in the stash search box clears the words f
   corpus-1030-1316  v36.63  failing 90, new 4  robots 57 min/1 problems  -> 4 check(s) newly failing, e.g. v23.12 raid details are short, never explaining sentences: t | v20.69 ESC or TAB in the stash search box clears the words f
   corpus-1030-1153  v36.59  failing 93, new 3  robots 114 min/1 problems  -> 3 check(s) newly failing, e.g. v29.10 a Ctrl drag of a stack between the stash and the back | v23.12 raid details are short, never explaining sentences: t
   corpus-1030-0746  v36.57  failing 91, new 1  robots 287 min/6 problems  -> 1 check(s) newly failing, e.g. v18.78 text in the framed windows stays inside the frame: th
   corpus-1030-0631  v36.55  failing 85, new 0  robots 1191 min/2 problems  -> robots hit 2 problem(s) on it
-  corpus-1029-1512  v36.55  failing 89, new 0  robots 1191 min/2 problems  -> robots hit 2 problem(s) on it
 
 Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
   v18.78 text in the framed windows stays inside the frame: the text lines of the
   v23.12 raid details are short, never explaining sentences: the gun key reads [5]
-  v10.56 every gun schedules its own voice, no two alike, each shot a little diffe
+  v31.04 cw-shkey, his note (2026-10-18) "superhot mode needs a toggle key": the k

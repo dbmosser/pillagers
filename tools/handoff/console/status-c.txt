@@ -1,1 +1,1 @@
-10-31 05:31 paused (STOP-claude: his 10-30 order, Codex only for 2 player fixes)
+10-31 08:57 waiting for RAM: 2 GB free, a helper starts at 3; 0p03-186g-extract-countdown-plate kept

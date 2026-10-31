@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.72 - THE BIG MINIMAP AND LARGE HUD NO LONGER PUT PANELS OVER THE BELT
+
+Co-op hunt while he was away. Queue job 242 (CEO 10-29, from the o-00q camera at v36.41): with the minimap at its biggest size, the player 2 large HUD and run info open, the run info column covered the belt keys and the air strike meter, and the player 2 belt covered the end of the contract feed line. The run info now stops one gap above the belt and the air strike meter (it keeps the top rows and ends with a plus n more line), and a feed line that stands level with the belt ends before the belt.
+
+MEASURED. Check 36.72 passes, and fails on v36.71.
 ## v36.71 - COOKED GRENADE WARNING STAYS OVER YOUR HEAD
 
 Co-op hunt while he was away. His 10-31 report: a red feed line "cooked grenade! throw grenade now x6" showed when he held no grenade. The last-second warning is no longer a feed line at all; it flashes only over his own pillager while he holds the cooked frag. Watch: the cooked grenade warning stays over your head only.

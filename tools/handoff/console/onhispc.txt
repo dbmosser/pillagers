@@ -137,3 +137,4 @@
 10-31 04:39 v36.68 cw-autorec on his pc after 33s (8802 serves 36.68) week 93%
 10-31 05:20 v36.69 cw-cx-timelordhold on his pc after 66s (8802 serves 36.69) week 93%
 10-31 05:27 v36.70 cw-cx-text100 on his pc after 49s (8802 serves 36.70) week 93%
+10-31 05:34 v36.71 cw-cx-cookline on his pc after 33s (8802 serves 36.71) week 93%

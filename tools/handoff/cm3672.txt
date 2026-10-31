@@ -1,0 +1,7 @@
+v36.72: the big minimap and large hud no longer put panels over the belt
+
+Run info stops above the belt keys and the air strike meter in a crowded setup, and feed lines end before the belt.
+
+Check 36.72. Fails on v36.71.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

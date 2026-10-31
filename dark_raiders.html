@@ -3912,8 +3912,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.71';
-var VER_AT='2026-10-31 05:32';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.72';
+var VER_AT='2026-10-31 08:59';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23759,6 +23759,15 @@ function feedParts(ln,fL,maxW){
 }
 // v34.xx (cw-endcards2), the critic on 59 (3 of 5, P1): "a toast (running slowly) sits over the 80 percent scrim, the brightest thing on screen after the card". The feed waits behind the abandon question as it waits behind the map.
 function feedWaits(){ var _pb=document.getElementById('pausebox'); return !!(G&&G.mapOpen)||!!(_pb&&_pb.classList.contains('asking')); }
+// v28.xx (cw-hudbigfit), queue job 242: the width a feed line at height yt may take. The left feed is 28 percent of the screen wide and the belt starts left of that in the large HUD window,
+// so a line level with the belt ran under its keys; such a line now ends one gap before the belt (its detail shortens with "..." as before). Lines above or below the belt keep the full zone.
+function feedHotW(R,x,yt,pad){
+  var hc=G&&G.hotCells, i, L=1e9, T=1e9, B=-1e9, g=Math.max(2,Math.round(pad));
+  if(!hc||!hc.length) return R.w;
+  for(i=0;i<hc.length;i++){ if(hc[i].x<L) L=hc[i].x; if(hc[i].y<T) T=hc[i].y; if(hc[i].y+hc[i].h>B) B=hc[i].y+hc[i].h; }
+  if(yt+R.rh<=T-g||yt>=B+g||x>=L) return R.w;
+  return Math.max(R.fp*6,Math.min(R.w,L-g-x));
+}
 function feedDraw(){ var _lgS=LEGSIDE, _fst=0; LEGSIDE=null;   // v35.xx (cw-f1left): the opened controls list as drawn last frame (it draws after the feed); read once, so a frame without the list leaves the feed in its place
   var F=G&&G.fd, R, rs, fL, pad, gs, oa, y, yt, x, w, i, n, ln, al, e, pr, j, tx, yb, tw0;
   FEEDBOX.on=0; FEEDBOX.rows=[];
@@ -23774,9 +23783,10 @@ function feedDraw(){ var _lgS=LEGSIDE, _fst=0; LEGSIDE=null;   // v35.xx (cw-f1l
     for(i=F.lines.length-1,n=0;i>=0&&n<FEED.show;i--){
       ln=F.lines[i]; al=feedAlpha(ln); if(!(al>0)) continue; n++;   // v35.xx (cw-msgroute): a line that has faded out holds no place
       e=Math.min(1,(F.t-ln.born)/FEED.enter);
-      pr=feedParts(ln,fL,R.w-pad*3-gs-Math.round(pad*0.7));
-      w=Math.min(R.w,pad+Math.round(pad*0.5)+(ln.gl?gs+Math.round(pad*0.7):0)+pr.w+pad);
-      x=R.x+(_fst=feedStep(_lgS,R,rs))+(_fst?0:Math.round((e-1)*LH(18)*rs)); yt=y-R.rh;   // beside the open list a new line fades in where it stands (sliding in from the left it ran under the list)
+      yt=y-R.rh; x=R.x+(_fst=feedStep(_lgS,R,rs))+(_fst?0:Math.round((e-1)*LH(18)*rs)); var _fw=feedHotW(R,x,yt,pad);   // v28.xx (cw-hudbigfit): the row place and its width are known before the words are cut to fit
+      pr=feedParts(ln,fL,_fw-pad*3-gs-Math.round(pad*0.7));
+      w=Math.min(_fw,pad+Math.round(pad*0.5)+(ln.gl?gs+Math.round(pad*0.7):0)+pr.w+pad);
+        // beside the open list a new line fades in where it stands (sliding in from the left it ran under the list)
       ctx.globalAlpha=oa*al*e;
       hudPlate(x,yt,w,R.rh,ln.col,HUDC.plate);
       tx=x+pad+Math.round(pad*0.5);
@@ -45787,6 +45797,26 @@ else if(CC.ck==='elite'){ note=((T.eliteKills||0)>0)?'elite down, get out':'no e
     if(MMAP.box) by=Math.max(by,Math.ceil((mmBottom()+Math.round(_tg.gp*_tg.z))/_cz));   // v24.xx (minimap1): and under the minimap, one gap (v30.xx, cw-trcol: the column's gap)
     bx=clamp(bx+HOc.dx/_cz,Math.min(W-16-bw,W-(W-4)/_cz),Math.max(W-(W-4)/_cz,W-bw-4/_cz));
     by=clamp(by+HOc.dy/_cz,LH(10),Math.max(LH(10),H/_cz-LH(30)));
+    // v28.xx (cw-hudbigfit), queue job 242 (CEO 10-29, from the o-00q camera): with the big minimap and the large HUD the open run info hung down over the belt keys and the air strike meter.
+    // The panel now stops one gap above the highest belt key or live air strike plate that sits under it, and keeps what fits: the rows from the top, then one "+n more" line. The fold state is not touched.
+    if(!HOc.c&&G.hotCells&&G.hotCells.length){
+      var _hbS0=W+(bx-W)*_cz, _hbS1=W+(bx+bw-W)*_cz, _hbT=1e9, _hbi, _hbc, _hbA=airS();
+      for(_hbi=0;_hbi<G.hotCells.length;_hbi++){ _hbc=G.hotCells[_hbi]; if(_hbc.x<_hbS1&&_hbc.x+_hbc.w>_hbS0&&_hbc.y<_hbT) _hbT=_hbc.y; }
+      if(G.airBox&&G.airBox.w>0&&(_hbA.m>0||_hbA.aim||_hbA.sk.length)&&G.airBox.x<_hbS1&&G.airBox.x+G.airBox.w>_hbS0&&G.airBox.y<_hbT) _hbT=G.airBox.y;
+      if(_hbT<1e8){
+        var _hbM=Math.floor(((_hbT-Math.ceil(8*Math.max(1,hudRes())))/_cz-by-pad*2-lh)/lh);
+        if(total>_hbM){
+          var _hbK=[], _hbU=0, _hbR=0, _hbCut=false, _hbQ, _hbN;
+          for(_hbQ=0;_hbQ<rows.length;_hbQ++){
+            _hbN=(rows[_hbQ].k?1:0)+rows[_hbQ].wrapped.length;
+            if(!_hbCut&&_hbU+_hbN<=_hbM-1){ _hbK.push(rows[_hbQ]); _hbU+=_hbN; } else { _hbCut=true; if(rows[_hbQ].v) _hbR++; }
+          }
+          while(_hbK.length&&!_hbK[_hbK.length-1].v){ _hbU-=1; _hbK.pop(); }
+          if(_hbR>0&&_hbM>=1){ _hbK.push({k:'',v:'',wrapped:['+'+_hbR+' more'],vc:UIC.tx_2}); _hbU++; }
+          rows=_hbK; total=_hbU; bh=pad*2+lh+total*lh;
+        }
+      }
+    }
 hudPanel(bx,by,bw,bh,undefined,1);   // v18.13: the one HUD panel
     ctx.textAlign='left';
     var ry=by+pad+LH(8);
@@ -56805,7 +56835,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.71: The cooked grenade warning no longer shows in the message feed. It still flashes over your own head while you hold a cooked frag. Check 36.71 fails on v36.70',
+  now:'v36.72: Run info stops above the belt keys and the air strike meter in a crowded setup, and feed lines end before the belt. Check 36.72 fails on v36.71',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
