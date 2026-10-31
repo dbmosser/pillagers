@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.68 - RECORD EVERY RAID
+
+Co-op hunt while he was away. His order 10-31: set up the main pc to just record all my in-raid gameplay and use that as the idle screen. Watch: your raids now record themselves; watch the frame rate. A small dim rec dot sits in the top left corner while it records. Settings, the raid section, record every raid turns it off.
+
+MEASURED. Check 36.68 passes, and fails on v36.67.
 ## v36.67 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v36.51 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.

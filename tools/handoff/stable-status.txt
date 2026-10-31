@@ -1,12 +1,12 @@
 Latest stable: v36.55 (2026-10-29 22:13)
-Checked: 2026-10-31 03:33
+Checked: 2026-10-31 04:35
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1030-2155  v36.66  failing 86, new 3  robots 1303 min/1 problems  -> 3 check(s) newly failing, e.g. v23.12 raid details are short, never explaining sentences: t | v18.78 text in the framed windows stays inside the frame: th
-  corpus-1030-1753  v36.66  failing 86, new 3  robots 1303 min/1 problems  -> 3 check(s) newly failing, e.g. v23.12 raid details are short, never explaining sentences: t | v18.78 text in the framed windows stays inside the frame: th
-  corpus-1030-1445  v36.66  failing 91, new 4  robots 1303 min/1 problems  -> 4 check(s) newly failing, e.g. v23.12 raid details are short, never explaining sentences: t | v20.69 ESC or TAB in the stash search box clears the words f
+  corpus-1030-2155  v36.66  failing 86, new 3  robots 1389 min/1 problems  -> 3 check(s) newly failing, e.g. v23.12 raid details are short, never explaining sentences: t | v18.78 text in the framed windows stays inside the frame: th
+  corpus-1030-1753  v36.66  failing 86, new 3  robots 1389 min/1 problems  -> 3 check(s) newly failing, e.g. v23.12 raid details are short, never explaining sentences: t | v18.78 text in the framed windows stays inside the frame: th
+  corpus-1030-1445  v36.66  failing 91, new 4  robots 1389 min/1 problems  -> 4 check(s) newly failing, e.g. v23.12 raid details are short, never explaining sentences: t | v20.69 ESC or TAB in the stash search box clears the words f
   corpus-1030-1316  v36.63  failing 90, new 4  robots 57 min/1 problems  -> 4 check(s) newly failing, e.g. v23.12 raid details are short, never explaining sentences: t | v20.69 ESC or TAB in the stash search box clears the words f
   corpus-1030-1153  v36.59  failing 93, new 3  robots 114 min/1 problems  -> 3 check(s) newly failing, e.g. v29.10 a Ctrl drag of a stack between the stash and the back | v23.12 raid details are short, never explaining sentences: t
   corpus-1030-0746  v36.57  failing 91, new 1  robots 287 min/6 problems  -> 1 check(s) newly failing, e.g. v18.78 text in the framed windows stays inside the frame: th

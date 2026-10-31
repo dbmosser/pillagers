@@ -1,0 +1,7 @@
+v36.68: record every raid
+
+Frame cost, VM test Chrome 1882x973 (software, about 32 frames a second), two runs each: game work a frame off 3.86 and 4.35 ms, on 3.76 and 4.28 ms; the copy into the recording adds 0.33 to 0.36 ms a frame; frame gaps unchanged at 31.3 ms. Under the 1.5 ms limit, so 1600 wide at 30 frames a second stays. Codec: video/mp4 avc1 (H.264) first, then webm h264, vp8, vp9 last; 2.5 Mbps. The copy runs 30 times a second whatever the screen rate. Auto clips: no download, under 60 s not kept, newest 15 and 3 GB kept. P2 window and test pages never record.
+
+Check 36.68. Fails on v36.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
