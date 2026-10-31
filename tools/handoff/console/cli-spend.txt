@@ -2097,3 +2097,5 @@
 2026-10-30 0.0741 critic-o-13-154-machine-tells-unseen-and-open-beat
 2026-10-30 0.0000 o-13-154-machine-tells-unseen-and-open-beat
 2026-10-30 0.0000 o-145-pad-sprint-toggle-default
+2026-10-30 0.0801 critic-o-145-pad-sprint-toggle-default
+2026-10-30 0.0000 o-145-pad-sprint-toggle-default

@@ -1840,20 +1840,20 @@
   "when": "2026-10-29T18:16"
  },
  "p2-1080": {
-  "score": 2,
-  "pass": false,
+  "score": 3,
+  "pass": true,
   "need": 3,
-  "verdict": "The raid HUD is still a pile of mismatched boxes, floating labels and chips, and the earlier fixes were not applied. The open controls panel, a tiny timer, a duplicated mark label and unplated hp and armour bars compete with the world.",
+  "verdict": "A clean, consistent full-screen settings card with a clear lime focus bar and an x in the corner. The hierarchy is flat, the columns are badly balanced, and the list shows audio rows under 'the raid' with no section break.",
   "findings": [
-   "P1 top-centre timer, team score and mark chip: Make the timer 56px f-cond 800 with no box. Put 'team 0 sp' on one 20px line under it. Drop the per-player split or set it at 16px --tx-2. Give every box a 4px radius, 8px gaps and one centre axis.",
-   "P1 left controls list (move / fight / gear): Fold it to one 16px line, 'f1 controls', at mid-bottom left. If the party demo must keep it open, cut it to 8 actions. Use one keycap style: 1px --ui-line-hi border, --ui-raised fill, 4px radius. Set the headers at 16px --tx-1, weight 700.",
-   "P1 bottom-left armour and hp bars: Put both bars on a --ui-panel plate with a 1px --ui-line-hi border. Make the bars 12px tall on a --ui-line track. Use a --ok fill for hp and a --tx-2 fill for armour. Put the numbers at 20px f-cond 700 --tx-1 to the right of the bars. Leave an 8px gap between the bars and keep 16px clear of the hotbar.",
-   "P1 world labels: 'mark 39m', 'player 1 · 48m', 'mark · 39m', 'packing floor', 'the forge', 'the seal 0%', 'in pillager's party': Use one rule: 16px f-cond 600 --tx-1 with a 2px --ui-void halo and no box. Area names are --tx-2 with no letter-spacing. Extraction labels are --extract. Show each mark once. Move the party status to the left feed.",
-   "P2 hotbar slots 1 to 0: Give all 10 slots a 1px --ui-line outline on a --ui-panel fill, 64px square, 8px gaps. Mark the selected slot with a 2px --acc border. Put the numbers at 14px --tx-2 in the top-left corner inside the slot. Keep ammo counts at 16px in the bottom-right."
+   "P1 right detail pane: Narrow the pane to about 420px, or fill it with the current value, its options and a default marker. Give the freed width to the list column. Raise the description from the 16px muted text to the 20px body size in tx-1.",
+   "P1 center list, rows from 'master volume' down: Put audio rows under the 'audio' tab only. Add a 16px section label, or move the divider to a 32px gap. Give 'experimental' the same row height as the others. Fade the clipped last row, or pad the scroll area by 16px so no row is cut.",
+   "P1 value cells and arrows: Right-align the value group to the row's right edge. Make the arrows 20px in tx-2, and lime only on the focused row. Set unfocused values in tx-2, weight 600, and keep tx-1 for the focused value.",
+   "P2 left tab column: Use even 64px tab pitch. Add a 1px line-hi divider above 'send play data', or move it into the tab list. Align the three columns' top edges to one y. Use one focus treatment for tabs and rows.",
+   "P2 header and footer: Remove the lime tick or make it a full-width 2px header rule. Set 'esc close' at 16px in tx-2 with a key-cap box, since the x already shows. Make the card border line-hi (#4a5257)."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00w-244-ping-after-mark-merge-recipes-2/mark-legacy-demo-p2-1080.jpg",
-  "task": "o-00w-244-ping-after-mark-merge",
-  "when": "2026-10-29T18:16"
+  "pic": "tools/handoff/console/notes/shots/o-145-pad-sprint-toggle-default-recipes-1/sprint-default-p2-1080.jpg",
+  "task": "o-145-pad-sprint-toggle-default",
+  "when": "2026-10-30T18:17"
  },
  "pix86c-fashion": {
   "score": 3,
@@ -5228,5 +5228,21 @@
   "pic": "tools/handoff/console/notes/shots/o-13-154-machine-tells-unseen-and-open-beat-recipes-4/154-warden-open-join-1080.jpg",
   "task": "o-13-154-machine-tells-unseen-and-open-beat",
   "when": "2026-10-30T18:07"
+ },
+ "sprint-default-host": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "A clean, consistent full-screen settings card with a clear lime focus bar and an x in the corner. The hierarchy is flat, the columns are badly balanced, and the list shows audio rows under 'the raid' with no section break.",
+  "findings": [
+   "P1 right detail pane: Narrow the pane to about 420px, or fill it with the current value, its options and a default marker. Give the freed width to the list column. Raise the description from the 16px muted text to the 20px body size in tx-1.",
+   "P1 center list, rows from 'master volume' down: Put audio rows under the 'audio' tab only. Add a 16px section label, or move the divider to a 32px gap. Give 'experimental' the same row height as the others. Fade the clipped last row, or pad the scroll area by 16px so no row is cut.",
+   "P1 value cells and arrows: Right-align the value group to the row's right edge. Make the arrows 20px in tx-2, and lime only on the focused row. Set unfocused values in tx-2, weight 600, and keep tx-1 for the focused value.",
+   "P2 left tab column: Use even 64px tab pitch. Add a 1px line-hi divider above 'send play data', or move it into the tab list. Align the three columns' top edges to one y. Use one focus treatment for tabs and rows.",
+   "P2 header and footer: Remove the lime tick or make it a full-width 2px header rule. Set 'esc close' at 16px in tx-2 with a key-cap box, since the x already shows. Make the card border line-hi (#4a5257)."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-145-pad-sprint-toggle-default-recipes-1/sprint-default-host-1080.jpg",
+  "task": "o-145-pad-sprint-toggle-default",
+  "when": "2026-10-30T18:17"
  }
 }

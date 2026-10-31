@@ -9,3 +9,10 @@ Rules: the seed 4242 fingerprint (ents 85/374, containers 165/593) must hold unl
 TASK DONE when it shipped; TASK PARTIAL with what is left.
 
 HIS PRIORITY 10-27 (priorities page): MEDIUM
+
+Lane note 2026-10-30 14:18: shipped cw-cx-padsprintdefault and parked: only lane-side steps are left. Codex's last words:
+Shipped and confirmed ON HIS PC v36.66. Corrected both camera recipes to show and focus the sprint row; their syntax checks pass.
+
+LOCAL: no linked review.
+
+TASK PARTIAL: lane must recapture the corrected sprint-row pictures and return critic results.

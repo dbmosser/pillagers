@@ -132,3 +132,4 @@
 10-30 13:07 v36.63 cw-cx-sharedmachine on his pc after 33s (8802 serves 36.63) week 91%
 10-30 13:21 v36.64 cw-cx-goldbolt on his pc after 66s (8802 serves 36.64) week 91%
 10-30 13:50 v36.65 cw-cx-machineopen on his pc after 50s (8802 serves 36.65) week 91%
+10-30 14:15 v36.66 cw-cx-padsprintdefault on his pc after 17s (8802 serves 36.66) week 91%

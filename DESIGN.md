@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.67 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v36.51 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
+
+MEASURED. Check 36.67 passes, and fails on v36.66.
 ## v36.66 - PAD SPRINT TOGGLE DEFAULT
 
 Co-op hunt while he was away. His 10-25 g-68: Pad defaults to toggle. Watch: click LS once to keep running; stop the stick, aim with LT, fire a shot or run out of breath to end it. Keyboard Shift stays a hold. Saved hand picks stay until the sprint row is clicked.
