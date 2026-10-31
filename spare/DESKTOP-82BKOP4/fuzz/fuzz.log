@@ -6134,3 +6134,4 @@
 2026-10-31 04:39:27 raid 8 career raidSeed=240587266 map=0 god=0 sec=177 end=ended problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=5437 score=150 ents=52 travelPx=15475 fires=41 menuPct=23 heapMB=62 p2= gfx=21168/8.25/8.25/1/1 work=21166/4.25/5.75/6.75 build=36.66
 2026-10-31 05:26:09 FUZZ START seed=1482910493 minutes=60 raidsec=300 port=9331 srv=8806 build=36.69 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
 2026-10-31 05:31:17 raid 1 demo2p raidSeed=2031798640 map=0 god=0 sec=303 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=6527 score=0 ents=52 travelPx=21986 fires=129 menuPct=24 heapMB=68 p2=link_3s_join_5s_pad_own gfx=25693/8.25/16.75/187/1 gfx2=27633/8.25/16.75/119/1 work=26537/5.75/14.75/20.25 work2=28605/4.75/8.75/14.75 build=36.69
+2026-10-31 06:56:37 FUZZ START seed=1708857927 minutes=60 raidsec=300 port=9331 srv=8806 build=36.71 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
