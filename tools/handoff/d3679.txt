@@ -1,0 +1,5 @@
+## v36.79 - THE INBOUND LINE GIVES THE RING LETTER ROOM
+
+Co-op hunt while he was away. The critic on the v36.77 picture (screen 37): the ring letter badge sat inside the words on the inbound line (extract b inbound read as extract(b)inbound). The landed line already had two spaces either side; the inbound line now does too. Drawing only. Watch: the ring letter reads as the ring name in both party windows.
+
+MEASURED. Check 36.79 passes, and fails on v36.78.

@@ -1,0 +1,128 @@
+{
+    "title":  "ONE NAME FOR THE NUMBER KEYS",
+    "why":  "His word in every 10-27 order is hotbar (\"items on the hotbar\", \"hotbar swap\"). The row of number keys was named three ways: hotbar on the stash row, belt on the lift and the callouts, tactical belt on the older screens. It is hotbar now on every surface a player reads.",
+    "now":  "the number key row says hotbar everywhere: the backpack panel, the lift, the pad legends, the raid callouts and the stash words",
+    "edits":  [
+                  {
+                      "anchor":  "\u003cdiv class=\"msub\"\u003eYour inventory is your backpack plus your tactical belt. An item is in one or the other, never both.\u003c/div\u003e",
+                      "replacement":  "\u003cdiv class=\"msub\"\u003eYour inventory is your backpack plus your hotbar. An item is in one or the other, never both.\u003c/div\u003e"
+                  },
+                  {
+                      "anchor":  "\u003ch2\u003eTactical belt\u003c/h2\u003e",
+                      "replacement":  "\u003ch2\u003eHotbar\u003c/h2\u003e"
+                  },
+                  {
+                      "anchor":  "var TAGFWD={\u0027Hotbar worked well\u0027:\u0027Tactical belt worked well\u0027};",
+                      "replacement":  "var TAGFWD={\u0027Tactical belt worked well\u0027:\u0027Hotbar worked well\u0027};   // v28.xx (cw-onehotbar), his word in every 10-27 order: \"items on the hotbar\", \"hotbar swap\". The row of number keys is the hotbar on every surface."
+                  },
+                  {
+                      "anchor":  "\u0027Inventory fiddly\u0027,\u0027Tactical belt worked well\u0027,\u0027Loot boring\u0027",
+                      "replacement":  "\u0027Inventory fiddly\u0027,\u0027Hotbar worked well\u0027,\u0027Loot boring\u0027"
+                  },
+                  {
+                      "anchor":  "\"Thrown. Goes on a tactical belt key.\":\"Belt consumables ftw. \"",
+                      "replacement":  "\"Thrown. Goes on a hotbar key.\":\"Hotbar consumables ftw. \""
+                  },
+                  {
+                      "anchor":  "\"Thrown. Goes on a tactical belt key. Makes 2.\":\"Belt consumables ftw.\"",
+                      "replacement":  "\"Thrown. Goes on a hotbar key. Makes 2.\":\"Hotbar consumables ftw.\""
+                  },
+                  {
+                      "anchor":  "return \u0027Thrown. Goes on a tactical belt key.\u0027;",
+                      "replacement":  "return \u0027Thrown. Goes on a hotbar key.\u0027;"
+                  },
+                  {
+                      "anchor":  "\u0027ring search\u0027,\u0027belt -\u0027,\u0027belt +\u0027,\u0027focus\u0027",
+                      "replacement":  "\u0027ring search\u0027,\u0027hotbar -\u0027,\u0027hotbar +\u0027,\u0027focus\u0027"
+                  },
+                  {
+                      "anchor":  "[n(4)+\u0027/\u0027+n(5)+\u0027 tap\u0027,\u0027change tactical belt slot\u0027]",
+                      "replacement":  "[n(4)+\u0027/\u0027+n(5)+\u0027 tap\u0027,\u0027change hotbar slot\u0027]"
+                  },
+                  {
+                      "anchor":  "[\u0027LB/RB tap\u0027,\u0027change tactical belt slot\u0027]",
+                      "replacement":  "[\u0027LB/RB tap\u0027,\u0027change hotbar slot\u0027]"
+                  },
+                  {
+                      "anchor":  "[b(4)+\u0027 / \u0027+b(5),\u0027tactical belt\u0027]",
+                      "replacement":  "[b(4)+\u0027 / \u0027+b(5),\u0027hotbar\u0027]"
+                  },
+                  {
+                      "anchor":  "[\u0027LB / RB\u0027,\u0027tactical belt\u0027]",
+                      "replacement":  "[\u0027LB / RB\u0027,\u0027hotbar\u0027]"
+                  },
+                  {
+                      "anchor":  "say(_any?\u0027NO THROWABLE ON THE TACTICAL BELT\u0027:\u0027NO THROWABLES LEFT\u0027);",
+                      "replacement":  "say(_any?\u0027NO THROWABLE ON THE HOTBAR\u0027:\u0027NO THROWABLES LEFT\u0027);"
+                  },
+                  {
+                      "anchor":  "say((findHeal()\u003e=0)?\u0027NO HEAL ON BELT\u0027:\u0027NO MEDICAL SUPPLIES\u0027)",
+                      "replacement":  "say((findHeal()\u003e=0)?\u0027NO HEAL ON HOTBAR\u0027:\u0027NO MEDICAL SUPPLIES\u0027)"
+                  },
+                  {
+                      "anchor":  "say(\u0027NO HEAL ON BELT\u0027,\u0027info\u0027",
+                      "replacement":  "say(\u0027NO HEAL ON HOTBAR\u0027,\u0027info\u0027"
+                  },
+                  {
+                      "anchor":  "(ITEMS[_rpk].use===\u0027throw\u0027?\u0027ON BELT\u0027:\u0027IN BACKPACK\u0027)",
+                      "replacement":  "(ITEMS[_rpk].use===\u0027throw\u0027?\u0027ON HOTBAR\u0027:\u0027IN BACKPACK\u0027)"
+                  },
+                  {
+                      "anchor":  "You come back down with an empty backpack and belt.\u003c/span\u003e",
+                      "replacement":  "You come back down with an empty backpack and hotbar.\u003c/span\u003e"
+                  },
+                  {
+                      "anchor":  "text(\u0027tactical belt\u0027,left,beltTop-16*s,20,\u0027#aaa498\u0027);",
+                      "replacement":  "text(\u0027hotbar\u0027,left,beltTop-16*s,20,\u0027#aaa498\u0027);"
+                  },
+                  {
+                      "anchor":  "[[\u0027\u0027,\u0027drag to tactical belt\u0027]]",
+                      "replacement":  "[[\u0027\u0027,\u0027drag to hotbar\u0027]]"
+                  },
+                  {
+                      "anchor":  ":\u0027drag to tactical belt\u0027) // v28.xx (cw-cx-floorbag)",
+                      "replacement":  ":\u0027drag to hotbar\u0027) // v28.xx (cw-cx-floorbag)"
+                  },
+                  {
+                      "anchor":  "past the ends to the tactical belt   A pick up or place   B close",
+                      "replacement":  "past the ends to the hotbar   A pick up or place   B close"
+                  },
+                  {
+                      "anchor":  "\u0027 drop one   drag to tactical belt\u0027",
+                      "replacement":  "\u0027 drop one   drag to hotbar\u0027"
+                  },
+                  {
+                      "anchor":  "\u0027    BACKPACK \u0027+_bpN+\u0027    BELT \u0027+_bltN",
+                      "replacement":  "\u0027    BACKPACK \u0027+_bpN+\u0027    HOTBAR \u0027+_bltN"
+                  },
+                  {
+                      "anchor":  "you packed, plus your current tactical belt and backpack.\u0027",
+                      "replacement":  "you packed, plus your current hotbar and backpack.\u0027"
+                  },
+                  {
+                      "anchor":  ":\u0027your current tactical belt and backpack.\u0027",
+                      "replacement":  ":\u0027your current hotbar and backpack.\u0027"
+                  },
+                  {
+                      "anchor":  "\u0027 off the tactical belt and into the backpack.\u0027",
+                      "replacement":  "\u0027 off the hotbar and into the backpack.\u0027"
+                  },
+                  {
+                      "anchor":  "\u0027TACTICAL BELT \\u00b7 PICK UP AN ITEM WITH A, THEN A HERE\u0027",
+                      "replacement":  "\u0027HOTBAR \\u00b7 PICK UP AN ITEM WITH A, THEN A HERE\u0027"
+                  },
+                  {
+                      "anchor":  "\u0027TACTICAL BELT \\u00b7 HOVER AN ITEM + PRESS 1-9 OR 0\u0027",
+                      "replacement":  "\u0027HOTBAR \\u00b7 HOVER AN ITEM + PRESS 1-9 OR 0\u0027"
+                  },
+                  {
+                      "anchor":  "\u003cdiv class=\"srph\"\u003e\u003cb\u003ebelt\u003c/b\u003e\u003cspan id=\"srplanmsg\"\u003e",
+                      "replacement":  "\u003cdiv class=\"srph\"\u003e\u003cb\u003ehotbar\u003c/b\u003e\u003cspan id=\"srplanmsg\"\u003e"
+                  },
+                  {
+                      "anchor":  "\u0027Large for tv: bigger raid panels, minimap and belt.\u0027",
+                      "replacement":  "\u0027Large for tv: bigger raid panels, minimap and hotbar.\u0027"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the row of number keys is the hotbar on every surface a player reads (his word in every 10-27 order): the backpack panel, the throwable hint, the pad legends, the feeling tag, the lift, the raid callouts and the stash words; none says belt\u0027,\n   run:function(){\n     var bad=[], src=\u0027\u0027, sc, i, j, k, cm, hint, sp, pj, padL, tt, tb, cut, lines, ln, RX, n=0, keepKit;\n     var BW=[\u0027be\u0027,\u0027lt\u0027].join(\u0027\u0027);\n     function belt(s){ return new RegExp(\u0027\\\\b\u0027+BW+\u0027\\\\b\u0027,\u0027i\u0027).test(String(s||\u0027\u0027)); }\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       // ONE: the raid backpack panel\n       cm=document.getElementById(\u0027carrymodal\u0027);\n       if(!cm) bad.push(\u0027no raid backpack panel\u0027);\n       else { if(belt(cm.textContent)) bad.push(\u0027the backpack panel still says \u0027+BW); if(!/hotbar/i.test(cm.textContent)) bad.push(\u0027the backpack panel never says hotbar\u0027); }\n       // TWO: the throwable hint\n       if(typeof itemUseHint===\u0027function\u0027){ hint=itemUseHint(ITEMS.frag||{use:\u0027throw\u0027}); if(belt(hint)||!/hotbar/i.test(hint)) bad.push(\u0027the throwable hint reads \u0027+JSON.stringify(hint)); }\n       // THREE: the controller legends\n       if(window.__pad\u0026\u0026__pad.legend){ padL=__pad.legend(); tt=[]; for(j=0;j\u003cpadL.length;j++) for(k=0;k\u003cpadL[j][1].length;k++) tt.push(padL[j][1][k][1]); pj=tt.join(\u0027 | \u0027); if(belt(pj)) bad.push(\u0027the controller legend still says \u0027+BW); if(!/hotbar/i.test(pj)) bad.push(\u0027the controller legend never says hotbar\u0027); }\n       tb={LEGEND:(typeof LEGEND!==\u0027undefined\u0027)?LEGEND:null,LEGEND_PAD:(typeof LEGEND_PAD!==\u0027undefined\u0027)?LEGEND_PAD:null,GEARRULES:(typeof GEARRULES!==\u0027undefined\u0027)?GEARRULES:null};\n       for(k in tb) if(tb[k]\u0026\u0026belt(JSON.stringify(tb[k]))) bad.push(k+\u0027 still says \u0027+BW);\n       // FOUR: the feeling tag, and an old saved one still reads right\n       if(typeof TAGS!==\u0027undefined\u0027){ for(i=0;i\u003cTAGS.length;i++) if(belt(TAGS[i])) bad.push(\u0027the tag \"\u0027+TAGS[i]+\u0027\" says \u0027+BW); if(TAGS.indexOf(\u0027Hotbar worked well\u0027)\u003c0) bad.push(\u0027no feeling tag reads Hotbar worked well\u0027); }\n       if(typeof tagText===\u0027function\u0027\u0026\u0026tagText([\u0027Tactical \u0027,\u0027belt worked well\u0027].join(\u0027\u0027))!==\u0027Hotbar worked well\u0027) bad.push(\u0027a tag saved with the old word does not read hotbar\u0027);\n       // FIVE: the lift panel\n       P.kitPick=\u0027mine\u0027; saveProfile(); renderSector(); openModal(\u0027sectormodal\u0027);\n       sp=document.getElementById(\u0027sectorplan\u0027);\n       if(!sp) bad.push(\u0027no lift hotbar panel\u0027); else { if(belt(sp.textContent)) bad.push(\u0027the lift panel still says \u0027+BW); if(!/hotbar/i.test(sp.textContent)) bad.push(\u0027the lift panel never says hotbar\u0027); }\n       // SIX: the words drawn on canvas and said in callouts live in the script. Read every code line (comments, the news list and tag lists left out).\n       sc=document.scripts; for(i=0;i\u003csc.length;i++) src+=sc[i].textContent;\n       cut=src.indexOf(\u0027window.__frame=function\u0027); if(cut\u003e0) src=src.slice(0,cut);\n       if(src.length\u003c100000) bad.push(\u0027the build cannot read its own script\u0027);\n       else {\n         src=src.replace(/\\/\\*[\\s\\S]*?\\*\\//g,\u0027\u0027).replace(/\u003c!--[\\s\\S]*?--\u003e/g,\u0027\u0027);\n         RX=[new RegExp([\u0027tactical \u0027,\u0027belt\u0027].join(\u0027\u0027),\u0027i\u0027),new RegExp([\u0027NO HEAL ON \u0027,\u0027BELT\u0027].join(\u0027\u0027)),new RegExp([\"\u0027ON \",\"BELT\u0027\"].join(\u0027\u0027)),new RegExp([\"BELT \u0027\",\"\\\\+\"].join(\u0027\u0027)),new RegExp([\u0027\u003cb\u003e\u0027,BW,\u0027\u003c\\\\/b\u003e\u0027].join(\u0027\u0027)),new RegExp([\"\u0027\",BW,\" [-+]\u0027\"].join(\u0027\u0027)),new RegExp([\u0027minimap and \u0027,BW].join(\u0027\u0027))];\n         lines=src.split(\u0027\\n\u0027);\n         for(i=0;i\u003clines.length\u0026\u0026n\u003c6;i++){\n           ln=lines[i].replace(/^\\s+/,\u0027\u0027); if(ln.charAt(0)===\"\u0027\"||ln.indexOf(\u0027//\u0027)===0||ln.indexOf(\u0027var TAGFWD\u0027)===0) continue;\n           ln=ln.replace(/\\s\\/\\/\\s.*$/,\u0027\u0027);\n           for(j=0;j\u003cRX.length;j++) if(RX[j].test(ln)){ bad.push(\u0027code still says \u0027+BW+\u0027: \u0027+ln.slice(Math.max(0,ln.search(RX[j])-30),ln.search(RX[j])+50)); n++; break; }\n         }\n       }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{\n       try{ var sm=document.getElementById(\u0027sectormodal\u0027); if(sm) sm.classList.remove(\u0027on\u0027); }catch(_s){}\n       try{ __topClear(); __cleanProfile(); }catch(_c){}\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

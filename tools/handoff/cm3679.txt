@@ -1,0 +1,7 @@
+v36.79: the inbound line gives the ring letter room
+
+The inbound extraction line has room around the ring letter badge.
+
+Check 36.79. Fails on v36.78.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.79 - THE INBOUND LINE GIVES THE RING LETTER ROOM
+
+Co-op hunt while he was away. The critic on the v36.77 picture (screen 37): the ring letter badge sat inside the words on the inbound line (extract b inbound read as extract(b)inbound). The landed line already had two spaces either side; the inbound line now does too. Drawing only. Watch: the ring letter reads as the ring name in both party windows.
+
+MEASURED. Check 36.79 passes, and fails on v36.78.
 ## v36.78 - A DANGER STANDS OVER THE DOWNED CARD
 
 Co-op hunt while he was away. Follow-up to v36.75: the danger plate now stands at 27 percent of the height, and the downed card (lifted off the player in v35.xx) stands at the same height, so a danger said while you are down would draw on the card. While you are down the plate now stands on top of the card, clear of it.

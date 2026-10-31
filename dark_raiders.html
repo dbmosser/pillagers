@@ -3912,8 +3912,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.78';
-var VER_AT='2026-10-31 09:21';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.79';
+var VER_AT='2026-10-31 09:24';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -46754,13 +46754,12 @@ ctx.restore();
     // v8.68 named this window for him rather than calling it OPEN. v11.74, his
     // note: that name read as something happening elsewhere, so it tells him to
     // move instead, in the words he gave for the ring badge at v11.54.
-    var _exS=holding?extractNowLine(_exL,G.shipHold):('EXTRACT '+_exL+' INBOUND  '+Math.ceil(G.beaconT)+'s');
-    // v36.xx (cw-xcountplate), the critic on o-120g (P0 'the extraction countdown has no plate on busy ground and repeats the action and the distance'): the countdown stands on its plate
+    var _exS=holding?extractNowLine(_exL,G.shipHold):('EXTRACT  '+_exL+'  INBOUND  '+Math.ceil(G.beaconT)+'s');   // v36.xx (cw-xcountplate3): two spaces either side of the ring letter, as the landed line has, so its badge has room (the critic read 'extract(b)inbound')    // v36.xx (cw-xcountplate), the critic on o-120g (P0 'the extraction countdown has no plate on busy ground and repeats the action and the distance'): the countdown stands on its plate
     // while inbound AND once the ship has landed (the landed line was the one left bare), measured to the words as drawn.
     _exBW=extBanPlate(TX(_exS),W/2,_exBan,_exR).w;   // v32.xx (cw-extscrim)
     hudText(_exS,W/2,_exBan);   // v16.30, his word: inbound
     // v36.xx (cw-xcountplate): the letter is the ring's name (his words stay: extract in progress), so it is ringed like a badge. The distance is the pill's job (top centre, once), the action is the centre line (once).
-    try{ var _exPre=TX(holding?'EXTRACT IN PROGRESS!  ':'EXTRACT '), _exFp=parseFloat((/([\d.]+)px/.exec(ctx.font)||[0,24])[1]), _exCx=W/2-hudRawW(TX(_exS))/2+hudRawW(_exPre)+hudRawW(TX(_exL))/2;
+    try{ var _exPre=TX(holding?'EXTRACT IN PROGRESS!  ':'EXTRACT  '), _exFp=parseFloat((/([\d.]+)px/.exec(ctx.font)||[0,24])[1]), _exCx=W/2-hudRawW(TX(_exS))/2+hudRawW(_exPre)+hudRawW(TX(_exL))/2;
       // v36.xx (cw-xcountplate2), the critic's eye on the picture (screen 37): the round badge touched the letters either side on the one-space inbound line. It is an oval that hugs the letter (its width plus 0.1 of the type size each side, a single space is 0.25).
       ctx.save(); ctx.lineWidth=Math.max(1.5,_exFp*0.07); ctx.strokeStyle=ctx.fillStyle; ctx.beginPath(); ctx.ellipse(_exCx,_exBan-_exFp*0.3,hudRawW(TX(_exL))/2+_exFp*0.1,_exFp*0.5,0,0,6.2832); ctx.stroke(); ctx.restore(); }catch(_exRg){}
     {
@@ -56897,7 +56896,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.78: A danger said while you are down stands over the downed card, never on it. Check 36.78 fails on v36.77',
+  now:'v36.79: The inbound extraction line has room around the ring letter badge. Check 36.79 fails on v36.78',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
