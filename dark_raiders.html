@@ -3929,8 +3929,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.91';
-var VER_AT='2026-10-31 11:15';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.92';
+var VER_AT='2026-10-31 11:23';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -50889,9 +50889,9 @@ function mapPlaceLabels(Q,hdrY,fn){
     ctx.save(); try{ ctx.setTransform(L.m); }catch(_t){}
     ctx.font=L.font; ctx.fillStyle=L.fs; ctx.textAlign=L.ta; ctx.textBaseline=L.tb; ctx.globalAlpha=L.ga;
     // v28.xx (cw-cx-mapstart-plates): critic P1, preserve every label and separate it from map linework with 4px side padding.
-    if(mapFirstOn()){
+    if(true){   /* v28.xx (cw-mapchips): every sector map label sits on a dark chip, not only the raid start map (the critic: labels sit straight on busy room linework) */
       var plate=mapLabelRect(L,g.dx,g.dy);
-      ctx.save(); ctx.setTransform(1,0,0,1,0,0); ctx.fillStyle='rgba(11,12,13,.8)';
+      ctx.save(); ctx.setTransform(1,0,0,1,0,0); ctx.fillStyle=mapFirstOn()?'rgba(11,12,13,.8)':'rgba(11,12,13,.6)';
       ctx.fillRect(plate.l-4*_mz,plate.t-3*_mz,plate.r-plate.l+8*_mz,plate.b-plate.t+6*_mz); ctx.restore();
     }
     // v28.xx (cw-cx-sectorhold-o03): a displaced loot label stays visibly attached to its own icon, never a neighbouring cache.
@@ -56990,7 +56990,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.91: Sector map: the strongbox word is placed first so it sits right beside its icon, zone names are brighter, the contract reward uses the main text colour and the progress track is 5 px (10 px at 4K). No caches, no new features. LOCAL: no linked review. Retarget: check 31.48 accepts zone names up to 82 percent. Check 36.91 fails on v36.90',
+  now:'v36.92: Every label on the M sector map now sits on a dark chip (the raid start map already had them). No caches, no new features. LOCAL: no linked review. Check 36.92 fails on v36.91',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

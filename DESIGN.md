@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.92 - SECTOR MAP CHIPS
+
+Co-op hunt while he was away. His 10-31 party polish order. The critic held the M map at 3: map labels sit straight on busy room linework. Render only. Watch: every word on the sector map now has a dark chip behind it.
+
+MEASURED. Check 36.92 passes, and fails on v36.91.
 ## v36.91 - SECTOR MAP POLISH
 
 Co-op hunt while he was away. His 10-31 party polish order. The critic held the M map at 3: contract hierarchy and tracks, zone name contrast, and the strongbox word floating off its icon at 4K. Render only. Watch: the strongbox word sits close to its icon, zone names are brighter, contract rewards are brighter and the progress tracks are thicker.

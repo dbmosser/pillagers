@@ -275,17 +275,17 @@
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "Removing the cache tags cleared the cluttered label pile-ups on the map, but the labels are still weak in tiers and contrast, and the contracts panel is unchanged: its bars are still thin grey rules, its text is still all one weight, and the 'open' row still breaks the count column.",
+  "verdict": "Only the contract rows changed, and the new set adds a green 'holding' tag; the earlier advice on progress bars, map label chips, the strongbox cluster and the extract b cluster was not applied, so the screen is still a competent but flat 3.",
   "findings": [
-   "P1 contracts panel, rows (x 1140-1745, y 240-890): Draw a 4px track in --ui-line with an --acc fill proportional to progress. Set names in --tx-1 at 20px and rewards in --tx-2 at 16px. Give every row the same count slot ('0/1'). Move 'holding' and 'open' into a status tag at the left of the bar.",
-   "P1 map labels, overall (extract c/b/a, zone names, POI labels): Extract labels 20px --extract. POI labels 16px --tx-1 with a 60% --ui-void chip behind them. Zone names 16px --tx-2 at 4.5:1 or better, with a 1px dark outline. Make 'locked' a --warn glyph instead of bold white text.",
-   "P1 map, strongbox label and icon (x 1015-1080, y 400-480): Put the label 12px to the right of the icon, or below it, with a chip behind it. Move 'blast freezer · locked' at least 24px left. Make the icon 28px.",
-   "P2 map, extract b cluster (x 960-1075, y 480-560): Centre the 'extract b' label under its marker and give it a chip. Keep it 16px clear of the room edge.",
-   "P2 map frame, empty lower-left and lower-right (x 160-1085, y 640-900): Drop the unlabelled ring markers or add labels at 16px. Shrink the red 'encampment' labels to 16px, or give them a --danger diamond with the label in --tx-1."
+   "P1 contracts panel rows (x 1195-1730, y 200-930): Make each track 4px in --ui-line with an --acc fill proportional to progress. Set names in --tx-1 at 20px. Set rewards in --tx-2 at 16px. Give every row the same '0/1' count slot at the left of the bar.",
+   "P1 contracts, first row 'no kills' (y 215-255): Use one status slot for every row: '0/1' for counted rows, and 'holding' as a 16px --ok tag in the same position. Add a full-width --ok bar fill on this row.",
+   "P1 map labels (extract c/b/a, zone names, POI labels): Extract labels 20px --extract. POI labels 16px --tx-1 on a 60% --ui-void chip with 6px/4px padding. Zone names 16px --tx-2 with a 1px dark outline, at 4.5:1 or better. Show 'locked' as a --warn glyph.",
+   "P1 strongbox cluster (x 1015-1150, y 400-480): Put the label 12px to the right of or below the icon, on a chip. Move 'blast freezer · locked' at least 24px left. Make the icon 28px.",
+   "P2 extract b cluster (x 1050-1150, y 485-570): Centre the labels under the marker on a chip. Keep them 16px clear of 'chill row' and the room edge."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00v-no-caches-on-map-after/22-raid-map-open-1080.jpg",
-  "task": "o-00v-no-caches-on-map",
-  "when": "2026-10-29T16:40"
+  "pic": "tools/handoff/console/notes/shots/0p16-after/22-raid-map-open-1080.jpg",
+  "task": "manual",
+  "when": "2026-10-31T15:18"
  },
  "23-raid-backpack-open": {
   "score": 3,

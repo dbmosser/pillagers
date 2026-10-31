@@ -68,3 +68,6 @@ Same blocker. notes/95/ still missing; codex measurements folder still only raw-
 
 --- claude lane b run 2026-10-31 (0p15 requeue, 4th check) ---
 Same blocker. notes/95/ still missing; codex measurements folder still only raw-camera-shared-t1.json. No split, pid or stall-after files, so step 1 cannot say go. No game edits, no ship key. Stopped per the requeue rule.
+
+--- claude lane b run 2026-10-31 (0p15 requeue, 5th check) ---
+Same blocker. notes/95/ still missing; codex measurements folder still only raw-camera-shared-t1.json. No split, pid or stall-after files, so step 1 cannot say go. No game edits, no ship key. Stopped per the requeue rule.

@@ -1,0 +1,7 @@
+v36.92: sector map chips
+
+Every label on the M sector map now sits on a dark chip (the raid start map already had them). No caches, no new features. LOCAL: no linked review.
+
+Check 36.92. Fails on v36.91.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
