@@ -143,3 +143,4 @@
 10-31 09:12 v36.74 cw-xcountplate on his pc after 34s (8802 serves 36.74) week 93%
 10-31 09:15 v36.75 cw-dangerslot on his pc after 67s (8802 serves 36.75) week 93%
 10-31 09:17 v36.76 cw-hudroster on his pc after 50s (8802 serves 36.76) week 93%
+10-31 09:19 v36.77 cw-xcountplate2 on his pc after 34s (8802 serves 36.77) week 93%

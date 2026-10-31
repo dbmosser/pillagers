@@ -2103,3 +2103,5 @@
 2026-10-31 0.9911750000000001 0p02-242-hud-big-settings-overlap
 2026-10-31 0.1181 critic-manual
 2026-10-31 0.0945 critic-manual
+2026-10-31 2.7584527999999997 0p01-186f-hud-panel-consistency
+2026-10-31 0.0850 critic-manual

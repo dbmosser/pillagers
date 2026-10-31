@@ -1,0 +1,5 @@
+## v36.78 - A DANGER STANDS OVER THE DOWNED CARD
+
+Co-op hunt while he was away. Follow-up to v36.75: the danger plate now stands at 27 percent of the height, and the downed card (lifted off the player in v35.xx) stands at the same height, so a danger said while you are down would draw on the card. While you are down the plate now stands on top of the card, clear of it.
+
+MEASURED. Check 36.78 passes, and fails on v36.77.

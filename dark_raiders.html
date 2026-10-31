@@ -3912,8 +3912,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.77';
-var VER_AT='2026-10-31 09:18';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.78';
+var VER_AT='2026-10-31 09:21';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -22976,7 +22976,12 @@ function alertRepeat(m,k,o,now){   // a danger said again within 10 s of being o
   return !!(s&&s.hasOwnProperty(id)&&now-s[id]<ALERTAGAIN);
 }
 function alertWaitMax(e){ if(e.back&&e.o&&e.o.hold) return 8; if(alertDanger(e.k)) return ALERTDROP; return e.back?5:ALERTWAIT; }
-function alertSlotY(){ return Math.max(ALERTY||LH(96),Math.round(H*ALERTYF/((HUDZ.msg||1)*hudRes()*hudUserZ('msg')))); }   // the top of the danger plate, before the message scale
+function alertSlotY(hh){   // the top of the danger plate, before the message scale
+  var z=(HUDZ.msg||1)*hudRes()*hudUserZ('msg'), y=Math.max(ALERTY||LH(96),Math.round(H*ALERTYF/z)), p=G&&G.player;
+  // v36.77 (cw-dangerdown): while you are down the downed card stands at the same height (it was lifted off the player, v35.xx cw-clockcard), so the danger plate stands on top of it
+  if(p&&p.downed&&!G.over&&DOWNTOP>0) y=Math.max(ALERTY||LH(96),Math.min(y,Math.floor(DOWNTOP/z-hh-LH(8))));
+  return y;
+}
 function msgAlertK(k){ return ALERTK.hasOwnProperty(k); }
 function alertUp(){ var a=G&&G.alert; return (a&&a.T>0&&a.m)?a:null; }
 function alertHeld(a){
@@ -23436,7 +23441,7 @@ function alertLayout(){   // with the message scale not yet applied: the alert p
     for(i=0;i<bl.length;i++) bl[i]+=LH(7);
     return {a:a,hl:hl,sl:sl,bl:bl,hf:hf,lf:lf,hp:hp,gs:gs,slot:0,y:ALERTY||LH(96),w:Math.max(LH(320),Math.ceil(LH(12)+gs+LH(7)+w+LH(12))),h:y+Math.round((sl.length?lp:hp)*0.3)+LH(24)};
   }
-  return {a:a,hl:hl,sl:sl,bl:bl,hf:hf,lf:lf,hp:hp,gs:gs,slot:1,y:alertSlotY(),w:Math.ceil(LH(12)+gs+LH(7)+w+LH(10)),h:y+Math.round((sl.length?lp:hp)*0.3)+LH(5)};
+  return {a:a,hl:hl,sl:sl,bl:bl,hf:hf,lf:lf,hp:hp,gs:gs,slot:1,y:alertSlotY(y+Math.round((sl.length?lp:hp)*0.3)+LH(5)),w:Math.ceil(LH(12)+gs+LH(7)+w+LH(10)),h:y+Math.round((sl.length?lp:hp)*0.3)+LH(5)};
 }
 function alertGlyph(kd,x,cy,s,col){
   var r=s/2, cx=x+r, lw=Math.max(1.5,s*0.13);
@@ -44138,7 +44143,7 @@ function extractNowLine(letter,secs){
 // and this offer line shared one band and printed on top of each other. Each now starts below the one above it and notes its
 // own bottom edge, in screen pixels, for the next (HUDBOSSB, HUDGIFTB; 0 when it was not drawn). With no boss bar and no
 // offer up, nothing moves.
-var DOWNGAP=64, DOWNLIFT=0;   // v35.xx (cw-clockcard): the downed card's bottom stands 64 (1080p units) over the player; the lift last applied
+var DOWNGAP=64, DOWNLIFT=0, DOWNTOP=0;   // v36.77 (cw-dangerdown): DOWNTOP is the top of the downed card on the screen, in px, as last drawn   // v35.xx (cw-clockcard): the downed card's bottom stands 64 (1080p units) over the player; the lift last applied
 var HUDBOSSB=0, HUDGIFTB=0, HUDMSGB=0, HUDALERTB=0, HUDFEEDT=0, ALERTL=null;   // v22.13 (R08): the alert plate bottom, the feed top (unscaled) and the alert layout   // v21.86 (R04): HUDMSGB is the bottom of the message rows, set by msgLayout
 function drawGiftLine(){
   var gi, go, t, s=null, it, w, y;
@@ -46879,7 +46884,7 @@ ctx.restore();
     var _dy=H/2-34;                                  // unchanged at 1920x1080
     // v35.xx (cw-clockcard), HIS ORDER (2026-10-28): "when player is downed, the downed card blocks the view of the centered player -- needs to move up". The card lifts until
     // its bottom edge is DOWNGAP over the screen centre (the player), never higher than the top centre stack.
-    try{ var _dpR=downPlateRect(W/2,_dy,_hH,_hD,!!p.revived,CFG.giveUp!==0,!!(padZ&&padZ.open&&((padZ.pullT||0)>0||(padZ.callT||0)>0)),downedVerb(),p.dbOn===1), _dLift=Math.max(0,Math.round(_dpR.y+_dpR.h-(H/2-DOWNGAP))), _dCap=Math.floor(_dpR.y-H/2-((HUDTOPB||0)+LH(8)-H/2)/_dwz); _dLift=Math.max(0,Math.min(_dLift,_dCap)); if(_dLift>0) ctx.translate(0,-_dLift); DOWNLIFT=_dLift; }catch(_dlf){}
+    try{ var _dpR=downPlateRect(W/2,_dy,_hH,_hD,!!p.revived,CFG.giveUp!==0,!!(padZ&&padZ.open&&((padZ.pullT||0)>0||(padZ.callT||0)>0)),downedVerb(),p.dbOn===1), _dLift=Math.max(0,Math.round(_dpR.y+_dpR.h-(H/2-DOWNGAP))), _dCap=Math.floor(_dpR.y-H/2-((HUDTOPB||0)+LH(8)-H/2)/_dwz); _dLift=Math.max(0,Math.min(_dLift,_dCap)); if(_dLift>0) ctx.translate(0,-_dLift); DOWNLIFT=_dLift; DOWNTOP=Math.round(H/2+_dwz*((_dpR.y-_dLift)-H/2)); }catch(_dlf){}
     try{ downPlateDraw(downPlateRect(W/2,_dy,_hH,_hD,!!p.revived,CFG.giveUp!==0,!!(padZ&&padZ.open&&((padZ.pullT||0)>0||(padZ.callT||0)>0)),downedVerb(),p.dbOn===1)); }catch(_dpl){}   // v28.xx (cw-downplate)
     ctx.font=FS(TYPE.title); ctx.fillStyle=UIC.danger; ctx.fillText('DOWN',W/2,_dy-Math.round((_hH-_dpx(FS(TYPE.title)))*0.5));   // v34.40 (cw-downedcard2), critic on screen 34 (P1 'the small down label is easy to miss'): the danger label is the title size (26), the timer stays the one hero   // v34.39 (cw-downedcard), critic on screen 34: the word down is a danger label at the callout size; the timer below is the one hero
     try{ downBarDraw(W/2,_dy-_hH-4,p); }catch(_dbd){}   // v28.xx (downbar1): the slider bar, above the title, inside the same scale
@@ -56892,7 +56897,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.77: The ring name badge on the extraction countdown hugs its letter. Check 36.77 fails on v36.76',
+  now:'v36.78: A danger said while you are down stands over the downed card, never on it. Check 36.78 fails on v36.77',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

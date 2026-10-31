@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.78 - A DANGER STANDS OVER THE DOWNED CARD
+
+Co-op hunt while he was away. Follow-up to v36.75: the danger plate now stands at 27 percent of the height, and the downed card (lifted off the player in v35.xx) stands at the same height, so a danger said while you are down would draw on the card. While you are down the plate now stands on top of the card, clear of it.
+
+MEASURED. Check 36.78 passes, and fails on v36.77.
 ## v36.77 - THE RING NAME BADGE HUGS ITS LETTER
 
 Co-op hunt while he was away. The picture of v36.74 (screen 37) showed the new round badge around the ring letter touching the letters either side on the one-space inbound line. It is now an oval measured to the letter. Drawing only. Watch: the ring letter in the extract line reads as a name, not a smudge.

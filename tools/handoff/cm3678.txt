@@ -1,0 +1,7 @@
+v36.78: a danger stands over the downed card
+
+A danger said while you are down stands over the downed card, never on it.
+
+Check 36.78. Fails on v36.77.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
