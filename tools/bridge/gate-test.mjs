@@ -99,6 +99,11 @@ async function runCase([label, zoomPct, mode, port], shareDir) {
 export async function gateTest(ctx) {
   if (!fs.existsSync(CHROME)) return { ok: false, error: 'Chrome is not at ' + CHROME };
   if (!fs.existsSync(path.join(PARTY, 'dark_raiders.html'))) return { ok: false, error: 'no party copy at ' + PARTY };
+  // 10-31 (CEO, low RAM): no start under 5 GB free (his 4 GB floor plus this Chrome), none on party night; a refusal is a skip, not a fail
+  const n = new Date();
+  if (n >= new Date(2026, 9, 31, 17, 0) && n < new Date(2026, 10, 1, 6, 0)) return { ok: false, refused: true, error: 'party night: no tests until Sun 06:00' };
+  const freeGB = Math.round(os.freemem() / 1073741824 * 10) / 10;
+  if (freeGB < 5) return { ok: false, refused: true, freeGB, error: 'low ram: ' + freeGB + ' GB free, a test needs 5; ask again later' };
   const idle = idleSec();
   if (idle < 600) return { ok: false, refused: true, idleSec: idle, error: idle < 0 ? 'could not read the last input time' : 'he used the keyboard or mouse ' + idle + ' s ago; this opens windows on his screen, so it runs only after 10 minutes without input' };
   const serveJs = path.join(ctx.repoRoot, 'tools', 'spare', 'serve.mjs');

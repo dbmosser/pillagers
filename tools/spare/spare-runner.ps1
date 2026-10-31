@@ -383,7 +383,14 @@ function Load-Hold(){
   $v=GetS 'seen_t'; if($v -match '^\d{9,11}$'){ $script:holdE=[Math]::Min([long]$v,$e) }
   $v=GetS 'human_t'; if($v -match '^\d{9,11}$'){ $script:holdH=[Math]::Min([long]$v,$e) }
 }
-function FreeGB(){ $os=Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue; if(-not $os){ return 0 }; return [Math]::Min($os.FreePhysicalMemory,$os.FreeVirtualMemory)/1MB }
+# 10-31 (CEO, his "consistent testing especially in low RAM/intermittent RAM scenarios"): a self-test can fake low RAM. fake-lowram.txt in
+# the bridge share with until=EPOCH makes FreeGB read 1 GB until then (the VM puts it there with hostctl share-put). A fake stop starts no
+# 30-minute wait, so the resume shows within minutes.
+$script:fakeLow=$false
+function FreeGB(){
+  $script:fakeLow=$false
+  try{ $t=[IO.File]::ReadAllText((Join-Path $env:LOCALAPPDATA 'PillagersBridgeshareake-lowram.txt')); if($t -match 'until=(d+)' -and [long]$Matches[1] -gt (Epoch)){ $script:fakeLow=$true; return 1.0 } }catch{}
+  $os=Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue; if(-not $os){ return 0 }; return [Math]::Min($os.FreePhysicalMemory,$os.FreeVirtualMemory)/1MB }
 # 10-22 the VM's nights: the main PC's "VM night memory up" task (tools/migrate/host-night-memory.ps1) lends the VM up to 6 GB more at 23:00,
 # sized once from what is free right then, and takes it back from 06:00. Measured 10-20 and 10-21: 12.1 and 12.5 GB free at 23:00, VM 10 -> 16.
 # So from 22:40 to 23:10 this runner frees what it holds and starts nothing, and until 06:45 it starts only with 10 GB free (the VM did not
@@ -439,6 +446,9 @@ function Playing(){
 }
 function LightOK(){ if($script:noFg){ return $false }; return (-not (Playing)) }
 function VMResizeSoon(){ if((FollowAway) -gt 0){ return $false }; $hm=HourMin; return ($hm -ge 2240 -and $hm -lt 2310) }
+# 10-31 (CEO, his party night): no tests at all on this PC from Sat 10/31 17:00 to Sun 11/1 06:00, whatever the memory. 8802, the party
+# copy and the bridge are looked after as always.
+function PartyHold(){ $n=Get-Date; return ($n -ge [datetime]'2026-10-31 17:00' -and $n -lt [datetime]'2026-11-01 06:00') }
 function VMNight(){ if((FollowAway) -gt 0){ return $false }; $hm=HourMin; return ($hm -ge 2240 -or $hm -lt 645) }
 # ends only what this runner started: the test scripts run from C:\PillagersIdle, and the test Chromes (debug port and pillagers-cdp profile)
 # 10-26 SPARE-PRESENCE-PAUSE, SPARE PC only (IDLE MODE keeps the match above, unchanged): a test part is one of the runner's own launch
@@ -514,8 +524,14 @@ function Kill-One($p){
 # -Refund (someone is at the PC): the runner's full run (state.txt corpus_file), stopped before its end, gives its try back once, so it
 # starts again from the beginning once the PC is free (while it is paused the VM runs the tests, so a day of short visits still gets
 # full runs there).
-function Stop-Work([string]$why,[switch]$Refund){
+function Stop-Work([string]$why,[switch]$Refund,[switch]$LowRam){
   if($Idle){
+    # 10-31: a stop for low RAM is an abort, not a game failure: fuzz.log gets a FUZZ ABORT line (tools/stable.mjs leaves out the raids
+    # that ended in the 3 minutes before it), and a stopped online 2 player test gets its try back
+    if($LowRam){
+      if((Running 'fuzz.ps1.*-Port 9332(s|$)') -gt 0){ try{ [IO.File]::AppendAllText($FzOut+'uzz.log',(Get-Date).ToString('yyyy-MM-dd HH:mm:ss')+' FUZZ ABORT reason=low ram ('+[Math]::Round((FreeGB),1)+' GB free'+$(if($script:fakeLow){ ', a self-test' }else{ '' })+'), not a game failure'+"`r`n",$Enc) }catch{} }
+      if((Running 'p2.mjs"?s+host(s|$)') -gt 0 -and (GetS 'p2_want') -eq $P2Want){ $tr=[int]('0'+(GetS 'p2_tries')); if($tr -gt 0){ PutS 'p2_tries' ([string]($tr-1)) } }
+    }
     $n=0
     Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessId -ne $PID -and $_.CommandLine -and (
       ($_.CommandLine -match 'PillagersIdle' -and $_.CommandLine -match 'fuzz\.ps1|corpq\.sh|corpus-slices\.sh|p2\.mjs') -or
@@ -523,7 +539,7 @@ function Stop-Work([string]$why,[switch]$Refund){
       ($_.Name -eq 'chrome.exe' -and $_.CommandLine -match 'remote-debugging-port=(9344|9331|9332)(\s|$)' -and $_.CommandLine -match 'pillagers-cdp')) } |
       ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue; $n++ }
     $script:working=$false
-    if($n){ Say ('stopped '+$n+' test parts ('+$why+')') }
+    if($n){ Say ('stopped '+$n+' test parts ('+$why+')'); Tidy-Profiles }
     return
   }
   $n=0; $corp=@{}
@@ -593,7 +609,8 @@ function Watch([int]$sec){
     if((AwaySec) -lt 30){ if($Idle){ if((-not $script:lightRun) -or -not (LightOK)){ Stop-Work $(if($script:playWhy){ 'he is playing ('+$script:playWhy+')' }else{ 'he is back at the PC' }); return } }else{ Stop-Work ('someone is at the PC: '+$script:awayWhy) -Refund; return } }
     if($Idle -and ($k % 6) -eq 0){
       if((FreeGB) -lt 4){ $lo++ }else{ $lo=0 }
-      if($lo -ge 2){ PutS 'lowstop_t' ([string](Epoch)); Stop-Work 'under 4 GB free at two looks'; return }
+      if($lo -ge 2){ if(-not $script:fakeLow){ PutS 'lowstop_t' ([string](Epoch)) }; Stop-Work 'paused: low ram, under 4 GB free at two looks' -LowRam; return }
+      if(PartyHold){ Stop-Work 'party night: no tests until Sun 06:00'; return }
       if(VMResizeSoon){ Stop-Work 'the VM takes its night memory at 23:00'; return }
       # 10-28: if the main PC's game check reads the 4K robot as him playing (it skips pillagers-cdp Chromes since 10-24), the VM would be
       # held to 30% of its processors: the robot goes back to 1080p for the rest of the day
@@ -929,7 +946,25 @@ function Start-Corpus(){
   Say ('full test run started on '+$head.Substring(0,8)+' (v'+(GameVer)+') -> '+$name)
 }
 
+# 10-31: before a test Chrome starts, test Chromes whose script is gone are ended and the test profiles lose their stale lock files,
+# so one Chrome per test at most and no "profile in use" start
+function Tidy-Profiles(){
+  if(-not $Idle){ return }
+  try{
+    $own=@{ '9331'=((Running 'fuzz.ps1.*-Port 9331(s|$)') -gt 0); '9332'=((Running 'fuzz.ps1.*-Port 9332(s|$)') -gt 0); 'p2'=((Running 'p2.mjs"?s+host(s|$)') -gt 0) }
+    $k=0
+    Get-CimInstance Win32_Process -Filter "Name='chrome.exe'" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine } | ForEach-Object {
+      $c=$_.CommandLine; $o=$null
+      if($c -match 'pillagers-p2online'){ $o='p2' } elseif($c -match 'pillagers-cdp' -and $c -match 'remote-debugging-port=(9331|9332)(s|$)'){ $o=$Matches[1] }
+      if($o -and -not $own[$o]){ Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue; $k++ } }
+    if($k){ Say ('ended '+$k+' left-over test Chrome parts') }
+    if(-not ($own['9331'] -or $own['9332'] -or $own['p2'])){
+      Get-ChildItem -LiteralPath $env:TEMP -Directory -ErrorAction SilentlyContinue | Where-Object { $_.Name -like 'pillagers-cdp*' -or $_.Name -like 'pillagers-p2online*' } | ForEach-Object {
+        foreach($lf in 'SingletonLock','SingletonCookie','SingletonSocket','lockfile'){ Remove-Item -LiteralPath (Join-Path $_.FullName $lf) -Force -ErrorAction SilentlyContinue } } }
+  }catch{}
+}
 function Start-Robot([int]$port,[string]$copy,[string]$size='',[switch]$Low){
+  Tidy-Profiles
   if(-not (Test-Path -LiteralPath ($T+'\fxcorpus.html'))){ return }
   $env:FUZZ_OUT_DIR=$FzOut; $env:FUZZ_COPY_NAME=$copy
   $pr=Start-Process -FilePath powershell.exe -WindowStyle Hidden -PassThru -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-WindowStyle','Hidden',
@@ -1035,7 +1070,7 @@ while($true){
     # 4 GB stay free (his 10-28 afternoon "can we knock it down to only leave 4gb free?"; it was 6).
     $fw=FollowAway
     # 10-30: while the online 2 player test is still wanted, a start needs 5 GB free (his 4 GB floor plus its one Chrome), not 6
-    $ng=$(if(VMResizeSoon){ 999 }elseif($script:working){ 3 }elseif($vmn){ 10 }elseif((GetS 'p2_done') -ne $P2Want){ 5 }else{ 6 })
+    $ng=$(if(VMResizeSoon -or (PartyHold)){ 999 }elseif($script:working){ 3 }elseif($vmn){ 10 }elseif((GetS 'p2_done') -ne $P2Want){ 5 }else{ 6 })
     $na=$(if($script:working -or $fw -le 0){ 900 }else{ [Math]::Max(900,($fw+2)*60) })
     $grow=(-not $script:working) -and ($fw -gt 0) -and (VmGrowing)
     $lowW=(-not $script:working) -and (((Epoch)-[long]('0'+(GetS 'lowstop_t'))) -lt 1800)
@@ -1043,8 +1078,8 @@ while($true){
     $light=($away -lt 900) -and (LightOK)
     $busy=(($away -lt $na) -and -not $light)
     if($busy -or $fg -lt $ng -or $grow -or $lowW){
-      $pw=$(if($away -lt 900 -and -not $light){ 'paused: he is using the PC'+$(if($script:playWhy){ ' ('+$script:playWhy+')' }else{ '' }) }elseif($busy -or $grow){ 'paused: the VM takes its memory first' }elseif($lowW){ 'paused: 30 minutes after a memory stop' }elseif($vmn){ 'paused: the VM has the memory at night' }else{ 'paused: under '+$ng+' GB free' })
-      if($script:working){ if((-not $busy) -and $ng -lt 999 -and $fg -lt $ng){ PutS 'lowstop_t' ([string](Epoch)) }; Stop-Work $pw }
+      $pw=$(if(PartyHold){ 'paused: party night, no tests until Sun 06:00' }elseif($away -lt 900 -and -not $light){ 'paused: he is using the PC'+$(if($script:playWhy){ ' ('+$script:playWhy+')' }else{ '' }) }elseif($busy -or $grow){ 'paused: the VM takes its memory first' }elseif($lowW){ 'paused: 30 minutes after a memory stop' }elseif($vmn){ 'paused: the VM has the memory at night' }else{ 'paused: low ram, under '+$ng+' GB free' })
+      if($script:working){ $lr=((-not $busy) -and $ng -lt 999 -and $fg -lt $ng); if($lr -and -not $script:fakeLow){ PutS 'lowstop_t' ([string](Epoch)) }; Stop-Work $pw -LowRam:$lr }
       Refresh-Party
       Ensure-Bridge
       Ensure-Play
@@ -1169,7 +1204,7 @@ while($true){
       if($n -ge 3){ PutS 'p2_done' $P2Want; Say 'the online 2 player test did not finish in 3 tries' }
       else {
         if((Running 'fuzz\.ps1.*-Port 9332(\s|$)') -gt 0){ Stop-Work 'the online 2 player test goes first' }
-        PutS 'p2_want' $P2Want; PutS 'p2_tries' ([string]($n+1)); PutS 'p2_t' ([string](Epoch))
+        Tidy-Profiles; PutS 'p2_want' $P2Want; PutS 'p2_tries' ([string]($n+1)); PutS 'p2_t' ([string](Epoch))
         Start-Process -FilePath $Node -WindowStyle Hidden -ArgumentList @(('"'+$T+'\p2online\p2.mjs"'),'host','--port','8817','--cdp','9361','--root',('"'+$R+'"')) | Out-Null
         $p2Run=1; $script:working=$true; $script:lightRun=$true; Say ('online 2 player test started as the host (try '+($n+1)+', test port 8817)')
       }
