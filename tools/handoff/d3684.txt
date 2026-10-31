@@ -1,0 +1,5 @@
+## v36.84 - UNDERCROFT HUB POLISH
+
+Co-op hunt while he was away. Critic on the o-00l pictures (hub 2 of 5): glow discs with hard rims, a welcome toast stacked on the station prompt and the stash sign, three money styles in the corner, a second plate for the experimental caption. Watch: the glow around each station fades out, the welcome toast sits under the title, the stash and bag $ figures are as big as the credits, the experimental caption is inside the last pour sign.
+
+MEASURED. Check 36.84 passes, and fails on v36.83.

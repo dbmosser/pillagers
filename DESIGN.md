@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.84 - UNDERCROFT HUB POLISH
+
+Co-op hunt while he was away. Critic on the o-00l pictures (hub 2 of 5): glow discs with hard rims, a welcome toast stacked on the station prompt and the stash sign, three money styles in the corner, a second plate for the experimental caption. Watch: the glow around each station fades out, the welcome toast sits under the title, the stash and bag $ figures are as big as the credits, the experimental caption is inside the last pour sign.
+
+MEASURED. Check 36.84 passes, and fails on v36.83.
 ## v36.83 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v36.67 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.

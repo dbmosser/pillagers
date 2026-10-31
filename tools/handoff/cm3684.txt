@@ -1,0 +1,7 @@
+v36.84: undercroft hub polish
+
+the undercroft hub reads cleanly: soft station glow, the toast under the title, one money style, one sign plate for the bar.
+
+Check 36.84. Fails on v36.83.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
