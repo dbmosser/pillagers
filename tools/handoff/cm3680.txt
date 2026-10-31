@@ -1,0 +1,7 @@
+v36.80: the downed card self-revive key is a keycap
+
+The downed card shows the self-revive key on a keycap chip.
+
+Check 36.80. Fails on v36.79.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
