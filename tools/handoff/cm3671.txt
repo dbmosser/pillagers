@@ -1,0 +1,7 @@
+v36.71: cooked grenade warning stays over your head
+
+The cooked grenade warning no longer shows in the message feed. It still flashes over your own head while you hold a cooked frag.
+
+Check 36.71. Fails on v36.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

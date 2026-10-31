@@ -1,0 +1,5 @@
+## v36.71 - COOKED GRENADE WARNING STAYS OVER YOUR HEAD
+
+Co-op hunt while he was away. His 10-31 report: a red feed line "cooked grenade! throw grenade now x6" showed when he held no grenade. The last-second warning is no longer a feed line at all; it flashes only over his own pillager while he holds the cooked frag. Watch: the cooked grenade warning stays over your head only.
+
+MEASURED. Check 36.71 passes, and fails on v36.70.

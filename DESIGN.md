@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.71 - COOKED GRENADE WARNING STAYS OVER YOUR HEAD
+
+Co-op hunt while he was away. His 10-31 report: a red feed line "cooked grenade! throw grenade now x6" showed when he held no grenade. The last-second warning is no longer a feed line at all; it flashes only over his own pillager while he holds the cooked frag. Watch: the cooked grenade warning stays over your head only.
+
+MEASURED. Check 36.71 passes, and fails on v36.70.
 ## v36.70 - TEXT STARTS AT 100 PERCENT
 
 Co-op hunt while he was away. His 10-31 order: text size should default to 100 percent. A new profile and both arcade demo windows start at 100 percent text with the matching menu zoom, no longer the TV size. Saves keep their own size. Watch: text starts at 100%.
