@@ -159,3 +159,4 @@
 10-31 11:00 v36.90 cw-p2reopen on his pc after 50s (8802 serves 36.90) week 93%
 10-31 11:17 v36.91 cw-mappolish on his pc after 67s (8802 serves 36.91) week 93%
 10-31 11:25 v36.92 cw-mapchips on his pc after 67s (8802 serves 36.92) week 93%
+10-31 12:21 v36.93 cw-medalchip on his pc after 50s (8802 serves 36.93) week 93%

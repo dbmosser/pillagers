@@ -3929,8 +3929,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.93';
-var VER_AT='2026-10-31 12:19';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.94';
+var VER_AT='2026-10-31 12:23';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7189,13 +7189,18 @@ function bus(){
 // the first time a sound asks for one, once for each BUS. The compressor adds its own make up gain (about 7 dB at this setting,
 // the limiter about 2), so the trim after them brings a quiet sound back to about 4 dB over what it was.
 var SND=null;
-var SND_CAT={shot:'gun',reload:'gun',reloadin:'gun',dry:'gun',
+var SND_CAT={shot:'gun',reload:'gun',reloadin:'gun',dry:'gun',lowmag:'gun',
   boom:'imp',hit:'imp',clank:'imp',
   servo:'mach',skitter:'mach',drone:'mach',hydraul:'mach',dish:'mach',stepHeavy:'mach',seen:'mach',alarm:'mach',
   foot:'foley',step:'foley',
-  pick:'ui',pickRare:'ui',pickElite:'ui',pickGun:'ui',clockwarn:'ui',clocktick:'ui',
+  pick:'ui',pickRare:'ui',pickElite:'ui',pickGun:'ui',clockwarn:'sting',clocktick:'sting',
   heart:'vox',flap:'amb',hitmark:'ui',killconf:'ui'};
 var SND_CATS=['gun','imp','mach','foley','amb','vox','ui','sting','world'];
+// v36.xx (cw-alarmvol), HIS ORDER (2026-10-25, g-81 "Yes, their own row"; harsh sound is his worst party problem, answer 27): ALARMS VOLUME. The raid alarms
+// and the raid clock get a row of their own in AUDIO, on top of effects volume. blip scales these types by it; the lock-on siren, the crit and warn stings,
+// the teammate down alert and the two and one minute cues scale themselves. At FULL the mix is exactly what it was.
+var SND_ALARM={alarm:1,seen:1,xalarm:1,lastcall:1,clockwarn:1,clocktick:1,lastmin:1};
+function alarmVolK(t){ return SND_ALARM[t]?volOf('volAlarm'):1; }
 function sndBuild(a,B){
   var S={out:B,bus:{},world:null,comp:null,lim:null,trim:null}, i, c, gn;
   try{
@@ -7384,7 +7389,8 @@ function mateArrowPulse(dn,ms){
   return 1+0.25*(1+Math.sin((+ms||0)/1000*Math.PI*4));
 }
 function sndMateAlert(){
-  var a, out, t, i, o, og, f=[880,660,880,660], at;
+  var a, out, t, i, o, og, f=[880,660,880,660], at, mv=volOf('volAlarm');
+  if(!(mv>0)) return false;   // v36.xx (cw-alarmvol): ALARMS VOLUME, the teammate down alert follows it
   if(G&&G.sim) return false;
   if(typeof NET==='object'&&NET&&NET.specTick) return false;
   a=ac(); if(!a) return false;
@@ -7394,7 +7400,7 @@ function sndMateAlert(){
     for(i=0;i<f.length;i++){
       at=t+i*0.16;
       o=a.createOscillator(); og=a.createGain(); o.type='triangle'; o.frequency.setValueAtTime(f[i],at);
-      og.gain.setValueAtTime(0.0001,at); og.gain.exponentialRampToValueAtTime(0.2,at+0.012); og.gain.exponentialRampToValueAtTime(0.0001,at+0.14);
+      og.gain.setValueAtTime(0.0001,at); og.gain.exponentialRampToValueAtTime(0.2*mv,at+0.012); og.gain.exponentialRampToValueAtTime(0.0001,at+0.14);
       o.connect(og); og.connect(out); o.start(at); o.stop(at+0.16);
     }
   }catch(err){ return false; }
@@ -8193,10 +8199,12 @@ function annSpec(k){
   return null;
 }
 function annCue(k){
-  var a, sp, t, out, f=null, i, n, o, g;
+  var a, sp, t, out, f=null, i, n, o, g, av=1;
   if(G&&G.sim) return false;
   if(typeof NET==='object'&&NET&&NET.specTick) return false;
   sp=annSpec(k); if(!sp) return false;
+  // v36.xx (cw-alarmvol): the two and one minute cues follow ALARMS VOLUME; OFF returns before the announcer is marked busy.
+  if(k==='TWOMIN'||k==='ONEMIN'){ av=volOf('volAlarm'); if(!(av>0)) return false; if(av<1) sp={len:sp.len,lp:sp.lp,notes:sp.notes.map(function(q){ var c=q.slice(); c[5]=q[5]*av; return c; })}; }
   a=ac(); if(!a) return false;
   t=a.currentTime; if(t<ANNC.busy) return false;
   out=sndBus('sting'); if(!out) return false;
@@ -8743,7 +8751,7 @@ function tickMachSiren(dt,still){
   v=MSIREN.v; v.offAt=-1;
   k=Math.min(n,6);
   per=MSIREN_PER[0]-(MSIREN_PER[0]-MSIREN_PER[1])*(k-1)/5;
-  lv=MSIREN_LVL*(1+0.08*(k-1))*(0.7+0.3*clamp(1-nd/MSIREN_R,0,1))*kw;   // v25.xx (sirentune): a crawler-only lock-on is half as loud
+  lv=MSIREN_LVL*(1+0.08*(k-1))*(0.7+0.3*clamp(1-nd/MSIREN_R,0,1))*kw; lv*=volOf('volAlarm'); /* v36.xx (cw-alarmvol): ALARMS VOLUME, the locked on text stays */   // v25.xx (sirentune): a crawler-only lock-on is half as loud
   pl=sndPlace(near.x,near.y);
   t=a.currentTime;
   try{
@@ -10140,6 +10148,7 @@ function blip(type,d,pan){
   // edge of the ring is faint but heard). Every other sound, and everything within 450, plays exactly as before.
   var _hr=(NOISEMARK[type]&&NOISEMARK[type].hear>900)?NOISEMARK[type].hear*1.05:900;
   var vol=d===undefined?1:(d<=450?1-d/900:Math.max(0,0.5*(_hr-d)/(_hr-450))); vol*=((type==='foot'||type==='step'||type==='stepHeavy'||type==='stepHowl')?volOf('volFoot'):1);   // v26.xx (settings1): FOOTSTEPS VOLUME, the steps you make and the ones you hear
+  vol*=alarmVolK(type);   // v36.xx (cw-alarmvol): ALARMS VOLUME, before the quiet return so OFF is silent
   if(vol<=.02) return;
   var t=a.currentTime;
   // Every generator below connects to OUT instead of the destination, so adding
@@ -10193,6 +10202,16 @@ function blip(type,d,pan){
     var dyf=a.createBiquadFilter(); dyf.type='bandpass'; dyf.frequency.value=1400; dyf.Q.value=4;
     var dyg=a.createGain(); dyg.gain.value=.09*vol;
     dys.connect(dyf); dyf.connect(dyg); dyg.connect(OUT); dys.start(t);
+    }
+    if(type==='lowmag'){
+    // v36.xx (cw-lowmag), HIS ANSWER (2026-10-25, g-82 "Add a lighter click near empty"): a light tick on your last rounds, about half the dry click, a hair
+    // after the crack so it lands under the shot and not on top of it.
+    var lmb=a.createBuffer(1,260,a.sampleRate),lmc=lmb.getChannelData(0);
+    for(var lmi=0;lmi<260;lmi++) lmc[lmi]=(Math.random()*2-1)*Math.pow(1-lmi/260,2.6);
+    var lms=a.createBufferSource(); lms.buffer=lmb;
+    var lmf=a.createBiquadFilter(); lmf.type='bandpass'; lmf.frequency.value=3600; lmf.Q.value=6;
+    var lmg=a.createGain(); lmg.gain.value=.05*vol;
+    lms.connect(lmf); lmf.connect(lmg); lmg.connect(OUT); lms.start(t+.03);
     }
     if(type==='shot'){
     // Weapon voices. One generator, one table: every family gets its own
@@ -23030,7 +23049,17 @@ var ALERTSND={
   warn:[[0,330,330,0.09,'square',0.022],[0.1,262,262,0.2,'square',0.022]],
   ext:[[0,659,659,0.08,'triangle',0.03],[0.07,880,880,0.18,'triangle',0.03]]
 };
-function alertSting(k){ if(!G||G.sim||!ALERTSND[k]) return false; return styTone(ALERTSND[k]); }
+// v36.xx (cw-alarmvol): ALARMS VOLUME scales the crit and warn stings (OFF is silent); the extraction and good news sting stays on effects.
+function alertSting(k){
+  var n, v;
+  if(!G||G.sim||!ALERTSND[k]) return false;
+  n=ALERTSND[k];
+  if(k==='crit'||k==='warn'){
+    v=volOf('volAlarm'); if(!(v>0)) return false;
+    if(v<1) n=n.map(function(q){ var c=q.slice(); c[5]=q[5]*v; return c; });
+  }
+  return styTone(n);
+}
 function alertShow(m,k,o,now){
   try{ if(extAlertSoundOn(m,k,o)) alertSting(k); }catch(_asg){}   // v28.xx (cw-cx-extractquiet): delayed extract/siege callouts obey the audio windows too.
   var a=alertUp();
@@ -25665,6 +25694,17 @@ function shotDrawLift(b,back){
   var ly=(b.ly>0)?b.ly:12, sx=isFinite(b.sx)?b.sx:b.x, sy=isFinite(b.sy)?b.sy:b.y;
   var t=clamp((Math.hypot(b.x-sx,b.y-sy)-(back||0)-(b.mzd||0))/220,0,1);
   return ly*(1-t*t*(3-2*t));
+}
+// v36.xx (cw-lowmag), HIS ANSWER (2026-10-25, g-82 "Add a lighter click near empty"): the last quarter of a magazine ticks under the shot, the same red step as the
+// magazine ring. Only this window hears it (blip, not blipMine). Not for melee (mag 0) or with the infinite clip power up.
+function lowMagClick(p){
+  var m, lim;
+  if(!p||!p.wep||!G||G.sim) return false;
+  m=p.wep.mag; if(!(m>0)||pwrClip()) return false;
+  lim=Math.max(1,Math.floor(m*0.25));
+  if(!(p.ammo>=1&&p.ammo<=lim)) return false;
+  blip('lowmag');
+  return true;
 }
 function fireWeapon(sh,wep,tx,ty,fromPlayer){
   if(fromPlayer&&G&&G.arcade&&G.player&&G.player.arcSh) arcadeShieldOff();   // v23.30 (arcade9): a shot drops the spawn shield
@@ -30327,7 +30367,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
           }
         } else {
           if(!pwrClip()) p.ammo--; p.lastShot=now; p.fired=true;
-          fireWeapon(p,p.wep,p.x+Math.cos(p.face)*100,p.y+Math.sin(p.face)*100,true);
+          fireWeapon(p,p.wep,p.x+Math.cos(p.face)*100,p.y+Math.sin(p.face)*100,true); lowMagClick(p);   // v36.xx (cw-lowmag): after the shot, p.ammo is what is left
         }
       }
     } else {
@@ -56993,7 +57033,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.93: In a short window the medal row stays above the folded controls chip, still as wide as the feed. Check 36.93 fails on v36.92',
+  now:'v36.94: Settings, AUDIO has an ALARMS VOLUME row for alarms, warnings and the raid clock, and your last quarter magazine ticks lightly under each shot. Check 36.94 fails on v36.93',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -74494,7 +74534,7 @@ var GAMEOPTS=[
   // the ones you hear), and a MONO switch for one ear or one speaker. Defaults are today: full, full, off. UI rides the HUD bus (volApply),
   // the footsteps scale inside blip, and MONO folds the output to one channel and drops every pan.
   {k:'volUi', label:'UI VOLUME', sec:'AUDIO',
-   hint:'Menu clicks and HUD pings: pickups, hit ticks and the clock. On top of effects volume.',
+   hint:'Menu clicks and HUD pings: pickups and hit ticks. On top of effects volume.',
    opts:[
      {n:'OFF',  cfg:{volUi:0}},
      {n:'25%',  cfg:{volUi:0.25}},
@@ -74510,6 +74550,16 @@ var GAMEOPTS=[
      {n:'50%',  cfg:{volFoot:0.5}},
      {n:'75%',  cfg:{volFoot:0.75}},
      {n:'FULL', cfg:{volFoot:1}}
+   ], def:4},
+  // v36.xx (cw-alarmvol), HIS ORDER (2026-10-25, g-81): alarms, warnings and the raid clock on their own level. See SND_ALARM.
+  {k:'volAlarm', label:'ALARMS VOLUME', sec:'AUDIO',
+   hint:'Alarms, warnings and the raid clock. On top of effects volume.',
+   opts:[
+     {n:'OFF',  cfg:{volAlarm:0}},
+     {n:'25%',  cfg:{volAlarm:0.25}},
+     {n:'50%',  cfg:{volAlarm:0.5}},
+     {n:'75%',  cfg:{volAlarm:0.75}},
+     {n:'FULL', cfg:{volAlarm:1}}
    ], def:4},
   {k:'mono', label:'MONO AUDIO', sec:'AUDIO',
    hint:'One channel for everything, no left or right. For one ear or one speaker.',

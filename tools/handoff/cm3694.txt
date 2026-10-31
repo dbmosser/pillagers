@@ -1,0 +1,7 @@
+v36.94: alarms volume row and a light tick on your last rounds
+
+Settings, AUDIO has an ALARMS VOLUME row for alarms, warnings and the raid clock, and your last quarter magazine ticks lightly under each shot.
+
+Check 36.94. Fails on v36.93.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
