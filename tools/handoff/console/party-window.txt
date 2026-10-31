@@ -1,0 +1,3 @@
+START=1793462400
+END=1793530800
+# party freeze Sat 10/31 12:00 to Sun 11/1 06:00 local (CEO 10-31; survives a Claude restart)

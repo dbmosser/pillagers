@@ -143,6 +143,7 @@ if [ "$MODE" = check ]; then
 today=$(date +%F); now=$(date +%s); name=""
 if [ "$MODE" = run ]; then
   if [ -f "$C/STOP" ] || [ -f "$X/STOP" ]; then say "paused (STOP file)"; exit 0; fi
+  if [ -f "$C/party-window.txt" ]; then pws=$(grep -m1 "^START=" "$C/party-window.txt" | tr -dc 0-9); pwe=$(grep -m1 "^END=" "$C/party-window.txt" | tr -dc 0-9); if [ -n "$pws" ] && [ -n "$pwe" ] && [ "$now" -ge "$pws" ] && [ "$now" -lt "$pwe" ]; then say "paused (party freeze until Sun 06:00)"; exit 0; fi; fi
   re=$(cat "$X/rest-until.txt" 2>/dev/null | tr -dc '0-9')
   # 10-29 (CEO): a pace rest never holds his own o-00* orders; a usage-limit or reserve rest still does
   if [ -n "$re" ] && grep -q "ahead of the pace line" "$X/rest-why.txt" 2>/dev/null && ls "$C/tasks/"o-00*.md >/dev/null 2>&1; then rm -f "$X/rest-until.txt" "$X/rest-why.txt"; re=""; fi
