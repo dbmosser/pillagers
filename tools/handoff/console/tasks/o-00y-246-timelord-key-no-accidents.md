@@ -1,4 +1,6 @@
 # o-00y-246 timelord-key-no-accidents : timelord mode never switches on by a brushed key
+party-breaking: yes
+camera: 1
 HIS WORDS 10-31 (in the Gameplay Edit Intaker chat): "sometimes the game randomly cuts timelord mode on even when I don't change it in settings -- why?"
 PARTY RELEVANT (his 10-30 order: fixes critical for two player play may be built in the next 30 hours, tested, mostly on Codex): guests at the party will brush this key.
 
@@ -10,3 +12,5 @@ Build:
 Check (must FAIL on v36.55): tap Backquote in a raid: CFG.superhot unchanged; hold 0.7 s: it flips; in an arcade raid a hold does nothing.
 Rules: seed 4242 fingerprint must hold; both windows; never touch the pickup stack, loot sounds or loot rows; never change salvagerun:profile. DESIGN.md watch line: "timelord mode needs a held key and is off limits in the demo". Model: Codex or Sonnet 5.5 high.
 TASK DONE when it shipped and is ON HIS PC.
+
+CEO 10-31 04:55: party-breaking (guests flip timelord by brushing the key left of 1), so Codex builds it past its week reserve. Must be ON HIS PC before the Sat 12:00 freeze; if it cannot pass the gate by 11:30, ship nothing.
