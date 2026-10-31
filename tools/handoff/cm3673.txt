@@ -1,0 +1,7 @@
+v36.73: one inset for the raid hud panels, one card for the clock and the extract line
+
+Corner panels sit on one margin; the clock and the extract line share one card; the pillager board reads YOU first.
+
+Check 36.73. Fails on v36.72.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

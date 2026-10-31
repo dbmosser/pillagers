@@ -1,0 +1,2 @@
+2026-10-31: v36.72 cw-hudbigfit SHIPPED, ON HIS PC (33s). Run info stops one gap above the belt keys and the air strike meter (rows kept from the top, then a "+n more" line); feed lines level with the belt end before it. Check 36.72 covers 1080 and 4K, host and join, minimap size 2, large HUD, run info open, air strike plate up. No camera picture taken.
+Watch on next play: in the crowded mix (big minimap, large HUD, run info open) the run info shows fewer rows with a "+n more" line; fold or unfold it with the chevron as before.

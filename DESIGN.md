@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.73 - ONE INSET FOR THE RAID HUD PANELS, ONE CARD FOR THE CLOCK AND THE EXTRACT LINE
+
+Co-op hunt while he was away. The Codex critic on the raid HUD (o-120d, 3 3 3 2, stuck over two rounds): the roster started 10 px from the left edge, the vitals 24, the right column 17 and the ammo card 8 from the right, so every corner had its own margin; the clock, its sky icon, the extract chip and the arrow floated as four pieces over a busy backdrop; the roster ran eight rows at one weight. Now every corner panel stands the same distance from its screen edge (the right column inset, 16.8 px at 1080p): the pillager board, the feed with the controls list and the medal spot, the status icons, the vitals bars, the teammate rows and the ammo card. Without a score card the clock, its sky icon, the extract line and its arrow stand on one centred card; with a score card (career, demo) the clock and score keep their own windows by his order and the extract line and its arrow share one card as wide as the score card. The teammate rows use the shared panel. YOU is the bright row of the pillager board and the rivals sit one step back.
+
+MEASURED. Check 36.73 passes, and fails on v36.72.
 ## v36.72 - THE BIG MINIMAP AND LARGE HUD NO LONGER PUT PANELS OVER THE BELT
 
 Co-op hunt while he was away. Queue job 242 (CEO 10-29, from the o-00q camera at v36.41): with the minimap at its biggest size, the player 2 large HUD and run info open, the run info column covered the belt keys and the air strike meter, and the player 2 belt covered the end of the contract feed line. The run info now stops one gap above the belt and the air strike meter (it keeps the top rows and ends with a plus n more line), and a feed line that stands level with the belt ends before the belt.

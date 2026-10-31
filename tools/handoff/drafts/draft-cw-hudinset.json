@@ -1,0 +1,80 @@
+{
+    "title":  "ONE INSET FOR THE RAID HUD PANELS, ONE CARD FOR THE CLOCK AND THE EXTRACT LINE",
+    "why":  "The Codex critic on the raid HUD (o-120d, 3 3 3 2, stuck over two rounds): the roster started 10 px from the left edge, the vitals 24, the right column 17 and the ammo card 8 from the right, so every corner had its own margin; the clock, its sky icon, the extract chip and the arrow floated as four pieces over a busy backdrop; the roster ran eight rows at one weight. Now every corner panel stands the same distance from its screen edge (the right column inset, 16.8 px at 1080p): the pillager board, the feed with the controls list and the medal spot, the status icons, the vitals bars, the teammate rows and the ammo card. Without a score card the clock, its sky icon, the extract line and its arrow stand on one centred card; with a score card (career, demo) the clock and score keep their own windows by his order and the extract line and its arrow share one card as wide as the score card. The teammate rows use the shared panel. YOU is the bright row of the pillager board and the rivals sit one step back.",
+    "now":  "Corner panels sit on one margin; the clock and the extract line share one card; the pillager board reads YOU first.",
+    "edits":  [
+                  {
+                      "anchor":  "function hudRes(){",
+                      "replacement":  "// v28.xx (cw-hudinset), the Codex critic on the raid HUD (o-120d, 3 3 3 2): \u0027the roster starts at x=10, the bars at x=24, the minimap sits about 18px from the right edge, and the weapon card runs almost flush to the right and bottom edges\u0027. ONE INSET for every corner panel: the right column\u0027s own (16 in its zoom, 16.8 at 1080p), in screen pixels. The roster, the feed and the controls list, the status icons, the vitals bars, the teammate rows and the ammo card all stand this far from their screen edge.\nfunction hudIns(){ return Math.round(16*(HUDZ.cond||1)*hudRes()); }\nfunction hudRes(){\n"
+                  },
+                  {
+                      "anchor":  "MEDALBOX.x=Math.round(LH(9)*rs);",
+                      "replacement":  "MEDALBOX.x=hudIns();   /* v28.xx (cw-hudinset): the shared inset */"
+                  },
+                  {
+                      "anchor":  "return {x:Math.round(LH(9)*rs),y:bot-h,w:fw,h:h,rh:rh,gap:gap,fp:fp};",
+                      "replacement":  "return {x:hudIns(),y:bot-h,w:fw,h:h,rh:rh,gap:gap,fp:fp};"
+                  },
+                  {
+                      "anchor":  "ox=Math.round(9*hr);",
+                      "replacement":  "ox=hudIns();   /* v28.xx (cw-hudinset): the shared inset */ "
+                  },
+                  {
+                      "anchor":  "PADX=clamp(PADX+HOr.dx/_rz,4,Math.max(4,W/_rz-LW-4));",
+                      "replacement":  "PADX=clamp(8+hudIns()/_rz+HOr.dx/_rz,4,Math.max(4,W/_rz-LW-4));   // v28.xx (cw-hudinset): the panel (8 left of the text) stands on the shared inset"
+                  },
+                  {
+                      "anchor":  "var col=w.st===\u0027EXTRACTED\u0027?\u0027#7fc4a0\u0027:(w.st===\u0027DEAD\u0027?\u0027#6b7783\u0027:\u0027#cdd6dd\u0027);",
+                      "replacement":  "var col=w.st===\u0027EXTRACTED\u0027?\u0027#7fc4a0\u0027:(w.st===\u0027DEAD\u0027?\u0027#6b7783\u0027:(w.me?UIC.tx_1:UIC.tx_2));   // v28.xx (cw-hudinset), the critic: \u0027eight rows at equal weight form a dense block\u0027. YOU is the bright row (tx-1), the rivals sit one step back (tx-2)"
+                  },
+                  {
+                      "anchor":  "ctx.save(); hudZoomIn(\u0027body\u0027,0,H);",
+                      "replacement":  "ctx.save(); hudZoomIn(\u0027body\u0027,0,H); var _bsx=hudIns()/((HUDZ.body||1)*hudRes()*hudUserZ(\u0027body\u0027))-16; ctx.translate(_bsx,0);   /* v28.xx (cw-hudinset): the bars (drawn from x 16) stand on the shared inset on the screen */"
+                  },
+                  {
+                      "anchor":  "var R=hudZoomRect(\u0027body\u0027,0,H,{x:16,y:by-50,w:HBW,h:50+HBH}), T=hudZoomRect(\u0027body\u0027,0,H,{x:16,y:by-50-LH(5)-LH(18),w:HBW,h:1});",
+                      "replacement":  "var R=hudZoomRect(\u0027body\u0027,0,H,{x:16+_bsx,y:by-50,w:HBW,h:50+HBH}), T=hudZoomRect(\u0027body\u0027,0,H,{x:16+_bsx,y:by-50-LH(5)-LH(18),w:HBW,h:1});"
+                  },
+                  {
+                      "anchor":  "_wpR=W-8/_gz",
+                      "replacement":  "_wpR=W-hudIns()/_gz"
+                  },
+                  {
+                      "anchor":  "NETTEAMBOX={n:n,x:Math.round(12*_thr),y:_tt,w:Math.round(158*_thr),h:Math.round(n*44*_thr)};",
+                      "replacement":  "NETTEAMBOX={n:n,x:hudIns(),y:_tt,w:Math.round(158*_thr),h:Math.round(n*44*_thr)};"
+                  },
+                  {
+                      "anchor":  "    hudFadeRect(x-4,y-15,w+8,36);\n    ctx.fillStyle=\u0027rgba(6,9,13,.62)\u0027; ctx.fillRect(x-4,y-15,w+8,36);",
+                      "replacement":  "    hudPanel(x-4,y-15,w+8,36,undefined,1);   // v28.xx (cw-hudinset), the critic on the party windows: the teammate rows were a 62 percent blue-black box on their own margin. The shared panel (fill, 1px line, 4px radius), its left edge on the shared inset"
+                  },
+                  {
+                      "anchor":  "var _hfMate=hudFadeBegin(\u0027partner-\u0027+g.seat);",
+                      "replacement":  "x=hudIns()/_thr+4; var _hfMate=hudFadeBegin(\u0027partner-\u0027+g.seat);"
+                  },
+                  {
+                      "anchor":  "var SCOREBOX={g:null,x:0,y:0,w:0,h:0};",
+                      "replacement":  "var SCOREBOX={g:null,x:0,y:0,w:0,h:0}, CLKCARD={g:null,k:\u0027\u0027,x:0,y:0,w:0,h:0,ay:0};   // v28.xx (cw-hudinset): the top centre card as last drawn: k \u0027one\u0027 holds the clock and the extract row, k \u0027row\u0027 is the extract row under the score card (the arrow inside it)"
+                  },
+                  {
+                      "anchor":  "var _tSrc=_noClk?(G.t||0):Math.ceil(Math.max(0,G.timeLeft));",
+                      "replacement":  "var _tSrc=_noClk?(G.t||0):Math.ceil(Math.max(0,G.timeLeft));\n  // v28.xx (cw-hudinset), the critic (o-120d): \u0027the timer, sun icon, extract chip and teal arrow are four separate floating pieces with no shared container; the extract timer is the number the player needs under pressure and is light on a busy backdrop\u0027. In a raid with no score card (no career, no arcade) the clock, its sky icon, the extract line and its arrow stand on ONE centred card (_clkCard); the clock text is drawn by _clkJob once the card is down. With a score card (career, arcade) his order keeps the clock and the score as separate windows, so the extract line and its arrow share one card under the score card instead.\n  var _clkJob=null, _clkTx=\u0027\u0027;\n  CLKCARD.g=null;\n  function _clkCard(hMin,botY){\n    var ow=ctx.font, ctw, hw, x0, y0=Math.round(4*_tz), h;\n    ctx.font=_fClk; ctw=ctx.measureText(_clkTx).width; ctx.font=ow;\n    hw=Math.round(Math.max(hMin,ctw/2+30*_tz)+8*_tz); x0=Math.round(W/2-hw); h=Math.round(botY-y0);\n    hudPlate(x0,y0,hw*2,h,null,HUDC.plate);\n    CLKCARD.g=G; CLKCARD.k=\u0027one\u0027; CLKCARD.x=x0; CLKCARD.y=y0; CLKCARD.w=hw*2; CLKCARD.h=h; CLKCARD.ay=Math.round(botY-5*_tz);\n    if(_clkJob){ var jb=_clkJob; _clkJob=null; jb(); }\n    ctx.textAlign=\u0027center\u0027;\n  }"
+                  },
+                  {
+                      "anchor":  "var _cpo=(!_noClk\u0026\u0026_tSrc\u003c=CLOCK_RED\u0026\u0026_tSrc\u003e0)?clockPopIn(W/2,_yClk-_hClk*0.35,G.timeLeft):false; hudText(mm+\u0027:\u0027+(ss\u003c10?\u00270\u0027:\u0027\u0027)+ss,W/2,_yClk); if(_cpo) ctx.restore(); try{ ctx.font=_fClk; wxIconDraw(Math.round(W/2+ctx.measureText(mm+\u0027:\u0027+(ss\u003c10?\u00270\u0027:\u0027\u0027)+ss).width/2+LH(18)*_tz),Math.round(_yClk-_hClk*0.36),Math.round(LH(10)*_tz)); }catch(_wxi){} }",
+                      "replacement":  "_clkTx=mm+\u0027:\u0027+(ss\u003c10?\u00270\u0027:\u0027\u0027)+ss; _clkJob=function(){ var _cpo; ctx.font=_fClk; ctx.textAlign=\u0027center\u0027; ctx.fillStyle=(!_noClk\u0026\u0026_tSrc\u003c=CLOCK_RED)?\u0027#ff5a4a\u0027:\u0027#cdd6dd\u0027; _cpo=(!_noClk\u0026\u0026_tSrc\u003c=CLOCK_RED\u0026\u0026_tSrc\u003e0)?clockPopIn(W/2,_yClk-_hClk*0.35,G.timeLeft):false; hudText(_clkTx,W/2,_yClk); if(_cpo) ctx.restore(); try{ ctx.font=_fClk; wxIconDraw(Math.round(W/2+ctx.measureText(_clkTx).width/2+LH(18)*_tz),Math.round(_yClk-_hClk*0.36),Math.round(LH(10)*_tz)); }catch(_wxi){} }; }"
+                  },
+                  {
+                      "anchor":  "    ctx.save();\n    if(_xpk\u003e0){ var _xsc=1+0.12*Math.sin(Math.PI*_xpk); ctx.translate(_compX,_xpy+_eph/2); ctx.scale(_xsc,_xsc); ctx.translate(-_compX,-(_xpy+_eph/2)); }\n    hudPlate(_xpx,_xpy,_epw,_eph,null,HUDC.plate);",
+                      "replacement":  "    // v28.xx (cw-hudinset): ONE CARD. The arrow stands 4 px lower so it clears the words, and sits inside the card with the extract line. No score card: the clock card is this card (_clkCard). A score card above: the extract card is as wide as the score card and holds the arrow.\n    var _oneCard=!!_clkJob, _rowCard=!!(G.arcade||G.career), _az0=_tz*(G.arcade?ARCADE_ARW:1), _cdX=_xpx, _cdY=_xpy, _cdW=_epw, _cdH=_eph, _ayy;\n    if(_oneCard||_rowCard) _yArw+=Math.round(4*_tz);\n    _ayy=_yArw+(G.arcade?Math.round(8*_tz):0);\n    if(_rowCard){\n      if(!_rushUI\u0026\u0026SCOREBOX.g===G\u0026\u0026SCOREBOX.w\u003e_cdW){ _cdW=SCOREBOX.w; _cdX=Math.round(_compX-_cdW/2); }\n      _cdH=Math.round(_ayy+5*_az0+5*_tz-_cdY);\n      CLKCARD.g=G; CLKCARD.k=\u0027row\u0027; CLKCARD.x=_cdX; CLKCARD.y=_cdY; CLKCARD.w=_cdW; CLKCARD.h=_cdH; CLKCARD.ay=Math.round(_ayy+5*_az0);\n    }\n    if(_oneCard){ _clkCard(_epw/2,Math.round(_ayy+5*_az0+5*_tz)); _cdX=CLKCARD.x; _cdY=CLKCARD.y; _cdW=CLKCARD.w; _cdH=CLKCARD.h; ctx.font=_fCmp; ctx.fillStyle=_col; }\n    ctx.save();\n    if(_xpk\u003e0){ var _xsc=1+0.12*Math.sin(Math.PI*_xpk); ctx.translate(_compX,_cdY+_cdH/2); ctx.scale(_xsc,_xsc); ctx.translate(-_compX,-(_cdY+_cdH/2)); }\n    if(!_oneCard) hudPlate(_cdX,_cdY,_cdW,_cdH,null,HUDC.plate);"
+                  },
+                  {
+                      "anchor":  "ctx.roundRect(_xpx+0.5,_xpy+0.5,_epw-1,_eph-1,Math.min(_eph/2,LH(4))); else ctx.rect(_xpx,_xpy,_epw,_eph);",
+                      "replacement":  "ctx.roundRect(_cdX+0.5,_cdY+0.5,_cdW-1,_cdH-1,Math.min(_cdH/2,LH(4))); else ctx.rect(_cdX,_cdY,_cdW,_cdH);"
+                  },
+                  {
+                      "anchor":  "  // v22.13, the raid text rewrite (R08): the MARKED row that flashed here is retired.",
+                      "replacement":  "  if(_clkJob) _clkCard(0,Math.round(_yClk+_hClk*0.30+6*_tz));   // v28.xx (cw-hudinset): no extraction to point at (all shut): the clock and its sky icon still stand on their card\n  // v22.13, the raid text rewrite (R08): the MARKED row that flashed here is retired."
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the raid HUD panels share one inset (within 2 px: pillager board, feed, vitals bars, ammo card, run info) and the clock, its extract line and the arrow draw inside one card (his critic, o-120d: ragged margins, four floating timer pieces)\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__endRaid\u0026\u0026window.__frame)) return \u0027SKIP: no raid here\u0027;\n     var bad=[], g, i, L=[], lo, hi, PR=CanvasRenderingContext2D.prototype, of=PR.fillText, clk=null, pill=null, C, ins=[];\n     function add(n,v){ if(typeof v===\u0027number\u0027\u0026\u0026v===v) L.push({n:n,v:v}); }\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       try{ __pinDPR(1); }catch(_d){}\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: no live raid\u0027;\n       g.bagOpen=false; g.mapOpen=false; g.ents.length=0; keys={}; g.legendOn=1;\n       for(i=0;i\u003c4;i++) say(\u0027inset test line \u0027+i,\u0027info\u0027,{reach:\u0027e\u0027});\n       for(i=0;i\u003c8;i++) __frame(0.016);\n       PR.fillText=function(s,x,y){ var t=String(s); if(/^\\d+:\\d\\d$/.test(t)) clk={x:x,y:y}; else if(/^extract \\d+m/i.test(t)) pill={x:x,y:y}; return of.apply(this,arguments); };\n       __frame(0.016); __frame(0.016);\n       PR.fillText=of;\n       add(\u0027pillager board\u0027,HUDBOX.raiders?HUDBOX.raiders.x:null);\n       add(\u0027feed\u0027,(FEEDBOX\u0026\u0026FEEDBOX.on)?FEEDBOX.x:null);\n       add(\u0027vitals\u0027,(typeof VITBOX===\u0027object\u0027\u0026\u0026VITBOX)?VITBOX.x:null);\n       add(\u0027ammo card\u0027,(GUNCARD\u0026\u0026GUNCARD.g===g\u0026\u0026GUNCARD.w\u003e0)?(W-(GUNCARD.x+GUNCARD.w)):null);\n       add(\u0027run info\u0027,HUDBOX.cond?(W-(HUDBOX.cond.x+HUDBOX.cond.w)):null);\n       if(L.length\u003c4) bad.push(\u0027only \u0027+L.length+\u0027 corner panels were laid out (\u0027+L.map(function(q){return q.n;}).join(\u0027, \u0027)+\u0027)\u0027);\n       lo=1e9; hi=-1e9; for(i=0;i\u003cL.length;i++){ if(L[i].v\u003clo) lo=L[i].v; if(L[i].v\u003ehi) hi=L[i].v; ins.push(L[i].n+\u0027 \u0027+Math.round(L[i].v*10)/10); }\n       if(hi-lo\u003e2) bad.push(\u0027panel insets differ by \u0027+(Math.round((hi-lo)*10)/10)+\u0027 px (want within 2): \u0027+ins.join(\u0027, \u0027));\n       C=(typeof CLKCARD===\u0027object\u0027)?CLKCARD:null;\n       if(!C||C.g!==g||!(C.w\u003e0)) bad.push(\u0027no top centre card was drawn around the clock and the extract line\u0027);\n       else if(!clk||!pill) bad.push(\u0027the clock or the extract line was not drawn (clock \u0027+(clk?\u0027yes\u0027:\u0027no\u0027)+\u0027, extract \u0027+(pill?\u0027yes\u0027:\u0027no\u0027)+\u0027)\u0027);\n       else {\n         if(C.k!==\u0027one\u0027\u0026\u0026!(g.arcade||g.career)) bad.push(\u0027the card is not the clock card\u0027);\n         if(C.k===\u0027one\u0027\u0026\u0026!(clk.x\u003eC.x\u0026\u0026clk.x\u003cC.x+C.w\u0026\u0026clk.y\u003eC.y\u0026\u0026clk.y\u003cC.y+C.h)) bad.push(\u0027the clock is outside its card\u0027);\n         if(!(pill.x\u003eC.x\u0026\u0026pill.x\u003cC.x+C.w\u0026\u0026pill.y\u003eC.y\u0026\u0026pill.y\u003cC.y+C.h)) bad.push(\u0027the extract line is outside its card\u0027);\n         if(!(C.ay\u003c=C.y+C.h)) bad.push(\u0027the arrow hangs below its card\u0027);\n       }\n     }catch(e){bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e));}\n     finally{\n       PR.fillText=of;\n       try{var g2=__state(); if(g2\u0026\u0026!g2.over){g2.player.downed=false; __endRaid(\u0027abandon\u0027);}}catch(_e){}\n       __topClear(); __cleanProfile();\n     }\n     return bad.length?bad.join(\u0027; \u0027):null;\n   }},"
+}
