@@ -1,0 +1,7 @@
+v36.90: a dead player 2 window comes back in the 2 player demo
+
+If the player 2 window closes or crashes in the 2 player demo, the host reopens it by itself within a few seconds and player 2 can press A to rejoin.
+
+Check 36.90. Fails on v36.89.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

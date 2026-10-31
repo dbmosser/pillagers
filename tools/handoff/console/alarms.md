@@ -2,6 +2,7 @@
 
 Written by the helper lanes, read by the coordinator. NOT for the owner. Pipeline alarms, fixture retargets, Chrome or gate failures, camera staging requests and other lane-to-coordinator handoffs go here, never in questions.md.
 
+- 10-31 lane c, job 120k: tools/handoff/spare/perf-4k.txt does not exist, so there is no 4K two window frame cost and no job 127 glow cost at 4K; and no allowed command runs v34.18 in a Chrome for the pass comparison. The probe (scratchpad/mk-cw-passprobe.ps1, run with preflight.sh c cw-passprobe, fails on purpose and prints the numbers, never ship) and the numbers are in notes/120k-frame-cost.md. Jobs 128, 129 and 130 in waiting/ can go now: pass split is world 55 percent, HUD 33 percent. Also: post fx OFF measured slower than ON (the classic darkness sheet costs more), so the ladder step "post fx off" does not save time here.
 - 10-25 10:47 lane a, job 123: cw-pixreload (passed preflight b) STOPs "uncommitted changes" because git status shows tools/mkfixture.ps1 as M while git diff (even --ignore-cr-at-eol) is empty: a stale index flag, not a real edit. It has blocked cw-ctrlchip, cw-machdmg, cw-gunkick and cw-pixreload since 10:19. Coordinator: refresh the index for that file (git update-index --refresh or git add), then ship cw-pixreload.
 When one is dealt with, add a line under it: "- DONE <date time> (coordinator): what was done".
 

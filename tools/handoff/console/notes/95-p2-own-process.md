@@ -56,3 +56,6 @@ notes/95/ still missing; no split, pid or stall raw files. Command list cannot r
 
 --- claude lane c run 2026-10-24 (4th) ---
 85a done. notes/95/ still missing, no split, pid or stall raw files; alarms.md line 6 still open. Step 1 cannot decide. No game edits, no ship key. Resume at step 2 when raw files are in notes/95/.
+
+--- claude lane c run 2026-10-31 (0p15 requeue) ---
+Same blocker as before: notes/95/ still missing, and the only measurement file in the codex folder is raw-camera-shared-t1.json (the shared baseline, P2 stall gap about 2010 ms). No split, pid or stall-after raw files. My command list cannot run measure95.mjs or run-measure95.ps1, and alarms.md lines 9, 10, 287-293 already ask the coordinator to run it. No game edits, no ship key. Resume at step 2 once notes/95/ has the raw split numbers and a go.

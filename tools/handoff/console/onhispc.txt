@@ -155,3 +155,4 @@
 10-31 09:53 v36.86 cw-bldsmooth on his pc after 34s (8802 serves 36.86) week 93%
 10-31 10:00 v36.87 cw-firstfight on his pc after 67s (8802 serves 36.87) week 93%
 10-31 10:02 v36.88 cw-coopsmooth on his pc after 34s (8802 serves 36.88) week 93%
+10-31 10:05 v36.89 cw-framegarbage on his pc after 65s (8802 serves 36.89) week 93%

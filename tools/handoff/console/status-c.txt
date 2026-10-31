@@ -1,1 +1,1 @@
-10-31 09:55 running 0p12-120k-two-player-frame-cost on Claude Code, sonnet high, run 1 (your plan: week 93% of the 94.5% line, 5-hour 3%)
+10-31 10:56 0p15-95-p2-own-process: partial (run 1 of 4), $0.1612559
