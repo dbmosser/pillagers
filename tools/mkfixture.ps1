@@ -7955,7 +7955,7 @@ class Audio {
        if(rows.length!==1||rows[0].label!=='timelord mode') bad.push('the saved superhot row is not labelled timelord mode');
        if(rows.length===1&&(rows[0].opts[0].cfg.superhot!==0||rows[0].opts[1].cfg.superhot!==1)) bad.push('the saved dial changed');
        noOld(JSON.stringify(KEYS_LOCKED),'change keys');
-       if(!KEYS_LOCKED.some(function(r){ return r[0]==='timelord mode'&&r[1]==='LEFT OF 1'; })) bad.push('change keys has no timelord mode row');
+       if(!KEYS_LOCKED.some(function(r){ return r[0]==='timelord mode'&&/^(?:HOLD )?LEFT OF 1$/.test(r[1]); })) bad.push('change keys has no timelord mode row');
        noOld(JSON.stringify(LEGEND),'controls list');
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
@@ -27215,7 +27215,7 @@ class Audio {
        proto.fillText=function(){ var s=String(arguments[0]), m=0; try{ m=this.measureText(s).width; }catch(_m){} txt.push({s:s,x:arguments[1],y:arguments[2],w:m}); return oFt.apply(this,arguments); };
        try{ __frame(0.016); } finally { proto.fillText=oFt; }
        k=null; w=null;
-       for(i=0;i<txt.length;i++){ if(/^left of 1$/i.test(txt[i].s)) k=txt[i]; if(/^(superhot|timelord) on\/off$/i.test(txt[i].s)) w=txt[i]; }
+       for(i=0;i<txt.length;i++){ if(/^(?:hold )?left of 1$/i.test(txt[i].s)) k=txt[i]; if(/^(superhot|timelord) on\/off$/i.test(txt[i].s)) w=txt[i]; }
        if(!w) bad.push('the F1 controls list has no Superhot row');
        else if(!k) bad.push('the F1 controls list does not name the key for Superhot in words (LEFT OF 1)');
        else{
@@ -27232,7 +27232,7 @@ class Audio {
            row.dispatchEvent(new MouseEvent('mouseover',{bubbles:true}));
            window.__setDetailSync();
            w=(el('setdetail')||{}).textContent||'';
-           if(!/key: left of 1/i.test(w)) bad.push('the pane beside the Settings list does not say "key: left of 1" for Superhot ('+w.slice(0,90)+')');
+           if(!/key: (?:hold )?left of 1/i.test(w)) bad.push('the pane beside the Settings list does not say "key: left of 1" for Superhot ('+w.slice(0,90)+')');
          } else bad.push('the Settings list has no Superhot row to name a key on');
          el('settingsmodal').classList.remove('on');
        }
@@ -28511,7 +28511,7 @@ class Audio {
      function on(e){ return !!(e&&e.classList.contains('on')); }
      function clearKeys(){ try{ for(var kk in keys) keys[kk]=false; mouse.down=false; }catch(_k){} }
      // The key as it arrives: a keydown on the window, and a keyup, with the repeat flag a held key sends.
-     function bq(rep){ shT+=0.4; statusNow=function(){ return shT; }; clearKeys(); window.dispatchEvent(new KeyboardEvent('keydown',{code:'Backquote',key:'`',repeat:!!rep,bubbles:true,cancelable:true})); window.dispatchEvent(new KeyboardEvent('keyup',{code:'Backquote',key:'`',bubbles:true,cancelable:true})); clearKeys(); }   // v28.xx (cw-cx-timelord): separate presses by 0.4 s on the answer clock, beyond its 0.35 s repeat guard
+     function bq(rep){ shT+=0.4; statusNow=function(){ return shT; }; clearKeys(); window.dispatchEvent(new KeyboardEvent('keydown',{code:'Backquote',key:'`',repeat:!!rep,bubbles:true,cancelable:true})); if(typeof shKeyTick==='function'){ shT+=0.7; shKeyTick(); } window.dispatchEvent(new KeyboardEvent('keyup',{code:'Backquote',key:'`',bubbles:true,cancelable:true})); clearKeys(); }   // v28.xx (cw-cx-timelord): separate presses by 0.4 s on the answer clock, beyond its 0.35 s repeat guard // v28.xx (cw-cx-timelordhold): hold on newer builds, retain the old shortcut on older builds.
      function setSuper(v){ P.gameOpts=P.gameOpts||{}; P.gameOpts.superhot=v; applyGameOpts(); }
      function topMsg(){ if(g&&g.ans&&g.ans.m) return String(g.ans.m); if(g&&g.msg) return g.msg; var L=(g&&g.fd&&g.fd.lines)||[]; return L.length?String(L[L.length-1].txt):''; }   // v28.xx (cw-cx-timelord): read the current answer bubble, or the older message/feed lanes
      // Every Superhot line the player can see: the two message rows over the screen and the lines of the left feed.
@@ -88915,7 +88915,7 @@ class Audio {
      var press=function(){
        said.length=0;
        say=function(m){ said.push(String(m)); }; if(has2) say2=function(m){ said.push(String(m)); };
-       try{ window.dispatchEvent(new KeyboardEvent('keydown',{code:'Backquote',bubbles:true,cancelable:true})); }
+       try{ window.dispatchEvent(new KeyboardEvent('keydown',{code:'Backquote',bubbles:true,cancelable:true})); if(typeof shKeyTick==='function'){ var keyNow=statusNow, keyAt=keyNow(); try{ statusNow=function(){ return keyAt+0.7; }; shKeyTick(); }finally{ statusNow=keyNow; } } window.dispatchEvent(new KeyboardEvent('keyup',{code:'Backquote',bubbles:true,cancelable:true})); }
        finally{ say=_say; if(has2) say2=_s2; }
        return said.join(' | ');
      };
