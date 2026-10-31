@@ -17602,7 +17602,7 @@ class Audio {
        var h=hubBagG;h.bagBelt=true;h.bagBeltSel=4;h.drag={key:'gun_shotgun',fromHot:4,pad:1};
        drawIconSprite=function(c,k,x,y,z){icons.push({k:k,x:x,y:y,z:z});return di.apply(this,arguments);};
        ctx.strokeRect=function(x,y,w,hh){rings.push({x:x,y:y,w:w,h:hh,c:String(this.strokeStyle)});return sr.apply(this,arguments);};
-       ctx.fillText=function(t){if(t==='equipped'||t==='tactical belt')labels.push(parseFloat((/([\d.]+)px/.exec(this.font)||[])[1]));return ft.apply(this,arguments);};
+       ctx.fillText=function(t){if(t==='equipped'||t==='hotbar')labels.push(parseFloat((/([\d.]+)px/.exec(this.font)||[])[1]));return ft.apply(this,arguments);};
        drawHubBag();var c=h.hotCells[4];
        if(!rings.some(function(r){return r.c==='#e6ff3d'&&r.x<=c.x&&r.y<=c.y&&r.x+r.w>=c.x+c.w&&r.y+r.h>=c.y+c.h;}))bad.push('held target has no visible lime ring');
        if(!icons.some(function(i){return i.k==='gun_shotgun'&&i.z>=c.w*.6&&i.x>c.x+c.w/2&&i.y<c.y+c.h/2;}))bad.push('held portrait is small or not visibly lifted');
@@ -49593,8 +49593,8 @@ class Audio {
        hurt(50); quickHeal();
        n0=cnt('bandage');
        if(n0!==1||cnt('stim')!==1) bad.push('THREE: with no heal on the belt a tap spent something (bandage '+cnt('bandage')+', stim '+cnt('stim')+')');
-       if(!line(/^NO HEAL ON BELT$/)) bad.push('THREE: a tap with no heal on the belt said '+JSON.stringify(said.map(function(x){ return x.m; })));
-       else if(!/BACKPACK/.test(String(line(/^NO HEAL ON BELT$/).o.sub||''))) bad.push('THREE: NO HEAL ON BELT has '+JSON.stringify(line(/^NO HEAL ON BELT$/).o.sub)+' under it, not the backpack key');
+       if(!line(/^NO HEAL ON HOTBAR$/)) bad.push('THREE: a tap with no heal on the hotbar said '+JSON.stringify(said.map(function(x){ return x.m; })));
+       else if(!/BACKPACK/.test(String(line(/^NO HEAL ON HOTBAR$/).o.sub||''))) bad.push('THREE: NO HEAL ON HOTBAR has '+JSON.stringify(line(/^NO HEAL ON HOTBAR$/).o.sub)+' under it, not the backpack key');
        // FOUR: nothing but a Stim
        g.bag=['stim']; g.hotAssign={6:'stim'}; g.hotAuto={};
        hurt(50); quickHeal();
@@ -64062,7 +64062,7 @@ class Audio {
          if(!s){ bad.push('on the '+r[i][0]+' a click on an unbound Stash screen belt key said nothing'); continue; }
          if(s!==s.toUpperCase()) bad.push('on the '+r[i][0]+' a click on an unbound Stash screen belt key says '+JSON.stringify(s)+', not a short ALL CAPS callout');
          if(/[.!?]$/.test(s)) bad.push('on the '+r[i][0]+' the belt key answer ends in punctuation: '+JSON.stringify(s));
-         if(!/tactical belt/i.test(s)) bad.push('on the '+r[i][0]+' the belt key answer no longer names the tactical belt: '+JSON.stringify(s));
+         if(!/hotbar/i.test(s)) bad.push('on the '+r[i][0]+' the belt key answer no longer names the hotbar: '+JSON.stringify(s));
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
@@ -81262,7 +81262,7 @@ class Audio {
      if(src.length<100000) return 'SKIP: the build cannot read its own script';
      OLD=['No throwable you carry is on your','No legs left to roll with','Auto-jog arms from a standstill','Type what to call them first','Everyone with the','Point at an item in the stash, then press','Let go too soon','Hold it down for a second','Linked. Saying hello to the host'];
      // tr5fixb: since the batch 5 review the auto-jog detail is the caps tag [CAPS] AUTO-JOG; any of the three forms keeps the rewrite.
-     NEW=[(src.indexOf('No throwable on your tactical belt.')>=0?'No throwable on your tactical belt.':'NO THROWABLE ON THE TACTICAL BELT'),(src.indexOf('Too tired to roll.')>=0?'Too tired to roll.':'TOO TIRED TO ROLL'),(src.indexOf('Stop first, then tap CAPS to auto-jog.')>=0?'Stop first, then tap CAPS to auto-jog.':(src.indexOf('] to auto-jog.')>=0?'] to auto-jog.':'] AUTO-JOG')),(src.indexOf('Enter a name first.')>=0?'Enter a name first.':'name required'),'Released too early. Hold for one second.','Hold for one second to confirm.','Connected. Joining the host.'];
+     NEW=[(src.indexOf('No throwable on your tactical belt.')>=0?'No throwable on your tactical belt.':'NO THROWABLE ON THE HOTBAR'),(src.indexOf('Too tired to roll.')>=0?'Too tired to roll.':'TOO TIRED TO ROLL'),(src.indexOf('Stop first, then tap CAPS to auto-jog.')>=0?'Stop first, then tap CAPS to auto-jog.':(src.indexOf('] to auto-jog.')>=0?'] to auto-jog.':'] AUTO-JOG')),(src.indexOf('Enter a name first.')>=0?'Enter a name first.':'name required'),'Released too early. Hold for one second.','Hold for one second to confirm.','Connected. Joining the host.'];
      for(i=0;i<OLD.length;i++) if(src.indexOf(OLD[i])>=0) bad.push('the old line with "'+OLD[i]+'" is still in the build');
      for(i=0;i<NEW.length;i++) if(src.indexOf(NEW[i])<0) bad.push('the line "'+NEW[i]+'" is missing');
      return bad.length?bad.join('; '):null; }},
@@ -86081,7 +86081,7 @@ class Audio {
      if(!ITEMS.gun_smg||ITEMS.gun_smg.use!=='gun'||!ITEMS.bandage) return 'SKIP: no Compact SMG gun item or Bandage in this build';
      if(typeof G!=='undefined'&&G&&G.sim) return 'SKIP: a sim is running';
      var bad=[], g=null, snap=null, keep=null, seen=[], cx=ctx, realFill=null, ownFill=false, _say=say, _blip=blip, padWas=PAD.on;
-     var wnWas=(typeof WNSEEN!=='undefined')?WNSEEN:null, GUN=ITEMS.gun_smg.name, DRAG='drag to tactical belt';
+     var wnWas=(typeof WNSEEN!=='undefined')?WNSEEN:null, GUN=ITEMS.gun_smg.name, DRAG='drag to hotbar';
      // Needles for words the floor must not draw, assembled so the check never finds its own source.
      var AN='ARROWS'+' move', ZN='Z drop'+' one', EN='ENTER'+' equip', DN='DPAD L'+' drop';
      // A later control that cannot run keeps a failure already found, so the old build fails rather than skips.
@@ -97818,7 +97818,7 @@ class Audio {
      if(typeof buildExport!=='function'||typeof fmtRun!=='function') return 'SKIP: this fixture cannot build a run report';
      if(!window.__P) return 'SKIP: this fixture cannot read the profile';
      var bad=[], P2=__P(), keepLog=(P2.log||[]).slice();
-     var OLD='Hot'+'bar worked well', NEW='Tactical belt'+' worked well';
+     var OLD='Tactical belt'+' worked well', NEW='Hot'+'bar worked well';   // cw-onehotbar (v36.81): the tag reads hotbar again, a tag saved as tactical belt is carried forward
      try{
        // THE BUTTON FACES. TAGS is the button face itself: buildTags writes each
        // string straight into the element text.
@@ -109551,10 +109551,10 @@ class Audio {
      if(html.indexOf('Experience')<0) bad.push('control: the Experience card is gone');
      for(var k in keep) P2[k]=keep[k];
      return bad.length?bad.join('; '):null; }},
-  {v:'10.26',what:'the hotbar is the TACTICAL BELT everywhere a player reads it, and the old word is gone from every surface',
+  {v:'10.26',what:'the number key row is the hotbar everywhere a player reads it (his word again since v36.81), and the words tactical belt are gone from every surface',
    run:function(){
      var bad=[];
-     var OLDW=['hot','bar'].join(''), NEWW=['tactical ','belt'].join('');
+     var OLDW=['tactical ','belt'].join(''), NEWW=['hot','bar'].join('');
      function has(t,w){ return String(t||'').toLowerCase().indexOf(w)>=0; }
      // ONE: the legends and the pause rows, read from the tables the HUD draws from.
      var tables={LEGEND:(typeof LEGEND!=='undefined')?LEGEND:null,LEGEND_PAD:(typeof LEGEND_PAD!=='undefined')?LEGEND_PAD:null,GEARRULES:(typeof GEARRULES!=='undefined')?GEARRULES:null};
@@ -111028,7 +111028,7 @@ class Audio {
        if(present()) bad.push('control: a 60 damage round did not finish a downed man at 40 health');
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'9.90',what:'the backpack has one name on every surface that names it, and the pad legend says tactical belt',
+  {v:'9.90',what:'the backpack has one name on every surface that names it, and the pad legend says hotbar',
    run:function(){
      var bad=[];
      if(!__vpAlive()) return 'SKIP: the pane has no layout, nothing is drawn';
@@ -111071,19 +111071,19 @@ class Audio {
        for(var a=0;a<padL.length;a++) for(var b=0;b<padL[a][1].length;b++) padTxt.push(padL[a][1][b][1]);
        var pj=padTxt.join(' | ');
        // v10.26: his word for it is tactical belt, so a bare belt is no longer the old name; the old name is hotbar.
-       if(/hotbar/i.test(pj)) bad.push('the controller legend still says hotbar');
+       if(/tactical belt/i.test(pj)) bad.push('the controller legend still says tactical belt');
        if(isWord(pj,INV)) bad.push('the controller legend still calls the backpack the '+INV);
-       if(!/tactical belt/i.test(pj)||!/backpack/i.test(pj)) bad.push('the controller legend does not say both tactical belt and backpack');   // v10.26
+       if(!/hotbar/i.test(pj)||!/backpack/i.test(pj)) bad.push('the controller legend does not say both hotbar and backpack');   // v36.81 (cw-onehotbar)
      } else bad.push('this fixture cannot read the controller legend');
      // FIVE: the raid backpack panel and the Undercroft column, already renamed
      // at v9.89, must still say Backpack and Hotbar. A control that this build
      // did not undo last build's work.
      var cm=document.getElementById('carrymodal');
      var heads=cm?[].map.call(cm.querySelectorAll('h2,h3'),function(h){ return h.textContent.trim(); }):[];
-     if(!heads.some(function(h){ return /^backpack/i.test(h); })||!heads.some(function(h){ return /^tactical belt$/i.test(h); }))
+     if(!heads.some(function(h){ return /^backpack/i.test(h); })||!heads.some(function(h){ return /^hotbar$/i.test(h); }))
        bad.push('control: the raid backpack panel headings read ['+heads.join(', ')+']');
      return bad.length?bad.join('; '):null; }},
-  {v:'9.89',what:'the tactical belt has one name on every surface that names it (his word since v10.26; it was hotbar from v9.89)',
+  {v:'9.89',what:'the number key row has one name, hotbar, on every surface that names it (his word again since v36.81; it was tactical belt from v10.26)',
    run:function(){
      var bad=[];
      if(!__vpAlive()) return 'SKIP: the pane has no layout, so no gesture can be aimed';
@@ -111102,13 +111102,13 @@ class Audio {
      var msub=(cm.querySelector('.msub')||{}).textContent||'';
      var labs=[].map.call(document.querySelectorAll('.loslab'),function(l){ return l.textContent.trim(); });
      var all=heads.concat([msub]).concat(labs).join(' | ');
-     var OLDW=['hot','bar'].join('');
+     var OLDW=TACT;
      if(has(all,OLDW)) bad.push('a panel heading still says '+OLDW);
      if(has(msub,PLUSBELT)) bad.push('the backpack subtitle still says '+PLUSBELT);
-     if(!heads.some(function(h){ return /^tactical belt$/i.test(h); }))
-       bad.push('the raid backpack panel has no heading that reads Tactical belt, it has ['+heads.join(', ')+']');
-     if(!labs.some(function(l){ return /^tactical belt/i.test(l); }))
-       bad.push('the Undercroft loadout column has no label that starts with Tactical belt, it has ['+labs.join(', ')+']');
+     if(!heads.some(function(h){ return /^hotbar$/i.test(h); }))
+       bad.push('the raid backpack panel has no heading that reads Hotbar, it has ['+heads.join(', ')+']');
+     if(!labs.some(function(l){ return /^hotbar/i.test(l); }))
+       bad.push('the Undercroft loadout column has no label that starts with Hotbar, it has ['+labs.join(', ')+']');
      // TWO: the prompt behind clicking an EMPTY hotbar cell in the Undercroft.
      __pinDPR(1); __forceSize(1920,1080); __cleanProfile();
      var P2=__P(); P2.stash=['frag']; P2.kit=[]; P2.hotAssign={};
@@ -111136,7 +111136,7 @@ class Audio {
      var toast=document.getElementById('hubtoast')||document.getElementById('toast')||document.getElementById('say2');
      hubToastText=(toast&&toast.textContent)||'';
      var said=String(window.__lastSay||'')+' '+hubToastText;
-     if(!/tactical belt/i.test(said)&&!has(said,OLDW)&&!has(said,BAR))
+     if(!said.trim())
        return done('SKIP: clicking an empty belt cell said nothing this check can read: ['+said.trim().slice(0,80)+']');
      if(has(said,BAR)) bad.push('clicking an empty belt cell still says '+BAR);
      if(has(said,OLDW)) bad.push('clicking an empty belt cell still says '+OLDW);
