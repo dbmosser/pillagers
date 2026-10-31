@@ -1,4 +1,6 @@
 # o-00y3-248 text-size-default-100 : text size starts at 100%, in the demo too
+party-breaking: yes
+camera: 1
 HIS WORDS 10-31 (in the Gameplay Edit Intaker chat): "text size should default to 100%"
 PARTY RELEVANT: the arcade demo starts every player at TV-size text, but the party is now two PCs on monitors with mouse and keyboard (his 10-29 plan), so the demo text is oversized. CEO decides under his 10-30 order (fixes critical for two player play).
 
@@ -7,3 +9,5 @@ Build: the default text size is 100%: uiScale 1.0 with its matching menu zoom (t
 Check (must FAIL on v36.55): a fresh profile and a fresh arcade demo start have uiScale 1.0; a profile that set 1.75 keeps 1.75.
 Rules: take pictures (uishots: raid HUD and a menu at 100%, 1080p and 4K) and look at them; seed 4242 fingerprint must hold; never change salvagerun:profile; never touch the pickup stack, loot sounds or loot rows. DESIGN.md watch line: "text starts at 100%". Model: Codex or Sonnet 5.5 high.
 TASK DONE when it shipped and is ON HIS PC.
+
+CEO 10-31 05:05: party relevant (two PCs on monitors tonight), so Codex builds it right after o-00y-246, past its reserve. Must be ON HIS PC before Sat 12:00; if it cannot pass the gate by 11:30, ship nothing.
