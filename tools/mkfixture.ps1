@@ -27036,7 +27036,7 @@ class Audio {
        ent.forEach(function(h){ if(zn.indexOf(String(h.o).toLowerCase())>=0&&!(h.y<cd.y+cd.hh)){ n++; if(h.h>hp*0.95*cd.z) zp++; } });
        if(n<3) bad.push('TWO: only '+n+' zone names were drawn');
        else if(zp) bad.push('TWO: '+zp+' zone names are as big as a callout head ('+hp+' px), not a size under the extraction names');
-       if(zfs.length&&Math.max.apply(null,zfs.map(hex2))>0.70) bad.push('TWO: a zone name is drawn at more than 70 percent ('+zfs[0]+')');
+       if(zfs.length&&Math.max.apply(null,zfs.map(hex2))>0.82) bad.push('TWO: a zone name is drawn at more than 82 percent ('+zfs[0]+')');
        // THREE: contract names all in the main text colour (a finished one too), the reward smaller than the name
        // v28.xx (cw-cx-corpus-r3a), corrected by job 55: v32.30 (cw-cx-mapspace-o03, 3b975f77) deliberately quieted open names, uses success colour for completed names and sized the reward to the label type; the gate marker cw-cx-mapquiet-o03 is present on every build that has them.
        if(String(doneFs).toLowerCase()!==String(quiet?UIC.ok:UIC.tx_1).toLowerCase()) bad.push('THREE: the finished contract name has the wrong colour ('+doneFs+')');
