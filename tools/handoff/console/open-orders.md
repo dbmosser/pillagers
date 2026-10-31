@@ -91,3 +91,5 @@ SHIPPED 10-28 v35.66: 201 air strike needs 3000 damage (was 1500). On his PC 168
 - HIS ORDER 10-31: text size defaults to 100% (was 150% TV size from Q21, demo included). Job tasks/o-00y3-248-text-size-default-100.md; party relevant, CEO decides.
 
 - HIS ORDER 10-31: the seal 50% faster to open, and a wave attacks when you start opening it. Parked as after-nov1/o-01c-249-seal-faster-and-defended.md.
+
+- HIS ORDER 10-31: no golden pillager bots (bots stand in for live players). Parked as after-nov1/o-01d-250-no-golden-pillager-bots.md. Open question for after the party: the bounty pillager bot event is the same kind of buff.
