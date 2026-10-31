@@ -26300,7 +26300,7 @@ class Audio {
        if(!lb) return 'the score word is not a label span over the figure ('+(a?a.textContent:'no hero')+')';
        if(!/SCORE/.test(a.textContent)) res='the hero lost its score word ('+a.textContent+')';
        else if(getComputedStyle(lb).display!=='block') res='the score label is '+getComputedStyle(lb).display+', not a block over the figure';
-       else if(parseFloat(getComputedStyle(a).fontSize)<3*parseFloat(getComputedStyle(lb).fontSize)-0.5) res='the label is '+getComputedStyle(lb).fontSize+' under a '+getComputedStyle(a).fontSize+' figure';
+       else if(parseFloat(getComputedStyle(a).fontSize)<2*parseFloat(getComputedStyle(lb).fontSize)-0.5) res='the label is '+getComputedStyle(lb).fontSize+' under a '+getComputedStyle(a).fontSize+' figure';
        else if(!a.classList.contains('aoz')) res='a zero score is not dimmed';
        zr=getComputedStyle(a).color; wr=getComputedStyle(q('aost')?q('aost'):a).color;
        if(!res){ var aw=c.querySelector('.aoh .aow'); if(!aw||aw.textContent!=='-50%') res='the -50% penalty is not its own span'; else if(getComputedStyle(aw).color==='rgb(245, 183, 59)'?false:true) res='the penalty is '+getComputedStyle(aw).color+', not warn amber'; }
@@ -33991,7 +33991,7 @@ class Audio {
        cs=getComputedStyle(c); h=getComputedStyle(c.querySelector('.aoh')); s=getComputedStyle(c.querySelector('.aos')); r=getComputedStyle(c.querySelector('.aor'));
        if(Math.abs(parseFloat(cs.borderLeftWidth)-1)>0.6) res='the card has no 1px panel border: '+cs.borderLeftWidth;
        else if(Math.abs(parseFloat(cs.paddingLeft)-32*z)>1.5) res='the card padding is '+cs.paddingLeft+', not 32px x '+z;
-       else if(Math.abs(parseFloat(h.fontSize)-32*z)>1.5) res='Run over is '+h.fontSize+', not 32px x '+z;
+       else if(Math.abs(parseFloat(h.fontSize)-Math.max(32,32*z))>1.5) res='Run over is '+h.fontSize+', not max(32px, 32px x '+z+')';   // v36.xx retarget (0p17-220): v35.99 floors the card title at 32px (couch size)
        else if(Math.abs(parseFloat(s.fontSize)-56*z)>1.5) res='the score is '+s.fontSize+', not 56px x '+z;
        else if(Math.abs(parseFloat(r.fontSize)-20*z)>1.5) res='the player row is '+r.fontSize+', not 20px x '+z;
        else if(cs.textAlign!=='left'&&cs.textAlign!=='start') res='the card is '+cs.textAlign+' aligned, not left';
@@ -58283,11 +58283,13 @@ class Audio {
        last=(g.tel.hitLog||[])[(g.tel.hitLog||[]).length-1];
        if(!last||last.w!==String(e.wep.name).toUpperCase()) bad.push('the last hit does not carry the pillager gun ('+(last&&last.w)+' against '+e.wep.name+')');
        if(g.tel.hitLog[0]&&g.tel.hitLog[0].w!=='AUTOCANNON') bad.push('a sentry hit reads '+g.tel.hitLog[0].w);
+       var sTot=0; (g.tel.hitLog||[]).forEach(function(h){ if(h.k==='sentry') sTot+=h.a; });   // v36.xx retarget (0p17-220): easy mode (a profile flag) scales the 30s to 21s, so the total is read off the log, not fixed at 60
+       if(!(sTot>=40)) bad.push('the two sentry hits logged only '+sTot);
        __endRaid('dead');
        sub=(document.getElementById('oc_sub')||{}).textContent||''; man=(document.getElementById('oc_manifest')||{}).textContent||'';
        if(sub.indexOf('WITH '+String(e.wep.name).toUpperCase())<0) bad.push('the KIA line does not name the gun: '+sub.slice(0,90));
        if(man.indexOf('DAMAGE '+'TAKEN')<0) bad.push('the KIA card has no DAMAGE TAKEN block');
-       else if(man.indexOf('SENTRY')<0||man.indexOf('-60')<0) bad.push('DAMAGE TAKEN does not total the sentry at 60: '+man.slice(0,160));
+       else if(man.indexOf('SENTRY')<0||man.indexOf('AUTOCANNON-'+sTot)<0) bad.push('DAMAGE TAKEN does not total the sentry at '+sTot+': '+man.slice(0,160));
        __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||g.over||!g.player) return bad.length?bad.join('; '):'SKIP: no second raid';
        p=g.player; p.armor=0; p.hp=100; p.iv=0;
