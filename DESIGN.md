@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.87 - THE FIRST DEMO FIGHT COMES ABOUT 15 TO 20 SECONDS IN
+
+Co-op hunt while he was away. His round 2 answer 2.62 b: the first fight comes after about 15 to 20 seconds, a short walk and then the first machines notice you. Measured on 40 demo seeds with a player standing at the start, the first pack came at 22 s and landed 770 to 1060 away, and the median first contact was about 89 s (19 of 40 seeds met nothing in 100 s). Two things held it back: the pack landed far, and a ring called by an AI pillager far away froze the wave clock for the whole start. The first pack of a demo run now comes after 11 s, lands 480 to 640 away, and only a called ring within 1000 of a player holds it. Every later pack and every career raid is as before.
+
+MEASURED. Check 36.87 passes, and fails on v36.86.
 ## v36.86 - BUILDINGS READ IN THE SMOOTH LOOK
 
 Co-op hunt while he was away. His priorities note of 10-20 asks whether you can tell a house, an office and a warehouse apart. Since v34.81 the smooth look is the default, and the kind floors and flat details (v34.49) were baked only in the pixel look. Both looks now floor each building by its kind (house open floor with a rug, office tiled with papers, warehouse racking or dock with pallets and oil, shop tiled with shelf lines, workshop grid with plates and stains). Ground only: no wall, collider, sight line or seeded draw changes.

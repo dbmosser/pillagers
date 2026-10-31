@@ -3929,8 +3929,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.86';
-var VER_AT='2026-10-31 09:52';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.87';
+var VER_AT='2026-10-31 09:57';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -56975,7 +56975,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.86: Houses, offices, warehouses, shops and workshops now have their own floors and details in the smooth look too. Check 36.86 fails on v36.85',
+  now:'v36.87: In the demo the first pack of machines now comes in a few seconds and lands close, so the first fight starts about 15 to 20 seconds in. Check 36.87 fails on v36.86',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -67028,6 +67028,17 @@ function arcadeTeam(){ return Math.max(0,ARCADE.mine|0)+Math.max(0,ARCADE.mate|0
 // always, sentries from tier 1, hostile pillagers from tier 2, and from tier 4 the first body of each pack is an elite. WAVE n is
 // called in the warn lane. The bodies reach player 2 like any body that arrives after the build. A normal raid never runs any of it.
 var ARCADE_WAVE={near:1400,minR:770,maxR:1060,tries:40};
+// v36.87 (cw-firstfight), HIS ANSWER 2.62 b (round 2): "the first fight comes after about 15 to 20 seconds: a short walk, then the first machines notice you".
+// Measured on 40 demo seeds with a player standing at the start: the first pack came at 22 s and landed 770 to 1,060 away, and the median first contact was
+// about 89 s (19 of 40 seeds met nothing in 100 s). Now the FIRST pack of a DEMO run (no wave yet) comes after ARCADE_FIRST.iv seconds and lands
+// ARCADE_FIRST.minR to maxR away, so a short walk meets it. Every later pack is as before, and a career raid never takes this path.
+var ARCADE_FIRST={iv:11,minR:480,maxR:640};
+function arcadeFirstOn(WS){ return !!(G&&G.arcade&&!G.career&&WS&&!(WS.waveN|0)); }
+function arcadeSiegeNear(men){   // a called ring within 1,000 of someone playing: that one still holds the pack
+  var i, j, z;
+  for(i=0;i<(G.zones||[]).length;i++){ z=G.zones[i]; if(!z||z.beaconT===null||z.beaconT===undefined) continue; for(j=0;j<men.length;j++) if(dist(z,men[j])<1000) return true; }
+  return false;
+}
 function arcadeWaveMen(){
   var a=[], p=G.player, i, u;
   if(p&&!p.specOut&&!p.dying&&isFinite(p.x)&&isFinite(p.y)) a.push(p);
@@ -67054,23 +67065,23 @@ function arcadeWaveOk(men,q,x,y,lo,hi){
   if(fireAt(x,y,60)) return false;   // v26.xx (flow4): and never in a fire
   if(shAt(x,y,40)) return false;   // v26.xx (flow11): nor inside a stronghold
   d=dist({x:x,y:y},q); if(d<lo||d>hi) return false;
-  for(j=0;j<men.length;j++) if(dist({x:x,y:y},men[j])<700) return false;
+  for(j=0;j<men.length;j++) if(dist({x:x,y:y},men[j])<Math.min(700,lo+1)) return false;   // v36.87 (cw-firstfight): the first demo pack lands nearer than 700; every other pack has lo of 769 or more, so this stays 700
   return true;
 }
-function arcadeWaveSpot(men,q){
-  var k, a, r, x, y;
+function arcadeWaveSpot(men,q,f){
+  var k, a, r, x, y, lo=f?ARCADE_FIRST.minR:ARCADE_WAVE.minR, hi=f?ARCADE_FIRST.maxR:ARCADE_WAVE.maxR;   // v36.87 (cw-firstfight)
   for(k=0;k<ARCADE_WAVE.tries;k++){
-    a=Math.random()*Math.PI*2; r=ARCADE_WAVE.minR+Math.random()*(ARCADE_WAVE.maxR-ARCADE_WAVE.minR);
+    a=Math.random()*Math.PI*2; r=lo+Math.random()*(hi-lo);
     x=q.x+Math.cos(a)*r; y=q.y+Math.sin(a)*r;
-    if(arcadeWaveOk(men,q,x,y,ARCADE_WAVE.minR-1,ARCADE_WAVE.maxR+1)) return {x:x,y:y};
+    if(arcadeWaveOk(men,q,x,y,lo-1,hi+1)) return {x:x,y:y};
   }
   return null;
 }
-function arcadeWaveBody(men,q,c){
+function arcadeWaveBody(men,q,c,f){
   var k, x, y;
   for(k=0;k<6;k++){
     x=c.x+Math.random()*72-36; y=c.y+Math.random()*72-36;
-    if(arcadeWaveOk(men,q,x,y,700,1200)) return {x:x,y:y};
+    if(arcadeWaveOk(men,q,x,y,f?ARCADE_FIRST.minR-80:700,f?ARCADE_FIRST.maxR+160:1200)) return {x:x,y:y};
   }
   return {x:c.x,y:c.y};
 }
@@ -67136,26 +67147,27 @@ function arcadeWaveTick(dt){
   // v28.xx (cw-cx-finalrush): faster waves and one extra machine; breathers, safe spawn positions and called rings still hold.
   var rush=arcadeRushOn();
   if(rush){ iv*=0.8; cap+=2; pack++; }
+  var first=arcadeFirstOn(WS); if(first) iv=ARCADE_FIRST.iv;   // v36.87 (cw-firstfight): the first demo pack comes early and near
   // v26.xx (siegelite), HIS NOTE (2026-10-13): "maybe too many bots at extract". A CALLED RING HOLDS THE WAVE DIRECTOR. The packs landed 770
   // to 1,060 from him at the ring on top of the siege (a high score met 10 wave bodies and 5 siege machines in the 30 s wait). From the
   // call to the end of the boarding window nothing new spawns and the clock stands still, so the first pack after a missed window is
   // the one that was due. Both modes: DEMO and CAREER run this same tick.
-  if(siegeCalled()) return 0;
+  if(siegeCalled()&&!(first&&!arcadeSiegeNear(arcadeWaveMen()))) return 0;   // v36.87 (cw-firstfight): a ring an AI pillager called far away no longer holds the first demo pack back
   var D=flowDir(dt), amb=0;   // v26.xx (flow1): the Director reads the stress first; a breather stands the wave clock still, a quiet stretch speeds it
   WS.waveT=(+WS.waveT||0)+((dt>0)?dt:0)*D.pace;
   if(D.pace<=0){ WS.waveT=Math.min(WS.waveT,iv-0.5); return 0; }   // v26.xx (flow1): in a breather the next pack waits, however long the clock has been ready
   if(WS.waveT<iv) return 0;
   men=arcadeWaveMen(); if(!men.length) return 0;
   live=arcadeWaveLive(men);
-  if(live>=cap){ WS.waveT=iv-1; return 0; }   // full: look again in a second
+  if(live>=cap&&!first){ WS.waveT=iv-1; return 0; }   // full: look again in a second
   q=men[Math.floor(Math.random()*men.length)];
   amb=flowAmbushOk(D,q)?1:0; c=amb?flowAmbushSpot(men,q):null;   // v26.xx (flow1): a long quiet ends in a pack from behind him
-  if(!c){ amb=0; c=arcadeWaveSpot(men,q); }
+  if(!c){ amb=0; c=arcadeWaveSpot(men,q,first); }
   if(!c){ WS.waveT=iv-0.5; return 0; }   // no floor this time: try again shortly
-  n=Math.min(amb?pack+2:pack,cap-live);   // v26.xx (flow1): an ambush brings two more
+  n=first?pack:Math.min(amb?pack+2:pack,cap-live);   // v26.xx (flow1): an ambush brings two more
   kinds=['crawler','crawler']; if(tier>=1) kinds.push('sentry'); if(tier>=2) kinds.push('raider');
   for(i=0;i<n;i++){
-    s=arcadeWaveBody(men,q,c); kd=kinds[Math.floor(Math.random()*kinds.length)];
+    s=arcadeWaveBody(men,q,c,first); kd=kinds[Math.floor(Math.random()*kinds.length)];
     if(rush&&i===n-1) kd=(Math.random()<0.5)?'crawler':'sentry';   // v28.xx (cw-cx-finalrush): the extra body is always a machine.
     e=null;
     if(G.career) fxBorrow(function(){ e=(kd==='sentry')?mkSentry(s.x,s.y):(kd==='raider')?arcadeWaveRaider(s.x,s.y):mkCrawler(s.x,s.y); });   // v24.xx (feat0h3)

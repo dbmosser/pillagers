@@ -1,0 +1,7 @@
+v36.87: the first demo fight comes about 15 to 20 seconds in
+
+In the demo the first pack of machines now comes in a few seconds and lands close, so the first fight starts about 15 to 20 seconds in.
+
+Check 36.87. Fails on v36.86.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
