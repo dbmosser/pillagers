@@ -46574,15 +46574,20 @@ class Audio {
        if(k>=24) return bad.length?bad.join('; '):'SKIP: no open ground beside the player';
        sx=p.x+Math.cos(a)*90; sy=p.y+Math.sin(a)*90; p.face=Math.atan2(sy-p.y,sx-p.x);
        hasD=OWN.call(window,'drawOp'); oD=drawOp;
+       function spyOn(c,cl){ var s={c:c,n:0,hF:OWN.call(c,'fill'),oF:c.fill,hR:OWN.call(c,'fillRect'),oR:c.fillRect};
+         c.fill=function(){ if(String(this.fillStyle).toLowerCase()===cl) s.n++; return s.oF.apply(this,arguments); };
+         c.fillRect=function(){ if(String(this.fillStyle).toLowerCase()===cl) s.n++; return s.oR.apply(this,arguments); };
+         return s; }
+       function spyOff(s){ if(s.hF) s.c.fill=s.oF; else delete s.c.fill; if(s.hR) s.c.fillRect=s.oR; else delete s.c.fillRect; }
        for(i=0;i<roles.length;i++){
          role=roles[i]; col=PROLE[role].c.toLowerCase();
          e=mkRaider(sx,sy,undefined,true); e.elite=0; e.prole=role; e.hostile=true; e.state='loot'; e.downed=0; e.hp=e.maxhp; e.face=Math.atan2(p.y-sy,p.x-sx);
-         g.ents=[e]; nCol=0; seen=null;
-         hF=OWN.call(wc,'fill'); oF=wc.fill; hR=OWN.call(wc,'fillRect'); oR=wc.fillRect;
-         wc.fill=function(){ if(String(this.fillStyle).toLowerCase()===col) nCol++; return oF.apply(this,arguments); };
-         wc.fillRect=function(){ if(String(this.fillStyle).toLowerCase()===col) nCol++; return oR.apply(this,arguments); };
+         g.ents=[e]; nCol=0; seen=null; var spies=null;
+         if(typeof RIM!=='undefined'&&RIM&&!RIM.xa){ try{ render2D(0.016); }catch(_pr){} }   // job 252: v36.80 (cw-outlineorder) draws a crew pillager on the outline scratch canvas RIM.xa, so the role mark fills there; one unspied render makes that canvas exist
+         spies=[spyOn(wc,col)]; if(typeof RIM!=='undefined'&&RIM&&RIM.xa) spies.push(spyOn(RIM.xa,col));
          drawOp=function(){ var s=arguments[9]; if(s&&s.own===e&&seen===null) seen=arguments[4]; return oD.apply(this,arguments); };
-         try{ render2D(0.016); } finally { if(hF) wc.fill=oF; else delete wc.fill; if(hR) wc.fillRect=oR; else delete wc.fillRect; drawOp=oD; }
+         try{ render2D(0.016); } finally { for(k=0;k<spies.length;k++) spyOff(spies[k]); drawOp=oD; }
+         for(k=0;k<spies.length;k++) nCol+=spies[k].n;
          if(nCol<1) bad.push('a '+role+' pillager in view draws no mark in his role colour '+col);
          if(typeof seen!=='string') bad.push('a '+role+' pillager was not drawn');
          else { coats[role]=seen; }
