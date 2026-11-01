@@ -117,7 +117,9 @@ if [ -z "$(find "$RS" "$C/real-spend.err" -mmin -20 2>/dev/null)" ]; then timeou
 if [ -n "$(find "$RS" -mmin -180 2>/dev/null)" ]; then rs=$(grep -o "\"month\":\"$month\",\"month_usd\":[0-9.]*" "$RS"); [ -n "$rs" ] && mspent=${rs##*:}; fi
 ENGINE=api; ALWAYS=0
 case ",$(cap CLI_ALWAYS "")," in *",$L,"*) ENGINE=cli; ALWAYS=1;; esac
-[ "$(cat "$C/console-empty" 2>/dev/null | tr -d '\r\n ')" = "$month" ] && ENGINE=cli
+# 11-01 (CEO): "always" keeps the lanes on his plan across month rollovers (11-01 the new month sent every job to the empty Console path, 42 runs at $0 in 3 h)
+ce=$(cat "$C/console-empty" 2>/dev/null | tr -d '
+ '); { [ "$ce" = "$month" ] || [ "$ce" = always ]; } && ENGINE=cli
 awk -v s="$mspent" -v t="$TOTAL" 'BEGIN{exit !(s+0>=t+0)}' && ENGINE=cli
 if [ $ENGINE = cli ]; then
   [ "$(cap CLI 1)" = 0 ] && { echo "$(date '+%m-%d %H:%M') Console money used up for $month; the Claude Code engine is off (CLI=0)" > "$C/status-$L.txt"; exit 0; }
