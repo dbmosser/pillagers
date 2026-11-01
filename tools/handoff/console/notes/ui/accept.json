@@ -1456,20 +1456,20 @@
   "need": 3
  },
  "67-career-stash-stocked": {
-  "score": 3,
-  "pass": true,
+  "score": 2,
+  "pass": false,
   "need": 3,
-  "verdict": "Only one thing changed: the sell-all bar lost its '+2,667 xp' suffix. The header clutter, the three stacked footer rows, the tiny empty loadout pane and the type-scale sprawl from the last review are all still there.",
+  "verdict": "None of the earlier advice was applied, and the new 'wanted +50%' strip squeezes the grid so the last tile row is cut off at about y=820 and its quantity badges are clipped.",
   "findings": [
-   "P1 header, top right: $48,250 / 212,000 xp / stash $12,635 / bag $0: Keep '$48,250' as the single hero at 32px f-cond 800. Set xp to 16px tx-2. Delete 'stash $12,635' and 'bag $0' from the header, and keep only '$0 going up' in the loadout pane.",
-   "P1 footer: key legend, 'sell all salvage' bar, 'freebie kit' row: Merge them into one 72px footer. Put the legend on the left in 14px tx-2. Put 'sell all salvage $2,667' on the right as an outlined 40px button with 20px text. Move 'freebie kit' into the loadout pane or a header chip, with the 'take' button next to its label.",
-   "P1 freebie kit row, 'take' button: Make 'take' a 160x40 button directly after the label with a 24px gap. Keep only one filled lime element visible. Change the grid badges to tx-1 on --ui-raised.",
-   "P1 right loadout pane: backpack, hotbar, keys: Give slots a 1px --ui-line solid border and an 8px gap. Make hotbar slots 72px with 16px tx-2 numerals. Delete the duplicate 'backpack' sub-label and the zero counts. Add a 'drop items here' label at 16px tx-2 in the backpack. Use the empty space for a selected-item detail pane.",
-   "P2 stash grid tiles: Remove the radial gradient and fill tiles with flat --ui-panel. Scale the art to about 96px. Keep the 3px rarity bar. Replace the red slash with a 16px lock glyph at 60% opacity."
+   "P0 stash grid, bottom row (y≈692-820): Give the grid a fixed region that ends 8px above the footer and scroll it cleanly. Or merge the legend and wanted strip into one 72px footer so the grid keeps its old 4 full rows (about 630px). Never clip a tile.",
+   "P1 wanted strip, y≈868: Put the strip on its own 40px row with 16px padding, aligned to x=122. Make the label 16px tx-2. Set the prices in tx-1 or --warn, not lime. Alternatively move it into the sell-all button's detail.",
+   "P1 footer stack: legend, wanted strip, sell all salvage, freebie kit: Use one 72px footer. Legend on the left at 14px tx-2. 'sell all salvage $2,719' on the right as a 40px outlined button with 20px text. Move 'freebie kit' and 'take' into the right pane or a header chip, with 'take' at 160x40.",
+   "P1 header, top right: Keep '$48,250' as the 32px f-cond 800 hero. Drop 'stash $12,635' and 'bag $0' to 16px tx-2, or delete them. The loadout pane already shows '$0 going up'.",
+   "P1 right pane, backpack and hotbar: Delete the duplicate 'backpack' sub-label and the zero counts. Use 1px solid --ui-line slots with an 8px gap, and make hotbar slots 72px. Fill the space with an item detail pane showing name, rarity bar and stats at 20px and 16px."
   ],
-  "pic": "tools/handoff/console/notes/shots/00p-m1c-after/67-career-stash-stocked-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/00p-m1d-after/67-career-stash-stocked-1080.jpg",
   "task": "manual",
-  "when": "2026-11-01T20:39"
+  "when": "2026-11-01T21:02"
  },
  "68-settings-sec-the-raid": {
   "score": 3,

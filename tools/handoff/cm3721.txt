@@ -1,0 +1,7 @@
+v37.21: season zero m1: lifetime earnings and the 30 ranks
+
+RANKS: scrounger i at 0, scrounger ii at 20,000 (about two good early raids), each step about 6 percent more than the last (20,000 then 21,000, 23,000 ... 99,000, 107,000), warlord v at 1,500,000 (about 120 raids, six weeks at about 20 raids a week). Rewards alternate cash (2,500 rising to 25,000 at warlord v, 121,000 in all) and kits of existing items (bandages, frags, medkits, plates, stims, smokes, decoys, data cores); a reward is not earnings. A rank is paid once when reached (P.rankPaid) with one floor line (rank up: sacker ii and its reward); a buy back or spending never lowers the rank. An old save is stamped once (P.mig1r): every rank its lifetime earnings reach is marked paid without paying. The Mainframe has a strip on every tab (rank, lifetime earnings, next rank, its reward, a bar); the stats page has a lifetime earnings card with the rank. A new profile starts with 1,000 dollars (was 900)
+
+Check 37.21. Fails on v37.20.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
