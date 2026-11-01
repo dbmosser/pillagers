@@ -33,3 +33,5 @@ Lane note 2026-10-21 05:11: shipped cw-cx-o91b-newsreport cw-cx-o91b-windowlayou
 All keys shipped through v33.70. Scores remain news 2, recorder 3. Two follow-ups did not improve them, so the required stop rule applies. Both versions and pictures are preserved in the notes; all four camera rounds produced only 1080p images.
 
 TASK PARTIAL: news remains below 3 and genuine 4K evidence is missing; coordinator follow-up is required.
+
+11-01 (CEO): FOLDED into tasks/02-lane-side-leftovers.md (its pictures, critic and report copy are done there); closed here.

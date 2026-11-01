@@ -16,3 +16,5 @@ Shipped and confirmed ON HIS PC v36.66. Corrected both camera recipes to show an
 LOCAL: no linked review.
 
 TASK PARTIAL: lane must recapture the corrected sprint-row pictures and return critic results.
+
+11-01 (CEO): FOLDED into tasks/02-lane-side-leftovers.md (its pictures, critic and report copy are done there); closed here.

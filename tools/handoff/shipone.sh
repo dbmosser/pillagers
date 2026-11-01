@@ -16,7 +16,13 @@ cd "$R" || exit 1
 # 10-25: a stale index stat (several helpers run git at once) showed the fixture as changed with an empty diff and stopped 3 jobs;
 # refresh the index first so only a real edit stops a ship.
 git update-index -q --refresh >/dev/null 2>&1
-[ -n "$(git status --porcelain dark_raiders.html tools/mkfixture.ps1)" ] && die "the game or fixture has uncommitted changes"
+# 11-01 (CEO): 22 of 43 recent ship STOPs were this line while another worker was mid-edit for a minute or two. Look again up to 3 times,
+# 60 s apart, before stopping; if the game moved on to another version while this ship waited, stop (PREV and NEW are stale).
+dirty(){ git update-index -q --refresh >/dev/null 2>&1; [ -n "$(git status --porcelain dark_raiders.html tools/mkfixture.ps1)" ]; }
+waited=0; for w in 1 2 3; do dirty || break; echo "wait $w of 3: the game or fixture has uncommitted changes (another worker mid-edit?); looking again in 60 s"; sleep ${SHIP_DIRTY_WAIT:-60}; waited=1; done
+dirty && die "the game or fixture has uncommitted changes (still after 3 looks, 60 s apart)"
+if [ $waited = 1 ]; then pv=$(grep -m1 "^var VER='" dark_raiders.html | sed "s/var VER='\([0-9]*\)\.\([0-9]*\)'.*/\1\2/")
+  [ "$pv" != "$PREV" ] && die "the game moved to v${pv:0:2}.${pv:2} while this ship waited; run it again"; fi
 NOW=$(powershell -NoProfile -Command "(Get-Content -Raw '$(cygpath -w "$D/draft-$K.json")' | ConvertFrom-Json).now")
 [ -z "$NOW" ] && die "no now text"
 g=$(ps -File "$(cygpath -w "$D/gen-draft.ps1")" -Key "$K" -New "$NEW"); echo "gen: $g"

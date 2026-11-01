@@ -51,6 +51,18 @@ mkdir -p "$C/tasks" "$C/done" "$C/failed" "$C/log" "$C/notes"
 [ -f "$C/STOP" ] && { echo "$(date '+%m-%d %H:%M') paused (STOP file)" > "$C/status-$L.txt"; exit 0; }
 [ -f "$C/STOP-claude" ] && { echo "$(date '+%m-%d %H:%M') paused (STOP-claude: his 10-30 order, Codex only for 2 player fixes)" > "$C/status-$L.txt"; exit 0; }
 if [ -f "$C/party-window.txt" ]; then _n=$(date +%s); pws=$(grep -m1 "^START=" "$C/party-window.txt" | tr -dc 0-9); pwe=$(grep -m1 "^END=" "$C/party-window.txt" | tr -dc 0-9); if [ -n "$pws" ] && [ -n "$pwe" ] && [ "$_n" -ge "$pws" ] && [ "$_n" -lt "$pwe" ]; then echo "$(date '+%m-%d %H:%M') paused (party freeze until Sun 06:00)" > "$C/status-$L.txt"; exit 0; fi; fi
+# 11-01 (CEO): 11-01 06:34 to 07:47, 42 runs at $0 that ended on the run budget (the new month left no Console share) each spent a job's
+# try, 5 minutes apart, and sent 10 jobs to failed/. A $0 run that ends on budget, sign-in or usage limit is now no try: no spend line,
+# the job stays in tasks/, one line in alarms.md, and this lane rests 30 min (rest-until-LANE.txt holds the epoch, rest-why-LANE.txt why).
+re=$(cat "$C/rest-until-$L.txt" 2>/dev/null | tr -dc 0-9)
+if [ -n "$re" ]; then
+  if [ "$re" -gt "$(date +%s)" ]; then echo "$(date '+%m-%d %H:%M') resting: $(cat "$C/rest-why-$L.txt" 2>/dev/null || echo 'a run ended before any work'), back about $(date -d "@$re" '+%H:%M')" > "$C/status-$L.txt"; exit 0; fi
+  rm -f "$C/rest-until-$L.txt" "$C/rest-why-$L.txt"; fi
+# zerorest is called before a run's spend line is written, so there is no line to take back (rewriting spend.txt here could drop
+# another lane's line written in the same second).
+zerorest(){ echo $(($(date +%s) + 1800 )) > "$C/rest-until-$L.txt"; echo "$1" > "$C/rest-why-$L.txt"
+  echo "$(date '+%m-%d %H:%M') $name (lane $L): \$0 run ended on $1; not counted as a try, job kept in tasks/, lane $L rests 30 min ($(basename "$out"))" >> "$C/alarms.md"
+  echo "$(date '+%m-%d %H:%M') $name: \$0 run ended on $1; not a try, $name kept, lane $L rests 30 min" | tee -a "$C/runs.log" > "$C/status-$L.txt"; exit 0; }
 cap(){ v=$(grep -m1 "^$1=" "$C/caps.txt" 2>/dev/null | cut -d= -f2 | tr -d '\r '); echo "${v:-$2}"; }
 RUN_USD=$(cap RUN_USD 4); DAY_USD=$(cap DAY_USD 15); today=$(date +%F)
 spent=$(awk -v d="$today" '$1==d {s+=$2} END {printf "%.2f", s+0}' "$C/spend.txt" 2>/dev/null); spent=${spent:-0}
@@ -118,8 +130,7 @@ if [ -n "$(find "$RS" -mmin -180 2>/dev/null)" ]; then rs=$(grep -o "\"month\":\
 ENGINE=api; ALWAYS=0
 case ",$(cap CLI_ALWAYS "")," in *",$L,"*) ENGINE=cli; ALWAYS=1;; esac
 # 11-01 (CEO): "always" keeps the lanes on his plan across month rollovers (11-01 the new month sent every job to the empty Console path, 42 runs at $0 in 3 h)
-ce=$(cat "$C/console-empty" 2>/dev/null | tr -d '
- '); { [ "$ce" = "$month" ] || [ "$ce" = always ]; } && ENGINE=cli
+ce=$(cat "$C/console-empty" 2>/dev/null | tr -d '\r\n '); { [ "$ce" = "$month" ] || [ "$ce" = always ]; } && ENGINE=cli
 awk -v s="$mspent" -v t="$TOTAL" 'BEGIN{exit !(s+0>=t+0)}' && ENGINE=cli
 if [ $ENGINE = cli ]; then
   [ "$(cap CLI 1)" = 0 ] && { echo "$(date '+%m-%d %H:%M') Console money used up for $month; the Claude Code engine is off (CLI=0)" > "$C/status-$L.txt"; exit 0; }
@@ -231,6 +242,9 @@ if [ $ENGINE = cli ]; then
       --allowedTools "${ALLOW[@]}" > "$out" 2> "$C/log/$name-$stamp.err" )
   cost=$(grep -o '"total_cost_usd":[0-9.eE+-]*' "$out" | tail -1 | cut -d: -f2); cost=${cost:-0}
   if awk -v c="$cost" 'BEGIN{exit !(c+0==0)}'; then
+    # 11-01 (CEO): sign-in and usage-limit stops rest this lane 30 min (zerorest) instead of trying again every 5 minutes
+    grep -qi 'authenticate\|oauth\|not logged in\|/login' "$out" && zerorest "Claude Code sign-in (terminal: claude, then /login)"
+    grep -qi 'usage limit\|limit reached\|rate limit\|budget' "$out" && zerorest "the plan usage limit or run budget"
     if grep -qi 'authenticate\|oauth\|not logged in\|/login' "$out"; then w="waiting for you to sign in to Claude Code once (terminal: claude, then /login)"
     elif grep -qi 'limit' "$out"; then w="your plan's usage limit is reached; waiting"; else w="Claude Code run ended before any work (see $(basename "$out"))"; fi
     echo "$(date '+%m-%d %H:%M') $w; $name kept" | tee -a "$C/runs.log" > "$C/status-$L.txt"; exit 0; fi
@@ -239,6 +253,8 @@ else
 k=$(powershell -NoProfile -Command "[Environment]::GetEnvironmentVariable('PILLAGERS_API_KEY','User')" 2>/dev/null | tr -d '\r\n')
 [ -z "$k" ] && { echo "$(date '+%m-%d %H:%M') waiting for his key (Windows user variable PILLAGERS_API_KEY)" > "$C/status-$L.txt"; exit 0; }
 left=$(awk -v s="$spent" -v c="$DAY_USD" -v r="$RUN_USD" 'BEGIN{x=c-s; if(x>r)x=r; printf "%.2f", x}')
+# 11-01 (CEO): a run with no money left ends at once on "budget" ($0, 11-01 06:34); do not start it
+awk -v x="$left" 'BEGIN{exit !(x+0<=0)}' && { echo "$(date '+%m-%d %H:%M') no Console money left for a run (\$$left; spent today \$$spent of \$$DAY_USD); $name kept" > "$C/status-$L.txt"; exit 0; }
 echo "$(date '+%m-%d %H:%M') running $name (cap \$$left; spent today \$$spent of \$$DAY_USD)" > "$C/status-$L.txt"
 # his key is account-wide (sk-ant-usr), so the API wants the workspace named in a header: WORKSPACE_ID in caps.txt (not a secret)
 ws=$(cap WORKSPACE_ID "")
@@ -256,6 +272,10 @@ cost=$(grep -o '"total_cost_usd":[0-9.eE+-]*' "$out" | tail -1 | cut -d: -f2); c
 if grep -q '"terminal_reason":"api_error"' "$out" && awk -v c="$cost" 'BEGIN{exit !(c+0==0)}'; then
   grep -qi 'credit' "$out" && echo "$month" > "$C/console-empty"   # the next run switches to Claude Code
   echo "$(date '+%m-%d %H:%M') API error before any work (check the key and the Console credits); $name kept" | tee -a "$C/runs.log" > "$C/status-$L.txt"; exit 0; fi
+# 11-01 (CEO): $0 runs that ended on the run budget, sign-in or a usage limit are no try (42 such on 11-01 burned 10 jobs' tries)
+if awk -v c="$cost" 'BEGIN{exit !(c+0==0)}'; then
+  grep -q '"terminal_reason":"budget"' "$out" && zerorest "the run budget (no Console money left)"
+  grep -qi 'authenticat\|not logged in\|/login\|usage limit\|rate limit' "$out" && zerorest "Console sign-in or usage limit"; fi
 echo "$today $cost $(stag)" >> "$C/spend.txt"
 fi
 # 10-24: the run is over, so this lane's preflight Chrome closes (preflight.sh starts it on 9350+lane number and keeps it for the

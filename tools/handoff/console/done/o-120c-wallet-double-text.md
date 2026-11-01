@@ -21,3 +21,5 @@ Lane note 2026-10-27 23:56: shipped cw-cx-walletframe and parked: only lane-side
 The fix is on his PC. The repeat run passed all 51 wallet checks. Archived the recipes to stop redundant 1080p runs; the coordinator’s 4K command is ready.
 
 TASK PARTIAL: actual 4K captures require the coordinator; broader critic findings remain handed off.
+
+11-01 (CEO): FOLDED into tasks/02-lane-side-leftovers.md (its pictures, critic and report copy are done there); closed here.

@@ -76,3 +76,20 @@ TASK DONE when shipped with its checks, the re-measure written and the pictures 
 
 HIS PRIORITY 10-27 (priorities page): MEDIUM (raised from low 20:02)
 RE-QUEUED 10-27 about 20:15: he raised it to MEDIUM on the priorities page. First read why it failed before (the notes above and its log). If the same blocker still stands, end with TASK PARTIAL naming the blocker and stop; do not burn tries on it.
+
+COORDINATOR STEP (CEO 11-01, written so the next coordinator can do it in one sitting; it stays in waiting/ because a lane cannot):
+The ladder code is shipped (v34.13 to v34.16). Only the re-measure is left, and a lane cannot run it: runA.sh, runC.sh and their
+Chrome scripts are not on a lane's command list, and they will not be added there, because a lane can write anything under notes/, so
+letting it run a script from notes/ would let it run any command. (There are no measure-A.sh, measure-C.sh or measure-summary.ps1;
+the lane meant the coord-07 scripts below.) Steps, at night with 4 GB+ free, never on 8802:
+1. Keep the old numbers: copy notes/coord-07/raw-A-t4-*.json and raw-C-t4-*.json into notes/coord-07/before-94/ (the run scripts
+   overwrite raw-*.json in place).
+2. Start the measuring Chrome on 9371 with popups allowed: powershell -NoProfile -ExecutionPolicy Bypass -File tools/handoff/console/notes/coord-07/start9371-popups.ps1
+   It loads the fixture from 8809 (c7.sh: tools/cdp.ps1 -Port 9371); check that 8809 serves the current fixture first.
+3. bash tools/handoff/console/notes/coord-07/runA.sh 4 3   (1 player, 4x CPU throttle, 3 repeats, about 8 min)
+4. bash tools/handoff/console/notes/coord-07/runC.sh 4 3   (2 player demo, both windows, about 8 min; it opens player 2's window)
+5. python tools/handoff/console/notes/coord-07/summarize.py, then make notes/coord-07/94-ladder-after/ and put the new raw files and
+   summary there, with one line per group beside the old numbers: A-t4 p50 40.8 / p95 50.1; C-t4 host 148.5 / 187.1, p2 146.7 / 217.6.
+6. Stop the Chrome: powershell -NoProfile -ExecutionPolicy Bypass -File tools/handoff/console/notes/coord-07/stop9371.ps1
+7. Close the job (move it to done/) with the new numbers in notes/94-ladder-sheds-sooner.md. No ship is needed unless the numbers are
+   worse than before; then write a new job, not a rerun of this one.

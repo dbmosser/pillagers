@@ -6,10 +6,20 @@ R="/c/claudecode/dark raiders"; H="$R/tools/handoff"; C="$H/console"; cd "$R" ||
 look=0; say(){ echo "$*"; }; flag(){ echo "LOOK: $*"; look=1; }
 hn=$(hostname); st=$(grep -m1 '^status=' /c/PillagersMove/kit/host-stopped.txt 2>/dev/null | cut -d= -f2)
 if [ "$hn" = "JUL26" ] || [ "$st" != "stopped" ]; then echo "STOP EVERYTHING: host=$hn host-stopped status=${st:-missing}"; echo "VERDICT: STOP"; exit 0; fi
-say "machine: $hn, main PC stopped"
+# 11-01 (CEO): this line said "main PC stopped" every time. It reads host-stopped.txt, the 10-19 hand-over note that says dev moved off
+# the main PC to this VM (status=stopped there means "the VM may run the helpers"), not whether the main PC works. Its real state is now
+# asked over the bridge (main-status) on the next line.
+say "machine: $hn (dev handed over from the main PC 10-19, host-stopped.txt)"
+ms=$(timeout 60 node tools/bridge/hostctl.mjs main-status 2>/dev/null | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{const j=JSON.parse(s.slice(s.indexOf('{')));const st=((j.runner||{}).status||[]);const g=k=>((st.find(x=>x.startsWith(k+'='))||'').slice(k.length+1));const r=j.receiver8799||{};
+console.log([j.ok?'up':'answers but not ok', 'plays v'+((j.play8802||{}).ver||'?')+' on 8802', 'runner '+(g('mode')||'?')+' (heartbeat '+((j.runner||{}).heartbeatAgeSec??'?')+' s)', g('soak')||'soak ?', 'collector 8799 '+(r.up?'up':'DOWN')].join(', '))}catch(e){}})")
+if [ -z "$ms" ]; then say "main PC: the bridge did not answer (main PC off or asleep?)"
+else say "main PC: $ms"; case "$ms" in *"collector 8799 DOWN"*) flag "the run-report collector (8799) on the main PC is down";; esac
+  printf '%s' "$ms" | grep -q 'soak v[0-9.]*: 0 of [1-9]' && flag "main PC 2 player soak passes 0 runs (job 01-260-main-pc-2p-soak-broken)"; fi
 vv=$(powershell.exe -NoProfile -ExecutionPolicy Bypass -File 'C:\PillagersMove\kit\vm-verify.ps1' -NoNetwork 2>&1)
 say "vm-verify: $(echo "$vv" | grep -m1 '^SUMMARY' | sed 's/SUMMARY: //')"
-echo "$vv" | grep '^\[FAIL' | while read -r l; do echo "LOOK: $l"; done; echo "$vv" | grep -q '^\[FAIL' && look=1
+# 11-01 (CEO): the collector on 8799 runs on the MAIN PC (main-status above checks it), so vm-verify's "port 8799 answers" FAIL in the VM is a false alarm
+vf=$(echo "$vv" | grep '^\[FAIL' | grep -v 'port 8799 answers')
+[ -n "$vf" ] && { while read -r l; do echo "LOOK: $l"; done <<< "$vf"; look=1; }
 hs=$(bash tools/health.sh 2>&1)
 echo "$hs" | grep '^PROBLEM' | grep -v 'full test run says' | while read -r l; do echo "LOOK: $l"; done
 echo "$hs" | grep '^PROBLEM' | grep -qv 'full test run says' && look=1
@@ -20,12 +30,31 @@ say "$(echo "$hs" | grep -m1 '^jobs waiting')"
 ram=$(echo "$hs" | grep -m1 '^free RAM' | tr -dc '0-9'); say "free RAM: ${ram:-?} GB, $(echo "$hs" | grep -m1 '^free virtual' | sed 's/free virtual memory: //') virtual"
 [ -n "$ram" ] && [ "$ram" -lt 2 ] && flag "free RAM under 2 GB: stop the newest helper"
 pu=$(cat "$C/plan-usage.txt" 2>/dev/null); wk=$(echo "$pu" | awk '{print $2}')
-ln=$(grep -ho 'line is at [0-9.]*%' "$C"/status-[abc].txt 2>/dev/null | head -1 | sed 's/line is at //')
-say "usage: week ${wk:-?}%, line ${ln:-? (no lane is pacing)}; 5-hour $(echo "$pu" | awk '{print $1}')%"
+# 11-01 (CEO): the line came only from a lane status that was pacing, so it said "line ?" most of the time. It is now worked out here
+# from caps.txt the same way tools/console-lane.sh does (WEEK_RESET, PLAN_TARGET, PLAN_LINE_END, PLAN_LINE_START/FROM/TARGET).
+cap(){ v=$(grep -m1 "^$1=" "$C/caps.txt" 2>/dev/null | cut -d= -f2 | tr -d '\r '); echo "${v:-$2}"; }
+nw=$(date +%s); WR=$(date -d "$(cap WEEK_RESET 2026-10-25T05:00:00Z)" +%s); while [ "$nw" -ge "$WR" ]; do WR=$((WR+604800)); done; ws=$((WR-604800))
+tg=$(cap PLAN_TARGET 85); ln=$(awk -v r="$WR" -v n="$nw" -v t="$tg" 'BEGIN{printf "%.1f", (1-(r-n)/604800)*t}')
+le=""; [ -n "$(cap PLAN_LINE_END "")" ] && le=$(date -d "$(cap PLAN_LINE_END "")" +%s 2>/dev/null)
+lst=""; [ -n "$(cap PLAN_LINE_START "")" ] && lst=$(date -d "$(cap PLAN_LINE_START "")" +%s 2>/dev/null)
+if [ -n "$le" ] && [ "$le" -gt "$ws" ] && [ "$le" -lt "$WR" ]; then
+  ln=$(awk -v s="$ws" -v e="$le" -v n="$nw" -v t="$tg" 'BEGIN{f=(n-s)/(e-s); if(f>1)f=1; if(f<0)f=0; printf "%.1f", f*t}')
+  if [ -n "$lst" ] && [ "$lst" -ge "$ws" ] && [ "$lst" -lt "$le" ]; then tg=$(cap PLAN_LINE_TARGET "$tg")
+    ln=$(awk -v s="$lst" -v e="$le" -v n="$nw" -v t="$tg" -v f0="$(cap PLAN_LINE_FROM 0)" 'BEGIN{f=(n-s)/(e-s); if(f>1)f=1; if(f<0)f=0; printf "%.1f", f0+f*(t-f0)}'); fi; fi
+pa=$(( (nw - $(echo "$pu" | awk '{print $3+0}')) / 60 ))
+say "usage: week ${wk:-?}%, the ${tg}% line is at $ln% now; 5-hour $(echo "$pu" | awk '{print $1}')% (read $pa min ago)"
+# 11-01 (CEO): plan-usage.txt (session %, week %, epoch) sat 5 h old while the lanes waited; flag it over 3 hours
+[ "$pa" -gt 180 ] && flag "plan-usage.txt is $((pa / 60)) h old (lanes refresh it only when one gets past the RAM and memory checks)"
 # 10-25 05:10: 112r reran 6 times in 25 minutes on a wait for a job that did not exist. Flag any job with 4 or more runs in an
 # hour, and any job a lane parked in waiting/ for the coordinator.
 since=$(date -d '-60 min' '+%m-%d %H:%M'); rr=$(awk -v s="$since" '($1" "$2)>=s && /\$[0-9]/{n=$3; sub(/:$/,"",n); c[n]++} END{for(k in c) if(c[k]>=4) printf "%s (%d runs) ", k, c[k]}' "$C/runs.log" 2>/dev/null)
 [ -n "$rr" ] && flag "job(s) rerunning: $rr"
+# 11-01 (CEO): 06:34 to 07:47, 42 runs at $0 each spent a job's try before anyone saw it; flag 3 or more $0 runs in the last hour
+z0=$(awk -v s="$since" '($1" "$2)>=s && (/, \$0(\.0+)?$/ || /\$0 run ended/)' "$C/runs.log" 2>/dev/null | wc -l)
+[ "$z0" -ge 3 ] && flag "$z0 runs at \$0 in the last hour (budget, sign-in or usage limit?): $(awk -v s="$since" '($1" "$2)>=s && (/, \$0(\.0+)?$/ || /\$0 run ended/)' "$C/runs.log" | tail -1 | cut -c1-120)"
+# 11-01 (CEO): jobs parked in waiting/ for more than 48 h, by name (10 sat there 2 to 11 days unseen)
+ow=$(find "$C/waiting" -maxdepth 1 -name '*.md' ! -name README.md -mmin +2880 2>/dev/null | sed 's#.*/##' | sort | paste -sd' ')
+[ -n "$ow" ] && flag "waiting/ over 48 h: $ow"
 for j in $(grep -o '^- [a-z0-9-]*\.md (parked [0-9-]* [0-9:]* by lane' "$C/waiting/README.md" 2>/dev/null | cut -d' ' -f2 | sort -u); do [ -f "$C/waiting/$j" ] && flag "parked for me: $j ($(grep -F -- "- $j (parked" "$C/waiting/README.md" | tail -1 | cut -d: -f3- | cut -c1-140))"; done
 today=$(date +%F); nf=$(find "$C/failed" -type f -newermt "-2 hours" 2>/dev/null | wc -l); [ "$nf" -gt 0 ] && flag "$nf job(s) failed in the last 2 hours: $(ls -t "$C/failed" | head -$nf | tr '\n' ' ')"
 rp=$(grep "^$today .*problems=[1-9]" "$H/fuzz/fuzz.log" 2>/dev/null | wc -l); [ "$rp" -gt 0 ] && flag "robots: $rp raid(s) today with problems; newest: $(grep "^$today .*problems=[1-9]" "$H/fuzz/fuzz.log" | tail -1 | cut -c1-120)"

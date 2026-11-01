@@ -16,3 +16,5 @@ Lane note 2026-10-30 13:31: shipped cw-cx-goldbolt and parked: only lane-side st
 Shipped v36.64 and confirmed ON HIS PC. Final pictures verify visible golden flight in both modes and resolutions. Camera review is exhausted; existing HUD findings are logged.
 
 TASK PARTIAL: coordinator must complete the linked two-window review and provide one picture per window.
+
+11-01 (CEO): FOLDED into tasks/02-lane-side-leftovers.md (its pictures, critic and report copy are done there); closed here.

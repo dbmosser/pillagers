@@ -14,3 +14,5 @@ Lane note 2026-10-27 22:12: shipped cw-cx-combatvoices and parked: only lane-sid
 v35.38 shipped and is confirmed ON HIS PC. Fixture checks passed; seed counts stayed unchanged. The report now includes the shipping evidence.
 
 TASK PARTIAL: coordinator must publish notes/131-sound-caps.md and verify two connected windows.
+
+11-01 (CEO): FOLDED into tasks/02-lane-side-leftovers.md (its pictures, critic and report copy are done there); closed here.

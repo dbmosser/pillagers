@@ -18,3 +18,5 @@ Lane note 2026-10-29 12:27: shipped cw-cx-onemark cw-cx-markread and parked: onl
 Both changes are shipped and ON HIS PC v36.53. Corrected the invalid camera pairing codes and verified them against the game’s parser.
 
 TASK PARTIAL: coordinator must run corrected linked captures beyond the exhausted two-round limit; raid critic score remains 3/4
+
+11-01 (CEO): FOLDED into tasks/02-lane-side-leftovers.md (its pictures, critic and report copy are done there); closed here.

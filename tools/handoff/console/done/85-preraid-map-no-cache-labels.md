@@ -27,3 +27,5 @@ Lane note 2026-10-21 02:06: shipped cw-cx-mapstart-clear cw-cx-mapstart-plates a
 All changes and checks shipped through v33.55. Verified the 1080p pictures and recorded remaining critic findings under the two-follow-up stopping rule.
 
 TASK PARTIAL: coordinator must capture and review the required 4K pictures; the lane forces 1080p.
+
+11-01 (CEO): FOLDED into tasks/02-lane-side-leftovers.md (its pictures, critic and report copy are done there); closed here.

@@ -14,3 +14,5 @@ Lane note 2026-10-28 08:54: shipped cw-cx-redtracers and parked: only lane-side 
 Shipped v35.67 and confirmed on his PC. Both windows are verified at 1080p by day and rainy night. Broader HUD critic findings are logged; the coordinator has the exact 4K capture command.
 
 TASK PARTIAL: coordinator’s 4K capture/review and remaining HUD critic findings are outstanding.
+
+11-01 (CEO): FOLDED into tasks/02-lane-side-leftovers.md (its pictures, critic and report copy are done there); closed here.

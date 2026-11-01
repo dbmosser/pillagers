@@ -16,3 +16,5 @@ Lane note 2026-10-30 07:26: shipped cw-cx-condition-sp cw-cx-condition-ui cw-cx-
 All changes shipped; v36.57 is ON HIS PC. Logged the remaining verification handoff.
 
 TASK PARTIAL: coordinator must obtain post-ship pictures and critic results, and complete linked verification in task 211.
+
+11-01 (CEO): FOLDED into tasks/02-lane-side-leftovers.md (its pictures, critic and report copy are done there); closed here.
