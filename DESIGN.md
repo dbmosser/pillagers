@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.09 - DEAD CODE OUT 6
+
+Co-op hunt while he was away. Audit 2026-10-28 item 10: 2 more functions that nothing calls (no player change). Batch 6 of the cleanup.
+
+MEASURED. Check 37.09 passes, and fails on v37.08.
 ## v37.08 - DEAD CODE OUT 5
 
 Co-op hunt while he was away. Audit 2026-10-28 item 10: p.wep.jam is always 0 (the only wear band carries jam:0, and his answer 14 says guns never jam), so the two jam branches in the fire code and the JAM CLEARED line can never run. No player change.

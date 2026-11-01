@@ -174,3 +174,4 @@
 11-01 12:33 v37.05 cw-dead2 on his pc after 66s (8802 serves 37.05) week 3%
 11-01 12:42 v37.06 cw-dead3 on his pc after 17s (8802 serves 37.06) week 3%
 11-01 12:49 v37.07 cw-dead4 on his pc after 33s (8802 serves 37.07) week 3%
+11-01 12:56 v37.08 cw-dead5 on his pc after 50s (8802 serves 37.08) week 3%

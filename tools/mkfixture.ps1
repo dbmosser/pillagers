@@ -6177,6 +6177,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'37.09',what:'dead functions with no caller are gone, batch 6 (cw-dead6)',
+   run:function(){
+     var bad=[];
+     if(typeof beltInstant!=='undefined') bad.push('beltInstant');
+     if(typeof padAxis!=='undefined') bad.push('padAxis');
+     if(bad.length) return 'still defined: '+bad.join(', ');
+     return null; }},
   {v:'37.08',what:'the gun jam branches are out of the fire code and the jam cleared line is gone (cw-dead5): guns never jam',
    run:function(){
      var s=[].slice.call(document.scripts).map(function(x){ return x.text||''; }).join('\n'), bad=[];

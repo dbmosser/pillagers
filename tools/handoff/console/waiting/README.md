@@ -31,3 +31,4 @@
 - 01-260-main-pc-2p-soak-broken.md (parked 11-01 12:13 by lane c): coordinator copy notes/260/nettest.html.new over tools/nettest.html and push, then check the next main PC soak (VM: 3 of 6, all failures half-second frame hitches)
 - 220-camera-flakes.md (parked 11-01 12:19 by lane c): coordinator to apply patches A to D from notes/220-camera-flakes.md, then run the three-recipe 4K check
 - 254-retarget-1031-reds.md (parked 11-01 12:37 by lane c): coordinator delete lines 137 to 153 (the 11-01 block) from tools/handoff/stable-known-red.txt; all 16 checks pass on the fixture
+- e1-advisor-trial.md (parked 11-01 12:57 by lane b): coordinator to set up the paired runs with per-job model choice and `/usage` readings (see notes/e1-advisor-trial.md)

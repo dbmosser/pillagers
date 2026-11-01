@@ -3929,8 +3929,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.08';
-var VER_AT='2026-11-01 12:54';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.09';
+var VER_AT='2026-11-01 13:01';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -20151,7 +20151,6 @@ function padStick(x,y){
   var n=Math.min(1,((m-dz)/(1-dz-0.06))*padSens());
   return {x:(x/m)*n,y:(y/m)*n};
 }
-function padAxis(v){ return padStick(v,0).x; }
 // Release every input the pad currently owns. Without this, a pad that dies or
 // is unplugged mid firefight leaves mouse.down true and the gun firing until the
 // reserve is empty, and leaves sprint or crouch latched on forever. Called from
@@ -25059,27 +25058,7 @@ function useBeltHeal(ix){
   spark(p.x,p.y,'#6fe0a0',10,90);
   return true;
 }
-// The digits 5 to 9 in a raid: the item on that key, at once, with the gun still in his hands. A grenade key throws its grenade through the quick
-// throw path (G.tsel is pointed at it for the throw and put back, so the G pick does not move), a medical key uses its item through the path H
-// uses (useBeltHeal), key 9 slots a plate as a hold on H does (quickPlate). An empty key gives the usual none line. G.hot never moves.
-function beltInstant(i){
-  var p=G&&G.player, sl, c, cls='', ti, sv;
-  if(!G||G.sim||G.over||G.paused||G.trade||G.hubFloor||!p||i<0||i>=HOTBAR_N) return false;
-  if(p.downed){ say('NOT WHILE DOWN'); return false; }
-  if(p.dying||p.specOut) return false;
-  sl=hotbarSlots(); c=sl[i];
-  cls=BELT_CLASS[i]; if(c&&c.kind==='throw') cls='throw'; else if(c&&(c.kind==='heal'||c.kind==='stim')) cls='med'; else if(c&&c.kind==='armor') cls='plate'; else if(i<GUNKEYS) return false;   // cw-hotitems: the item on the key decides
-  if(cls==='throw'){
-    ti=(c&&c.kind==='throw'&&c.icon&&(c.count|0)>0)?THROWKEYS.indexOf(c.icon):-1;
-    if(ti<0){ say('NO THROWABLE ON KEY '+slotKeyName(i)); return false; }
-    sv=G.tsel; G.tsel=ti;
-    try{ doThrow(); } finally { G.tsel=sv; }
-    return true;
-  }
-  if(cls==='med') return useBeltHeal(i);
-  if(cls==='plate') return quickPlate();
-  return false;
-}
+// v28.xx (cw-dead6): dead code out, no caller anywhere (audit 2026-10-28): beltInstant, padAxis.
 // cw-beltwheel, HIS ORDER (2026-10-27): "if its on the hotbar, then it should work like the wheel... e.g you click the number to equip, then you
 // still gotta click the mouse to use it". THE KEY OF AN ITEM TAKES IT OUT, the wheel pick (handTake): the gun goes away, the item readies, and a
 // fresh pull of the trigger uses it, one item, then the gun comes back. The same key again puts it away with no use. It used to use the item at
@@ -56983,7 +56962,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.08: Nothing a player can see changes. Check 37.08 fails on v37.07',
+  now:'v37.09: Nothing a player can see changes. Check 37.09 fails on v37.08',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

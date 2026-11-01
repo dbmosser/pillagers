@@ -1,0 +1,16 @@
+{
+    "title":  "DEAD CODE OUT 6",
+    "why":  "Audit 2026-10-28 item 10: 2 more functions that nothing calls (no player change). Batch 6 of the cleanup.",
+    "now":  "Nothing a player can see changes.",
+    "edits":  [
+                  {
+                      "anchor":  "// The digits 5 to 9 in a raid: the item on that key, at once, with the gun still in his hands. A grenade key throws its grenade through the quick\n// throw path (G.tsel is pointed at it for the throw and put back, so the G pick does not move), a medical key uses its item through the path H\n// uses (useBeltHeal), key 9 slots a plate as a hold on H does (quickPlate). An empty key gives the usual none line. G.hot never moves.\nfunction beltInstant(i){\n  var p=G\u0026\u0026G.player, sl, c, cls=\u0027\u0027, ti, sv;\n  if(!G||G.sim||G.over||G.paused||G.trade||G.hubFloor||!p||i\u003c0||i\u003e=HOTBAR_N) return false;\n  if(p.downed){ say(\u0027NOT WHILE DOWN\u0027); return false; }\n  if(p.dying||p.specOut) return false;\n  sl=hotbarSlots(); c=sl[i];\n  cls=BELT_CLASS[i]; if(c\u0026\u0026c.kind===\u0027throw\u0027) cls=\u0027throw\u0027; else if(c\u0026\u0026(c.kind===\u0027heal\u0027||c.kind===\u0027stim\u0027)) cls=\u0027med\u0027; else if(c\u0026\u0026c.kind===\u0027armor\u0027) cls=\u0027plate\u0027; else if(i\u003cGUNKEYS) return false;   // cw-hotitems: the item on the key decides\n  if(cls===\u0027throw\u0027){\n    ti=(c\u0026\u0026c.kind===\u0027throw\u0027\u0026\u0026c.icon\u0026\u0026(c.count|0)\u003e0)?THROWKEYS.indexOf(c.icon):-1;\n    if(ti\u003c0){ say(\u0027NO THROWABLE ON KEY \u0027+slotKeyName(i)); return false; }\n    sv=G.tsel; G.tsel=ti;\n    try{ doThrow(); } finally { G.tsel=sv; }\n    return true;\n  }\n  if(cls===\u0027med\u0027) return useBeltHeal(i);\n  if(cls===\u0027plate\u0027) return quickPlate();\n  return false;\n}\n",
+                      "replacement":  "// v28.xx (cw-dead6): dead code out, no caller anywhere (audit 2026-10-28): beltInstant, padAxis.\n"
+                  },
+                  {
+                      "anchor":  "function padAxis(v){ return padStick(v,0).x; }\n",
+                      "replacement":  ""
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027dead functions with no caller are gone, batch 6 (cw-dead6)\u0027,\n   run:function(){\n     var bad=[];\n     if(typeof beltInstant!==\u0027undefined\u0027) bad.push(\u0027beltInstant\u0027);\n     if(typeof padAxis!==\u0027undefined\u0027) bad.push(\u0027padAxis\u0027);\n     if(bad.length) return \u0027still defined: \u0027+bad.join(\u0027, \u0027);\n     return null; }},"
+}
