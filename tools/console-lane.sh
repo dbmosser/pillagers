@@ -177,6 +177,12 @@ if [ $ENGINE = cli ]; then
   # week": until PLAN_BURN_UNTIL the weekly line is off (helpers run whenever they can); after it PLAN_PACE=1 holds an even line to
   # PLAN_TARGET% (80) by the next reset. PLAN_WEEK_MAX stops them near the top of the week, so the chat is never locked out.
   pace=$(cap PLAN_PACE 1); bu=$(cap PLAN_BURN_UNTIL ""); [ -n "$bu" ] && [ "$nw" -lt "$(date -d "$bu" +%s 2>/dev/null || echo 0)" ] && pace=0
+  # 11-01 (CEO), his "blow any spare capacity starting at 11pm on saturday night before sunday 1am reset, we should always be ending
+  # near 100%, we left some on the table last week": the final burn turns the line off for the last FINAL_BURN_MIN_H hours before the
+  # reset, or earlier when the room left under PLAN_WEEK_MAX needs more hours at FINAL_BURN_RATE %/h (best measured 10-19: about 4 %/h
+  # with chats and lanes together; 2 is the lanes alone, a guess to be corrected from plan-usage-log.txt). Burn runs start on ESC_MODEL.
+  fbs=$(awk -v m="$(cap PLAN_WEEK_MAX 100)" -v w="$wk" -v r="$(cap FINAL_BURN_RATE 2)" -v h="$(cap FINAL_BURN_MIN_H 2)" 'BEGIN{x=(m-w)/r; if(x<h)x=h; printf "%d", x*3600}')
+  FINAL=0; [ "$nw" -ge $((WR - fbs)) ] && { pace=0; FINAL=1; }
   if [ "$wk" -ge "$(cap PLAN_WEEK_MAX 100)" ]; then
     echo "$(date '+%m-%d %H:%M') resting: the week is at $wk% (helpers stop at $(cap PLAN_WEEK_MAX 100)% so the chat keeps room)" > "$C/status-$L.txt"; exit 0; fi
   if { [ "$pace" != 0 ] && awk -v w="$wk" -v l="$line" -v b="$boost" 'BEGIN{exit !(w+b>=l)}'; } || [ "$ses" -ge "$(cap PLAN_SESSION_MAX 75)" ]; then
@@ -235,6 +241,7 @@ if [ $ENGINE = cli ]; then
   # whose first 5 lines say "model: opus" starts on Opus (the coordinator marks crashes and party breakers that way).
   pr=$(cat "$C/spend.txt" "$C/cli-spend.txt" 2>/dev/null | grep -c " $name$")
   lm=$(cap CLI_MODEL sonnet); le=$(cap CLI_EFFORT high)
+  [ "${FINAL:-0}" = 1 ] && { lm=$(cap ESC_MODEL opus); le=$(cap ESC_EFFORT high); }   # 11-01: the final burn runs on Opus
   if [ "$pr" -ge "$(cap ESC_AFTER 2)" ] || head -5 "$t" | grep -qi "^model: *opus"; then lm=$(cap ESC_MODEL opus); le=$(cap ESC_EFFORT high); fi
   sed -i "s/ on Claude Code (/ on Claude Code, $lm $le, run $((pr+1)) (/" "$C/status-$L.txt" 2>/dev/null
   ( cd "$R" && printf '%s' "Your task id is $name. Your lane is $L. You run in Claude Code: run every command with the Bash tool (never the PowerShell tool), use Read (it also shows pictures; it replaces view_image), Grep, Glob, Write, Edit and Bash, with each Bash command typed exactly in a form your rules list. $(cat "$t")" | env -u ANTHROPIC_API_KEY CLAUDE_CODE_AUTO_COMPACT_WINDOW="$(cap CLI_COMPACT 1000000)" CLAUDE_CODE_DISABLE_AUTO_MEMORY=1 claude -p \

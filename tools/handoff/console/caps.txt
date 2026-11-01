@@ -52,3 +52,6 @@ LOCAL_AI=0
 CLI_COMPACT=400000
 # 10-31 05:45 his order: "spend to 96% of usage between now and noon to polish the game for the party" then "between now and 3pm, rather": line 93 -> 96 by 14:15 local; party-window.txt stops new lane jobs at 14:15.
 # 11-01 (CEO, week reset): the standing 80% even line for the week (pillagers-pace-80).
+# 11-01 (CEO), his "blow any spare capacity starting at 11pm on saturday night ... always be ending near 100%": final burn before each reset (console-lane.sh)
+FINAL_BURN_MIN_H=2
+FINAL_BURN_RATE=2
