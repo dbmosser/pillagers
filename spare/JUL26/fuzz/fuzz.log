@@ -2833,3 +2833,17 @@
 2026-10-31 21:29:49 FUZZ START seed=1690196444 minutes=60 raidsec=300 port=9332 srv=8806 build=36.95 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
 2026-10-31 21:30:23 FUZZ START seed=35331208 minutes=60 raidsec=300 port=9332 srv=8806 build=36.95 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
 2026-10-31 21:30:58 FUZZ START seed=375913165 minutes=60 raidsec=300 port=9332 srv=8806 build=36.95 maps=0 size=1920x1080 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-31 21:33:18 FUZZ START seed=1776111176 minutes=60 raidsec=300 port=9332 srv=8806 build=36.95 maps=0 size=3840x2160 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-31 21:34:00 FUZZ START seed=198792222 minutes=60 raidsec=300 port=9332 srv=8806 build=36.95 maps=0 size=3840x2160 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-31 21:34:34 FUZZ START seed=548862238 minutes=60 raidsec=300 port=9332 srv=8806 build=36.95 maps=0 size=3840x2160 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-31 21:35:11 FUZZ START seed=903206334 minutes=60 raidsec=300 port=9332 srv=8806 build=36.95 maps=0 size=3840x2160 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-31 21:35:45 FUZZ START seed=1252654344 minutes=60 raidsec=300 port=9332 srv=8806 build=36.95 maps=0 size=3840x2160 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-31 21:36:20 FUZZ START seed=1607644248 minutes=60 raidsec=300 port=9332 srv=8806 build=36.95 maps=0 size=3840x2160 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-31 21:36:56 FUZZ START seed=1957179415 minutes=60 raidsec=300 port=9332 srv=8806 build=36.95 maps=0 size=3840x2160 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-31 21:37:31 FUZZ START seed=311171838 minutes=60 raidsec=300 port=9332 srv=8806 build=36.95 maps=0 size=3840x2160 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-31 21:38:05 FUZZ START seed=660721341 minutes=60 raidsec=300 port=9332 srv=8806 build=36.95 maps=0 size=3840x2160 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-31 21:38:42 FUZZ START seed=1015117219 minutes=60 raidsec=300 port=9332 srv=8806 build=36.95 maps=0 size=3840x2160 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-31 21:39:17 FUZZ START seed=1364385545 minutes=60 raidsec=300 port=9332 srv=8806 build=36.95 maps=0 size=3840x2160 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-31 21:39:51 FUZZ START seed=1718497344 minutes=60 raidsec=300 port=9332 srv=8806 build=36.95 maps=0 size=3840x2160 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-31 21:40:26 FUZZ START seed=68414413 minutes=60 raidsec=300 port=9332 srv=8806 build=36.95 maps=0 size=3840x2160 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
+2026-10-31 21:41:03 FUZZ START seed=424434854 minutes=60 raidsec=300 port=9332 srv=8806 build=36.95 maps=0 size=3840x2160 gpu=AMD_Radeon_RX_7900_XTX_2d=enabled
