@@ -55,7 +55,7 @@ elif ls "$C/tasks/o-"*.md >/dev/null 2>&1 && [ ! -f "$H/codex/STOP" ] && [ ! -f 
   if [ $FIX = 1 ]; then powershell -NoProfile -Command "Start-Process -FilePath 'C:\Program Files\Git\bin\bash.exe' -ArgumentList '\"$SP/start-codex-lane.sh\"' -WindowStyle Hidden" && echo "chatgpt lane: an o- job waited, STARTED"; else prob "chatgpt lane idle with an o- job waiting"; fi
 else echo "chatgpt lane: idle (no o- job)"; fi
 # 7 Google bug checker
-if has 'ship-review\.ps1.*-Engine agy'; then echo "google checker: running ($(head -c 80 "$H/ship-review/status-agy.txt" 2>/dev/null | tr -d '\r\n'))"
+if [ -f "$H/ship-review/agy-off" ]; then echo "google checker: off (11-01 CEO: stuck on v32.25 and out of free quota, nothing found since 10-27)"; elif has 'ship-review\.ps1.*-Engine agy'; then echo "google checker: running ($(head -c 80 "$H/ship-review/status-agy.txt" 2>/dev/null | tr -d '\r\n'))"
 else if [ $FIX = 1 ]; then powershell -NoProfile -Command "Start-Process -FilePath powershell.exe -ArgumentList '-NoProfile','-ExecutionPolicy','Bypass','-File','\"C:\claudecode\dark raiders\tools\ship-review.ps1\"','-Engine','agy','-Loop','-EveryMin','20' -WindowStyle Hidden" && echo "google checker: was down, STARTED"; else prob "google checker not running"; fi; fi
 # 7b the local AI reviewer (Ollama). 10-19: nothing restarted it, so it sat idle all afternoon. It rests by itself in his PC hours and
 # when the PC has under 11 GB free (the model takes about 4 GB of the PC's memory even on the graphics card).
