@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.15 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v36.99 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay. Watch: The what is new stamp keeps up with the build; the three notes are unchanged.
+
+MEASURED. Check 37.15 passes, and fails on v37.14.
 ## v37.14 - SEASON ZERO FOUNDATION: THE ACCOUNT AND THE PILLAGER
 
 Co-op hunt while he was away. his progression plan of 11-01 (m0): no XP, lifetime earnings sets the rank, a pillager lasts until it dies and the account carries on; old saves paid out for unclaimed rewards (his ok sure) Watch: the save holds an account name, the living pillager (generation one is the character he plays), a hall of the fallen and lifetime earnings; an old save is paid once in cash for every ladder reward it earned and never claimed, and the hub says it once; nothing else changes in play

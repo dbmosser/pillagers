@@ -6177,6 +6177,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'37.15',what:'the what is new card is stamped with this build or later and still shows the three short lowercase real notes',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnList!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>37.15+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), lines=wnList(), i;
+     if(!(parseFloat(WHATSNEW_VER)>=37.15-0.001)) bad.push('the card is stamped v'+WHATSNEW_VER+', before v37.15');
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(lines.length!==3) bad.push('the card shows '+lines.length+' notes, not three');
+     for(i=0;i<lines.length;i++){ if(String(lines[i])!==String(lines[i]).toLowerCase()||String(lines[i]).length>48) bad.push('note '+i+' is not short lowercase text'); }
+     if(/\balpha\b|polish pass/i.test(WHATSNEW.join('|'))) bad.push('the news has filler copy');
+     return bad.length?bad.join('; '):null; }},
   {v:'37.14',what:'cw-p0acct, his progression plan of 11-01 (m0 foundation; old saves paid out, his ok sure): an old save loads with nothing lost, every XP ladder reward it earned and never claimed paid once as $ (cash, kits at item value, a gun at its stash value) and marked claimed, lifetime earnings seeded from what it extracted plus every $ the ladder paid, the character it plays is generation one with its raids, extracts, kills and best haul, the hub says $N paid for unclaimed rewards once and never in the demo; a second load pays nothing; a new profile pays nothing; a pillager can end into the hall and the next is generation two with cash and lifetime earnings untouched',
    run:function(){
      if(!(window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot stage';

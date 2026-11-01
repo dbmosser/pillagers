@@ -1,1 +1,1 @@
-11-01 14:24 waiting for RAM: 2 GB free, a helper starts at 3; z-163-burn-ash-and-red-glow kept
+11-01 14:39 waiting for RAM: 1 GB free, a helper starts at 3; z-163-burn-ash-and-red-glow kept
