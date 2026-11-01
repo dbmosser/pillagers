@@ -24427,8 +24427,8 @@ class Audio {
        var s=gunCardMetrics().s,effects=text.filter(function(t){return /^(burn|panic|chain|stun|slow|freeze|shred|anti-armour)$/.test(t.t);});   /* cw-pillagersword: his 10-28 order, never a bare machine */
        if(effects.length!==8||effects.some(function(t){return t.px<Math.round(16*s);}))return 'element effects are too small or missing';
        if(text.filter(function(t){return t.t==='$6,000';}).length!==4)return 'missing dollar prices';
-       if(!forgeBuy(0)||P.credits!==4000||g.cs.s!==0||ARCADE.mine!==0)return 'element purchase changed stash or score';
-       text=[];var C=g.gunCard,cmp=gunCompare(C.w,C.vs);gunCardDraw(cmp,900,700,1,C.route);
+       var w0=g.player.wep;if(!forgeBuy(0)||P.credits!==4000||g.cs.s!==0||ARCADE.mine!==0)return 'element purchase changed stash or score';
+       text=[];var C=g.gunCard||{w:g.player.wep,vs:w0,route:'cost $6,000'},cmp=gunCompare(C.w,C.vs);   /* cw-no-gun-card (10-31): an upgrade raises no card now, so the receipt is drawn from the two guns */gunCardDraw(cmp,900,700,1,C.route);
        var cost=text.filter(function(t){return t.t==='cost $6,000';})[0];
        if(!cost||cost.px<20*s-0.1||text.some(function(t){return t.t==='=';}))return 'receipt cost or stat hierarchy is wrong';
        g.hotCells=[{x:W*0.3,y:H*0.88,w:80,h:80}];var pos=gunCardSpot(cmp,C.route),sz=gunCardSize(cmp,C.route);
@@ -24489,7 +24489,7 @@ class Audio {
        if(price.col!==probe.fillStyle) return 'affordable forge price is not primary text';
        PR.fillText=realFill; hudPrompt=realPrompt;
        if(!forgeOpen()||g.forgeUI||g.player.wep.fk!==1||P.credits!==7500) return 'instant stash purchase changed';
-       if(!g.gunCard||g.gunCard.route!=='cost $2,500') return 'gun card does not clearly label the dollar cost';
+       /* cw-no-gun-card (10-31): the upgrade card is gone, so its cost label is no longer checked here */
        if(g.cs.s!==0||ARCADE.mine!==0) return 'forge changed raid score';
        return null;
      } finally {
