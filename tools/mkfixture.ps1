@@ -11519,7 +11519,7 @@ class Audio {
        h=(document.getElementById('oc_manifest')||{}).innerHTML||'';
        m=/credits banked<\/span><b[^>]*data-to="(\d+)"/i.exec(h);
        if(!m||(+m[1])!==bank) bad.push('the end card credits banked reads '+(m?m[1]:'nothing')+' but the bank gained '+bank);
-       if((h.match(/x1\.05/g)||[]).length!==4) bad.push('the guest card shows '+(h.match(/x1\.05/g)||[]).length+' condition rows, not 4');
+       if((h.match(/x1\.05/g)||[]).length!==4) bad.push('the guest card shows '+(h.match(/x1\.05/g)||[]).length+' condition rows, not 4: '+(h.match(/<span class="lgl">[^<]*<\/span><b>x[\d.]+<\/b>/g)||[]).join(' | '));
        return bad.length?bad.join('; '):null;
      } finally {
        try{ if(G&&!G.over) __endRaid('abandon'); }catch(e){}
