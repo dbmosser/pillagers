@@ -115840,6 +115840,12 @@ window.__uiLint=function(opts){
 # source came back as mojibake and Set-Content -Encoding utf8 then double encoded it.
 # Four hub labels shipped into every fixture with a stray A-circumflex. Read explicit.
 $text = [IO.File]::ReadAllText($src,[Text.Encoding]::UTF8)
+# 2026-11-01 (cw-steadyraster, job 241): a check page (opened with a query: the full run's ?sliceN=1, runchk's ?kzN=1) asks every 2D
+# canvas for willReadFrequently, which draws it on the processor. On a real graphics card (the spare PC, his main PC) two identical draws
+# of a frozen frame could differ by a pixel, so v8.85, v8.89, v9.07, v33.51 and v34.90 failed only in full runs there, while the VM, which
+# draws on the processor, passed them every time. The game is untouched. Robots and the camera open the page with no query and keep the card.
+$steady = "`r`n/* fixture only (cw-steadyraster): check pages draw 2D canvases on the processor */try{ if(location.search){ (function(gc){ HTMLCanvasElement.prototype.getContext=function(t,o){ if(t==='2d'&&!(o&&o.willReadFrequently!==undefined)){ var q={}, k; if(o) for(k in o) q[k]=o[k]; q.willReadFrequently=true; o=q; } return gc.call(this,t,o); }; })(HTMLCanvasElement.prototype.getContext); } }catch(_sr){}"
+$si = $text.IndexOf('<script>'); if($si -ge 0){ $text = $text.Insert($si+8, $steady) }
 $text = $text.Replace($needle, $inject)
 [IO.File]::WriteAllText($dst,$text,(New-Object Text.UTF8Encoding $false))
 "written: " + (Test-Path $dst)
