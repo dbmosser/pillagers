@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.99 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v36.83 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.
+
+MEASURED. Check 36.99 passes, and fails on v36.98.
 ## v36.98 - THE SEAL OPENS IN TWO THIRDS OF THE TIME AND CALLS A WAVE
 
 Co-op hunt while he was away. His order of 10-31: make the seal 50 percent faster to open, and make enemies spawn and attack when you start opening it. The need is now two thirds of the old one at every stage (23, 37, 51 and on). The first frame of cutting calls one wave of machines on the opener from 700 to 1000 away, a few more arrive one by one while the cut runs, once per seal per raid; a teammate window asks the host, which runs the wave for the party. Draws are on the effects side stream.

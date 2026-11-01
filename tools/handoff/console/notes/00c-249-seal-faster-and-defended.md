@@ -1,5 +1,6 @@
 # 00c-249 seal faster and defended (lane c)
 
+- SHIPPED v36.98 (51f325627), ON HIS PC v36.98. New callout: "seal breach: incoming" (alert lane, warn) when a seal is first cut.
 - Key cw-sealwave. mk script in scratchpad mk-cw-sealwave.ps1. PREFLIGHT PASS as v36.96.
 - Faster: sealNeed = round((34+21*tier)*2/3) (23, 37, 51...). Every reader uses sealNeed, so bars, map ring and end-card words follow.
 - Wave: first frame of progress (if the cut is not already finished) calls sealWaveCall: 3+min(tier,3) machines at once (crawlers 7 in 10, sentries 3 in 10),

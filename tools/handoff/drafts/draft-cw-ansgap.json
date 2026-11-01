@@ -1,0 +1,16 @@
+{
+    "title":  "THE ANSWER LINE KEEPS THE NEWEST PRESS",
+    "why":  "Job 208: the answer line dropped a line whose text was said less than 0.35 s ago even when another line was said in between, so on, off, on left off on screen. The repeat guard now applies only when the same text came straight before.",
+    "now":  "Quick presses of a key that flips a state always leave the answer line on the state just set. A held key still does not repeat the line.",
+    "edits":  [
+                  {
+                      "anchor":  "  var s=String(m), now=statusNow(), A=G.ans, seen=(G.ansSeen=G.ansSeen||{}), last=seen[s];",
+                      "replacement":  "  var s=String(m), now=statusNow(), A=G.ans, seen=(G.ansSeen=G.ansSeen||{}), last=seen[s], prev=G.ansPrev;   // v36.xx (cw-ansgap), job 208: prev is the text said just before this one\n  G.ansPrev=s;"
+                  },
+                  {
+                      "anchor":  "  if(last!==undefined\u0026\u0026now-last\u003cANSGAP) return A;                 // the key is still held: it does not come back",
+                      "replacement":  "  if(last!==undefined\u0026\u0026now-last\u003cANSGAP\u0026\u0026prev===s) return A;      // the key is still held: it does not come back. v36.xx (cw-ansgap): only when nothing else was said in between, so on, off, on within 0.35 s leaves on"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027an answer line said on, off, on within 0.35 s ends on \"on\": a line from another press in between is never swallowed (job 208, cw-ansgap); a held key still does not come back\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid)||typeof ansSay!==\u0027function\u0027) return \u0027SKIP: this fixture cannot deploy or has no answer line\u0027;\n     if(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026G.sim) return \u0027SKIP: a sim is running\u0027;\n     var bad=[], g=null, shNow=statusNow, T=statusNow(), t0, i;\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player||g.over) return \u0027SKIP: no live raid\u0027;\n       statusNow=function(){ return T; };\n       g.ans=null; g.ansSeen={}; g.ansPrev=null;\n       ansSay(\u0027SUPERHOT ON\u0027); T+=0.1; ansSay(\u0027SUPERHOT OFF\u0027); T+=0.1; ansSay(\u0027SUPERHOT ON\u0027);\n       if(!g.ans||g.ans.m!==\u0027SUPERHOT ON\u0027) bad.push(\u0027on, off, on within 0.35 s left \"\u0027+(g.ans\u0026\u0026g.ans.m)+\u0027\" on the answer line, not SUPERHOT ON\u0027);\n       g.ans=null; g.ansSeen={}; g.ansPrev=null; T+=10;\n       t0=T; ansSay(\u0027NO AMMO\u0027);\n       for(i=0;i\u003c10;i++){ T+=0.25; ansSay(\u0027NO AMMO\u0027); }\n       if(!g.ans||g.ans.at!==t0) bad.push(\u0027a held key brought the line back after it had gone (shown again at \u0027+(g.ans\u0026\u0026(g.ans.at-t0).toFixed(2))+\u0027 s)\u0027);\n       return bad.length?bad.join(\u0027; \u0027):null;\n     } finally {\n       statusNow=shNow;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e5){}\n       __topClear(); __resetCfg(); __cleanProfile();\n     }\n   }},"
+}
