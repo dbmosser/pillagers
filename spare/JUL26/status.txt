@@ -1,10 +1,10 @@
 host=JUL26
-seen=2026-11-01 11:27
-epoch=1793550456
+seen=2026-11-01 11:30
+epoch=1793550609
 game=739b4850 v37.03
-test_run=paused: 30 minutes after a memory stop
+test_run=paused: the VM takes its memory first
 robots=0
-ram_free_gb=5.3
+ram_free_gb=5.5
 push_ok=1
 runner=651454FA
 mode=idle
