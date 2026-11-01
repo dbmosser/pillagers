@@ -3606,9 +3606,12 @@ window.__REGRESS=[
      // v9.46: the panel under test has to HAVE a minimise glyph. Asked of the
      // game, at the exact pixel the samples below use, rather than assumed.
      var B=null, Bname=null;
+     // retarget (v35.36 quiet hud): the conditions card folds to one line with no resize corner, so
+     // aim at the pillager board (raiders) first; any other panel with a glyph is the fallback.
      if(H.box&&window.__hudHit){
-       for(var _pk in H.box){
-         var _r=H.box[_pk]; if(!_r) continue;
+       var _pks=['raiders']; for(var _pk0 in H.box) if(_pk0!=='raiders') _pks.push(_pk0);
+       for(var _pi=0;_pi<_pks.length;_pi++){
+         var _pk=_pks[_pi], _r=H.box[_pk]; if(!_r) continue;
          var _h=__hudHit(Math.round(_r.x+_r.w-12),Math.round(_r.y+8));
          if(_h&&_h.id===_pk&&_h.part==='glyph'){ B=_r; Bname=_pk; break; }
        }
