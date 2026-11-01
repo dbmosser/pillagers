@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.26 - EXTRACTED CARD: ROOM UNDER THE BONUS LINE
+
+Co-op hunt while he was away. the critic on screen 38 after v37.25 found the new extraction bonus line 12px from the stat strip Watch: the extraction bonus line is its own block in the secondary text colour with 24px under it
+
+MEASURED. Check 37.26 passes, and fails on v37.25.
 ## v37.25 - SEASON ZERO M1: NO CASH IN RAIDS
 
 Co-op hunt while he was away. his rulings of 11-01 (m1): no cash in raids, keep it like a credit card; money comes from selling gear and a bonus; contracts pay in gear and items to sell; racks pay materials instead of money; his pick 36, an extraction bonus of about 10 percent of the haul Watch: an extraction pays a bonus of 10 percent of the secured haul onto the account and into lifetime earnings, shown as extraction bonus on the card; a death or a walk out pays none; the stall banks a sale at once so a death keeps it; the survivor and the raid goals pay salvage of the same value instead of money; a contract pays salvage worth its old reward plus its gear, and a gun you own comes as a spare to the stash; racks and arrays pay rack parts worth what they paid; hire cuts count in lifetime earnings

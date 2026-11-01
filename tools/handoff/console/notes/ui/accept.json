@@ -163,17 +163,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "Nothing from the last review was acted on: the screen is the same except for different contract data, still a stack of banner, tab subtitle and list header above a contract list that is cut off at the bottom, next to a half-empty detail pane.",
+  "verdict": "The window shell is clean and consistent, but the earlier advice was mostly ignored: the stuff-for-you-to-do subtitle, the explaining header sentence, the 'standard' tag on every row and the short detail pane are all still there, and the selected row is still an olive wash.",
   "findings": [
-   "P1 rank banner, y=140-220: Fold it into one 16px tx-2 line in the header row ('scrounger i · $0 of $20,000'), or keep only a 4px progress bar. Drop 'lifetime earnings $0'. Make the labels 16px #aaa498, and show the reward only as a small chip.",
-   "P1 tab subtitle 'stuff for you to do.' (y=297) and list header (y=345): Delete the subtitle. Replace the header with 'done 0 · credits 0/3' at 16px tx-2, and move the credit rule into a detail-pane tooltip.",
-   "P1 right detail pane, y=320-668: Stretch the pane to y=320-1002 and pin the button to the bottom edge. Set the reward to 56px f-cond 800 tx-1. Give the button a 1px #4a5257 border and tx-2 text.",
-   "P1 selected row (y=366-460): Fill the selected row with #1e2225 and a 1px #4a5257 border, keep a 3px #e6ff3d left bar, and set the name to tx-1 at weight 700. Remove the 'standard' tag and show only non-standard tiers (hard, elite) as a tag.",
-   "P2 list rows, y=366-1000: Make the row two lines: name at 20px tx-1, then a 16px tx-2 line 'armour plates x2 · 0/2'. Right-align the $ reward at 20px in tx-1 on the first line. Add a 24px bottom fade on the list."
+   "P1 Subtitle at y=203 (image 1) and y=297 (image 2), and list header at y=251 / y=345: Delete the subtitle. Replace the header with 'done 0 · credits 0/3' at 16px #aaa498. Move the credit rule into a detail-pane hint or tooltip.",
+   "P1 Selected row, y=273-367 / y=367-461: Fill the row #1e2225 with a 1px #4a5257 border, keep the 3px #e6ff3d left bar, and set the name to tx-1 at weight 700. Add a 2px lime focus outline for pad focus.",
+   "P1 Row text, x=136-600: Drop the tag on standard rows and show it only for hard and elite. Use two lines: the name at 20px tx-1, then '0/2 · 2 armour plates' at 16px tx-2. Right-align the reward at 20px tx-1 on line one. Drop 'worth'.",
+   "P1 Detail pane, y=227-577 (image 1) and y=321-669 (image 2): Stretch the pane to the list bottom and pin the button to its bottom edge at 56px height. Set the reward to 56px f-cond 800 tx-1. Make the chip a 1px #4a5257 outline with tx-2 text, or remove it. Give the disabled button a 1px #2e3337 border with tx-2 text.",
+   "P1 Rank banner, y=140-220 (image 2 only): Always render one 16px tx-2 line in the header row: 'scrounger i · $0 of $20,000' with a 4px #2e3337 track and a lime fill. Drop 'lifetime earnings'. Show the reward as a small chip."
   ],
-  "pic": "tools/handoff/console/notes/shots/00p-m1e-after2/12-mainframe-contracts-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/00p-m1b-after/12-mainframe-contracts-1080.jpg",
   "task": "manual",
-  "when": "2026-11-01T21:17"
+  "when": "2026-11-01T21:23"
  },
  "14-mainframe-racks": {
   "score": 3,
@@ -387,17 +387,17 @@
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "The only change is that the '+130 xp' line was dropped, so the card is a little tighter, but the type sizes, the groups, the weak ghost button and the unstyled tags are all as they were.",
+  "verdict": "the card is clean and the lime primary action is clear, but the earlier layout advice was mostly not applied: the title is small, the objective row still sits between the header and the haul, the spacing is uneven, and the feedback button is still a weak outlined box.",
   "findings": [
-   "P1 'extracted' title and the subline: Set the title to 32px/700 with 8px below it. Make the subline 16px tx-2 and cut it to 'never spotted'. Put '+130 xp' back inside that same line, e.g. 'never spotted · +130 xp'.",
-   "P1 '✓ burst carbine' row, between the header and the haul: Move it into the stats group below the stat strip with a 16px 'objectives' label above it. Colour the ✓ var(--ok). Use a 32px gap between the haul group and the stats group.",
-   "P1 'how did that run feel +' ghost button: Make it 44px tall with 16px/600 text in tx-2 and a 1px --ui-line-hi border. Leave 24px between it and the primary button. Replace the '+' with a '›' chevron or drop it.",
-   "P1 vertical rhythm of the whole card: Make three groups with 32px between them: header, haul (label, hero, tiles), and stats with tags. Keep gaps inside a group at 8px or 16px. Give the card 32px top and bottom padding.",
-   "P2 stat strip labels and the tags line 'first out · untouched · ghost': Set the labels to 16px/600 with +.04em. Draw each tag as a chip with a 1px --ui-line-hi border and 8px gaps. Dim a 0 value to tx-2 and keep non-zero values in tx-1."
+   "P1 title 'extracted' and subline 'out clean · never spotted': Set the title to 32px/700 with 8px below it. Make the subline 16px tx-2 and cut it to 'never spotted'.",
+   "P1 '✓ burst carbine' row between the subline and 'haul': Move it below the stat strip with a 16px 'objectives' label above it. Colour the ✓ var(--ok). Keep 32px between groups.",
+   "P1 vertical rhythm of the card; image 2 gap above the stat strip: Use three groups with 32px between them. Put the bonus inside the haul group, 8px under the hero number, as '+$313 bonus' in 16px tx-2. Give the card 32px top and bottom padding.",
+   "P1 'how did that run feel +' button: Make it 44px tall with 16px/600 text and a 1px --ui-line-hi border, and put 24px between it and the primary button. Shorten the label to 'rate run ›' and drop the '+'.",
+   "P2 stat strip and the tags line 'first out · untouched · ghost': Set the labels to 16px/600 with +.04em. Dim 0 values to tx-2. Draw each tag as a chip with a 1px --ui-line-hi border, 8px gaps and 8px by 16px padding."
   ],
-  "pic": "tools/handoff/console/notes/shots/00p-m1a-after/38-extracted-card-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/00p-m1b-after/38-extracted-card-1080.jpg",
   "task": "manual",
-  "when": "2026-11-01T20:43"
+  "when": "2026-11-01T21:23"
  },
  "40-whats-new-card": {
   "score": 3,

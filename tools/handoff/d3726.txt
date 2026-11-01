@@ -1,0 +1,5 @@
+## v37.26 - EXTRACTED CARD: ROOM UNDER THE BONUS LINE
+
+Co-op hunt while he was away. the critic on screen 38 after v37.25 found the new extraction bonus line 12px from the stat strip Watch: the extraction bonus line is its own block in the secondary text colour with 24px under it
+
+MEASURED. Check 37.26 passes, and fails on v37.25.

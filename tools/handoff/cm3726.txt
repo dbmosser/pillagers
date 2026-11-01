@@ -1,0 +1,7 @@
+v37.26: extracted card: room under the bonus line
+
+the extraction bonus line is its own block in the secondary text colour with 24px under it
+
+Check 37.26. Fails on v37.25.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

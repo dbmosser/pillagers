@@ -3932,8 +3932,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.25';
-var VER_AT='2026-11-01 16:19';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.26';
+var VER_AT='2026-11-01 16:28';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -36190,7 +36190,7 @@ var _cdone=contractExtract(G.bag,haul);
     // v37.xx (cw-m1nocash), HIS PICK OF 11-01 (answer 36): an extraction pays a bonus of about 10% of the haul's value, the value this card just
     // said was secured, straight onto the account and into lifetime earnings. A death or an abandon never reaches this branch, so pays none.
     var _xb=extractBonusFor(_secV);
-    if(_xb>0){ P.credits=(P.credits||0)+_xb; lifeEarnAdd(_xb); lines.push('<span style="color:var(--amber)">extraction bonus +$'+_xb.toLocaleString()+'</span>'); }
+    if(_xb>0){ P.credits=(P.credits||0)+_xb; lifeEarnAdd(_xb); lines.push('<span class="ocbonus" style="display:block;margin:4px 0 24px;font-size:16px;color:var(--tx-2)">extraction bonus +$'+_xb.toLocaleString()+'</span>'); }   // v37.xx (cw-m1bonusgap): the critic on screen 38 found the line 12px from the stat strip; a block with 24px under it
     if(G.tel) G.tel.extBonus=_xb;
     lines.push('You extracted with '+Math.round(G.player.hp)+' of 100 health');
   } else if(how==='dead'){
@@ -57490,7 +57490,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.25: an extraction pays a bonus of 10 percent of the secured haul onto the account and into lifetime earnings, shown as extraction bonus on the card; a death or a walk out pays none; the stall banks a sale at once so a death keeps it; the survivor and the raid goals pay salvage of the same value instead of money; a contract pays salvage worth its old reward plus its gear, and a gun you own comes as a spare to the stash; racks and arrays pay rack parts worth what they paid; hire cuts count in lifetime earnings Check 37.25 fails on v37.24',
+  now:'v37.26: the extraction bonus line is its own block in the secondary text colour with 24px under it Check 37.26 fails on v37.25',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
