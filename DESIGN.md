@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.96 - UNDERCROFT: WHOEVER STANDS LOWER ON SCREEN IS DRAWN IN FRONT
+
+Co-op hunt while he was away. His note with a picture (10-31): his pillager was painted over a crowd pillager standing lower on screen, and it should be behind. The crowd was drawn in its own pass before him. Each crowd body now goes into the same y-sorted list as the walls, the posts, the party and him, keyed on its feet y, so the one lower on screen is drawn later and covers the one behind.
+
+MEASURED. Check 36.96 passes, and fails on v36.95.
 ## v36.95 - THE SHIP GLOW NEVER CRASHES THE FRAME
 
 Co-op hunt while he was away. The inbound ship glow radius is 60 plus 70 times how far the countdown has run. With the extract wait cut from 30 to 20 on 10-28, a countdown longer than the wait made that number negative and the canvas threw, which stops the whole frame. Clamped to 0 to 1. Found by check 34.89, which staged 40 against a wait of 20.

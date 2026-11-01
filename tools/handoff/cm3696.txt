@@ -1,0 +1,7 @@
+v36.96: undercroft: whoever stands lower on screen is drawn in front
+
+In the Undercroft you stand behind a pillager who is lower on screen than you, and in front of one who is higher.
+
+Check 36.96. Fails on v36.95.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

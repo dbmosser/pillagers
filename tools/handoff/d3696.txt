@@ -1,0 +1,5 @@
+## v36.96 - UNDERCROFT: WHOEVER STANDS LOWER ON SCREEN IS DRAWN IN FRONT
+
+Co-op hunt while he was away. His note with a picture (10-31): his pillager was painted over a crowd pillager standing lower on screen, and it should be behind. The crowd was drawn in its own pass before him. Each crowd body now goes into the same y-sorted list as the walls, the posts, the party and him, keyed on its feet y, so the one lower on screen is drawn later and covers the one behind.
+
+MEASURED. Check 36.96 passes, and fails on v36.95.

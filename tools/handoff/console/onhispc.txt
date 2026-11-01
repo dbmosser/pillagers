@@ -161,3 +161,4 @@
 10-31 11:25 v36.92 cw-mapchips on his pc after 67s (8802 serves 36.92) week 93%
 10-31 12:21 v36.93 cw-medalchip on his pc after 50s (8802 serves 36.93) week 93%
 10-31 12:24 v36.94 cw-alarmvol on his pc after 18s (8802 serves 36.94) week 93%
+10-31 12:38 v36.95 cw-urgclamp on his pc after 68s (8802 serves 36.95) week 93%
