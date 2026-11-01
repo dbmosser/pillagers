@@ -3929,8 +3929,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.16';
-var VER_AT='2026-11-01 14:44';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.17';
+var VER_AT='2026-11-01 14:53';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6453,6 +6453,20 @@ function wornMods(worn){
   for(s in m) m[s]=Math.round(Math.min(WORN_STATS[s].cap,m[s])*10000)/10000;
   return m;
 }
+// v37.xx (cw-p0stat), HIS PLAN OF 11-01, season zero, m0: ONE PLACE EVERY STAT READS GEAR FROM. What the pillager wears is summed once when the
+// raid is built (raidWornMods, kept on the body as p.wm) and read through wornM(stat) at each of the stats it changes: move speed, stamina,
+// reload, spread, noise, how far you are seen, bandage and medkit time, time on the floor, reviving your partner, searching and damage taken.
+// wornM is 0 with nothing worn, in the bot sim, in the demo (it plays on a copy and gets its own preset kit in m3) and for any body but your
+// own, and every site multiplies by 1 plus or minus it, which with 0 is exactly 1: an old save, the robots and seed 4242 play exactly as before.
+function raidWornMods(){
+  var m, s, any=0;
+  if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on) return null;
+  if(!P||!P.worn||typeof P.worn!=='object'||typeof wornMods!=='function') return null;
+  m=wornMods(P.worn); for(s in m) if(m[s]) any=1;
+  return any?m:null;
+}
+function wornM(s){ var p=(typeof G!=='undefined'&&G)?G.player:null; return (p&&p.wm&&!G.sim)?(+p.wm[s]||0):0; }
+function netRevNeed(){ return NET_REV_T*(1-wornM('revive')); }   // the reviver's own gear: the hold runs in his window
 var RIG_PAYOUT={rig_light:360,rig_medium:1280,rig_heavy:3120};
 function rigBuyback(pr){
   var paid=0,n=0,i,j;
@@ -18077,7 +18091,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
   var g={sim:!!sim,seed:seed,grid:buildSegGrid(map.segs,WORLD_W,WORLD_H),wingrid:buildSegGrid(map.wsegs||[],WORLD_W,WORLD_H),wgrid:buildWallGrid(map.walls,WORLD_W,WORLD_H),seal:(sim?null:{x:G_SEAL_SPOT.x,y:G_SEAL_SPOT.y,gained:0}), forge:(sim?null:forgeSpot(map,FIXED_MAPS[mapIx],containers)),
     nMach:N_SENTRY+N_CRAWLER,map:map,vegPal:mkVegPal(map),ground:sim?null:bakeGround(map,undefined,start),lights:lights,t:0,timeLeft:Math.round(CFG.raidSec*termClock),raidLen:Math.round(CFG.raidSec*termClock),paused:false,
     spawnDbg:_spDbg,issDraw:wepDrew,spawnGun:wepSpawn,   // v15.79: whether a loaner was drawn from the stream, told to the party so their builds make the same draw
-    player:{x:start.x,y:start.y,r:11,hp:100,maxhp:100,
+    player:{x:start.x,y:start.y,r:11,hp:100,maxhp:100,wm:(sim?null:raidWornMods()),   // v37.xx (cw-p0stat): what you wear, summed once
       // The sim wears a FIXED Scav Rig rather than whatever he happens to have
       // equipped. Raiders now carry armour, so a bare sim player was measuring a
       // game nobody plays: it dropped from 64 percent extract to 20 in one
@@ -24407,7 +24421,7 @@ function ping(x,y,s,h,quiet,src,typ,ent,pre){
   if(!pre) s*=CFG.noiseMult*wx().noise;
   // A plate carrier rattles. Every noise YOU make carries further in a heavier
   // rig, which is the other half of what you are buying with the protection.
-  if(src==='player'&&G.player&&!pre) s*=armorById(G.player.rig).noise;
+  if(src==='player'&&G.player&&!pre) s*=armorById(G.player.rig).noise*(1-wornM('quiet'));   // v37.xx (cw-p0stat): quiet
   if(!G.sim){
     var pp=G.player;
     var d0=dist(pp,{x:x,y:y});
@@ -24924,7 +24938,7 @@ function damagePlayer(amt,src,srcName,sx,sy){
     if(p.downT<=0) killPlayer(src);
     return;
   }
-  amt*=CFG.eDmg*easyDmgMul();   // v28.xx (cw-easymode): a third off once he said yes to easy mode
+  amt*=CFG.eDmg*easyDmgMul()*(1-wornM('tough'));   // v37.xx (cw-p0stat): tough   // v28.xx (cw-easymode): a third off once he said yes to easy mode
   dmgStreakHurt(p,amt);   // v28.xx (cw-cx-damagestreaks): any health or armour hit, before the plate absorbs it.
   if(p.armor>0){
     // NOT ||, v2.16. No Rig has absorb 0.00 and 0 is falsy, so this fallback
@@ -25009,7 +25023,7 @@ function damagePlayer(amt,src,srcName,sx,sy){
     // v28.51 (cloud-feel-closecall-downed), CLOUD HUNT 2026-10-15: and going down ends a roll. The roll counts down below the downed return of
     // updatePlayer, so a man downed mid-roll kept it frozen through the bleed-out and every revive handed it back: he slid on, and the next round
     // paid a CLOSE CALL for a dodge he never made.
-p.hp=0; p.downed=true; p.downT=CFG.downTime; p.pendKiller=src; p.prep=null; p.prepA=null; G.crouchTog=false; G.pCrouch=false; p.roll=0; p.dbOn=0;   // v28.xx (downbar1): a fresh bar
+p.hp=0; p.downed=true; p.downT=CFG.downTime*(1+wornM('grit')); p.downMax=p.downT;   /* v37.xx (cw-p0stat): grit */ p.pendKiller=src; p.prep=null; p.prepA=null; G.crouchTog=false; G.pCrouch=false; p.roll=0; p.dbOn=0;   // v28.xx (downbar1): a fresh bar
   padRumble(1,450);   // v17.37: going down is the longest buzz
   if(!G.sim){ try{ sndDowned(1); }catch(_dn){} }   // v24.xx (his order 2026-10-12): the downed noise, where the spoken I AM DOWN was
     // v12.46, 2026-09-07 audit: AND THE AUTO-JOG STOPS WHEN HE DOES. It is
@@ -26038,7 +26052,7 @@ function fireWeapon(sh,wep,tx,ty,fromPlayer){
   if(G&&!G.sim){
     // v8.52, audit: two more combatT stamps for the deleted radio. See damagePlayer.
   }
-var spx=wep.spread*(((fromPlayer&&shotSteady(G.player))||(!fromPlayer&&sh&&sh.steady))?0.4:1)*(fromPlayer?bloomMul(G.player):1)+(fromPlayer?bloomCone(G.player,wep):0);   // v26.xx (feel19): and it is true, the spread follows the ring
+var spx=wep.spread*(((fromPlayer&&shotSteady(G.player))||(!fromPlayer&&sh&&sh.steady))?0.4:1)*(fromPlayer?bloomMul(G.player):1)+(fromPlayer?bloomCone(G.player,wep):0); if(fromPlayer) spx*=1-wornM('steady');   // v37.xx (cw-p0stat): steady aim   // v26.xx (feel19): and it is true, the spread follows the ring
   if(!fromPlayer&&sh&&isFinite(tx)&&isFinite(ty)){ var _afd=Math.hypot(tx-sh.x,ty-sh.y); if(_afd>ACC_NEAR) spx*=1+Math.min(ACC_FALL,(_afd-ACC_NEAR)/ACC_SPAN); }   // 2026-10-12 (accfall): wider at long range
   // v4.38 HIS ANSWER 7: the Compact SMG climbs on a held trigger. Short taps
   // stay accurate; spraying the whole magazine is a choice with a cost.
@@ -26586,7 +26600,7 @@ function startPrep(kind,key){
   // one leaves the backpack; this line saw only a use.
   var _pr={t:0,
     max:(kind==='armor'?(CFG.armorPrep===undefined?2:CFG.armorPrep)
-                       :(CFG.healPrep===undefined?1.5:CFG.healPrep)),
+                       :(CFG.healPrep===undefined?1.5:CFG.healPrep)*(1-wornM('heal'))),   // v37.xx (cw-p0stat): quick hands
     kind:kind,key:key};
   if(kind==='armor') G.player.prepA=_pr; else G.player.prep=_pr;
   return prepFoley(_pr,-1,0);   // v25.23 (usefoleya): the first stage, as it starts; true drops the chirp
@@ -30387,7 +30401,7 @@ var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
       if(G.prints.length>40) G.prints.shift();
     }
   }
-  var spd=CFG.pSpeed*armorById(p.rig).spd; if(crouch) spd*=.52; if(sprint) spd*=1.62;
+  var spd=CFG.pSpeed*armorById(p.rig).spd*(1+wornM('spd')); if(crouch) spd*=.52; if(sprint) spd*=1.62;
   if(p.stimT>0) spd*=STIM_SPD;   // v11.83, HIS SPEC: a fifth more while the stim runs
   // "make character much slower". 0.55 was a shrug; deep water you are wading
   // through at waist height should be a commitment, not a texture. A dial so the
@@ -30410,7 +30424,7 @@ var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
 // v11.83, HIS SPEC: unlimited stamina while the stim runs; the bar is held full
 // and the drain is skipped, so the release latch never arms either.
 if(p.stimT>0) p.stam=100;
-else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam+7.5*dt);
+else if(sprint) p.stam=Math.max(0,p.stam-26*dt*(1-wornM('stam'))); else p.stam=Math.min(100,p.stam+7.5*dt*(1+wornM('stam')));   // v37.xx (cw-p0stat)
   if(sprint&&p.stam<45&&!G.sim){ p.brT=(p.brT||0)-dt; if(p.brT<=0){ p.brT=0.55; voxBreath(); } }
   // v4.24 HIS NOTE: running dry locks the sprint until the bar is back to 12,
   // so you cannot flutter the key at zero for free bursts.
@@ -30503,12 +30517,12 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
 
   tickReload(dt);   // v13.83: also run from the roll branch, so a roll does not freeze it
   autoEmptyGun();   // v28.xx (cw-cx-drygun): the gun yields even when the trigger is released.
-  if(keys['KeyR']&&p.reloading<=0&&!p.hand&&!reloadMedicalBusy(p)&&!sprint&&p.ammo<p.wep.mag&&rlHave(p)){ p.reloading=p.wep.reload*buzzSlow(); T.reloads++; if(!G.sim) reloadFoley(p); }   // v10.56; v25.52 (his reload order): the magazine out, then the steps
+  if(keys['KeyR']&&p.reloading<=0&&!p.hand&&!reloadMedicalBusy(p)&&!sprint&&p.ammo<p.wep.mag&&rlHave(p)){ p.reloading=p.wep.reload*buzzSlow()*(1-wornM('reload')); T.reloads++; if(!G.sim) reloadFoley(p); }   // v10.56; v25.52 (his reload order): the magazine out, then the steps
   // HOLDING THE TRIGGER ON AN EMPTY MAGAZINE RELOADS IT, v5.44, his note. The
   // bot has done this since it was written; the player had to let go and press
   // R. Held only, so a tap on an empty gun still does nothing.
   if(mouse.down&&p.reloading<=0&&!p.hand&&!reloadMedicalBusy(p)&&!sprint&&p.wep.mag>0&&p.ammo<=0&&rlHave(p)&&!p.downed&&p.jam<=0&&CFG.autoRel!==0){   // v26.xx (settings4): AUTO-RELOAD WHEN EMPTY
-    p.reloading=p.wep.reload*buzzSlow(); T.reloads++; if(!G.sim) reloadFoley(p);   // v25.52 (his reload order)   // v10.56; v22.73 (R28): the gun card says RELOADING
+    p.reloading=p.wep.reload*buzzSlow()*(1-wornM('reload')); T.reloads++; if(!G.sim) reloadFoley(p);   // v25.52 (his reload order)   // v10.56; v22.73 (R28): the gun card says RELOADING
   }
 
   var now=G.t*1000;
@@ -30647,7 +30661,7 @@ else if(sprint) p.stam=Math.max(0,p.stam-26*dt); else p.stam=Math.min(100,p.stam
       // neither repeats while the trigger stays held. The same sound and the same line; no seeded draw.
 if(!p.fired||p.wep.auto){
         if(rlHave(p)&&p.reloading<=0&&!reloadMedicalBusy(p)&&!sprint&&CFG.autoRel!==0){
-          p.reloading=p.wep.reload; T.reloads++;
+          p.reloading=p.wep.reload*(1-wornM('reload')); T.reloads++;
           if(!G.sim) reloadFoley(p);   // v25.52 (his reload order)   // v10.56; v22.73 (R28): the gun card says RELOADING
         } else if((!rlHave(p)||(CFG.autoRel===0&&p.reloading<=0))&&!p.dryTold){ p.dryTold=1; if(!G.sim) blipMine('dry'); }   // v26.xx (settings4): with AUTO-RELOAD off the empty gun with a reserve clicks too   // v10.56: an empty gun clicks; v22.73 (R28): the reticle says NO AMMO
         p.fired=true;
@@ -31071,7 +31085,7 @@ at:Math.round(elapsed()),f:(_wcw.door?'door':(_wcw.furn?'furn':(_wcw.wreck?'wrec
         // Search resumed, N% done (v11.94) in the raid text, every time. The search bar already shows how far the box got, so the line was
         // chatter: picking a search back up now says nothing, and the progress carries on exactly as before.
       }
-      near.prog=(near.prog||0)+dt/buzzSlow()*(G.arcade?ARCADE_SRCH:1)*(duoAt(near,NET.seat)?DUO_SRCH:1);   // v28.xx (cw-cx-duosearch): a nearby party member helps the host search
+      near.prog=(near.prog||0)+dt/buzzSlow()/(1-wornM('search'))*(G.arcade?ARCADE_SRCH:1)*(duoAt(near,NET.seat)?DUO_SRCH:1);   // v28.xx (cw-cx-duosearch): a nearby party member helps the host search
       // STAGED PULLS, v1.61. His note: "looting feels so uninspired, how can we make it
       // more interesting???" It was one hold, one lump of loot, about twenty one times a
       // raid, with no decision anywhere in it. Items now come out one at a time as the
@@ -33132,7 +33146,7 @@ if(e.kind==='howler'&&e.hearT>0){
     // each other.
     var _amb0=(CFG.eAmbient===undefined?100:CFG.eAmbient);
     var _far0=(CFG.crawlerEyes===0)?e.rng:Math.max(e.rng,_amb0);
-    var _fSee=_far0*(e.alert>0?1.35:1)*pcon*wkSight, _aSee=_amb0*pcon*wkSight;
+    var _wmh=(p===G.player)?1-wornM('hide'):1, _fSee=_far0*(e.alert>0?1.35:1)*pcon*wkSight*_wmh, _aSee=_amb0*pcon*wkSight*_wmh;   // v37.xx (cw-p0stat): hard to spot
     // v11.07, HIS NOTE 22: A THING THAT CAN BITE YOU HAS FOUND YOU. The floor is
     // its own reach plus a margin, so it notices you a moment before it can bite
     // rather than exactly on the line, and it applies to the corner of the eye as
@@ -46670,7 +46684,7 @@ ctx.fillStyle='#4de3d0';
   try{ if(NET.on&&G.netRevT>0&&G.netRevS>=0&&NET.up[G.netRevS]){   // v16.21, his note: the revive has a bar, like a search
     var _rg=NET.up[G.netRevS], _rs=w2s(_rg.x,26,_rg.y);
     // v19.61, from the review (2026-10-08): the teammate revive bar grows with the screen like the search and reload bars beside it (v19.57)
-    if(_rs){ var _hsV=hudAtIn(_rs.x,_rs.y); try{ bar(_rs.x-30,_rs.y-8,60,6,Math.min(1,G.netRevT/NET_REV_T),'#4de3d0');
+    if(_rs){ var _hsV=hudAtIn(_rs.x,_rs.y); try{ bar(_rs.x-30,_rs.y-8,60,6,Math.min(1,G.netRevT/netRevNeed()),'#4de3d0');
       ctx.font=FS(TYPE.label); ctx.textAlign='center'; ctx.fillStyle='#4de3d0'; hudText('REVIVING',_rs.x,_rs.y-14,2); ctx.textAlign='left'; } finally { if(_hsV) ctx.restore(); } }
   } }catch(_rvb){}
   if(G.searching&&!(G.player&&G.player.downed)){   // v14.08: not while down
@@ -47277,7 +47291,7 @@ ctx.restore();
     // The bar clears DOWN by its descent, and is narrower so the timer beside it
     // has room of its own instead of leaning on the line below.
     var _tmY=_dy+Math.round(_hH*1.05), _barY=_dy+Math.round(_hH*0.42)+Math.round(_hH*1.05);   // v28.xx (cw-downplate2): the timer has its own row under the word down, centred
-    bar(W/2-100,_barY,200,10,p.downT/CFG.downTime,UIC.tx_2);   // v34.40 (cw-downedcard3), critic on screen 34 (P1 'three red elements stacked, use one accent per card'): the bleed bar is neutral, the danger red stays on the label and the slider   // v34.39 (cw-downedcard): the guide danger colour
+    bar(W/2-100,_barY,200,10,p.downT/(p.downMax||CFG.downTime),UIC.tx_2);   // v34.40 (cw-downedcard3), critic on screen 34 (P1 'three red elements stacked, use one accent per card'): the bleed bar is neutral, the danger red stays on the label and the slider   // v34.39 (cw-downedcard): the guide danger colour
     // cw-downgain, HIS WORDS (2026-10-18): "players clock should include 2 decimals so that it is shown to run down". Left aligned so the digits do not
     // push into the bar as they change, and green while a hit's +0.50s shows.
     ctx.font=FS(TYPE.num); ctx.fillStyle=(p.dbGainT>DB_POP*0.5)?'#9fe8b0':UIC.tx_1; ctx.textAlign='center';   // v34.39 (cw-downedcard): the timer is the hero, the biggest type on the card (44, the HUD hero size), in the text colour   // v28.xx (cw-downplate2): one centred column (critic on screen 34: the timer was pushed to the plate edge)
@@ -57223,7 +57237,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.16: the save holds stash gear and nine worn slots, each piece with a kind, rarity, power, traits and pips, rolled on its own dice; every load checks them; nothing drops or is worn yet Check 37.16 fails on v37.15',
+  now:'v37.17: move speed, stamina, reload, spread, noise, how far you are seen, bandage time, time on the floor, reviving and searching all read what you wear, summed once per raid; nothing is worn yet so every raid plays exactly as before, the robots and the demo never read it Check 37.17 fails on v37.16',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -65691,8 +65705,8 @@ function netRevHold(p,dt){
   // v22.72 (tr5fixc), the review of raid text batch 5: a pick-up no longer says a line as it starts. The line named him and the key
   // to hold, which the [E] REVIVE prompt at his body (v22.68) had just said, and the REVIVING bar over him shows it while it runs.
   G.netRevT=(G.netRevT||0)+dt;
-  if(!G.sim){ try{ sndRevCharge(G.netRevT/NET_REV_T); }catch(_rc){} }   // v24.xx (his order 2026-10-12): the pick-up charges up
-  if(G.netRevT<NET_REV_T) return true;
+  if(!G.sim){ try{ sndRevCharge(G.netRevT/netRevNeed()); }catch(_rc){} }   // v24.xx (his order 2026-10-12): the pick-up charges up
+  if(G.netRevT<netRevNeed()) return true;   // v37.xx (cw-p0stat): medic
   G.netRevT=0; G.netRevS=-1; G.netRevDone=s; G.netRevWait=s; G.netRevW=0;   // v16.68, stability: he is called revived when his word says he is up (above), not here
   if(NET.role==='host') netRevPass(s,NET.seat);
   else for(var i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') netSend(NET.peers[i],{t:'rev',s:s});

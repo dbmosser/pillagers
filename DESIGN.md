@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.17 - SEASON ZERO FOUNDATION: WHAT YOU WEAR CHANGES HOW YOU PLAY
+
+Co-op hunt while he was away. his progression plan of 11-01 (m0): one place every stat reads gear from, so worn pieces make the pillager stronger; with nothing worn it changes nothing Watch: move speed, stamina, reload, spread, noise, how far you are seen, bandage time, time on the floor, reviving and searching all read what you wear, summed once per raid; nothing is worn yet so every raid plays exactly as before, the robots and the demo never read it
+
+MEASURED. Check 37.17 passes, and fails on v37.16.
 ## v37.16 - SEASON ZERO FOUNDATION: WORN GEAR PIECES
 
 Co-op hunt while he was away. his progression plan of 11-01 (m0): nine worn slots, four rarities, power that follows your gear, pips, lost on death; gear needs to be a saved piece of its own, rolled on its own dice so seed 4242 stays the same raid Watch: the save holds stash gear and nine worn slots, each piece with a kind, rarity, power, traits and pips, rolled on its own dice; every load checks them; nothing drops or is worn yet

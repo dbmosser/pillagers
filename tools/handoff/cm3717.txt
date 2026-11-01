@@ -1,0 +1,7 @@
+v37.17: season zero foundation: what you wear changes how you play
+
+move speed, stamina, reload, spread, noise, how far you are seen, bandage time, time on the floor, reviving and searching all read what you wear, summed once per raid; nothing is worn yet so every raid plays exactly as before, the robots and the demo never read it
+
+Check 37.17. Fails on v37.16.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

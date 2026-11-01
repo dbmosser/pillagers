@@ -1,1 +1,1 @@
-11-01 14:44 waiting for RAM: 1 GB free, a helper starts at 3; 00p-m1a-xp-off kept
+11-01 14:49 waiting for RAM: 2 GB free, a helper starts at 3; 00p-m1a-xp-off kept
