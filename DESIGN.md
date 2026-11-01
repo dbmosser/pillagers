@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.12 - MACHINE SMOKE: DARKER AND VENTED TO THE SIDES
+
+Co-op hunt while he was away. My picture of v37.10 showed the machine smoke as faint grey squares on the body. It is now near solid dark with a grey rim, and the puffs drift out to both sides as they rise so they show over open ground.
+
+MEASURED. Check 37.12 passes, and fails on v37.11.
 ## v37.11 - THE LAST MINUTE TURNS THE WORLD RED AND DROPS ASH
 
 Co-op hunt while he was away. His answer g-48 (yes, ash and a red glow): the burn coming had only a sting and a red clock. In the last minute a full-frame red wash grows from nothing at 1:00 to 16 percent at 0:00 and up to 70 grey flakes fall and drift, fading in over 3 s, so the burn reads across the room on a TV in both windows. Drawn after the light, fog and flashes and before the HUD, render layer only, no sound, seed untouched.

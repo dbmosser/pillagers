@@ -1,0 +1,7 @@
+v37.12: machine smoke: darker and vented to the sides
+
+A hurt machine trails dark smoke that shows clearly beside and above its body.
+
+Check 37.12. Fails on v37.11.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
