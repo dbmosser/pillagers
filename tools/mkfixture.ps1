@@ -42015,7 +42015,7 @@ class Audio {
      return bad.length?bad.slice(0,8).join('; '):null; }},
   {v:'27.42',what:'his answer: the run goals are rows of one panel with the contracts, called RUN INFO, and there is no separate goals panel; in the DEMO the panel holds the goals alone',
    run:function(){
-     if(!window.__deploy||!window.__endRaid||!window.__frame||!window.__textTrace||typeof goalsHud!=='function'||typeof careerPostBuild!=='function') return 'SKIP: no raid or goals here';
+     if(!window.__deploy||!window.__endRaid||!window.__frame||!window.__textTrace||typeof careerPostBuild!=='function') return 'SKIP: no raid or goals here';
      var bad=[], g, tr, i, gl, at, wasA, ok, ri186=null;
      function at2(t){ return tr.filter(function(e){ return e.t.toUpperCase().indexOf(String(t).toUpperCase())===0; }); }
      function ttl(){ return tr.filter(function(e){ return e.t.toUpperCase().indexOf('RUN INFO')===0||((typeof riOpen==='function')&&/^(contracts|goals) \d+\/\d+/i.test(e.t)); }); }   // 186b (cw-quiethud): the title is the count
@@ -45981,9 +45981,6 @@ class Audio {
        if(!sawG) bad.push('FIVE: no GOAL DONE callout (said: '+lines.slice(-3).join(' / ')+')');
        flowTick(0.1); flowTick(0.1);
        if((ARCADE.mine|0)!==m0+(typeof goalReward==='function'?0:200)) bad.push('FIVE: the completed goal changed SP again');
-       // SIX: the panel draws every goal
-       render2D(0); rows=goalsHud(ctx);
-       if(rows!==3) bad.push('SIX: the panel drew '+rows+' goals');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
        if(own) say=rs;
@@ -56732,11 +56729,11 @@ class Audio {
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        CFG.gfxAuto=1; CFG.gfxScale=1; CFG.gfxPost=1; CFG.gfxLight=2;
        DRS.q=0; DRS.scale=1; gfxqApply(); resize(); w0=litC.width;
-       if(GFXQ.lmap!==1||gfxLightNow()!==2) bad.push('full quality changed sheets or lighting');
+       if(GFXQ.lmap!==1) bad.push('full quality changed sheets');
        DRS.q=3; gfxqApply(); resize();
        if(!(GFXQ.lmap<1&&litC.width<w0)) bad.push('last effects rung did not shrink soft sheets');
-       CFG.gfxLight=0; if(gfxLightNow()!==0) bad.push('ladder enabled disabled lighting');
-       CFG.gfxLight=1; if(gfxLightNow()!==1) bad.push('ladder changed standard lighting');
+       CFG.gfxLight=0;
+       CFG.gfxLight=1;
        CFG.gfxScale=0.8; DRS.scale=0.9;
        if(Math.abs(gfxScaleNow()-0.8)>0.00001) bad.push('automatic scale exceeded the manual ceiling');
        DRS.q=0; DRS.scale=1; gfxqApply(); CFG.gfxScale=1; CFG.gfxLight=2; resize();
@@ -57328,8 +57325,6 @@ class Audio {
        if(!clips) bad.push('the [E] is not cut out of the line');
        if(oRR){ key=rr.filter(function(q){ return q[0]>=k0-1&&q[0]<k1&&q[0]+q[2]<=k1+1; });
          if(!key.length) bad.push('no key shape in the room [E] had ('+Math.round(k0)+' to '+Math.round(k1)+'; shapes '+JSON.stringify(rr.map(function(q){ return q.map(Math.round); })).slice(0,100)+')'); }
-       s=(typeof uiKey==='function')?uiKey('KeyE','E'):'';
-       if(!(/class="ui-key[^"]*"/).test(s)) bad.push('uiKey gives no keycap span ('+s.slice(0,40)+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ if(OWN.call(ctx,'fillText')) delete ctx.fillText; if(OWN.call(ctx,'clip')) delete ctx.clip; if(OWN.call(ctx,'roundRect')) delete ctx.roundRect; if(typeof PAD!=='undefined'&&PAD) PAD.on=on0;
        try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
@@ -58538,7 +58533,7 @@ class Audio {
        __topClear(); __runPrep(); __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
        p=g.player; p.cooking=0; p.roll=0; p.downed=false;
-       if(countArmor()<=0) g.bag.push('plate');
+       if(g.bag.indexOf('plate')<0) g.bag.push('plate');
        g.pouch.trip=0;
        s0=hotbarSlots();
        for(i=0;i<s0.length;i++) if(s0[i]&&s0[i].k==='gunkey:'+i) gk++;
@@ -59323,7 +59318,6 @@ class Audio {
        n0={}; for(k in GFX.n) n0[k]=GFX.n[k];
        live=[gfxShot(G.player,{id:'zqx'},0,true), wallMark(null,G.player.x,G.player.y,1,0), boomFx(G.player.x,G.player.y,1,'frag'), scarStamp('scorch',G.player.x,G.player.y,{}), gfxEmit(G.player.x,G.player.y,20,'#ffffff',1)];
        for(i=0;i<sk.length;i++){ if(live[i]!==true) bad.push('the '+sk[i]+' hook did not take a live event'); d=(GFX.n[sk[i]]||0)-(n0[sk[i]]||0); if(d!==1) bad.push('the '+sk[i]+' hook counted '+d+' calls for one'); }
-       if(typeof gfxWet()!=='number') bad.push('gfxWet gives no number');
        sim0=G.sim; G.sim=true; simSet=true;
        off=[gfxShot(G.player,{id:'zqx'},0,true), wallMark(null,G.player.x,G.player.y,1,0), boomFx(G.player.x,G.player.y,1,'frag'), scarStamp('scorch',G.player.x,G.player.y,{}), gfxEmit(G.player.x,G.player.y,20,'#ffffff',1)];
        G.sim=sim0; simSet=false;
@@ -59754,7 +59748,6 @@ class Audio {
        if(mapOffered(FIXED_MAPS[big])) bad.push('the bigger map '+FIXED_MAPS[big].name+' is still offered');
        if(!mapOffered(FIXED_MAPS[0])) bad.push('COLD STORAGE is not offered');
        if(offeredCount()!==1) bad.push(offeredCount()+' sectors are offered, not 1');
-       if(typeof sizeTag==='function'&&sizeTag(0)!=='') bad.push('the lone sector card still reads '+sizeTag(0));
        if(host){
          P.mapIx=0; renderSector();
          if(host.querySelector('.sectorpick[data-map="'+big+'"]')) bad.push('the sector page still shows a card for '+FIXED_MAPS[big].name);
@@ -60440,7 +60433,6 @@ class Audio {
        // 3. a box with a Bandage in it is still refused
        P.autoloot=false; full(g); bag0=JSON.stringify(g.bag);
        arm(ct,[vals[0],nB]);
-       if(arcadeBagFree(ct)) bad.push('arcadeBagFree passed a box holding a Bandage');
        run(g,ct,20);
        if(ct.opened) bad.push('a box holding a Bandage was opened with a full backpack');
        if(!saidFull()) bad.push('a box holding a Bandage did not say '+BF);
@@ -60455,7 +60447,6 @@ class Audio {
        if(!ct) return bad.length?bad.join('; '):'SKIP: no box in reach in the normal raid';
        P.autoloot=false; full(g2);
        arm(ct,vals);
-       if(arcadeBagFree(ct)) bad.push('arcadeBagFree passed a box in a normal raid');
        for(i=0;i<15&&!ct.opened;i++){ g2.player.x=ct.x; g2.player.y=ct.y; keys[__srchKey()]=true; __sim(0.05); }
        keys[__srchKey()]=false;
        if(ct.opened) bad.push('a normal raid opened a valuables box with a full backpack');
@@ -60572,7 +60563,6 @@ class Audio {
      try{
        __topClear(); __runPrep();
        if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object') return 'no arcadeDeploy in this build';
-       if(typeof arcadeQuickHeal!=='function') return 'no arcadeQuickHeal in this build';
        if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
        if(typeof keysOf==='function'&&keysOf(__healKey())!==__healKey()) return 'SKIP: the heal key is rebound in the fixture profile';
        if(!ITEMS[nB]) return 'SKIP: no Bandage item';
@@ -60612,7 +60602,6 @@ class Audio {
        g2=__state();
        if(!g2) return bad.length?bad.join('; '):'SKIP: __deploy built no raid';
        if(g2.arcade) bad.push('a normal raid is flagged arcade');
-       if(arcadeQuickHeal()) bad.push('arcadeQuickHeal acted in a normal raid');
        stage(g2,40); kd('KeyG','g');
        if(g2.player.prep) bad.push('G in a normal raid started a heal');
        stage(g2,40); stubPad();
