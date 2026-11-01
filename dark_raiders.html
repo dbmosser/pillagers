@@ -3932,8 +3932,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.22';
-var VER_AT='2026-11-01 16:08';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.23';
+var VER_AT='2026-11-01 16:14';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6612,14 +6612,16 @@ function renderRank(){
   if(!el||!P) return '';
   i=rankNow(); R=RANKS[i]; N=RANKS[i+1]||null; le=lifeEarnNow();
   f=N?Math.max(0,Math.min(1,(le-R.need)/(N.need-R.need))):1;
-  lab='font-size:13px;letter-spacing:.14em;color:var(--ash);line-height:18px';
+  // v37.xx (cw-m1rankui), critic on the Mainframe and stats screens (P1): labels were 13px under the 16px floor and lime showed three times. Labels 16px,
+  // values 30px in white, the next rank and reward in white; lime is the bar fill only (8px on the line colour).
+  lab='font-size:16px;letter-spacing:.04em;color:var(--ash);line-height:20px';
   el.innerHTML=
-    '<div style="flex:none;min-width:190px"><div style="'+lab+'">rank</div><div id="rankname" style="font-size:26px;line-height:32px;font-weight:700;letter-spacing:.04em;color:var(--amber)">'+R.n+'</div></div>'+
-    '<div style="flex:none;min-width:190px"><div style="'+lab+'">lifetime earnings</div><div id="rankearn" style="font-size:26px;line-height:32px;font-weight:700;color:var(--bone)">$'+le.toLocaleString()+'</div></div>'+
+    '<div style="flex:none;min-width:190px"><div style="'+lab+'">rank</div><div id="rankname" style="font-size:30px;line-height:36px;font-weight:700;letter-spacing:.02em;color:var(--bone)">'+R.n+'</div></div>'+
+    '<div style="flex:none;min-width:190px"><div style="'+lab+'">lifetime earnings</div><div id="rankearn" style="font-size:30px;line-height:36px;font-weight:700;color:var(--bone)">$'+le.toLocaleString()+'</div></div>'+
     '<div style="flex:1;min-width:0">'+
-      '<div style="display:flex;justify-content:space-between;gap:12px;'+lab+'"><span id="ranknext">'+(N?('next  '+N.n+'  $'+N.need.toLocaleString()):'top rank')+'</span>'+
-      (N?('<span>reward  <b id="rankrw" style="color:var(--amber);font-weight:600">'+rankRwTxt(N.rw)+'</b></span>'):'')+'</div>'+
-      '<div style="height:10px;margin-top:8px;border:1px solid var(--steel-hi);border-radius:2px;background:rgba(0,0,0,.35)"><div id="rankfill" style="height:100%;width:'+(f*100).toFixed(1)+'%;background:var(--amber)"></div></div>'+
+      '<div style="display:flex;justify-content:space-between;gap:12px;'+lab+'"><span>next  <b id="ranknext" style="color:var(--bone);font-weight:600">'+(N?(N.n+'  $'+N.need.toLocaleString()):'top rank')+'</b></span>'+
+      (N?('<span>reward  <b id="rankrw" style="color:var(--bone);font-weight:600">'+rankRwTxt(N.rw)+'</b></span>'):'')+'</div>'+
+      '<div style="height:8px;margin-top:10px;border:1px solid var(--ui-line-hi);border-radius:2px;background:rgba(0,0,0,.35)"><div id="rankfill" style="height:100%;width:'+(f*100).toFixed(1)+'%;background:var(--amber)"></div></div>'+
     '</div>';
   return R.n;
 }
@@ -57461,7 +57463,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.22: the three wanted items sit in the stash header row beside the held count (label, icon, name, price in the warn colour), so the grid keeps its full height Check 37.22 fails on v37.21',
+  now:'v37.23: strip labels 13 to 16px, rank name and lifetime earnings 26 to 30px in white, next rank and reward in white, lime on the bar fill only, bar 10 to 8px on the line colour Check 37.23 fails on v37.22',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

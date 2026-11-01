@@ -6177,6 +6177,34 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'37.23',what:'cw-m1rankui, critic on the Mainframe rank strip (P1 both screens: labels about 13px under the 16px floor, lime three times): every text in the strip is 16px or more, no text in it is lime, and lime is the bar fill only',
+   run:function(){
+     if(!(window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot stage';
+     if(typeof openOps!=='function'||typeof renderRank!=='function'||typeof RANKS==='undefined') return 'SKIP: no rank strip here';
+     var saved=P, oldStore=storeSet, oldSave=saveProfile, bad=[], el, all, i, e, cs, amb, tmp, own, n=0;
+     function need(ok,msg){ if(!ok) bad.push(msg); }
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       P=JSON.parse(JSON.stringify(saved)); storeSet=function(){}; saveProfile=function(){};
+       P.lifeEarn=RANKS[1].need+5000; delete P.sellDay; P.rankPaid=[0,1]; P.mig1r=1;
+       openOps('con');
+       el=document.getElementById('rankstrip');
+       if(!el||!(el.getBoundingClientRect().height>0)) return 'the Mainframe rank strip is not on screen';
+       tmp=document.createElement('div'); tmp.style.color='var(--amber)'; el.appendChild(tmp); amb=getComputedStyle(tmp).color; el.removeChild(tmp);
+       all=el.querySelectorAll('*');
+       for(i=0;i<all.length;i++){
+         e=all[i]; own=''; [].forEach.call(e.childNodes,function(c){ if(c.nodeType===3) own+=c.textContent; });
+         if(!own.trim()) continue;
+         n++; cs=getComputedStyle(e);
+         need(parseFloat(cs.fontSize)>=16,'"'+own.trim()+'" is '+cs.fontSize+', under 16px');
+         need(cs.color!==amb,'"'+own.trim()+'" is lime');
+       }
+       need(n>=6,'only '+n+' texts in the strip');
+       e=document.getElementById('rankfill');
+       need(e&&getComputedStyle(e).backgroundColor===amb,'the bar fill is not lime');
+     }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
+     finally{ P=saved; storeSet=oldStore; saveProfile=oldSave; try{ __topClear(); __cleanProfile(); }catch(_c){} }
+     return bad.length?bad.join('; '):null; }},
   {v:'37.22',what:'cw-m1mkt2, the critic on v37.20 (P0): the wanted strip took height from the stash grid and cut its last row; it now sits in the stash header row beside the held count, so showing it costs the grid no height; three wanted items, one lower case label, prices in the warn colour',
    run:function(){
      if(!(window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile&&window.__hubEnter&&window.__station)) return 'SKIP: this fixture cannot stage the stash';

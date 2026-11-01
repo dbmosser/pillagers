@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.23 - SEASON ZERO M1: THE RANK STRIP READS FROM THE COUCH
+
+Co-op hunt while he was away. the critic on the Mainframe and stats screens (P1 on both): the rank strip labels were 13px, under the 16px floor, and lime showed three times (rank name, reward, bar) Watch: strip labels 13 to 16px, rank name and lifetime earnings 26 to 30px in white, next rank and reward in white, lime on the bar fill only, bar 10 to 8px on the line colour
+
+MEASURED. Check 37.23 passes, and fails on v37.22.
 ## v37.22 - THE WANTED STRIP MOVES INTO THE STASH HEADER
 
 Co-op hunt while he was away. the critic on v37.20 (P0): the wanted strip above the sell button took height from the stash grid and cut its last row in half Watch: the three wanted items sit in the stash header row beside the held count (label, icon, name, price in the warn colour), so the grid keeps its full height

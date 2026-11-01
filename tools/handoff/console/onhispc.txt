@@ -188,3 +188,4 @@
 11-01 15:41 v37.19 cw-m1xpoff on his pc after 67s (8802 serves 37.19) week 4%
 11-01 16:00 v37.20 cw-m1mkt on his pc after 35s (8802 serves 37.20) week 5%
 11-01 16:07 v37.21 cw-m1ranks on his pc after 50s (8802 serves 37.21) week 5%
+11-01 16:09 v37.22 cw-m1mkt2 on his pc after 33s (8802 serves 37.22) week 5%

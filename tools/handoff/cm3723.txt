@@ -1,0 +1,7 @@
+v37.23: season zero m1: the rank strip reads from the couch
+
+strip labels 13 to 16px, rank name and lifetime earnings 26 to 30px in white, next rank and reward in white, lime on the bar fill only, bar 10 to 8px on the line colour
+
+Check 37.23. Fails on v37.22.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

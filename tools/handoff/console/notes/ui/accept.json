@@ -1123,17 +1123,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The only change is small: the rewards tab and the xp readout are gone, and the first card now shows net worth, but the grid, the card sizes and the clipped scroll edge are exactly as they were.",
+  "verdict": "The new rank strip and the removal of the notoriety paragraph help, but a duplicate stat card, an orphaned fourth card and an unchanged clipped scroller keep this at a 3.",
   "findings": [
-   "P1 stats cards row (x120-1793, y237-505): Make 3 equal columns of about 546px with 16px gutters and cut the cards to 160px tall. Put every value on one baseline at card top+96. Move the notoriety paragraph to a 16px tx-2 sub-line, one line only, or delete it. Give '$0' a 16px sub-line such as 'all runs'.",
-   "P1 net worth card sub-line 'cash $900 · stash $6,415' (y394): Delete the sub-line, or put it at 16px tx-2. Add a 'cash' label under the header's $900 so the header and the card use one label set ('cash', 'stash', 'bag').",
-   "P1 achievements grid (x120-1793, y589-1003): Add a 40px icon square at x=136. Right-align '0/1' at 16px tx-2. Put the padlock at the right edge. Dim locked names to tx-2 at 60% and give unlocked tiles a 3px lime left bar with a tx-1 name. Cut the tile height from 84px to 72px.",
-   "P1 scroll clip (y958-1003) and scrollbar (x1795): Add 24px of bottom padding inside the scroller and a 32px fade-to-panel gradient at the clip edge. End the clip at y=1000. Move the scrollbar to x=1802, an 8px gap from the tiles, and make it 6px wide in --ui-line-hi.",
-   "P2 header money row (x1400-1745, y78-104): Add a 'cash' label before $900. Set all three labels to 16px tx-2 and all three values to 24px. Put an 8px gap between a label and its value and 32px between pairs."
+   "P1 stats cards (x120-1793, y325-685): Use one row of 4 equal columns (about 410px each, 16px gutters, 150px tall), or fold 'went down' into the rank strip. Put every value at card top+80 and use 16px sub-lines.",
+   "P1 'lifetime earnings' card (x965-1370, y325-512) versus the rank strip (x353-480, y155-200): Delete the 'lifetime earnings' card and its 'rank scrounger i' sub-line. Keep one earnings figure (strip or card, not both). Give the 'net lifetime earnings' card a 16px tx-2 sub-line such as 'after losses', or drop it.",
+   "P1 rank strip (x120-1800, y140-214): Set strip labels to 16px tx-2. Make 'scrounger i' tx-1 at 32px and keep lime for the progress fill only. Change the reward text to tx-1. Make the bar 8px tall with a --ui-line-hi track. Align its label baseline with the 'lifetime earnings' value.",
+   "P1 net worth card sub-line (y482) and header money (x1450-1745, y78-104): Fix the data so the header and the card use the same stash value. Add a 'cash' label before $1,000 in the header. Make all three labels 16px tx-2 with 8px gaps. Put the card sub-line at 16px tx-2.",
+   "P1 achievements grid and scroller clip (x120-1793, y770-1003): Add a 32px fade-to-panel gradient and 24px of bottom padding, and end the clip at y=1000. Cut the tiles to 72px tall. Add a 40px icon square, a right-aligned 16px '0/1', and tx-2 at 60% on locked names. Move the scrollbar to x=1802, 6px wide."
   ],
-  "pic": "tools/handoff/console/notes/shots/00p-m1a-after/15-mainframe-stats-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/00p-m1e-after/15-mainframe-stats-1080.jpg",
   "task": "manual",
-  "when": "2026-11-01T20:43"
+  "when": "2026-11-01T21:09"
  },
  "74-pad-player-1": {
   "score": 3,
@@ -1459,17 +1459,17 @@
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "None of the earlier advice was applied, and the new 'wanted +50%' strip squeezes the grid so the last tile row is cut off at about y=820 and its quantity badges are clipped.",
+  "verdict": "The wanted strip moved into the grid header, which fixes the old stacked footer, but the footer, the empty right pane, the three competing money numbers and the tiny prices are all still there, so the screen only moved sideways.",
   "findings": [
-   "P0 stash grid, bottom row (y≈692-820): Give the grid a fixed region that ends 8px above the footer and scroll it cleanly. Or merge the legend and wanted strip into one 72px footer so the grid keeps its old 4 full rows (about 630px). Never clip a tile.",
-   "P1 wanted strip, y≈868: Put the strip on its own 40px row with 16px padding, aligned to x=122. Make the label 16px tx-2. Set the prices in tx-1 or --warn, not lime. Alternatively move it into the sell-all button's detail.",
-   "P1 footer stack: legend, wanted strip, sell all salvage, freebie kit: Use one 72px footer. Legend on the left at 14px tx-2. 'sell all salvage $2,719' on the right as a 40px outlined button with 20px text. Move 'freebie kit' and 'take' into the right pane or a header chip, with 'take' at 160x40.",
-   "P1 header, top right: Keep '$48,250' as the 32px f-cond 800 hero. Drop 'stash $12,635' and 'bag $0' to 16px tx-2, or delete them. The loadout pane already shows '$0 going up'.",
-   "P1 right pane, backpack and hotbar: Delete the duplicate 'backpack' sub-label and the zero counts. Use 1px solid --ui-line slots with an 8px gap, and make hotbar slots 72px. Fill the space with an item detail pane showing name, rarity bar and stats at 20px and 16px."
+   "P1 stash header strip, y≈190, 'wanted +50% / stim injector $366 / orbital relay $2,807 / circuit board $263': Set the text to 16px f-cond 600 in tx-2 and the prices in tx-1 or --warn (not lime). Keep the label 'wanted +50%' and show only 2 items with 24px gaps, or move the strip to its own 32px row above the grid. Drop the 8px glyphs.",
+   "P1 right pane, y≈240-850: Delete the duplicate 'backpack' sub-label and the zero counts. Use solid 1px --ui-line slots on an 8px gap. Make the hotbar slots 72px. Fill the lower pane with an item detail card: name at 20px, rarity bar, stats at 16px.",
+   "P1 footer stack, y≈860-1005 (legend, sell all salvage, freebie kit/take): Merge into one 72px footer. Legend on the left at 14px tx-2. On the right, 'sell all salvage $2,719' as a 40px outlined button with 20px f-cond 700 text and a lime focus state. Move 'freebie kit' + 'take' (160x40) into the right pane or a header chip.",
+   "P1 header, top right ($48,250 / stash $12,635 / bag $0): Make '$48,250' the single 32px f-cond 800 hero. Drop 'stash $12,635' and 'bag $0' to 16px tx-2, or delete bag, which is $0 and already shown as '$0 going up'. Leave a 24px gap before the X.",
+   "P2 tab row, y≈147: Shrink search to about 280px. Put sort, armory and trophies in tx-2 with a 1px --ui-line divider before them. Dim empty tabs to 50% opacity. Keep one lime 2px underline for the active tab."
   ],
-  "pic": "tools/handoff/console/notes/shots/00p-m1d-after/67-career-stash-stocked-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/00p-m1d-after2/67-career-stash-stocked-1080.jpg",
   "task": "manual",
-  "when": "2026-11-01T21:02"
+  "when": "2026-11-01T21:10"
  },
  "68-settings-sec-the-raid": {
   "score": 3,
