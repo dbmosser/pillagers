@@ -42175,7 +42175,7 @@ class Audio {
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep)) return 'SKIP: no raid here';
      if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof evPlan!=='function'||typeof evLaunch!=='function'||typeof EVENTS!=='object') return 'SKIP: no arcade or raid events here';
-     var bad=[], g=null, seed0, s, i, n, plan, ids={}, hasId=0, need=[], txt='', sc=[].slice.call(document.scripts), kinds=['debris','convoy','bounty','cool','rampage'], ev, E;
+     var bad=[], g=null, seed0, s, i, n, plan, ids={}, hasId=0, need=[], txt='', sc=[].slice.call(document.scripts), kinds=['debris','convoy','bounty','cool','rampage'], ev, E, evK0=null;
      try{
        __topClear(); __runPrep();
        if(ARCADE.on) return 'SKIP: the arcade is on after __topClear';
@@ -42187,11 +42187,14 @@ class Audio {
        for(i=0;i<kinds.length;i++) if(!EVENTS[kinds[i]]) bad.push('ONE: the event '+kinds[i]+' is gone too');
        // TWO: over many seeds no raid plans one (the plan is drawn on the event side stream of each seed)
        seed0=g.seed; n=0; E={};
+       // retarget (v35.72 cw-newpdefs, job 204): a demo start takes the new player set, which has debris, bounty and rampage off; switch the five event rows on for the seed loop and put them back after
+       evK0={}; Object.keys(XF_EV).forEach(function(id){ evK0[XF_EV[id]]=CFG[XF_EV[id]]; CFG[XF_EV[id]]=1; }); xfSnap();
        for(s=1;s<=240;s++){
          g.seed=s; plan=evPlan({});
          for(i=0;i<plan.length;i++){ n++; ids[plan[i].id]=(ids[plan[i].id]|0)+1; if(plan[i].id==='lo'+'ck') hasId++; }
        }
        g.seed=seed0;
+       Object.keys(evK0).forEach(function(k){ CFG[k]=evK0[k]; }); xfSnap(); evK0=null;
        if(hasId) bad.push('TWO: '+hasId+' of '+n+' planned events over 240 seeds were the lockdown');
        for(i=0;i<kinds.length;i++) if(kinds[i]!=='rampage'&&!ids[kinds[i]]) bad.push('TWO: no '+kinds[i]+' was planned in 240 seeds');
        // THREE: it cannot be launched
@@ -42203,6 +42206,7 @@ class Audio {
        for(i=0;i<need.length;i++) if(txt.indexOf(need[i][0])>=0) bad.push('FOUR: the game still has '+need[i][1]+' ('+need[i][0]+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
+       try{ if(evK0){ Object.keys(evK0).forEach(function(k){ CFG[k]=evK0[k]; }); xfSnap(); } }catch(_ev){}
        try{ if(g&&seed0!==undefined) g.seed=seed0; }catch(_s){}
        try{ if(typeof ARCADE==='object'&&ARCADE.on) arcadeLeave(); }catch(_l){}
        try{ if(__state()&&!__state().over) __endRaid('abandon'); }catch(_e){}
@@ -42243,9 +42247,11 @@ class Audio {
        if(hand&&hit(plate,hand,0)) bad.push(tag+'the plate overlaps the item in hand');
        // v28.xx (cw-cx-corpus-r3c): narrow belts retain right-edge alignment; the fixed placement may lift above the item instead.
        if(hand&&plate.x<hand.x+hand.w&&!(typeof handPlateBox==='function'&&plate.y+plate.h<=hand.y-Math.round(8*z))) bad.push(tag+'the plate is neither right of nor clear above the item in hand');
-       if(hit(plate,HUDBOX.gear,0)) bad.push(tag+'the plate overlaps the gear card');
+       // retarget (v35.80 cw-clockcard, job 186h item 12): measure against the DRAWN gun card (GUNCARD); HUDBOX.gear is the mouse box that starts 46 px above it. Falls back to HUDBOX.gear only when no card is drawn (bag open), as check 35.80 does.
+       var GCd=(typeof GUNCARD==='object'&&GUNCARD&&GUNCARD.g===g&&GUNCARD.w>0&&GUNCARD.h>0)?GUNCARD:HUDBOX.gear;
+       if(hit(plate,GCd,0)) bad.push(tag+'the plate overlaps the gear card');
        if(hit(plate,HUDBOX.body,0)) bad.push(tag+'the plate overlaps the health block');
-       /* v35.xx (cw-clockcard), HIS ORDER (2026-10-28): "air strike needs to move ABOVE this weapon panel, and be further over on the right hand side": right edge flush with the gun card (HUDBOX.gear), or with the screen margin where it clamps */ var GC=HUDBOX.gear, gR; if(!(GC&&GC.w>0&&GC.h>0)){ bad.push(tag+'staging: no gun card drawn'); return; } gR=Math.min(GC.x+GC.w,W-Math.round(8*z)); if(Math.abs((plate.x+plate.w)-gR)>2) bad.push(tag+'the plate ends at '+Math.round(plate.x+plate.w)+', not flush with the right edge of the gun card ('+Math.round(gR)+')');
+       /* v35.xx (cw-clockcard), HIS ORDER (2026-10-28): "air strike needs to move ABOVE this weapon panel, and be further over on the right hand side": right edge flush with the gun card (HUDBOX.gear), or with the screen margin where it clamps */ var GC=GCd, gR; if(!(GC&&GC.w>0&&GC.h>0)){ bad.push(tag+'staging: no gun card drawn'); return; } gR=Math.min(GC.x+GC.w,W-Math.round(8*z)); if(Math.abs((plate.x+plate.w)-gR)>2) bad.push(tag+'the plate ends at '+Math.round(plate.x+plate.w)+', not flush with the right edge of the gun card ('+Math.round(gR)+')');
        if(!(plate.y+plate.h<=GC.y)) bad.push(tag+'the plate is not above the gun card (plate bottom '+Math.round(plate.y+plate.h)+', card top '+Math.round(GC.y)+')');   // v35.xx (cw-clockcard): over the gun card now, not merely over the gun bar
      }
      try{
@@ -47390,7 +47396,7 @@ class Audio {
        P.gameOpts={}; P.tuned={}; __opts.apply();
        // ONE: the rows, in DISPLAY, defaulting to today, stepping and saving
        md.classList.add('on'); renderSettings(); rows=__opts.rows()||[];
-       [['xhStyle',0,[0,1,2,3,0]],['xhCol',0,[0,1,2,3,0]],['xhSz',1,[1,1.3,1.6,0.8,1]]].forEach(function(q){
+       [['xhStyle',0,[0,1,2,3,0]],['xhCol',0,[0,1,2,3,0]],['xhSz',1.3,[1.3,1.6,0.8,1,1.3]]].forEach(function(q){   /* retarget (v35.72 cw-newpdefs): a new profile starts on the large crosshair 1.3 */
          var kk=q[0], rr=rowOf(kk), sn, jj;
          if(!rr){ bad.push('ONE: Settings has no '+kk+' row'); return; }
          if(CFG[kk]!==q[1]) bad.push('ONE: a fresh profile has '+kk+' '+CFG[kk]+', not '+q[1]);
@@ -47447,7 +47453,7 @@ class Audio {
        P.gameOpts={}; P.tuned={}; __opts.apply(); CFG.fxInt=1;
        // ONE: the rows, in DISPLAY, defaulting to today, stepping and saving
        md.classList.add('on'); renderSettings(); rows=__opts.rows()||[];
-       [['shake',1,[1,1.5,0,0.5,1]],['gam',1,[1,0.8,0.65,1.25,1]],['showFps',0,[0,1,0]]].forEach(function(q){
+       [['shake',0.5,[0.5,1,1.5,0,0.5]],['gam',1,[1,0.8,0.65,1.25,1]],['showFps',0,[0,1,0]]]   /* retarget (v35.72 cw-newpdefs): a new profile starts on light shake 0.5 */.forEach(function(q){
          var kk=q[0], rr=rowOf(kk), sn, jj;
          if(!rr){ bad.push('ONE: Settings has no '+kk+' row'); return; }
          if(CFG[kk]!==q[1]) bad.push('ONE: a fresh profile has '+kk+' '+CFG[kk]+', not '+q[1]);
