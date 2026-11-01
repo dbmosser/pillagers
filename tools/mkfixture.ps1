@@ -9219,7 +9219,10 @@ class Audio {
          g.nearForge=null;rec={};pan=[];__frame(0);
          for(var i=0;i<2;i++){
            var id=i?'seal':'forge',t=rec[id],q=null;
-           if(!t){bad.push(id+' text missing at '+W+'/'+a+'/'+side);continue;}
+           if(!t){
+             function bx(b){return b?[b.x,b.y,b.w,b.h].map(function(n){return Math.round(n);}).join(','):'none';}
+             bad.push(id+' text missing at '+W+'/'+a+'/'+side+' (screen y '+Math.round(H*.48)+'; trcol '+bx(EDGEBOX.trcol)+'; cond '+bx(HUDBOX.cond)+'; notes '+bx(EDGEBOX.notes)+'; score '+bx(SCOREBOX)+'; clock '+bx(CLOCKBOX)+')');continue;
+           }
            for(var j=0;j<pan.length;j++)if(t.x>=pan[j].x-1&&t.x+t.w<=pan[j].x+pan[j].w+1&&t.y>=pan[j].y&&t.y<=pan[j].y+pan[j].h)q=pan[j];
            if(!q)bad.push(id+' shared plate missing');
            else if(q.x<margin-.1||q.x+q.w>W-margin+.1)bad.push(id+' plate clipped at '+W+'/'+a+'/'+side);
