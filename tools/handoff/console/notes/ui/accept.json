@@ -387,17 +387,17 @@
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "The ghost feedback button and the tighter spacing are small improvements, but the card now has a 32px title and a second checklist line, so it is still a stack of small centred lines. The $1,770 hero is the only strong element, and the title no longer leads.",
+  "verdict": "The only change is that the '+130 xp' line was dropped, so the card is a little tighter, but the type sizes, the groups, the weak ghost button and the unstyled tags are all as they were.",
   "findings": [
-   "P1 title 'extracted' vs haul number: Keep the hero at 56px. Make the title 32px/700 with 8px under it. Fold 'out clean · never spotted' and '+130 xp' into one 16px line in tx-2 so the header is two lines, not three.",
-   "P1 checklist lines: 'extract without killing anything' / 'burst carbine': Drop the sentence row or shorten it to 'no kills'. Group the objectives under one 16px label in a 24px block with 8px row gaps. Colour the ✓ var(--ok).",
-   "P1 vertical rhythm of the whole card: Use three groups, each with a 32px gap between them: header (title, one line), the haul (label, hero, tiles), and the stats. Keep gaps inside a group at 8px or 16px, and put the checks and badges inside the stats group.",
-   "P1 'how did that run feel +' ghost button: Make the ghost 44px tall with 16px/600 text in tx-2, and add a 16px border in --ui-line-hi. Leave 24px between it and the primary. Replace '+' with a chevron, or drop it.",
-   "P2 stat strip and tags: 'first out · untouched · ghost': Set the labels to 16px/600 with +.04em tracking. Draw the tags as small bordered chips at 16px with an 8px gap. Dim a stat with 0 to tx-2 and keep non-zero values in tx-1."
+   "P1 'extracted' title and the subline: Set the title to 32px/700 with 8px below it. Make the subline 16px tx-2 and cut it to 'never spotted'. Put '+130 xp' back inside that same line, e.g. 'never spotted · +130 xp'.",
+   "P1 '✓ burst carbine' row, between the header and the haul: Move it into the stats group below the stat strip with a 16px 'objectives' label above it. Colour the ✓ var(--ok). Use a 32px gap between the haul group and the stats group.",
+   "P1 'how did that run feel +' ghost button: Make it 44px tall with 16px/600 text in tx-2 and a 1px --ui-line-hi border. Leave 24px between it and the primary button. Replace the '+' with a '›' chevron or drop it.",
+   "P1 vertical rhythm of the whole card: Make three groups with 32px between them: header, haul (label, hero, tiles), and stats with tags. Keep gaps inside a group at 8px or 16px. Give the card 32px top and bottom padding.",
+   "P2 stat strip labels and the tags line 'first out · untouched · ghost': Set the labels to 16px/600 with +.04em. Draw each tag as a chip with a 1px --ui-line-hi border and 8px gaps. Dim a 0 value to tx-2 and keep non-zero values in tx-1."
   ],
-  "pic": "tools/handoff/console/notes/shots/105-after/38-extracted-card-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/00p-m1a-after/38-extracted-card-1080.jpg",
   "task": "manual",
-  "when": "2026-10-24T18:32"
+  "when": "2026-11-01T20:43"
  },
  "40-whats-new-card": {
   "score": 3,
@@ -1123,17 +1123,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The notoriety card is gone and the net worth hero is a sound change, but a stray 'went down' card now sits alone on a second row, and the achievements grid, the clipped bottom edge and the header strip are unchanged.",
+  "verdict": "The only change is small: the rewards tab and the xp readout are gone, and the first card now shows net worth, but the grid, the card sizes and the clipped scroll edge are exactly as they were.",
   "findings": [
-   "P1 stats row 2, 'went down' card (x120-525, y442-597): Make 4 equal columns of about 1/4 each with 16px gutters, or move 'went down' into the first row. Drop the second row, and cut all cards to about 160px tall.",
-   "P1 stats row 1, card baselines and sizes: Put every value on one baseline at card top+96. Cut the cards to 160px. Add a 4px lime progress bar under 'level 1'. Give the remaining cards a 16px tx-2 sub-line, such as 'lifetime, all runs', so the $0 card doesn't look broken.",
-   "P1 net worth card, sub-line 'cash $900 · stash $6,415': Remove the sub-line, or keep it and drop the header duplicates. Use one label set everywhere ('cash', 'stash', 'bag').",
-   "P1 achievements grid (x120-1793, y682-1003): Add a 40px icon square at x=136. Show '0/1' in 16px tx-2 at the right. Dim locked names to tx-2 at 60%. Give unlocked tiles a 3px lime left bar and a tx-1 name. Lock-state rule: padlock at the right edge, not left of the name.",
-   "P1 scroll clip bottom (y~958-1003): Add 24px of bottom padding to the scroll container and a 32px fade-to-panel gradient at the clip edge. End the clip at y=1000. Inset the scrollbar to x=1802, an 8px gap from the tiles."
+   "P1 stats cards row (x120-1793, y237-505): Make 3 equal columns of about 546px with 16px gutters and cut the cards to 160px tall. Put every value on one baseline at card top+96. Move the notoriety paragraph to a 16px tx-2 sub-line, one line only, or delete it. Give '$0' a 16px sub-line such as 'all runs'.",
+   "P1 net worth card sub-line 'cash $900 · stash $6,415' (y394): Delete the sub-line, or put it at 16px tx-2. Add a 'cash' label under the header's $900 so the header and the card use one label set ('cash', 'stash', 'bag').",
+   "P1 achievements grid (x120-1793, y589-1003): Add a 40px icon square at x=136. Right-align '0/1' at 16px tx-2. Put the padlock at the right edge. Dim locked names to tx-2 at 60% and give unlocked tiles a 3px lime left bar with a tx-1 name. Cut the tile height from 84px to 72px.",
+   "P1 scroll clip (y958-1003) and scrollbar (x1795): Add 24px of bottom padding inside the scroller and a 32px fade-to-panel gradient at the clip edge. End the clip at y=1000. Move the scrollbar to x=1802, an 8px gap from the tiles, and make it 6px wide in --ui-line-hi.",
+   "P2 header money row (x1400-1745, y78-104): Add a 'cash' label before $900. Set all three labels to 16px tx-2 and all three values to 24px. Put an 8px gap between a label and its value and 32px between pairs."
   ],
-  "pic": "tools/handoff/console/notes/shots/00p-m1c-after/15-mainframe-stats-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/00p-m1a-after/15-mainframe-stats-1080.jpg",
   "task": "manual",
-  "when": "2026-11-01T20:38"
+  "when": "2026-11-01T20:43"
  },
  "74-pad-player-1": {
   "score": 3,

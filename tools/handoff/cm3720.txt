@@ -1,0 +1,7 @@
+v37.20: season zero: the market
+
+sale prices drift day to day (80 to 120 percent of value, seeded from the calendar day), what you sold a lot of this week sells for less (down to 70 percent) and creeps back up as the week passes, three wanted items a day pay 50 percent more and show as a wanted strip on the stash screen and a wanted line at the Peddler; the Peddler pays market prices too; buy back still returns the exact price paid; lifetime earnings never raise a price
+
+Check 37.20. Fails on v37.19.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

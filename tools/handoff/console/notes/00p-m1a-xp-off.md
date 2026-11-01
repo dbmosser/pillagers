@@ -16,6 +16,12 @@ Key cw-m1xpoff, mk S\mk-cw-m1xpoff.ps1 + mk-cw-m1xpoff.check.js (29 edits). Pref
 - Kept: restore code x and l, syncXpLevel on load (P.xpLevel number nobody reads), his baked text map entries, bar_line (shows his
   "things are about to get real"), hidden sellhint, shop rep gates (every SHOP rep is 0, never shown), run report export line (60246).
 
+## Result
+SHIPPED v37.19 (f11f5f6d2), ON HIS PC v37.19. Sell all label edit dropped (m1c v37.18 did it first). Pictures notes/shots/00p-m1a-before
+and 00p-m1a-after (1080 + 4k). Critic: 15 stats 3 ("same"; old card sizes, m1e rebuilds that row), 38 extracted 3 ("same"; its P1 asking to put
+xp back skipped as his order; the other findings are old layout and m1b edits this card next for the extraction bonus line, so the polish
+belongs with or after m1b).
+
 ## Lessons
 - parsecheck.html balance() reads `return /re/.test(x)` as division then a regex: unbalanced braces, parse FAIL with no detail.
   Never put a regex literal right after `return` in a check. (Probe key cw-pftest proved the pipeline fine; its draft json stays in drafts/.)

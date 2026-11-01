@@ -1,0 +1,6 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  04-stash-terminal                      staged       7.5s  
+  67-career-stash-stocked                staged       6.3s  
+== 4k : window 3876x2265, viewport 3840x2160
+  04-stash-terminal                      staged       7.8s  
+  67-career-stash-stocked                staged       6.3s  

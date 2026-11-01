@@ -2193,3 +2193,6 @@
 2026-11-01 0.1168 critic-manual
 2026-11-01 0.1180 critic-manual
 2026-11-01 3.6876326 00p-m1c-stash-sell
+2026-11-01 0.0966 critic-manual
+2026-11-01 0.0923 critic-manual
+2026-11-01 8.268504400000003 00p-m1a-xp-off

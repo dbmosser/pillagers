@@ -1,0 +1,4 @@
+{"generated":"2026-11-01T15:55:59","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":27,"screens":[
+{"name":"12-mainframe-contracts","screen":"Mainframe: contracts","1080":{"staged":true,"note":"opmodal","viewport":"1920x1080","shot":"12-mainframe-contracts-1080.jpg","lint":""}},
+{"name":"15-mainframe-stats","screen":"Mainframe: your stats","1080":{"staged":true,"note":"opmodal","viewport":"1920x1080","shot":"15-mainframe-stats-1080.jpg","lint":""}}
+]}

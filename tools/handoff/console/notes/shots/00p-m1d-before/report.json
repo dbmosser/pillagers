@@ -1,0 +1,4 @@
+{"generated":"2026-11-01T15:52:27","url":"http://localhost:8808/fixture.html","recipes":"C:\\claudecode\\dark raiders\\tools\\handoff\\shots\\ui-screens-js.json","seconds":51,"screens":[
+{"name":"04-stash-terminal","screen":"THE STASH: stash grid, loadout backpack, tactical belt, sell row, freebie kit","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"04-stash-terminal-1080.jpg","lint":""},"4k":{"staged":true,"note":"","viewport":"3840x2160","shot":"04-stash-terminal-4k.jpg","lint":""}},
+{"name":"67-career-stash-stocked","screen":"THE STASH with a stocked career profile (sort/filter bar, belt, wheel strip)","1080":{"staged":true,"note":"","viewport":"1920x1080","shot":"67-career-stash-stocked-1080.jpg","lint":""},"4k":{"staged":true,"note":"","viewport":"3840x2160","shot":"67-career-stash-stocked-4k.jpg","lint":""}}
+]}

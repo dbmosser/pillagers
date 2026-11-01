@@ -1,0 +1,140 @@
+{
+    "title":  "SEASON ZERO M1: NO CASH IN RAIDS",
+    "why":  "his rulings of 11-01 (m1): no cash in raids, keep it like a credit card; money comes from selling gear and a bonus; contracts pay in gear and items to sell; racks pay materials instead of money; his pick 36, an extraction bonus of about 10 percent of the haul",
+    "now":  "an extraction pays a bonus of 10 percent of the secured haul onto the account and into lifetime earnings, shown as extraction bonus on the card; a death or a walk out pays none; the stall banks a sale at once so a death keeps it; the survivor and the raid goals pay salvage of the same value instead of money; a contract pays salvage worth its old reward plus its gear, and a gun you own comes as a spare to the stash; racks and arrays pay rack parts worth what they paid; hire cuts count in lifetime earnings",
+    "edits":  [
+                  {
+                      "anchor":  "function mfPayPer(){ return (P.racks||0)*RACK_PAY + arrayCount()*ARRAY_PAY; }",
+                      "replacement":  "function mfPayPer(){ return (P.racks||0)*RACK_PAY + arrayCount()*ARRAY_PAY; }\n// v37.xx (cw-m1nocash), HIS RULINGS OF 11-01 (season zero m1): \"no cash in riads, keep it like a credit card\"; \"it shouldn\u0027t pay cash beyond just\n// selling what you have and maybe some sort of bonus\"; contracts \"pay in gear and items to sell\"; racks \"make them pay materials instead of $\".\n// Two fills, both without dice (no RNGS, no FXS), so nothing seeded moves and the board can show exactly what a claim pays:\n// payItemsFor(v) is salvage worth about v, the dearest that fits first and the four materials last (the survivor, raid goals, contracts);\n// rackMatsFor(v) is the four rack parts worth about v, taken in turn (board, cell, wire, scrap) so a payout is a mix.\nvar PAY_POOL=[\u0027blackbox\u0027,\u0027titan\u0027,\u0027core\u0027,\u0027servo\u0027,\u0027optic\u0027,\u0027board\u0027,\u0027cell\u0027,\u0027wire\u0027,\u0027scrap\u0027], RACK_MATS=[\u0027board\u0027,\u0027cell\u0027,\u0027wire\u0027,\u0027scrap\u0027];\nfunction payItemsFor(v){\n  var out=[], rem=Math.round(+v||0), i, k, c;\n  for(i=0;i\u003cPAY_POOL.length\u0026\u0026out.length\u003c16;i++){ k=PAY_POOL[i]; c=ival(k); if(!(c\u003e0)) continue; while(rem\u003e=c\u0026\u0026out.length\u003c16){ out.push(k); rem-=c; } }\n  return out;\n}\nfunction rackMatsFor(v){\n  var out=[], rem=Math.round(+v||0), i=0, miss=0, k, c;\n  while(miss\u003cRACK_MATS.length\u0026\u0026out.length\u003c400){ k=RACK_MATS[i%RACK_MATS.length]; i++; c=ival(k); if(c\u003e0\u0026\u0026c\u003c=rem){ out.push(k); rem-=c; miss=0; } else miss++; }\n  return out;\n}\nfunction keysWorth(L){ var t=0, i; for(i=0;i\u003c(L||[]).length;i++) t+=ival(L[i]); return t; }\nfunction keysLine(L){\n  var n={}, o=[], i, k;\n  for(i=0;i\u003c(L||[]).length;i++){ k=L[i]; if(!n[k]){ n[k]=0; o.push(k); } n[k]++; }\n  return o.map(function(q){ return String(ITEMS[q]?ITEMS[q].name:q).toLowerCase()+(n[q]\u003e1?(\u0027 x\u0027+n[q]):\u0027\u0027); }).join(\u0027, \u0027);\n}\n// What a contract pays besides its gear: salvage worth about its old $ reward.\nfunction contractPayKeys(c){ return payItemsFor((c\u0026\u0026typeof c.reward===\u0027number\u0027\u0026\u0026c.reward\u003e0)?c.reward:0); }\n// HIS PICK (answer 36): the extraction bonus is about 10% of the haul\u0027s value.\nvar EXTRACT_BONUS=0.10;\nfunction extractBonusFor(v){ return Math.round(Math.max(0,+v||0)*EXTRACT_BONUS); }"
+                  },
+                  {
+                      "anchor":  "  var pay=ri(900,1500);\n  P.credits+=pay;\n  G.strayPaid=(G.strayPaid||0)+pay;\n  var gift=pick([\u0027titan\u0027,\u0027core\u0027,\u0027optic\u0027,\u0027servo\u0027]);\n  try{ grantLoot(mkContainer(e.x,e.y,\u0027crate\u0027),[gift]); G.strayGave=gift; }catch(_sg){}",
+                      "replacement":  "  var pay=ri(900,1500);\n  // v37.xx (cw-m1nocash), his 11-01 ruling (\"no cash in riads\"): the same roll is paid in salvage of about that value into the backpack, beside\n  // his gift, through the one grant; no $. A death loses it with the backpack.\n  var _sPay=payItemsFor(pay), _sq;\n  var gift=pick([\u0027titan\u0027,\u0027core\u0027,\u0027optic\u0027,\u0027servo\u0027]);\n  try{ grantLoot(mkContainer(e.x,e.y,\u0027crate\u0027),[gift].concat(_sPay)); G.strayGave=gift; }catch(_sg){}\n  G.strayPaid=(G.strayPaid||0)+keysWorth(_sPay)+(G.strayGave?ival(gift):0);"
+                  },
+                  {
+                      "anchor":  "  if(G.strayGave) pickTag(gift,\u0027FROM THE SURVIVOR\u0027);\n  say(\u0027+\u0027+\u0027$\u0027+pay.toLocaleString(),\u0027pick\u0027,{tag:\u0027FROM THE SURVIVOR\u0027,c:\u0027gain\u0027});",
+                      "replacement":  "  if(G.strayGave){ pickTag(gift,\u0027FROM THE SURVIVOR\u0027); for(_sq=0;_sq\u003c_sPay.length;_sq++) pickTag(_sPay[_sq],\u0027FROM THE SURVIVOR\u0027); }"
+                  },
+                  {
+                      "anchor":  "  label(e.x,e.y-34,\u0027+$\u0027+pay,\u0027#ffc04a\u0027,0.35,false);",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "  return Math.round(pedBuyRate()*100)+\u0027% of value, paid now. You still have to walk it out.\u0027;",
+                      "replacement":  "  return Math.round(pedBuyRate()*100)+\u0027% of value, banked now\u0027;   // v37.xx (cw-m1nocash): banked at the sale, a death keeps it"
+                  },
+                  {
+                      "anchor":  "  G.pedCarry=(G.pedCarry||0)+tot;",
+                      "replacement":  "  // v37.xx (cw-m1nocash), HIS RULING OF 11-01: \"no cash in riads, keep it like a credit card\". The stall pays straight onto the account at the\n  // sale, so a death never takes it, and it counts in lifetime earnings. Nothing in a raid holds money (G.pedCarry stays 0). A sim raid touches no P.\n  if(!G.sim\u0026\u0026P){ P.credits=(P.credits||0)+tot; lifeEarnAdd(tot); try{ saveProfile(); }catch(_psv){} }"
+                  },
+                  {
+                      "anchor":  "    say(\u0027+\u0027+\u0027$\u0027+tot.toLocaleString(),\u0027pick\u0027,{tag:\u0027CARRIED\u0027,c:\u0027gain\u0027});",
+                      "replacement":  "    say(\u0027+\u0027+\u0027$\u0027+tot.toLocaleString(),\u0027pick\u0027,{tag:\u0027BANKED\u0027,c:\u0027gain\u0027});   // v37.xx (cw-m1nocash): banked at the sale, so not CARRIED"
+                  },
+                  {
+                      "anchor":  "    var _mfPay=mfPayPer();\n    P.credits+=_mfPay;",
+                      "replacement":  "    var _mfPay=mfPayPer();\n    // v37.xx (cw-m1nocash), HIS RULING OF 11-01 on racks: \"make them pay materials instead of $\". The same value, in rack parts, to the stash.\n    var _mfMats=rackMatsFor(_mfPay), _mfi;\n    for(_mfi=0;_mfi\u003c_mfMats.length;_mfi++) P.stash.push(_mfMats[_mfi]);"
+                  },
+                  {
+                      "anchor":  "    _mfLine=\u0027\u003cspan style=\"color:var(--ash)\"\u003eMainframe server bonus: $\u0027+\n      _mfPay.toLocaleString()+\u0027\u003c/span\u003e\u0027;",
+                      "replacement":  "    _mfLine=\u0027\u003cspan style=\"color:var(--ash)\"\u003emainframe parts: \u0027+escHtml(keysLine(_mfMats))+\u0027\u003c/span\u003e\u0027;   // v37.xx (cw-m1nocash): parts, not $"
+                  },
+                  {
+                      "anchor":  "      var cut=Math.round(mhaul*0.10);\n      P.credits+=cut;",
+                      "replacement":  "      var cut=Math.round(mhaul*0.10);\n      P.credits+=cut; lifeEarnAdd(cut);   // v37.xx (cw-m1nocash): every $ earned counts in lifetime earnings"
+                  },
+                  {
+                      "anchor":  "        var cut2=Math.round((_mrow.val||0)*0.10);\n        P.credits+=cut2;",
+                      "replacement":  "        var cut2=Math.round((_mrow.val||0)*0.10);\n        P.credits+=cut2; lifeEarnAdd(cut2);   // v37.xx (cw-m1nocash)"
+                  },
+                  {
+                      "anchor":  "  if(G.strayPaid){\n    // v11.86, HIS NOTE: no \"already banked\"; and the gift, on the card of a run\n    // that brought it home (a death or an abandonment lost the bag it went into).\n    lines.push(\u0027\u003cspan style=\"color:var(--coolant)\"\u003eThe survivor paid you \u0027+\u0027$\u0027+G.strayPaid.toLocaleString()+\n      (how===\u0027extract\u0027\u0026\u0026G.strayGave\u0026\u0026ITEMS[G.strayGave]?\u0027 and gave you a \u0027+escHtml(ITEMS[G.strayGave].name):\u0027\u0027)+\u0027.\u003c/span\u003e\u0027);\n  }\n  if(G.pedSold){\n    lines.push(how===\u0027extract\u0027\n      ?\u0027\u003cspan style=\"color:var(--coolant)\"\u003eStall money carried out: \u0027+\u0027$\u0027+(G.pedCarry||0).toLocaleString()+\u0027, banked.\u003c/span\u003e\u0027\n      :(how===\u0027dead\u0027\n        ?\u0027\u003cspan style=\"color:var(--rust)\"\u003eStall money lost where you fell: \u0027+\u0027$\u0027+(G.pedCarry||0).toLocaleString()+\u0027.\u003c/span\u003e\u0027\n        // v13.77, downed and extraction audit: an abandoned run did not fall anywhere.\n        :\u0027\u003cspan style=\"color:var(--rust)\"\u003eStall money left behind: \u0027+\u0027$\u0027+(G.pedCarry||0).toLocaleString()+\u0027.\u003c/span\u003e\u0027));\n  }",
+                      "replacement":  "  // v37.xx (cw-m1nocash): the survivor pays salvage into the backpack, so his gift is on the card of a run that brought it home.\n  if(G.strayPaid\u0026\u0026how===\u0027extract\u0027) lines.push(\u0027\u003cspan style=\"color:var(--coolant)\"\u003esurvivor gift worth $\u0027+G.strayPaid.toLocaleString()+\u0027\u003c/span\u003e\u0027);\n  // v37.xx (cw-m1nocash): the stall banks at the sale, so every outcome kept it.\n  if(G.pedSold) lines.push(\u0027\u003cspan style=\"color:var(--coolant)\"\u003estall sales $\u0027+G.pedSold.toLocaleString()+\u0027 banked\u003c/span\u003e\u0027);"
+                  },
+                  {
+                      "anchor":  "    if(G.pedCarry\u0026\u0026!G.sim){ P.credits+=G.pedCarry; }",
+                      "replacement":  "    // v37.xx (cw-m1nocash): no stall money rides the raid any more; it was banked at the sale."
+                  },
+                  {
+                      "anchor":  "    lines.push(\u0027You extracted with \u0027+Math.round(G.player.hp)+\u0027 of 100 health\u0027);",
+                      "replacement":  "    // v37.xx (cw-m1nocash), HIS PICK OF 11-01 (answer 36): an extraction pays a bonus of about 10% of the haul\u0027s value, the value this card just\n    // said was secured, straight onto the account and into lifetime earnings. A death or an abandon never reaches this branch, so pays none.\n    var _xb=extractBonusFor(_secV);\n    if(_xb\u003e0){ P.credits=(P.credits||0)+_xb; lifeEarnAdd(_xb); lines.push(\u0027\u003cspan style=\"color:var(--amber)\"\u003eextraction bonus +$\u0027+_xb.toLocaleString()+\u0027\u003c/span\u003e\u0027); }\n    if(G.tel) G.tel.extBonus=_xb;\n    lines.push(\u0027You extracted with \u0027+Math.round(G.player.hp)+\u0027 of 100 health\u0027);"
+                  },
+                  {
+                      "anchor":  "function runEarnings(rec){ return ((rec.outcome===\u0027extract\u0027)?((rec.haul||0)+(rec.pedSold||0)):0)-(rec.carriedIn||0)-(rec.kitSold||0); }",
+                      "replacement":  "// v37.xx (cw-m1nocash): a stall sale is banked at the sale since this build (pedBank on the row), so it counts whatever the outcome; an older row as before.\nfunction runEarnings(rec){ return ((rec.outcome===\u0027extract\u0027)?(rec.haul||0):0)+((rec.outcome===\u0027extract\u0027||rec.pedBank)?(rec.pedSold||0):0)-(rec.carriedIn||0)-(rec.kitSold||0); }"
+                  },
+                  {
+                      "anchor":  "    pedSold:T.pedSold||0,pedKilled",
+                      "replacement":  "    pedSold:T.pedSold||0,pedBank:1,pedKilled"
+                  },
+                  {
+                      "anchor":  "    var _pgv=ival(\u0027gun_\u0027+g.k);\n    if(_pgv\u003e0){ P.credits=(P.credits||0)+_pgv;\n      return WEAPONS[g.k].name+\u0027, already yours, so its value of \u0027+\u0027$\u0027+_pgv.toLocaleString()+\u0027 instead\u0027; }",
+                      "replacement":  "    // v37.xx (cw-m1nocash), his 11-01 ruling (contracts \"pay in gear and items to sell\"): no $; the spare goes to the stash, to sell or keep.\n    if(ITEMS[\u0027gun_\u0027+g.k]){ P.stash.push(\u0027gun_\u0027+g.k);\n      return WEAPONS[g.k].name+\u0027, a spare to the stash\u0027; }"
+                  },
+                  {
+                      "anchor":  "  // v5.78: a contract pays money, not standing.\n  P.credits+=c.reward;",
+                      "replacement":  "  // v37.xx (cw-m1nocash), HIS RULING OF 11-01: contracts \"pay in gear and items to sell\". Salvage worth about its old $ reward goes to the\n  // stash (contractPayKeys, no dice, so the board shows exactly this), with the gear it carries. No $.\n  var _ck=contractPayKeys(c), _cq;\n  for(_cq=0;_cq\u003c_ck.length;_cq++) P.stash.push(_ck[_cq]);"
+                  },
+                  {
+                      "anchor":  "  return {pay:c.reward, gear:got};",
+                      "replacement":  "  return {pay:keysWorth(_ck), gear:got, items:_ck};"
+                  },
+                  {
+                      "anchor":  "  var got=0,total=0,gear=[];",
+                      "replacement":  "  var got=0,total=0,gear=[],items=[];"
+                  },
+                  {
+                      "anchor":  "    got++; total+=r.pay; if(r.gear) gear.push(r.gear);",
+                      "replacement":  "    got++; total+=r.pay; items=items.concat(r.items||[]); if(r.gear) gear.push(r.gear);"
+                  },
+                  {
+                      "anchor":  "  say2(got+\u0027 contract\u0027+(got===1?\u0027\u0027:\u0027s\u0027)+\u0027 paid: \u0027+\u0027$\u0027+total.toLocaleString()+\n       (gear.length?(\u0027 and \u0027+gear.join(\u0027, \u0027)):\u0027\u0027)+\u0027.\u0027);",
+                      "replacement":  "  say2(got+\u0027 contract\u0027+(got===1?\u0027\u0027:\u0027s\u0027)+\u0027 paid: \u0027+keysLine(items)+(gear.length?(\u0027, \u0027+gear.join(\u0027, \u0027)):\u0027\u0027));   // v37.xx (cw-m1nocash): items, no $"
+                  },
+                  {
+                      "anchor":  "        say2(\u0027Contract paid: \u0027+\u0027$\u0027+r.pay.toLocaleString()+\u0027\u0027+(r.gear?\u0027 and \u0027+r.gear:\u0027\u0027)+\u0027.\u0027);",
+                      "replacement":  "        say2(\u0027contract paid: \u0027+keysLine(r.items||[])+(r.gear?\u0027, \u0027+r.gear:\u0027\u0027));   // v37.xx (cw-m1nocash): items, no $"
+                  },
+                  {
+                      "anchor":  "    st.innerHTML=Math.min(c.prog,c.n)+\u0027 / \u0027+c.n+\u0027 \u0026middot; \u003cb\u003e\u0027+\u0027$\u0027+c.reward.toLocaleString()+\u0027\u003c/b\u003e\u0027;",
+                      "replacement":  "    st.innerHTML=Math.min(c.prog,c.n)+\u0027 / \u0027+c.n+\u0027 \u0026middot; \u003cb\u003eworth \u0027+\u0027$\u0027+c.reward.toLocaleString()+\u0027\u003c/b\u003e\u0027;   // v37.xx (cw-m1nocash): it pays items of that worth"
+                  },
+                  {
+                      "anchor":  "  money.innerHTML=\u0027$\u0027+(c.reward||0).toLocaleString();",
+                      "replacement":  "  money.innerHTML=\u0027worth $\u0027+(c.reward||0).toLocaleString();   // v37.xx (cw-m1nocash): the items below are worth this"
+                  },
+                  {
+                      "anchor":  "  var gks=gearKeys(c.gear),seen={};",
+                      "replacement":  "  var gks=gearKeys(c.gear).concat(contractPayKeys(c)),seen={};   // v37.xx (cw-m1nocash): and the salvage the claim pays"
+                  },
+                  {
+                      "anchor":  "    cell.title=((c.gear\u0026\u0026(c.gear.kind===\u0027wep\u0027||c.gear.kind===\u0027key\u0027))?",
+                      "replacement":  "    cell.title=((c.gear\u0026\u0026(c.gear.kind===\u0027wep\u0027||c.gear.kind===\u0027key\u0027)\u0026\u0026PAY_POOL.indexOf(gkey)\u003c0)?"
+                  },
+                  {
+                      "anchor":  "      else R.cash+=(gl.chip|0)*5;\n    } else R.cash+=(gl.chip|0)*5;",
+                      "replacement":  "      else R.items=R.items.concat(payItemsFor((gl.chip|0)*5));\n    } else R.items=R.items.concat(payItemsFor((gl.chip|0)*5));   // v37.xx (cw-m1nocash): salvage of the old $ value, banked on extraction, lost on a death"
+                  },
+                  {
+                      "anchor":  "  return goalPaysItem(gl)?\u0027bonus loot\u0027:(\u0027$\u0027+((gl.chip|0)*5).toLocaleString());",
+                      "replacement":  "  return goalPaysItem(gl)?\u0027bonus loot\u0027:\u0027bonus salvage\u0027;   // v37.xx (cw-m1nocash): no $ in a raid"
+                  },
+                  {
+                      "anchor":  "    k=R.items[i]; bankItem(k); G.goalPaid.value+=ival(k);\n    lines.push(\u0027\u003cspan class=\"goalreward\"\u003erun goals \u0027+escHtml(ITEMS[k].name.toLowerCase())+\u0027\u003c/span\u003e\u0027);\n  }",
+                      "replacement":  "    k=R.items[i]; bankItem(k); G.goalPaid.value+=ival(k);\n  }\n  if(R.items.length) lines.push(\u0027\u003cspan class=\"goalreward\"\u003erun goals \u0027+escHtml(keysLine(R.items))+\u0027\u003c/span\u003e\u0027);   // v37.xx (cw-m1nocash): one line for the lot"
+                  },
+                  {
+                      "anchor":  "  say(\u0027Array \u0027+P.arrays+\u0027 comes online. The wall is clear again, and it pays $\u0027+",
+                      "replacement":  "  say(\u0027Array \u0027+P.arrays+\u0027 comes online. The wall is clear again, and it pays parts worth $\u0027+"
+                  },
+                  {
+                      "anchor":  "  say(\u0027Rack \u0027+P.racks+\u0027 hums to life. \u0027+\u0027$\u0027+mfPayPer().toLocaleString()+\u0027 every time you make it home.\u0027+",
+                      "replacement":  "  say(\u0027Rack \u0027+P.racks+\u0027 hums to life. Parts worth \u0027+\u0027$\u0027+mfPayPer().toLocaleString()+\u0027 every time you make it home.\u0027+"
+                  },
+                  {
+                      "anchor":  "\u0027 per extraction\u003c/span\u003e\u0027",
+                      "replacement":  "\u0027 in parts per extraction\u003c/span\u003e\u0027"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-m1nocash, his rulings of 11-01 (no cash in riads, keep it like a credit card; contracts pay in gear and items to sell; racks pay materials instead of $; his pick 36, an extraction bonus of about 10% of the haul): an extraction pays exactly round(haul x 0.10) onto the account and into lifetime earnings and the card says extraction bonus; a death pays no bonus and no $; racks pay rack parts worth what they paid and no $; a stall sale is banked at the sale and a death keeps it; the survivor pays salvage into the backpack and no $; a claimed contract pays salvage and a spare gun to the stash and no $; an old save loads twice with nothing moved\u0027,\n   run:function(){\n     if(!(window.__runPrep\u0026\u0026window.__resetCfg\u0026\u0026window.__pinDefaults\u0026\u0026window.__cleanProfile\u0026\u0026window.__deploy\u0026\u0026window.__endRaid\u0026\u0026window.__state)) return \u0027SKIP: this fixture cannot stage\u0027;\n     if(typeof applyLoadedProfile!==\u0027function\u0027||typeof lifeEarnNow!==\u0027function\u0027||typeof pedSellAll!==\u0027function\u0027||typeof strayGive!==\u0027function\u0027||typeof claimContractAt!==\u0027function\u0027) return \u0027SKIP: no loader, lifetime earnings, stall, survivor or contracts here\u0027;\n     var saved=P, cfg={}, k, oldStore=storeSet, oldSave=saveProfile, d0=DMUL_ON, bad=[], g, c0, l0, s0, exp, el, t, i, v, n, haul, snap, W, c, r, MATS={scrap:1,wire:1,cell:1,board:1};\n     function need(ok,msg){ if(!ok) bad.push(msg); }\n     function worth(L){ var s=0; for(var q=0;q\u003cL.length;q++) s+=ival(L[q]); return s; }\n     function mats(L){ var o=[]; for(var q=0;q\u003cL.length;q++) if(MATS[L[q]]) o.push(L[q]); return o; }\n     function cardText(){ var e=document.getElementById(\u0027oc_manifest\u0027); return String((e\u0026\u0026e.textContent)||\u0027\u0027); }\n     function up(bag){\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); var q=__state();\n       if(!q||!q.player||q.over) throw new Error(\u0027no live raid\u0027);\n       q.bag=bag.slice(); q.carriedIn=0; q.carriedKit=[]; q.issuedBandages=0; q.pedCarry=0; q.pedSold=0; q.strayPaid=0; q.goalRewards=null;\n       q.player.downed=false; q.player.hp=100; q.ents.length=0; q.player.iv=99;\n       return q;\n     }\n     function done(){ if(typeof pendingRun!==\u0027undefined\u0027\u0026\u0026pendingRun\u0026\u0026!pendingRun._committed\u0026\u0026typeof commitRun===\u0027function\u0027) commitRun(pendingRun); }\n     for(k in CFG) cfg[k]=CFG[k];\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       storeSet=function(){}; saveProfile=function(){};\n       DMUL_ON=0; P.cond=\u0027day\u0027; P.terms=[]; P.merc=\u0027\u0027; P.racks=2; P.arrays=0;\n       haul=ival(\u0027core\u0027)+ival(\u0027titan\u0027); exp=Math.round(haul*0.10);\n       if(!(exp\u003e0)) return \u0027control: core and titan are worth nothing here\u0027;\n       // ONE: an extraction pays the bonus and nothing else in $; the racks pay parts\n       g=up([\u0027core\u0027,\u0027titan\u0027]); c0=P.credits||0; l0=lifeEarnNow(); s0=P.stash.slice();\n       __endRaid(\u0027extract\u0027); done();\n       need((P.credits||0)-c0===exp,\u0027ONE: an extraction moved credits by \u0027+((P.credits||0)-c0)+\u0027, not the bonus \u0027+exp+\u0027 (10% of \u0027+haul+\u0027)\u0027);\n       need(lifeEarnNow()-l0===exp,\u0027ONE: lifetime earnings moved by \u0027+(lifeEarnNow()-l0)+\u0027, not \u0027+exp);\n       t=cardText().toLowerCase();\n       need(t.length\u003e20,\u0027ONE: control: no raid end card\u0027);\n       need(t.indexOf(\u0027extraction bonus +$\u0027+exp.toLocaleString())\u003e=0,\u0027ONE: the card has no \"extraction bonus +$\u0027+exp+\u0027\" line\u0027);\n       v=worth(mats(P.stash))-worth(mats(s0));\n       need(v\u003e400-ival(\u0027scrap\u0027)\u0026\u0026v\u003c=400,\u0027ONE: two racks paid parts worth $\u0027+v+\u0027, not about $400\u0027);\n       // TWO: a death on the same staging pays no bonus, no $ and no parts\n       g=up([\u0027core\u0027,\u0027titan\u0027]); c0=P.credits||0; l0=lifeEarnNow(); s0=P.stash.slice();\n       __endRaid(\u0027dead\u0027); done();\n       need((P.credits||0)===c0\u0026\u0026lifeEarnNow()===l0,\u0027TWO: a death moved credits by \u0027+((P.credits||0)-c0)+\u0027 and lifetime by \u0027+(lifeEarnNow()-l0));\n       need(cardText().toLowerCase().indexOf(\u0027extraction bonus\u0027)\u003c0,\u0027TWO: the death card shows an extraction bonus\u0027);\n       need(worth(mats(P.stash))===worth(mats(s0)),\u0027TWO: a death paid rack parts\u0027);\n       // THREE: a stall sale is banked at the sale and a death keeps it\n       g=up([\u0027core\u0027]); g.trade={x:g.player.x,y:g.player.y,stock:[],traded:0};\n       c0=P.credits||0; l0=lifeEarnNow(); n=Math.round(ival(\u0027core\u0027)*pedBuyRate());\n       pedSellAll();\n       need((P.credits||0)-c0===n\u0026\u0026lifeEarnNow()-l0===n,\u0027THREE: a stall sale banked \u0027+((P.credits||0)-c0)+\u0027 and lifetime \u0027+(lifeEarnNow()-l0)+\u0027, not \u0027+n+\u0027 at the sale\u0027);\n       need(!g.pedCarry,\u0027THREE: the raid still holds stall money (\u0027+g.pedCarry+\u0027)\u0027);\n       g.trade=null; __endRaid(\u0027dead\u0027); done();\n       need((P.credits||0)-c0===n,\u0027THREE: the death took the stall money (credits moved \u0027+((P.credits||0)-c0)+\u0027)\u0027);\n       need(cardText().toLowerCase().indexOf(\u0027stall sales\u0027)\u003e=0,\u0027THREE: the death card has no stall sales line\u0027);\n       // FOUR: the survivor pays salvage into the backpack, no $\n       g=up([\u0027medkit\u0027]); c0=P.credits||0;\n       strayGive({want:\u0027medkit\u0027,x:g.player.x+20,y:g.player.y,helped:0});\n       need((P.credits||0)===c0,\u0027FOUR: the survivor paid $\u0027+((P.credits||0)-c0));\n       v=worth(g.bag)-ival(g.strayGave||\u0027\u0027);\n       need(!!g.strayGave\u0026\u0026v\u003e900-ival(\u0027scrap\u0027)\u0026\u0026v\u003c=1500,\u0027FOUR: the survivor put salvage worth $\u0027+v+\u0027 in the backpack (\u0027+JSON.stringify(g.bag)+\u0027), not $900 to $1500\u0027);\n       g.player.downed=false; __endRaid(\u0027abandon\u0027); done();\n       // FIVE: a claimed contract pays salvage and a spare gun, no $\n       W=null; for(k in WEAPONS) if(ITEMS[\u0027gun_\u0027+k]\u0026\u0026k!==\u0027fists\u0027){ W=k; break; }\n       c=P.contracts\u0026\u0026P.contracts[0];\n       if(!W||!c) bad.push(\u0027FIVE: control: no gun or no contract to stage\u0027);\n       else {\n         if(P.weapons.indexOf(W)\u003c0) P.weapons.push(W);\n         c.reward=1000; c.prog=c.n; c.gear={kind:\u0027wep\u0027,k:W};\n         c0=P.credits||0; s0=P.stash.length;\n         r=claimContractAt(0);\n         t=P.stash.slice(s0);\n         need(!!r,\u0027FIVE: the claim refused\u0027);\n         need((P.credits||0)===c0,\u0027FIVE: the contract paid $\u0027+((P.credits||0)-c0));\n         need(t.indexOf(\u0027gun_\u0027+W)\u003e=0,\u0027FIVE: the spare gun did not go to the stash (\u0027+JSON.stringify(t)+\u0027)\u0027);\n         v=worth(t)-ival(\u0027gun_\u0027+W);\n         need(v\u003e1000-ival(\u0027scrap\u0027)\u0026\u0026v\u003c=1000,\u0027FIVE: the contract paid salvage worth $\u0027+v+\u0027, not about $1000\u0027);\n       }\n       // SIX: an old save (nothing new is saved) loads twice with nothing moved\n       snap=JSON.parse(JSON.stringify(P)); snap.cfg=JSON.parse(JSON.stringify(CFG)); snap.cfgv=18;\n       for(i=0;i\u003c2;i++){\n         applyLoadedProfile({value:JSON.stringify(snap)});\n         need(P.credits===snap.credits\u0026\u0026JSON.stringify(P.stash)===JSON.stringify(snap.stash)\u0026\u0026JSON.stringify(P.contracts)===JSON.stringify(snap.contracts)\u0026\u0026P.lifeEarn===snap.lifeEarn\u0026\u0026JSON.stringify(P.weapons)===JSON.stringify(snap.weapons)\u0026\u0026P.racks===snap.racks,\u0027SIX: load \u0027+(i+1)+\u0027 moved the save (credits \u0027+P.credits+\u0027 vs \u0027+snap.credits+\u0027, stash \u0027+P.stash.length+\u0027 vs \u0027+snap.stash.length+\u0027, lifetime \u0027+P.lifeEarn+\u0027 vs \u0027+snap.lifeEarn+\u0027)\u0027);\n         snap=JSON.parse(JSON.stringify(P));\n       }\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{\n       try{ g=__state(); if(g\u0026\u0026!g.over){ g.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){}\n       DMUL_ON=d0;\n       P=saved; storeSet=oldStore; saveProfile=oldSave;\n       for(k in CFG) if(!(k in cfg)) delete CFG[k]; for(k in cfg) CFG[k]=cfg[k];\n       try{ __topClear(); __cleanProfile(); }catch(_c){}\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

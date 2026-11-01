@@ -1,0 +1,12 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  01-title-mode-menu                     staged       5.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  03-hub-floor                           staged       6.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  12-mainframe-contracts                 staged       7.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | opmodal
+  15-mainframe-stats                     staged       7.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | opmodal
+  38-extracted-card                      staged       9.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 4k : window 3876x2265, viewport 3840x2160
+  01-title-mode-menu                     staged       5.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  03-hub-floor                           staged       6.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  12-mainframe-contracts                 staged       7.3s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | opmodal
+  15-mainframe-stats                     staged       7.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | opmodal
+  38-extracted-card                      staged       9.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

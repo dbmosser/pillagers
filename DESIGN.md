@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.20 - SEASON ZERO: THE MARKET
+
+Co-op hunt while he was away. his note of 11-01 (answer 38): prices should move around based on something; the plan m1 market Watch: sale prices drift day to day (80 to 120 percent of value, seeded from the calendar day), what you sold a lot of this week sells for less (down to 70 percent) and creeps back up as the week passes, three wanted items a day pay 50 percent more and show as a wanted strip on the stash screen and a wanted line at the Peddler; the Peddler pays market prices too; buy back still returns the exact price paid; lifetime earnings never raise a price
+
+MEASURED. Check 37.20 passes, and fails on v37.19.
 ## v37.19 - SEASON ZERO M1: NO MORE XP
 
 Co-op hunt while he was away. his order of 11-01: lets get rid of the concept of xp altogether, everything you can get, you have to buy with cash (plan m1, build 1 of 5) Watch: a run, a walk out and nothing else earns or costs XP; the Mainframe has no rewards tab, no claim buttons and no rewards waiting badge; no xp or level figure on the raid end card, the corner readout, the stash header, the stats tab, the save slots or the peddler panel; looks a level or the reward board gated are open; an old save is paid once in cash for ladder rewards earned since the last payout and never claimed, the money counts in lifetime earnings and the hub says it once; the saved XP figure stays in the save and the restore code still carries it; SP and the career board are unchanged
