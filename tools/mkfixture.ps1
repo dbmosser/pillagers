@@ -16484,7 +16484,8 @@ class Audio {
              ys=trY(o2.ob,false); yr=trY(o3.ob,false); yp=trY(o2.fb,true);
              if(!ys.length||!yr.length||!yp.length) bad.push('staging: the survivor tracer ('+ys.length+'), the pillager pistol tracer ('+yr.length+') or the partner survivor tracer ('+yp.length+') was not drawn');
              else {
-               if(ys.some(function(y){ return Math.abs(y-(sv.y-o2.own.y))>1; })) bad.push('the survivor tracer is drawn '+ys[0].toFixed(1)+' over the round, his flash '+(sv.y-o2.own.y).toFixed(1)+' up');
+               /* retarget (job 261, 11-01): the flash point carries the round's own spread (17 units out along its angle), so the gun line it sits on is its height over the feet plus 17 times the sine of its angle; the tracer height (shotLy, 20 times the drawn size) is measured against that, not against a flash nudged up by a wide shot */
+               if(ys.some(function(y){ return Math.abs(y-(sv.y-o2.own.y+17*Math.sin(o2.own.a)))>1; })) bad.push('the survivor tracer is drawn '+ys[0].toFixed(1)+' over the round, his flash '+(sv.y-o2.own.y+17*Math.sin(o2.own.a)).toFixed(1)+' up');
                if(Math.abs(ys[0]-yr[0])>1) bad.push('the survivor tracer is drawn '+ys[0].toFixed(1)+' over the round, a lean pillager pistol tracer '+yr[0].toFixed(1));
                if(yp.some(function(y){ return Math.abs(y-ys[0])>1; })) bad.push('the partner window draws the survivor tracer '+yp[0].toFixed(1)+' over the round, his own window '+ys[0].toFixed(1));
              }
