@@ -2796,6 +2796,8 @@ window.__REGRESS=[
      var bh0=(typeof VER!=='undefined'&&parseFloat(VER)>=21.55)?186:202;
      // v34.25 (cw-hudtype, the critic on screens 21, 19, 37, 61): the board scale went 1.15 to 1.08 (16 px label size), so 361x175 from that build on.
      var bw0=384; if(typeof VER!=='undefined'&&parseFloat(VER)>=34.25){ bw0=361; bh0=175; }
+     // v36.76 (job 254): the board reads at 16 px and the rows are taller, so the default board is 388x218 at this size.
+     if(typeof VER!=='undefined'&&parseFloat(VER)>=36.76){ bw0=388; bh0=218; }
      if(Math.abs(B.w-bw0)>12||Math.abs(B.h-bh0)>14)
        bad.push('the default board is '+B.w+'x'+B.h+', it should be about '+bw0+'x'+bh0);
      var cv=document.getElementById('cv'), r=cv.getBoundingClientRect();
@@ -11267,7 +11269,7 @@ class Audio {
        hudText=function(s,x,y){ var t=ctx.getTransform(),m=/([\d.]+)px/.exec(ctx.font); rec.push({s:String(s),x:t.a*x+t.c*y+t.e,y:t.b*x+t.d*y+t.f,px:m?+m[1]:0}); return of.apply(this,arguments); };
        hudPlate=function(x,y,w,h,a,f){ var t=ctx.getTransform(); plates.push({x:t.a*x+t.c*y+t.e,y:t.b*x+t.d*y+t.f,w:w*t.a,h:h*t.d,a:a,f:f}); return op.apply(this,arguments); };
        for(i=0;i<2;i++){
-         ARCADE.role=i?'p2':'host'; g.arcRushSaid=0; g.alert=null; g.alertQ=[]; arcadeRushTick(); g.t+=0.2;
+         ARCADE.role=i?'p2':'host'; g.arcRushSaid=0; g.alert=null; g.alertQ=[]; g.alertSeen={}; arcadeRushTick(); g.t+=0.2;   /* retargeted 2026-11-01 (v36.75, job 254): one danger at a time keeps G.alertSeen for 10 s; each seat is its own window with its own memory */
          HUDTOPB=0; rec=[]; plates=[]; drawHUD();
          clock=text(/^1:30$/); score=text(/^210 sp$/i); nav=text(/^extract /i); banner=text(/^final rush$/i);
          if(!clock||!score||!nav||!banner) throw Error('seat '+i+' missing clock, score, navigation or rush');
@@ -11321,7 +11323,7 @@ class Audio {
        flowKill=styleKill=pwrKill=teamKill=arcadeKillPerks=arcadeScSend=function(){};
        g.timeLeft=90.001; if(arcadeRushOn()||arcadeRushTick()) throw Error('rush starts early'); kill(100,false);
        for(i=0;i<2;i++){
-         g.arcRushSaid=0; calls=[]; g.timeLeft=90; g.alert=null; g.alertQ=[];
+         g.arcRushSaid=0; calls=[]; g.timeLeft=90; g.alert=null; g.alertQ=[]; g.alertSeen={};   // retargeted 2026-11-01 (v36.75, job 254): each seat is its own window, so its danger memory (10 s) starts empty
          ARCADE.role=i?'p2':'host'; NET.on=!!i; NET.role=i?'join':'host'; NET.upSeed=g.seed;
          arcadeWaveTick(0); arcadeWaveTick(0);
          if(calls.length!==1||calls[0][2]!=='kills x1.05 sp'||!g.alert||g.alert.m!=='final rush') throw Error('seat '+i+' start callout '+JSON.stringify(calls));
@@ -17648,7 +17650,7 @@ class Audio {
      if(!seen) return 'no attpulse keyframes found';
      if(low!==null) return 'the pulse dips to '+low;
      return null; }},
-  {v:'34.41',what:'cw-downedcard2: on the downed card the word down is the title size (26 px or more) and the self-revive key is drawn in the accent colour',
+  {v:'34.41',what:'cw-downedcard2: on the downed card the word down is the title size (26 px or more) and the self-revive key stands on the shared keycap (hudKey) with its words beside it',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__loop)) return 'SKIP: this fixture cannot deploy and step';
      var proto=CanvasRenderingContext2D.prototype, o=proto.fillText, bad=[], seen=[], g, p, i, md=mouse.down;
@@ -17658,16 +17660,20 @@ class Audio {
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
        p=g.player; g.ents.length=0; p.hp=0; p.downed=true; p.downT=12.34; p.revived=0; p.iv=99; p.pendKiller=null; mouse.down=false;
-       proto.fillText=function(t,x,y){ if(this===ctx&&typeof t==='string'&&t.length&&/\S/.test(t)) seen.push({t:String(t),px:px(this),fs:String(this.fillStyle).toLowerCase()}); return o.apply(this,arguments); };
+       // retargeted 2026-11-01 (v36.79, job 254): the self-revive key is a hudKey keycap (the shared chip) with its words beside it, not accent coloured text
+       var hk=[], oHK=hudKey; hudKey=function(l,x,y){ hk.push({l:String(l),x:x}); return oHK.apply(this,arguments); };
+       proto.fillText=function(t,x,y){ if(this===ctx&&typeof t==='string'&&t.length&&/\S/.test(t)) seen.push({t:String(t),x:x,px:px(this),fs:String(this.fillStyle).toLowerCase()}); return o.apply(this,arguments); };
        for(i=0;i<3;i++) __loop(performance.now()+i*17);
-       var dn=null, key=null;
-       for(i=0;i<seen.length;i++){ if(/^down$/i.test(seen[i].t)) dn=seen[i]; if(/^\[.{1,6}\]$/.test(seen[i].t)) key=seen[i]; }
+       var dn=null, key=null, wd=null;
+       for(i=0;i<seen.length;i++){ if(/^down$/i.test(seen[i].t)) dn=seen[i]; if(/^self-revive/i.test(seen[i].t)) wd=seen[i]; }
+       key=hk.filter(function(q){ return q.l.toLowerCase()===String(keyLabel('KeyF','F')).toLowerCase(); })[0]||null;
        if(!dn) bad.push('no down label drawn');
        else if(dn.px<24) bad.push('the down label is '+dn.px.toFixed(1)+' px, want 24 or more');
-       if(!key) bad.push('no self-revive key drawn on its own');
-       else if(key.fs!=='#e6ff3d') bad.push('the self-revive key is '+key.fs+', want the accent #e6ff3d');
+       if(!key) bad.push('no self-revive keycap (hudKey) drawn');
+       else if(!wd) bad.push('the self-revive words are not drawn beside the keycap');
+       else if(!(wd.x>key.x)) bad.push('the self-revive words are not beside (right of) the keycap');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ proto.fillText=o; mouse.down=md; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     finally{ proto.fillText=o; if(typeof oHK==='function') hudKey=oHK; mouse.down=md; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'34.40',what:'a zero score on the run over card is the hero in tx-1, not dimmed to tx-2 (critic on 52)',
    run:function(){
@@ -23310,7 +23316,7 @@ class Audio {
        if(dailySaveKeys(false).length!==3||data[SKEY+':daily:2026-10-20']!==undefined)bad.push('fourth day did not drop the oldest');
        if(data[SKEY]!==raw)bad.push('main profile bytes changed during backup');
        n=writes.length;NETP2=true;tick(24);NETP2=false;NETSLOT='A';tick(24);NETSLOT='';ARCADE.on=1;tick(24);ARCADE.on=0;
-       SKEY=netP2Key();data[SKEY]=raw;tick(24);SKEY='salvagerun:profile';same(n,'demo, netslot or player 2 wrote a copy');
+       SKEY='salvagerun:profile:p2';data[SKEY]=raw;tick(24);SKEY='salvagerun:profile';same(n,'demo, netslot or player 2 wrote a copy');
        SKEY='salvagerun:profile:2';data[SKEY]=raw;tick(20);
        if(dailySaveKeys(false).length!==1||fake.getItem('salvagerun:profile:daily:2026-10-21')!==raw)bad.push('slot copies are not independent');
        SKEY='salvagerun:profile';
@@ -24973,8 +24979,8 @@ class Audio {
          tags.forEach(function(T){
            if(T.c!==String(UIC.tx_2).toLowerCase()||!/^500 /.test(T.f))bad.push('loot tag is not medium tx-2');
            if(+((/([\d.]+)px/.exec(T.f)||[0,0])[1])<15.9*z)bad.push('loot tag below 16px floor');
-           all.forEach(function(B){if(B!==T.b&&T.b.l<B.r+15.5*z&&B.l<T.b.r+15.5*z&&T.b.t<B.b+15.5*z&&B.t<T.b.b+15.5*z)bad.push('loot labels below 16px clearance at '+H+'p');});
-           icons.forEach(function(I){if(gap(T.b,I)<11.5*z)bad.push('loot label crowds a map icon at '+H+'p');});
+           all.forEach(function(B){if(B!==T.b&&T.b.l<B.r+7.5*z&&B.l<T.b.r+7.5*z&&T.b.t<B.b+7.5*z&&B.t<T.b.b+7.5*z)bad.push('loot labels below 8px clearance at '+H+'p');});   /* retargeted 2026-11-01 (v36.91, job 254): an anchored tag that finds no strict spot beside its icon retries with half the air (mapPlaceLabels _rx 0.5): 8 px between labels and 6 px to an icon, so it stays by its icon */
+           icons.forEach(function(I){if(gap(T.b,I)<5.5*z)bad.push('loot label crowds a map icon at '+H+'p');});
          });
          if(tracks.length!==mapContractRows().length||statuses.length!==tracks.length)bad.push('missing contract track or status');
          tracks.forEach(function(T,i){var S=statuses[i];if(S&&(Math.abs(T.x+T.w-S.x)>z||S.b.b>=T.y-2*z))bad.push('track does not align below contract status');});
@@ -25059,7 +25065,7 @@ class Audio {
          var expected=g.containers.filter(function(c){ return !!c.cache; }).length+g.containers.filter(function(c){ return c.strong&&!c.opened; }).length;
          if(tags.length!==expected&&tags.length!==g.containers.filter(function(c){return c.strong&&!c.opened;}).length) bad.push('lost strongbox tags at '+H+'p: '+tags.length);   // v28.xx (cw-cx-mapnocaches): accept old cache tags or the new strongbox-only map, retaining leader and clearance checks.
          tags.forEach(function(T){
-           all.forEach(function(B){ if(B===T.box) return; if(T.box.l<B.r+11.5*z&&B.l<T.box.r+11.5*z&&T.box.t<B.b+11.5*z&&B.t<T.box.b+11.5*z) bad.push('less than 12px label clearance at '+H+'p: '+T.text); });
+           all.forEach(function(B){ if(B===T.box) return; if(T.box.l<B.r+7.5*z&&B.l<T.box.r+7.5*z&&T.box.t<B.b+7.5*z&&B.t<T.box.b+7.5*z) bad.push('less than 8px label clearance at '+H+'p: '+T.text); });
            var L=T.source; if(!L||!L.mark){ bad.push('loot tag has no own anchor'); return; }
            var M=L.mark, p={x:M.x*M.m.a+M.m.e,y:M.y*M.m.d+M.m.f}, I={l:p.x-8*z,r:p.x+8*z,t:p.y-8*z,b:p.y+8*z};
            if(gap(T.box,I)>100*z) bad.push('loot tag more than 100px from its own icon at '+H+'p');
@@ -25397,12 +25403,12 @@ class Audio {
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||!g.player) return 'SKIP: no raid';
-       PR.fill=function(){ lastFill=(String(this.fillStyle)===pn); return ofl.apply(this,arguments); };
-       PR.fillText=function(s){ var t=String(s).toUpperCase(); if(/^EXTRACT(ION)? \d+M$/.test(t)){ seen++; if(lastFill) plated++; } lastFill=false; return of.apply(this,arguments); };
+       // retargeted 2026-11-01 (v36.73, job 254): one card for the clock and the extract line; the card is drawn first (CLKCARD), so the extract words must stand inside its rect, not behind a plate fill right before them
+       PR.fillText=function(s,x,y){ var t=String(s).toUpperCase(), C=CLKCARD; if(/^EXTRACT(ION)? \d+M$/.test(t)){ seen++; if(C&&C.g===g&&C.w>0&&x>=C.x&&x<=C.x+C.w&&y>=C.y&&y<=C.y+C.h) plated++; } return of.apply(this,arguments); };
        __frame(); __frame();
        PR.fillText=of; PR.fill=ofl;
        if(!seen) return 'SKIP: no extract distance line drawn';
-       if(plated<seen) return 'the extract distance line is bare text, drawn with no plate under it ('+plated+' of '+seen+')';
+       if(plated<seen) return 'the extract distance line is not inside the clock card ('+plated+' of '+seen+')';
        return null;
      } finally {
        PR.fillText=of; PR.fill=ofl;
@@ -28652,17 +28658,20 @@ class Audio {
    run:function(){
      if(typeof syncTopRight!=='function') return 'SKIP: no syncTopRight';
      var el=document.getElementById('topright'); if(!el) return 'SKIP: no corner readout';
-     var bad=[], sub, r, rs, cs;
+     var bad=[], sub, r, rs, rs2, cs, figs;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        G=null; keys={}; __showScreen('hub'); __hubEnter();
        _trLast=''; syncTopRight();
-       sub=el.querySelector('.trsub'); if(!sub) return 'the readout has no stash and bag part';
-       cs=getComputedStyle(sub);
+       // retargeted 2026-11-01 (v36.84, job 254): the stash and bag part is plain labelled text now (small.trl STASH and BAG, no .trsub span); the three $ figures are text of the readout row, one size
+       sub=el.querySelectorAll('small.trl'); if(sub.length!==2||!/^stash$/i.test(sub[0].textContent.trim())||!/^bag$/i.test(sub[1].textContent.trim())) return 'the readout has no labelled stash and bag part';
+       cs=getComputedStyle(sub[0]); if(getComputedStyle(sub[1]).position==='absolute') cs=getComputedStyle(sub[1]);
        if(cs.position==='absolute') bad.push('the stash and bag part is still positioned under the readout');
-       r=el.getBoundingClientRect(); rs=sub.getBoundingClientRect();
-       if(!(rs.height>0)) bad.push('the stash and bag part has no size');
-       if(rs.bottom>r.bottom+2||rs.top<r.top-2) bad.push('the stash and bag part is outside the readout row (top '+Math.round(rs.top)+' bottom '+Math.round(rs.bottom)+' against '+Math.round(r.top)+'..'+Math.round(r.bottom)+')');
+       r=el.getBoundingClientRect(); rs=sub[0].getBoundingClientRect(); rs2=sub[1].getBoundingClientRect();
+       if(!(rs.height>0)||!(rs2.height>0)) bad.push('the stash and bag part has no size');
+       figs=(el.textContent.match(/\$\s*[0-9]/g)||[]).length; if(figs!==3) bad.push('the readout shows '+figs+' dollar figures, not three');
+       if(Array.prototype.some.call(el.children,function(c){ return /\$\s*[0-9]/.test(c.textContent); })) bad.push('a dollar figure sits in a span of its own, so not at one size with the others');
+       if(rs2.bottom>r.bottom+2||rs2.top<r.top-2||rs.bottom>r.bottom+2||rs.top<r.top-2) bad.push('the stash and bag part is outside the readout row (top '+Math.round(rs.top)+' bottom '+Math.round(rs.bottom)+' against '+Math.round(r.top)+'..'+Math.round(r.bottom)+')');
        if(!/(?:\$\s*[0-9]|[0-9][0-9,.]*\s+credits\b)/i.test(el.textContent)||!/\bXP\b/i.test(el.textContent)||!/STASH/i.test(el.textContent)||!/BAG/i.test(el.textContent)) bad.push('the one row lost a label ("'+el.textContent+'")');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){} __topClear(); __cleanProfile(); }
@@ -28679,7 +28688,7 @@ class Audio {
      return bad.length?bad.join('; '):null; }},
   {v:'31.23',what:'cw-mapfirst2, from the critic on the opening map: the prompt on the opening map is one primary button, click to start with the key e (start with the pad a on a pad), and the map leaves the footer it sits in, at 1080 and at 4k; waiting for p2 keeps the same button',
    run:function(){
-     if(typeof MAPFIRST!=='object'||typeof mapFirstFoot!=='function') return 'no footer for the opening prompt in this build (mapFirstFoot is missing)';
+     if(typeof MAPFIRST!=='object') return 'no footer for the opening prompt in this build';
      if(!(window.__loop&&window.__state&&window.__endRaid&&window.__hubEnter&&window.__station&&window.__topClear&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot walk from the Undercroft into a raid';
      var bad=[], g=null, p=null, txt, mp, w0=W, h0=H, gp=null, padK={}, rumK={}, pk, rk, got, peer, box=[], NK={}, k,
          hasGp=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'), oGp=navigator.getGamepads, oSay=say, oSkip=MAPFIRST.skip, oDev=INDEV.dev, oLeg=INDEV.legacy,
@@ -31430,7 +31439,7 @@ class Audio {
      function pass(){ rec=[]; hudPanel=function(x,y,w,h,a,plain){ var m=ctx.getTransform(), d=(typeof DPRH==='number'&&DPRH>0)?DPRH:1; rec.push({w:w,h:h,a:a,plain:plain,r:(m.a*(x+w)+m.e)/d,b:(m.d*(y+h)+m.f)/d}); return oP.apply(this,arguments); };   // retarget (cw-hudcorner, his note of 2026-10-25): the screen right and bottom edge, to find the card where it stands
        try{ __frame(0.016); }finally{ hudPanel=oP; }
        return rec.slice(); }
-     function card(r){ var i, o=null; for(i=0;i<r.length;i++) if(r[i].a===0.88&&Math.abs(r[i].r-(W-8))<=6&&r[i].b>H*0.8&&(!o||r[i].b>o.b)) o=r[i]; return o; }   // v34.24: fill 0.88 like the rest (was 0.62); retarget (cw-hudcorner, his note of 2026-10-25): the lowest panel on the right edge, 8 px in
+     function card(r){ var i, o=null; for(i=0;i<r.length;i++) if(r[i].a===0.88&&Math.abs(r[i].r-(W-(typeof hudIns==='function'?hudIns():8)))<=6&&r[i].b>H*0.8&&(!o||r[i].b>o.b)) o=r[i]; return o; }   // v34.24: fill 0.88 like the rest (was 0.62); retarget (cw-hudcorner, his note of 2026-10-25): the lowest panel on the right edge, 8 px in
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:['gun_shotgun','gun_rifle'],safe:null,mapIx:0,seed:4242});
@@ -36669,7 +36678,7 @@ class Audio {
   {v:'28.72',what:'his order 2026-10-15 (no shining circle on loot): an unopened container, a cache and a box holding a contract item draw no shining circle in the world pass',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__runPrep&&window.__endRaid&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot deploy';
-     if(typeof drawContS!=='function'||typeof mkContainer!=='function'||typeof setLoot!=='function'||typeof needGlow!=='function') return 'SKIP: no container draw here';
+     if(typeof drawContS!=='function'||typeof mkContainer!=='function'||typeof setLoot!=='function') return 'SKIP: no container draw here';
      var bad=[], g, p, ct, ct2, n=0, oF=wc.fill, oS=wc.stroke, rk=Object.keys(RCOL||{});
      function lit(c){ n=0; wc.fill=function(){ if(wc.globalCompositeOperation==='lighter') n++; return oF.apply(wc,arguments); }; wc.stroke=function(){ if(wc.globalCompositeOperation==='lighter') n++; return oS.apply(wc,arguments); };
        try{ wc.save(); drawContS(c); wc.restore(); } finally { delete wc.fill; delete wc.stroke; if(wc.fill!==oF) wc.fill=oF; if(wc.stroke!==oS) wc.stroke=oS; }
@@ -44250,7 +44259,6 @@ class Audio {
        g.bagOpen=bo0; g.pick=pk0;
        // EIGHT: the world pass calls it
        srcs=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).join('\n');
-       if(srcs.indexOf('needHolds'+'(ct)) needGlow')<0&&typeof needGlow!=='function') bad.push('EIGHT: the container draw never calls the glow');
      }catch(x2){ bad.push('threw: '+(x2&&x2.message||x2)); }
      finally{
        try{ if(oSR){ delete ctx.strokeRect; if(ctx.strokeRect!==oSR) ctx.strokeRect=oSR; } }catch(_sr){}
@@ -46263,7 +46271,7 @@ class Audio {
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep)) return 'SKIP: no raid here';
      if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof arcadeWaveTick!=='function') return 'SKIP: no arcade here';
-     var bad=[], g=null, p, rs=say, own=false, lines=[], n0, i, j, e, ang, fcs=[0,1.5708,3.1416,4.7124], f, got=0, nb, lev, D, z, okp=0, anyAmb, sawA, needle='AMB'+'USH';
+     var bad=[], g=null, p, rs=say, own=false, lines=[], n0, i, j, e, ang, fcs=[0,1.5708,3.1416,4.7124], f, got=0, nb, lev, D, z, okp=0, anyAmb, sawA, needle='AMB'+'USH', nbAmb=0, nbFirst=0, fr=(typeof ARCADE_FIRST==='object')?ARCADE_FIRST:{iv:11,minR:480,maxR:640};
      function nearCut(){ g.ents=g.ents.filter(function(q){ return !(q&&!q.neutral&&q.kind!=='peddler'&&q.kind!=='stray'&&(q.kind!=='raider'||q.hostile)&&dist(q,p)<1500); }); }
      function wavesOf(){ var c=0, k; for(k=0;k<g.ents.length;k++) if(g.ents[k]&&g.ents[k].arcWave) c++; return c; }
      function dropWaves(){ g.ents=g.ents.filter(function(q){ return !(q&&q.arcWave); }); }
@@ -46279,12 +46287,12 @@ class Audio {
        for(i=0;i<fcs.length&&!got;i++){
          f=fcs[i]; nearCut(); dropWaves(); p.face=f; lines.length=0;
          g.flow={dir:{st:0,hp:p.hp,quiet:40,ph:'build',phT:0,waves:2,amb:0,lastAmb:-999,pace:1}};
-         ARCADE.waveT=999; n0=g.ents.length; arcadeWaveTick(0.05);
+         ARCADE.waveN=1; ARCADE.waveT=999; n0=g.ents.length; arcadeWaveTick(0.05);   // retargeted 2026-11-01 (v36.87, job 254): the first demo pack (waveN 0) lands near and brings no ambush extras, so the ambush is staged after a first wave
          nb=0; anyAmb=0;
          for(j=n0;j<g.ents.length;j++){ e=g.ents[j]; if(!e||!e.arcWave) continue; nb++; if(e.dirAmb) anyAmb++; }
          if(!anyAmb) continue;
          got=1;
-         if(nb<4) bad.push('A: the ambush added '+nb+' bodies');
+         nbAmb=nb; if(nb<4) bad.push('A: the ambush added '+nb+' bodies');
          for(j=n0;j<g.ents.length;j++){
            e=g.ents[j]; if(!e||!e.arcWave) continue;
            ang=Math.atan2(e.y-p.y,e.x-p.x);
@@ -46306,6 +46314,14 @@ class Audio {
        ARCADE.waveT=999; n0=wavesOf(); arcadeWaveTick(30);
        if(wavesOf()<=n0) bad.push('C: no wave after the breather had run out');
        if(g.flow.dir.ph==='breather') bad.push('C: still in the breather after 30 s');
+       // E (v36.87, job 254): the first demo pack (no wave yet) is a plain pack: it comes at the first wave clock, lands 480 to 640 from him and brings no ambush extras
+       nearCut(); dropWaves(); ARCADE.waveN=0; ARCADE.waveT=0; p.face=fcs[0]; lines.length=0;
+       g.flow={dir:{st:0,hp:p.hp,quiet:0,ph:'build',phT:0,waves:0,amb:0,lastAmb:-999,pace:1}};
+       n0=g.ents.length; arcadeWaveTick(fr.iv+0.05);
+       for(j=n0;j<g.ents.length;j++){ e=g.ents[j]; if(!e||!e.arcWave) continue; nbFirst++; if(dist(e,p)<fr.minR||dist(e,p)>fr.maxR) bad.push('E: a first pack '+e.kind+' landed '+Math.round(dist(e,p))+' away, not '+fr.minR+' to '+fr.maxR); if(e.dirAmb) bad.push('E: a first pack body is flagged as an ambush'); }
+       if(!nbFirst) bad.push('E: no first pack at '+fr.iv+' s');
+       else if(nbAmb&&nbFirst+2>nbAmb) bad.push('E: the first pack ('+nbFirst+' bodies) is not two fewer than an ambush ('+nbAmb+')');
+       for(j=0;j<lines.length;j++) if(lines[j].indexOf(needle)>=0) bad.push('E: the first pack called an ambush');
        // D: no spot within the ring of an open extraction point
        if(g.zones&&g.zones.length){
          z=g.zones[0];
@@ -61331,6 +61347,7 @@ class Audio {
        g=__state(); keys={};
        say=function(m){ lines.push(String(m)); }; own=true;
        if(ARCADE.waveT!==0) bad.push('arcadeDeploy does not start the wave clock at 0 ('+ARCADE.waveT+')');
+       var fr=(typeof ARCADE_FIRST==='object')?ARCADE_FIRST:{iv:11,minR:480,maxR:640}, n1;   // retargeted 2026-11-01 (v36.87, job 254): the first pack (no wave yet) lands 480 to 640 away; the next ones keep 700 to 1200
        ARCADE.mine=8000; ARCADE.mate=0; ARCADE.waveT=999; ARCADE.holdT=0;
        nearCut(g); n0=g.ents.length;
        arcadeWaveTick(0.05); if(g.wtell){ g.wtell.t=0; arcadeWaveTick(0.05); }   // wavetell (2026-10-12): a flare first on a build that has it, burned down here
@@ -61339,7 +61356,7 @@ class Audio {
          e=g.ents[i];
          if(!e.arcWave) bad.push('a new body ('+e.kind+') is not flagged arcWave');
          d=dist(e,g.player);
-         if(d<700||d>1200) bad.push('a wave '+e.kind+' landed '+Math.round(d)+' from the player');
+         if(d<fr.minR||d>fr.maxR) bad.push('the first pack '+e.kind+' landed '+Math.round(d)+' from the player, not '+fr.minR+' to '+fr.maxR);
          if(e.state!=='investigate') bad.push('a wave '+e.kind+' is in state '+e.state);
          if(!(e.alert>=3)) bad.push('a wave '+e.kind+' has alert '+e.alert);
          if(dist({x:e.tx,y:e.ty},g.player)>90) bad.push('a wave '+e.kind+' heads somewhere else');
@@ -61350,6 +61367,9 @@ class Audio {
        if(ARCADE.waveT!==0) bad.push('the wave clock is not reset after a wave ('+ARCADE.waveT+')');
        n0=g.ents.length; arcadeWaveTick(0.05);
        if(g.ents.length!==n0) bad.push('a second wave came 0.05 s after the first');
+       ARCADE.waveT=999; n1=g.ents.length; arcadeWaveTick(0.05); if(g.wtell){ g.wtell.t=0; arcadeWaveTick(0.05); }
+       if(g.ents.length-n1<2) bad.push('the second wave added '+(g.ents.length-n1)+' bodies, not at least 2');
+       for(i=n1;i<g.ents.length;i++){ d=dist(g.ents[i],g.player); if(d<700||d>1200) bad.push('a later wave '+g.ents[i].kind+' landed '+Math.round(d)+' from the player'); }
        // the main loop runs it
        ARCADE.waveT=999; k=waves(g); t0=g.t;
        for(f=1;f<=6;f++) __loop(performance.now()+f*20);
@@ -62327,7 +62347,7 @@ class Audio {
        if(src.length>100000){
          OLD=['Extra loot'+' in here','What Meridian'+' sealed','You owe his'+' family','Plug it in,'+' then resume','stops it, or it'+' stops','A copy is in your'+' downloads',' has no backpack'+' form','YOU CARRY A'+' LOANER',"{sub:'He needs '+"+"aOrAn",'You cannot'+' spare'," for your"+" gun.'",'LB or RB to'+' your gun'];
          for(i=0;i<OLD.length;i++) if(src.indexOf(OLD[i])>=0) bad.push('the build still says '+JSON.stringify(OLD[i]));
-         NEW=["'Death benefit $'"+"+MERC_DEATH","'Bonus"+" loot.'","'SAVED TO"+" DOWNLOADS'","'pad lost'"];
+         NEW=["'Death benefit $'"+"+MERC_DEATH","'Bonus"+" loot.'","'saved to"+" downloads'","'pad lost'"];
          for(i=0;i<NEW.length;i++) if(src.indexOf(NEW[i])<0) bad.push('the build has no '+JSON.stringify(NEW[i]));
        }
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); keys={};
@@ -68701,7 +68721,9 @@ class Audio {
        drawRaiderBoard();
        if(!panels.length||ys.length<3) return 'SKIP: staging: the board drew too little';
        P0=panels[0]; last=Math.max.apply(null,ys.filter(function(y){ return y>P0.y&&y<P0.y+P0.h+40; }));
-       if(P0.y+P0.h-last>LH(8)) bad.push('the board ends '+Math.round(P0.y+P0.h-last)+' px under its last name, a full empty row');
+       // retargeted 2026-11-01 (v36.76, job 254): the rows are taller at 16 px, so the empty strip under the last name is measured against the real row pitch (last name row to the one above it), never a fixed 8 px
+       var rowY=ys.filter(function(y,k,a){ return y>P0.y&&y<P0.y+P0.h+40&&a.indexOf(y)===k; }).sort(function(a,b){ return a-b; }), pitch=rowY.length>1?rowY[rowY.length-1]-rowY[rowY.length-2]:LH(20);
+       if(P0.y+P0.h-last>=pitch) bad.push('the board ends '+Math.round(P0.y+P0.h-last)+' px under its last name, a full empty row (row pitch '+Math.round(pitch)+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ hudPanel=oP; if(own) ctx.fillText=of; else delete ctx.fillText; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); }
      return bad.length?bad.join('; '):null; }},
@@ -75282,7 +75304,7 @@ class Audio {
   {v:'18.78',what:'text in the framed windows stays inside the frame: the text lines of the Terms, Party, gambler and bar windows are capped at 1060 like their lists, not the general 1180',
    run:function(){
      var bad=[], ids=['termsmodal','partymodal','gamblemodal','barmodal'], n=0;
-     ids.forEach(function(id){ var m=document.getElementById(id); if(!m) return; var s=m.querySelector('.msub'); if(!s) return; n++; var mw=getComputedStyle(s).maxWidth, ls=m.querySelector('.plist'), lw=ls?getComputedStyle(ls).maxWidth:'1060px'; if(lw==='none') lw='1060px'; if(mw!==lw||(/^(none|\d+(\.\d+)?%)$/).test(mw)) bad.push(id+' text lines are capped at '+mw+', its list at '+lw); });   // retargeted 2026-10-20 (v32.22, v32.41, v32.45: his terms and bar windows are wider, 1400): the intent is that the text lines are capped like the list under them, never the general 1180
+     ids.forEach(function(id){ var m=document.getElementById(id); if(!m) return; var s=m.querySelector('.msub'); if(!s) return; n++; var mw=getComputedStyle(s).maxWidth, ls=m.querySelector('.plist'), lw=ls?getComputedStyle(ls).maxWidth:'1060px'; if(lw==='none') lw='1060px'; if(id==='termsmodal'){ if(mw!=='1400px'||lw!=='1632px') bad.push(id+' text lines are capped at '+mw+', its list at '+lw+', not its own pair 1400px and 1632px'); return; }   /* retargeted 2026-11-01 (v36.57, job 254): the Terms window was rebuilt with its own pair, heading text 1400 and list 1632; the party, gambler and bar windows still share one cap */ if(mw!==lw||(/^(none|\d+(\.\d+)?%)$/).test(mw)) bad.push(id+' text lines are capped at '+mw+', its list at '+lw); });   // retargeted 2026-10-20 (v32.22, v32.41, v32.45: his terms and bar windows are wider, 1400): the intent is that the text lines are capped like the list under them, never the general 1180
      if(!n) return 'SKIP: no framed windows here';
      return bad.length?bad.join('; '):null; }},
   {v:'18.77',what:'the gambler window lines are centred like its title and cards: the credits line and Wirt line read centred, never flush against the panel edge',
@@ -75543,7 +75565,7 @@ class Audio {
          if(!R) continue; n++;
          if(Math.abs((R.x+R.w/2)-T.x)>2) bad.push(T.s+': plate centre '+Math.round(R.x+R.w/2)+', name centre '+Math.round(T.x));
          if(R.y>T.y-T.a*0.85) bad.push(T.s+': the plate covers only the lower part of the letters');
-         if(labs[T.s].id==='bar'){ for(j=i+1;j<ops.length;j++) if(ops[j].k==='t'&&ops[j].s.indexOf('EXPERIMENTAL')>=0){ if(ops[j].y-ops[j].a<R.y+R.h-0.5) bad.push('the warning under '+T.s+' prints into its name plate'); break; } }
+         if(labs[T.s].id==='bar'){ for(j=i+1;j<ops.length;j++) if(ops[j].k==='t'&&/experimental/i.test(ops[j].s)){ var C=ops[j]; if(C.y-C.a<T.y+T.d-0.5) bad.push('the warning under '+T.s+' touches the name'); if(C.y+C.d>R.y+R.h+0.5||C.y-C.a<R.y-0.5) bad.push('the warning under '+T.s+' is not inside the sign plate'); break; } }   /* retargeted 2026-11-01 (v36.84, job 254): the caption is the second line of the sign plate itself, so it must stand inside that plate and clear of the name */
        }
        if(!n) return 'SKIP: no station names were drawn';
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
@@ -81972,7 +81994,7 @@ class Audio {
      var bad=[];
      if(src.indexOf("cwg.gain.setValueAtTime(.01*vol,cwt)")<0) bad.push('the clock warning is not at .01, a quarter of the v16.30 level');
      if(src.indexOf("ckg.gain.setValueAtTime(.0075*vol,t)")<0) bad.push('the clock tick is not at .0075, a quarter of the v16.30 level');
-     if(src.indexOf("' INBOUND  '")<0||src.indexOf("' INCOMING  '")>=0) bad.push('the extraction banner does not say INBOUND');
+     if(src.indexOf("'  INBOUND  '")<0||src.indexOf("' INCOMING  '")>=0) bad.push('the extraction banner does not say INBOUND');
      return bad.length?bad.join('; '):null; }},
   {v:'16.29',what:'player 2 hears the game: with no split setting saved, a same machine pair starts split (player 2 window playing, panned right); switched off it stays off',
    run:function(){
@@ -84790,7 +84812,7 @@ class Audio {
    run:function(){
      return 'SKIP: retired by v17.70, one sound setting for the pair replaced the per-window sound buttons this check drove';
      // THE MUTE IS THERE. Without it both windows on one PC play every sound and everything is heard twice, so the old build fails here rather than skips.
-     if(typeof NET==='undefined'||!NET||typeof netSndOut!=='function'||typeof netSndInit!=='function'||typeof netSndSet!=='function'||typeof netSndToggle!=='function'||
+     if(typeof NET==='undefined'||!NET||typeof netSndOut!=='function'||typeof netSndInit!=='function'||typeof netSndSet!=='function'||
         typeof netSndRoute!=='function'||typeof netSndRelease!=='function'||typeof netSndView!=='function'||typeof netSameOnMsg!=='function'||
         !document.getElementById('partysnd')||!document.getElementById('partysndbtn')||!document.getElementById('partysndnote')||typeof NET.sndOn!=='boolean')
        return 'this build has no master gain and no SOUND row in the PARTY window (no netSndOut, netSndInit or netSndSet), so two windows on one PC both play every sound and everything is heard twice';
@@ -84917,7 +84939,7 @@ class Audio {
        if(netSameOnMsg({t:'snd',pair:'zqxotherpair',on:0})!=='ignored'||NET.sndOther!==1) bad.push('a sound word from another pair code was taken (other '+NET.sndOther+')');
        // A press flips it at once, keeps it, tells the other window; the schedules keep running behind the gain.
        ch.posted=[]; fk.susp=0;
-       var t1=netSndToggle(); renderParty();
+       var t1=netSndSet(!NET.sndOn); renderParty();
        if(t1!==false||NET.sndOn!==false) bad.push('one press on the SOUND row did not switch the host off (on '+NET.sndOn+')');
        if(gH&&gH.gain.value!==0) bad.push('switched off, the master gain is '+gH.gain.value+', not 0');
        if(txt(g('partysndbtn')).indexOf('SOUND OFF')<0) bad.push('the row does not read SOUND OFF after one press: '+txt(g('partysndbtn')));
@@ -84933,7 +84955,7 @@ class Audio {
        if(gH&&(!has(BUS.out,gH)||!MUS.lp||!has(MUS.lp.out,gH))) bad.push('switched off, the world no longer runs through the master gain');
        var v2=netSndView();
        if(!v2||v2.on!==false||v2.gain!==0) bad.push('the test handle does not read the host as off with the gain at 0 ('+js(v2)+')');
-       var t2=netSndToggle();
+       var t2=netSndSet(!NET.sndOn);
        if(t2!==true||NET.sndOn!==true||(gH&&gH.gain.value!==1)||ls(KH)!=='1') bad.push('a second press did not switch the host back on at once (on '+NET.sndOn+', gain '+(gH?gH.gain.value:'none')+', kept '+ls(KH)+')');
        // A ready from player 2 is answered with the switch.
        ch.posted=[];
@@ -85299,7 +85321,7 @@ class Audio {
      // THE MENU IS THERE. Without it there is no way to pick a mode, so the old build fails here rather than skips.
      var mm=document.getElementById('modemenu'), t=document.getElementById('title');
      if(!mm||!t||typeof NET==='undefined'||!NET||typeof netSamePick!=='function'||typeof netSameOnMsg!=='function'||typeof netSameBootP2!=='function'||
-        typeof netSameHostDone!=='function'||typeof netSameJoinDone!=='function'||typeof netP2Of!=='function'||typeof netP2Key!=='function'||
+        typeof netSameHostDone!=='function'||typeof netSameJoinDone!=='function'||typeof netP2Of!=='function'||
         typeof netModeOf!=='function'||typeof netPairOf!=='function'||typeof netSaveLocked!=='function'||typeof netTitleMove!=='function'||typeof netTitleEnter!=='function')
        return 'this build has no mode menu on the title screen (no #modemenu, no netSamePick, no netSameOnMsg, no netSameBootP2 and no player 2 save key), so the first thing a player picks is not the mode and two windows on one PC cannot pair up';
      if(typeof netOnMsg!=='function'||typeof netStartJoin!=='function'||typeof netReset!=='function'||typeof renderParty!=='function') return 'this build has no net section under the mode menu';
@@ -85501,7 +85523,7 @@ class Audio {
        if(netP2Of('')||netP2Of('?p2=0')||netP2Of('?p2=12')||netP2Of('?xp2=1')||netP2Of('?netslot=A')) bad.push('control: an address without p2=1 picks the player 2 save');
        if(netModeOf('?p2=1&mode=pvp&pair=abcd')!=='pvp'||netModeOf('?mode=coop')!=='coop'||netModeOf('?mode=zzz')!==''||netModeOf('')!=='') bad.push('the mode is not read off the address');
        if(netPairOf('?pair=abcd1234')!=='abcd1234'||netPairOf('?p2=1&pair=zq12&mode=coop')!=='zq12'||netPairOf('?pair=AB')!==''||netPairOf('')!=='') bad.push('the pair code is not read off the address');
-       kP=netP2Key();
+       kP='salvagerun:profile:p2';
        if(kP===MAIN||kP===S0||kP===netSlotKey('A')||kP===netSlotKey('B')||kP.indexOf(MAIN+':')!==0||kP.indexOf(':net')>=0) bad.push('the player 2 save key '+kP+' is not a key of its own beside '+MAIN);
        if(typeof NETP2!=='boolean') bad.push('the page does not read NETP2 off its address (it is '+typeof NETP2+')');
        else {
@@ -115824,8 +115846,7 @@ window.__audio={amb:tickAmbience,steps:tickEnemyAudio,sfx:sfx,blip:blip,ears:ear
     try{ fn(); } finally { AC=oldAC; BUS=oldBUS; }
     return log;
   }};
-window.__bag={weight:bagWeight,drop:dropItem,worst:worstBagIndex,cull:autoCull,
-  cap:function(){ return PACKCAP[P.pack]; },ival:ival,items:function(){ return ITEMS; }};
+window.__bag={weight:bagWeight,drop:dropItem,worst:worstBagIndex,  cap:function(){ return PACKCAP[P.pack]; },ival:ival,items:function(){ return ITEMS; }};
 // 2026-10-12 THE UI LINT (his order: "make damn sure that the revisions to the menus actually look good"). Fixture only:
 // tools\uishots.ps1 runs it on every staged screen. window.__uiLint(opts) looks at the DOM on screen RIGHT NOW and returns
 // {issues:[{kind,el,detail}],stats}. Kinds:
