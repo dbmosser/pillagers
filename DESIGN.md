@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.19 - SEASON ZERO M1: NO MORE XP
+
+Co-op hunt while he was away. his order of 11-01: lets get rid of the concept of xp altogether, everything you can get, you have to buy with cash (plan m1, build 1 of 5) Watch: a run, a walk out and nothing else earns or costs XP; the Mainframe has no rewards tab, no claim buttons and no rewards waiting badge; no xp or level figure on the raid end card, the corner readout, the stash header, the stats tab, the save slots or the peddler panel; looks a level or the reward board gated are open; an old save is paid once in cash for ladder rewards earned since the last payout and never claimed, the money counts in lifetime earnings and the hub says it once; the saved XP figure stays in the save and the restore code still carries it; SP and the career board are unchanged
+
+MEASURED. Check 37.19 passes, and fails on v37.18.
 ## v37.18 - SEASON ZERO: SELL FROM THE STASH AND BUY BACK
 
 Co-op hunt while he was away. his answers of 11-01 (m1): sell from the stash screen (37), buy back what you sold today at the same price (39), show net worth (44), lifetime earnings count every dollar earned (47); the plan has no XP, so a sale pays only $ Watch: every stash sale pays one price (sellPriceOf) in $ only and counts in lifetime earnings; the sales of the day show as buy back chips under the sell button and a chip buys that sale back at the price paid; a locked item never sells; the stats page shows net worth (cash plus the stash at sale prices)

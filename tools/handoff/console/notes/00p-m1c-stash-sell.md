@@ -11,5 +11,9 @@
 - Buy back strip #buyback under the sell button: chips, newest first, each buys back that whole sale at the price paid. Cap 12 entries.
 - XP removed from all four sale sites; sellall label lost "+N XP".
 
-## After ship
-- Retarget fixture check v24.28 line ~57722 (Sell all paid XP) to "no XP".
+## Result
+- SHIPPED v37.18 (eb62f44a0), ON HIS PC v37.18. Check 37.18 PASS/PASS; fingerprint held.
+- v24.28 retargeted (fixture b92cbf7ba); 24.28, 37.18, 22.01 PASS on runchk.
+- Critic: 15-mainframe-stats 3 (P1 on mine: net worth sub-line repeats the header figures; left for m1e, which reworks that card), 67-career-stash-stocked 3 (all findings older layout). Finish line for these screens is 3.
+- Buy back strip has no camera stage: asked the coordinator in alarms.md. Pictures: notes/shots/00p-m1c-before and -after (1080 and 4K).
+- DESIGN.md (not writable for me) lacks the day-close banking note; it is in notes/progression/README.md and alarms.md.

@@ -1,9 +1,24 @@
 # 00p-m1a-xp-off notes (lane a)
 
-## XP sites in the game (v37.17 grep)
-- earn: addProgress 35369 (addXp(xpBaseFor)), syncXpLevel 7108; sale lines 58652 58662 59434 61186 are m1c's (leave the P.xp+=).
-- abandon fee takes P.xp: 72729 (button text), 72968 (takes), 36110 (card line).
-- shop XP gates (o.rep): 59560, 60450-60656, 73552, 74198. level gate 37663 (k==='level').
-- text: 3684 reptop header, 59078 reptop, 57461, 57680 renderSeason head, 59912 account card, 35774-35800 raid-end lines, 36494 ocStatRow icon,
-  46076 RAID XP buzz row, 49122 ctx text, 58000/58005 bar text, 59527/59541 sell-all text, 60219 restore msg, 60246 report, 60438, 60760, 76371 save slots.
-- keep: 6237 cache key, 6606 rep merge, 6686 load sync, 60021/60103 restore code x and l.
+Key cw-m1xpoff, mk S\mk-cw-m1xpoff.ps1 + mk-cw-m1xpoff.check.js (29 edits). Preflight PASS 11-01 as v37.18.
+
+## What it does
+- xpOffMig(p) (once, P.mig1x, born set in the P literal), run on load right after seasonZeroMig: ladderPayout again, $ to lifeEarnAdd,
+  hub line added to an unshown P.szNote (else a new one). P.xp untouched.
+- No XP earned: addXp returns 0, addProgress no longer calls it (netEarn kept), xpForRun returns 0, walking out takes no XP (G.abandonFee 0).
+  Sale lines (m1c) still do P.xp+= and syncXpLevel: left alone as ordered.
+- Mainframe: no REWARDS tab (openOps('rew') opens contracts), no KeyR on the station, seasonReady() returns 0 (no badge, no sign "rewards
+  waiting", no claim), renderSeason empties the pane, its msub text gone.
+- No XP/level text: raid end card XP + next reward lines, abandon fee line and confirm "costs N XP", corner readout, stash header reptop
+  (kept hidden, still written), stampBalance, YOUR STATS Experience card, title save slots, RAID XP conditions row, bar_now, peddler panel
+  "carried home", sell all label, restoreSay, repline, salvage blurb.
+- cosOwned: level:N and board:N looks are open (no level, no board any more).
+- Kept: restore code x and l, syncXpLevel on load (P.xpLevel number nobody reads), his baked text map entries, bar_line (shows his
+  "things are about to get real"), hidden sellhint, shop rep gates (every SHOP rep is 0, never shown), run report export line (60246).
+
+## Lessons
+- parsecheck.html balance() reads `return /re/.test(x)` as division then a regex: unbalanced braces, parse FAIL with no detail.
+  Never put a regex literal right after `return` in a check. (Probe key cw-pftest proved the pipeline fine; its draft json stays in drafts/.)
+
+## Old checks this breaks (not in the newest 80, so the gate does not run them): 11.52 (corner shows XP), 35.79/35.8x (xpBaseFor XP),
+  the Experience card check near fixture line 111005, addProgress checks near 107074, 111732, 112083, bar_now checks near 98627. Logged in alarms.md.

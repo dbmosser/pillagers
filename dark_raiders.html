@@ -3238,7 +3238,7 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
   </div>
   <div class="tpane" id="opane_rew" style="display:none;flex-direction:column;flex:1;min-height:0">
     <div id="seasonhead" style="font-size:13px;letter-spacing:.14em;color:var(--amber);padding:0 0 6px"></div>
-    <div class="msub">Kills, loot, doors, selling and extracting all pay XP. Dying pays half. A hundred rewards, claimed in order, and nothing here ever resets.</div>
+    <div class="msub"></div><!-- v37.xx (cw-m1xpoff): the XP ladder is gone -->
     <!-- v19.40, seen on the 4K REWARDS screenshot (2026-10-08): the count was dark text meant for the amber fill, but with the fill near empty
          (XP out of 1,200,000) it sat on the dark track and could not be read. Light text with a dark edge reads on both; the bar is a little taller. -->
     <div id="seasonbar" style="height:20px;border:1px solid var(--steel-hi);background:rgba(0,0,0,.35);margin:6px 0 10px 0;position:relative">
@@ -3681,7 +3681,7 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
   <div class="toprow">
     <div>
       <!-- v28.xx (cw-cx-namestashview), J4 critic: identify the screen and show the actual save name in the shared menu font. --><div class="brand">stash <span class="stashsep" aria-hidden="true">/</span> <span id="stashname">pillager</span> <span id="verlabel"></span></div>
-      <div style="font-size:13px;color:var(--ash);letter-spacing:.14em;margin-top:4px">THE UNDERCROFT &mdash; THE STASH &mdash; XP <span id="reptop" style="color:var(--amber)">0</span> <span id="notoline"></span></div>
+      <div style="font-size:13px;color:var(--ash);letter-spacing:.14em;margin-top:4px">THE UNDERCROFT &mdash; THE STASH<span id="reptop" style="display:none">0</span><!-- v37.xx (cw-m1xpoff): no xp in the stash header --> <span id="notoline"></span></div>
     </div>
     <div class="credits" id="credits">0<small>CREDITS</small></div>
     <button class="deploy ghost" id="stashclose" style="padding:8px 18px;margin-left:14px;align-self:center">CLOSE</button>
@@ -3930,8 +3930,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.18';
-var VER_AT='2026-11-01 15:33';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.19';
+var VER_AT='2026-11-01 15:39';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5187,7 +5187,7 @@ var P={credits:900,stash:[],weapons:['pistol'],equipped:'fists',runs:0,ext:0,die
   // cut at the great door, was told Banked, reloaded the page, and the second
   // load took it, once, silently. mig945 is the rig buyback, harmless on an
   // empty stash, and is stamped for the same reason: the rule is the rule.
-  mig739:1,mig945:1,beltV:5,hotbarV:10,mig0p:1,lifeEarn:0,   // v37.xx (cw-p0acct): season zero records born set (seasonZeroMig)   // v21.93: beltV, the four-gun belt plan, born set (beltSlidePlan)
+  mig739:1,mig945:1,beltV:5,hotbarV:10,mig0p:1,lifeEarn:0,mig1x:1,   // v37.xx (cw-m1xpoff): the second ladder payout stamp, born set (xpOffMig)   // v37.xx (cw-p0acct): season zero records born set (seasonZeroMig)   // v21.93: beltV, the four-gun belt plan, born set (beltSlidePlan)
   achScan:1,   // v35.47 (cloud-ach-born-scan), CLOUD AUDIT 2026-10-28: BORN SET. Live runs already count kills (achRun live), so the one-time log scan in achStatsDraw added every run again the first time a new save opened its stats: 14 pillager kills read 28 and unlocked the 25 kill medal
   // v11.73, from the 2026-09-06 menu audit: BORN SET, like dayMigrated above.
   // The pname default lives inside applyLoadedProfile, which only runs when a
@@ -6241,7 +6241,8 @@ function syncTopRight(){
   _trLast=s;
   if(s==='demo'){ el.innerHTML=''; return; }
   TRV.c=c; TRV.x=x; TRV.sv=sv.toLocaleString(); TRV.bv=bv.toLocaleString();   // v30.xx (cw-trcol): the same figures as text, for the rows the raid HUD draws
-  el.innerHTML='\x24'+c+'<span class="trgap"></span>'+x+' <small>XP</small> <small class="trl">STASH</small> \x24'+sv.toLocaleString()+' <small class="trl">BAG</small> \x24'+bv.toLocaleString();   // v36.xx (cw-hubpolish), critic on o-00l: "money ($) type varies between stations". The stash and bag values were 16px 600 beside the 24px 800 credits; all three $ values are the one number style now, the words stash and bag stay the quiet label.   // v33.xx (cw-raiddollar): his Q59, the stash and bag values are money   // v28.xx (cw-stashbag): spaces, so the text reads right when copied
+  // v37.xx (cw-m1xpoff), his 11-01 order: no xp in the corner readout
+  el.innerHTML='\x24'+c+'<span class="trgap"></span><small class="trl">STASH</small> \x24'+sv.toLocaleString()+' <small class="trl">BAG</small> \x24'+bv.toLocaleString();   // v36.xx (cw-hubpolish), critic on o-00l: "money ($) type varies between stations". The stash and bag values were 16px 600 beside the 24px 800 credits; all three $ values are the one number style now, the words stash and bag stay the quiet label.   // v33.xx (cw-raiddollar): his Q59, the stash and bag values are money   // v28.xx (cw-stashbag): spaces, so the text reads right when copied
 }
 // v17.24, co-op hunt 2026-09-28: TWO TABS ON ONE SAVE. Each tab reads the save once, at boot, and every save writes its whole
 // profile over the key, so with the game open in two tabs the tab holding the older copy wiped what the other had banked (an
@@ -6368,6 +6369,23 @@ function seasonZeroMig(p){
   if(pay.c>0) p.szNote={c:pay.c,n:pay.n,shown:0};
   p.mig0p=1;
   acctEnsure(p);
+  return pay;
+}
+// v37.xx (cw-m1xpoff), HIS ORDER (11-01): "lets get rid of the concept of xp altogether -- everything you can get, you have to buy with cash".
+// Plan m1: XP, levels and the XP ladder come off every screen. Once per save (P.mig1x, born set on a new profile), after seasonZeroMig: every
+// ladder reward the save earned and never claimed (the XP it earned between m0 and this build) is paid as $ and marked claimed, the $ goes into
+// lifetime earnings, and the one-time hub line adds to a line not yet shown rather than replacing it. P.xp stays in the save; nothing reads it.
+function xpOffMig(p){
+  var pay, n;
+  if(!p||typeof p!=='object'||p.mig1x===1) return null;
+  pay=ladderPayout(p);
+  if(pay.c>0){
+    if(p===P) lifeEarnAdd(pay.c); else { acctEnsure(p); p.lifeEarn=Math.round(p.lifeEarn+pay.c); }
+    n=p.szNote;
+    if(n&&typeof n==='object'&&!n.shown&&n.c>0){ n.c=Math.round(n.c+pay.c); n.n=(n.n|0)+pay.n; }
+    else p.szNote={c:pay.c,n:pay.n,shown:0};
+  }
+  p.mig1x=1;
   return pay;
 }
 // Lifetime earnings only ever go up. The one writer m1 calls for every $ earned.
@@ -6817,7 +6835,8 @@ if(typeof FIXED_MAPS!=='undefined'&&typeof mapOffered==='function'){
               _c.desc=_c.desc.replace(/snitches/g,'criers').replace(/snitch/g,'crier');
           });
           try{ gunsGoneSweep(P); }catch(_ggs){}
-          try{ seasonZeroMig(P); }catch(_szm){}   // v37.xx (cw-p0acct): unclaimed ladder rewards paid as $, lifetime earnings seeded, the character is generation one (once, P.mig0p)   // v28.xx (cw-gunsgone): a saved Marksman Rifle or Whisper pays its credits first
+          try{ seasonZeroMig(P); }catch(_szm){}
+          try{ xpOffMig(P); }catch(_xom){}   // v37.xx (cw-m1xpoff): ladder rewards earned since m0 paid as $ (once, P.mig1x)   // v37.xx (cw-p0acct): unclaimed ladder rewards paid as $, lifetime earnings seeded, the character is generation one (once, P.mig0p)   // v28.xx (cw-gunsgone): a saved Marksman Rifle or Whisper pays its credits first
           if(!Array.isArray(P.stash)) P.stash=[];
           P.stash=P.stash.filter(function(k){ return !!ITEMS[k]; });
           if(!Array.isArray(P.weapons)) P.weapons=[];
@@ -35281,18 +35300,13 @@ function spForRun(rec){
   return Math.max(0,sp);
 }
 function seasonClaimed(){ if(!Array.isArray(P.spClaimed)) P.spClaimed=[]; return P.spClaimed; }
-function seasonReady(){
-  var cl=seasonClaimed(),n=0;
-  for(var i=0;i<SEASON_TIERS.length;i++)
-    if((P.xp||0)>=SEASON_TIERS[i].sp&&cl.indexOf(i)<0) n++;
-  return n;
-}
+function seasonReady(){ return 0; }   // v37.xx (cw-m1xpoff): the XP ladder is gone; xpOffMig paid what was earned, so no reward is waiting anywhere
 function tierLabel(T){
   if(T.kind==='wep') return WEAPONS[T.v].name+' to the armoury';
   return T.label||'';
 }
 function claimTier(ix){
-  var T=SEASON_TIERS[ix]; if(!T) return null;
+  var T=SEASON_TIERS[ix]; if(!T||!seasonReady()) return null;   // v37.xx (cw-m1xpoff): nothing is claimed from the ladder any more
   var cl=seasonClaimed();
   if(cl.indexOf(ix)>=0) return null;
   if((P.xp||0)<T.sp) return null;
@@ -35365,10 +35379,7 @@ function claimAllTiers(){
 // nothing at all while being counted everywhere else.
 var KILLXP={crawler:4,sentry:6,snitch:8,listener:10,choir:15,raider:15,howler:20,bulwark:25,warden:60};
 function xpForRun(rec){
-  var x=40 + Math.round((rec.containers||0)*4) + Math.round((rec.dist||0)/900);
-  if(rec.outcome==='dead') x*=0.5;
-  else if(rec.outcome==='abandon') x*=0.25;
-  return Math.round(x);
+  return 0;   // v37.xx (cw-m1xpoff): a run is worth no XP (his 11-01 order)
 }
 // v28.xx (cw-cx-condition-sp), his 10-28 decision: "All these modifiers like night rain etc stuff should contribute to sp not $ at 1.05".
 // v28.xx (cw-cx-condition-sp): XP is the separate Mainframe reward track; neither it nor cash receives these multipliers.
@@ -35417,9 +35428,8 @@ function xpBaseFor(rec){
 function addProgress(rec){
   // v9.96: through addXp, so a dose in his blood pays its bonus on the run.
   // v28.xx (cw-cx-condition-sp): night, weather and signed Terms now multiply SP only.
-  var _xb=xpBaseFor(rec), _xg=addXp(_xb,(rec.doseMul>0)?rec.doseMul:undefined);   // v12.12: the multiplier the card printed
-  rec.xpBase=_xb; rec.xpGot=_xg;
-  syncXpLevel();   // v12.67: the same formula, in one named place
+  // v37.xx (cw-m1xpoff), his 11-01 order ("lets get rid of the concept of xp altogether"): a run pays no XP and P.xp is left as it is.
+  // SP is settled by careerSettle and is unchanged.
   // v10.27, his note: NET LIFETIME EARNINGS. Everything extracted minus
   // everything carried in, over every run; a run that died or was abandoned
   // lost what it carried. Negative is allowed, because that is the truth of
@@ -35812,42 +35822,7 @@ silentExit:T.silentExit||0,
   // their multiplier on season progress, only on credits. A 35 percent Terms load
   // was quietly worth nothing on the long track.
   var tPay=termsPay(1);   // v20.31 (H27): the Terms this raid was built with
-  (function(){
-    var _grec={outcome:how,haul:haul,carriedIn:G.carriedIn||0,containers:T.containers,kills:T.kills,termPay:tPay,
-      doorsOpened:T.doorsOpened||0,caches:T.cachesOpened||0,dist:Math.round(T.distance||0),   // v13.57: rounded as the banked record rounds it
-      // v11.63: the same two flags the banked record carries, so the card prints
-      // what addProgress and addXp will actually credit: night, weather and dose.
-      night:(typeof isDay==='function'&&!isDay())?1:0,
-      wxHard:(typeof wxHardId==='function')?wxHardId((G.wx&&G.wx.id)||'clear'):0};
-    var gained=Math.round(xpBaseFor(_grec)*buzzXpMul());
-    if(gained>0){
-      var cap=SEASON_TIERS[SEASON_TIERS.length-1].sp;
-      // HIS NOTE, v3.59: "it says Season 1 +84 progress -- but what the hell
-      // does that mean? is it rep? not clear". It is not rep. Named and
-      // explained at the one place he reads it.
-      // v8.71, his note: "what happens at Y? Not clear." Nothing happened at Y,
-      // and the old line said "XP progress unlocks the Mainframe rewards", which
-      // promised something automatic. Nothing is automatic: every one of the 100
-      // rewards waits at THE MAINFRAME under REWARDS until you press Claim. The
-      // line now names the next one and what it costs.
-      var _xa=(P.xp||0)+gained, _nx=null;
-      for(var _ni=0;_ni<SEASON_TIERS.length;_ni++) if(SEASON_TIERS[_ni].sp>_xa){ _nx=_ni; break; }
-      lines.push('<span style="color:var(--amber)">+'+gained.toLocaleString()+' XP'+
-        (how==='dead'?' (50% penalty for failure to extract)':(how==='abandon'?' (75% penalty for backing out)':''))+
-        (how==='dead'
-          ? '  &middot;  '+_xa.toLocaleString()+' XP in all'
-          : '  &middot;  '+Math.min(cap,_xa).toLocaleString()+' of '+cap.toLocaleString())+
-        '</span><br><span style="color:var(--ash)">'+
-        (_nx===null
-          ? 'All '+SEASON_TIERS.length+' rewards earned. XP keeps counting, but there is nothing left that it pays for.'
-          // v8.91, his note: not on a death screen. A man reading KILLED IN
-          // ACTION does not need to be told what the next reward is.
-          : (how==='dead' ? ''
-            : 'Next: '+escHtml(tierLabel(SEASON_TIERS[_nx]))+', reward '+(_nx+1)+' of '+SEASON_TIERS.length+
-              ', '+(SEASON_TIERS[_nx].sp-_xa).toLocaleString()+' XP away. Claim it at the Mainframe.'))+
-        '</span>');
-    }
-  })();
+  // v37.xx (cw-m1xpoff), his 11-01 order ("lets get rid of the concept of xp altogether"): the card has no XP line and no next reward line.
   if(G.strayPaid){
     // v11.86, HIS NOTE: no "already banked"; and the gift, on the card of a run
     // that brought it home (a death or an abandonment lost the bag it went into).
@@ -36155,7 +36130,7 @@ var _cdone=contractExtract(G.bag,haul);
     lines.push('<span class="ocnote ocsr">Run abandoned. '+'$'+haul.toLocaleString()+' left behind.</span><div class="ocloss"><b>\x24'+haul.toLocaleString()+'</b><span>Left behind</span></div>');   /* v28.xx (cw-abhero): the loss is the 56px figure over a 16px label; the same words stay in the hidden line (critic on screen 60: no hero line) */
     // v15.09, quit audit finding 7: AND THE FEE THE CONFIRM TOOK, ON ITS OWN LINE. The XP line above is his baked wording and its
     // total is counted after the fee, so this line is what explains the drop. A new line: no baked key is reworded.
-    if(G.abandonFee>0) lines.push('<span style="color:var(--rust)">Walked out on the job. XP -'+G.abandonFee+'.</span>');
+    // v37.xx (cw-m1xpoff): walking out costs no XP, so the card has no fee line
   }
   if(!G.sim) forgeSweep(how);   // v23.xx (forge12): a death takes the forge of the armoury gun lost; an abandon writes nothing
   // v12.87, HIS NOTE 2026-09-11, verbatim: "when a player comes back to the
@@ -37707,8 +37682,7 @@ function cosOwned(c){
   // v5.80: was (P.worldTier||0)>=v, which is unreachable now the tier is gone.
   // The crown is the prestige hat, so it gates on finishing the board instead,
   // which is exactly the achievement the tier used to mark.
-  if(k==='board')    return ((P.spClaimed||[]).length)>=SEASON_TIERS.length;
-  if(k==='level')    return (P.xpLevel||1)>=v;
+  if(k==='board'||k==='level') return true;   // v37.xx (cw-m1xpoff): no player level and no reward board any more, so nothing they gated stays locked
   if(k==='warden')   return ((P.kills&&P.kills.warden)||0)>=v;
   if(k==='buy')      return !!((P.cosBought||{})[c.id]);
   return false;
@@ -46121,7 +46095,7 @@ if(!p.downed&&!G.bagOpen&&!G.mapOpen&&!(G.wheel&&!G.wheel.pad)){   // v28.xx (cw
       // bonus is one number for both and is printed once, below.
       rows.push({k:_bzTags[_bq][1]+(_bn>1?(' \u00d7'+_bn):''),v:fmtDur(_bt)+' left',c:'#d98aff'});   // v22.xx (R48): m:ss
     }
-    if(buzzTotal()) rows.push({k:'RAID XP',v:'+'+buzzXpPct()+'%',c:'#d98aff'});
+    // v37.xx (cw-m1xpoff): no RAID XP row (a raid pays no XP)
     var wv=[];
     if(MW.view!==1) wv.push('sight '+(MW.view<1?'-':'+')+Math.round(Math.abs(1-MW.view)*100)+'%');
     // HIS NOTE, v3.57: "shouldn't it be 'all characters are 40% quieter'
@@ -49167,7 +49141,7 @@ function drawTrade(){
   if(n){
     cy+=LH(13);
     ctx.fillStyle='#6b7783';
-    ctx.fillText('Carried home: '+'$'+fullv.toLocaleString()+' and '+fullv.toLocaleString()+' XP. He pays no XP.',x+14,cy);
+    ctx.fillText('Carried home: '+'$'+fullv.toLocaleString()+'.',x+14,cy);   // v37.xx (cw-m1xpoff): no xp
   }
   cy+=LH(17);
   ctx.strokeStyle='#232b35'; ctx.beginPath(); ctx.moveTo(x+14,cy); ctx.lineTo(x+PW-14,cy); ctx.stroke();
@@ -52285,7 +52259,7 @@ acts:{KeyE:['go up',function(){
      acts:{KeyE:['terminal',function(){ if(hubBagOpen) hubBagOpenSet(false); /* v11.50: commit the open backpack first, or its stale snapshot overwrites what the terminal does */ renderHub(); document.getElementById('hub').classList.add('on'); }]}},
     {id:'mf',x:590,y:105,r:44,label:'THE MAINFRAME',sub:'',c:'#4de3d0',season:1,
      acts:{KeyE:['contracts',function(){ openOps('con'); }],
-           KeyR:['rewards', function(){ openOps('rew'); }],
+           // v37.xx (cw-m1xpoff): no rewards key (the XP ladder is gone)
            KeyF:['racks',   function(){ openOps('mf');  }],
            // v6.50: the fourth tab had no key while the other three did.
            KeyT:['your stats',function(){ openOps('rec'); }]}},
@@ -57285,7 +57259,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.18: every stash sale pays one price (sellPriceOf) in $ only and counts in lifetime earnings; the sales of the day show as buy back chips under the sell button and a chip buys that sale back at the price paid; a locked item never sells; the stats page shows net worth (cash plus the stash at sale prices) Check 37.18 fails on v37.17',
+  now:'v37.19: a run, a walk out and nothing else earns or costs XP; the Mainframe has no rewards tab, no claim buttons and no rewards waiting badge; no xp or level figure on the raid end card, the corner readout, the stash header, the stats tab, the save slots or the peddler panel; looks a level or the reward board gated are open; an old save is paid once in cash for ladder rewards earned since the last payout and never claimed, the money counts in lifetime earnings and the hub says it once; the saved XP figure stays in the save and the restore code still carries it; SP and the career board are unchanged Check 37.19 fails on v37.18',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -57505,8 +57479,7 @@ function stampBalance(el){
     c=document.createElement('span'); c.className='modcur';
     h.appendChild(c);
   }
-  c.innerHTML=(P.credits||0).toLocaleString()+'<em>c</em>'+
-    '<i>'+(P.xp||0).toLocaleString()+'<em>XP</em></i>';
+  c.innerHTML=(P.credits||0).toLocaleString()+'<em>c</em>';   // v37.xx (cw-m1xpoff): no xp beside the balance
 }
 // v8.84: THE SIMPLE INVENTORY, the one he has asked for three times. P.kit is
 // the backpack down here and P.hotAssign is the belt, which is the same pair the
@@ -57724,49 +57697,12 @@ function renderTerms(){
   if(foot&&tt.parentElement!==foot) foot.appendChild(tt);
 }
 function renderSeason(){
-  var head=document.getElementById('seasonhead');
-  head.textContent='XP';
-  var cap=SEASON_TIERS[SEASON_TIERS.length-1].sp,sp=P.xp||0;
-  document.getElementById('seasonfill').style.width=clamp(100*sp/cap,0,100)+'%';
-  document.getElementById('seasontext').textContent=Math.min(sp,cap).toLocaleString()+' / '+cap.toLocaleString();
-  var el=document.getElementById('seasonlist'); el.innerHTML='';
-  try{ syncOpsTabs(); }catch(_st){}    // v8.19: the tab badge follows the board
-  (function(){
-    var _sb=document.getElementById('seasonclaimall'); if(!_sb) return;
-    var _sr=seasonReady();
-    _sb.textContent=_sr?('CLAIM ALL  ('+_sr+')'):'CLAIM ALL';   // v28.xx (cw-rackrew), critic task 99: the sentence "nothing ready to claim" is gone (Q8: the disabled button already says nothing is ready)
-    _sb.disabled=!_sr;
-    _sb.onclick=claimAllTiers;
-  })();
-  var cl=seasonClaimed();
-  var _rwNx=-1; for(var _ri=0;_ri<SEASON_TIERS.length;_ri++){ if(cl.indexOf(_ri)<0&&sp<SEASON_TIERS[_ri].sp){ _rwNx=_ri; break; } }   // v28.xx (cw-rackrew): the next reward to earn reads first
-  SEASON_TIERS.forEach(function(T,ix){
-    var row=document.createElement('div'); row.className='row';
-    var got=cl.indexOf(ix)>=0,ready=!got&&sp>=T.sp;
-    row.className+=' rw-'+T.kind+(ready?' rw-ready':'')+(ix===_rwNx?' rw-next':'');   // v28.xx (cw-rackrew): type cue (credits, wep, kit), ready, next
-    var nm=document.createElement('div'); nm.className='nm';
-    nm.textContent=(ix+1)+'.  '+tierLabel(T);
-    if(got) nm.style.color='var(--ash)';
-    else if(!ready) nm.style.color='var(--ash)';
-    var vl=document.createElement('div'); vl.className='vl';
-    vl.textContent=got?'claimed':(ready?'ready':(T.sp-sp).toLocaleString()+' to go');
-    if(ready) vl.style.color='#ffc04a';
-    var b=document.createElement('button');
-    if(got){ b.textContent='Claimed'; b.disabled=true; }
-    else if(!ready){ b.textContent=T.sp.toLocaleString(); b.disabled=true; }
-    else {
-      b.textContent='Claim';
-      b.onclick=function(){
-        var m=claimTier(ix);
-        // v8.10: "Reward", not "Tier" - the word is on his Never list, and the
-        // v8.06 vocabulary sweep walked straight past this one.
-        if(m) say2('Reward '+(ix+1)+': '+m);
-        renderSeason(); renderHub();
-      };
-    }
-    row.appendChild(nm); row.appendChild(vl); row.appendChild(b);
-    el.appendChild(row);
-  });
+  // v37.xx (cw-m1xpoff), his 11-01 order ("lets get rid of the concept of xp altogether"): no XP bar and no reward ladder. The pane is never
+  // opened (openOps has no REWARDS tab); it is emptied so nothing in it prints XP.
+  var el=document.getElementById('seasonlist'); if(el) el.innerHTML='';
+  var head=document.getElementById('seasonhead'); if(head) head.textContent='';
+  var _stx=document.getElementById('seasontext'); if(_stx) _stx.textContent='';
+  try{ syncOpsTabs(); }catch(_st){}
   var rm=document.getElementById('roadmaplist'); rm.innerHTML='';
   // v6.56: not in a player build. These rows are the open questions I am asking HIM,
   // and they were showing on the Rewards tab of a shipping game.
@@ -57950,10 +57886,7 @@ function buzzXpPct(){ return Math.round((buzzXpMul()-1)*1000)/10; }
 // ONE WRITER for earned XP, so every grant takes the bar's bonus. Returns what
 // was actually added.
 function addXp(n,mul){
-  n=Math.round(n||0); if(n<=0) return 0;
-  var g=Math.round(n*((mul!==undefined)?mul:buzzXpMul()));   // v12.12: a run banks the bonus its card printed
-  P.xp=(P.xp||0)+g;
-  return g;
+  return 0;   // v37.xx (cw-m1xpoff): nothing earns XP any more (his 11-01 order); the saved figure stays as it is
 }
 var BUZZT=0;
 function tickBuzz(dt){
@@ -58050,7 +57983,7 @@ function barIconURL(tag){
   // that moves must never be concatenated onto a line he has edited.
   var _bnow=document.getElementById('bar_now');
   if(_bnow) _bnow.textContent=buzzTotal()
-    ? ('In your blood now: '+buzzTotal()+' dose'+(buzzTotal()===1?'':'s')+', RAID XP +'+buzzXpPct()+'%.')
+    ? ('In your blood now: '+buzzTotal()+' dose'+(buzzTotal()===1?'':'s')+'.')   // v37.xx (cw-m1xpoff): no raid xp figure
     : '';
   var h='';
   for(var i=0;i<BOOZE.length;i++){
@@ -59978,8 +59911,7 @@ function achStatsDraw(g){
           'Total value extracted minus value carried in, across all runs. Deaths and abandons count what you lost.');
   // v37.xx (cw-m1sell), his answer 44: net worth, the cash and what the stash would sell for today
   h+=card('net worth', '$'+netWorth().toLocaleString(), 'cash $'+(P.credits||0).toLocaleString()+'  &middot;  stash $'+stashWorth().toLocaleString());
-  h+=card('Experience', 'Level '+(P.xpLevel||1),
-          (P.xp||0).toLocaleString()+' XP earned');
+  // v37.xx (cw-m1xpoff), his 11-01 order: no Experience card (no XP and no player level); m1e puts lifetime earnings and the rank here
   // NOTORIETY, v8.26, his order: visible, and in words that mean something.
   // A bare number told him nothing about what it was costing him. Every clause
   // below is computed from the same expressions the rules use, so the card
@@ -60285,7 +60217,7 @@ function restoreSay(o){
   for(id in (o.s||{})) st+=(o.s[id]|0);
   var ng=(o.g&&o.g.w)?o.g.w.length:0;
   return o.n+', '+(o.r|0)+' raid'+((o.r|0)===1?'':'s')+', '+'$'+(o.c|0).toLocaleString()+
-         ', '+(o.x|0).toLocaleString()+' XP, '+st+' item'+(st===1?'':'s')+' in the stash'+
+         ', '+st+' item'+(st===1?'':'s')+' in the stash'+   // v37.xx (cw-m1xpoff): the code still carries x and l; nothing shows them
          (o.g?', '+ng+' gun'+(ng===1?'':'s'):'')+'.';
 }
 // v23.6x (feat0c), HIS ANSWER (2026-10-12): the version players see restarts at v0.0001. VER stays the internal ship number the tools,
@@ -60504,7 +60436,7 @@ function renderShop(){
   // v6.14: the balance moved to the heading, where it is on every screen now, so
   // this line keeps only what the heading cannot say: where reputation comes from.
   document.getElementById('repline').textContent=
-    'XP comes from selling salvage in the Undercroft.';
+    '';   // v37.xx (cw-m1xpoff): there is no XP
   // The best guns are not sold here and never have been. Say so where money is
   // being spent, and name them, or the mechanic stays invisible.
   // v6.08: the "I do not stock the heavy end" line came off the counter. It was
@@ -60826,7 +60758,7 @@ function itemStatsHTML(k){
   if(it.use==='gun') return 'A gun. Equip it from the stash, or sell it at the terminal.';   // v12.18: the bench makes these now
   if(it.use==='key') return 'Opens one locked room.';
   if(craftPart(k)) return craftUse(k)||'Crafting material.';
-  return 'Salvage. Sell it at the terminal for credits and XP.';
+  return 'Salvage. Sell it at the terminal for credits.';   // v37.xx (cw-m1xpoff): no xp
 }
 // v8.10: the single writer for a finished contract. Pays, banks the standing
 // weight, and refills the slot. Returns null for anything not actually
@@ -61290,7 +61222,9 @@ function openOps(tab){
   try{ ensureContracts(); }catch(e){}
   // REWARDS sits next to CONTRACTS because they are the two halves of the same
   // thing: work you sign for and work you are paid for.
-  var T=[['con','CONTRACTS'],['rew','REWARDS'],['mf','RACKS'],['rec','YOUR STATS']];
+  var T=[['con','CONTRACTS'],['mf','RACKS'],['rec','YOUR STATS']];   // v37.xx (cw-m1xpoff): no REWARDS tab (the XP ladder is gone); an old call for it opens contracts
+  if(want==='rew') want='con';
+  (function(){ var _rp=document.getElementById('opane_rew'); if(_rp) _rp.style.display='none'; })();
   try{ renderHub(); }catch(e){}
   try{ renderMainframe(); }catch(e){}
   try{ renderSeason(); }catch(e){}
@@ -72796,10 +72730,7 @@ document.getElementById('abandonbtn').onclick=function(){
     // him negative, which is right, but this quoted the figure from before that
     // floor: a first-time player with almost no XP read a hundred-odd XP on a
     // button that was about to take nothing from him.
-    var _ac=Math.min(abandonRepCost(_el),(P.xp||0));
-    // v23.22 (arcade3): an arcade raid costs no XP, so its confirm quotes none
-    /* v28.xx (cw-endflat), the critic on 59: "an explaining parenthetical on the danger button". Q8, reason logged in notes/ui/changes.md: the cost is its own quiet 16px line under the button words, not a bracket inside them. */
-    cb.innerHTML=(G&&G.arcade)?'YES, ABANDON THIS RUN':'YES, ABANDON THIS RUN <small>'+((_el>60)?(_ac>0?('costs '+_ac+' XP'):'no XP to lose'):'free this early')+'</small>';
+    cb.innerHTML='YES, ABANDON THIS RUN';   // v37.xx (cw-m1xpoff): walking out costs no XP, so the button quotes no cost
     return;
   }
   // second press on the same button is the NO: disarm and go back.
@@ -73035,8 +72966,7 @@ document.getElementById('confirmabandon').onclick=function(){
     // v12.77: and the line afterwards reports what was actually taken, not the
     // figure before the floor. It used to say XP -106 to a man who had lost
     // nothing, because he had nothing to lose.
-    var _rc=Math.min(abandonRepCost(runElapsed()),(P.xp||0));   // v17.64: from when this player joined
-    P.xp=Math.max(0,(P.xp||0)-_rc);
+    var _rc=0;   // v37.xx (cw-m1xpoff): no XP fee (his 11-01 order); P.xp is left as it is
     // v15.09, quit audit finding 7: AN ABANDON THAT COSTS XP SAYS SO ON THE OUTCOME CARD. The line below is drawn on the raid
     // screen, and endRaid covers that screen with the outcome card in this same click, so the fee was never read and the card's
     // XP total came out lower than the XP it printed with nothing to explain it. The raid keeps the fee for the card and the report.
@@ -76438,7 +76368,7 @@ loadProfile().then(function(){
            '<span style="color:var(--ash);font-size:13px">'+
            // v8.56, audit: "1 runs" on the first screen of the game, on the slot
            // of anyone who has played exactly once.
-           (inf?(inf.runs+' raid'+(inf.runs===1?'':'s')+' \u00b7 $'+inf.credits.toLocaleString()+' \u00b7 '+inf.xp.toLocaleString()+' XP'):'new')+
+           (inf?(inf.runs+' raid'+(inf.runs===1?'':'s')+' \u00b7 $'+inf.credits.toLocaleString()):'new')+   // v37.xx (cw-m1xpoff): no xp on a save slot
            ((me||blk)?'':' <button data-del="'+key+'" class="deploy ghost" style="margin-left:8px;padding:2px 8px;font-size:13px">DELETE</button>')+
            '</span></div>';
       }

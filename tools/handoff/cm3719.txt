@@ -1,0 +1,7 @@
+v37.19: season zero m1: no more xp
+
+a run, a walk out and nothing else earns or costs XP; the Mainframe has no rewards tab, no claim buttons and no rewards waiting badge; no xp or level figure on the raid end card, the corner readout, the stash header, the stats tab, the save slots or the peddler panel; looks a level or the reward board gated are open; an old save is paid once in cash for ladder rewards earned since the last payout and never claimed, the money counts in lifetime earnings and the hub says it once; the saved XP figure stays in the save and the restore code still carries it; SP and the career board are unchanged
+
+Check 37.19. Fails on v37.18.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

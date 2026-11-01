@@ -15,6 +15,10 @@ Worn gear (cw-p0gear, v37.16):
 - wornMake(k, r, pw, seed): rolls on its own dice (wornRand), never RNGS or FXS, so seed 4242 never moves. In a raid seed it from G.seed and something fixed per container or wreck.
 - wornAdd(p, piece), wornWear(p, id, slot), wornOff(p, slot), wornClean(p) (every load), wornMods(worn) (the sum: rings with one trait take the stronger; every stat capped), wornTraitV(piece, trait) (pips: a third stronger each), wornName(piece).
 Stats (cw-p0stat, v37.17): raidWornMods() sums P.worn onto the raid body as G.player.wm at buildRaid; wornM(stat) is the only reader (0 with nothing worn, in G.sim, in the demo). Sites: tools/handoff/console/notes/progression/stat-sites.md. Not yet carried for a co-op partner (m3 sends it over the net link).
+Sales (cw-m1sell, v37.18), at file scope after lifeEarnAdd:
+- sellPriceOf(k): THE ONE SALE PRICE (today ival(k)); m1d makes it a market here and nowhere else. stashSell(k, n) is the only stash sale (refuses P.keep, pays $, no XP, lists the sale); stashBuyBack(i); stashWorth(), netWorth().
+- P.sellDay {d local day, e $ sold today not bought back, s [{k, n, p}]}; sellDayGet() repairs it and, when the day has changed, banks e into lifetime earnings with lifeEarnAdd and clears the list. So P.lifeEarn never goes down and never counts an undone sale.
+- READ LIFETIME EARNINGS WITH lifeEarnNow() (P.lifeEarn plus today's unbanked sales), never P.lifeEarn alone. m1e: a buy back can lower lifeEarnNow() by its own sale, so pay each rank once (keep a paid mark), never on every crossing.
 
 ## Rules for every 00p job
 - Ship only through mk script, preflight, shipq (RULES.md). Check must FAIL on the build before. Seed 4242 fingerprint must hold.

@@ -131,3 +131,7 @@ The order asked for an outline on things you can use. His 10-15 order says no sh
 
 ## 11-01 bounty pillager raid event (v37.00)
 Only machines can be golden now (your 10-31 rule: pillagers stand in for live players, so no boss-style buffs). The bounty pillager raid event is the same kind of thing (a pillager with a prize on its head). I left it alone as ordered. Keep it as it is, or treat it like the golden one?
+
+## 11-01 no more xp (season zero m1, v37.18)
+1. The drinks at The Last Pour only ever made a raid pay more XP. With XP gone they do nothing now (I took the "raid xp +N%" off the screen and left the drinks as they are). What should a drink do: a small SP boost, a small $ boost, something else, or should the bar go?
+2. Looks that needed a player level (8 of them, like the hair colour at level 4) or the finished reward board (2 crowns) are open to everyone now, since there is no level and no board. Keep them free, or put a $ price on them?

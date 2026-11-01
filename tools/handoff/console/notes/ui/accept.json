@@ -1123,17 +1123,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "it is a clean, consistent dark card with a proper x, tabs and one lime hero, but the body is a flat grid of identical boxes with empty cells, an explaining paragraph, a 'locked' prefix repeated on every row and a clipped last row, so it reads as a template and not a polished AAA stats screen.",
+  "verdict": "The notoriety card is gone and the net worth hero is a sound change, but a stray 'went down' card now sits alone on a second row, and the achievements grid, the clipped bottom edge and the header strip are unchanged.",
   "findings": [
-   "P1 notoriety card: cut to the state word 'clean' plus at most a 3-5 word tag (e.g. 'no bounty'). Move the rule into a hover or focus tooltip. Set the card to the same 16px label style as the other two.",
-   "P1 stats row: experience / notoriety / net lifetime earnings: make three equal columns (about 1/3 each, 16px gutters) and height 160px instead of 270. Put every value on one baseline at y=card top+96. Give 'net lifetime earnings' a hero-weight or matching 32px number in tx-1. Add a thin progress bar under 'level 1' using a lime 4px fill.",
-   "P1 achievements grid: drop the 'locked' word. Show locked state by dimming the name to tx-2 at 60% plus a 16px padlock glyph at the right. Unlocked tiles get a 3px lime left bar and tx-1 name. Add a 40px icon square at the left (x=136) and a small progress fraction such as '0/1' in 16px tx-2 at the right.",
-   "P1 bottom of the scroll area (y~975-1003): add 24px bottom padding to the scroll container and a 32px fade-to-panel gradient at the clip edge. Make the clip end at the card's inner padding (y=1000), not mid-row. Inset the scrollbar 8px from the tiles (tile right edge 1778, scrollbar at 1792).",
-   "P1 header resource strip (top right): use one pattern: 20px tx-1 number plus 16px tx-2 label, with even 24px gaps, e.g. '$900', '0 xp', '$3,750 stash', '$0 bag'. Put the x button 24px to the right, 48px square."
+   "P1 stats row 2, 'went down' card (x120-525, y442-597): Make 4 equal columns of about 1/4 each with 16px gutters, or move 'went down' into the first row. Drop the second row, and cut all cards to about 160px tall.",
+   "P1 stats row 1, card baselines and sizes: Put every value on one baseline at card top+96. Cut the cards to 160px. Add a 4px lime progress bar under 'level 1'. Give the remaining cards a 16px tx-2 sub-line, such as 'lifetime, all runs', so the $0 card doesn't look broken.",
+   "P1 net worth card, sub-line 'cash $900 · stash $6,415': Remove the sub-line, or keep it and drop the header duplicates. Use one label set everywhere ('cash', 'stash', 'bag').",
+   "P1 achievements grid (x120-1793, y682-1003): Add a 40px icon square at x=136. Show '0/1' in 16px tx-2 at the right. Dim locked names to tx-2 at 60%. Give unlocked tiles a 3px lime left bar and a tx-1 name. Lock-state rule: padlock at the right edge, not left of the name.",
+   "P1 scroll clip bottom (y~958-1003): Add 24px of bottom padding to the scroll container and a 32px fade-to-panel gradient at the clip edge. End the clip at y=1000. Inset the scrollbar to x=1802, an 8px gap from the tiles."
   ],
-  "pic": "tools/handoff/console/notes/shots/88-undercroft-windows-recipes-3/15-mainframe-stats-1080.jpg",
-  "task": "88-undercroft-windows",
-  "when": "2026-10-22T09:33"
+  "pic": "tools/handoff/console/notes/shots/00p-m1c-after/15-mainframe-stats-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-01T20:38"
  },
  "74-pad-player-1": {
   "score": 3,
@@ -1458,18 +1458,18 @@
  "67-career-stash-stocked": {
   "score": 3,
   "pass": true,
-  "verdict": "This is a competent Diablo-style dark inventory card with a clear lime 'take' CTA and good rarity bars, but it is crowded and the type scale is inconsistent. The loadout pane is mostly empty while the footer is dense, and the 'take' bar competes with the header for attention.",
+  "need": 3,
+  "verdict": "Only one thing changed: the sell-all bar lost its '+2,667 xp' suffix. The header clutter, the three stacked footer rows, the tiny empty loadout pane and the type-scale sprawl from the last review are all still there.",
   "findings": [
-   "P1 header, top right: Keep one hero figure ($48,250 at 32px f-cond 800). Move 'xp' to tx-2 at 16px. Delete 'stash $8,405 bag $0' and keep only '$0 going up' in the loadout pane.",
-   "P1 bottom, 'freebie kit' / 'take' row: Fold it into the card footer. Make it a 56px footer row with the label left and a 160x40 'take' button directly after the label (24px gap), or move it into the loadout pane. Keep one filled button per card.",
-   "P1 footer: key legend, 'sell all salvage' bar, 'freebie kit' row: Merge them into one 72px footer. Put the legend on the left in 14px tx-2 and 'sell all salvage $1,975' as a real outlined button (40px high, 20px text) on the right. Drop the second bar.",
-   "P1 loadout pane (backpack, tactical belt, gun keys, item wheel): Enlarge gun key and item wheel icons to at least 32px. Raise the numerals to 16px tx-2. Give empty slots a 1px --ui-line border and an 8px gap so they read as slots. Add a short empty-state label in the backpack, such as 'drop items here'.",
-   "P2 type scale across the card: Snap to the five sizes. Section labels at 20px f-cond 600 tx-1 with a 1px --ui-line divider under them. Sub-section labels at 16px tx-2. Counts and badges at a minimum of 16px, or drop them."
+   "P1 header, top right: $48,250 / 212,000 xp / stash $12,635 / bag $0: Keep '$48,250' as the single hero at 32px f-cond 800. Set xp to 16px tx-2. Delete 'stash $12,635' and 'bag $0' from the header, and keep only '$0 going up' in the loadout pane.",
+   "P1 footer: key legend, 'sell all salvage' bar, 'freebie kit' row: Merge them into one 72px footer. Put the legend on the left in 14px tx-2. Put 'sell all salvage $2,667' on the right as an outlined 40px button with 20px text. Move 'freebie kit' into the loadout pane or a header chip, with the 'take' button next to its label.",
+   "P1 freebie kit row, 'take' button: Make 'take' a 160x40 button directly after the label with a 24px gap. Keep only one filled lime element visible. Change the grid badges to tx-1 on --ui-raised.",
+   "P1 right loadout pane: backpack, hotbar, keys: Give slots a 1px --ui-line solid border and an 8px gap. Make hotbar slots 72px with 16px tx-2 numerals. Delete the duplicate 'backpack' sub-label and the zero counts. Add a 'drop items here' label at 16px tx-2 in the backpack. Use the empty space for a selected-item detail pane.",
+   "P2 stash grid tiles: Remove the radial gradient and fill tiles with flat --ui-panel. Scale the art to about 96px. Keep the 3px rarity bar. Replace the red slash with a 16px lock glyph at 60% opacity."
   ],
-  "pic": "tools/handoff/console/notes/shots/69-camera/67-career-stash-stocked-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/00p-m1c-after/67-career-stash-stocked-1080.jpg",
   "task": "manual",
-  "when": "2026-10-21T03:37",
-  "need": 3
+  "when": "2026-11-01T20:39"
  },
  "68-settings-sec-the-raid": {
   "score": 3,

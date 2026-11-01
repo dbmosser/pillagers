@@ -104,10 +104,6 @@
                       "replacement":  "    ctx.fillText(\u0027Carried home: \u0027+\u0027$\u0027+fullv.toLocaleString()+\u0027.\u0027,x+14,cy);   // v37.xx (cw-m1xpoff): no xp"
                   },
                   {
-                      "anchor":  "      ? (\u0027Sell all salvage  \\u00b7  \u0027+\u0027$\u0027+_sv.toLocaleString()+\u0027  +\u0027+_sv.toLocaleString()+\u0027 XP\u0027)",
-                      "replacement":  "      ? (\u0027Sell all salvage  \\u00b7  \u0027+\u0027$\u0027+_sv.toLocaleString())   // v37.xx (cw-m1xpoff): no xp on the label (the sale line itself is 00p-m1c)"
-                  },
-                  {
                       "anchor":  "         \u0027, \u0027+(o.x|0).toLocaleString()+\u0027 XP, \u0027+st+\u0027 item\u0027+(st===1?\u0027\u0027:\u0027s\u0027)+\u0027 in the stash\u0027+",
                       "replacement":  "         \u0027, \u0027+st+\u0027 item\u0027+(st===1?\u0027\u0027:\u0027s\u0027)+\u0027 in the stash\u0027+   // v37.xx (cw-m1xpoff): the code still carries x and l; nothing shows them"
                   },
