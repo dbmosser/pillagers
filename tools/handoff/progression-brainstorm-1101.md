@@ -31,3 +31,6 @@ Open: is worn gear lost on death (no insurance ruling 09-30); is $ for earned co
 ## Round 3 (11-01, his picks)
 His words: "2play combos is probably the least compelling to me" / "i like the idea of worn gear that you lose upon death -- makes dying more costly" / "amulet".
 So: co-op combos dropped; worn gear is lost on death (no insurance); slots hat, cloak, armor, pants, amulet, two rings. Full plan page: tools/handoff/progression-plan.html (published as an artifact).
+
+## Round 4 (11-01)
+His words: "lets get rid of the concept of xp altogether -- everything you can get, you have to buy with cash". Plan page updated: no XP, levels or XP ladder; rank = lifetime $ banked (Reach style, spending never lowers it) with rank-up rewards replacing the ladder; skills bought with $; unclaimed ladder rewards paid as $ on first load.

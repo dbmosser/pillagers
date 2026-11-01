@@ -100,7 +100,8 @@ footer { color: var(--muted); font-size: 13px; }
 <header>
   <div class="eyebrow">pillagers · season zero · plan only, nothing built yet</div>
   <h1>progression plan</h1>
-  <p class="lede">Where we are headed: a career where every raid pays toward a named rank, what you wear makes you stronger and is lost when you die, how it looked stays yours forever, and each week brings a new law and a new challenge raid. This page has the design for each piece, then the build order.</p>
+  <p class="lede">Where we are headed: a career where cash is the only currency. Every raid pays $, and $ buys everything: gear, skills, stations, looks. What you wear makes you stronger and is lost when you die, how it looked stays yours forever, and each week brings a new law and a new challenge raid. This page has the design for each piece, then the build order.</p>
+  <p class="lede"><b>11-01, his call:</b> "lets get rid of the concept of xp altogether -- everything you can get, you have to buy with cash". XP, levels and the XP reward ladder go away.</p>
   <nav aria-label="sections">
     <a href="#loop">the loop</a><a href="#ranks">ranks and $</a><a href="#gear">worn gear</a><a href="#wardrobe">wardrobe</a><a href="#relics">relics</a><a href="#picks">level-up picks</a><a href="#overclocks">overclocks</a><a href="#tree">skill tree</a><a href="#stations">stations</a><a href="#pass">pass</a><a href="#weekly">weekly raid</a><a href="#law">hub law</a><a href="#build">build plan</a><a href="#calls">his calls</a>
   </nav>
@@ -112,8 +113,8 @@ footer { color: var(--muted); font-size: 13px; }
   <div class="loop">
     <div><b>before you ascend</b><span>Pick what to wear and what to leave home. Spend $ at the seller, upgrade a station, check the week's law.</span></div>
     <div><b>in the raid</b><span>Machines fill your surge bar: pick 1 of 3 upgrades. Forge your gun and pick an overclock. Find gear and maybe a relic.</span></div>
-    <div><b>getting home</b><span>Every bar that moved on one screen: rank, pass, new looks, gear pips, station materials.</span></div>
-    <div><b>dying</b><span>Everything worn and carried is gone. Your rank, skill points, looks and stations stay.</span></div>
+    <div><b>getting home</b><span>One screen: the $ you banked, your rank, new looks, gear pips, station materials, and what you can now afford.</span></div>
+    <div><b>dying</b><span>Everything worn and carried is gone. Your rank, bought skills, looks and stations stay.</span></div>
     <div><b>each week</b><span>A new hub law and a new seeded challenge raid with its own high score.</span></div>
   </div>
   <p>Gear is the risk, rank and skills are the safety net, looks are the trophies. All ten ideas you liked fit that shape. Two-player combo moves are cut on your word.</p>
@@ -122,20 +123,22 @@ footer { color: var(--muted); font-size: 13px; }
 <section class="sheet" id="ranks">
   <div class="head"><h2>ranks and $ to spend</h2><span class="chip c-yes">you liked</span></div>
   <div class="rows">
+    <div class="row"><div class="k">no xp</div><div class="v">One number matters: $. It is banked when you extract (dying banks nothing, as today). Contracts, racks, selling and the haul all pay $.</div></div>
     <div class="row"><div class="k">ranks</div><div class="v"><ul>
+      <li>Your rank is the total $ you have ever banked, like Halo Reach, where credits set your rank and spending never lowered it. Spending $ never costs you rank.</li>
       <li>30 ranks in six names of five steps: scrounger, cutpurse, sacker, reaver, marauder, warlord (warlord v is the top).</li>
-      <li>XP comes from what already pays it: kills, loot, doors, selling, extracting. Dying still pays half.</li>
       <li>Paced so a regular player reaches warlord in about six weeks of season zero.</li>
       <li>The rank shows on your name over your head, at the lift, and on the raid-end screen.</li>
     </ul></div></div>
-    <div class="row"><div class="k">each rank-up</div><div class="v">A $ payout, one skill point, and every fifth rank a deeper stock at the gear seller.</div></div>
+    <div class="row"><div class="k">each rank-up</div><div class="v">A reward (gear crate, a look or a relic; this replaces the XP reward ladder), and every fifth rank a deeper stock at the gear seller. A rank is never a gate on anything else; everything else is bought.</div></div>
     <div class="row"><div class="k">what $ buys</div><div class="v"><ul>
       <li>Gear at the seller (stock rotates each day, deepens with rank).</li>
-      <li>Consumables and guns, as today.</li>
+      <li>Skills at the Mainframe, each one priced.</li>
       <li>Station upgrades (with materials), and rerolling one trait on a piece at the workbench.</li>
+      <li>Consumables and guns, as today.</li>
       <li>Losing gear on death keeps $ meaningful: there is always something to replace.</li>
     </ul></div></div>
-    <div class="row"><div class="k">today</div><div class="v">The level exists but does nothing and is hidden. XP already flows. The shop has 8 consumables and 2 guns.</div></div>
+    <div class="row"><div class="k">old saves</div><div class="v">XP and the reward ladder are removed. Any ladder rewards a player earned but never claimed are paid out as $ on first load, and the starting rank comes from lifetime $ banked, so nobody loses anything.</div></div>
   </div>
 </section>
 
@@ -210,6 +213,7 @@ footer { color: var(--muted); font-size: 13px; }
       <li>In two-player each player picks their own.</li>
     </ul></div></div>
     <div class="row"><div class="k">examples</div><div class="v">faster reload · kills heal 2 · a third grenade · shots ricochet once · pickups pull from further · machines show through walls for 3 s after a kill</div></div>
+    <div class="row"><div class="k">no xp</div><div class="v">The surge bar is a raid-only meter that empties when the raid ends, not XP. If that still counts as XP to him, the other way: the three cards appear when you pay $ at a raid terminal, like the Forge.</div></div>
     <div class="row"><div class="k">watch for</div><div class="v">Screen clutter, and overlap with the Forge. The cards stay small and low; the Forge stays about your gun.</div></div>
   </div>
 </section>
@@ -226,8 +230,8 @@ footer { color: var(--muted); font-size: 13px; }
   <div class="head"><h2>skill tree</h2><span class="chip c-yes">you liked</span></div>
   <div class="rows">
     <div class="row"><div class="k">shape</div><div class="v"><ul>
-      <li>Spent at the Mainframe. One point per rank, 30 in season zero. Points never leave.</li>
-      <li>Three branches of 6 skills, each skill up to 2 points, then a capstone where you pick one of two. That is 39 points of tree for 30 points, so you cannot take everything.</li>
+      <li>Bought with $ at the Mainframe. Each step costs more than the last in its branch. Bought skills never leave, even on death.</li>
+      <li>Three branches of 6 skills, each skill 2 steps, then a capstone where you pick one of two. Buying the whole tree costs more than a season of play, so you choose where your $ goes first, and every skill competes with gear for the same cash.</li>
       <li><b>scavenger:</b> quieter searching, keycards that last longer, more materials from salvage. Capstone: see gear rarity through walls, or one extra pick per raid.</li>
       <li><b>gunhand:</b> steadier aim on the move, faster swaps, cheaper Forge. Capstone: a third overclock choice, or a free MK II once per raid.</li>
       <li><b>iron:</b> faster bandages, longer downed time, more stamina, faster revives. Capstone: get up once per raid by yourself, or armor pieces take a hit for you before breaking.</li>
@@ -251,12 +255,11 @@ footer { color: var(--muted); font-size: 13px; }
 </section>
 
 <section class="sheet" id="pass">
-  <div class="head"><h2>season zero pass, never expires</h2><span class="chip c-yes">you liked</span></div>
+  <div class="head"><h2>season zero pass, never expires</h2><span class="chip c-yes">folded into ranks</span></div>
   <div class="rows">
     <div class="row"><div class="k">how it plays</div><div class="v"><ul>
-      <li>The 100-step ladder you already have (top 1.2 million XP today) is retuned so a regular player finishes in about six weeks.</li>
-      <li>Rewards become gear crates, $, wardrobe looks and a few relics.</li>
-      <li>It never expires. When season one comes, season zero stays claimable.</li>
+      <li>With XP gone, the pass and the ranks become one ladder: the 30 ranks, set by lifetime $ banked, each paying a reward (gear crates, looks, relics).</li>
+      <li>It never expires. When season one comes, it adds new ranks or a new reward row, and season zero's stay reachable.</li>
     </ul></div></div>
   </div>
 </section>
@@ -298,12 +301,12 @@ footer { color: var(--muted); font-size: 13px; }
     <thead><tr><th>#</th><th>milestone</th><th>builds</th><th>days</th><th>you will see</th></tr></thead>
     <tbody>
       <tr><td class="m">m0</td><td>foundation</td><td class="d">3 to 4</td><td class="d">2</td><td>nothing yet: gear pieces that remember their own traits, one place every stat reads gear from, side-roll drops</td></tr>
-      <tr><td class="m">m1</td><td>ranks and $</td><td class="d">3</td><td class="d">1 to 2</td><td>your rank over your head, rank-ups paying $, a bigger seller</td></tr>
+      <tr><td class="m">m1</td><td>cash only, ranks</td><td class="d">3 to 4</td><td class="d">2</td><td>XP gone everywhere, unclaimed rewards paid as $, rank from lifetime $ over your head, rank-up rewards, a bigger seller</td></tr>
       <tr><td class="m">m2</td><td>worn gear</td><td class="d">6 to 8</td><td class="d">4 to 6</td><td>the doll at the stash, gear drops in raid, lost on death, pips on extract, salvage</td></tr>
       <tr><td class="m">m3</td><td>wardrobe</td><td class="d">3 to 4</td><td class="d">2 to 3</td><td>gear shows on your pillager, looks kept forever, cloaks</td></tr>
       <tr><td class="m">m4</td><td>relics</td><td class="d">3</td><td class="d">2</td><td>the first 12 rule-breakers on rings and amulets</td></tr>
       <tr><td class="m">m5</td><td>forge overclocks</td><td class="d">2</td><td class="d">1</td><td>a pick of two at each Forge upgrade</td></tr>
-      <tr class="cut"><td class="m">m6</td><td>pass and raid-end screen</td><td class="d">2 to 3</td><td class="d">1 to 2</td><td>a pass you can finish, every moved bar after a raid</td></tr>
+      <tr class="cut"><td class="m">m6</td><td>raid-end screen</td><td class="d">2</td><td class="d">1</td><td>$ banked, rank, new looks, pips and what you can now afford, on one screen</td></tr>
       <tr><td class="m">m7</td><td>level-up picks</td><td class="d">4 to 5</td><td class="d">3</td><td>the surge bar and the three cards</td></tr>
       <tr><td class="m">m8</td><td>skill tree</td><td class="d">4</td><td class="d">3</td><td>the tree at the Mainframe</td></tr>
       <tr><td class="m">m9</td><td>stations</td><td class="d">4</td><td class="d">3</td><td>the Undercroft growing as you build</td></tr>
@@ -325,8 +328,8 @@ footer { color: var(--muted); font-size: 13px; }
     </div>
     <div class="m">
       <div class="top"><h3><span>m1</span>ranks and $</h3></div>
-      <ul><li>Rank names and curve, rank-up moment, the name tag, the raid-end line, seller stock by rank.</li></ul>
-      <p class="see"><b>Watch for:</b> whether the first ranks come fast enough to feel good.</p>
+      <ul><li>XP, levels and the XP ladder removed from every screen; unclaimed ladder rewards paid as $; rank names and curve from lifetime $ banked; rank-up rewards; the name tag; seller stock by rank.</li></ul>
+      <p class="see"><b>Watch for:</b> whether the first ranks come fast enough to feel good, and whether prices feel right now that $ is the only thing you chase.</p>
     </div>
     <div class="m">
       <div class="top"><h3><span>m2</span>worn gear</h3><span class="chip c-core">the big one</span></div>
@@ -348,7 +351,7 @@ footer { color: var(--muted); font-size: 13px; }
     <div class="m">
       <div class="top"><h3><span>m4 · m5 · m6</span>relics, overclocks, pass</h3></div>
       <ul>
-        <li>12 rule-breakers; two overclocks per Forge step; the pass retuned to about six weeks and filled with gear and looks; the raid-end screen showing every bar that moved.</li>
+        <li>12 rule-breakers; two overclocks per Forge step; the raid-end screen showing $ banked, rank and what you can now afford.</li>
       </ul>
       <p class="see"><b>Watch for:</b> a relic that breaks the game in a bad way; we trim it.</p>
     </div>
@@ -372,8 +375,9 @@ footer { color: var(--muted); font-size: 13px; }
   <div class="eyebrow">his calls · I go with the default unless he says otherwise</div>
   <ol>
     <li>Gear shows in the backpack and loot rows as a new kind of item in its rarity color. Your rule is that nobody touches the loot rows unless you ask. <span class="def">Default: yes, gear appears there, and how looting feels stays the same.</span></li>
-    <li>A higher rank deepens the seller's stock, which overrides your 10-12 "no level-up unlocks". <span class="def">Default: yes, every fifth rank.</span></li>
-    <li>Can $ buy looks at the Mainframe, Reach style? <span class="def">Default: no, looks come only from playing (your 09-03 answer).</span></li>
+    <li>With XP gone, rank comes from the total $ you have ever banked, Reach style, and spending never lowers it. <span class="def">Default: yes. The other way: no ranks at all.</span></li>
+    <li>Everything is bought, so do the looks at the Discount Fashion Depot (earned by achievements today) go on sale for $? <span class="def">Default: yes, they get prices; looks from gear still unlock by getting the piece home.</span></li>
+    <li>Level-up picks: is a raid-only surge bar fine, or should the cards be bought with $ at a raid terminal? <span class="def">Default: surge bar.</span></li>
     <li>The Thanksgiving cut at m6. <span class="def">Default: as drawn.</span></li>
   </ol>
 </div>
