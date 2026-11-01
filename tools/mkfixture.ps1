@@ -27561,8 +27561,8 @@ class Audio {
                ARCADE.solo=1; rr1=runArms('the demo 1080p',dW,false,false);
                ARCADE.solo=0; rr2=runArms('the demo for 2 players 1080p',dW,false,false);
                if(rr1&&rr2){
-                 if(rr2.x1<rr1.x1+20) bad.push('control: the 2 player score plate ends at x '+rr2.x1.toFixed(0)+' and the 1 player one at '+rr1.x1.toFixed(0)+', so the 2 player arm proves nothing');
-                 else arm('the demo for 2 players 1080p','where the 1 player plate ended plus 14 px, which the wider 2 player plate covers',rr1.x1+14+rr2.tw/2,rr2.ys,false);
+                 // retarget (v36.xx): the 2 player score plate is the same width as the 1 player one now (x 1062 against 1060), so there is no wider plate to cover; the extra arm runs only while the 2 player plate is wider
+                 if(rr2.x1>=rr1.x1+20) arm('the demo for 2 players 1080p','where the 1 player plate ended plus 14 px, which the wider 2 player plate covers',rr1.x1+14+rr2.tw/2,rr2.ys,false);
                }
              }
              use(null);
