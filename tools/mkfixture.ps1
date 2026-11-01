@@ -57815,7 +57815,7 @@ class Audio {
          if(n!==0) bad.push('Sell all left '+n+' of 7');
          if(m!==1) bad.push('Sell all touched another item ('+m+' left of 1)');
          if(P.credits!==c0+7*v) bad.push('Sell all paid '+(P.credits-c0)+', not '+(7*v));
-         if((P.xp||0)!==x0+7*v) bad.push('Sell all paid '+((P.xp||0)-x0)+' XP, not '+(7*v));
+         if((P.xp||0)!==x0) bad.push('Sell all paid '+((P.xp||0)-x0)+' XP; a sale pays $ only since v37.18 (cw-m1sell)');
        }
        P.stash=[key]; P.kit=[];
        if(itemMenuRows(key,'stash',1).some(sellsAll)) bad.push('a single item offers Sell all');
