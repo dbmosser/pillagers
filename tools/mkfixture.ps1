@@ -6285,7 +6285,7 @@ window.__REGRESS=[
        renderHub(); hub.classList.add('on');
        // ONE: sell one through the stash menu row
        v=sellPriceOf(key); c0=P.credits; le0=lifeEarnNow(); x0=P.xp;
-       need(v===ival(key),'ONE: sellPriceOf '+v+' is not the price the stash pays ('+ival(key)+')');
+       need(v>0,'ONE: sellPriceOf '+key+' is '+v);   // retarget (cw-m1mkt): since the market the price moves off the plain value; the row hint and the pay below hold it to sellPriceOf
        need(le0===20000,'ONE: lifetime earnings read '+le0+' with nothing sold, not 20000');
        row=rowOf(key,'Sell one',3);
        if(!row) bad.push('ONE: the stash menu has no Sell one row');
@@ -6335,11 +6335,11 @@ window.__REGRESS=[
        need(netWorth()===P.credits+sum,'FIVE: netWorth() '+netWorth()+', not '+(P.credits+sum));
        // SIX: the next day banks the day once and clears the list
        le0=P.lifeEarn; v=sellPriceOf(key); stashSell(key,1);
-       need(P.lifeEarn===le0&&lifeEarnNow()===le0+v+2*sellPriceOf(other),'SIX: today counts '+(lifeEarnNow()-le0)+', not '+(v+2*sellPriceOf(other)));
+       need(P.lifeEarn===le0&&lifeEarnNow()===le0+v+2*sv,'SIX: today counts '+(lifeEarnNow()-le0)+', not '+(v+2*sv));
        P.sellDay.d='1999-1-1'; n=sellDayGet();
-       need(P.lifeEarn===le0+v+2*sellPriceOf(other)&&n.e===0&&n.s.length===0&&lifeEarnNow()===P.lifeEarn,'SIX: a new day banked '+(P.lifeEarn-le0)+', left '+n.e+' and '+n.s.length+' sales listed');
+       need(P.lifeEarn===le0+v+2*sv&&n.e===0&&n.s.length===0&&lifeEarnNow()===P.lifeEarn,'SIX: a new day banked '+(P.lifeEarn-le0)+', left '+n.e+' and '+n.s.length+' sales listed');
        sellDayGet();
-       need(P.lifeEarn===le0+v+2*sellPriceOf(other),'SIX: the day was banked twice');
+       need(P.lifeEarn===le0+v+2*sv,'SIX: the day was banked twice');
        // SEVEN: an old save (no P.sellDay) loads with nothing lost, and again
        P.stash=[key,other,'scrap']; P.credits=4321; P.weapons=['pistol','smg']; P.equipped='smg'; P.lifeEarn=777; P.contracts=P.contracts||[]; ct0=P.contracts.length; x0=JSON.stringify(P.forged||{});
        base=JSON.parse(JSON.stringify(P)); base.cfg=JSON.parse(JSON.stringify(CFG)); base.cfgv=18; delete base.sellDay;
@@ -57897,7 +57897,7 @@ class Audio {
        if(!row) bad.push('a stack of 7 on the Stash screen has no Sell all row on its right-click menu');
        else {
          if(row.label!=='Sell all 7') bad.push('the row reads '+JSON.stringify(row.label)+', not Sell all 7');
-         v=ival(key); c0=P.credits; x0=P.xp||0; row.act();
+         v=(typeof sellPriceOf==='function'?sellPriceOf(key):ival(key)); c0=P.credits; x0=P.xp||0; row.act();
          n=0; m=0; P.stash.forEach(function(q){ if(q===key) n++; if(q===other) m++; });
          if(n!==0) bad.push('Sell all left '+n+' of 7');
          if(m!==1) bad.push('Sell all touched another item ('+m+' left of 1)');
@@ -67691,7 +67691,7 @@ class Audio {
        row=rows.filter(sells)[0];
        if(!row) bad.push('the item menu (Y on a controller) on the Stash screen has no Sell one row');
        else {
-         v=ival(key); c0=P.credits; row.act();
+         v=(typeof sellPriceOf==='function'?sellPriceOf(key):ival(key)); c0=P.credits; row.act();
          n=0; P.stash.forEach(function(q){ if(q===key) n++; });
          if(n!==2) bad.push('Sell one left '+n+' of 3');
          if(P.credits!==c0+v) bad.push('Sell one paid '+(P.credits-c0)+', not '+v);
@@ -89642,7 +89642,7 @@ class Audio {
        if(g.trade!==pd) return 'SKIP: E beside the Peddler did not open the stall here';
        // CONTROL: three plain finds sold at the stall leave the issued pair issued on the next frame, on either build.
        g.bag.push(X,X,X); frame(false);
-       var xp=Math.round(ival(X)*pedBuyRate()), c0=g.pedCarry||0;
+       var xp=Math.round((typeof sellPriceOf==='function'?sellPriceOf(X):ival(X))*pedBuyRate()), c0=g.pedCarry||0;
        press(); frame(false);
        if(count(g.bag,X)!==0||(g.pedCarry||0)-c0!==3*xp) return 'SKIP: key 1 on the open stall did not sell the three '+X+' for '+(3*xp)+' here (carried '+((g.pedCarry||0)-c0)+')';
        if(g.trade!==pd) return 'SKIP: the stall shut after a sale here';
@@ -89652,7 +89652,7 @@ class Audio {
        // CONTROL: the frame read the find as a rise, so the issued pair is still two and the count saw five.
        if(g.issuedBandages!==2||g.bandSeen!==5) return 'SKIP: the frame after finding three Bandages read '+g.bandSeen+' Bandages and '+g.issuedBandages+' issued here';
        if(typeof pedBeltClaims==='function'&&pedBeltClaims().bandage) return 'SKIP: a Bandage is on a tactical belt key here, so the sale would keep it';
-       var bp=Math.round(ival('bandage')*pedBuyRate()), c1=g.pedCarry||0;
+       var bp=Math.round((typeof sellPriceOf==='function'?sellPriceOf('bandage'):ival('bandage'))*pedBuyRate()), c1=g.pedCarry||0;
        press();
        // CONTROL: the sale kept the issued pair and bought the three found ones (v13.71), on either build.
        if(count(g.bag,'bandage')!==2||(g.pedCarry||0)-c1!==3*bp) return 'SKIP: key 1 left '+count(g.bag,'bandage')+' Bandages and carried '+((g.pedCarry||0)-c1)+' more where the three found ones are '+(3*bp)+' here';
@@ -95191,8 +95191,8 @@ class Audio {
        // THE FINDING: the two issued Bandages and one plain item.
        g.trade={kind:'peddler',hp:100,x:g.player.x,y:g.player.y}; g.pedCarry=0; g.pedSold=0;
        g.bag=['bandage','bandage',X]; g.issuedBandages=2;
+       var want=Math.round((typeof sellPriceOf==='function'?sellPriceOf(X):ival(X))*rate);
        pedSellAll();
-       var want=Math.round(ival(X)*rate);
        if(bands(g.bag)!==2) bad.push('SELL BACKPACK sold '+(2-bands(g.bag))+' of the 2 issued Bandages (carried now '+g.pedCarry+', the plain item alone is '+want+')');
        else if(g.pedCarry!==want) bad.push('the stall paid '+g.pedCarry+' where the plain item alone is worth '+want);
        // CONTROL: a Bandage he found (none issued) is sold.
@@ -95219,8 +95219,8 @@ class Audio {
        var g=__state();
        g.ents.length=0; g.trade={kind:'peddler',hp:100,x:g.player.x,y:g.player.y}; g.pedCarry=0; g.pedSold=0; g.issuedBandages=0;
        g.bag=['medkit',X]; g.hotAssign={2:'medkit'}; g.hotAuto={};
+       var want=Math.round((typeof sellPriceOf==='function'?sellPriceOf(X):ival(X))*pedBuyRate());
        pedSellAll();
-       var want=Math.round(ival(X)*pedBuyRate());
        if(g.bag.indexOf('medkit')<0) bad.push('SELL BACKPACK sold the Medkit on belt key 3 (carried now '+g.pedCarry+', the other item alone is '+want+')');
        // CONTROL: the item that is only in the backpack is sold and paid for.
        if(g.bag.indexOf(X)>=0||!(g.pedCarry>=want)) bad.push('control: the '+X+' in the backpack was not sold for '+want+', so this check cannot see a sale');
@@ -112302,7 +112302,7 @@ class Audio {
      P2.stash=pick?[pick]:[]; P2.kit=[]; P2.hotAssign={}; P2.junk=[]; P2.xp=1000; P2.credits=0;
      var sb=document.getElementById('sellall');
      if(sb&&pick){
-       var v=ival(pick);
+       var v=(typeof sellPriceOf==='function'?sellPriceOf(pick):ival(pick));
        try{ sb.onclick(); }catch(e1){ bad.push('sell all threw: '+e1); }
        var got=(P2.xp||0)-1000;
        if(P2.credits!==v) bad.push('sell all paid $'+P2.credits+' for '+pick+' worth $'+v+', so this probe did not sell what it staged');
