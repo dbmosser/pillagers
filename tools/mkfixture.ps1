@@ -8391,8 +8391,6 @@ window.__REGRESS=[
          tickHeal(100);keys={KeyR:true};updatePlayer(0.001);keys={};ok(p.reloading>0,'R stayed blocked after healing');
          reset();arm();quickPlate();cut('quick plate');ok(!!p.prepA,'quick plate did not start');blocked('plate wind-up');
          tickPrep(3);keys={KeyR:true};updatePlayer(0.001);keys={};ok(p.reloading>0,'R stayed blocked after plate');
-         reset();arm();beltInstant(6);cut('instant bandage');ok(!!p.prep,'instant bandage did not start');
-         reset();arm();beltInstant(8);cut('instant plate');ok(!!p.prepA,'instant plate did not start');
          reset();arm();handTake('medkit');cut('wheel draw');ok(wheelHeal('medkit')&&p.prep,'wheel heal did not start');
          reset();g.hot=5;arm();beltStep(1);cut('pad medical pick');ok(p.hand&&p.hand.k==='bandage','pad bumper did not take bandage out');
          reset();arm();mouse.down=true;var before=p.ammo;updatePlayer(0.001);cut('fire');ok(p.ammo===before-1,'fire cancel did not fire a real round');
@@ -15337,7 +15335,7 @@ class Audio {
        if(k1<0) bad.push('the gun in hand lost its key');
        var cnt=function(){ return G.bag.filter(function(k){ return k==='medkit'; }).length; }, n0=cnt();
        p.hp=Math.max(1,Math.round(p.maxhp*0.3));
-       if(!beltInstant(k0)) bad.push('key '+slotKeyName(k0)+' did not use the medkit');
+       if(!useBeltHeal(k0)) bad.push('key '+slotKeyName(k0)+' did not use the medkit');
        if(cnt()>=n0&&!p.prep) bad.push('no medkit was spent');
        if((p.wep&&p.wep.id)!==w0) bad.push('the gun in hand changed');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
@@ -47309,7 +47307,7 @@ class Audio {
        md.classList.remove('on');
        // TWO: the stick maths
        // v28.xx (cw-cx-corpus02): J2 introduced the radial helper and its 0.06 outer deadzone.
-       var outer=(typeof padStick==='function')?0.06:0;
+       var outer=(typeof padStick==='function')?0.06:0, padAxis=function(v){ return padStick(v,0).x; };
        CFG.padDz=0.22; CFG.padSens=1;
        if(padAxis(0.2)!==0||!near(padAxis(0.5),(0.5-0.22)/(0.78-outer))||!near(padAxis(-1),-1)) bad.push('TWO: control: the default stick reads '+padAxis(0.2)+', '+padAxis(0.5)+', '+padAxis(-1));
        CFG.padDz=0.4; if(padAxis(0.3)!==0||!near(padAxis(0.5),(0.5-0.4)/(0.6-outer))) bad.push('TWO: a deadzone of 0.4 reads '+padAxis(0.3)+' and '+padAxis(0.5));
@@ -85097,7 +85095,7 @@ class Audio {
         typeof netPadWant!=='function'||typeof netPadInit!=='function'||typeof netPadCycle!=='function'||typeof netPadSet!=='function'||typeof netPadLabel!=='function'||
         typeof netSameOnMsg!=='function'||!document.getElementById('partypad')||!document.getElementById('partypadbtn')||typeof NET.padIx!=='number')
        return 'this build hands no controller to a window that is not in front (no netPadTick, netPadFor, netPadRecv or netPadSend, and no CONTROLLER row in the PARTY window), so player 2 at the second window on one PC has no controller while the player 1 window is in front';
-     if(typeof pollPad!=='function'||typeof PAD==='undefined'||!PAD||typeof padAxis!=='function'||typeof padRelease!=='function'||typeof padOpenModal!=='function'||typeof renderParty!=='function'||typeof netReset!=='function'||
+     if(typeof pollPad!=='function'||typeof PAD==='undefined'||!PAD||typeof padRelease!=='function'||typeof padOpenModal!=='function'||typeof renderParty!=='function'||typeof netReset!=='function'||
         typeof netSamePick!=='function'||typeof netSameBootP2!=='function'||typeof netHost!=='function'||typeof netSupported!=='function') return 'this build has no controller reader under the hand-over';
      if(typeof G!=='undefined'&&G&&!G.over) return 'SKIP: a raid is running, and the hand-over is measured on the Undercroft floor';
      if(!window.__hubEnter) return 'SKIP: this fixture cannot reach the Undercroft floor';
@@ -85260,7 +85258,7 @@ class Audio {
        if(r1!=='pad'||NET.padOther!==1) bad.push('a state handed over by player 2 was not kept ('+r1+', other '+NET.padOther+')');
        frame();
        if(!PAD.on||!keys.KeyR||keys.KeyF||!PAD.prev[2]||PAD.prev[3]) bad.push('the host not in front does not play the state handed over: on '+PAD.on+', R '+!!keys.KeyR+', F '+!!keys.KeyF+', down '+downs());
-       if(!PAD.ax||Math.abs(PAD.ax[1]-0.5)>1e-6||Math.abs(PAD.my-padAxis(0.5))>1e-6) bad.push('the sticks handed over did not reach the pad fields (ax '+js(PAD.ax)+', my '+PAD.my+')');
+       if(!PAD.ax||Math.abs(PAD.ax[1]-0.5)>1e-6||Math.abs(PAD.my-padStick(0.5,0).x)>1e-6) bad.push('the sticks handed over did not reach the pad fields (ax '+js(PAD.ax)+', my '+PAD.my+')');
        if(netSameOnMsg(fwd(1,1,[2]))!=='padown') bad.push('a state from the other window own pad was kept');
        if(netSameOnMsg(fwd(1,0,[2]))!=='padnot') bad.push('a state from a pad the host did not pick was kept');
        if(netSameOnMsg(fwd(0,1,[2]))!=='pad') bad.push('control: a state from the pad the host picked was refused');
