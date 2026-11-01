@@ -1,0 +1,7 @@
+v37.13: hurt machines show smoke and sparks, not a health bar
+
+A hurt machine shows smoke and sparks and no health bar under its name.
+
+Check 37.13. Fails on v37.12.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

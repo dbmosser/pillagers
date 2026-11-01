@@ -1,0 +1,5 @@
+## v37.13 - HURT MACHINES SHOW SMOKE AND SPARKS, NOT A HEALTH BAR
+
+Co-op hunt while he was away. His 10-25 answer g-83: smoke and sparks only. The name plate still drew a 3 px health pip under every hurt machine. Machines now keep the name plate, smoke and sparks only; pillager bots, the hire, strays and the peddler keep their pip, and the Overseer keeps its boss bar.
+
+MEASURED. Check 37.13 passes, and fails on v37.12.

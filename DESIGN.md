@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.13 - HURT MACHINES SHOW SMOKE AND SPARKS, NOT A HEALTH BAR
+
+Co-op hunt while he was away. His 10-25 answer g-83: smoke and sparks only. The name plate still drew a 3 px health pip under every hurt machine. Machines now keep the name plate, smoke and sparks only; pillager bots, the hire, strays and the peddler keep their pip, and the Overseer keeps its boss bar.
+
+MEASURED. Check 37.13 passes, and fails on v37.12.
 ## v37.12 - MACHINE SMOKE: DARKER AND VENTED TO THE SIDES
 
 Co-op hunt while he was away. My picture of v37.10 showed the machine smoke as faint grey squares on the body. It is now near solid dark with a grey rim, and the puffs drift out to both sides as they rise so they show over open ground.
