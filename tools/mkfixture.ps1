@@ -23438,8 +23438,9 @@ class Audio {
        mz0=__menuZoom.get(); delete P.gunKeys; delete P.wheelOrder; P.freeKit=0;
        for(z=0;z<sizes.length;z++){
          __menuZoom.set(sizes[z]); renderHub(); hub.classList.add('on');
+         stashTabSet(true);   // retarget (v36.21, his pick option a): the gun key and wheel tiles sit on the keys tab of the loadout column
          tiles=document.querySelectorAll('#kitsetup .kst');
-         if(tiles.length!==17) return 'expected 17 setup tiles, got '+tiles.length;
+         if(tiles.length!==GUNKEYS+8) return 'expected '+(GUNKEYS+8)+' setup tiles (gun keys and the 8 wheel cells), got '+tiles.length;   // 17 when the hotbar had 9 gun keys, 18 with key 0 (cw-cx-hotbar9)
          for(i=0;i<tiles.length;i++){
            sp=tiles[i].querySelector('span'); ic=tiles[i].querySelector('.ic');
            if(!sp||!ic) return 'a setup tile has no name or picture';
@@ -24653,7 +24654,7 @@ class Audio {
    run:function(){
      if(!(window.__hubEnter&&window.__P&&window.__applyLoaded)) return 'SKIP: this fixture cannot reach the pre-raid page';
      if(typeof renderSector!=='function'||typeof openModal!=='function') return 'SKIP: no pre-raid page';
-     var bad=[], snap=null, q, sm=document.getElementById('sectormodal'), went=0, oAsc=ascendNow, oStart=startRaid, oKF=kitFill, cv, r, px, i, k, rr, dep, lastPan, seq, pans;
+     var bad=[], snap=null, q, sm=document.getElementById('sectormodal'), went=0, oAsc=ascendNow, oStart=startRaid, oKF=kitFill, cv, r, px, i, k, sz, rr, dep, lastPan, seq, pans;
      function shut(){ var mo=document.querySelectorAll('.modal.on'); for(var j=0;j<mo.length;j++) mo[j].classList.remove('on'); }
      function pad(btn){ var f=function(n){ return n===btn; }; padMenu(f); }
      function rel(){ padMenu(function(){ return false; }); }
@@ -24669,8 +24670,9 @@ class Audio {
        // ONE: the map is wide, ice blue, and drawn from the real map
        cv=document.querySelector('#sectorlist canvas.secprev');
        if(!cv) return 'the pre-raid page has no map canvas';
-       r=cv.getBoundingClientRect(); k=Math.min(r.width,r.height*cv.width/cv.height); i=800*Math.min(innerWidth/1920,innerHeight/1080);
-       if(k<i) bad.push('ONE: the map shows '+Math.round(k)+' px wide, under '+Math.round(i)+' (800 at 1080p) ['+innerWidth+'x'+innerHeight+' cell '+Math.round(r.width)+'x'+Math.round(r.height)+' kit '+Math.round(document.getElementById('srkitcol').getBoundingClientRect().height)+' side '+Math.round(document.getElementById('srside').getBoundingClientRect().height)+' scale '+((typeof menuScale==='function')?menuScale():'?')+']');
+       // 10-28 (job 213, audit item 6): the map is measured as DRAWN ON SCREEN. A true 1920x1080 window with the 1.3 menu zoom read the cell in zoom-free layout px (757 for a map about 965 wide on screen). The zoom is read from the page itself: the pre-raid modal is inset:0, so it fills the window, and its layout width is the window width divided by the zoom.
+       r=cv.getBoundingClientRect(); sz=(sm.offsetWidth>0)?innerWidth/sm.offsetWidth:1; k=Math.min(cv.offsetWidth,cv.offsetHeight*cv.width/cv.height)*sz; k=Math.max(k,Math.min(r.width,r.height*cv.width/cv.height)); i=800*Math.min(innerWidth/1920,innerHeight/1080);
+       if(k<i) bad.push('ONE: the map shows '+Math.round(k)+' px wide, under '+Math.round(i)+' (800 at 1080p) ['+innerWidth+'x'+innerHeight+' cell '+Math.round(r.width)+'x'+Math.round(r.height)+' layout '+cv.offsetWidth+'x'+cv.offsetHeight+' zoom '+sz.toFixed(2)+' kit '+Math.round(document.getElementById('srkitcol').getBoundingClientRect().height)+' side '+Math.round(document.getElementById('srside').getBoundingClientRect().height)+' scale '+((typeof menuScale==='function')?menuScale():'?')+']');
        try{ px=cv.getContext('2d').getImageData(Math.round(cv.width*0.01)+3,Math.round(cv.height*0.01)+3,1,1).data; }catch(_gi){ px=null; }
        if(!px) bad.push('ONE: the map canvas cannot be read');
        else if(!(px[0]<40&&px[2]>px[0]+20)) bad.push('ONE: the map ground is rgb('+px[0]+','+px[1]+','+px[2]+'), not ice blue');
@@ -27489,7 +27491,7 @@ class Audio {
          else if(pl.length>=4&&pl[3].y0-pl[2].y1>2){ gy=(pl[2].y1+pl[3].y0)/2; arm(tag,'in the gap between the stash and backpack rows',L+w/2,gy+py*0.35,false); }
          else bad.push(tag+': no measurable protected gap above the minimap ('+pl.length+' row plates)');
        }
-       for(a=0;a<r.rr.length;a++) if(r.rr[a].x0<W/2&&r.rr[a].x1>W/2&&r.rr[a].y0>=0&&r.rr[a].y0<=40*Math.max(1,(typeof hudRes==='function')?hudRes():1)&&r.rr[a].y1>4&&(r.rr[a].x1-r.rr[a].x0)>W*0.04){ if(!rr||r.rr[a].y1>rr.y1) rr=r.rr[a]; }   // retarget (v36.64 cw-cx-hudtvread): the plate is inset 16 px (times the hud zoom) from the top edge, so find it centred in the top band, not at y 0
+       for(a=0;a<r.rr.length;a++) if(r.rr[a].x0<W/2&&r.rr[a].x1>W/2&&r.rr[a].y0>=0&&r.rr[a].y0<=120*Math.max(1,(typeof hudRes==='function')?hudRes():1)&&r.rr[a].y1>4&&(r.rr[a].x1-r.rr[a].x0)>W*0.04){ if(!rr||r.rr[a].y1>rr.y1) rr=r.rr[a]; }   // retarget (v36.64 cw-cx-hudtvread): the plate is inset 16 px (times the hud zoom) from the top edge, so find it centred in the top band, not at y 0
        if(!rr){ bad.push(tag+': no score and clock plate was drawn at the top centre'); return null; }
        ys=(rr.y0+rr.y1)/2+py*0.35;
        arm(tag,'in the middle of the score and clock plate',(rr.x0+rr.x1)/2,ys,false);
@@ -30329,7 +30331,10 @@ class Audio {
        hudPlate=function(x,y,w,h){ calls.push({x:x,y:y,w:w,h:h}); return oHp.apply(this,arguments); };
        try{ b=arcadeScoreHud(60,1); } finally { hudPlate=oHp; }
        // retarget (v36.64 cw-cx-hudtvread): the plate is inset 16 px (times the hud zoom) from the top edge, so it must sit within the top band, not at y 0
-       pl=calls.filter(function(c){ return c.y>=0&&c.y<=40*Math.max(1,(typeof hudRes==='function')?hudRes():1)&&c.x<W/2&&c.x+c.w>W/2; }).sort(function(u,v){ return (v.y+v.h)-(u.y+u.h); })[0];   // the plate that covers the clock row is the tallest one in the band
+       // v35.80 (cw-clockcard) made the clock and the score two cards: the clock card hangs from the top band, the score card under it ends at the returned bottom. A centred card must reach that bottom.
+       var cen=calls.filter(function(c){ return c.x<W/2&&c.x+c.w>W/2; });
+       if(!cen.some(function(c){ return c.y>=0&&c.y<=40*Math.max(1,(typeof hudRes==='function')?hudRes():1); })) return 'no plate hangs from the top band behind the score ('+calls.length+' plates)';
+       pl=cen.sort(function(u,v){ return (v.y+v.h)-(u.y+u.h); })[0];
        if(!pl) return 'no plate hangs from the top edge behind the score ('+calls.length+' plates)';
        if(pl.y+pl.h<(b||0)-2) return 'the plate ends at '+(pl.y+pl.h)+', above the bottom of the clock row '+b;
        if(Math.abs((pl.x+pl.w/2)-W/2)>2) return 'the plate is not centred';
@@ -38758,8 +38763,9 @@ class Audio {
        if(Math.abs(__menuZoom.titleRes()-1)>0.01) return 'SKIP: the pane is not 1920x1080';
        mz0=__menuZoom.get(); __menuZoom.set(1.3);
        delete P.gunKeys; delete P.wheelOrder; P.freeKit=0; renderHub(); hub.classList.add('on');
+       stashTabSet(true);   // retarget (v36.21, his pick option a): the gun key and wheel tiles sit on the keys tab of the loadout column
        t=document.querySelectorAll('#kitsetup .kst');
-       if(t.length!==17) return 'SKIP: the plates drew '+t.length+' tiles, not 17';
+       if(t.length!==GUNKEYS+8) return 'SKIP: the plates drew '+t.length+' tiles, not '+(GUNKEYS+8);
        for(i=0;i<t.length;i++){
          sp=t[i].querySelector('span'); if(!sp) continue;
          if(sp.scrollWidth>sp.clientWidth) cut.push(String(sp.textContent)+' '+sp.scrollWidth+'>'+sp.clientWidth);
@@ -47644,8 +47650,9 @@ class Audio {
        try{ __hubEnter(); }catch(_h){}
        [].forEach.call(document.querySelectorAll('.modal.on'),function(m){ m.classList.remove('on'); });
        delete P.gunKeys; delete P.wheelOrder; P.freeKit=0; renderHub(); hub.classList.add('on');
+       stashTabSet(true);   // retarget (v36.21, his pick option a): the gun key and wheel tiles sit on the keys tab of the loadout column
        t=document.querySelectorAll('#kitsetup .kst');
-       if(t.length!==17) return 'SKIP: the plates drew '+t.length+' tiles, not 17';
+       if(t.length!==GUNKEYS+8) return 'SKIP: the plates drew '+t.length+' tiles, not '+(GUNKEYS+8);
        for(i=0;i<t.length;i++){ sp=t[i].querySelector('span'); if(sp&&sp.scrollWidth>sp.clientWidth+1) cut.push(String(sp.textContent)); }
        if(cut.length) bad.push('names cut on the plates: '+cut.join(', '));
        a=document.querySelector('#kitsetup [data-gk="0"]'); b=document.querySelector('#kitsetup [data-wh="0"]');
@@ -59896,7 +59903,7 @@ class Audio {
        if(__state()!==g||g.over) return 'the arcade raid ended during the search';
        if(!ct.opened) return 'SKIP: the staged crate was not searched in 600 frames';
        // retarget (v35.68, his order): every harder settings row pays 5 percent a step and in arcade the pot is the score, so a valuable pays its value times the live multiplier
-       var VP=(typeof spMul==='function')?spMul(V):V;   /* spMul: the settings multiplier times the raid condition multiplier, the very function the pickup pays through */
+       var VP=Math.max(1,Math.round(ival(key)/((typeof ARCADE_LOOT_DIV==='number'&&ARCADE_LOOT_DIV>0)?ARCADE_LOOT_DIV:1)));   /* arcadeLoot pays ival(key) read live in the raid: the value moves with the settings multiplier (every harder row pays 5 percent a step) */
        if((ARCADE.pot|0)-pot0!==VP) bad.push('a valuable worth '+V+' raised the pot by '+((ARCADE.pot|0)-pot0)+', not '+VP);
        if((ARCADE.mine|0)-mine0!==VP) bad.push('a valuable worth '+V+' raised the score by '+((ARCADE.mine|0)-mine0)+', not '+VP);
        for(i=0;i<rows.length;i++) if(rows[i].l==='pick'&&rows[i].tag) tagd=rows[i].tag;
@@ -62324,6 +62331,7 @@ class Audio {
        H1=contractDesc(c1); H2=contractDesc(c2);   /* v34.46 (cw-cdoneshort): the detail is the contract words only */
        if(H1===H2) return 'SKIP: staging: the two contracts read the same';
        g.paused=false; g.msg=''; g.msgT=0; g.msgSub=''; g.msgKey=''; g.feed=[]; g.msgQ=[]; g.msgQM=[]; g.fd={t:0,seq:0,lines:[]};
+       g.player.combatT=99;   // retarget (v35.44 cw-msgroute): a finished goal waits for 4 s without a shot (feedCalm), so stage a calm player
        contractOpen(ct);
        if(c1.prog<c1.n||c2.prog<c2.n) return 'SKIP: staging: the crate did not finish both contracts';
        // cw-fewermsg retarget, his complaint 2026-10-27 (too many messages reach the player): the left feed takes one new line every 2.5 s, and a goal done waits its
@@ -62704,7 +62712,7 @@ class Audio {
        tr=texts(function(){ ctx.save(); try{ netPingDraw(); } finally { ctx.restore(); } });
        scan(tr,'a ping label');
        for(i=0;i<tr.length;i++) if(tr[i].indexOf(': ')>=0) bad.push('a ping label is a colon label: '+JSON.stringify(tr[i]));
-       if(!tr.some(function(s){ return s.indexOf('CRIER')>=0&&(/\d+m$/).test(s); })) bad.push('a ping on a Crier is not drawn naming the CRIER with its distance (drawn: '+JSON.stringify(tr)+')');
+       if(!tr.some(function(s){ return /crier/i.test(s)&&(/\d+m$/).test(s); })) bad.push('a ping on a Crier is not drawn naming the CRIER with its distance (drawn: '+JSON.stringify(tr)+')');
        NET.pings=[];
        // FOUR: the board counts the dead as dead
        if(g.roster&&g.roster.length){
