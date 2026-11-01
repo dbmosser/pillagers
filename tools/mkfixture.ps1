@@ -23464,12 +23464,13 @@ class Audio {
          if(tiles.length!==GUNKEYS+8) return 'expected '+(GUNKEYS+8)+' setup tiles (gun keys and the 8 wheel cells), got '+tiles.length;   // 17 when the hotbar had 9 gun keys, 18 with key 0 (cw-cx-hotbar9)
          for(i=0;i<tiles.length;i++){
            sp=tiles[i].querySelector('span'); ic=tiles[i].querySelector('.ic');
-           if(!sp||!ic) return 'a setup tile has no name or picture';
+           // retarget (v36.xx, the extra hotbar key has no gun class): a gun key tile with no class draws no picture, so it is measured by its name alone; every other tile keeps both
+           if(!sp||(!ic&&!tiles[i].hasAttribute('data-gk'))) return 'a setup tile has no name or picture ('+tiles[i].className+' '+(tiles[i].getAttribute('data-gk')||tiles[i].getAttribute('data-wh'))+')';
            if(parseFloat(getComputedStyle(sp).fontSize)<16) bad.push('name below 16px');
            if(sp.scrollWidth>sp.clientWidth) bad.push('zoom '+sizes[z]+': clipped '+sp.textContent+' '+sp.scrollWidth+'>'+sp.clientWidth);
-           a=ic.getBoundingClientRect(); b=sp.getBoundingClientRect(); r=tiles[i].getBoundingClientRect();
+           a=ic?ic.getBoundingClientRect():{width:1,left:0,right:0,top:0,bottom:0}; b=sp.getBoundingClientRect(); r=tiles[i].getBoundingClientRect();
            if(!(a.width>0&&b.width>0&&b.height>0)) bad.push('hidden name or picture');
-           if(a.right>b.left+0.5&&a.left<b.right-0.5&&a.bottom>b.top+0.5&&a.top<b.bottom-0.5) bad.push('picture overlaps '+sp.textContent);
+           if(ic&&a.right>b.left+0.5&&a.left<b.right-0.5&&a.bottom>b.top+0.5&&a.top<b.bottom-0.5) bad.push('picture overlaps '+sp.textContent);
            if(b.left<r.left-0.5||b.right>r.right+0.5||b.bottom>r.bottom+0.5) bad.push('name outside tile: '+sp.textContent);
          }
        }
@@ -27555,8 +27556,10 @@ class Audio {
              if(!sub) bad.push('control: no closed box in the demo raid');
              else {
                sub.nm='cache name';
-               ARCADE.solo=1; rr1=runArms('the demo 1080p',300,false,false);
-               ARCADE.solo=0; rr2=runArms('the demo for 2 players 1080p',300,false,false);
+               // retarget (v35.72 cw-newpdefs): a demo start takes the new player set, which may carry its own interface size; the column is 300 at the 1.2 size, in the demo at most 1.2, and scales with the size the demo runs at
+               var dU=Math.min(uiScale(),1.2), dW=Math.round(300*(dU/1.2)*10)/10;
+               ARCADE.solo=1; rr1=runArms('the demo 1080p',dW,false,false);
+               ARCADE.solo=0; rr2=runArms('the demo for 2 players 1080p',dW,false,false);
                if(rr1&&rr2){
                  if(rr2.x1<rr1.x1+20) bad.push('control: the 2 player score plate ends at x '+rr2.x1.toFixed(0)+' and the 1 player one at '+rr1.x1.toFixed(0)+', so the 2 player arm proves nothing');
                  else arm('the demo for 2 players 1080p','where the 1 player plate ended plus 14 px, which the wider 2 player plate covers',rr1.x1+14+rr2.tw/2,rr2.ys,false);
@@ -49392,7 +49395,8 @@ class Audio {
          if(getBank()!==7500||g.cs.s!==0||g.cs.b.kill!==0||g.cs.b.forge) bad.push('MK II did not charge only the stash');
          if(said.indexOf('GUN UPGRADED')<0) bad.push('no GUN UPGRADED line ('+JSON.stringify(said.slice(0,5))+')');
          if(blips.indexOf('forge')<0) bad.push('the Forge made no sound');
-         if(!g.gunCard||!g.gunCard.w||g.gunCard.w.fk!==1) bad.push('no gun card for the new gun');
+         // retired (v36.97, a forge upgrade raises no weapon card): the gun in hand is the proof the new gun exists; if a card is ever raised it must be the MK II
+         if(g.gunCard&&g.gunCard.w&&g.gunCard.w.fk!==1) bad.push('the gun card raised for the forge shows the wrong gun');
          if(WEAPONS.rifle.dmg!==car.dmg||WEAPONS.rifle.fk) bad.push('the weapon table was touched');
        }
        // 4. a MK II gun is at the top of what the bench offers in this build or asks for an element: either way no second MK II charge
@@ -62758,7 +62762,7 @@ class Audio {
            tr=texts(function(){ ctx.save(); try{ drawRaiderBoard(); } finally { ctx.restore(); } });
            scan(tr,'the Current Pillagers board');
            if(tr.some(function(s){ return (/\d+ down$/).test(s); })) bad.push('the board counts the dead as down: '+JSON.stringify(tr.filter(function(s){ return (/ down$/).test(s); })));
-           if(!tr.some(function(s){ return (/\d+ dead$/).test(s); })) bad.push('the board does not count the dead as N dead');
+           if(!tr.some(function(s){ return (/\d+ dead$/).test(s); })) bad.push('the board does not count the dead as N dead (drawn: '+JSON.stringify(tr.slice(0,12))+', roster '+g.roster.length+', hud '+JSON.stringify(__P().hud)+')');
          }
        }
        scan(said,'a said line');
@@ -99386,9 +99390,10 @@ class Audio {
          bad.push('the in-raid panel still quotes the cover ground contract in raw world units, which is the one unit nothing else in the game uses and he has no way to read');
        // CONTROL ONE: another conduct card in the same place must still speak, or
        // the guard has silenced the panel rather than one line.
-       var steady={type:'conduct',ck:'steady',n:1,prog:0,reward:900,desc:'Stay up'};
+       // retarget (v35.36 cw-quiethud change 3): a conduct line that only says nothing happened yet (steady, no downs yet) draws nothing at rest, so the control uses a card whose count always speaks
+       var steady={type:'conduct',ck:'weak',n:1,prog:0,reward:900,desc:'Weak points'};
        var tSteady=shown(steady,2000);
-       if(tSteady.toLowerCase().indexOf('down')<0)
+       if(tSteady.toLowerCase().indexOf('weak points hit')<0)
          bad.push('control: another conduct contract in the same state now prints nothing either, so this build has silenced the panel and not one line');
        // CONTROL TWO: the work itself is untouched.
        if(typeof conductMet==='function'&&g.tel){
@@ -113996,7 +114001,7 @@ class Audio {
      // list several men.
      var rows=Math.max(0,Math.round((B.raiders.h-40)/26));
      if(rows<4)
-       bad.push('the board now has room for about '+rows+' rows, which is not a board');
+       bad.push('the board now has room for about '+rows+' rows, which is not a board ('+Math.round(B.raiders.w)+'x'+Math.round(B.raiders.h)+', hud '+JSON.stringify(P9.hud)+', roster '+((g.roster||[]).length)+')');
      return bad.length?bad.join('; '):null; }},
   {v:'9.65',what:'the outdoor cover is five different things, and not one wall moved',
    run:function(){
