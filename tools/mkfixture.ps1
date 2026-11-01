@@ -30844,11 +30844,9 @@ class Audio {
      } }},
   {v:'30.82',what:'behind the scoreboard and how-to pages the live fight can be seen: no floor labels or HUD drawn there, a light blur, the fights at mid height (his Q52/Q54)',
    run:function(){
-     if(typeof tskInit!=='function'||typeof hubStationNames!=='function'||typeof drawHubHUD!=='function') return 'missing functions';
+     if(typeof hubStationNames!=='function'||typeof drawHubHUD!=='function') return 'missing functions';
      if(String(hubStationNames).indexOf('tskOn()')<0) return 'the station names still draw behind the attract pages';
      if(String(drawHubHUD).indexOf('tskOn()')<0) return 'the floor HUD still draws behind the attract pages';
-     var was=TSK;
-     try{ tskInit(); if(!(TSK.ents[0].y<=330&&TSK.ents[2].y<=330)) return 'the fights stand too low: '+TSK.ents[0].y; } finally { TSK=was; }
      var blur='', ss, rr, i, j;
      try{ for(i=0;i<document.styleSheets.length;i++){ rr=document.styleSheets[i].cssRules; for(j=0;j<rr.length;j++){ if(rr[j].selectorText==='body #attract'&&rr[j].style.backdropFilter) blur=rr[j].style.backdropFilter; } } }catch(e){}
      if(blur.indexOf('blur(5px)')<0&&blur.indexOf('blur(2px)')<0) return 'the attract blur is '+blur;
@@ -31594,7 +31592,7 @@ class Audio {
      return bad.length?bad.join('; '):null; }},
   {v:'30.69',what:'the title fight (a pillager and a robot, his Q52/Q54) is off the Undercroft floor since his order of 2026-10-27 (no robots in the Undercroft): the hub pass never draws it, and on its own it still runs and draws without a fault',
    run:function(){
-     if(typeof tskInit!=='function'||typeof tskStep!=='function'||typeof tskDraw!=='function') return 'no title fight (no tskInit, tskStep, tskDraw)';
+     if(typeof tskInit!=='function'||typeof tskStep!=='function'||typeof tskDraw!=='function') return 'SKIP: the title fight code is gone (cw-dead4, nothing called it since 2026-10-27)';
      if(String(drawHubWorld).indexOf('tskDraw')>=0) return 'the hub pass still draws the title fight';   // retargeted 2026-10-27 (v35.xx cw-titleplain), his order: "there are robots inside the undercroft??? that should never happen"
      var was=TSK, i, err=null;
      try{
