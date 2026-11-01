@@ -185,7 +185,7 @@ function data() {
   // 10-27: the version his main PC serves on 8802 (tools/handoff/onhispc.sh), the version on itch (the runner's itch step), the feature
   // jobs parked until 11/1 (his 10-27 "no new features until Nov 1"), and whether this page's copy reaches his desktop (the bridge)
   const op = tail(C + '/onhispc.txt', 20).reverse().map(l => /^(\d\d-\d\d \d\d:\d\d) .*\(8802 serves ([\d.]+)\)/.exec(l)).find(Boolean);
-  const after = existsSync(C + '/after-nov1') ? readdirSync(C + '/after-nov1').filter(f => f.endsWith('.md')).length : 0;
+  const after = existsSync(C + '/after-nov1') ? readdirSync(C + '/after-nov1').filter(f => f.endsWith('.md') && f !== 'README.md').length : 0;
   return { now: new Date().toLocaleTimeString(), ver: ver(), shipsToday, cpu, notes, spare, spareInfo: spareInfo(),
     onPc: op ? { ver: op[2], at: op[1] } : null, itch: rd(N + '/itch-ver.txt').trim(), afterNov1: after,
     link: { ok: snapOkAt > snapFailAt, okAt: snapOkAt, failAt: snapFailAt },

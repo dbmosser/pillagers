@@ -108,6 +108,7 @@ function laneLine(s){
   if(m=/resting: codex usage limit, back about ([^;]*)/.exec(s)) return ['a','Resting: ChatGPT\'s usage limit is reached. Back about '+m[1]];
   // 10-28: a lane's "needs you:" is almost always a machine fault for Claude to fix, never a question for him (his questions live in for-you.md)
   if(m=/needs you: (.*)/.exec(s)) return ['r','Stopped: '+m[1].replace(/\s*\(see [^)]*\)/g,'').replace(/;\s*\S+ kept\s*$/,'').replace(/the codex worktree cannot be refreshed/,'its own copy of the game could not be updated').replace(/codex is not installed/,'the ChatGPT program is missing from the VM')+' (a job for Claude, not you)'];
+  if(/off in the [\d.]+ GB VM/.test(s)) return ['d','Off: the VM has memory for three Claude helpers, so A, B and C take its jobs'];   // 11-01: helper E's raw status line
   return ['d',s];
 }
 const REASON=[[/uncommitted changes/,'another helper was in the middle of an edit'],[/parse check/,'the game would not load with this change'],
@@ -236,7 +237,7 @@ async function tick(){
   const op=d.onPc; $('onpc').innerHTML=op?(op.ver===d.ver?'v'+esc(op.ver):'<span'+(op.ver<d.ver?' class="warn"':'')+'>v'+esc(op.ver)+'</span>'):'?';
   $('itch').innerHTML=d.itch?(d.itch===d.ver?'v'+esc(d.itch):'<span class="warn">v'+esc(d.itch)+'</span>'):'?';
   { const n=new Date(), dt=[];   // his dates (CLAUDE.md, 10-27): each line drops off by itself once its day is past
-    if(n<new Date(2026,10,1)) dt.push('Party: Sat 10/31 night'); if(n<new Date(2026,10,2)) dt.push('fixes and polish only until Sun 11/1');   // 10-28: his words moved the party from Fri 10/30
+    if(n<new Date(2026,10,1)) dt.push('Party: Sat 10/31 night'); if(n<new Date(2026,10,1,1)) dt.push('fixes and polish only until Sun 11/1');   // 10-28: his words moved the party from Fri 10/30
     if(n<new Date(2026,10,27)) dt.push('release on itch: Thu 11/26'); $('dates').textContent=dt.join(' · '); }
   const sb=d.stable||{}; $('stable').textContent=sb.version?('v'+sb.version+' ('+sb.at.slice(5)+')'+(sb.frozen?' frozen':'')):'none yet';
   const nf=/last (?:fetch|try) \d\d-\d\d (\d\d:\d\d)/.exec(d.notes||''), sp=d.spare||'', sl=/last seen \S+ (\d\d:\d\d)/.exec(sp);
@@ -246,7 +247,7 @@ async function tick(){
   $('lanes').innerHTML=(d.stopFile?row('r',null,'<b>All helpers are paused</b> because the STOP file is in tools/handoff/console. Delete it to restart them.'):'')+
     d.lanes.filter(l=>l.lane!=='o'&&!l.old).map(l=>{const [c,t]=laneLine(l.status);return row(c,null,'<b>'+LANE[l.lane]+'</b>: '+esc(t)+'<div class="small">Next up: '+([...new Set(l.queue.map(job))].slice(0,3).map(esc).join(' / ')||'nothing')+(l.queue.length>3?' ... ('+l.queue.length+' jobs waiting)':'')+'</div>');}).join('')+
     (()=>{const off=d.lanes.filter(l=>l.lane!=='o'&&l.old).map(l=>l.lane.toUpperCase()); return off.length?row('d',null,'<b>Helper'+(off.length>1?'s ':' ')+off.join(', ').replace(/, (\w)$/,' and $1')+':</b> switched off (the VM runs the others instead)'):'';})()+
-    (d.afterNov1&&new Date()<new Date(2026,10,2)?row('d',null,'<b>New features wait until Sun 11/1</b> (your order): '+d.afterNov1+' feature jobs are parked until then; only fixes and polish run now'):'')+
+    (d.afterNov1&&new Date()<new Date(2026,10,1,1)?row('d',null,'<b>New features wait until Sun 11/1</b> (your order): '+d.afterNov1+' feature jobs are parked until then; only fixes and polish run now'):'')+
     '<div class="small" style="margin-top:8px">Jobs finished: '+d.done+(d.failed.length?' &middot; <span class="warn">Gave up: '+d.failed.length+'</span>':'')+((d.blocked||[]).length?' &middot; Parked until another job finishes: '+d.blocked.map(b=>esc(job(b.job))).join(', '):'')+'</div>';
   const s=d.spend, pct=Math.min(100,Math.round(100*s.all/s.total)), tp=Math.min(100,Math.round(100*s.today/Math.max(.01,s.share)));
   // 10-27: once the estimate says it is spent, say so in words instead of "$200.95 of $198 used"
