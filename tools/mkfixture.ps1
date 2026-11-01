@@ -27489,9 +27489,9 @@ class Audio {
          else if(pl.length>=4&&pl[3].y0-pl[2].y1>2){ gy=(pl[2].y1+pl[3].y0)/2; arm(tag,'in the gap between the stash and backpack rows',L+w/2,gy+py*0.35,false); }
          else bad.push(tag+': no measurable protected gap above the minimap ('+pl.length+' row plates)');
        }
-       for(a=0;a<r.rr.length;a++) if(r.rr[a].x0<W/2&&r.rr[a].x1>W/2&&r.rr[a].y0<=1&&r.rr[a].y1>4&&(r.rr[a].x1-r.rr[a].x0)>W*0.04){ rr=r.rr[a]; break; }
+       for(a=0;a<r.rr.length;a++) if(r.rr[a].x0<W/2&&r.rr[a].x1>W/2&&r.rr[a].y0>=0&&r.rr[a].y0<=40*Math.max(1,(typeof hudRes==='function')?hudRes():1)&&r.rr[a].y1>4&&(r.rr[a].x1-r.rr[a].x0)>W*0.04){ rr=r.rr[a]; break; }   // retarget (v36.64 cw-cx-hudtvread): the plate is inset 16 px (times the hud zoom) from the top edge, so find it centred in the top band, not at y 0
        if(!rr){ bad.push(tag+': no score and clock plate was drawn at the top centre'); return null; }
-       ys=rr.y1/2+py*0.35;
+       ys=(rr.y0+rr.y1)/2+py*0.35;
        arm(tag,'in the middle of the score and clock plate',(rr.x0+rr.x1)/2,ys,false);
        arm(tag,'with its middle on the right end of the score and clock plate',rr.x1,ys,false);
        if(rr.x1+14+tw<L-8) arm(tag,'14 px right of the score and clock plate',rr.x1+14+tw/2,ys,true);
@@ -30328,7 +30328,8 @@ class Audio {
        oHp=hudPlate; g.timeLeft=300;
        hudPlate=function(x,y,w,h){ calls.push({x:x,y:y,w:w,h:h}); return oHp.apply(this,arguments); };
        try{ b=arcadeScoreHud(60,1); } finally { hudPlate=oHp; }
-       pl=calls.filter(function(c){ return c.y<=0&&c.x<W/2&&c.x+c.w>W/2; })[0];
+       // retarget (v36.64 cw-cx-hudtvread): the plate is inset 16 px (times the hud zoom) from the top edge, so it must sit within the top band, not at y 0
+       pl=calls.filter(function(c){ return c.y>=0&&c.y<=40*Math.max(1,(typeof hudRes==='function')?hudRes():1)&&c.x<W/2&&c.x+c.w>W/2; })[0];
        if(!pl) return 'no plate hangs from the top edge behind the score ('+calls.length+' plates)';
        if(pl.y+pl.h<(b||0)-2) return 'the plate ends at '+(pl.y+pl.h)+', above the bottom of the clock row '+b;
        if(Math.abs((pl.x+pl.w/2)-W/2)>2) return 'the plate is not centred';
@@ -42849,7 +42850,7 @@ class Audio {
        proto=CanvasRenderingContext2D.prototype; oDI=proto.drawImage;
        if(typeof WEAPONS==='object'&&WEAPONS.rifle&&typeof gunKeysSettle==='function'){ var wc0={}, kw; for(kw in WEAPONS.rifle) wc0[kw]=WEAPONS.rifle[kw]; g.player.wep=wc0; g.player.ammo=wc0.mag; g.hotAssign={}; g.hotAuto={}; gunKeysSettle({deploy:1}); try{ g.hot=gunCell(); }catch(_gh){} }
        sl=hotbarSlots();
-       for(i=0;i<GUNKEYS&&i<sl.length;i++){ if(sl[i].kind==='gun'&&sl[i].vacant) vac.push(i); else if(sl[i].kind==='gun'&&sl[i].icon&&sl[i].icon!=='fists') car.push(i); }
+       for(i=0;i<GUNKEYS&&i<sl.length;i++){ if(sl[i].kind==='gun'&&sl[i].vacant){ if(gunKeyList()[i]) vac.push(i); /* retarget (v28.xx cw-cx-hotbar9): key 9 starts without a class, so it has no ghost to draw */ } else if(sl[i].kind==='gun'&&sl[i].icon&&sl[i].icon!=='fists') car.push(i); }
        if(vac.length<3) return 'SKIP: staging: fewer than three empty gun keys ('+vac.length+')';
        if(!car.length) return 'SKIP: staging: no carried gun';
        draw();
@@ -59894,10 +59895,12 @@ class Audio {
        say=rs; own=false;
        if(__state()!==g||g.over) return 'the arcade raid ended during the search';
        if(!ct.opened) return 'SKIP: the staged crate was not searched in 600 frames';
-       if((ARCADE.pot|0)-pot0!==V) bad.push('a valuable worth '+V+' raised the pot by '+((ARCADE.pot|0)-pot0)+', not '+V);
-       if((ARCADE.mine|0)-mine0!==V) bad.push('a valuable worth '+V+' raised the score by '+((ARCADE.mine|0)-mine0)+', not '+V);
+       // retarget (v35.68, his order): every harder settings row pays 5 percent a step and in arcade the pot is the score, so a valuable pays its value times the live multiplier
+       var VP=Math.round(V*((typeof diffMul==='function')?diffMul():1));
+       if((ARCADE.pot|0)-pot0!==VP) bad.push('a valuable worth '+V+' raised the pot by '+((ARCADE.pot|0)-pot0)+', not '+VP);
+       if((ARCADE.mine|0)-mine0!==VP) bad.push('a valuable worth '+V+' raised the score by '+((ARCADE.mine|0)-mine0)+', not '+VP);
        for(i=0;i<rows.length;i++) if(rows[i].l==='pick'&&rows[i].tag) tagd=rows[i].tag;
-       if(tagd!=='+'+arcadeCr(V)) bad.push('the pickup tag reads '+(tagd||'nothing')+', not +'+arcadeCr(V));   // v28.xx (corpus retarget): his lean2 order, the score is SP, so the tag is +N SP
+       if(tagd!=='+'+arcadeCr(VP)) bad.push('the pickup tag reads '+(tagd||'nothing')+', not +'+arcadeCr(VP));   // v28.xx (corpus retarget): his lean2 order, the score is SP, so the tag is +N SP
        ARCADE.banner=null; ARCADE.solo=0; ARCADE.mine=1234; ARCADE.mate=0; ARCADE.streak=null;
        cx=hcv.getContext('2d'); ft=cx.fillText; ownF=true;
        cx.fillText=function(s){ seen.push(String(s)); return ft.apply(this,arguments); };
