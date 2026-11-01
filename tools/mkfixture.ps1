@@ -15763,7 +15763,10 @@ class Audio {
        return o;
      }
      // one world frame with only this round in the air, 30 units on (past any muzzle gate); how far over the round its tracer was drawn
-     function trY(bl,inFx){ var Y=[], v=Math.hypot(bl.vx,bl.vy)||1; bl=cp(bl); bl.x+=bl.vx/v*30; bl.y+=bl.vy/v*30; g.bullets.length=0; g.fxBullets=[]; if(inFx) g.fxBullets.push(bl); else g.bullets.push(bl); CanvasRenderingContext2D.prototype.lineTo=function(x,y){ if(Math.abs(x-bl.x)<1e-6) Y.push(bl.y-y); return LT.apply(this,arguments); }; ltOn=true; try{ __frame(0); } finally { CanvasRenderingContext2D.prototype.lineTo=LT; ltOn=false; g.bullets.length=0; g.fxBullets=[]; } return Y; }
+     function trY(bl,inFx){ var Y=[], v=Math.hypot(bl.vx,bl.vy)||1; var lf, dd; bl=cp(bl); bl.x+=bl.vx/v*30; bl.y+=bl.vy/v*30; g.bullets.length=0; g.fxBullets=[]; if(inFx) g.fxBullets.push(bl); else g.bullets.push(bl);
+       /* retarget (cw-cx-reticleflight, his 10-29 note "bullets should go through the center of the reticule"): since v36.xx the tracer leaves the muzzle at gun height and eases down to the sim line over 220 world px (smoothstep), so 47 px out it is drawn lower than the muzzle. The heights are divided by what is left of the lift there (1 - smoothstep of the travelled distance past the drawn muzzle), so they read as the muzzle height again and every comparison below still holds */
+       dd=Math.max(0,Math.min(1,(Math.hypot(bl.x-(isFinite(bl.sx)?bl.sx:bl.x),bl.y-(isFinite(bl.sy)?bl.sy:bl.y))-(bl.mzd||0))/220)); lf=1-dd*dd*(3-2*dd);
+       CanvasRenderingContext2D.prototype.lineTo=function(x,y){ if(Math.abs(x-bl.x)<1e-6) Y.push((bl.y-y)/lf); return LT.apply(this,arguments); }; ltOn=true; try{ __frame(0); } finally { CanvasRenderingContext2D.prototype.lineTo=LT; ltOn=false; g.bullets.length=0; g.fxBullets=[]; } return Y; }
      // one HUD frame at a screen size and a scope zoom, cooking a throwable of kind ck; returns how far the bottom of the reload bar and of the cook plate sit over the drawn lean head top, in HUD px
      function plates(w,h,az,ckd){
        var r, feet, head, dpr=(typeof DPRH==='number'&&DPRH>0)?DPRH:1, o={}, oHP=hudPrompt, SV=null, nv=[g.nearStray,g.nearDoor,g.nearSeal,g.nearDown,g.ents];
@@ -76139,9 +76142,9 @@ class Audio {
      if(typeof bagDropSel!=='function'||typeof netPileTake!=='function') return 'trading is still offering';
      if(!(window.__deploy&&window.__state&&window.__endRaid)) return 'SKIP: this fixture cannot deploy';
      var bad=[], g, p, keep={on:NET.on,role:NET.role,peers:NET.peers,up:NET.up,roster:NET.roster,seat:NET.seat}, oSend=netSend, oPeer=netEntsPeer, oHost=netEntsHost, sent=[], n0, c, i, zRow=null, yRow=null, peer={state:'in',seat:0,dc:{readyState:'open',send:function(){}}}, peer1={state:'in',seat:1,dc:{readyState:'open',send:function(){}}};
-     for(i=0;i<LEGEND.length;i++) if(LEGEND[i][0]==='TEAM') LEGEND[i][1].forEach(function(r){ if(r[0]==='Z') zRow=r; });
+     for(i=0;i<LEGEND.length;i++) if(LEGEND[i][0]==='TEAM') LEGEND[i][1].forEach(function(r){ if(r[0]===keyName(keysDef('KeyZ'))) zRow=r; });   /* retarget (cw-meleez): drop is V by default now, the row reads the default key of the drop action */
      for(i=0;i<LEGEND_PAD.length;i++) if(LEGEND_PAD[i][0]==='TEAM') LEGEND_PAD[i][1].forEach(function(r){ if(r[0]==='Y') yRow=r; });
-     if(!zRow||!/drop/.test(String(zRow[1]))) bad.push('the key list TEAM section has no Z drop row');
+     if(!zRow||!/drop/.test(String(zRow[1]))) bad.push('the key list TEAM section has no '+keyName(keysDef('KeyZ'))+' drop row');
      if(!yRow||!/drop/.test(String(yRow[1]))) bad.push('the pad list TEAM section has no Y drop row');
      try{
        netSend=function(q,m){ sent.push(m); return true; };
@@ -76359,9 +76362,9 @@ class Audio {
    run:function(){
      var bad=[], i, j, tRow=null, yRow=null, kb=document.getElementById('kb_trade'), pt=document.getElementById('partytrade'), g, on0, h0=0, h1=0, lines=[], src='';
      if(typeof LEGEND==='undefined'||typeof LEGEND_PAD==='undefined') return 'SKIP: no key tables';
-     for(i=0;i<LEGEND.length;i++) if(LEGEND[i][0]==='TEAM') for(j=0;j<LEGEND[i][1].length;j++) if(LEGEND[i][1][j][0]==='Z') tRow=LEGEND[i][1][j];
+     for(i=0;i<LEGEND.length;i++) if(LEGEND[i][0]==='TEAM') for(j=0;j<LEGEND[i][1].length;j++) if(LEGEND[i][1][j][0]===keyName(keysDef('KeyZ'))) tRow=LEGEND[i][1][j];   /* retarget (cw-meleez): the drop row is V by default now */
      for(i=0;i<LEGEND_PAD.length;i++) if(LEGEND_PAD[i][0]==='TEAM') for(j=0;j<LEGEND_PAD[i][1].length;j++) if(LEGEND_PAD[i][1][j][0]==='Y') yRow=LEGEND_PAD[i][1][j];
-     if(!tRow||!/trad|offer|drop/.test(String(tRow[1]))) return 'the key list has no TEAM section with a Z row for trading';
+     if(!tRow||!/trad|offer|drop/.test(String(tRow[1]))) return 'the key list has no TEAM section with a '+keyName(keysDef('KeyZ'))+' row for trading';
      if(!yRow||!/trad|offer|drop/.test(String(yRow[1]))) bad.push('the pad list has no TEAM section with a Y row for trading');
      if(!kb) bad.push('the stash key bar has no offer line');
      if(!pt||!/Offer|Drop/i.test(pt.textContent)) bad.push('the Party window does not explain trading');
