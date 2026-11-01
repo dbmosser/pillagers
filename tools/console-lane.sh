@@ -138,7 +138,7 @@ if [ $ENGINE = cli ]; then
   # so he always has room. CLI_BOOST lanes (f) run only while the week is 5 or more points under that line.
   PU="$C/plan-usage.txt"
   if [ -z "$(find "$PU" -mmin -5 2>/dev/null)" ]; then
-    u=$(cd "$R" && MSYS_NO_PATHCONV=1 env -u ANTHROPIC_API_KEY timeout 90 claude -p "/usage" --output-format json 2>/dev/null | grep -o 'Current session: [0-9]*% used\|Current week (all models): [0-9]*% used' | grep -o '[0-9]*%' | tr -d '%' | tr '\n' ' ')
+    u=$([ -f "$R/tools/handoff/console/usage-manual.txt" ] || cd "$R" && [ ! -f "$R/tools/handoff/console/usage-manual.txt" ] && MSYS_NO_PATHCONV=1 env -u ANTHROPIC_API_KEY timeout 90 claude -p "/usage" --output-format json 2>/dev/null | grep -o 'Current session: [0-9]*% used\|Current week (all models): [0-9]*% used' | grep -o '[0-9]*%' | tr -d '%' | tr '\n' ' ')
     # 10-21 08:55: written to a temp file and moved, so a lane reading it while another writes never sees it empty (lane c 08:47)
     set -- $u; [ -n "$2" ] && echo "$1 $2 $(date +%s)" > "$PU.$L.tmp" && mv -f "$PU.$L.tmp" "$PU"; fi
   read ses wk _ < "$PU" 2>/dev/null

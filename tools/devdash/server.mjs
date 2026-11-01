@@ -31,6 +31,7 @@ const PU = C + '/plan-usage.txt', PL = C + '/plan-usage-log.txt';
 const CLAUDE = existsSync(process.env.USERPROFILE + '/.local/bin/claude.exe') ? process.env.USERPROFILE + '/.local/bin/claude.exe' : 'claude';
 let planBusy = false, planTried = 0, planLogged = (() => { const l = tail(PL, 1)[0]; return l ? +l.split(' ')[0] : 0; })();
 function planRefresh() {
+  if (existsSync(C + '/usage-manual.txt')) return;   // 11-01 (CEO): claude -p /usage became a paid model call in Claude Code 2.1.304; the CEO check-in writes plan-usage.txt instead
   if (planBusy || Date.now() - planTried < 10 * 60e3) return; planBusy = true; planTried = Date.now();
   const env = { ...process.env }; delete env.ANTHROPIC_API_KEY;
   execFile(CLAUDE, ['-p', '/usage', '--output-format', 'json'], { cwd: R, env, timeout: 90e3, windowsHide: true, maxBuffer: 4e6 }, (err, out) => {

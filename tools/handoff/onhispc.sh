@@ -27,7 +27,7 @@ dt=$(( $(date +%s) - t0 ))
 # the week's plan use: the lanes' file when it is under 5 minutes old, else ask (same command and same atomic write as console-lane.sh)
 PU="$C/plan-usage.txt"
 if [ -z "$(find "$PU" -mmin -5 2>/dev/null)" ]; then
-  u=$(cd "$R" && MSYS_NO_PATHCONV=1 env -u ANTHROPIC_API_KEY timeout 90 claude -p "/usage" --output-format json 2>/dev/null | grep -o 'Current session: [0-9]*% used\|Current week (all models): [0-9]*% used' | grep -o '[0-9]*%' | tr -d '%' | tr '\n' ' ')
+  u=$([ -f "$R/tools/handoff/console/usage-manual.txt" ] || cd "$R" && [ ! -f "$R/tools/handoff/console/usage-manual.txt" ] && MSYS_NO_PATHCONV=1 env -u ANTHROPIC_API_KEY timeout 90 claude -p "/usage" --output-format json 2>/dev/null | grep -o 'Current session: [0-9]*% used\|Current week (all models): [0-9]*% used' | grep -o '[0-9]*%' | tr -d '%' | tr '\n' ' ')
   set -- $u; [ -n "$2" ] && echo "$1 $2 $(date +%s)" > "$PU.ship.tmp" && mv -f "$PU.ship.tmp" "$PU"; fi
 read ses wk _ < "$PU" 2>/dev/null
 if [ $hit = 1 ]; then

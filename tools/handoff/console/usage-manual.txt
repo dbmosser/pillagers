@@ -1,0 +1,1 @@
+since Claude Code 2.1.304, claude -p "/usage" is a paid model call, not the free usage card. The CEO check-in writes plan-usage.txt from the app usage tool (get_usage) instead. While this file exists, scripts never call claude -p /usage.
