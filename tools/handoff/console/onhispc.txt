@@ -179,3 +179,4 @@
 11-01 13:06 v37.10 cw-machsmoke on his pc after 34s (8802 serves 37.10) week 3%
 11-01 13:09 v37.11 cw-burnash on his pc after 66s (8802 serves 37.11) week 3%
 11-01 13:13 v37.12 cw-machsmoke2 on his pc after 33s (8802 serves 37.12) week 3%
+11-01 13:19 v37.13 cw-nomachpip on his pc after 18s (8802 serves 37.13) week 3%

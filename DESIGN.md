@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.14 - SEASON ZERO FOUNDATION: THE ACCOUNT AND THE PILLAGER
+
+Co-op hunt while he was away. his progression plan of 11-01 (m0): no XP, lifetime earnings sets the rank, a pillager lasts until it dies and the account carries on; old saves paid out for unclaimed rewards (his ok sure) Watch: the save holds an account name, the living pillager (generation one is the character he plays), a hall of the fallen and lifetime earnings; an old save is paid once in cash for every ladder reward it earned and never claimed, and the hub says it once; nothing else changes in play
+
+MEASURED. Check 37.14 passes, and fails on v37.13.
 ## v37.13 - HURT MACHINES SHOW SMOKE AND SPARKS, NOT A HEALTH BAR
 
 Co-op hunt while he was away. His 10-25 answer g-83: smoke and sparks only. The name plate still drew a 3 px health pip under every hurt machine. Machines now keep the name plate, smoke and sparks only; pillager bots, the hire, strays and the peddler keep their pip, and the Overseer keeps its boss bar.

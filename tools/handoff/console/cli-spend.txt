@@ -2183,3 +2183,4 @@
 2026-11-01 0.1431943 e1-advisor-trial-wait
 2026-11-01 3.3609526 217-dead-code-cleanup
 2026-11-01 0.4427544 z-163-burn-ash-and-red-glow
+2026-11-01 0.9980144999999999 z-125-gfx-machine-damage

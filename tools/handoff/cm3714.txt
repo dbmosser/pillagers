@@ -1,0 +1,7 @@
+v37.14: season zero foundation: the account and the pillager
+
+the save holds an account name, the living pillager (generation one is the character he plays), a hall of the fallen and lifetime earnings; an old save is paid once in cash for every ladder reward it earned and never claimed, and the hub says it once; nothing else changes in play
+
+Check 37.14. Fails on v37.13.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
