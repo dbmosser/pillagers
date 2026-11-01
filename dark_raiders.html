@@ -3929,8 +3929,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.00';
-var VER_AT='2026-11-01 10:22';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.01';
+var VER_AT='2026-11-01 10:25';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -24016,10 +24016,11 @@ var ANSFEED=/^(CONTRACT ITEM NEARBY|CONTROLLER DISCONNECTED|WALL GLITCH SAVED TO
 var ANSBOX={on:0,x:0,y:0,w:0,h:0,px:0,t:''};
 function ansOn(m){ return !!(G&&!G.hubFloor&&!G.paused&&!G.over&&!G.bagOpen&&!G.mapOpen&&G.player&&!ANSFEED.test(String(m).toUpperCase().replace(/[.\s]+$/,''))); }
 function ansSay(m,o){
-  var s=String(m), now=statusNow(), A=G.ans, seen=(G.ansSeen=G.ansSeen||{}), last=seen[s];
+  var s=String(m), now=statusNow(), A=G.ans, seen=(G.ansSeen=G.ansSeen||{}), last=seen[s], prev=G.ansPrev;   // v36.xx (cw-ansgap), job 208: prev is the text said just before this one
+  G.ansPrev=s;
   seen[s]=now;
   if(A&&A.m===s&&now-A.at<ANSLIFE) return A;                     // said again while it shows: one line, its time is not refreshed
-  if(last!==undefined&&now-last<ANSGAP) return A;                 // the key is still held: it does not come back
+  if(last!==undefined&&now-last<ANSGAP&&prev===s) return A;      // the key is still held: it does not come back. v36.xx (cw-ansgap): only when nothing else was said in between, so on, off, on within 0.35 s leaves on
   G.ans={m:s,sub:(o&&o.sub)?String(o.sub):'',at:now};
   return G.ans;
 }
@@ -57098,7 +57099,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.00: Only machines are golden. The golden enemy is never a pillager. WATCH: a raid where the golden enemy is always a machine; if a raid has none far enough away, no golden enemy that raid. Check 37.00 fails on v36.99',
+  now:'v37.01: Quick presses of a key that flips a state always leave the answer line on the state just set. A held key still does not repeat the line. Check 37.01 fails on v37.00',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

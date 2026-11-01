@@ -1,0 +1,7 @@
+v37.01: the answer line keeps the newest press
+
+Quick presses of a key that flips a state always leave the answer line on the state just set. A held key still does not repeat the line.
+
+Check 37.01. Fails on v37.00.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

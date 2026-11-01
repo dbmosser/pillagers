@@ -127,3 +127,6 @@ the raid shows an alert twice: the red banner and a row in the left feed ("the p
 
 ## 10-31 box in reach outline (v36.82)
 The order asked for an outline on things you can use. His 10-15 order says no shining circle on items. I drew only a thin faint lime rectangle on the one box E would search (no glow, nothing on other boxes). Keep it, or drop it?
+
+## 11-01 bounty pillager raid event (v37.00)
+Only machines can be golden now (your 10-31 rule: pillagers stand in for live players, so no boss-style buffs). The bounty pillager raid event is the same kind of thing (a pillager with a prize on its head). I left it alone as ordered. Keep it as it is, or treat it like the golden one?

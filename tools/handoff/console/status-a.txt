@@ -1,1 +1,1 @@
-11-01 10:07 running 00d-250-no-golden-pillager-bots on Claude Code, sonnet high, run 1 (your plan: week 1% of the 4.8% line, 5-hour 0%)
+11-01 10:24 running 01-242-red-14.76-stash-hover-misses-key-9 on Claude Code, sonnet high, run 1 (your plan: week 1% of the 5.0% line, 5-hour 0%)

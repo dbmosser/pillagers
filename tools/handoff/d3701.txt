@@ -1,0 +1,5 @@
+## v37.01 - THE ANSWER LINE KEEPS THE NEWEST PRESS
+
+Co-op hunt while he was away. Job 208: the answer line dropped a line whose text was said less than 0.35 s ago even when another line was said in between, so on, off, on left off on screen. The repeat guard now applies only when the same text came straight before.
+
+MEASURED. Check 37.01 passes, and fails on v37.00.
