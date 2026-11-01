@@ -132,3 +132,5 @@ v24.22   # flake: only 3 of the five station words found in 1512, green before a
 # CEO 10-29 21:30 (his order: stable build for the party): cosmetic resize hatch on HUD panels, fix job o-240 stays open
 v30.62   # resize hatch shows without hover; cosmetic, job o-240
 # not listed on purpose: v26.59 (job 252) and v36.30 (job 253) may be real; v31.04 has job 208
+# his 11-01 order "get rid of the concept of xp altogether", v37.19 (cw-m1a): the career corner readout has no XP word any more; sorted by the check-in 11-01 15:55 (run on v37.19); retarget to credits, stash and bag
+v31.25   # wants the XP label in the one-row corner readout; XP is gone from every screen
