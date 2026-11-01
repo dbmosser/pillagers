@@ -27489,7 +27489,7 @@ class Audio {
          else if(pl.length>=4&&pl[3].y0-pl[2].y1>2){ gy=(pl[2].y1+pl[3].y0)/2; arm(tag,'in the gap between the stash and backpack rows',L+w/2,gy+py*0.35,false); }
          else bad.push(tag+': no measurable protected gap above the minimap ('+pl.length+' row plates)');
        }
-       for(a=0;a<r.rr.length;a++) if(r.rr[a].x0<W/2&&r.rr[a].x1>W/2&&r.rr[a].y0>=0&&r.rr[a].y0<=40*Math.max(1,(typeof hudRes==='function')?hudRes():1)&&r.rr[a].y1>4&&(r.rr[a].x1-r.rr[a].x0)>W*0.04){ rr=r.rr[a]; break; }   // retarget (v36.64 cw-cx-hudtvread): the plate is inset 16 px (times the hud zoom) from the top edge, so find it centred in the top band, not at y 0
+       for(a=0;a<r.rr.length;a++) if(r.rr[a].x0<W/2&&r.rr[a].x1>W/2&&r.rr[a].y0>=0&&r.rr[a].y0<=40*Math.max(1,(typeof hudRes==='function')?hudRes():1)&&r.rr[a].y1>4&&(r.rr[a].x1-r.rr[a].x0)>W*0.04){ if(!rr||r.rr[a].y1>rr.y1) rr=r.rr[a]; }   // retarget (v36.64 cw-cx-hudtvread): the plate is inset 16 px (times the hud zoom) from the top edge, so find it centred in the top band, not at y 0
        if(!rr){ bad.push(tag+': no score and clock plate was drawn at the top centre'); return null; }
        ys=(rr.y0+rr.y1)/2+py*0.35;
        arm(tag,'in the middle of the score and clock plate',(rr.x0+rr.x1)/2,ys,false);
@@ -30329,7 +30329,7 @@ class Audio {
        hudPlate=function(x,y,w,h){ calls.push({x:x,y:y,w:w,h:h}); return oHp.apply(this,arguments); };
        try{ b=arcadeScoreHud(60,1); } finally { hudPlate=oHp; }
        // retarget (v36.64 cw-cx-hudtvread): the plate is inset 16 px (times the hud zoom) from the top edge, so it must sit within the top band, not at y 0
-       pl=calls.filter(function(c){ return c.y>=0&&c.y<=40*Math.max(1,(typeof hudRes==='function')?hudRes():1)&&c.x<W/2&&c.x+c.w>W/2; })[0];
+       pl=calls.filter(function(c){ return c.y>=0&&c.y<=40*Math.max(1,(typeof hudRes==='function')?hudRes():1)&&c.x<W/2&&c.x+c.w>W/2; }).sort(function(u,v){ return (v.y+v.h)-(u.y+u.h); })[0];   // the plate that covers the clock row is the tallest one in the band
        if(!pl) return 'no plate hangs from the top edge behind the score ('+calls.length+' plates)';
        if(pl.y+pl.h<(b||0)-2) return 'the plate ends at '+(pl.y+pl.h)+', above the bottom of the clock row '+b;
        if(Math.abs((pl.x+pl.w/2)-W/2)>2) return 'the plate is not centred';
@@ -59896,7 +59896,7 @@ class Audio {
        if(__state()!==g||g.over) return 'the arcade raid ended during the search';
        if(!ct.opened) return 'SKIP: the staged crate was not searched in 600 frames';
        // retarget (v35.68, his order): every harder settings row pays 5 percent a step and in arcade the pot is the score, so a valuable pays its value times the live multiplier
-       var VP=Math.round(V*((typeof diffMul==='function')?diffMul():1));
+       var VP=(typeof spMul==='function')?spMul(V):V;   /* spMul: the settings multiplier times the raid condition multiplier, the very function the pickup pays through */
        if((ARCADE.pot|0)-pot0!==VP) bad.push('a valuable worth '+V+' raised the pot by '+((ARCADE.pot|0)-pot0)+', not '+VP);
        if((ARCADE.mine|0)-mine0!==VP) bad.push('a valuable worth '+V+' raised the score by '+((ARCADE.mine|0)-mine0)+', not '+VP);
        for(i=0;i<rows.length;i++) if(rows[i].l==='pick'&&rows[i].tag) tagd=rows[i].tag;
@@ -81626,7 +81626,8 @@ class Audio {
      var src='', i;
      try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
      var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
-     if(src.indexOf("if(G.mapOpen) G.mapOpen=false; else if(NET.on&&NET.upSeed) netPingMake(); else G.mapOpen=true;")<0) bad.push('D-UP does not ping');
+     // retarget (v35.41 cw-cx-solopings, task 139): the tap pings alone too, so it no longer waits for NET.on and NET.upSeed
+     if(src.indexOf("if(G.mapOpen) G.mapOpen=false; else if(NET.on&&NET.upSeed) netPingMake(); else G.mapOpen=true;")<0&&src.indexOf("else if(G.mapOpen) G.mapOpen=false; else netPingMake();")<0) bad.push('D-UP does not ping');
      if(src.indexOf("if(_lbN&&_rbN&&(!PAD.prev[4]||!PAD.prev[5])&&G&&!G.over&&NET.on) netPingMake();")>=0) bad.push('both bumpers still ping');
      return bad.length?bad.join('; '):null; }},
   {v:'16.45',what:'settings in a raid: the pause box opens Settings, and a raid length change moves the running clock at once',
@@ -81661,7 +81662,26 @@ class Audio {
      var src='';
      try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
      var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
-     if(src.indexOf("if(typeof NET==='object'&&NET&&NET.on&&NET.role==='join'&&isFinite(amt)) amt*=netKidMul();")<0&&src.indexOf("if(typeof NET==='object'&&NET&&((NET.on&&NET.role==='join')||(typeof G!=='undefined'&&G&&G.netWasJoin))&&isFinite(amt)) amt*=netKidMul();")<0) bad.push('damage to player 2 is not scaled');   // v21.97 also scales a raid this window joined and took over
+     // retarget (v35.54 o-120e): the cut rides _hitMul inside damagePlayer now, so prove it with a real hit on player 2 (damage taken), not by reading source
+     if(window.__deploy&&window.__endRaid&&typeof damagePlayer==='function'){
+       var kg=null, kp=null, kBase=0, kCut=0, kOn=NET.on, kRole=NET.role, kS2=netSend, kK2=P.kidDmg, kH2=NET.kidHost;
+       try{
+         netSend=function(){ return true; };
+         __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0);
+         __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+         kg=__state(); kp=kg&&kg.player;
+         if(kp&&!kg.over){
+           NET.on=false; P.kidDmg=1; NET.kidHost=undefined;
+           kp.iv=0; kp.armor=0; kp.downed=false; kp.hp=100; damagePlayer(20,'sentry','T'); kBase=100-kp.hp;
+           kp.iv=0; kp.armor=0; kp.downed=false; kp.hp=100;
+           P.kidDmg=0.25; NET.on=true; NET.role='join';
+           damagePlayer(20,'sentry','T'); kCut=100-kp.hp;
+           if(!(kBase>0)) bad.push('staging: a plain hit of 20 took '+kBase);
+           else if(Math.abs(kCut-kBase*0.25)>0.6) bad.push('damage to player 2 is not scaled (a hit took '+kCut+' against '+kBase+' with the cut at a quarter)');
+         }
+       }catch(_k){ bad.push('threw: '+(_k&&_k.message||_k)); }
+       finally{ NET.on=kOn; NET.role=kRole; netSend=kS2; P.kidDmg=kK2; NET.kidHost=kH2; try{ var kg2=__state(); if(kg2&&!kg2.over){ kg2.player.iv=0; kg2.player.hp=100; __endRaid('abandon'); } }catch(_e){} __topClear(); }
+     }
      return bad.length?bad.join('; '):null; }},
   {v:'16.43',what:'ping: a ping reaches the party through the host with who made it, and snaps to an enemy near the cursor',
    run:function(){
@@ -81683,8 +81703,9 @@ class Audio {
      var src='', i;
      try{ var ss=document.getElementsByTagName('script'); for(i=0;i<ss.length;i++) src+=ss[i].textContent||''; }catch(e){ return 'SKIP: the build cannot read its own script'; }
      var cut=src.indexOf('window.__frame=function'); if(cut>0) src=src.slice(0,cut);
-     if(src.indexOf("if(code==='KeyN'&&G&&!G.over&&!repeat&&NET.on) netPingMake();")<0) bad.push('N does not ping');
-     if(src.indexOf("else if(NET.on&&NET.upSeed) netPingMake();")<0) bad.push('a controller cannot ping');   // v16.46 moved it to a D-UP tap
+     // retarget (v35.41 cw-cx-solopings, task 139): pings work solo, so N and the D-UP tap no longer wait for NET.on
+     if(src.indexOf("if(code==='KeyN'&&G&&!G.over&&!repeat&&NET.on) netPingMake();")<0&&src.indexOf("if(code==='KeyN'&&G&&!G.over&&!repeat) netPingMake();")<0) bad.push('N does not ping');
+     if(src.indexOf("else if(NET.on&&NET.upSeed) netPingMake();")<0&&src.indexOf("else if(G.mapOpen) G.mapOpen=false; else netPingMake();")<0) bad.push('a controller cannot ping');   // v16.46 moved it to a D-UP tap
      return bad.length?bad.join('; '):null; }},
   {v:'16.42',what:'kill feed: a party kill becomes a NAME killed WHAT line on every window, its own as YOU',
    run:function(){
