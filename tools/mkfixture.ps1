@@ -6194,7 +6194,7 @@ window.__REGRESS=[
        h1=gr.getBoundingClientRect().height; el.style.display='none'; h2=gr.getBoundingClientRect().height; renderHub();
        need(Math.abs(h1-h2)<=2,'showing the wanted strip takes '+Math.round(h2-h1)+'px from the stash grid ('+Math.round(h1)+' against '+Math.round(h2)+')');
        ch=el.querySelectorAll('[data-want] b');
-       for(i=0;i<ch.length;i++) need(getComputedStyle(ch[i]).color===getComputedStyle(document.documentElement).getPropertyValue('--warn').trim()||/245, 183, 59/.test(getComputedStyle(ch[i]).color),'a wanted price is coloured '+getComputedStyle(ch[i]).color+', not the warn colour');
+       for(i=0;i<ch.length;i++) need(/245, 183, 59|239, 233, 220/.test(getComputedStyle(ch[i]).color),'a wanted price is coloured '+getComputedStyle(ch[i]).color+', not the warn colour or tx-1');   // retarget (cw-m1mkt3): the critic moved the prices to tx-1
        t=String(el.textContent);
        need(t.indexOf('wanted +50%')===0&&t===t.toLowerCase(),'the strip reads '+JSON.stringify(t));
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
