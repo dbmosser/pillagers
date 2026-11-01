@@ -1,0 +1,7 @@
+v37.24: the wanted strip reads from the couch
+
+the wanted strip is 16px with 24px between items; the label is in the warn colour, the names in the second text colour and the prices in the first
+
+Check 37.24. Fails on v37.23.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

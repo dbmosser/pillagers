@@ -163,17 +163,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The new version adds a rank banner that pushes the list down 88px and crowds the screen, and none of the earlier advice was applied: the list, selected row, tagline, header sentence, detail pane and toast are the same as before.",
+  "verdict": "Nothing from the last review was acted on: the screen is the same except for different contract data, still a stack of banner, tab subtitle and list header above a contract list that is cut off at the bottom, next to a half-empty detail pane.",
   "findings": [
-   "P1 rank banner (y=140-214): Fold the rank into the header row as a single 16px tx-2 line ('scrounger i · $0 of $20,000'). Or drop the banner and keep only the thin progress bar. Keep lime for the selected row only, and make the rank name tx-1 at 32px.",
-   "P1 banner text: 'rank', 'lifetime earnings', 'next scrounger ii $20,000', 'reward': Set all labels to 16px f-cond 600 at +.04em in #aaa498. Set the reward text in tx-1, or show it as a small icon chip. Remove 'lifetime earnings $0', or show it only once it is above 0.",
-   "P1 under tabs ('stuff for you to do.') and list header ('hard work needs 3 more credits (a hard card is worth 2, an elite 3)'): Delete the tab subtitle. Replace the list header with 'done 0 · credits 0/3' at 16px tx-2. This recovers about 28px of height.",
-   "P1 selected row, row sub-lines and the 'standard' tag: Fill the selected row with #1e2225, add a 3px #e6ff3d left bar and a 1px #4a5257 border, and set the name to tx-1 at weight 700. Remove the 'standard' tag from rows that have it, since the detail pane already shows it. Set the sub-lines to 16px #aaa498.",
-   "P1 right detail pane (y=315-663): Stretch the pane to y=315-1002 and pin the button to its bottom edge. Set the reward '$400' at 56px f-cond 800. Give the disabled button a 1px #4a5257 border and tx-2 text."
+   "P1 rank banner, y=140-220: Fold it into one 16px tx-2 line in the header row ('scrounger i · $0 of $20,000'), or keep only a 4px progress bar. Drop 'lifetime earnings $0'. Make the labels 16px #aaa498, and show the reward only as a small chip.",
+   "P1 tab subtitle 'stuff for you to do.' (y=297) and list header (y=345): Delete the subtitle. Replace the header with 'done 0 · credits 0/3' at 16px tx-2, and move the credit rule into a detail-pane tooltip.",
+   "P1 right detail pane, y=320-668: Stretch the pane to y=320-1002 and pin the button to the bottom edge. Set the reward to 56px f-cond 800 tx-1. Give the button a 1px #4a5257 border and tx-2 text.",
+   "P1 selected row (y=366-460): Fill the selected row with #1e2225 and a 1px #4a5257 border, keep a 3px #e6ff3d left bar, and set the name to tx-1 at weight 700. Remove the 'standard' tag and show only non-standard tiers (hard, elite) as a tag.",
+   "P2 list rows, y=366-1000: Make the row two lines: name at 20px tx-1, then a 16px tx-2 line 'armour plates x2 · 0/2'. Right-align the $ reward at 20px in tx-1 on the first line. Add a 24px bottom fade on the list."
   ],
-  "pic": "tools/handoff/console/notes/shots/00p-m1e-after/12-mainframe-contracts-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/00p-m1e-after2/12-mainframe-contracts-1080.jpg",
   "task": "manual",
-  "when": "2026-11-01T21:08"
+  "when": "2026-11-01T21:17"
  },
  "14-mainframe-racks": {
   "score": 3,
