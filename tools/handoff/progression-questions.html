@@ -1,0 +1,297 @@
+<title>Pillagers Lineage Questions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column of question cards grouped by topic, a sticky progress bar on top. Answers save to the page's store so Claude can read them. Dark-first, like the game. */
+:root {
+  --bg: #12161c; --panel: #1a2029; --line: #2b3440; --fg: #e3e6ea; --muted: #97a2b0;
+  --accent: #f0a53a; --accent-ink: #12161c; --good: #6fbf73; --warn: #e0b44a;
+  --display: "Saira Condensed", "Arial Narrow", sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) {
+  --bg: #f3f1ec; --panel: #ffffff; --line: #d9d4ca; --fg: #1d2127; --muted: #5d6672;
+  --accent: #b5680c; --accent-ink: #ffffff; --good: #2f8a3a; --warn: #9a7410; color-scheme: light; } }
+:root[data-theme="light"] {
+  --bg: #f3f1ec; --panel: #ffffff; --line: #d9d4ca; --fg: #1d2127; --muted: #5d6672;
+  --accent: #b5680c; --accent-ink: #ffffff; --good: #2f8a3a; --warn: #9a7410; color-scheme: light; }
+
+body { background: var(--bg); color: var(--fg); font: 15px/1.55 var(--body); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap { max-width: 820px; margin: 0 auto; padding-block: 28px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 22px; }
+h1, h2 { font-family: var(--display); font-weight: 700; text-transform: lowercase; letter-spacing: .02em; margin: 0; line-height: 1.1; text-wrap: balance; }
+h1 { font-size: clamp(32px, 6vw, 48px); }
+h2 { font-size: 24px; }
+p { margin: 0; max-width: 70ch; }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.lede { color: var(--muted); }
+header { display: grid; gap: 10px; }
+
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 10px; border-bottom: 1px solid var(--line); display: grid; gap: 6px; }
+.bar .row { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; justify-content: space-between; }
+.count { font: 500 14px var(--mono); font-variant-numeric: tabular-nums; }
+.status { font: 400 12.5px var(--mono); color: var(--muted); }
+.meter { height: 4px; background: var(--line); border-radius: 2px; overflow: hidden; }
+.meter i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s; }
+.jump { display: flex; flex-wrap: wrap; gap: 4px 12px; font: 500 12.5px var(--mono); }
+.jump a { color: var(--accent); text-decoration: none; }
+
+section.group { display: grid; gap: 10px; scroll-margin-top: 110px; }
+section.group > .gh { display: grid; gap: 4px; padding-top: 6px; border-top: 2px solid var(--line); }
+section.group > .gh p { color: var(--muted); font-size: 14px; }
+
+.q { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; display: grid; gap: 8px; }
+.q.done { border-color: color-mix(in srgb, var(--good) 45%, var(--line)); }
+.q .t { display: grid; grid-template-columns: 44px 1fr; gap: 8px; align-items: baseline; }
+.q .n { font: 500 12.5px var(--mono); color: var(--muted); font-variant-numeric: tabular-nums; }
+.q .t span:last-child { min-width: 0; }
+.opts { display: flex; flex-wrap: wrap; gap: 6px; padding-left: 52px; }
+.opt { font: 500 13.5px var(--body); color: var(--fg); background: transparent; border: 1px solid var(--line); border-radius: 4px; padding: 6px 10px; cursor: pointer; text-align: left; position: relative; }
+.opt:hover { border-color: var(--accent); }
+.opt:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.opt.pick::after { content: "my pick"; font: 500 9.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-left: 8px; }
+.opt[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.opt[aria-pressed="true"].pick::after { color: var(--accent-ink); }
+.note { margin-left: 52px; font: 13.5px var(--body); color: var(--fg); background: transparent; border: 1px dashed var(--line); border-radius: 4px; padding: 6px 8px; width: calc(100% - 52px); }
+.note:focus { outline: none; border-style: solid; border-color: var(--accent); }
+.note::placeholder { color: var(--muted); }
+footer { color: var(--muted); font-size: 13px; }
+
+@media (max-width: 560px) {
+  .q .t { grid-template-columns: 34px 1fr; }
+  .opts { padding-left: 0; }
+  .note { margin-left: 0; width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) { .meter i { transition: none; } }
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">pillagers · season zero · lineage and progression</div>
+  <h1>100 questions</h1>
+  <p class="lede">Built from your 11-01 calls: no XP; $ comes mostly from selling gear; lifetime earnings sets your rank; skills are bought; your pillager keeps its level until it dies, then the account gets a new, auto-named pillager. On death you keep stash cash, lifetime earnings and the account. You lose the pillager and everything it took in, worn gear included. Looks come only from gear; body choices stay free.</p>
+  <p class="lede">Tap an answer. Each one saves as you go, and I read them from here. "my pick" marks what I would choose. Anything you skip, I take my pick. Add a note on any question.</p>
+</header>
+
+<div class="bar" role="status" aria-live="polite">
+  <div class="row"><span class="count" id="count">0 of 100 answered</span><span class="status" id="status">connecting...</span></div>
+  <div class="meter"><i id="meter"></i></div>
+  <nav class="jump" id="jump" aria-label="topics"></nav>
+</div>
+
+<div id="groups"></div>
+
+<footer>Questions file: tools/handoff/progression-questions.html. The plan: tools/handoff/progression-plan.html.</footer>
+</div>
+
+<script>
+const G = [
+ ["lineage", "the lineage: death and the next pillager", "Rogue Legacy and Reigns: each death passes the account to a new pillager.", [
+  ["When your pillager dies, how does the next one arrive?", ["right away, one new pillager", "pick 1 of 3 heirs with different traits", "pick 1 of 2 heirs"], 1],
+  ["Do new pillagers roll traits, good and bad (light step, nearsighted, heavy hands)?", ["yes, small ones", "yes, big ones that change how you play", "no traits"], 0],
+  ["Should a heir with a worse trait come with a $ bonus, so a rough draw still pays?", ["yes", "no"], 0],
+  ["Auto-name format", ["a name: brakka", "name and generation: brakka iv", "name and earned epithet: brakka the quiet"], 1],
+  ["Should a pillager earn an epithet from how it plays (the quiet, the greedy, the lucky) shown in the hall?", ["yes", "no"], 0],
+  ["When can you rename a pillager?", ["only when it is born", "when born and any time at the stash"], 1],
+  ["The account name (separate from pillager names) shows where?", ["menus and the title only", "menus plus the two-player lobby", "nowhere other players see"], 1],
+  ["Where do past pillagers live?", ["a hall of the fallen wall in the Undercroft", "a tab at the Mainframe", "both: the wall, and a tab with full stats"], 2],
+  ["Should the hall show how and where each pillager died (district, killed by)?", ["yes", "no"], 0],
+  ["How many past pillagers does the hall keep?", ["all of them", "the last 100", "the last 25"], 1],
+  ["Lineage records shown in the hall (longest life, richest haul, most kills, highest level)?", ["yes", "no"], 0],
+  ["A new pillager starts with", ["nothing", "a free basic gun and bandages", "whatever starter kit you bought on the account"], 1],
+  ["A short birth moment in the Undercroft: name card, traits, rename button?", ["yes", "no"], 0],
+  ["Show the generation number (this is your 14th pillager)?", ["yes", "no"], 0],
+  ["Can you retire a living pillager into the hall, with its worn gear going to the stash?", ["yes, for nothing", "yes, and it pays a bonus by level", "no, only death ends a pillager"], 1]
+ ]],
+ ["level", "pillager level: kept until death", "The level and its picks live on the pillager, not the account.", [
+  ["What fills the level bar?", ["machine kills only", "kills, containers and doors", "anything that would earn $"], 1],
+  ["When the bar fills in a raid", ["pick 1 of 3 upgrades on the spot", "pick after you extract", "small pick on the spot, bigger one at home"], 0],
+  ["Picking in a raid", ["never pauses, auto-picks after 8 s", "pauses in solo only", "never pauses, waits until you pick"], 0],
+  ["Level cap for one pillager", ["10", "20", "30", "no cap"], 1],
+  ["Pace", ["about 1 level a raid", "2 or 3 a raid early, slowing later", "fast at first, then slow"], 1],
+  ["Can a pillager change its picks?", ["no, picks are who it is", "yes, for $ at the Mainframe"], 0],
+  ["Two maxed picks that belong together combine into a stronger one?", ["yes", "no"], 0],
+  ["Show a pillager's picks as small badges by its name?", ["yes", "no"], 0],
+  ["How does a high-level pillager stay challenged?", ["no change; easy is the reward", "machines scale up a little with level", "harder districts and keycard rooms pay better gear"], 2],
+  ["Pick pool at launch", ["about 24", "about 40", "about 60"], 1],
+  ["Do bought skills add new picks to the pool, so the account widens what heirs can roll?", ["yes", "no"], 0],
+  ["Two-player: when one player levels, does the partner get anything?", ["no", "a small shared boost"], 0],
+  ["Two-player: a downed pillager revived by the partner lives on?", ["yes", "no"], 0],
+  ["Level on the HUD", ["next to health", "under the clock", "on the name tag only"], 0],
+  ["Reaching the level cap gives", ["a capstone pick", "a title in the hall", "both"], 2],
+  ["Quitting a raid early", ["counts as death, as today", "loses what you carried, the pillager lives"], 0],
+  ["Can a pillager sit out (stay home) while you play another?", ["no, one pillager at a time", "yes, a small roster like Darkest Dungeon"], 0]
+ ]],
+ ["money", "money: mostly from selling", "Your call: no cash beyond selling what you bring home, plus maybe a bonus.", [
+  ["Income besides selling", ["none", "a small extraction bonus", "an extraction bonus, and contracts pay in items to sell"], 2],
+  ["Contracts pay in", ["$", "gear and items to sell", "both"], 1],
+  ["Racks (passive $ on extract)", ["keep them", "remove them", "make them pay materials instead of $"], 2],
+  ["Extraction bonus size", ["a flat small amount", "about 10% of the haul's value", "grows with the pillager's level"], 1],
+  ["Where you sell", ["the Peddler only", "the Peddler, or straight from the stash screen", "also at a terminal in raid"], 1],
+  ["Sell prices", ["fixed share of value", "change daily per item", "rise as you upgrade the Peddler"], 2],
+  ["Buy back what you sold today, at the same price?", ["yes", "no"], 0],
+  ["Cash for a brand-new account", ["$0", "$1,000", "$5,000"], 1],
+  ["Cash found in a raid", ["no cash in raids", "it is loot, lost on death like everything carried"], 1],
+  ["Seller prices rise with your lifetime earnings?", ["yes", "no"], 1],
+  ["A daily login bonus?", ["yes", "no"], 1],
+  ["Show net worth (stash cash plus stash value)?", ["yes", "no"], 0],
+  ["The gamble station (Wirt)", ["keep as it is", "remove it", "turn it into a gear mystery box"], 2],
+  ["Should hostile pillagers drop what they wear, so killing a geared one pays?", ["yes", "no"], 0]
+ ]],
+ ["earnings", "lifetime earnings and rank", "Every $ banked adds to lifetime earnings; spending never lowers it.", [
+  ["Lifetime earnings counts", ["every $ banked", "only $ from selling", "selling plus the extraction bonus"], 0],
+  ["Ranks from lifetime earnings", ["30 named ranks", "10 named ranks", "no ranks, just the number"], 0],
+  ["Rank names", ["scrounger, cutpurse, sacker, reaver, marauder, warlord", "Undercroft guild titles", "plain numbered tiers"], 0],
+  ["Rank rewards", ["a reward at every rank", "every 5th rank", "none"], 0],
+  ["Where lifetime earnings shows", ["the Mainframe", "the Mainframe and the account card", "also over your head in raids"], 1],
+  ["Does the rank title show over your pillager's head in raids?", ["yes", "no, the pillager's name and level only"], 1],
+  ["Do higher ranks open new districts?", ["yes", "no"], 1]
+ ]],
+ ["gear", "worn gear", "Eight slots: hat, cloak, armor, pants, amulet, two rings, backpack. All lost on death.", [
+  ["Eight slots, or add more?", ["eight is enough", "add boots", "add gloves", "add both"], 0],
+  ["The backpack (no loot cap) helps with", ["faster searching", "quieter while carrying", "a mix, like any other piece"], 2],
+  ["Rarity names: scrap, sound, rare, relic?", ["yes", "rename them"], 0],
+  ["Gear pieces found in a raid", ["1 or 2", "2 or 3", "4 or 5"], 1],
+  ["Gear on the ground glows in its rarity color?", ["yes", "no"], 0],
+  ["See a piece's traits before you pick it up (hover)?", ["yes", "no"], 0],
+  ["Extracting wearing a piece earns a pip, up to 3?", ["yes", "no"], 0],
+  ["Gear wears out?", ["never, like guns", "armor only", "all of it"], 0],
+  ["Gear strength comes from", ["the district it dropped in", "the pillager's level", "lifetime earnings"], 0],
+  ["Can any pillager wear any piece?", ["yes, no gates", "needs a level"], 0],
+  ["Set bonuses (2 and 4 pieces)", ["at launch", "later", "never"], 1],
+  ["The seller stocks", ["scrap and sound", "up to rare", "all, relics rare and pricey"], 1],
+  ["Salvage unwanted gear into materials?", ["yes", "no"], 0],
+  ["Reroll one trait for $ at the workbench?", ["yes", "no"], 0],
+  ["Machines drop gear?", ["yes, bigger machines better odds", "no, only containers and pillagers"], 0],
+  ["Room for gear in the stash", ["no limit", "grows with the stash station"], 1],
+  ["Saved outfits (one tap to dress)?", ["yes", "no"], 0],
+  ["Compare tip shows better or worse than what you wear?", ["yes", "no"], 0],
+  ["Total power from gear caps near", ["+15%", "+25%", "+40%"], 1],
+  ["Today's armor rigs become armor pieces?", ["yes", "no"], 0],
+  ["Demo mode hands both players the same preset kit?", ["yes", "no"], 0],
+  ["Can you hand gear to your partner in a raid?", ["yes", "no"], 0]
+ ]],
+ ["looks", "looks and the body", "Looks come only from gear. Body choices stay free.", [
+  ["A gear look joins your wardrobe when you", ["extract with it once", "wear it into any raid", "pick it up"], 0],
+  ["Wear one piece's stats with another piece's look?", ["yes", "no"], 0],
+  ["Today's Discount Fashion Depot", ["remove it", "freeze it; owned body options stay", "turn owned items into gear looks"], 1],
+  ["Free body choices: gender, face, hair, face tattoos, skin, eyes, beard?", ["yes, all free", "some cost $"], 0],
+  ["Each new pillager's body", ["random, and you can edit it", "copies your last pillager", "random and fixed"], 0],
+  ["Changing hair or face later", ["free", "small $ at the bar"], 0],
+  ["Dye colors for gear looks", ["no", "yes, bought", "later"], 2],
+  ["Relic looks get a small glow?", ["yes", "no"], 0],
+  ["Hats hide hair?", ["yes", "no"], 0],
+  ["Show a pillager's portrait in the hall in what it last wore?", ["yes", "no"], 0]
+ ]],
+ ["skills", "skills: bought on the account", "Every pillager benefits; death never takes a bought skill.", [
+  ["Skills belong to", ["the account; every pillager has them", "the pillager; lost on death"], 0],
+  ["Prices", ["each step in a branch costs more", "flat", "every skill bought makes the next one dearer"], 2],
+  ["Branches: scavenger, gunhand, iron?", ["yes", "change them"], 0],
+  ["Respec", ["free", "costs $"], 0],
+  ["Pillager classes (scout, bruiser, tinker) bought on the account, like Rogue Legacy?", ["yes", "later", "no"], 1],
+  ["Where you buy skills", ["the Mainframe", "a new station", "the bar"], 0],
+  ["A new account gets a free starter skill or two?", ["yes", "no"], 1]
+ ]],
+ ["extras", "relics, overclocks and the week", "The pieces you already liked.", [
+  ["Relics only on rings and the amulet?", ["yes", "any slot"], 0],
+  ["Most relics worn at once", ["1", "3", "any number"], 1],
+  ["Overclock choices per Forge step", ["2", "3"], 0],
+  ["Remove an overclock", ["never", "for $ at the workbench"], 1],
+  ["The weekly challenge raid uses a preset kit, so your pillager is never at risk?", ["yes", "no"], 0],
+  ["Hub law each week", ["you sign one of three", "random"], 0],
+  ["Laws apply in demo mode?", ["yes", "no"], 1],
+  ["Build order", ["lineage and level first, then gear", "gear first", "both together"], 0]
+ ]]
+];
+
+let n = 0; const Q = [];
+G.forEach(g => g[3].forEach(q => { n++; Q.push({ id: "q" + String(n).padStart(3, "0"), n, text: q[0], opts: q[1], pick: q[2], g: g[0] }); }));
+const ans = {};
+let db = null;
+
+const groupsEl = document.getElementById("groups"), jump = document.getElementById("jump");
+G.forEach(g => {
+  const a = document.createElement("a"); a.href = "#" + g[0]; a.textContent = g[0]; jump.appendChild(a);
+  const s = document.createElement("section"); s.className = "group"; s.id = g[0];
+  const gh = document.createElement("div"); gh.className = "gh";
+  const h = document.createElement("h2"); h.textContent = g[1];
+  const p = document.createElement("p"); p.textContent = g[2];
+  gh.append(h, p); s.appendChild(gh);
+  Q.filter(q => q.g === g[0]).forEach(q => s.appendChild(card(q)));
+  groupsEl.appendChild(s);
+});
+
+function card(q) {
+  const d = document.createElement("div"); d.className = "q"; d.id = q.id;
+  const t = document.createElement("div"); t.className = "t";
+  const nn = document.createElement("span"); nn.className = "n"; nn.textContent = String(q.n).padStart(3, "0");
+  const tx = document.createElement("span"); tx.textContent = q.text;
+  t.append(nn, tx);
+  const o = document.createElement("div"); o.className = "opts"; o.setAttribute("role", "group"); o.setAttribute("aria-label", q.text);
+  q.opts.forEach((label, i) => {
+    const b = document.createElement("button"); b.type = "button"; b.className = "opt" + (i === q.pick ? " pick" : "");
+    b.textContent = label; b.setAttribute("aria-pressed", "false"); b.id = q.id + "-o" + i;
+    b.addEventListener("click", () => choose(q, i));
+    o.appendChild(b);
+  });
+  const note = document.createElement("input"); note.type = "text"; note.className = "note"; note.id = q.id + "-note";
+  note.placeholder = "note (optional)"; note.setAttribute("aria-label", "note for question " + q.n);
+  note.addEventListener("change", () => saveNote(q, note.value));
+  d.append(t, o, note);
+  return d;
+}
+
+function paint() {
+  let done = 0;
+  Q.forEach(q => {
+    const a = ans[q.id], el = document.getElementById(q.id);
+    const has = a && typeof a.i === "number";
+    if (has) done++;
+    el.classList.toggle("done", !!has);
+    q.opts.forEach((_, i) => document.getElementById(q.id + "-o" + i).setAttribute("aria-pressed", has && a.i === i ? "true" : "false"));
+    const note = document.getElementById(q.id + "-note");
+    if (a && typeof a.note === "string" && document.activeElement !== note) note.value = a.note;
+  });
+  document.getElementById("count").textContent = done + " of " + Q.length + " answered";
+  document.getElementById("meter").style.width = (done / Q.length * 100) + "%";
+}
+
+function setStatus(s) { document.getElementById("status").textContent = s; }
+
+const busy = {};
+async function write(q) {
+  const a = ans[q.id] || {};
+  const body = { n: q.n, q: q.text, i: a.i, choice: typeof a.i === "number" ? q.opts[a.i] : null, pick: q.opts[q.pick], note: a.note || "", at: new Date().toISOString() };
+  if (!db) { setStatus("not saved: the answer store is not reachable here"); return; }
+  if (busy[q.id]) { busy[q.id] = "again"; return; }
+  busy[q.id] = true;
+  try { await db.collection("answers").doc(q.id).set(body); setStatus("saved " + String(q.n).padStart(3, "0")); }
+  catch (e) { setStatus("not saved: " + ((e && e.message) || "store refused the write")); }
+  const again = busy[q.id] === "again"; busy[q.id] = false;
+  if (again) write(q);
+}
+function choose(q, i) {
+  ans[q.id] = Object.assign({}, ans[q.id], { i: (ans[q.id] && ans[q.id].i === i) ? null : i });
+  paint(); write(q);
+}
+function saveNote(q, v) { ans[q.id] = Object.assign({}, ans[q.id], { note: v.trim() }); paint(); write(q); }
+
+paint();
+
+(async () => {
+  const c = window.claude;
+  db = c && c.use ? await c.use("db") : null;
+  if (!db) { setStatus("answers cannot save in this view; open it on claude.ai"); return; }
+  const timer = setTimeout(() => setStatus("cannot reach saved answers yet"), 10000);
+  db.collection("answers").onSnapshot(snap => {
+    snap.docs.forEach(d => { const v = d.data(); if (v) ans[d.id] = { i: typeof v.i === "number" ? v.i : null, note: typeof v.note === "string" ? v.note : "" }; });
+    if (!snap.metadata || !snap.metadata.fromCache) { clearTimeout(timer); setStatus("answers save as you tap"); }
+    paint();
+  }, e => { clearTimeout(timer); setStatus("answer store stopped: " + ((e && e.code) || "error")); });
+})();
+</script>

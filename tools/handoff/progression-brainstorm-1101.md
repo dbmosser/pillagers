@@ -34,3 +34,15 @@ So: co-op combos dropped; worn gear is lost on death (no insurance); slots hat, 
 
 ## Round 4 (11-01)
 His words: "lets get rid of the concept of xp altogether -- everything you can get, you have to buy with cash". Plan page updated: no XP, levels or XP ladder; rank = lifetime $ banked (Reach style, spending never lowers it) with rank-up rewards replacing the ladder; skills bought with $; unclaimed ladder rewards paid as $ on first load.
+
+## Round 5 (11-01) BINDING rulings, his words
+- "it shouldn't pay cash beyond just selling what you have and maybe some sort of bonus, but most the money should come from selling gear."
+- "ok call that 'lifetime earnings'" (the rank basis: total $ ever banked)
+- "skills are bought -- yes, great"; old saves paid out: "ok sure"
+- "I like the idea of leveling up inside a raid, but player should keep that level until they die. and then they get a new pillager but it stays on the same account. There are some games that do this -- Reigns, Rogue Legacy"
+- "So upon death player keeps cash in stash, lifetime earns, account. But player loses their pillager, and anything the pillager took with them into the raid, including worn gear."
+- "Cosmetic pieces need to just come from the worn gear so I think we need to freeze/possible remove alot fo the current cosmetic system, but I still want players to be able to customize gender, facial appearance, hair, tattoos on face, etc."
+- "worn gear pieces should include backpack (but don't add loot cap, backpack should just be a helper piece like any other worn gear)"
+Next: 100 questions page (his ask) to develop these.
+- "it should autoname their next pillager each time with an opportunity to rename the character, like in rogue legacy"
+- "character and account names should be separate"
