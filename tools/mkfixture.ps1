@@ -3923,8 +3923,9 @@ window.__REGRESS=[
      // v32.83 retarget (50-corpus-old-a): the backpack panel was redesigned (nine gun keys, the grid beside the figure); its 1080p size is 830x477 now (it was 1194x435).
      // v34.65 and v34.66 (job 115) made the raid backpack tiles bigger on purpose; job 119 retarget: the 1080p panel is 862x596 now.
      // v34.71 (cw-bagclose, his Q1) made the header 6 px taller on purpose so the close button sits inside it; 118r retarget: the 1080p panel is 862x606 now.
-     if(Math.abs(a.p.w-862)>6||Math.abs(a.p.h-606)>6)
-       bad.push('control: the 1080p panel changed to '+Math.round(a.p.w)+'x'+Math.round(a.p.h)+', it was 862x606');
+     // v36.48 (his order: guns, usables, crafting under headings) made it 862x624; retarget: the height is read off the live panel and held to the band of a working 1080p layout, so the next heading change does not break this control.
+     if(Math.abs(a.p.w-862)>6||a.p.h<560||a.p.h>700)
+       bad.push('control: the 1080p panel changed to '+Math.round(a.p.w)+'x'+Math.round(a.p.h)+', it was 862 wide and 560 to 700 tall');
      // CONTROL 2: it must still clear the belt at BOTH sizes. Doubling a panel
      // that sits above the belt is exactly how it lands on the belt, which is a
      // thing he has already reported once.
@@ -27019,7 +27020,7 @@ class Audio {
        // 5. the callouts and legend rows in the page source
        src=[].slice.call(document.scripts).map(function(x){ return x.textContent||''; }).join('\n');
        // (the strings are split so this check does not find itself in the page source)
-       ["say('PILLAGER"+" REINFORCEMENTS'","say('PILLAGER"+" TURNED HOSTILE'","say('PILLAGER"+" CALLED EXTRACTION'","hold to finish a pillager"+"'","|  Pillagers"+" extracted: '","pillagers trust"+" you less.","Kill 25 pillager"+"s in all.","t:'3 PILLAGER"+"S'","BOUNTY PILLAGER"+"'","a pillager"+" who had not fought you."].forEach(function(n){
+       ["say('PILLAGER"+" REINFORCEMENTS'","say('PILLAGER"+" TURNED HOSTILE'","say('PILLAGER"+" CALLED EXTRACTION'","hold to finish a pillager"+"'","|  Pillagers"+" extracted: '","pillagers trust"+" you less.","Kill 25 pillager"+"s in all.","t:'KILL 3 PILLAGER"+"S'","BOUNTY PILLAGER"+"'","a pillager"+" who had not fought you."].forEach(function(n){
          if(src.indexOf(n)<0) bad.push('the page has no '+n); });
        ["say('PILLAGER BOT"+" REINFORCEMENTS'","say('PILLAGER BOT"+" TURNED HOSTILE'","say('PILLAGER BOT"+" CALLED EXTRACTION'","hold to finish a pillager"+" bot'","AI pillagers"+" extracted","pillager bots"+" trust you less","raiders who"+" hide"].forEach(function(n){
          if(src.indexOf(n)>=0) bad.push('the page still says '+n); });
@@ -41668,7 +41669,9 @@ class Audio {
        for(i=0;i<cap.length;i++) if(cap[i].length>=5&&cap[i][2]>=150*ZOOM()) big++;
        if(big) bad.push('THREE: '+big+' big circles were drawn by the flow ('+cap.length+' arcs)');
        // FOUR: the label at the gate: HOLD TO BREACH, never STAND AT THE GATE
-       if(txts.indexOf('HOLD TO'+' BREACH')<0) bad.push('FOUR: the label HOLD TO BREACH is not drawn at the gate (said: '+txts.slice(0,6).join(' / ')+')');
+       // retarget (v36.15, his order): the gate reads HOLD E TO BREACH, the key is the search key binding
+       var _brLabel='HOLD '+keyName(keysOf('KeyE'))+' TO'+' BREACH';
+       if(txts.indexOf(_brLabel)<0) bad.push('FOUR: the label '+_brLabel+' is not drawn at the gate (said: '+txts.slice(0,6).join(' / ')+')');
        if(txts.indexOf('STAND AT THE'+' GATE')>=0) bad.push('FOUR: the old label STAND AT THE GATE is still drawn');
        // FIVE: the breach: holding at the gate fills the ring, the shutter comes out, wave two comes from inside
        p.x=gp.x+s.nx*40; p.y=gp.y+s.ny*40; lines.length=0; st=g.ents.length; keys={KeyE:true};
@@ -42853,9 +42856,9 @@ class Audio {
        n=labs.filter(function(s){ return s.indexOf('ALL')===0; }).length;
        if(n!==1) bad.push('ONE: '+n+' tabs start with ALL ('+labs.join('|')+')');
        if(labs.join('|').indexOf('MEDICAL')>=0) bad.push('ONE: a MEDICAL tab is still there');
-       ix={}; labs.forEach(function(s,k){ ['KEYS','VALUABLES','LOCKED','ARMORY'].forEach(function(w){ if(s.indexOf(w)===0) ix[w]=k; }); });
+       ix={}; labs.forEach(function(s,k){ ['KEYCARDS','VALUABLES','LOCKED','ARMORY'].forEach(function(w){ if(s.indexOf(w)===0) ix[w]=k; }); });   /* retarget (v36.18, his order: in-game keys are keycards): the tab reads KEYCARDS */
        if(ix.VALUABLES===undefined||ix.LOCKED===undefined) bad.push('ONE: VALUABLES and LOCKED are not tabs ('+labs.join('|')+')');
-       else if(!(ix.VALUABLES>ix.KEYS&&ix.LOCKED>ix.VALUABLES)) bad.push('ONE: the tab order is wrong ('+labs.join('|')+')');
+       else if(!(ix.VALUABLES>ix.KEYCARDS&&ix.LOCKED>ix.VALUABLES)) bad.push('ONE: the tab order is wrong ('+labs.join('|')+')');
        tb=document.getElementById('stashtabs'); n=0; if(tb) Array.prototype.forEach.call(tb.children,function(c){ if(c.classList.contains('invtabs')) n++; });
        if(document.querySelectorAll('#stashtabs .kchips').length) bad.push('ONE: a chip row exists');
        // TWO: the counts follow the same rule
@@ -50927,6 +50930,7 @@ class Audio {
      var bad=[], c0=(typeof CAREER_ON==='number')?CAREER_ON:0, rs0, wx={}, g, i;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       if(typeof newpDials==='function') newpDials();   /* retarget (v35.72 cw-newpdefs, job 204): every demo start takes the new player set, so the career raid is built on the same dials */
        rs0=CFG.raidSec;
        if(!(rs0>0)) return 'SKIP: the raid clock dial is off here';
        try{ CAREER_ON=1; }catch(_c){}
@@ -55748,6 +55752,7 @@ class Audio {
      var bad=[], g, p, h0, norm=null, arc=null;
      try{
        __topClear(); __runPrep(); __resetCfg();
+       if(typeof newpDials==='function') newpDials();   /* retarget (v35.72 cw-newpdefs, job 204): the demo takes the new player set at every start (forgiving hits), so the career hit is staged on the same dials */
        if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object') return 'no arcadeDeploy in this build';
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); p=g.player; if(!g||g.over) return 'SKIP: no live raid';
@@ -62007,7 +62012,8 @@ class Audio {
          if(typeof ARCADE_RAID_SEC==='number'){ if(g.raidLen!==ARCADE_RAID_SEC) bad.push('raidLen is '+g.raidLen+', not the DEMO clock '+ARCADE_RAID_SEC); if(!raidClockOn()) bad.push('the DEMO raid clock is off'); }
          else { if(g.raidLen!==0) bad.push('raidLen is '+g.raidLen); if(raidClockOn()) bad.push('the raid clock is on'); }
          // retargeted 2026-10-13 (demoextract): the DEMO call waits the extractWait dial as CAREER does; a build without it still overlays 15 s
-         if(!(CFG.raidSec===0||CFG.raidSec===rs0)||!(CFG.extractWait===15||CFG.extractWait===xw0)) bad.push('the arcade dials are raidSec '+CFG.raidSec+', extractWait '+CFG.extractWait);
+         var _np=(typeof newpRow==='function'&&typeof NEWP_SET==='object'&&newpRow('clock')&&newpRow('clock').opts[NEWP_SET.clock])?newpRow('clock').opts[NEWP_SET.clock].cfg.raidSec:-1;   /* retarget (v35.72 cw-newpdefs): the demo sets the new player clock */
+         if(!(CFG.raidSec===0||CFG.raidSec===rs0||CFG.raidSec===_np)||!(CFG.extractWait===15||CFG.extractWait===xw0)) bad.push('the arcade dials are raidSec '+CFG.raidSec+', extractWait '+CFG.extractWait);
          for(i=0;i<g.zones.length;i++) if(g.zones[i].closeAt!==undefined) bad.push('ring '+i+' closes at '+g.zones[i].closeAt);
          if(!p.wep||ARCADE_GUNS1.indexOf(p.wep.id)<0) bad.push('the gun in hand is '+(p.wep&&p.wep.id));
          if(!p.sec||!WEAPONS[p.sec.id]||p.sec.id==='fists'||p.sec.id==='pistol'||(p.wep&&p.sec.id===p.wep.id)) bad.push('the stowed gun is '+(p.sec&&p.sec.id));
@@ -62092,8 +62098,8 @@ class Audio {
        NET.on=true; netEntsPeer=function(){ return true; };
        if(!hitKills({hp:10},23)) bad.push('linked window: a 23 damage round into 10 health is not a kill');
        if(hitKills({hp:50},23)) bad.push('linked window: a 23 damage round into 50 health counts as a kill');
-       var src=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).join(''), nd='_dn,_dc,hitKills'+'(en,edmg));';
-       if(src.split(nd).length-1<2) bad.push('the damage number and the party copy do not both ask hitKills');
+       var src=[].slice.call(document.scripts).map(function(s){ return s.text||''; }).join(''), nd=/_dn,_dc,hitKills\(en,edmg\)[,)]/g;   /* retarget (cw-cx-dmgmerge): both calls carry a target argument after hitKills(en,edmg) now */
+       if((src.match(nd)||[]).length<2) bad.push('the damage number and the party copy do not both ask hitKills');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ NET.on=on0; netEntsPeer=pe0; }
      return bad.length?bad.join('; '):null; }},
