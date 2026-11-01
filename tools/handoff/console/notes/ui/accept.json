@@ -1827,33 +1827,33 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The HUD is readable and the top-centre stack is cleaner, but the open controls panel, the feed line still sitting over the play area, the unframed hotbar and the mismatched vitals bars keep it from looking polished.",
+  "verdict": "The controls panel is now folded to a one-line 'f1 controls' hint and the feed lane is tidier, but the HUD still has inconsistent panel styles, a sub-minimum 'chill row cache' label, and a hotbar that reads as scattered slots instead of one strip.",
   "findings": [
-   "P1 feed line 'pillager joined' x895-1025 y893-930: Move all feed lines to a fixed lane at x24, y300-420 (above the controls panel). Use a 16px f-cond 600 tx-1 chip on a 70% --ui-void fill with a 4px radius. Keep the lane free of world labels.",
-   "P1 controls panel x14-325 y467-815: For career, fold it to one line 'f1 controls' at mid-bottom left, x24, 16px tx-2, and open it on F1. For the demo, keep 8 rows, set headers at 16px tx-2 with .04em tracking, and drop the panel to 80% opacity. Rename the first row's action to 'walk'.",
-   "P1 hotbar x555-1475 y965-1062: Draw all 10 slots as 64px --ui-panel squares with a 1px --ui-line-hi border, 8px apart, on a 70% void strip. Put the slot number at 16px tx-1 in the top-left. Mark the selected slot with a 2px --acc border and no glow.",
-   "P1 vitals bars x24-430 y965-1068: Make both bars 20px high with a 4px gap. Use 20px f-cond 700 text in --acc-ink on the fill or tx-1 on a void chip. Align the labels on one left edge at x54, and set the bottom margin to 48px.",
-   "P2 top-centre stack x858-1062 y18-200: Put the timer and score in one 220px-wide panel with a 1px --ui-line divider. Keep the timer at 56px 800 as the hero. Set the split at 16px tx-2. Put the 'mark 43m' chip 16px below it, and render the zone name at 16px tx-1 with a void chip."
+   "P1 hotbar x555-1475 y960-1062: Draw all 10 slots as 64px --ui-panel squares with a 1px --ui-line-hi border, 8px apart, on a 70% void strip. Put the slot number at 16px tx-1 in the top-left. Change the selected border to a 2px --acc.",
+   "P1 top-centre timer x905-1030 y10-75: Put the timer and the extract line in one 220px --ui-panel with a 1px --ui-line divider. Set the timer to 56px f-cond 800 tx-1, the moon to 16px tx-2, and the extract line to 16px --extract. Keep 16px of padding.",
+   "P1 left panels x8-368 y142-260 and x14-170 y325-360: Use one panel recipe for both: --ui-panel at 85% opacity, a 1px --ui-line-hi border, a 4px radius and 16px padding. Set the row text to 16px f-cond 600. Make 'you' tx-1 and the rest tx-2 at 4.5:1 or better. Align the name bar to the same x24 left edge.",
+   "P1 'chill row cache' label x1388-1518 y115-140: Render it as a 16px f-cond 600 tx-1 label on a 70% --ui-void chip with a 4px radius and 8px/4px padding. Drop the pink.",
+   "P1 hp bar x24-430 y1035-1070: Make the bar 20px high at x24 with a 48px bottom margin. Set 'hp 100' to 20px f-cond 700 in --acc-ink on the fill. Put the two status icons in a 40px --ui-panel row 8px above the bar."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00w-244-ping-after-mark-merge-recipes-2/mark-legacy-demo-p1-1080.jpg",
-  "task": "o-00w-244-ping-after-mark-merge",
-  "when": "2026-10-29T18:16"
+  "pic": "tools/handoff/console/notes/shots/02-o-140-red-enemy-tracers/red-tracers-night-p1-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-01T15:42"
  },
  "p2-1080": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "A clean, consistent full-screen settings card with a clear lime focus bar and an x in the corner. The hierarchy is flat, the columns are badly balanced, and the list shows audio rows under 'the raid' with no section break.",
+  "verdict": "This is the raid HUD, not the settings card the earlier notes described, so those notes don't apply. The HUD is readable and all lower case, but it is a set of unrelated parts: three panel looks, two type treatments, a heavy hp bar, a tiny hotbar at 4k, and floating slot numerals.",
   "findings": [
-   "P1 right detail pane: Narrow the pane to about 420px, or fill it with the current value, its options and a default marker. Give the freed width to the list column. Raise the description from the 16px muted text to the 20px body size in tx-1.",
-   "P1 center list, rows from 'master volume' down: Put audio rows under the 'audio' tab only. Add a 16px section label, or move the divider to a 32px gap. Give 'experimental' the same row height as the others. Fade the clipped last row, or pad the scroll area by 16px so no row is cut.",
-   "P1 value cells and arrows: Right-align the value group to the row's right edge. Make the arrows 20px in tx-2, and lime only on the focused row. Set unfocused values in tx-2, weight 600, and keep tx-1 for the focused value.",
-   "P2 left tab column: Use even 64px tab pitch. Add a 1px line-hi divider above 'send play data', or move it into the tab list. Align the three columns' top edges to one y. Use one focus treatment for tabs and rows.",
-   "P2 header and footer: Remove the lime tick or make it a full-width 2px header rule. Set 'esc close' at 16px in tx-2 with a key-cap box, since the x already shows. Make the card border line-hi (#4a5257)."
+   "P1 bottom-left hp bar, 'hp 100': Shrink the bar to about 240x16px. Keep 'hp 100' at 20px f-cond 600 in tx-1 with no outline. Reserve the 56px hero size for ammo only, and use --ok only for the fill.",
+   "P1 hotbar, slots 3 to 9 and 0: Draw every slot as a 64px tile with a --ui-panel fill at 80% and a 1px --ui-line-hi border. Use an 8px gap and put the numeral at 16px in tx-2 inside the tile corner. Scale the hotbar by height/1080 so it matches at 4k.",
+   "P1 HUD panels (bots list, ammo, contracts, extract timer, hotbar): Use one panel recipe on every HUD box: --ui-panel at 85%, 1px --ui-line-hi, 4px radius and 16px padding. The 'chill row cache' label and the 'keyboard' and 'f1 controls' chips should follow it or be dropped.",
+   "P1 top-left bots list: Cut to the header, 'you' and a one-line '0 out · 3 dead'. Set the row text at 16px with a 24px row pitch. Right-align the $ values in one column. Show 'dead' as a --danger word only. Drop the chevron or make it 16px.",
+   "P2 ammo panel, bottom-right: Make the magazine count 25 of 25, or show 24 / 24 with a plus-one marker. Keep one 16px footer line only. Align the weapon name, the number and the footer to the same right edge at 16px padding."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-145-pad-sprint-toggle-default-recipes-1/sprint-default-p2-1080.jpg",
-  "task": "o-145-pad-sprint-toggle-default",
-  "when": "2026-10-30T18:17"
+  "pic": "tools/handoff/console/notes/shots/02-o-140-red-enemy-tracers/red-tracers-day-p2-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-01T15:43"
  },
  "pix86c-fashion": {
   "score": 3,
@@ -4659,97 +4659,97 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The card is now clean and consistent, with the close x in the corner, a clear lime main action and rarity bars, but the quantity column is still weak, the item names are small, and the card is still wider than its content needs.",
+  "verdict": "The sector map is a clean, consistent card that follows the shared title, x and footer pattern, but the map has no focal point, the contracts list is quiet and low-contrast, and several labels are too small and cramped to read from a couch. The earlier 'welcome pack' advice no longer applies, because this is a different screen.",
   "findings": [
-   "P1 quantity column (x2/x3, right edge x~1398): Show 'x1' on single rows. Set quantities to 20px f-cond 700 in tx-1 in a fixed 64px right-aligned column. Or move them straight after the name.",
-   "P1 card width and row content (x480-1440, rows 72px): Narrow the card to about 640px centred. Add a 16px tx-2 type tag ('smg', 'heal', 'grenade') after each name. Or keep the width and put the rarity word in the tag.",
-   "P1 title 'welcome pack' (y~237): Set the title to 32px f-cond 700 in tx-1. Put its baseline 32px from the card top, and cut the top padding from about 64px to 32px.",
-   "P2 orphan lime tick at the card top-left (x504-540, y157): Extend it into a full-width 3px lime top rule, or remove it.",
-   "P2 item names (x625, 20px f-cond 600): Make the rarity bar 4px by the full 64px row height, flush with the icon edge, and set names to 20px f-cond 700."
+   "P1 map labels (the long dock, foreman office · locked, strongbox, chill row, packing floor, the sump, scrap line), 1080 px at about 12-13px: Set all map labels to at least 16px f-cond 600. Put a 70% --ui-void pill behind each. Shorten the player tag to 'p2' or move the badge 12px up-right so it doesn't overlap the text. Keep 8px clear of icons.",
+   "P1 contracts panel rows (x1215-1715, y200-920), 1080 px: Set names to 20px f-cond 700 in tx-1 and counts to 16px tx-2. Make the bar 4px high with a --ui-raised track and an --acc fill proportional to progress. Show the bar's progress even when it is 0. Put the one closest contract in a --ui-raised row with a 3px --acc left bar. Round every count and price to 16px or larger.",
+   "P1 map frame (x186-1172) as a whole: Make the player marker 24px with a 2px tx-1 ring and a soft halo. Dim the room fill to --ui-line so markers lead. Keep teal only for extracts, with 20px names and 16px 'closes in' text. Draw the hot-ground fill at 15% opacity or less.",
+   "P2 header (y60-120), 'sector map' subtitle and 'dawn · clear': Set the subtitle to 16px --tx-2 with 16px of left gap. Move 'dawn · clear' into the map frame's top-left corner as a weather tag. Or keep it in the header, but set it in tx-1 at 16px with a 16px gap to the x.",
+   "P2 footer (y963-1027): 'click to set a mark', 'surveyed 5%', 'm close': Set the legend to 16px. Space the items 32px apart. Put the surveyed % on the map frame's lower edge as a small progress bar. Keep one close affordance in the footer, as 'm close' at 16px with a 24px lime chip."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00v-239-ping-and-map-mark-are-one-recipes-2/mark-p1-partner-map-1080.jpg",
-  "task": "o-00v-239-ping-and-map-mark-are-one",
-  "when": "2026-10-29T16:23"
+  "pic": "tools/handoff/console/notes/shots/02-o-00v-239-linked/mark-p1-partner-map-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-01T15:48"
  },
  "p1-partner-raid": {
-  "score": 2,
+  "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "The capture shows the welcome-pack modal over the dimmed lobby, not the partner raid HUD, so the map-mark change and the earlier HUD advice can't be judged; the modal itself is tidy but undersized and its hierarchy is flat.",
+  "verdict": "The re-shoot now shows the real raid HUD with the partner mark, so the capture can be judged. The HUD is a patchwork of panel styles, with several sub-16px labels and the bottom edge crowded.",
   "findings": [
-   "P0 whole capture (p1-partner-raid): Dismiss or suppress the welcome pack for this capture, or trigger it before the shot is taken. Re-shoot at raid time with the P1 and P2 HUD visible and the mark on screen. Until then the o-00v-239 change cannot be accepted.",
-   "P1 modal card, centre (x480-1440, y157-923): Size the card to 90% (about 1728x972) or, if it is meant as a small confirm, drop the fake-window chrome. Use --scrim at .80 so the lobby behind is not legible.",
-   "P1 item rows (y285-780): Make the guns larger (96px tile, rarity name in a 16px --tx-2 label) and keep consumables compact. Put quantity as a 16px chip directly after the name, or use a 2-column tile grid. Make the rarity bar 3px and as tall as the tile.",
-   "P1 close button, top-right (1375-1422, 175-221): Draw the x as a 1px --ui-line-hi 40px box with a --tx-2 glyph, which brightens to --tx-1 on focus. Set the title to 32px f-cond 700 with the 24px margin the rest of the card uses.",
-   "P2 primary button 'take the pack', bottom right: Set it to 20px f-cond 700 with +.04em tracking, 56px tall, with 24px above it. Add a visible 2px --acc-hover outer ring as the focus state, and give the close x its own focus ring."
+   "P1 top-left 'current pillagers 3' dropdown and the 'pillager' party card (x18-340, y118-360): Use one HUD panel recipe everywhere: --ui-panel at about 85% opacity, a 1px --ui-line-hi border, a 4px radius and 8px padding. Put the party card on that opaque panel. Make the dropdown a 40px-tall panel header with a --tx-2 16px label, and show the chevron only on focus.",
+   "P1 bottom row: hp bar (18-425, y1035-1068), hotbar (555-950, y972-1062), 'f1 controls' chip, 'pillager joined' toast (894-1026, y893-929): Set the hp bar to 12px tall in --ok, with the 'hp 100' label at 20px f-cond 700 above it, and keep a 48px margin from the screen edge. Put 'f1 controls' on the same 16px chip as 'keyboard', 16px clear of the hotbar. Lift the toast to y≈840 so it clears the hotbar by 24px or more.",
+   "P1 in-world labels: 'sentry r-57', 'the seal 0%', 'the forge', 'packing floor' (approx 12-14px): Raise all of them to 16px f-cond 600 with +.04em tracking in --tx-1, on a --scrim .6 pill with 4px 8px padding. Use one tint per meaning only: amber for station names, cyan for extraction.",
+   "P2 hotbar slots 3-9 and 0 (x765-1480, y972-1000): Draw the empty slots as 1px --ui-line outlines with 14px --tx-2 numbers at 60% opacity and no ghost icons. Keep a 2px --acc ring only on the active slot.",
+   "P2 ammo panel bottom-right (1702-1903, y925-1050): Set the hint to 16px --tx-2. Right-align the name, the number and the hint on one 16px inset. Match the panel width to the minimap and run-info column (about 250px) and align the right edges at x=1903."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00v-239-ping-and-map-mark-are-one-recipes-2/mark-p1-partner-raid-1080.jpg",
-  "task": "o-00v-239-ping-and-map-mark-are-one",
-  "when": "2026-10-29T16:23"
+  "pic": "tools/handoff/console/notes/shots/02-o-00v-239-linked/mark-p1-partner-raid-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-01T15:45"
  },
  "p2-partner-map": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The card is clean and consistent with the lime-button and x-corner system, but the earlier advice on title size, row scale, quantity weight, the corner stub and the button's focus ring was not applied, so it is still a flat list with weak hierarchy.",
+  "verdict": "The sector map is a clean, consistent card that follows the shared title, x and footer pattern, but the map has no focal point, the contracts list is quiet and low-contrast, and several labels are too small and cramped to read from a couch. The earlier 'welcome pack' advice no longer applies, because this is a different screen.",
   "findings": [
-   "P1 title 'welcome pack' (x≈521,y≈237): Set the title to 32px f-cond 700 with 24px of space above it. Add a 16px tx-2 subtitle such as '7 items', or a 56px hero count. Put 24px between the title and the divider.",
-   "P1 row names and quantities (x≈625 and x≈1387): Use 72px rows and 20px names. Set the quantity to tx-1 at 20px tabular, in a fixed 64px right-aligned column, and show 'x1' on single items. Make the rarity bars 3px wide and 32px tall. Add a 16px rarity-coloured tag before the quantity.",
-   "P1 'take the pack' button (x1200–1399, y810–866): Make the button 64px high and at least 240px wide, with 20px f-cond 800 text and normal tracking. Add a 2px tx-1 ring with a 4px offset to show focus. Centre it, or span the footer, to match the shop and codex cards.",
-   "P2 top-left corner of the card (x≈504–540, y≈157): Draw a full-width 3px --acc bar across the top edge of the card, or delete the stub.",
-   "P2 card layout and padding: Use 32px padding on all sides and cut the bottom gap to 32px. Narrow the card to about 720px, or add a right-hand detail pane."
+   "P1 map labels (the long dock, foreman office · locked, strongbox, chill row, packing floor, the sump, scrap line), 1080 px at about 12-13px: Set all map labels to at least 16px f-cond 600. Put a 70% --ui-void pill behind each. Shorten the player tag to 'p2' or move the badge 12px up-right so it doesn't overlap the text. Keep 8px clear of icons.",
+   "P1 contracts panel rows (x1215-1715, y200-920), 1080 px: Set names to 20px f-cond 700 in tx-1 and counts to 16px tx-2. Make the bar 4px high with a --ui-raised track and an --acc fill proportional to progress. Show the bar's progress even when it is 0. Put the one closest contract in a --ui-raised row with a 3px --acc left bar. Round every count and price to 16px or larger.",
+   "P1 map frame (x186-1172) as a whole: Make the player marker 24px with a 2px tx-1 ring and a soft halo. Dim the room fill to --ui-line so markers lead. Keep teal only for extracts, with 20px names and 16px 'closes in' text. Draw the hot-ground fill at 15% opacity or less.",
+   "P2 header (y60-120), 'sector map' subtitle and 'dawn · clear': Set the subtitle to 16px --tx-2 with 16px of left gap. Move 'dawn · clear' into the map frame's top-left corner as a weather tag. Or keep it in the header, but set it in tx-1 at 16px with a 16px gap to the x.",
+   "P2 footer (y963-1027): 'click to set a mark', 'surveyed 5%', 'm close': Set the legend to 16px. Space the items 32px apart. Put the surveyed % on the map frame's lower edge as a small progress bar. Keep one close affordance in the footer, as 'm close' at 16px with a 24px lime chip."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00v-239-ping-and-map-mark-are-one-recipes-2/mark-p2-partner-map-1080.jpg",
-  "task": "o-00v-239-ping-and-map-mark-are-one",
-  "when": "2026-10-29T16:23"
+  "pic": "tools/handoff/console/notes/shots/02-o-00v-239-linked/mark-p2-partner-map-4k.jpg",
+  "task": "manual",
+  "when": "2026-11-01T15:48"
  },
  "p2-partner-raid": {
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "This is a clean, readable welcome-pack modal, but it is not the partner-raid screen with the ping and map mark that the label and my earlier review describe. The card is also only about half the screen and the type hierarchy is flat.",
+  "verdict": "The re-shoot now shows the real raid HUD with the partner mark, so the capture can be judged. The HUD is a patchwork of panel styles, with several sub-16px labels and the bottom edge crowded.",
   "findings": [
-   "P0 whole capture (p2-partner-raid): Re-capture mark-p2-partner-raid-1080 in a live raid with the P2 mark placed and the minimap visible. Capture the welcome pack as its own screen.",
-   "P1 card (480,157 to 1440,923): Either widen it to a 1728x972 card, or keep a deliberate narrow dialog of 640px with the rows tightened. Do not leave a half-size card with 700px rows.",
-   "P1 title 'welcome pack' (521,237): Set the title to 32px f-cond 700 and align its baseline with the centre of the X. Cut the top padding to 32px. Put a 16px tx-2 count such as '7 items' on the right of the title row.",
-   "P1 close X (1375,175, 48x48): Use a 40px box, a --ui-line-hi border and a tx-2 glyph that goes tx-1 on focus. Remove the sliver, or extend it into a full 3px lime top bar if it is meant as an accent.",
-   "P2 item rows: Make the rarity bar 3px and 32px tall. Put the quantity in tx-1 at 20px f-cond 700, or place it beside the name. Add a 16px tx-2 type tag such as 'smg' or 'consumable' under each name."
+   "P1 top-left 'current pillagers 3' dropdown and the 'pillager' party card (x18-340, y118-360): Use one HUD panel recipe everywhere: --ui-panel at about 85% opacity, a 1px --ui-line-hi border, a 4px radius and 8px padding. Put the party card on that opaque panel. Make the dropdown a 40px-tall panel header with a --tx-2 16px label, and show the chevron only on focus.",
+   "P1 bottom row: hp bar (18-425, y1035-1068), hotbar (555-950, y972-1062), 'f1 controls' chip, 'pillager joined' toast (894-1026, y893-929): Set the hp bar to 12px tall in --ok, with the 'hp 100' label at 20px f-cond 700 above it, and keep a 48px margin from the screen edge. Put 'f1 controls' on the same 16px chip as 'keyboard', 16px clear of the hotbar. Lift the toast to y≈840 so it clears the hotbar by 24px or more.",
+   "P1 in-world labels: 'sentry r-57', 'the seal 0%', 'the forge', 'packing floor' (approx 12-14px): Raise all of them to 16px f-cond 600 with +.04em tracking in --tx-1, on a --scrim .6 pill with 4px 8px padding. Use one tint per meaning only: amber for station names, cyan for extraction.",
+   "P2 hotbar slots 3-9 and 0 (x765-1480, y972-1000): Draw the empty slots as 1px --ui-line outlines with 14px --tx-2 numbers at 60% opacity and no ghost icons. Keep a 2px --acc ring only on the active slot.",
+   "P2 ammo panel bottom-right (1702-1903, y925-1050): Set the hint to 16px --tx-2. Right-align the name, the number and the hint on one 16px inset. Match the panel width to the minimap and run-info column (about 250px) and align the right edges at x=1903."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00v-239-ping-and-map-mark-are-one-recipes-2/mark-p2-partner-raid-1080.jpg",
-  "task": "o-00v-239-ping-and-map-mark-are-one",
-  "when": "2026-10-29T16:24"
+  "pic": "tools/handoff/console/notes/shots/02-o-00v-239-linked/mark-p2-partner-raid-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-01T15:45"
  },
  "mark-solo-map": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The window shell is clean and consistent, but the map is still crowded with about 30 labels at mixed sizes and colours, and the contracts panel is flat, so the screen stays at a competent 3.",
+  "verdict": "The mark pin and chip are clearer and the rows are tidier, but the map is still crowded with small labels. Some of those labels clip into room walls or touch each other, and the contract rows still use the same weak list pattern as before.",
   "findings": [
-   "P1 map canvas labels: Default to extracts, the mark, the player and hazards only. Show room and cache names on hover or zoom. Set all labels to 16px with a 1px --ui-void halo. Use --tx-1 for primary labels and --tx-2 for secondary ones. Collapse the repeated 'cache' text into the glyph, and nudge labels so there is at least an 8px gap between any two.",
-   "P1 mark marker (482,412) and its 'mark' chip: Make the pin 24px with a 2px ring and a --acc or P1 amber pulse. Put the chip at 16px on --ui-panel, 8px clear of 'extract c', and move 'extract c / closes in 3:00' 16px to the right.",
-   "P1 contracts rows: Set names to 20px --tx-1. Make the dividers 1px --ui-line. Draw a real 4px progress track only on rows with progress, filled with --acc. Put '0/2' in --tx-2 on the same line as the price, or move it to the left under the name. Give the held or done row a 3px --ok bar on the left edge.",
-   "P2 map colour language: Keep colour for icons and rings, and give labels --tx-1 or --tx-2 only. Lower the hazard fill to 12% opacity with a 2px dashed --danger outline. Move the labels out of the circle.",
-   "P2 header: Set the subtitle to 16px --tx-2 with a 16px gap after the title. Reduce the x to 40px with a --ui-line-hi border. Put 24px between '6pm · clear' and the x."
+   "P1 map canvas labels (image 1 especially: cache x9, foreman office, blast freezer, strongbox, extract b): Show only extracts, the mark, the player, hazards and the peddler by default. Reveal room names and caches on hover or zoom. Replace the repeated 'cache' text with the glyph and a single count badge. Set labels to 16px with a 1px --ui-void halo and an 8px minimum gap. Use --tx-1 for primary labels and --tx-2 for secondary ones.",
+   "P1 contracts rows (right panel): Names in 20px --tx-1. Dividers 1px --ui-line. Draw a 4px --acc track only on rows with progress above 0. Put '0/2' under the name in 16px --tx-2, with the price alone on the right in --tx-1. Give held or done rows a 3px --ok bar on the left edge.",
+   "P1 extract labels and mark chip (images 1 and 2): Fix the extract label anchor so it never moves between states. Give it a 16px offset from the pin and a --ui-panel plate at 80%. Keep a 16px gap from the mark chip. Add a 2px amber ring to the pin.",
+   "P2 hazard circle and hot ground: Lower the fill to 12%. Make the outline a 2px dashed --danger line. Move the labels outside the circle or give them a plate.",
+   "P2 header: Subtitle 16px --tx-2 with a 16px gap after the title. Weather 16px --tx-2 with 24px to the x. Make the x 40px with a --ui-line-hi border."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00v-239-ping-and-map-mark-are-one-recipes-2/mark-solo-map-1080.jpg",
-  "task": "o-00v-239-ping-and-map-mark-are-one",
-  "when": "2026-10-29T16:24"
+  "pic": "tools/handoff/console/notes/shots/02-o-00v-239-ping-and-map-mark-are-one/mark-solo-map-4k.jpg",
+  "task": "manual",
+  "when": "2026-11-01T15:40"
  },
  "mark-solo-raid": {
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "The mark pill and the 'you' and crate tags now share one dark chip recipe, but the earlier hp bar, weapon strip and header fixes were not applied, so the HUD still looks cluttered and uneven.",
+  "verdict": "The raid HUD is readable and the ammo card and the top-centre banner are clean, but the earlier fixes were mostly not applied: the hp bar still sits in the corner, the weapon bar still shows ten slots, and the world tags still use four different recipes.",
   "findings": [
-   "P1 bottom-left hp bar (25-430, 1035-1068): Inset it 48px from the left and bottom. Make the track 12px tall on --ui-panel with an --ok fill. Put 'hp 100' at 20px in --tx-1 on the panel above the track, not on the fill.",
-   "P1 weapon slots 1 to 0 (560-1480, 965-1055): Show only owned slots plus at most 2 empty slots drawn as 1px --ui-line outlines. Make every tile 80x80 with a 4px radius. Set the numerals to 16px --tx-2 inside the tile corner. Keep lime only on the selected slot.",
-   "P1 top-right 'run info' header (1603-1900, 330-360) vs 'current pillagers 7' (8-367, 142-170): Make both 32px tall, with a 1px --ui-line-hi border, 4px radius and 16px f-cond 600 text. Leave 8px under the minimap and give both the same 16px side padding.",
-   "P1 world tags: 'sentry r-46' (1140-1210, 485-503), 'the seal 0%' (1562-1645, 492-512), 'the forge' (1692-1755, 748-768), 'search crate' (967-1065, 566-586): Use one recipe for every world tag: 16px f-cond 600, --tx-1 on --scrim, 4px radius, 8px horizontal and 4px vertical padding. Tint only a 2px left bar (--warn for sentry, --extract for the seal, --r-gold for the forge). Keep each tag within 16px of its target.",
-   "P2 sentry cluster (1120-1200, 460-600) and threat cone: Draw the cone at 15% alpha with a 1px --danger edge. Offset the sentry tag 24px above the sprite. Drop the duplicate '!' marker above it."
+   "P1 bottom-left hp bar (25-430, 1035-1068): Inset the bar 48px from the left and bottom. Make the track 12px tall on --ui-panel with a --ok fill. Put 'hp 100' at 20px f-cond 600 in --tx-1 above the track, not on the fill.",
+   "P1 weapon slots 1 to 0 (560-1480, 965-1055): Show only owned slots plus at most 2 empty slots as 1px --ui-line outlines. Make every tile 80x80 with a 4px radius. Put the numerals at 16px --tx-2 inside the tile corner. Keep lime only on the selected slot.",
+   "P1 world tags: 'sentry r-46' (1140-1210, 485-503), 'the seal 0%' (1562-1645, 492-512), 'the forge' (1692-1755, 748-768), 'search crate' (967-1065, 566-586): Use one recipe for every tag: 16px f-cond 600 in --tx-1 on --scrim, 4px radius, 8px horizontal and 4px vertical padding. Tint only a 2px left bar (--warn for sentry, --extract for the seal, --r-gold for the forge).",
+   "P1 top-right 'run info' (1603-1900, 330-360) vs 'current pillagers 7' (8-367, 142-170): Make both 32px tall, with a 1px --ui-line-hi border, 4px radius, 16px f-cond 600 text and 16px side padding. Inset the left one 48px from the screen edge. Leave 8px under the minimap.",
+   "P2 top-centre banner (910-1010, 10-95): Always draw the banner on a --scrim plate with 4px radius and 16px padding. Keep the 9:00 at 32px as the one hero element and set 'mark 28m' at 16px."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-00v-239-ping-and-map-mark-are-one-recipes-2/mark-solo-raid-1080.jpg",
-  "task": "o-00v-239-ping-and-map-mark-are-one",
-  "when": "2026-10-29T16:24"
+  "pic": "tools/handoff/console/notes/shots/02-o-00v-239-ping-and-map-mark-are-one/mark-solo-raid-4k.jpg",
+  "task": "manual",
+  "when": "2026-11-01T15:40"
  },
  "mark-legacy-solo": {
   "score": 2,
@@ -5244,5 +5244,21 @@
   "pic": "tools/handoff/console/notes/shots/o-145-pad-sprint-toggle-default-recipes-1/sprint-default-host-1080.jpg",
   "task": "o-145-pad-sprint-toggle-default",
   "when": "2026-10-30T18:17"
+ },
+ "p2-4k": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "This is the raid HUD, not the settings card the earlier notes described, so those notes don't apply. The HUD is readable and all lower case, but it is a set of unrelated parts: three panel looks, two type treatments, a heavy hp bar, a tiny hotbar at 4k, and floating slot numerals.",
+  "findings": [
+   "P1 bottom-left hp bar, 'hp 100': Shrink the bar to about 240x16px. Keep 'hp 100' at 20px f-cond 600 in tx-1 with no outline. Reserve the 56px hero size for ammo only, and use --ok only for the fill.",
+   "P1 hotbar, slots 3 to 9 and 0: Draw every slot as a 64px tile with a --ui-panel fill at 80% and a 1px --ui-line-hi border. Use an 8px gap and put the numeral at 16px in tx-2 inside the tile corner. Scale the hotbar by height/1080 so it matches at 4k.",
+   "P1 HUD panels (bots list, ammo, contracts, extract timer, hotbar): Use one panel recipe on every HUD box: --ui-panel at 85%, 1px --ui-line-hi, 4px radius and 16px padding. The 'chill row cache' label and the 'keyboard' and 'f1 controls' chips should follow it or be dropped.",
+   "P1 top-left bots list: Cut to the header, 'you' and a one-line '0 out · 3 dead'. Set the row text at 16px with a 24px row pitch. Right-align the $ values in one column. Show 'dead' as a --danger word only. Drop the chevron or make it 16px.",
+   "P2 ammo panel, bottom-right: Make the magazine count 25 of 25, or show 24 / 24 with a plus-one marker. Keep one 16px footer line only. Align the weapon name, the number and the footer to the same right edge at 16px padding."
+  ],
+  "pic": "tools/handoff/console/notes/shots/02-o-140-red-enemy-tracers/red-tracers-day-p2-4k.jpg",
+  "task": "manual",
+  "when": "2026-11-01T15:43"
  }
 }

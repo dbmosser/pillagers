@@ -58,6 +58,14 @@
 ## Run 10 (lane a)
 - No ship, no new pictures (uishots and the critic are not allowed commands on this run). After the 10-18 evening handover: 45 card findings are "card: task 12's". 01 = 3 and 44/57 share 01's code; the remaining findings (logo gradient, five ordered mode rows, saves form, fullscreen button) wait on him. Backdrop and Q50/Q51/Q53/Q72 shipped. 4K 60fps on the title not measurable by me.
 
+## Run 11 (lane b, 2026-11-01, re-queued at MEDIUM)
+- No ship. The live backdrop is CANCELLED for good (his 10-27 order, v35.34 cw-titleplain); not rebuilt.
+- Scores in accept.json, all pass at the finish line for these screens (3.51 a: 3 is enough outside raid, waiting, pause, run-over): 01 = 3 (need 3, shot 187-after on the plain backdrop, 10-28), 44 = 3, 45 = 3, 57 = 3.
+- The same blocker stands: the critic's top finding on 01 and 44 is a flat logo. The style guide (line 115) keeps the logo as "the one brand mark", and old check 18.11 asks for the gold gradient, so that is his call: asked once in questions.md. The other P1s are his ordered mode rows (1 player, co-op, two demos) and the saves block (a form, many checks).
+- 44 P0 (trophy toast over the key legend) is the shared toast placement, not the title; 57's top finding is a "popup blocked" error banner from the test Chrome's 2 player window, a staging artifact (alarms.md). 45: "card: task 12's".
+- Left as a cheap P2 for later polish: tagline margins 24 above / 16 below to 16 above / 40 below (01 P2). Not worth a full gate on its own.
+- 11 runs, past the 6-try stop (2.83 b): done. Best versions: shots/187-after (01, plain backdrop) and shots/03-r6-after (saves block fix).
+
 ## Not done (older; the live fight is now done by cw-title-fight)
 - Q52/Q54 live backdrop with REAL pillager-vs-robot combat behind title, scoreboard, how-to (screens 45, 46, 56). Title shows the dimmed hub floor (titleSceneReady, ~46338; HB hub world with people milling, drawn in the main loop state==='hub' ~47519). Real combat needs either a raid sim (G, state='raid', runSim ~32155, G.sim skips draw) driven by a bot under the title at 60fps 4K, or hub NPCs with robots shooting. Big engineering task, not started: it needs its own multi-ship plan and a perf check at 4K.
 - Screens 44, 45, 46, 56, 57 not scored by the critic yet (shots in shots/03-after).

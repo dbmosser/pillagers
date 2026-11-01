@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.02 - THE PICTURE STORES KEEP A RUNNING TOTAL
+
+Co-op hunt while he was away. The research brief of 10-25 (row 17): the game counted each off screen picture store on its own but kept no total, and the party runs about three hours (one store grew once before, v32.75). One running total (pictures and estimated bytes, the peak, and the count in each store) now sits in the frame telemetry, the run record and the flight recorder run line, so a long session shows which store grows.
+
+MEASURED. Check 37.02 passes, and fails on v37.01.
 ## v37.01 - THE ANSWER LINE KEEPS THE NEWEST PRESS
 
 Co-op hunt while he was away. Job 208: the answer line dropped a line whose text was said less than 0.35 s ago even when another line was said in between, so on, off, on left off on screen. The repeat guard now applies only when the same text came straight before.

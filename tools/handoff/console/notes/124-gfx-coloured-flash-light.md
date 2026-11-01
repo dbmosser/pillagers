@@ -1,5 +1,7 @@
-# 124-gfx-coloured-flash-light (lane a, 10-25)
+# 124-gfx-coloured-flash-light (lane a, 10-25; closed lane b, 11-01)
 - SHIPPED v34.80 (fd55c26b6): three put() swaps in gfxLightPass: flashes use F.c, hunting machine eyes the eye-glow red, the beacon teal. Same draw count (cached sprite per colour), so no new frame cost. His lamp and the teammate lamp stay white.
 - Why the earlier STOP: my check set P.cond='night' and never put it back, so the seed 4242 fingerprint run after it spawned 112/482 ents. Proved with a comment-only probe (v34.79 cw-fpprobe, shipped, fingerprint held). Check now restores P.cond.
-- Lesson: a check that changes P.cond must restore it, the preflight does not run the fingerprint.
-- Left: night pictures (both windows, 1080p and 4K) and 4K frame numbers for the DESIGN.md line (draw count unchanged by design).
+- 11-01 pictures (v37.01, camera lane b, 1080 and 4k): notes/shots/124-after/ 37-raid-extracting-countdown (teal beacon ring lights the ground teal), 83-glow-shock (blue shock glow on the crawler), 82-glow-burn. No "before" pictures: the colour swap shipped 10-25 and the old build is gone; the old light was white.
+- 11-01 4K frame cost: the swap adds no draw calls (same put() count, cached sprite per colour), so no new cost. Main PC robot, v36.95, 4K two windows, RX 7900 XTX: p1 p50/p95/p99 5.25/10.75/14.75 ms, p2 4.25/7.25/12.75 ms, slow 6.2 percent (tools/handoff/spare/perf-4k.txt). That is the only line there; there is no pre-v34.80 4K line to compare.
+- Watch on his next play: at night, a muzzle flash or blast should tint the ground its own colour (orange, blue for shock), hunting machine eyes red, the extraction beacon teal. Both windows share the same pass.
+- Not done: no 2-window picture pair (the camera shoots one window). Pixel and vector looks use the same sprite cache.

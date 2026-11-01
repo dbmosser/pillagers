@@ -1,0 +1,1003 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>PILLAGERS net test</title>
+<style>
+  body{background:#14100e;color:#e8e0d4;font:14px/1.5 ui-monospace,Consolas,monospace;padding:14px;margin:0}
+  h1{font-size:15px;letter-spacing:.14em;text-transform:uppercase;color:#c8a24a;margin:0 0 8px}
+  .dim{color:#8a8076} .ok{color:#7fd48a} .bad{color:#e2564a}
+  button{font:inherit;background:#221a16;color:#e8e0d4;border:1px solid #6a5a4a;padding:6px 14px;cursor:pointer;margin-right:6px}
+  button:disabled{opacity:.4;cursor:default}
+  #result{font-size:18px;margin:10px 0}
+  pre{white-space:pre-wrap;margin:6px 0 12px;max-height:260px;overflow-y:auto;border:1px solid #3a3028;padding:8px}
+  .frames{display:flex;gap:10px;flex-wrap:wrap}
+  .frames div{flex:1;min-width:480px}
+  iframe{width:100%;height:420px;border:1px solid #3a3028;background:#000}
+</style>
+<h1>PILLAGERS net test, multiplayer builds 1 to 8</h1>
+<p class="dim">The live half of checks 15.74 and 15.75, run by hand. Two copies of the fixture load below, one with ?netslot=A and
+one with ?netslot=B, each playing a save of its own, and RUN links them for real on this PC: A hosts through its own PARTY window
+buttons, B joins with the invite code, A lets B in with the reply code, and both rosters must show two within five seconds. Then
+the floor (build 2): B must draw A where A stands, A walks on a real W held on its own window (S if a wall stops W), and 300 ms
+after it stops B must draw A within 16 units of where A stands; A must draw B too, whose PARTY window stays open. Then a third
+copy spoken for by this page tries to join on the wrong version and must be turned away, and on the right version must be let in
+(the control). Last, B quits the party and A must take B off its floor. The seeded stream of both copies must not move. Keep
+this tab in front while it runs: a hidden tab stops both floors. Serve the tools folder on a shard port and open
+http://localhost:8805/nettest.html (never :8802, his play profile, and never :8803, the dry chain). Add ?f=fxdry77.html to test a
+dry fixture instead of fixture.html (fxdry78.html for build 5, fxdry79.html for build 6, fxdry80.html for build 7, fxdry91.html for build 8). The two net saves are separate from every other save on this origin.</p>
+<p class="dim">RUN SAME MACHINE is the live half of check 15.76 (build 3): copy A presses its own 2 PLAYER CO-OP (SAME MACHINE) row. The
+window it asks for is stood in for by this page, which loads the address A asks for (this page, ?p2=1, the mode and the pair
+code) into copy C below, so the popup blocker does not decide the test; C is otherwise the real player 2 window, on the
+permanent player 2 save. The two must pair by themselves over the real channel between windows and both rosters show two
+within twenty seconds; C must name the mode in its PARTY window; each must draw the other on the floor where it stands; the
+player 2 save must be under its own key with the main save and the save pointer untouched; and when A ends the party C must
+hear it. To see the real popup, click the co-op row inside copy A by hand (a click from this page cannot open a window for it);
+allow the popup for this origin if the browser blocks it, and RETRY on the title says so.</p>
+<p class="dim">Build 4, the controller handed over (check 15.77), is a step inside RUN SAME MACHINE: copy A stands in for the window in
+front (its focus faked true, copy C's faked false) with two faked controllers, controller 1 with LB down and controller 2 with A
+down; A picks controller 1 through its own CONTROLLER row in the PARTY window, so controller 2 is handed to C over the real
+channel between windows, and within 200 ms C must report its pad button 0 down and never button 4, player 1's own. When the
+faked controllers are taken away C must let go within 400 ms.</p>
+<p class="dim">Build 5, world sound from one window only (check 15.78), is a step inside RUN SAME MACHINE after the controller step: copy C
+(the player 2 window) must report its sound off and copy A on through the test handle, each knowing what the other does; A
+presses its own SOUND row in the PARTY window, and within 200 ms the note in C's PARTY window must say the other window has
+its sound off; A presses again and C must hear its sound is on. The fixture blocks the audio context (it is silent by
+construction), so the switch is read there and the master gain only where a context exists; the log says which.</p>
+<p class="dim">Build 6, the party ascends together (check 15.79), is the RUN RAID step inside RUN SAME MACHINE, after the saves are checked:
+copy A ascends through the real sector page path (the lift station fired from the handle, ASCEND TO THIS SECTOR, MY LOADOUT;
+__deploy on sector 0 at seed 4242 when the station cannot be fired), copy C must be up top within 5 s on the same seed with
+the same fingerprint, A walks on a real W held on its own window (S if a wall stops W) and 300 ms after it stops C must draw A
+within 16 units of where A stands, and A must draw C. Then A abandons: from v16.14 A spectates (his ruling), so C must keep playing and be told the host is out, and once C abandons A must stop spectating within 3 s. Both come back down before the party ends. Only two real PCs can show the raid word and the fast channel over a home
+router, the frame rate of two raids on two PCs, and whether the fingerprint holds across two different browsers.</p>
+<p class="dim">Build 7, one set of enemies run by the host (check 15.80), is the enemy step inside RUN RAID, right after both copies are up
+top: the body nearest player A in copy A (every body carries the number it was given at the build, the same on both copies)
+must be held by copy C within 500 ms within 16 units of where A runs it, and after 2 s of frames both copies must still agree
+on that body within 24 units. Copy A must say it runs its bodies for the party and copy C that it watches the host run them.</p>
+<p class="dim">Build 8, loot per player and the host leaving ends the run for everyone (check 15.91), is the loot step inside RUN RAID, right
+after the enemy step: copy C is stood beside the nearest unopened box it holds (every box carries the number it was given at the
+build, the same on both copies; the stand is a test only teleport on the net handle) and holds E for real on its own window for
+the time the box takes. The loot must land in C's own backpack, on its own raid on the player 2 save, one item at a time as the
+bar fills, and both copies must draw that box searched, with the last item in C, within 500 ms of each other; A's own backpack
+must not gain. Copy A must say it owns the boxes for the party and copy C that it searches through the host. Then A abandons: from v16.14 A spectates (his ruling), so C must keep playing and be told the host is out, and once C abandons A must stop spectating within 3 s.</p>
+<div>
+  <button id="run" disabled>RUN</button>
+  <button id="runsame" disabled>RUN SAME MACHINE</button>
+  <button id="wipe">WIPE THE TWO NET SAVES AND THE PLAYER 2 SAVE</button>
+  <button id="reload">RELOAD THE TWO COPIES</button>
+</div>
+<div id="result" class="dim">loading the two copies...</div>
+<pre id="log"></pre>
+<div class="frames">
+  <div><div class="dim">copy A (host)</div><iframe id="fa"></iframe></div>
+  <div><div class="dim">copy B (joins)</div><iframe id="fb"></iframe></div>
+  <div><div class="dim">copy C (the player 2 window, opened by A on RUN SAME MACHINE)</div><iframe id="fc"></iframe></div>
+</div>
+<script>
+(function(){
+  'use strict';
+  var FIX=(location.search.match(/[?&]f=([^&]+)/)||[])[1];
+  FIX=FIX?decodeURIComponent(FIX):'fixture.html';
+  var fa=document.getElementById('fa'), fb=document.getElementById('fb'), fc=document.getElementById('fc');
+  var logEl=document.getElementById('log'), resEl=document.getElementById('result'), runB=document.getElementById('run'), runS=document.getElementById('runsame');
+  var TAG='PTY1', raw=[], runs=0;
+  function log(t){ logEl.textContent+=t+'\n'; logEl.scrollTop=logEl.scrollHeight; }
+  function W(f){ return f.contentWindow; }
+  function D(f){ return f.contentDocument; }
+  function el(f,id){ var d=D(f); return d?d.getElementById(id):null; }
+  function wait(pred,ms,what){
+    return new Promise(function(res,rej){
+      var t0=Date.now();
+      (function tick(){
+        var v=null; try{ v=pred(); }catch(e){ v=null; }
+        if(v) return res(v);
+        if(Date.now()-t0>ms) return rej(new Error('timed out after '+ms+' ms waiting for '+what));
+        setTimeout(tick,50);
+      })();
+    });
+  }
+  function refuse(t){ resEl.className='bad'; resEl.textContent='FAIL: '+t; document.title='FAIL net test'; }
+  // A fixture without the ?netslot override would boot twice on ONE save and write it from both copies, so its source is read
+  // first and nothing is loaded unless the override is in it.
+  function load(){
+    runB.disabled=true; runS.disabled=true; fc.src='about:blank'; resEl.className='dim'; resEl.textContent='reading '+FIX+'...';
+    if(location.protocol!=='http:'&&location.protocol!=='https:'){ refuse('open this page from a local server (a tools shard port such as http://localhost:8805/nettest.html), not from a file.'); return; }
+    fetch(FIX,{cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status+' for '+FIX); return r.text(); }).then(function(t){
+      if(t.indexOf('function netSlotOf(')<0){ refuse(FIX+' has no ?netslot override (a build before v15.74), so two copies of it would share one save. Nothing was loaded.'); return; }
+      resEl.textContent='loading the two copies...';
+      runs=0;
+      fa.src=FIX+'?netslot=A'; fb.src=FIX+'?netslot=B';
+      booted();
+    },function(e){ refuse('could not read '+FIX+': '+e.message); });
+  }
+  function booted(){
+    wait(function(){ return W(fa)&&W(fa).__net&&W(fb)&&W(fb).__net; },30000,'both copies to boot with the net test handle').then(function(){
+      runB.disabled=false; resEl.textContent='ready: press RUN';
+      log('loaded '+FIX+': copy A save '+W(fa).__net.key+', copy B save '+W(fb).__net.key+', both on v'+W(fa).__net.ver);
+      // BUILD 3: the same machine pair needs the mode menu and the net handle that reads the mode (v15.76 and later).
+      if(typeof W(fa).__net.same==='function'&&el(fa,'modecoop')) runS.disabled=false;
+      else log('(no RUN SAME MACHINE: copy A has no mode menu, a build before v15.76)');
+    },function(e){
+      resEl.className='bad'; resEl.textContent='FAIL: '+e.message+'. A build before v15.74 has no net section; a copy opened without ?netslot has no handle.';
+      document.title='FAIL net test';
+    });
+  }
+  // The code format, written again here from the rule in the net section, so this page checks the game rather than itself.
+  function b64u(bytes){ var s='',i; for(i=0;i<bytes.length;i++) s+=String.fromCharCode(bytes[i]); return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+  function unb64u(t){ t=String(t).replace(/-/g,'+').replace(/_/g,'/'); while(t.length%4) t+='='; var s=atob(t),o=new Uint8Array(s.length),i; for(i=0;i<s.length;i++) o[i]=s.charCodeAt(i); return o; }
+  function unpack(code){
+    var t=String(code||'').replace(/\s+/g,''), at=t.indexOf(TAG);
+    if(at<0) return Promise.reject(new Error('no PTY1 in the code'));
+    var k=t.charAt(at+4), m=t.charAt(at+5), body=((/^[A-Za-z0-9_-]+/).exec(t.slice(at+6))||[''])[0];
+    var type=(k==='o')?'offer':((k==='a')?'answer':null);
+    if(!type) return Promise.reject(new Error('the code is neither an invite nor a reply'));
+    if(m==='p') return Promise.resolve({type:type,sdp:new TextDecoder().decode(unb64u(body))});
+    var st=new Blob([unb64u(body)]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+    return new Response(st).text().then(function(sdp){ return {type:type,sdp:sdp}; });
+  }
+  function pack(type,sdp){
+    var st=new Blob([new TextEncoder().encode(sdp)]).stream().pipeThrough(new CompressionStream('deflate-raw'));
+    return new Response(st).arrayBuffer().then(function(ab){ return TAG+((type==='offer')?'o':'a')+'z'+b64u(new Uint8Array(ab)); });
+  }
+  function gather(pc){
+    return new Promise(function(res){
+      var done=false; function fin(){ if(!done){ done=true; res(); } }
+      if(pc.iceGatheringState==='complete') return fin();
+      pc.addEventListener('icegatheringstatechange',function(){ if(pc.iceGatheringState==='complete') fin(); });
+      setTimeout(fin,5000);
+    });
+  }
+  // A third copy, spoken for by this page: a bare peer connection that says hello on the version it is given.
+  function rawJoin(invite,ver,proto,name){
+    return unpack(invite).then(function(d){
+      if(d.type!=='offer') throw new Error('the host code is not an invite');
+      var pc=new RTCPeerConnection({iceServers:[]});
+      var dc=pc.createDataChannel('rel',{negotiated:true,id:0,ordered:true});
+      var J={pc:pc,dc:dc,got:[],name:name};
+      raw.push(J);
+      dc.onmessage=function(ev){ try{ J.got.push(JSON.parse(ev.data)); }catch(e){} };
+      dc.onopen=function(){ dc.send(JSON.stringify({t:'hello',proto:proto,ver:ver,pid:'e5e5'+name.length,name:name})); };
+      return pc.setRemoteDescription(d)
+        .then(function(){ return pc.createAnswer(); })
+        .then(function(a){ return pc.setLocalDescription(a); })
+        .then(function(){ return gather(pc); })
+        .then(function(){ return pack('answer',pc.localDescription.sdp); })
+        .then(function(rc){ J.reply=rc; return J; });
+    });
+  }
+  function got(J,t){ for(var i=0;i<J.got.length;i++) if(J.got[i]&&J.got[i].t===t) return J.got[i]; return null; }
+  function rows(f){ var r=el(f,'partyroster'); return r?r.querySelectorAll('[data-seat]').length:0; }
+  function st(f){ return W(f).__net.state(); }
+  // 11-01 (job 260): THE STAND-IN WINDOW GETS ITS OPENER. Copy C is an iframe, not a popup, so it has no window.opener. Since v33.58
+  // (cw-p2bridge) a player 2 window opened from a framed player 1 (this page frames A, so the address carries emb=1) talks over its
+  // opener and stops at boot without one (netSameBootP2 returns 'noopener'), so from 10-21 the pair never linked here. A real popup
+  // has its opener from the first line, so while C loads this page hands it A as its opener on every tick. If C still boots without
+  // it (it booted as player 2 with no link channel), C is reloaded, up to 3 times. Armed by the stand-in window.open and the reload step.
+  function cflags(C){ try{ var g=C.__state(), p=g&&g.player, w=p&&p.wep; return JSON.stringify({over:g.over,paused:g.paused,bag:g.bagOpen,map:g.mapOpen,mf:g.mapFirst,trade:!!g.trade,forge:!!g.forgeUI,hub:!!g.hubFloor,sim:!!g.sim,wheel:!!g.wheel,stall:!!g.stall,down:p&&p.downed,dying:p&&p.dying,hp:p&&p.hp,gun:w&&w.id,mag:w&&w.mag,ammo:p&&p.ammo,reload:p&&p.reloadT,mf2:C.__net.up().on,seed:C.__net.up().seed,focus:C.document.hasFocus(),fix:!!C.__isFixture,pbox:!!(C.document.getElementById('pausebox')&&C.document.getElementById('pausebox').classList.contains('on')),fsg:(C.document.getElementById('fsgate')||{style:{}}).style.display||'none',gx:(C.__gx?C.__gx('JSON.stringify({po:pauseOpen,tu:tuneOpen,df:devFreeze(),fsg:FSG.open,snip:!!(typeof SNIP==="object"&&SNIP&&SNIP.on),te:CFG.textEdit,dl:DEV_LOCAL,st:state,mf:MAPFIRST.skip})'):'?'),Apaused:(W(fa).__state())?W(fa).__state().paused:'?',tel:g.tel?{s:g.tel.shots,h:g.tel.hits}:null}); }catch(e){ return 'cflags: '+e.message; } }
+  function armC(A){
+    var t0=Date.now(), tries=0;
+    (function tick(){
+      var w=null, s=null;
+      try{ w=W(fc); }catch(e){ w=null; }
+      try{ if(w&&String(w.location.href).indexOf('p2=1')>=0&&w.opener!==A) w.opener=A; }catch(e){}
+      try{ if(w&&w.__net&&w.__net.p2&&!w.__preReload) s=w.__net.same(); }catch(e){ s=null; }
+      if(s&&s.chan) return;
+      if(s&&s.same==='p2'){
+        if(tries>=3){ log('C booted without its opener 3 times; giving up'); return; }
+        tries++; log('C booted without its opener (an iframe has none), so it is reloaded with one: try '+tries);
+        try{ w.__preReload=1; w.location.reload(); }catch(e){}
+      }
+      if(Date.now()-t0<60000) setTimeout(tick,0);
+    })();
+  }
+  function click(f,id){ var b=el(f,id); if(!b) throw new Error('copy '+(f===fa?'A':'B')+' has no #'+id); b.click(); }
+  function put(f,id,v){ var t=el(f,id); if(!t) throw new Error('copy '+(f===fa?'A':'B')+' has no #'+id); t.value=v; }
+  // The host makes a new invite code through its own window and hands it to this page.
+  function hostCode(prev){
+    return wait(function(){ var c=el(fa,'partycode'); return (c&&c.value.indexOf('PTY1o')===0&&c.value!==prev)?c.value:null; },20000,'copy A to show an invite code');
+  }
+  // BUILD 2: THE FLOOR. What one copy draws of another, read through the net test handle (v15.75 and later).
+  function sleep(ms){ return new Promise(function(res){ setTimeout(res,ms); }); }
+  function view(f,seat){ var v=W(f).__net.floor(), i; for(i=0;i<v.length;i++) if(v[i].seat===seat) return v[i]; return null; }
+  function xy(o){ return o?(o.x.toFixed(1)+','+o.y.toFixed(1)):'nowhere'; }
+  function gap(a,b){ return (a&&b)?Math.sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y)):-1; }
+  // Nothing may be open over a floor that has to walk, or the floor ignores its keys: the PARTY window (closed by its own
+  // CLOSE, which lets go of a paste box), a welcome window on a fresh save, the pause box.
+  function clearFloor(f){
+    try{ click(f,'closeparty'); }catch(e){}
+    var d=D(f); if(!d) return;
+    var pb=d.getElementById('pausebox'), rb=d.getElementById('resumebtn'), po=false; try{ po=!!(W(f).__gx&&W(f).__gx('pauseOpen')); }catch(e){}
+    if(rb&&((pb&&pb.classList.contains('on'))||po)){ if(po) log('clear: copy '+(f===fa?'A':(f===fb?'B':'C'))+' had its pause box open, so its own resume was pressed'); rb.click(); }   // 11-01 (job 260): before the modal sweep below, which hides the pause box too
+    [].forEach.call(d.querySelectorAll('.modal.on'),function(m){ m.classList.remove('on'); });   // the game's own resume: hiding the box left the game paused
+    if(pb) pb.classList.remove('on');
+  }
+  // A real key held on the copy window (never its document: a key sent there reaches the window too and acts twice).
+  function hold(f,code,key,ms){
+    var w=W(f), K=w.KeyboardEvent||KeyboardEvent;
+    w.dispatchEvent(new K('keydown',{code:code,key:key,bubbles:true,cancelable:true}));
+    return sleep(ms).then(function(){ w.dispatchEvent(new K('keyup',{code:code,key:key,bubbles:true,cancelable:true})); });
+  }
+  function floorStep(A,B,bad,rep){
+    if(typeof A.__net.floor!=='function'||typeof B.__net.floor!=='function'||typeof A.__net.me!=='function'||typeof B.__net.me!=='function'){
+      bad.push('this fixture has no floor view in its net handle (a build before v15.75), so the floor step cannot run');
+      return Promise.resolve();
+    }
+    var sa=A.__net.me().seat, sb=B.__net.me().seat, a0=null, used='W';
+    clearFloor(fa);
+    a0=A.__net.me();
+    return wait(function(){ var v=view(fb,sa); return (v&&v.shown&&gap(v,A.__net.me())<=16)?v:null; },3000,'copy B to draw copy A where it stands').then(function(v){
+      log('floor: A (seat '+sa+') stands at '+xy(A.__net.me())+' and B draws it at '+xy(v)+'; fast channels open: A '+A.__net.fast()+', B '+B.__net.fast());
+      return hold(fa,'KeyW','w',300);
+    }).then(function(){
+      var m=gap(A.__net.me(),a0);
+      if(m<8){ log('W moved copy A '+m.toFixed(1)+' units (a wall in the way?), so S is held instead'); used='S'; return hold(fa,'KeyS','s',300); }
+    }).then(function(){
+      var m=gap(A.__net.me(),a0);
+      rep.walked=Math.round(m);
+      if(m<8){ bad.push('copy A did not walk on a held '+used+' (it moved '+m.toFixed(1)+' units), so the floor step proves nothing; is something open over its floor?'); return; }
+      return sleep(300).then(function(){
+        var me=A.__net.me(), v=view(fb,sa), d=gap(v,me);
+        rep.floorGap=(d>=0)?Math.round(d*10)/10:null;
+        log('floor: A walked '+m.toFixed(1)+' units on '+used+' to '+xy(me)+'; 300 ms later B draws it at '+xy(v)+(d>=0?(', '+d.toFixed(1)+' units off'):''));
+        if(!v||!v.shown) bad.push('300 ms after copy A walked, copy B does not draw it at all');
+        else if(d>16) bad.push('300 ms after copy A walked, copy B draws it '+d.toFixed(1)+' units from where it stands (the limit is 16)');
+        var vb=view(fa,sb), bm=B.__net.me(), db=gap(vb,bm);
+        log('floor: B (seat '+sb+', PARTY window open) stands at '+xy(bm)+' and A draws it at '+xy(vb));
+        if(!vb||!vb.shown||db>16) bad.push('copy A does not draw copy B where it stands ('+(vb?(db.toFixed(1)+' units off'):'not drawn')+'), with the PARTY window open on B');
+      });
+    }).then(function(){ A.__net.open(); },function(e){ A.__net.open(); throw e; });
+  }
+  // v16.09: VOICE, only with ?voice=1 (it asks for a microphone; the cloud runs Chromium with a fake one). A switches its mic on;
+  // B must get A's voice line, play it and take in voice bytes from it; holding Y must open A's mic and letting go shut it. (A
+  // held track is not told apart by bytes here: Chromium's fake mic is a short beep, so the gate is read off A itself.)
+  function voiceStep(A,B,bad){
+    if(!/[?&]voice=1(&|$)/.test(location.search)) return Promise.resolve();
+    if(typeof A.__net.mic!=='function'){ bad.push('voice: this fixture has no voice in its net handle (a build before v16.09)'); return Promise.resolve(); }
+    var e0=0, e1=0, e2=0;
+    return Promise.resolve(A.__net.mic()).then(function(r){
+      if(r!==true) throw new Error('A could not switch its mic on: '+JSON.stringify(r));
+      log('voice: A mic '+JSON.stringify(A.__net.voice())+'; B '+JSON.stringify(B.__net.voice()));
+      return wait(function(){ return B.__net.voice().heard>0?true:null; },5000,'copy B to play the voice of copy A');
+    }).then(function(){ return sleep(1500); }).then(function(){ return B.__net.energy(); }).then(function(e){ e0=e; return sleep(1500); })
+    .then(function(){ return B.__net.energy(); }).then(function(e){ e1=e; return Promise.all([hold(fa,'KeyY','y',1500),sleep(200).then(function(){ var v=A.__net.voice(); if(!v.live) bad.push('voice: holding Y on copy A did not open its mic'); })]); })
+    .then(function(){ return B.__net.energy(); }).then(function(e){ e2=e;
+      var quiet=e1-e0, loud=e2-e1;
+      log('voice: B takes in '+quiet+' voice bytes over 1.5 s with Y up and '+loud+' over 1.5 s with Y held on A');
+      if(!(quiet>500&&loud>500)) bad.push('voice: copy B took in almost no voice from copy A ('+quiet+' bytes with Y up, '+loud+' held): the voice line is not carrying sound');
+      if(A.__net.voice().live) bad.push('voice: copy A mic stayed open after Y was let go');
+    });
+  }
+  // After B quits, A takes it off its floor, and B keeps nobody on its own.
+  function byeStep(A,B,bad){
+    if(typeof A.__net.floor!=='function') return Promise.resolve();
+    var sb=B.__net.me().seat, was=view(fa,sb);
+    if(!(was&&was.shown)) bad.push('control: before copy B quit, copy A did not draw it');
+    click(fb,'partyquit');
+    return wait(function(){ var v=view(fa,sb); return !(v&&v.shown); },3000,'copy A to take copy B off its floor after its bye').then(function(){
+      log('bye: B quit and A no longer draws seat '+sb+'; B keeps '+B.__net.floor().length+' on its own floor');
+      if(B.__net.floor().length) bad.push('copy B still keeps '+B.__net.floor().length+' on its floor after it quit');
+    });
+  }
+  function run(){
+    runB.disabled=true; logEl.textContent=''; resEl.className='dim'; resEl.textContent='running...';
+    var A=W(fa), B=W(fb), bad=[], rep={}, rngA0, rngB0, invite, reply, t0;
+    try{ A.__net.reset(); B.__net.reset(); }catch(e){}
+    raw.forEach(function(J){ try{ J.pc.close(); }catch(e){} }); raw=[];
+    // Boot: no peer connection in either copy yet, and each on its own save.
+    var a0=st(fa), b0=st(fb);
+    log('boot: copy A made '+a0.made+' links, copy B made '+b0.made+'; saves '+A.__net.key+' and '+B.__net.key);
+    if(A.__net.key===B.__net.key) bad.push('both copies play the same save '+A.__net.key);
+    // Boot makes nothing: held only on the first RUN after the copies load, since a RUN makes links of its own.
+    if(!runs){
+      if(a0.made!==0||(A.__pcBoot&&A.__pcBoot.made!==0)) bad.push('copy A made peer connections before HOST was pressed');
+      if(b0.made!==0||(B.__pcBoot&&B.__pcBoot.made!==0)) bad.push('copy B made peer connections before JOIN was pressed');
+    } else log('(the boot count is held on the first RUN after a load; RELOAD to hold it again)');
+    runs++;
+    try{ if(A.__hubEnter) A.__hubEnter(); if(B.__hubEnter) B.__hubEnter(); }catch(e){}
+    A.__net.open(); B.__net.open();
+    rngA0=A.__net.rngs(); rngB0=B.__net.rngs();
+    click(fa,'partyhost');
+    hostCode('').then(function(c){
+      invite=c; rep.invite=c.length; log('A: invite code, '+c.length+' characters');
+      put(fb,'partyin',invite); click(fb,'partyjoin');
+      return wait(function(){ var r=el(fb,'partycode'); return (r&&r.value.indexOf('PTY1a')===0)?r.value:null; },20000,'copy B to show a reply code');
+    }).then(function(r){
+      reply=r; rep.reply=r.length; log('B: reply code, '+r.length+' characters');
+      put(fa,'partyreplyin',reply); t0=Date.now(); click(fa,'partyaccept');
+      return wait(function(){ return st(fa).roster.length===2&&st(fb).roster.length===2&&rows(fa)===2&&rows(fb)===2; },5000,'both rosters to show two');
+    }).then(function(){
+      rep.linkMs=Date.now()-t0; log('both rosters show two, '+rep.linkMs+' ms after LET THEM IN');
+      log('A roster: '+JSON.stringify(st(fa).roster)); log('B roster: '+JSON.stringify(st(fb).roster)+', B seat '+st(fb).seat);
+      if(A.__net.rngs()!==rngA0||B.__net.rngs()!==rngB0) bad.push('the seeded stream moved across the handshake');
+      // BUILD 2: the two copies see each other on the floor. A failure here is written down and the run goes on.
+      return floorStep(A,B,bad,rep).then(null,function(e){ bad.push('floor: '+e.message); });
+    }).then(function(){
+      // The wrong version is turned away.
+      click(fa,'partyinvite');
+      return hostCode(invite);
+    }).then(function(c){
+      invite=c; log('A: second invite code, '+c.length+' characters');
+      return rawJoin(invite,'0.01',A.__net.proto,'ZQX WRONG VERSION');
+    }).then(function(J){
+      put(fa,'partyreplyin',J.reply); click(fa,'partyaccept');
+      return wait(function(){ return got(J,'reject')||got(J,'welcome'); },8000,'the wrong version copy to hear back').then(function(m){ return {J:J,m:m}; });
+    }).then(function(o){
+      log('the copy on v0.01 heard: '+JSON.stringify(o.m));
+      if(o.m.t!=='reject'||o.m.why!=='version') bad.push('a copy on v0.01 was not turned away for its version');
+      if(st(fa).roster.length!==2) bad.push('after the wrong version knocked, the host roster holds '+st(fa).roster.length);
+      // CONTROL: the right version is let in.
+      return wait(function(){ var n=el(fa,'partyinvite'); return n&&n.style.display!=='none'; },5000,'NEW INVITE CODE to come back on A').then(function(){ click(fa,'partyinvite'); return hostCode(invite); });
+    }).then(function(c){
+      invite=c; log('A: third invite code, '+c.length+' characters');
+      return rawJoin(invite,A.__net.ver,A.__net.proto,'ZQX SAME VERSION');
+    }).then(function(J){
+      put(fa,'partyreplyin',J.reply); click(fa,'partyaccept');
+      return wait(function(){ return got(J,'welcome')||got(J,'reject'); },8000,'the same version copy to hear back').then(function(m){ return {J:J,m:m}; });
+    }).then(function(o){
+      log('the copy on v'+A.__net.ver+' heard: '+JSON.stringify(o.m));
+      if(o.m.t!=='welcome') bad.push('control: a copy on the same version v'+A.__net.ver+' was not let in');
+      return wait(function(){ return st(fa).roster.length===3&&st(fb).roster.length===3; },5000,'both rosters to show three').then(function(){ return true; },function(e){ bad.push('control: '+e.message); return false; });
+    }).then(function(){
+      if(A.__net.rngs()!==rngA0||B.__net.rngs()!==rngB0) bad.push('the seeded stream moved while A walked or the third copy knocked');
+      rep.madeA=st(fa).made; rep.madeB=st(fb).made;
+      // BUILD 2: B quits, and A takes it off its floor. v16.09: first, with ?voice=1, the voice step.
+      return voiceStep(A,B,bad).then(null,function(e){ bad.push('voice: '+e.message); }).then(function(){ return byeStep(A,B,bad).then(null,function(e){ bad.push('bye: '+e.message); }); });
+    }).then(null,function(e){ bad.push(e.message); }).then(function(){
+      try{ A.__net.reset(); B.__net.reset(); }catch(e){}
+      raw.forEach(function(J){ try{ J.pc.close(); }catch(e){} }); raw=[];
+      var pass=!bad.length;
+      var line=(pass?'PASS':'FAIL')+': invite code '+(rep.invite||'?')+' characters, reply code '+(rep.reply||'?')+' characters, linked in '+(rep.linkMs===undefined?'?':rep.linkMs)+' ms (limit 5000), A walked '+(rep.walked===undefined?'?':rep.walked)+' units and B drew it '+((rep.floorGap===undefined||rep.floorGap===null)?'?':rep.floorGap)+' units off (limit 16), copy A made '+(rep.madeA===undefined?'?':rep.madeA)+' links and copy B '+(rep.madeB===undefined?'?':rep.madeB)+(pass?'':('; '+bad.join('; ')));
+      resEl.className=pass?'ok':'bad'; resEl.textContent=line; log(line);
+      document.title=(pass?'PASS':'FAIL')+' net test';
+      window.__NETTEST={pass:pass,bad:bad,rep:rep,line:line};
+      runB.disabled=false;
+    });
+  }
+  // BUILD 4: THE CONTROLLER HANDED OVER. Copy A stands in for the window in front: its getGamepads is stubbed with two pads,
+  // controller 1 with LB down (player 1's own, once A picks it through its CONTROLLER row) and controller 2 with A down, and
+  // its focus is faked true; copy C's focus is faked false. Within 200 ms C must report its pad button 0 down through the
+  // real channel between windows, and never button 4 (player 1's pad). Then the stubs come off, A's pick goes back to none,
+  // and C must let go within 400 ms.
+  function padStep(A,C,bad,rep){
+    if(typeof A.__net.pad!=='function'||typeof C.__net.pad!=='function'||typeof A.__net.padSet!=='function'||!el(fa,'partypadbtn')){
+      bad.push('this fixture has no controller hand-over in its net handle (a build before v15.77), so the controller step cannot run');
+      return Promise.resolve();
+    }
+    function mkPad(ix,down){ var b=[], q; for(q=0;q<17;q++) b.push({pressed:down.indexOf(q)>=0,value:down.indexOf(q)>=0?1:0,touched:down.indexOf(q)>=0}); return {connected:true,id:'test pad '+ix,index:ix,mapping:'standard',timestamp:1,axes:[0,0,0,0],buttons:b}; }
+    var t0=0, before=C.__net.pad(), NGA=A.navigator.getGamepads;
+    log('controller: before the hand-over C holds buttons ['+before.down.join(',')+'], its pick '+before.ix+', the host pick as C knows it '+before.other+', in front '+before.front);
+    try{ A.document.hasFocus=function(){ return true; }; C.document.hasFocus=function(){ return false; }; }catch(e){ bad.push('controller: the focus of the copies cannot be faked: '+e.message); return Promise.resolve(); }
+    A.navigator.getGamepads=function(){ return [mkPad(0,[4]),mkPad(1,[0])]; };
+    // A picks controller 1 through its own row, so C is handed controller 2.
+    A.__net.open();
+    click(fa,'partypadbtn');
+    var sa=A.__net.pad();
+    log('controller: A picked '+sa.ix+' through its CONTROLLER row, which reads '+(el(fa,'partypadbtn')?el(fa,'partypadbtn').textContent:'?'));
+    if(sa.ix!==0) bad.push('controller: one press on the CONTROLLER row in A did not pick controller 1 (pick '+sa.ix+')');
+    clearFloor(fa);
+    t0=Date.now();
+    return wait(function(){ var p=C.__net.pad(); return (p.down.indexOf(0)>=0)?p:null; },200,'copy C to report its pad button 0 down').then(function(p){
+      rep.padMs=Date.now()-t0;
+      log('controller: C reports buttons ['+p.down.join(',')+'] down '+rep.padMs+' ms after A was given the pads; handed over from pad '+(p.fwd?p.fwd.ix:'?')+', A sent '+A.__net.pad().sent+', C got '+p.got+', the host pick as C knows it '+p.other);
+      if(p.down.indexOf(4)>=0) bad.push('controller: C plays button 4, which is down on player 1 own controller');
+      if(!p.fwd||p.fwd.ix!==1) bad.push('controller: C was handed pad '+(p.fwd?p.fwd.ix:'none')+', not controller 2');
+      var pa=A.__net.pad();
+      if(!pa.on||pa.down.indexOf(4)<0||pa.down.indexOf(0)>=0) bad.push('controller: A does not play its own controller 1 alone (on '+pa.on+', down ['+pa.down.join(',')+'])');
+    },function(e){ var p=C.__net.pad(); bad.push('controller: '+e.message+' (C holds ['+p.down.join(',')+'], handed '+(p.fwd?('pad '+p.fwd.ix+' '+p.fwd.age+' ms ago'):'nothing')+', A sent '+A.__net.pad().sent+', C got '+p.got+', the host pick as C knows it '+p.other+')'); }).then(function(){
+      try{ A.navigator.getGamepads=NGA; }catch(e){}
+      try{ delete A.document.hasFocus; delete C.document.hasFocus; }catch(e){}
+      try{ A.__net.padSet(-1); }catch(e){}
+      return sleep(800).then(function(){ var p=C.__net.pad(); log('controller: 800 ms after the pads were taken away (v16.80 keeps a handed state 0.6 s) C holds ['+p.down.join(',')+'], on '+p.on); if(p.on||p.down.length) bad.push('controller: C still plays a pad 800 ms after the window in front stopped handing one over'); });
+    });
+  }
+  // BUILD 5: WORLD SOUND FROM ONE WINDOW ONLY. After the pair, copy C (the player 2 window) must report its sound off and copy
+  // A (the host) on through the test handle, each knowing what the other does; A presses its own SOUND row, and within 200 ms
+  // the note in C's PARTY window must say the other window has its sound off (the word goes over the real channel between
+  // windows); then A presses again and C must hear its sound is on. The fixture blocks the audio context, so the master gain
+  // is read only where a context exists; otherwise the switch alone is read, and the log says so.
+  // v17.70: ONE SOUND SETTING FOR THE PAIR. Both windows start with sound on (BOTH PLAYERS). A presses its WORLD SOUND row:
+  // PLAYER 1 ONLY, and C must fall silent within 500 ms (the shared setting, heard through the storage event); again: PLAYER 2
+  // ONLY, A silent and C back on; again: BOTH PLAYERS, both on. The gain is read where a window has an audio context.
+  function sndStep(A,C,bad,rep){
+    if(typeof A.__net.snd!=='function'||typeof C.__net.snd!=='function'||!el(fa,'partysndbtn')){
+      bad.push('this fixture has no sound switch in its net handle (a build before v15.78), so the sound step cannot run');
+      return Promise.resolve();
+    }
+    var sa=A.__net.snd(), sc=C.__net.snd(), t0=0;
+    log('sound: A reports '+JSON.stringify(sa)+'; C reports '+JSON.stringify(sc));
+    if(sa.on!==true) bad.push('sound: with BOTH PLAYERS the host window does not report its sound on ('+JSON.stringify(sa)+')');
+    if(sc.on!==true) bad.push('sound: with BOTH PLAYERS the player 2 window does not report its sound on ('+JSON.stringify(sc)+')');
+    A.__net.open(); C.__net.open();
+    function lbl(f){ return el(f,'partysndbtn')?el(f,'partysndbtn').textContent:'?'; }
+    function press(want,aOn,cOn,what){
+      click(fa,'partysndbtn'); t0=Date.now();
+      if(lbl(fa).indexOf(want)<0) bad.push('sound: after a press the row in A reads '+JSON.stringify(lbl(fa))+', not '+want);
+      return wait(function(){ var a=A.__net.snd(), c=C.__net.snd(); return (a.on===aOn&&c.on===cOn)?[a,c]:null; },500,'both windows to follow '+want).then(function(r){
+        log('sound: '+want+' in '+(Date.now()-t0)+' ms; A '+JSON.stringify(r[0])+', C '+JSON.stringify(r[1]));
+        if(r[0].ctx&&r[0].gain!==null&&r[0].gain!==(aOn?1:0)) bad.push('sound: '+want+', the host gain is '+r[0].gain);
+        if(r[1].ctx&&r[1].gain!==null&&r[1].gain!==(cOn?1:0)) bad.push('sound: '+want+', the player 2 gain is '+r[1].gain);
+      },function(e){ bad.push('sound: '+e.message+' (A '+JSON.stringify(A.__net.snd())+', C '+JSON.stringify(C.__net.snd())+', C row '+JSON.stringify(lbl(fc))+')'); });
+    }
+    return press('PLAYER 1 ONLY',true,false).then(function(){ return press('PLAYER 2 ONLY',false,true); }).then(function(){ return press('BOTH PLAYERS',true,true); }).then(function(){ rep.sndMs=Date.now()-t0; });
+  }
+  // BUILD 6: THE PARTY ASCENDS TOGETHER. Copy A ascends through the real sector page path when the lift station can be fired
+  // from the handle (the lift, ASCEND TO THIS SECTOR, MY LOADOUT), else through __deploy on sector 0 at seed 4242; copy C must
+  // be up top within 5 s on the same seed with the same fingerprint; A walks on a real W held on its own window and 300 ms
+  // after it stops C must draw A within 16 units of where A stands, and A must draw C; then A abandons, and from build 8 C's
+  // raid must end as ABANDONED within 2 s with the host left line on its run card. Both come back down after.
+  function upView(f,seat){ var u=W(f).__net.up(), i; for(i=0;i<u.list.length;i++) if(u.list[i].seat===seat) return u.list[i]; return null; }
+  function comeDown(A,C){
+    try{ if(A.__net.up().on) A.__endRaid('abandon'); }catch(e){}
+    try{ if(C.__net.up().on) C.__endRaid('abandon'); }catch(e){}
+    try{ A.__topClear(); C.__topClear(); }catch(e){}
+    try{ if(A.__hubEnter) A.__hubEnter(); if(C.__hubEnter) C.__hubEnter(); }catch(e){}
+  }
+  // BUILD 7: ONE SET OF ENEMIES. Right after both are up top, the body nearest player A in copy A must be held by copy C within
+  // 500 ms within 16 units of where A runs it (its number is the same on both copies, given at the build in list order), and
+  // after 2 s of frames both copies must still agree on it within 24 units.
+  function entOf(f,id){ var v=W(f).__net.ents(), i; for(i=0;i<v.list.length;i++) if(v.list[i].id===id) return v.list[i]; return null; }
+  function entStep(A,C,bad,rep){
+    if(typeof A.__net.ents!=='function'||typeof C.__net.ents!=='function'){ bad.push('this fixture has no enemy view in its net handle (a build before v15.80), so the enemy step cannot run'); return Promise.resolve(); }
+    var ea=A.__net.ents(), ec=C.__net.ents(), me=A.__net.up().me, near=null, nd=1e9, i, d, t0=Date.now();
+    for(i=0;i<ea.list.length;i++){ if(!ea.list[i].id) continue; d=gap(ea.list[i],me); if(d<nd){ nd=d; near=ea.list[i]; } }
+    log('enemies: A runs '+ea.n+' bodies ('+ea.numbered+' numbered, runs them for the party: '+ea.host+'); C holds '+ec.n+' ('+ec.numbered+' numbered, watches the host: '+ec.peer+')');
+    if(!ea.host) bad.push('enemies: copy A does not run its bodies for the party');
+    if(!ec.peer) bad.push('enemies: copy C does not watch the host run its bodies');
+    if(!near){ bad.push('enemies: copy A runs no numbered body'); return Promise.resolve(); }
+    log('enemies: the body nearest A is number '+near.id+' ('+near.k+(near.name?(' '+near.name):'')+') at '+xy(near)+', '+Math.round(nd)+' units off');
+    return wait(function(){ var c=entOf(fc,near.id), a=entOf(fa,near.id); return (c&&a&&gap(c,a)<=16)?{c:c,a:a}:null; },500,'copy C to hold the body nearest A within 16 units of where A runs it').then(function(o){
+      rep.entMs=Date.now()-t0; rep.entGap=Math.round(gap(o.c,o.a)*10)/10;
+      log('enemies: C holds number '+near.id+' at '+xy(o.c)+' against A at '+xy(o.a)+', '+rep.entGap+' units off, '+rep.entMs+' ms after both were up top');
+      return sleep(2000);
+    },function(e){ var c=entOf(fc,near.id), a=entOf(fa,near.id); throw new Error(e.message+' (C holds it at '+xy(c)+', A runs it at '+xy(a)+')'); }).then(function(){
+      var c=entOf(fc,near.id), a=entOf(fa,near.id), d2=gap(c,a);
+      rep.entGap2=(d2>=0)?Math.round(d2*10)/10:null;
+      log('enemies: 2 s later C holds number '+near.id+' at '+xy(c)+' against A at '+xy(a)+(d2>=0?(', '+d2.toFixed(1)+' units off'):''));
+      if(!c||!a) bad.push('enemies: 2 s later one copy no longer holds body '+near.id+' (A '+!!a+', C '+!!c+')');
+      else if(d2>24) bad.push('enemies: 2 s later the copies disagree on body '+near.id+' by '+d2.toFixed(1)+' units (the limit is 24)');
+    });
+  }
+  // P2 SHOTS (his run report of v16.25: player 2 fired 24 rounds at 0 percent, no kills). Copy C, its frame widened to 1600x900
+  // so the HUD panels leave the middle clear, stands 90 units west of a machine A runs, aims with real mouse events on its own
+  // canvas and holds fire until the body dies or 5 s pass. The body must lose health on A, the hits must count on C's tally and
+  // the kill must reach C's tally. A body behind a wall takes no rounds, so up to six bodies are tried, nearest first.
+  function shotStep(A,C,bad,rep){
+    var ea=A.__net.ents(), me=C.__net.up().me, list=[], i, e, fw0=fc.style.width, fh0=fc.style.height, tries=[];
+    function kills(g){ var n=0, q, K=g&&g.tel&&g.tel.kills; if(K) for(q in K) n+=(K[q]|0); return n; }
+    function tel(){ var g=C.__state(); return {s:(g&&g.tel)?(g.tel.shots|0):0,h:(g&&g.tel)?(g.tel.hits|0):0,k:kills(g)}; }
+    for(i=0;i<ea.list.length;i++){ e=ea.list[i]; if(e.id&&e.hp>0&&['crawler','sentry'].indexOf(e.k)>=0) list.push(e); }
+    list.sort(function(a,b){ return gap(a,me)-gap(b,me); });
+    if(!list.length){ bad.push('shots: A runs no crawler or sentry to shoot'); return Promise.resolve(); }
+    fc.style.width='1600px'; fc.style.height='900px';
+    function one(t){
+      var t0=tel(), hp0=t.hp, tEnd;
+      C.__net.stand(t.x-90,t.y); clearFloor(fc);
+      return sleep(600).then(function(){
+        tEnd=Date.now()+5000;
+        return new Promise(function(res){
+          var cvC=C.document.getElementById('cv'), down=false, n=0;
+          function ev(el,type){ var r=cvC.getBoundingClientRect(); el.dispatchEvent(new C.MouseEvent(type,{clientX:r.left+r.width/2+Math.round(r.width*0.08),clientY:r.top+r.height/2,button:0,bubbles:true})); }
+          (function aim(){
+            var c=entOf(fc,t.id);
+            try{ var gk=C.__state(), pk=gk&&gk.player; if(pk&&!gk.over&&!pk.downed&&pk.hp>0) pk.hp=Math.max(pk.hp,pk.maxhp||100); }catch(_k){}   // the step tests C's rounds, not whether C outlives the sentry it stands beside
+            try{ var gh=A.__state(), tg=null; if(gh&&gh.ents){ gh.ents.forEach(function(o){ if(o&&o.nid===t.id) tg=o; }); if(tg) gh.ents.forEach(function(o){ if(o&&o!==tg&&o.hp>0&&Math.hypot(o.x-tg.x,o.y-tg.y)<900) o.cd=Math.max(o.cd||0,1); }); } }catch(_x){}   // the others nearby hold fire on A, the host: a crossfire kill credits nobody and read as a lost kill (overnight 09-30, 10-01)
+            try{ if(c) C.__net.stand(c.x-90,c.y); ev(cvC,'mousemove'); n++; if(!down){ down=true; ev(cvC,'mousedown'); } else if(n%8===0){ ev(C,'mouseup'); down=false; } }catch(_a){ log('shots: aim '+_a.message); }   // a click every eight frames, so a gun that fires once per press fires again
+            if(Date.now()<tEnd&&entOf(fa,t.id)) setTimeout(aim,16); else { try{ ev(C,'mouseup'); }catch(_b){} res(); }
+          })();
+        });
+      }).then(function(){ return sleep(400); }).then(function(){
+        var a=entOf(fa,t.id), t1=tel(), r={id:t.id,k:t.k,shots:t1.s-t0.s,hits:t1.h-t0.h,kills:t1.k-t0.k,hp0:Math.round(hp0),hp:a?Math.round(a.hp):null};
+        try{ var gq=C.__state(), pq=gq&&gq.player, cq=entOf(fc,t.id), cvq=C.document.getElementById('cv'); r.diag={p:pq?[Math.round(pq.x),Math.round(pq.y)]:null,face:pq?+(+pq.face||0).toFixed(2):null,to:(pq&&cq)?+Math.atan2(cq.y-pq.y,cq.x-pq.x).toFixed(2):null,gap:(pq&&cq)?Math.round(Math.hypot(cq.x-pq.x,cq.y-pq.y)):null,gun:pq?((pq.wep&&pq.wep.id)||pq.gun||null):null,cv:cvq?[cvq.width,cvq.height,cvq.clientWidth,cvq.clientHeight]:null,frame:[fc.clientWidth,fc.clientHeight],dn:pq?!!pq.downed:null,roll:pq?+(pq.roll||0).toFixed(2):null}; }catch(_dg){ r.diag='?'; }   // why a body took no hits (10-02: C hit none of six twice)
+        log('shots: C fired at number '+r.id+' ('+r.k+'): '+r.shots+' rounds, '+r.hits+' hits and '+r.kills+' kills on its tally; A holds it at '+(a?(r.hp+' hp'):'gone (dead)')+', from '+r.hp0);
+        return r;
+      });
+    }
+    function next(ix){
+      if(ix>=list.length||ix>=6) return Promise.resolve();
+      return one(list[ix]).then(function(r){ tries.push(r); if(!r.hits||(r.hp!==null&&!(r.hp<r.hp0))) return next(ix+1); });   // a counted hit that left this body whole landed on another body: try the next
+    }
+    return next(0).then(function(){
+      fc.style.width=fw0; fc.style.height=fh0;
+      var r=tries.filter(function(q){ return q.hits; }).pop()||tries[tries.length-1];
+      rep.shotHits=r?r.hits:0; rep.shotKills=r?r.kills:0;
+      if(!tries.some(function(q){ return q.shots>0; })) bad.push('shots: C fired no rounds with the fire button held (C '+cflags(C)+'; first try '+JSON.stringify(tries.length?tries[0].diag:null)+')');
+      else if(!r||!r.hits) bad.push('shots: C hit none of '+tries.length+' bodies it fired at from 90 units (last try '+JSON.stringify(tries.length?tries[tries.length-1].diag:null)+'; first '+JSON.stringify(tries.length?tries[0].diag:null)+')');
+      else {
+        if(r.hp!==null&&!(r.hp<r.hp0)) bad.push('shots: the body C hit lost no health on A');
+        if(r.hp===null&&!r.kills) bad.push('shots: C killed body '+r.id+' and its tally counted no kill');
+        if(r.hp===null){ var fA=(A.__state()&&A.__net.feed)?A.__net.feed():null, fC=C.__net.feed?C.__net.feed():null;
+          log('feed: A shows '+JSON.stringify(fA)+'; C shows '+JSON.stringify(fC));
+          if(fA&&!fA.some(function(q){ return /killed/.test(q)&&!/^YOU/.test(q); })) bad.push('feed: A does not show C kill');
+          if(fC&&!fC.some(function(q){ return /^YOU killed/.test(q); })) bad.push('feed: C does not show its own kill as YOU'); }
+        if(r.hp!==null) log('shots: body '+r.id+' survived 5 s of fire (aim, not a fault); the kill credit is read on a run where it dies');
+      }
+    });
+  }
+  // BUILD 8: LOOT PER PLAYER. Right after the enemy step, copy C is stood beside the nearest unopened box it holds (a test only
+  // teleport on its handle; the box carries the number it was given at the build, the same on both copies) and holds E for real
+  // on its own window for the time the box takes. The loot must land in C's own backpack, on its own raid on the player 2 save;
+  // both copies must draw the box searched, with the last item in C, within 500 ms of each other; A's own backpack must not gain.
+  function boxOf(f,cid){ var v=W(f).__net.cont(), i; for(i=0;i<v.list.length;i++) if(v.list[i].cid===cid) return v.list[i]; return null; }
+  // PAD LOOT (2026-09-27, his report: player 2 looting is broken in real play while a keyboard E on C passes lootStep). C is
+  // stood beside the nearest unopened box it holds and the pad X button is HELD ON THE HOST, as in real play (A in front reads
+  // the pads and forwards them; C plays the forwarded pad), for up to 5 s. The box must open and the loot land in C.
+  function padLootStep(A,C,bad,rep){
+    if(typeof C.__net.cont!=='function'||typeof C.__net.stand!=='function'||typeof A.__net.pad!=='function') return Promise.resolve();
+    var vc=C.__net.cont(), me=C.__net.up().me, box=null, bd=1e9, i, b, d, NGA=A.navigator.getGamepads, HFA=A.document.hasFocus, HFC=C.document.hasFocus, t0=0, it0=0, dn=false;
+    function itemsC(){ try{ var g=C.__state(); return (g&&g.tel)?(g.tel.items|0):0; }catch(e){ return 0; } }
+    function mkPad(){ var bt=[],q; for(q=0;q<17;q++) bt.push({pressed:(q===2&&dn),value:(q===2&&dn)?1:0,touched:(q===2&&dn)}); return {connected:true,id:'padloot',index:0,mapping:'standard',timestamp:Date.now(),buttons:bt,axes:[0,0,0,0]}; }
+    function state(){ var g=C.__state(), q=boxOf(fc,box.cid); return 'box '+JSON.stringify(q)+'; C searching '+(g&&g.searching?'yes':'no')+', near box '+(g&&g.nearContainer?('yes ('+JSON.stringify({cid:g.nearContainer.cid,ty:g.nearContainer.type||g.nearContainer.ty,op:g.nearContainer.opened||g.nearContainer.op,n:(g.nearContainer.loot||[]).length})+')'):'no')+', ring '+!!(g&&g.nearPad)+', bag '+!!(g&&g.bagOpen)+', map '+!!(g&&g.mapOpen)+', down '+!!(g&&g.player&&g.player.downed)+', stall '+!!(g&&g.trade)+', near peddler '+!!(g&&g.nearPed)+', near door '+!!(g&&g.nearDoor)+', keys '+JSON.stringify(Object.keys((C.__keys&&C.__keys())||{}))+', pad '+JSON.stringify(C.__net.pad()); }
+    for(i=0;i<vc.list.length;i++){ b=vc.list[i]; if(b.op) continue; d=gap(b,me); if(d<bd){ bd=d; box=b; } }
+    if(!box){ bad.push('pad loot: C holds no unopened box'); return Promise.resolve(); }
+    C.__net.stand(box.x-20,box.y); clearFloor(fa); clearFloor(fc);
+    try{ A.document.hasFocus=function(){ return true; }; C.document.hasFocus=function(){ return false; }; }catch(e){}
+    A.navigator.getGamepads=function(){ return [mkPad()]; };
+    it0=itemsC(); t0=Date.now();
+    return sleep(400).then(function(){ dn=true; return wait(function(){ var q=boxOf(fc,box.cid); return ((q&&q.op)||itemsC()>it0)?1:null; },5000,'the box C stands at to open on a forwarded pad X'); }).then(function(){
+      rep.padLootMs=Date.now()-t0;
+      log('pad loot: C searched box '+box.cid+' with pad X held on the host and forwarded: '+(itemsC()-it0)+' items landed, '+rep.padLootMs+' ms; '+state());
+    },function(e){ bad.push('pad loot: '+e.message+' ('+state()+')'); }).then(function(){
+      dn=false; return sleep(200);
+    }).then(function(){ A.navigator.getGamepads=NGA; A.document.hasFocus=HFA; C.document.hasFocus=HFC; });
+  }
+  function lootStep(A,C,bad,rep){
+    if(typeof A.__net.cont!=='function'||typeof C.__net.cont!=='function'||typeof C.__net.stand!=='function'){ bad.push('this fixture has no container view in its net handle (a build before v15.91), so the loot step cannot run'); return Promise.resolve(); }
+    var vc=C.__net.cont(), va=A.__net.cont(), me=C.__net.up().me, box=null, bd=1e9, i, b, d, t0=0, tA=null, tC=null, tBag=null, bagC0=0, bagA0=0, itC0=0, n=0, ba=null, msgs=[];
+    // Items granted to C are counted on its own run tally (G.tel.items, one per item grantLoot hands over), not its backpack
+    // length: ammo goes to the reserve and a gun to a weapon slot, so a box of ammo landed in C with its backpack unchanged.
+    function itemsC(){ try{ var g=C.__state(); return (g&&g.tel)?(g.tel.items|0):0; }catch(e){ return 0; } }
+    log('loot: A holds '+va.n+' boxes ('+va.numbered+' numbered, owns them for the party: '+va.host+'); C holds '+vc.n+' ('+vc.numbered+' numbered, searches through the host: '+vc.peer+')');
+    if(!va.host) bad.push('loot: copy A does not own the boxes for the party');
+    if(!vc.peer) bad.push('loot: copy C does not search through the host');
+    for(i=0;i<vc.list.length;i++){ b=vc.list[i]; if(b.cid<0||b.op||b.by>=0) continue; if(b.ty!=='crate'&&b.ty!=='locker'&&b.ty!=='safe'&&b.ty!=='body') continue; d=gap(b,me); if(d<bd){ bd=d; box=b; } }
+    if(!box){ bad.push('loot: copy C holds no unopened numbered box to search'); return Promise.resolve(); }
+    ba=boxOf(fa,box.cid); n=ba?ba.n:0;
+    log('loot: the nearest unopened box to C is number '+box.cid+' ('+box.ty+') at '+xy(box)+', '+Math.round(bd)+' units off; A lists '+n+' items in it, '+(ba?ba.tm:'?')+' s to search');
+    if(!ba||!n){ bad.push('loot: copy A lists no items in box '+box.cid); return Promise.resolve(); }
+    var op0={}; vc.list.forEach(function(q){ if(q.op) op0[q.cid]=1; });   // the boxes already open, to name any other the hold opens
+    bagC0=vc.bag.length; bagA0=va.bag.length; itC0=itemsC(); rep.lootBag0=vc.bag.slice();
+    C.__net.stand(box.x+6,box.y);
+    clearFloor(fc);
+    // C's next word tells A where it now stands, so the request is not refused as far away.
+    return sleep(250).then(function(){
+      var holdMs=Math.round((ba.tm||1)*1200+600), held, watch; msgs=[];
+      t0=Date.now();
+      var CW=W(fc), KE=CW.KeyboardEvent, eUpd=false; function eUp(){ if(eUpd) return; eUpd=true; CW.dispatchEvent(new KE('keyup',{code:'KeyE',key:'e',bubbles:true,cancelable:true})); }
+      CW.dispatchEvent(new KE('keydown',{code:'KeyE',key:'e',bubbles:true,cancelable:true}));   // E is let go once the listed items are in: held longer it searches the next box at C's feet (overnight 10-01: a Wire from a pile)
+      held=sleep(holdMs).then(eUp);
+      watch=wait(function(){
+        var a=boxOf(fa,box.cid), c=boxOf(fc,box.cid), bc=itemsC()-itC0, gm;
+        try{ gm=C.__state(); if(gm&&gm.msg&&msgs.indexOf(gm.msg)<0) msgs.push(gm.msg); if(gm&&Array.isArray(gm.pick)) gm.pick.forEach(function(r){ var t=(r&&r.item)?('PICK '+r.m):''; if(t&&msgs.indexOf(t)<0) msgs.push(t); }); }catch(_m){}   // 2026-10-11: a pickup is a pickup stack row since the raid text work (R16)
+        if(a&&a.op&&tA===null) tA=Date.now();
+        if(c&&c.op&&tC===null) tC=Date.now();
+        if(bc>=n&&tBag===null){ tBag=Date.now(); eUp(); }
+        return (tA!==null&&tC!==null&&tBag!==null)?true:null;
+      },holdMs+1500,'the box to read searched on both copies with the loot in C');
+      return Promise.all([held,watch]);
+    }).then(function(){
+      var vc2=C.__net.cont(), va2=A.__net.cont(), bc=itemsC()-itC0, a=boxOf(fa,box.cid);
+      (function(){ var g=C.__state(), nb=(g&&g.netBoard)||null, live=0, k; if(nb) for(k=0;k<nb.length;k++) if(!nb[k].out&&nb[k].st!=='DEAD') live++;
+        log('board: C holds '+(nb?nb.length:'no')+' host board rows, '+live+' still out there'+(nb&&nb[0]?(', first '+JSON.stringify(nb[0])):''));
+        if(!nb||!nb.length) bad.push('board: C holds no host board rows'); else if(!live) bad.push('board: every host row reads out or dead on C'); })();
+      rep.lootMsgs=msgs; log('loot: C read these lines while it searched: '+JSON.stringify(msgs));
+      if(!msgs.some(function(q){ return (/^Took |^PICK /).test(q); })) bad.push('loot: C never read a Took line or a pickup row naming what it pulled');
+      rep.lootItems=bc; rep.lootMs=Math.max(Math.abs(tA-tBag),Math.abs(tC-tBag),Math.abs(tA-tC));
+      log('loot: C searched box '+box.cid+' with a real E held; '+bc+' items landed in C (its backpack was '+JSON.stringify(rep.lootBag0)+', now '+JSON.stringify(vc2.bag)+'); A drew it searched '+(tA-t0)+' ms after the hold began, C '+(tC-t0)+' ms, the last item landed in C at '+(tBag-t0)+' ms; the widest gap is '+rep.lootMs+' ms');
+      var opn=vc2.list.filter(function(q){ return q.op&&!op0[q.cid]&&q.cid!==box.cid; }).map(function(q){ return q.cid+' '+q.ty; });
+      if(bc!==n) bad.push('loot: '+bc+' items landed in C, not the '+n+' A listed (other boxes opened in the hold: '+JSON.stringify(opn)+'; box '+box.cid+' held '+JSON.stringify((ba&&ba.keys)||null)+'; backpack was '+JSON.stringify(rep.lootBag0)+', now '+JSON.stringify(vc2.bag)+'; lines '+JSON.stringify(msgs)+')');
+      if(rep.lootMs>500) bad.push('loot: the copies took '+rep.lootMs+' ms to agree the box is searched with the loot in C (the limit is 500)');
+      if(va2.bag.length!==bagA0) bad.push('loot: copy A own backpack gained '+(va2.bag.length-bagA0)+' from C search');
+      if(a&&a.n) bad.push('loot: A still lists '+a.n+' items in the box');
+    },function(e){ var a=boxOf(fa,box.cid), c=boxOf(fc,box.cid); throw new Error(e.message+' (A: '+JSON.stringify(a)+', C: '+JSON.stringify(c)+', C backpack '+JSON.stringify(C.__net.cont().bag)+', C asked '+JSON.stringify(C.__net.cont().srch)+', A holds '+JSON.stringify(A.__net.cont().holds)+')'); });
+  }
+  // SOAK (2026-09-27, stability before his co-op session): with ?soak=N in the address, N seconds of random input while the
+  // party is up top: player 1 (copy A) on random keys, mouse moves, clicks and wheel; player 2 (copy C) on a random controller
+  // handed over from A as in real play. Any error in either window, a crash the game wrote into a save, a roster that drops
+  // below two, or a window whose frames stall is a failure. A raid that ends by itself (a death, an extract, a menu button)
+  // ends the soak early and is written down; later steps may then fail for that reason alone.
+  var SOAK=+((location.search.match(/[?&]soak=(\d+)/)||[])[1]||0);
+  function soakStep(A,C,bad,rep){
+    if(!SOAK) return Promise.resolve();
+    var KEYS=['KeyW','KeyW','KeyW','KeyA','KeyA','KeyS','KeyD','KeyD','KeyE','KeyE','KeyR','KeyF','KeyG','KeyQ','KeyC','KeyV','KeyX',
+      'KeyZ','KeyT','KeyH','KeyB','KeyM','KeyI','KeyY','KeyP','Tab','Escape','Space','ShiftLeft','ControlLeft','Digit1','Digit2',
+      'Digit3','Digit4','Digit5','Enter','Backquote'];
+    var errs=[], frames={A:0,C:0}, live=true, t0=Date.now(), n=0, drops=0, stall=[], pad=null, NGA=A.navigator.getGamepads;
+    var HFA=A.document.hasFocus, HFC=C.document.hasFocus, cvA=el(fa,'cv'), minF={A:1e9,C:1e9}, lastF={A:0,C:0};
+    [[A,'A'],[C,'C']].forEach(function(p){ var w=p[0];
+      w.__soakErr=function(ev){ var e=ev&&(ev.error||ev.reason); errs.push(p[1]+': '+((ev&&ev.message)||(e&&e.message)||String(e))+(e&&e.stack?(' @ '+String(e.stack).split('\n').slice(1,3).join(' ').replace(/\s+/g,' ')):'')); };
+      w.addEventListener('error',w.__soakErr); w.addEventListener('unhandledrejection',w.__soakErr);
+      (function tick(){ if(!live) return; frames[p[1]]++; w.requestAnimationFrame(tick); })();
+    });
+    function mkPad(){ var b=[],q,d; for(q=0;q<17;q++){ d=q!==8&&q!==9&&Math.random()<0.12; b.push({pressed:d,value:d?1:0,touched:d}); }
+      return {connected:true,id:'soak pad',index:0,mapping:'standard',timestamp:Date.now(),buttons:b,
+        axes:[Math.random()*2-1,Math.random()*2-1,Math.random()*2-1,Math.random()*2-1]}; }
+    try{ A.document.hasFocus=function(){ return true; }; C.document.hasFocus=function(){ return false; }; }catch(e){}
+    pad=mkPad(); A.navigator.getGamepads=function(){ return [pad]; };
+    function key(w,code,ms){ var K=w.KeyboardEvent;
+      w.dispatchEvent(new K('keydown',{code:code,key:code.replace(/^Key|^Digit/,'').toLowerCase(),bubbles:true,cancelable:true}));
+      setTimeout(function(){ w.dispatchEvent(new K('keyup',{code:code,key:code.replace(/^Key|^Digit/,'').toLowerCase(),bubbles:true,cancelable:true})); },ms); }
+    function mouse(){ if(!cvA) return; var r=cvA.getBoundingClientRect(), x=r.left+Math.random()*r.width, y=r.top+Math.random()*r.height, M=A.MouseEvent, u=Math.random();
+      cvA.dispatchEvent(new M('mousemove',{clientX:x,clientY:y,bubbles:true}));
+      if(u<0.25){ var bt=(u<0.2)?0:2; cvA.dispatchEvent(new M('mousedown',{clientX:x,clientY:y,button:bt,buttons:bt?2:1,bubbles:true}));
+        setTimeout(function(){ A.dispatchEvent(new M('mouseup',{clientX:x,clientY:y,button:bt,bubbles:true})); },30+Math.random()*500); }
+      else if(u<0.3){ try{ cvA.dispatchEvent(new A.WheelEvent('wheel',{deltaY:(Math.random()<0.5?-100:100),bubbles:true,cancelable:true})); }catch(e){} } }
+    log('soak: '+SOAK+' s of random input, player 1 on keys and mouse, player 2 on a random controller');
+    return new Promise(function(done){
+      var iv=setInterval(function(){
+        var s=(Date.now()-t0)/1000, ua=A.__net.up(), uc=C.__net.up();
+        if(Math.random()<0.6){ var k=KEYS[Math.floor(Math.random()*KEYS.length)]; key(A,k,/Key[WASD]/.test(k)?(200+Math.random()*1200):(40+Math.random()*300)); n++; }
+        mouse();
+        [A,C].forEach(function(w){ try{ var g=w.__state(), p=g&&g.player; if(p&&!g.over&&!p.downed&&p.hp>0) p.hp=Math.max(p.hp,p.maxhp||100); if(p&&!g.over&&p.downed) p.downT=Math.max(p.downT||0,8); }catch(e){} });   // the soak hunts errors, not survival: random input walks into fire, and a downed player is not left to bleed out
+        if(Math.random()<0.5) pad=mkPad();
+        if(st(fa).roster.length<2||st(fc).roster.length<2) drops++;
+        [[A,'A'],[C,'C']].forEach(function(p){ try{ var g=p[0].__state(), m=g?(p[1]+' '+s.toFixed(1)+'s '+(g.over?'[over '+(g.outcome||g.over)+'] ':'')+String(g.msg||'')):(p[1]+' '+s.toFixed(1)+'s no raid'); var k=m.replace(/^\S+ [\d.]+s /,p[1]); if(k!==(soakStep['last'+p[1]]||'')){ soakStep['last'+p[1]]=k; (rep.soakMsgs=rep.soakMsgs||[]).push(m); } }catch(e){} });
+        if(s>=1&&Math.floor(s)!==Math.floor(s-0.12)){ ['A','C'].forEach(function(q){ var d=frames[q]-lastF[q]; lastF[q]=frames[q]; if(s>2) minF[q]=Math.min(minF[q],d); if(d<3) stall.push(q+' drew '+d+' frames in second '+Math.floor(s)); }); }
+        [[A,'A'],[C,'C']].forEach(function(p){ try{ var g=p[0].__state(); if(g) soakStep['g'+p[1]]=g; else if(soakStep['g'+p[1]]&&!rep['soakEnd'+p[1]]){ var o=soakStep['g'+p[1]], pl=o.player||{}; rep['soakEnd'+p[1]]={at:+s.toFixed(1),over:o.over,hp:pl.hp,downed:pl.downed,deathBeat:o.deathBeat,t:+(o.t||0).toFixed(1),msg:String(o.msg||''),status:st(p[1]==='A'?fa:fc).status||'',err:st(p[1]==='A'?fa:fc).err||''}; log('soak: '+p[1]+' left the raid: '+JSON.stringify(rep['soakEnd'+p[1]])); } }catch(e){} });
+        var over=(!uc.on)?('C is no longer up top (over '+uc.over+')'):((!ua.on&&!/spectat/i.test(st(fa).status||''))?('A is no longer up top'):'');
+        if(s>=SOAK||over){
+          clearInterval(iv); live=false;
+          if(over) rep.soakEnded=over+' after '+s.toFixed(0)+' s';
+          KEYS.forEach(function(k){ try{ A.dispatchEvent(new A.KeyboardEvent('keyup',{code:k,bubbles:true})); }catch(e){} });
+          try{ A.dispatchEvent(new A.MouseEvent('mouseup',{button:0,bubbles:true})); A.dispatchEvent(new A.MouseEvent('mouseup',{button:2,bubbles:true})); }catch(e){}
+          pad=mkPad(); pad.buttons.forEach(function(b){ b.pressed=false; b.value=0; }); pad.axes=[0,0,0,0];
+          setTimeout(function(){
+            A.navigator.getGamepads=NGA; A.document.hasFocus=HFA; C.document.hasFocus=HFC;
+            var cr=[];
+            [[A,'A'],[C,'C']].forEach(function(p){ var w=p[0]; w.removeEventListener('error',w.__soakErr); w.removeEventListener('unhandledrejection',w.__soakErr);
+              try{ (w.__P().crashes||[]).forEach(function(c){ if(c&&c.t>=t0) cr.push(p[1]+' save: '+c.msg+' x'+(c.n||1)+' '+(c.where||'')); }); }catch(e){} });
+            rep.soak={sec:Math.round(s),keys:n,errors:errs.length,saved:cr.length,drops:drops,minFramesPerSec:minF};
+            log('soak: '+JSON.stringify(rep.soak)+(rep.soakEnded?(' - ended early: '+rep.soakEnded):''));
+            log('soak trace: '+(rep.soakMsgs||[]).slice(-14).join(' | '));
+            var seen={}; errs.concat(cr).forEach(function(t){ var k=t.replace(/\d+/g,'#'); if(!seen[k]){ seen[k]=1; log('soak error: '+t); } });
+            if(errs.length) bad.push('soak: '+errs.length+' errors, first: '+errs[0]);
+            if(cr.length) bad.push('soak: '+cr.length+' crashes written into a save, first: '+cr[0]);
+            if(drops) bad.push('soak: the roster fell below two on '+drops+' samples');
+            if(stall.length) bad.push('soak: frames stalled: '+stall.slice(0,3).join('; '));
+            try{ A.__topClear(); }catch(e){} try{ C.__topClear(); }catch(e){}
+            done();
+          },300);
+        }
+      },120);
+    });
+  }
+  // DROP-IN (v17.46, v17.50): A goes up with C, C abandons at once and stays in the Undercroft while A plays on. C's window must
+  // show JOIN THE RAID IN PROGRESS within 3 s; once A is 3 s in (THE OVERSEER is up), C presses it and must be up top on A's
+  // seed within 5 s, on A's clock within 3 s, holding the boss under its name and size. Both come back down after.
+  function dropStep(A,C,bad,rep){
+    if(typeof C.__state!=='function'||typeof A.__deploy!=='function') return Promise.resolve();
+    var ua=null, t1=0;
+    [A,C].forEach(function(w){ try{ if(w.__resetCfg) w.__resetCfg(); }catch(e){} });   // the soak presses random keys and can leave a Settings dial moved (SUPERHOT stops the clock)
+    [fa,fc].forEach(function(f){ var g=W(f).__state(), b=el(f,"oc_btn"); if(g&&g.over&&b) b.click(); });   // the run card closed with its button, as a player does (__topClear only hides it)
+    clearFloor(fa); clearFloor(fc);
+    A.__deploy({kit:[],safe:null,mapIx:0,seed:4242});
+    return wait(function(){ if(A.__net.up().on) return 'none'; var m=el(fc,'askmodal'), y=el(fc,'askyes'); return (m&&m.classList.contains('on')&&y)?y:null; },3000,'copy C to be asked for its kit, or A to go up').then(function(y){
+      if(y!=='none') y.click();
+      return wait(function(){ return A.__net.up().on?1:null; },3000,'copy A to go up');
+    }).then(function(){
+      ua=A.__net.up();
+      return wait(function(){ var u=C.__net.up(); return (u.on&&u.seed===ua.seed)?u:null; },5000,'copy C to be up top on the same seed').then(null,function(e){
+        var uc=C.__net.up(), gc=C.__state(); throw new Error('C up '+uc.on+' seed '+uc.seed+' over '+uc.over+' G '+(gc?(gc.seed+' over '+gc.over+' sim '+gc.sim):'none')+' err '+(st(fc).err||'').slice(0,160)+' (A up '+ua.on+' seed '+ua.seed+'; C PARTY status: '+(st(fc).status||'')+' / '+(st(fc).err||'')+'; A status: '+(st(fa).status||'')+')');
+      });
+    }).then(function(){
+      C.__endRaid("abandon"); var ob=el(fc,"oc_btn"); if(ob) ob.click();
+      return wait(function(){ return el(fc,'joinlate')||null; },3000,'copy C to show JOIN THE RAID IN PROGRESS after it abandoned with A up');
+    }).then(function(){
+      if(!A.__net.up().on) throw new Error('copy A left the raid when C abandoned');
+      return wait(function(){ var g=A.__state(); return (g&&!g.over&&g.t>3)?1:null; },8000,'copy A to be 3 s into the raid').then(null,function(e){ var g=A.__state(), d=D(fa), mo=[].slice.call(d.querySelectorAll('.modal.on,.on')).map(function(x){ return x.id; }).join(','); throw new Error(e.message+' (A G '+(g?('t '+g.t+' over '+g.over+' paused '+g.paused+' shAct '+g.shAct+' deathBeat '+g.deathBeat):'none')+'; open: '+mo+')'); });
+    }).then(function(){
+      try{ var gw=A.__state(), wl=gw.map.walls[Math.floor(gw.map.walls.length/2)]; rep.dropWall=wl.wid; gw.map.walls.splice(gw.map.walls.indexOf(wl),1); }catch(e){}   // a wall down on A before C comes up (v17.58)
+      t1=Date.now(); el(fc,'joinlate').click();
+      return wait(function(){ var u=C.__net.up(); return (u.on&&u.seed===ua.seed)?u:null; },5000,'copy C to be up top again after JOIN THE RAID IN PROGRESS');
+    }).then(function(){
+      rep.dropMs=Date.now()-t1;
+      return sleep(600);
+    }).then(function(){
+      var ga=A.__state(), gc=C.__state(), ba=null, bc=null, i;
+      for(i=0;i<ga.ents.length;i++) if(ga.ents[i]&&ga.ents[i].boss){ ba=ga.ents[i]; break; }
+      for(i=0;i<gc.ents.length;i++) if(gc.ents[i]&&ba&&gc.ents[i].nid===ba.nid){ bc=gc.ents[i]; break; }
+      log('drop-in: C joined '+rep.dropMs+' ms after the press; clocks A '+ga.t.toFixed(1)+' C '+gc.t.toFixed(1)+'; bodies A '+ga.ents.length+' C '+gc.ents.length+'; boss on C '+(bc?(JSON.stringify(bc.name)+' r '+bc.r):'none'));
+      if(Math.abs(ga.t-gc.t)>3) bad.push('drop-in: C is on clock '+gc.t.toFixed(1)+', A on '+ga.t.toFixed(1));
+      if(rep.dropWall!==undefined&&gc.map.walls.some(function(w){ return w.wid===rep.dropWall; })) bad.push('drop-in: wall '+rep.dropWall+' is down on A and still stands on C');
+      if(!ba) bad.push('drop-in: A holds no boss 3 s into the raid');
+      else if(!bc) bad.push('drop-in: C does not hold THE OVERSEER A holds');
+      else if(bc&&(bc.name!==ba.name||bc.r!==ba.r)) bad.push('drop-in: C holds the boss as '+JSON.stringify(bc.name)+' r '+bc.r);
+      return tradeStep(A,C,bad,rep).then(null,function(e){ bad.push('trade: '+e.message); }).then(function(){
+        // HIS RULING 2026-10-01 (v17.66): C dies in the raid and must not be offered it again, while A is still up top
+        if(!C.__net.up().on||!A.__net.up().on) return;
+        C.__endRaid('dead'); var ob=el(fc,'oc_btn'); if(ob) ob.click();
+        return sleep(1500).then(function(){ if(!A.__net.up().on) return; if(el(fc,'joinlate')) bad.push('ban: C died and was still offered JOIN THE RAID IN PROGRESS'); else { rep.banOk=1; log('ban: C died and is not offered the raid again'); } });
+      }).then(function(){ comeDown(A,C); return sleep(500); });
+    });
+  }
+  // TRADE (v17.44): with both up top after the drop-in and C beside A, A opens its bag on one item and presses T; C must be
+  // offered it within 1.5 s and press T to take it; then it must have left A's bag and be in C's, once, within 2 s.
+  function tradeStep(A,C,bad,rep){
+    var ga=A.__state(), gc=C.__state(), K='codex', t0=0;
+    if(!ga||!gc||!ga.player||!gc.player||ga.over||gc.over) return Promise.reject(new Error('both windows must be up top'));
+    [ga,gc].forEach(function(g){ g.player.hp=g.player.maxhp||100; });
+    if(Math.hypot(gc.player.x-ga.player.x,gc.player.y-ga.player.y)>150){ gc.player.x=ga.player.x+40; gc.player.y=ga.player.y; }
+    ga.bag=[K]; gc.bag=[]; ga.bagOpen=false; gc.bagOpen=false;
+    return sleep(700).then(function(){
+      ga.bagOpen=true; ga.bagSel=0; t0=Date.now();
+      return hold(fa,'KeyT','t',80);
+    }).then(function(){
+      ga.bagOpen=false;
+      return wait(function(){ var g=C.__state(); return (g&&g.giftIn&&g.giftIn.k===K)?g.giftIn:null; },1500,'copy C to be offered the item A gave (A says: '+((A.__state()||{}).giftOut?'offered':'no offer')+')');
+    }).then(function(){
+      // C takes it the way player 2 does: Y on a controller, read by the window in front (A) and forwarded to C
+      var NGA=A.navigator.getGamepads, HFA=A.document.hasFocus, HFC=C.document.hasFocus, yd=true;
+      function pad(){ var bt=[],q; for(q=0;q<17;q++) bt.push({pressed:(q===3&&yd),value:(q===3&&yd)?1:0,touched:(q===3&&yd)}); return {connected:true,id:'tradepad',index:0,mapping:'standard',timestamp:Date.now(),buttons:bt,axes:[0,0,0,0]}; }
+      try{ A.document.hasFocus=function(){ return true; }; C.document.hasFocus=function(){ return false; }; }catch(e){}
+      A.navigator.getGamepads=function(){ return [pad()]; };
+      return sleep(250).then(function(){ yd=false; return sleep(250); }).then(function(){ A.navigator.getGamepads=NGA; A.document.hasFocus=HFA; C.document.hasFocus=HFC; });
+    }).then(function(){
+      return wait(function(){ var a=A.__state(), c=C.__state(); return (a&&c&&a.bag.indexOf(K)<0&&c.bag.indexOf(K)>=0)?1:null; },2000,'the item to leave A and reach C');
+    }).then(function(){
+      var a=A.__state(), c=C.__state(), n=c.bag.filter(function(k){ return k===K; }).length;
+      rep.tradeMs=Date.now()-t0;
+      log('trade: A gave '+K+' to C in '+rep.tradeMs+' ms; A bag '+JSON.stringify(a.bag)+', C bag '+JSON.stringify(c.bag));
+      if(n!==1) bad.push('trade: C holds '+n+' of the item, not one');
+    },function(e){ var a=A.__state(), c=C.__state(); throw new Error(e.message+' (A bag '+JSON.stringify(a&&a.bag)+', C bag '+JSON.stringify(c&&c.bag)+', C giftIn '+JSON.stringify(c&&c.giftIn)+')'); });
+  }
+  // RELOAD (v17.53): A goes up with C, then C's window is reloaded, as when player 2's window is closed and opened again in a
+  // raid. C must boot as player 2 and link again within 30 s, be told the host is in a raid (the welcome), show JOIN THE RAID
+  // IN PROGRESS once in the Undercroft, and be up top on A's seed within 5 s of pressing it. Resolves with the new window.
+  function reloadStep(A,C,bad,rep){
+    var ua=null, C2=null, t0=0;
+    [A,C].forEach(function(w){ try{ if(w.__resetCfg) w.__resetCfg(); }catch(e){} });
+    [fa,fc].forEach(function(f){ var g=W(f).__state(), b=el(f,'oc_btn'); if(g&&g.over&&b) b.click(); });
+    clearFloor(fa); clearFloor(fc);
+    var tries=0;   // A may still be watching the last raid (a host spectates until the party is back), so the ascent is tried again
+    return wait(function(){ if(A.__net.up().on) return 'none'; var m=el(fc,'askmodal'), y=el(fc,'askyes'); if(m&&m.classList.contains('on')&&y) return y; if(tries++%10===0){ try{ A.__deploy({kit:[],safe:null,mapIx:0,seed:4242}); }catch(e){} } return null; },8000,'copy C to be asked for its kit, or A to go up (A PARTY status: '+(st(fa).status||'')+')').then(function(y){
+      if(y!=='none') y.click();
+      return wait(function(){ return A.__net.up().on?1:null; },3000,'copy A to go up');
+    }).then(function(){
+      ua=A.__net.up(); t0=Date.now();
+      W(fc).__preReload=1; W(fc).location.reload(); armC(A);   // the window object stays the same across a reload; the mark does not
+      return sleep(500);
+    }).then(function(){
+      return wait(function(){ var w=W(fc); return (w&&!w.__preReload&&w.__net&&w.__net.p2&&st(fa).roster.length===2&&st(fc).roster.length===2)?w:null; },30000,'copy C to boot again as player 2 and link').then(null,function(e){ var w=W(fc), cv=(w&&w.__net)?w.__net.ver:'?'; throw new Error(e.message+' (A v'+A.__net.ver+', C v'+cv+(cv!==A.__net.ver?': a ship rebuilt the fixture mid-run, not a fault':'')+'; A PARTY error: '+(st(fa).err||'none')+')'); });
+    }).then(function(w){
+      C2=w; rep.relinkMs=Date.now()-t0;
+      if(!A.__net.up().on) throw new Error('copy A left the raid when C reloaded');
+      log('reload: C linked again '+rep.relinkMs+' ms after the reload; C PARTY status: '+(st(fc).status||''));
+      if(!/lift/.test(st(fc).status||'')) bad.push('reload: C was not told the host is in a raid ('+(st(fc).status||'')+')');
+      try{ var tl=el(fc,'title'), ts=el(fc,'titlestart'); if(tl&&ts&&tl.classList.contains('on')) ts.click(); else if(C2.__hubEnter) C2.__hubEnter(); }catch(e){}   // ENTER THE UNDERCROFT, as player 2 does (the fixture hook opens the floor before it shuts the title)
+      clearFloor(fc);
+      return wait(function(){ return el(fc,'joinlate')||null; },3000,'copy C to show JOIN THE RAID IN PROGRESS after it reloaded');
+    }).then(function(b){
+      b.click();
+      return wait(function(){ var u=C2.__net.up(); return (u.on&&u.seed===ua.seed)?u:null; },5000,'copy C to be up top on A seed after it reloaded and pressed JOIN');
+    }).then(function(){
+      var ga=A.__state(), gc=C2.__state();
+      log('reload: C is up top again; clocks A '+ga.t.toFixed(1)+' C '+gc.t.toFixed(1));
+      if(Math.abs(ga.t-gc.t)>3) bad.push('reload: C is on clock '+gc.t.toFixed(1)+', A on '+ga.t.toFixed(1));
+      comeDown(A,C2);
+      return sleep(500).then(function(){ return C2; });
+    });
+  }
+  function raidStep(A,C,bad,rep){
+    if(typeof A.__net.up!=='function'||typeof C.__net.up!=='function'||typeof A.__endRaid!=='function'||typeof A.__deploy!=='function'){
+      bad.push('this fixture has no up top view in its net handle (a build before v15.79), so the raid step cannot run');
+      return Promise.resolve();
+    }
+    var t0=0, used='W', a0=null, how='', sa=st(fa).seat, sc=st(fc).seat, ua=null;
+    // the Settings dials back to their defaults in both windows: the last run's soak can leave one moved by a random click in the
+    // pause box, and it rides the host save into this run (10-01: C hit nothing across six bodies, and the run after it).
+    [A,C].forEach(function(w,ix){ try{ if(w.__resetCfg){ var ch=w.__resetCfg(); if(ch&&typeof ch==='object'&&Object.keys(ch).length){ rep.cfgReset=(rep.cfgReset||'')+(ix?'C:':'A:')+Object.keys(ch).join(',')+' '; log('settings put back before the raid on '+(ix?'C':'A')+': '+JSON.stringify(ch)); } } }catch(e){} });
+    // both players kept on their feet through every step of the raid, as the soak keeps them: the steps test the link, not who
+    // survives the machines at the lift (10-02: C was killed 25 s in, before the shots step, and every step after it failed)
+    var keepAlive=setInterval(function(){ [A,C].forEach(function(w){ try{ var g=w.__state(), p=g&&g.player; if(p&&!g.over&&!p.downed&&p.hp>0) p.hp=Math.max(p.hp,p.maxhp||100); if(p&&!g.over&&p.downed) p.downT=Math.max(p.downT||0,8); }catch(e){} }); },150);
+    clearFloor(fa); clearFloor(fc);
+    function ascend(){
+      try{
+        if(typeof A.__station==='function'){
+          var r=A.__station('lift','KeyE');
+          if(r&&r.fired){
+            var sd=el(fa,'sectordeploy'), ay=null;
+            if(sd){ sd.click(); ay=el(fa,'askyes'); }
+            if(ay){ ay.click(); how='the sector page (the lift, ASCEND TO THIS SECTOR, MY LOADOUT)'; return; }
+          }
+        }
+      }catch(e){}
+      clearFloor(fa);
+      A.__deploy({kit:[],safe:null,mapIx:0,seed:4242}); how='__deploy on sector 0 at seed 4242';
+    }
+    t0=Date.now();
+    ascend();
+    // v16.37: a teammate chooses a kit too. When A asks the party, C's window shows MY LOADOUT and FREEBIE KIT; C answers MY
+    // LOADOUT for real and A goes up once every teammate has answered.
+    return wait(function(){ if(A.__net.up().on) return 'none'; var m=el(fc,'askmodal'), y=el(fc,'askyes'); return (m&&m.classList.contains('on')&&y)?y:null; },3000,'copy C to be asked for its kit').then(function(y){
+      if(y!=='none'){ rep.kitAsked=1; y.click(); log('raid: C was asked MY LOADOUT or FREEBIE KIT and answered MY LOADOUT'); }
+      else if(how.indexOf('sector page')>=0) bad.push('raid: A went up without asking C for its kit');
+      return wait(function(){ return A.__net.up().on?1:null; },2000,'copy A to go up once C answered');
+    }).then(null,function(e){ bad.push('raid: '+e.message); }).then(function(){
+    ua=A.__net.up();
+    log('raid: A went up through '+how+'; A up top '+ua.on+', seed '+ua.seed+', fingerprint '+JSON.stringify(ua.fp));
+    if(!ua.on) bad.push('raid: copy A is not up top after ascending ('+JSON.stringify({on:ua.on,seed:ua.seed})+')');
+    return wait(function(){ var u=C.__net.up(); return (u.on&&u.seed===ua.seed)?u:null; },5000,'copy C to be up top on the same seed').then(function(uc){
+      rep.raidMs=Date.now()-t0;
+      log('raid: C is up top '+rep.raidMs+' ms after A ascended, seed '+uc.seed+', fingerprint '+JSON.stringify(uc.fp)+'; C PARTY status: '+(st(fc).status||'')+' '+(st(fc).err||''));
+      if(!uc.fp||!ua.fp||uc.fp.h!==ua.fp.h||uc.fp.e!==ua.fp.e||uc.fp.c!==ua.fp.c||uc.fp.w!==ua.fp.w||uc.fp.wx!==ua.fp.wx) bad.push('raid: the fingerprints differ (A '+JSON.stringify(ua.fp)+', C '+JSON.stringify(uc.fp)+')');
+      // BUILD 7: the enemies, before A walks. A failure here is written down and the step goes on.
+      return entStep(A,C,bad,rep).then(null,function(e){ bad.push('enemies: '+e.message); }).then(function(){
+        // BUILD 8: C searches a box beside it through the host. A failure here is written down and the step goes on.
+        return lootStep(A,C,bad,rep).then(null,function(e){ bad.push('loot: '+e.message); }).then(function(){ return padLootStep(A,C,bad,rep).then(null,function(e){ bad.push('pad loot: '+e.message); }); }).then(function(){ return shotStep(A,C,bad,rep).then(null,function(e){ bad.push('shots: '+e.message); }); }).then(function(){
+          // v16.43: C pings and A must hold the ping, named for C's seat, within 500 ms.
+          if(typeof C.__net.ping!=='function') return;
+          var sc=st(fc).seat, pm=C.__net.ping(), t1=Date.now();
+          if(!pm){ bad.push('ping: C could not ping (C '+cflags(C)+')'); return; }
+          return wait(function(){ var l=A.__net.pings(), i; for(i=0;i<l.length;i++) if(l[i].s===sc&&l[i].w===(pm.w||"")) return l[i]; return null; },500,'copy A to hold the ping C made').then(function(q){
+            log('ping: C pinged '+(pm.w||'a spot')+' at '+pm.x+','+pm.y+'; A holds it for seat '+q.s+' '+(Date.now()-t1)+' ms later');
+          },function(e){ bad.push('ping: '+e.message); }).then(function(){
+            // v16.46: C places a map marker; A must hold it under C's seat, then lose it when C clears it.
+            if(typeof C.__net.mark!=='function') return;
+            var t2=Date.now(); C.__net.mark(1234,2345);
+            return wait(function(){ var w=A.__net.wps()[sc]; return (w&&w.x===1234&&w.y===2345)?w:null; },500,'copy A to hold the map marker C placed').then(function(){
+              log('marker: C placed a map marker; A holds it '+(Date.now()-t2)+' ms later');
+            },function(e){ bad.push('marker: '+e.message); });
+          });
+        });
+      }).then(function(){ return soakStep(A,C,bad,rep); }).then(function(){
+        clearFloor(fa);
+        a0=A.__net.up().me;
+        return hold(fa,'KeyW','w',300);
+      });
+    },function(e){ var uc=C.__net.up(); throw new Error(e.message+' (C up top '+uc.on+', seed '+uc.seed+', C PARTY status: '+(st(fc).status||'')+' '+(st(fc).err||'')+')'); }).then(function(){
+      var m=gap(A.__net.up().me,a0);
+      if(m<8){ log('W moved copy A '+m.toFixed(1)+' units up top (a wall in the way?), so S is held instead'); used='S'; return hold(fa,'KeyS','s',300); }
+    }).then(function(){
+      var me=A.__net.up().me, m=gap(me,a0);
+      rep.raidWalked=Math.round(m);
+      if(m<8) bad.push('raid: copy A did not walk up top on a held '+used+' (it moved '+m.toFixed(1)+' units); is something open over it?');
+      return sleep(300).then(function(){
+        var me2=A.__net.up().me, v=upView(fc,sa), d=gap(v,me2);
+        rep.raidGap=(d>=0)?Math.round(d*10)/10:null;
+        log('raid: A walked '+m.toFixed(1)+' units on '+used+' to '+xy(me2)+'; 300 ms later C draws it at '+xy(v)+(d>=0?(', '+d.toFixed(1)+' units off'):'')+(v?(', shown '+v.shown):''));
+        if(!v||!v.shown) bad.push('raid: 300 ms after copy A walked up top, copy C does not draw it at all');
+        else if(d>16) bad.push('raid: copy C draws A '+d.toFixed(1)+' units from where it stands up top (the limit is 16)');
+        var w=upView(fa,sc), mc=C.__net.up().me, dc=gap(w,mc);
+        log('raid: C stands at '+xy(mc)+' and A draws it at '+xy(w)+(w?(', shown '+w.shown):''));
+        if(!w||!w.shown||dc>16) bad.push('raid: copy A does not draw copy C where it stands up top ('+(w?(dc.toFixed(1)+' units off'):'not drawn')+')');
+      });
+    }).then(function(){
+      // BUILD 8, v16.14 (his ruling of 2026-09-26: the host spectates): A abandons with C up top, so A keeps the raid running.
+      // C must NOT be ended, must be told the host is out and must stop drawing A; then C abandons, and A must stop spectating
+      // (its PARTY status says the party is back down) within 3 s. Before v16.14 C was ended as ABANDONED here (v15.91).
+      var tq=Date.now();
+      A.__endRaid('abandon'); try{ A.__topClear(); }catch(e){}
+      return sleep(1500).then(function(){
+        var u=C.__net.up(), cs=st(fc).status||'', v=upView(fc,sa);
+        log('raid: A abandoned; 1.5 s later C is up top '+u.on+', over '+u.over+'; C PARTY status: '+cs);
+        if(!u.on||u.over) bad.push('raid: C was ended when A abandoned with C up top; the host should spectate');
+        if(!/host has left|out of this raid|is out of the raid|\bis out\b/i.test(cs)) bad.push('raid: C was not told the host is out of the raid ('+cs+')');   // wording changes with the host-out build
+        if(v&&v.shown) bad.push('raid: C still draws A after A left the surface');
+        C.__endRaid('abandon'); try{ C.__topClear(); }catch(e){}
+        return wait(function(){ return /party (is )?back/i.test(st(fa).status||'')?true:null; },3000,'copy A to stop spectating after C abandoned (A PARTY status: '+(st(fa).status||'')+')');
+      }).then(function(){ rep.hostLeftMs=Date.now()-tq; log('raid: C abandoned and A stopped spectating; A PARTY status: '+(st(fa).status||''));
+        var pa=el(fa,'oc_party'), pc=el(fc,'oc_party'), ta=pa?String(pa.textContent):'', tc=pc?String(pc.textContent):'';
+        log('summary: A card reads '+JSON.stringify(ta)+'; C card reads '+JSON.stringify(tc));
+        if(pa&&(!/party/i.test(ta)||(ta.match(/abandoned/gi)||[]).length<2)) bad.push('summary: A card does not show both players abandoned');
+        if(pc&&(!/party/i.test(tc)||(tc.match(/abandoned/gi)||[]).length<2)) bad.push('summary: C card does not show both players abandoned'); },
+        function(e){ bad.push('raid: '+e.message); });
+    }).then(function(){ clearInterval(keepAlive); comeDown(A,C); A.__net.open(); C.__net.open(); },function(e){ clearInterval(keepAlive); comeDown(A,C); A.__net.open(); C.__net.open(); throw e; });
+    });
+  }
+  // BUILD 3: THE SAME MACHINE PAIR. Copy A picks 2 PLAYER CO-OP (SAME MACHINE) through its own row. Its window.open is stood in
+  // for by this page, which loads the address A asks for into copy C and hands A that window, so the popup blocker does not
+  // decide the test. C is the real player 2 window otherwise: the same page with ?p2=1, the mode and the pair code, on the
+  // permanent player 2 save. The two must pair by themselves over the real channel between windows.
+  function runSame(){
+    runB.disabled=true; runS.disabled=true; logEl.textContent=''; resEl.className='dim'; resEl.textContent='running the same machine pair...';
+    var A=W(fa), C=null, bad=[], rep={}, t0=0, ls0=null, opened=null, rngA0=null, rngC0=null;
+    var MAIN='salvagerun:profile', AS='salvagerun:activeSlot', P2K='salvagerun:profile:p2';
+    function ls(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+    function finish(){
+      try{ delete A.open; }catch(e){}
+      try{ A.__net.reset(); if(C&&C.__net) C.__net.reset(); }catch(e){}
+      var pass=!bad.length;
+      var line=(pass?'PASS':'FAIL')+': same machine pair linked in '+(rep.linkMs===undefined?'?':rep.linkMs)+' ms (limit 20000), player 2 on '+(rep.key||'?')+', C drew A '+(rep.gapA===undefined?'?':rep.gapA)+' units off and A drew C '+(rep.gapC===undefined?'?':rep.gapC)+' units off (limit 16), C got its controller in '+(rep.padMs===undefined?'?':rep.padMs)+' ms (limit 200), C heard A switch its sound in '+(rep.sndMs===undefined?'?':rep.sndMs)+' ms (limit 200), C went up top '+(rep.raidMs===undefined?'?':rep.raidMs)+' ms after A (limit 5000), A walked '+(rep.raidWalked===undefined?'?':rep.raidWalked)+' units up top and C drew it '+((rep.raidGap===undefined||rep.raidGap===null)?'?':rep.raidGap)+' units off (limit 16), the body nearest A was held by C in '+(rep.entMs===undefined?'?':rep.entMs)+' ms (limit 500) '+(rep.entGap===undefined?'?':rep.entGap)+' units off (limit 16) and '+((rep.entGap2===undefined||rep.entGap2===null)?'?':rep.entGap2)+' units off after 2 s (limit 24), C searched a box and '+(rep.lootItems===undefined?'?':rep.lootItems)+' items landed in its own backpack with both copies agreeing it is searched within '+(rep.lootMs===undefined?'?':rep.lootMs)+' ms (limit 500), and A spectated until C was out, '+(rep.hostLeftMs===undefined?'?':rep.hostLeftMs)+' ms in all'+(pass?'':('; '+bad.join('; ')));
+      resEl.className=pass?'ok':'bad'; resEl.textContent=line; log(line);
+      document.title=(pass?'PASS':'FAIL')+' net test';
+      window.__NETTEST_SAME={pass:pass,bad:bad,rep:rep,line:line};
+      runB.disabled=false; runS.disabled=false;
+    }
+    try{ A.__net.reset(); }catch(e){}
+    if(typeof A.__net.same!=='function'||!el(fa,'modecoop')){ bad.push('copy A has no mode menu (a build before v15.76)'); finish(); return; }
+    fc.src='about:blank';
+    ls0={main:ls(MAIN),as:ls(AS),p2:ls(P2K)};
+    log('before: main save '+(ls0.main?(ls0.main.length+' chars'):'none')+', save pointer '+ls0.as+', player 2 save '+(ls0.p2?(ls0.p2.length+' chars'):'none'));
+    // The stand-in window: the address A asks for goes into copy C, and C is the window A is handed.
+    A.open=function(url,name,feat){ opened={url:String(url),name:name,feat:feat}; log('A asked for a window: '+url+' ('+feat+')'); fc.src=url; armC(A); return fc.contentWindow; };
+    try{ if(A.__hubEnter) A.__hubEnter(); }catch(e){}
+    rngA0=A.__net.rngs();
+    t0=Date.now();
+    try{ click(fa,'modecoop'); }catch(e){ bad.push(e.message); finish(); return; }
+    var sm=A.__net.same();
+    log('A after the co-op row: '+JSON.stringify(sm)+', links made '+st(fa).made);
+    if(sm.same!=='host'||sm.mode!=='coop'||!sm.chan) bad.push('after the co-op row copy A is not the host in co-op with a channel open: '+JSON.stringify(sm));
+    if(!opened) bad.push('the co-op row did not ask for a second window');
+    else if(!(/[?&]p2=1(&|$)/).test(opened.url)||!(/[?&]mode=coop(&|$)/).test(opened.url)||opened.url.indexOf('pair='+sm.pair)<0||opened.url.indexOf(location.origin)!==0) bad.push('the second window address is wrong: '+opened.url);
+    wait(function(){ return W(fc)&&W(fc).__net&&W(fc).__net.p2&&!W(fc).__preReload&&W(fc).__net.same().chan; },30000,'copy C to boot as the player 2 window with its link channel open').then(function(){
+      C=W(fc); rngC0=C.__net.rngs(); rep.key=C.__net.key;
+      log('C booted as player 2 on save '+C.__net.key+', '+(Date.now()-t0)+' ms after the row; its window title reads '+(C.document.title||'?')+'; its same machine state '+JSON.stringify(C.__net.same()));
+      if(!/^salvagerun:profile(:[1-8])?$/.test(C.__net.key)||C.__net.key===A.__net.key) bad.push('the player 2 window plays '+C.__net.key+' (player 1 plays '+A.__net.key+')');   // v17.93: a numbered save of its own, never player 1 save
+      if(C.__net.key===A.__net.key) bad.push('both windows play the same save');
+      var p2l=el(fc,'p2line'), mc=el(fc,'modecoop');
+      if(!p2l||p2l.style.display==='none'||!/player 2/i.test(p2l.textContent)) bad.push('the player 2 window does not say it is player 2 on its title');
+      if(mc&&mc.offsetParent!==null&&getComputedStyle(mc).display!=='none') bad.push('the player 2 window still offers the mode rows');
+      return wait(function(){ return st(fa).roster.length===2&&st(fc).roster.length===2; },20000,'both rosters to show two');
+    }).then(function(){
+      rep.linkMs=Date.now()-t0;
+      // The stream is sampled here, once both are on the floor: entering the Undercroft draws from it by design (1 PLAYER
+      // moves it the same way), so the span measured is the party on the floor, the saves and the end of the party.
+      rngA0=A.__net.rngs();
+      log('both rosters show two, '+rep.linkMs+' ms after the co-op row; A roster '+JSON.stringify(st(fa).roster)+'; C seat '+st(fc).seat+'; links made A '+st(fa).made+', C '+st(fc).made);
+      var cs=C.__net.same();
+      if(cs.mode!=='coop'||cs.same!=='p2') bad.push('copy C does not know it is player 2 in co-op: '+JSON.stringify(cs));
+      C.__net.open();
+      var ml=el(fc,'partymode');
+      log('C PARTY window mode line: '+(ml?ml.textContent:'none'));
+      if(!ml||ml.style.display==='none'||!/co-op/i.test(ml.textContent)||!/same machine/i.test(ml.textContent)) bad.push('the PARTY window on copy C does not name the mode');
+      A.__net.open();
+      var mla=el(fa,'partymode');
+      if(!mla||mla.style.display==='none'||!/co-op/i.test(mla.textContent)) bad.push('the PARTY window on copy A does not name the mode');
+      // THE FLOOR: each draws the other where it stands.
+      try{ if(C.__hubEnter) C.__hubEnter(); }catch(e){}
+      rngC0=C.__net.rngs();
+      clearFloor(fa); clearFloor(fc);
+      var sa=A.__net.me().seat, sc=C.__net.me().seat;
+      return wait(function(){ var v=view(fc,sa), w=view(fa,sc); return (v&&v.shown&&gap(v,A.__net.me())<=16&&w&&w.shown&&gap(w,C.__net.me())<=16)?[v,w]:null; },5000,'each window to draw the other where it stands').then(function(vw){
+        rep.gapA=Math.round(gap(vw[0],A.__net.me())*10)/10; rep.gapC=Math.round(gap(vw[1],C.__net.me())*10)/10;
+        log('floor: C draws A at '+xy(vw[0])+' (A stands at '+xy(A.__net.me())+'); A draws C at '+xy(vw[1])+' (C stands at '+xy(C.__net.me())+'); fast channels open A '+A.__net.fast()+', C '+C.__net.fast());
+      },function(e){ var v=view(fc,sa), w=view(fa,sc); bad.push('floor: '+e.message+' (C draws A at '+xy(v)+', A draws C at '+xy(w)+')'); });
+    }).then(function(){
+      // BUILD 4: the controller handed over from the window in front. A failure here is written down and the run goes on.
+      return padStep(A,C,bad,rep).then(null,function(e){ bad.push('controller: '+e.message); });
+    }).then(function(){
+      // BUILD 5: world sound from one window only. A failure here is written down and the run goes on.
+      return sndStep(A,C,bad,rep).then(null,function(e){ bad.push('sound: '+e.message); });
+    }).then(function(){
+      // THE SAVES: player 2 wrote its own key and nothing else moved.
+      var P2K=C.__net.key, p2=ls(P2K), d=null; try{ d=JSON.parse(p2); }catch(e){}   // v17.93: the slot player 2 picked
+      if(!d||typeof d.credits!=='number') bad.push('the player 2 window wrote no readable save under '+P2K);
+      if(ls(MAIN)!==ls0.main) bad.push('the main save changed while the player 2 window ran');
+      if(ls(AS)!==ls0.as) bad.push('the save pointer changed while the player 2 window ran');
+      log('saves: player 2 save '+(p2?(p2.length+' chars'):'none')+' under '+P2K+'; main save and save pointer '+((ls(MAIN)===ls0.main&&ls(AS)===ls0.as)?'unchanged':'CHANGED'));
+      if(A.__net.rngs()!==rngA0||C.__net.rngs()!==rngC0) bad.push('the seeded stream moved in one of the windows while the party stood on the floor');
+    }).then(function(){
+      // BUILD 6, 7 and 8: the party ascends together, the enemies, the loot and the host leaving. After the stream is sampled,
+      // since a raid build moves it by design. A failure here is written down and the run goes on.
+      return raidStep(A,C,bad,rep).then(null,function(e){ bad.push('raid: '+e.message); });
+    }).then(function(){
+      return dropStep(A,C,bad,rep).then(null,function(e){ bad.push('drop-in: '+e.message); comeDown(A,C); });
+    }).then(function(){
+      return reloadStep(A,C,bad,rep).then(function(c2){ if(c2) C=c2; },function(e){ bad.push('reload: '+e.message); if(W(fc)&&W(fc).__net) C=W(fc); comeDown(A,C); });
+    }).then(function(){
+      if(ls(MAIN)!==ls0.main) bad.push('the main save changed while the party went up top');
+      if(ls(AS)!==ls0.as) bad.push('the save pointer changed while the party went up top');
+      // THE END: A ends the party and C hears it.
+      A.__net.reset();
+      return wait(function(){ return !st(fc).on&&st(fc).roster.length===0; },5000,'copy C to hear the party end').then(function(){ log('A ended the party and C is off: '+JSON.stringify(st(fc))); },function(e){ bad.push('end: '+e.message); });
+    }).then(null,function(e){ bad.push(e.message); }).then(finish);
+  }
+  function wipe(){
+    ['A','B'].forEach(function(s){
+      var k='salvagerun:profile:net'+s;
+      [k,k+':prerestore',k+':precrash',k+':unreadable'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} });
+    });
+    // BUILD 3: and the permanent player 2 save this page makes on this origin.
+    (function(k){ [k,k+':prerestore',k+':precrash',k+':unreadable'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} }); })('salvagerun:profile:p2');
+    // BUILD 4: and the two controller picks kept for next time.
+    ['salvagerun:samepad:host','salvagerun:samepad:p2','salvagerun:samesound:who','salvagerun:samesound:split'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} });   // v17.70: and the shared sound setting
+    (function(){ try{ var s2=localStorage.getItem('salvagerun:activeSlot2'); if(s2){ var k2=(s2==='1')?'salvagerun:profile':('salvagerun:profile:'+s2); [k2,k2+':prerestore',k2+':precrash',k2+':unreadable'].forEach(function(x){ localStorage.removeItem(x); }); } localStorage.removeItem('salvagerun:activeSlot2'); }catch(e){} })();   // v17.93: player 2 own pointer and the slot it picked
+    // BUILD 5: and the two sound switches kept for next time.
+    ['salvagerun:samesound:host','salvagerun:samesound:p2'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} });
+    log('wiped the two net saves, the player 2 save, the controller picks and the sound switches; reloading the copies');
+    load();
+  }
+  runB.onclick=run;
+  runS.onclick=runSame;
+  document.getElementById('wipe').onclick=wipe;
+  document.getElementById('reload').onclick=load;
+  load();
+})();
+</script>

@@ -1,1 +1,1 @@
-11-01 10:12 running 01-241-redraw-not-steady on Claude Code, opus high, run 1 (your plan: week 1% of the 4.9% line, 5-hour 0%)
+11-01 10:34 running 01-260-main-pc-2p-soak-broken on Claude Code, opus high, run 1 (your plan: week 1% of the 5.0% line, 5-hour 0%)

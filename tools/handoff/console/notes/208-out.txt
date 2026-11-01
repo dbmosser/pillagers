@@ -1,2 +1,2 @@
-31.04: the F1 controls list does not show the key left of 1
+31.04: PASS
 ALL DONE

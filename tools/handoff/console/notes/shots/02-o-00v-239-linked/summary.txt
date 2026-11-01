@@ -1,0 +1,11 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  mark-p1-partner-raid                   staged      13.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"seat":1,"linked":true,"counts":[1,1],"smooth":true,"sender":"p2 pad"}
+  mark-p2-partner-raid                   staged       9.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"seat":2,"linked":true,"counts":[1,1],"smooth":true,"sender":"p1 mouse"}
+  mark-p1-partner-map                    staged       9.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"seat":1,"linked":true,"counts":[1,1],"smooth":true,"sender":"p2 pad"}
+  mark-p2-partner-map                    NOT STAGED  96.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: real windows did not link [{"role":"host","same":"host","pair":"cxmark239p2","err":"","status":"waiting for player 2","count":1},{"role":"join","same":"p2","pair":"cxmark239p2","err":"","status":"in PILLAGER's party · ascend at the lift to join","count":4}]
+    at partyPing (<anonym
+== 4k : window 3876x2265, viewport 3840x2160
+  mark-p1-partner-raid                   staged      19.0s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"seat":1,"linked":true,"counts":[1,1],"smooth":true,"sender":"p2 pad"}
+  mark-p2-partner-raid                   staged      16.0s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"seat":2,"linked":true,"counts":[1,1],"smooth":true,"sender":"p1 mouse"}
+  mark-p1-partner-map                    staged      19.8s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"seat":1,"linked":true,"counts":[1,1],"smooth":true,"sender":"p2 pad"}
+  mark-p2-partner-map                    staged      23.1s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"seat":2,"linked":true,"counts":[1,1],"smooth":true,"sender":"p1 mouse"}

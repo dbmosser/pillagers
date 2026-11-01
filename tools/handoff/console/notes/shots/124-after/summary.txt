@@ -1,0 +1,8 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  37-raid-extracting-countdown           staged      10.5s  
+  83-glow-shock                          staged      11.5s    | shock crawler at d 170 ang -0.52 | src 1/1 halos 1 pools 1 postNow true q 0 day false pix false light true Z 1.00 target crawler seen true st patrol
+  82-glow-burn                           staged      11.2s    | burn raider at d 170 ang -0.52 | src 1/1 halos 1 pools 1 postNow true q 0 day false pix false light true Z 1.00 target raider seen true st patrol
+== 4k : window 3876x2265, viewport 3840x2160
+  37-raid-extracting-countdown           staged      10.9s  
+  83-glow-shock                          staged      12.1s    | shock crawler at d 170 ang -0.52 | src 1/1 halos 1 pools 1 postNow true q 0 day false pix false light true Z 2.00 target crawler seen true st patrol
+  82-glow-burn                           staged      12.0s    | burn raider at d 170 ang -0.52 | src 1/1 halos 1 pools 1 postNow true q 0 day false pix false light true Z 2.00 target raider seen true st patrol

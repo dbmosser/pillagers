@@ -1,0 +1,7 @@
+v37.02: the picture stores keep a running total
+
+The flight recorder run line now ends with pics:N/MB peak:N/MB by:store counts. Nothing on screen changes.
+
+Check 37.02. Fails on v37.01.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

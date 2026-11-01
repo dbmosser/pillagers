@@ -167,3 +167,4 @@
 11-01 10:12 v36.98 cw-sealwave on his pc after 18s (8802 serves 36.98) week 1%
 11-01 10:20 v36.99 cw-cardstamp on his pc after 34s (8802 serves 36.99) week 1%
 11-01 10:24 v37.00 cw-nogoldpillager on his pc after 50s (8802 serves 37.00) week 1%
+11-01 10:27 v37.01 cw-ansgap on his pc after 67s (8802 serves 37.01) week 1%

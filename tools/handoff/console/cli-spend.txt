@@ -2145,3 +2145,16 @@
 2026-11-01 0.9844275999999996 00b-247-no-gun-card-after-upgrade
 2026-11-01 0.9476609000000001 00c-249-seal-faster-and-defended
 2026-11-01 0.5583769 00d-250-no-golden-pillager-bots
+2026-11-01 0.1733481 01-242-red-14.76-stash-hover-misses-key-9
+2026-11-01 0.5048954999999998 01-208-red-31.04-superhot-quick-presses
+2026-11-01 5.588766200000003 01-241-redraw-not-steady-wait
+2026-11-01 0.4233525 01-252-red-26.59-role-mark-not-drawn
+2026-11-01 0.5328061000000001 01-253-red-36.30-forge-label-missing-ads-right-edge
+2026-11-01 0.4983460000000001 03-title-and-backdrop
+2026-11-01 0.1378 critic-manual
+2026-11-01 0.1337 critic-manual
+2026-11-01 0.0998 critic-manual
+2026-11-01 0.1176 critic-manual
+2026-11-01 0.28632209999999997 124-gfx-coloured-flash-light
+2026-11-01 0.1202 critic-manual
+2026-11-01 0.1001 critic-manual
