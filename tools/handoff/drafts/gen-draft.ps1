@@ -28,7 +28,8 @@ foreach($t in @($p,$f)){ foreach($ch in $t.ToCharArray()){ if([int]$ch -gt 126){
 [IO.File]::WriteAllText((Join-Path $H ("p"+$New+".ps1")),$p,(New-Object Text.UTF8Encoding $false))
 [IO.File]::WriteAllText((Join-Path $H ("f"+$New+".ps1")),$f,(New-Object Text.UTF8Encoding $false))
 $w=[string]$d.why
+$wt=''; if($Now -and $w -notmatch '(?i)\bwatch\b'){ $wt=" Watch: "+$Now }   # 11-01 (task 220 item 6): a draft's now line reaches DESIGN.md as its Watch line when the why has none
 [IO.File]::WriteAllText((Join-Path $H ("cm"+$New+".txt")),("v"+$V+": "+$d.title.ToLower()+"`n`n"+$Now+"`n`nCheck "+$V+". Fails on v"+$PV+".`n`nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`n"),(New-Object Text.UTF8Encoding $false))
 [IO.File]::WriteAllText((Join-Path $H ("a"+$New+".txt")),("| "+$d.title+" | v"+$V+" | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: "+$V+" passes, fails on v"+$PV+" |`n"),(New-Object Text.UTF8Encoding $false))
-[IO.File]::WriteAllText((Join-Path $H ("d"+$New+".txt")),("## v"+$V+" - "+$d.title+"`n`nCo-op hunt while he was away. "+$w+"`n`nMEASURED. Check "+$V+" passes, and fails on v"+$PV+".`n"),(New-Object Text.UTF8Encoding $false))
+[IO.File]::WriteAllText((Join-Path $H ("d"+$New+".txt")),("## v"+$V+" - "+$d.title+"`n`nCo-op hunt while he was away. "+$w+$wt+"`n`nMEASURED. Check "+$V+" passes, and fails on v"+$PV+".`n"),(New-Object Text.UTF8Encoding $false))
 "generated p$New f$New cm a d ($($edits.Count) edits)"

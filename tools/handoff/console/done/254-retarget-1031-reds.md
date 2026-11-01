@@ -18,3 +18,5 @@ Each check pins the layout or text of a screen that a shipped polish pass change
 Do: lock.sh, edit tools/mkfixture.ps1, HELD=1 fixq.sh "retarget NN.NN: reason", unlock.sh (as in job 243). Then delete the 16 lines of the 11-01 block from tools/handoff/stable-known-red.txt.
 Rules: tests only, never edit dark_raiders.html; seed 4242 fingerprint unchanged; never touch the pickup stack, loot sounds or loot rows. If a check turns out to guard a real bug once re-aimed, stop and write a job for it instead.
 TASK DONE when the 16 pass on the current build in a full run and their known-red lines are gone.
+
+COORDINATOR 11-01 14:20: confirmed all 16 PASS on the current fixture (v37.13, runchk.sh, one run, 35.83/26.69/23.37 included); deleted the 11-01 block (header plus 16 lines) from tools/handoff/stable-known-red.txt. DONE.

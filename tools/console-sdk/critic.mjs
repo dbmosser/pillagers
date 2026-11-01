@@ -12,6 +12,11 @@ const R = 'C:/claudecode/dark raiders', C = R + '/tools/handoff/console', U = C 
 const pics = process.argv.slice(2);
 const ok = p => /^tools\/handoff\/(console\/notes|shots|ui-refs)\/[A-Za-z0-9_./-]+\.(jpe?g|png)$/i.test(p) && !p.includes('..') && existsSync(R + '/' + p);
 if (!pics.length || pics.length > 4 || !pics.every(ok)) { console.log('USAGE: node tools/console-sdk/critic.mjs PIC [PIC ...] (1-4 existing jpg/png under tools/handoff/console/notes, shots or ui-refs)'); process.exit(1); }
+// 11-01 (task 220 item 4, o-00f): report.json beside a camera set marks each picture staged true/false. A NOT STAGED picture is the
+// fallback title screen, not the scene, and was scored as if it were the raid. Refuse it: nothing is scored, nothing is cached.
+for (const p of pics) { const d = p.slice(0, p.lastIndexOf('/')), f = p.slice(d.length + 1); let rep; try { rep = JSON.parse(readFileSync(R + '/' + d + '/report.json', 'utf8')); } catch { continue; }
+  for (const s of rep.screens || []) for (const res of ['1080', '4k']) { const e = s && s[res];
+    if (e && e.shot === f && e.staged === false) { console.log('CRITIC REFUSED: ' + p + ' is NOT STAGED (' + String(e.note || '').replace(/\s+/g, ' ').slice(0, 200) + '). Fix the staging and shoot again; a fallback picture is not the scene.'); process.exit(1); } } }
 const caps = {}; try { readFileSync(C + '/caps.txt', 'utf8').split(/\r?\n/).forEach(l => { const m = /^(\w+)=(.*)$/.exec(l.trim()); if (m) caps[m[1]] = m[2]; }); } catch {}
 const guide = existsSync(U + '/style-guide.md') ? readFileSync(U + '/style-guide.md', 'utf8').slice(0, 8000) : '(no style guide yet: judge against the rubric alone)';
 const sys = `You are a skeptical senior UI art director at a AAA studio reviewing screenshots of PILLAGERS, a top-down 2.5D extraction

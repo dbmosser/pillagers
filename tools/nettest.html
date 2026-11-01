@@ -166,6 +166,28 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
   function got(J,t){ for(var i=0;i<J.got.length;i++) if(J.got[i]&&J.got[i].t===t) return J.got[i]; return null; }
   function rows(f){ var r=el(f,'partyroster'); return r?r.querySelectorAll('[data-seat]').length:0; }
   function st(f){ return W(f).__net.state(); }
+  // 11-01 (job 260): THE STAND-IN WINDOW GETS ITS OPENER. Copy C is an iframe, not a popup, so it has no window.opener. Since v33.58
+  // (cw-p2bridge) a player 2 window opened from a framed player 1 (this page frames A, so the address carries emb=1) talks over its
+  // opener and stops at boot without one (netSameBootP2 returns 'noopener'), so from 10-21 the pair never linked here. A real popup
+  // has its opener from the first line, so while C loads this page hands it A as its opener on every tick. If C still boots without
+  // it (it booted as player 2 with no link channel), C is reloaded, up to 3 times. Armed by the stand-in window.open and the reload step.
+  function cflags(C){ try{ var g=C.__state(), p=g&&g.player, w=p&&p.wep; return JSON.stringify({over:g.over,paused:g.paused,bag:g.bagOpen,map:g.mapOpen,mf:g.mapFirst,trade:!!g.trade,forge:!!g.forgeUI,hub:!!g.hubFloor,sim:!!g.sim,wheel:!!g.wheel,stall:!!g.stall,down:p&&p.downed,dying:p&&p.dying,hp:p&&p.hp,gun:w&&w.id,mag:w&&w.mag,ammo:p&&p.ammo,reload:p&&p.reloadT,mf2:C.__net.up().on,seed:C.__net.up().seed,focus:C.document.hasFocus(),fix:!!C.__isFixture,pbox:!!(C.document.getElementById('pausebox')&&C.document.getElementById('pausebox').classList.contains('on')),fsg:(C.document.getElementById('fsgate')||{style:{}}).style.display||'none',gx:(C.__gx?C.__gx('JSON.stringify({po:pauseOpen,tu:tuneOpen,df:devFreeze(),fsg:FSG.open,snip:!!(typeof SNIP==="object"&&SNIP&&SNIP.on),te:CFG.textEdit,dl:DEV_LOCAL,st:state,mf:MAPFIRST.skip})'):'?'),Apaused:(W(fa).__state())?W(fa).__state().paused:'?',tel:g.tel?{s:g.tel.shots,h:g.tel.hits}:null}); }catch(e){ return 'cflags: '+e.message; } }
+  function armC(A){
+    var t0=Date.now(), tries=0;
+    (function tick(){
+      var w=null, s=null;
+      try{ w=W(fc); }catch(e){ w=null; }
+      try{ if(w&&String(w.location.href).indexOf('p2=1')>=0&&w.opener!==A) w.opener=A; }catch(e){}
+      try{ if(w&&w.__net&&w.__net.p2&&!w.__preReload) s=w.__net.same(); }catch(e){ s=null; }
+      if(s&&s.chan) return;
+      if(s&&s.same==='p2'){
+        if(tries>=3){ log('C booted without its opener 3 times; giving up'); return; }
+        tries++; log('C booted without its opener (an iframe has none), so it is reloaded with one: try '+tries);
+        try{ w.__preReload=1; w.location.reload(); }catch(e){}
+      }
+      if(Date.now()-t0<60000) setTimeout(tick,0);
+    })();
+  }
   function click(f,id){ var b=el(f,id); if(!b) throw new Error('copy '+(f===fa?'A':'B')+' has no #'+id); b.click(); }
   function put(f,id,v){ var t=el(f,id); if(!t) throw new Error('copy '+(f===fa?'A':'B')+' has no #'+id); t.value=v; }
   // The host makes a new invite code through its own window and hands it to this page.
@@ -182,8 +204,9 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
   function clearFloor(f){
     try{ click(f,'closeparty'); }catch(e){}
     var d=D(f); if(!d) return;
-    [].forEach.call(d.querySelectorAll('.modal.on'),function(m){ m.classList.remove('on'); });
-    var pb=d.getElementById('pausebox'), rb=d.getElementById('resumebtn'); if(pb&&pb.classList.contains('on')&&rb) rb.click();   // the game's own resume: hiding the box left the game paused
+    var pb=d.getElementById('pausebox'), rb=d.getElementById('resumebtn'), po=false; try{ po=!!(W(f).__gx&&W(f).__gx('pauseOpen')); }catch(e){}
+    if(rb&&((pb&&pb.classList.contains('on'))||po)){ if(po) log('clear: copy '+(f===fa?'A':(f===fb?'B':'C'))+' had its pause box open, so its own resume was pressed'); rb.click(); }   // 11-01 (job 260): before the modal sweep below, which hides the pause box too
+    [].forEach.call(d.querySelectorAll('.modal.on'),function(m){ m.classList.remove('on'); });   // the game's own resume: hiding the box left the game paused
     if(pb) pb.classList.remove('on');
   }
   // A real key held on the copy window (never its document: a key sent there reaches the window too and acts twice).
@@ -475,7 +498,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       fc.style.width=fw0; fc.style.height=fh0;
       var r=tries.filter(function(q){ return q.hits; }).pop()||tries[tries.length-1];
       rep.shotHits=r?r.hits:0; rep.shotKills=r?r.kills:0;
-      if(!tries.some(function(q){ return q.shots>0; })) bad.push('shots: C fired no rounds with the fire button held');
+      if(!tries.some(function(q){ return q.shots>0; })) bad.push('shots: C fired no rounds with the fire button held (C '+cflags(C)+'; first try '+JSON.stringify(tries.length?tries[0].diag:null)+')');
       else if(!r||!r.hits) bad.push('shots: C hit none of '+tries.length+' bodies it fired at from 90 units (last try '+JSON.stringify(tries.length?tries[tries.length-1].diag:null)+'; first '+JSON.stringify(tries.length?tries[0].diag:null)+')');
       else {
         if(r.hp!==null&&!(r.hp<r.hp0)) bad.push('shots: the body C hit lost no health on A');
@@ -513,7 +536,11 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       log('pad loot: C searched box '+box.cid+' with pad X held on the host and forwarded: '+(itemsC()-it0)+' items landed, '+rep.padLootMs+' ms; '+state());
     },function(e){ bad.push('pad loot: '+e.message+' ('+state()+')'); }).then(function(){
       dn=false; return sleep(200);
-    }).then(function(){ A.navigator.getGamepads=NGA; A.document.hasFocus=HFA; C.document.hasFocus=HFC; });
+    }).then(function(){ A.navigator.getGamepads=NGA; A.document.hasFocus=HFA; C.document.hasFocus=HFC;
+      if(typeof C.__gx!=='function') return;   // 11-01 (job 260): the pad was pulled, so C pauses on pad lost; it is cleared for the mouse steps after
+      var tl=Date.now();
+      return wait(function(){ return C.__gx('!!(PAD.lost&&pauseOpen)')?1:null; },3000,'pad lost').then(function(){ log('pad loot: the pad was taken away and C paused on pad lost '+(Date.now()-tl)+' ms later; put back to mouse and keys'); },function(){ log('pad loot: C did not pause on pad lost within 3 s'); }).then(function(){ try{ C.__gx('PAD.lost=null;PAD.lossIx=-1;padLostUi(false,false);if(pauseOpen)togglePauseBox(false);1'); }catch(e){ log('pad loot: clear '+e.message); } });
+    });
   }
   function lootStep(A,C,bad,rep){
     if(typeof A.__net.cont!=='function'||typeof C.__net.cont!=='function'||typeof C.__net.stand!=='function'){ bad.push('this fixture has no container view in its net handle (a build before v15.91), so the loot step cannot run'); return Promise.resolve(); }
@@ -728,7 +755,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       return wait(function(){ return A.__net.up().on?1:null; },3000,'copy A to go up');
     }).then(function(){
       ua=A.__net.up(); t0=Date.now();
-      W(fc).__preReload=1; W(fc).location.reload();   // the window object stays the same across a reload; the mark does not
+      W(fc).__preReload=1; W(fc).location.reload(); armC(A);   // the window object stays the same across a reload; the mark does not
       return sleep(500);
     }).then(function(){
       return wait(function(){ var w=W(fc); return (w&&!w.__preReload&&w.__net&&w.__net.p2&&st(fa).roster.length===2&&st(fc).roster.length===2)?w:null; },30000,'copy C to boot again as player 2 and link').then(null,function(e){ var w=W(fc), cv=(w&&w.__net)?w.__net.ver:'?'; throw new Error(e.message+' (A v'+A.__net.ver+', C v'+cv+(cv!==A.__net.ver?': a ship rebuilt the fixture mid-run, not a fault':'')+'; A PARTY error: '+(st(fa).err||'none')+')'); });
@@ -801,7 +828,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
           // v16.43: C pings and A must hold the ping, named for C's seat, within 500 ms.
           if(typeof C.__net.ping!=='function') return;
           var sc=st(fc).seat, pm=C.__net.ping(), t1=Date.now();
-          if(!pm){ bad.push('ping: C could not ping'); return; }
+          if(!pm){ bad.push('ping: C could not ping (C '+cflags(C)+')'); return; }
           return wait(function(){ var l=A.__net.pings(), i; for(i=0;i<l.length;i++) if(l[i].s===sc&&l[i].w===(pm.w||"")) return l[i]; return null; },500,'copy A to hold the ping C made').then(function(q){
             log('ping: C pinged '+(pm.w||'a spot')+' at '+pm.x+','+pm.y+'; A holds it for seat '+q.s+' '+(Date.now()-t1)+' ms later');
           },function(e){ bad.push('ping: '+e.message); }).then(function(){
@@ -845,15 +872,15 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
         var u=C.__net.up(), cs=st(fc).status||'', v=upView(fc,sa);
         log('raid: A abandoned; 1.5 s later C is up top '+u.on+', over '+u.over+'; C PARTY status: '+cs);
         if(!u.on||u.over) bad.push('raid: C was ended when A abandoned with C up top; the host should spectate');
-        if(!/host has left|out of this raid|is out of the raid/i.test(cs)) bad.push('raid: C was not told the host is out of the raid ('+cs+')');   // wording changes with the host-out build
+        if(!/host has left|out of this raid|is out of the raid|\bis out\b/i.test(cs)) bad.push('raid: C was not told the host is out of the raid ('+cs+')');   // wording changes with the host-out build
         if(v&&v.shown) bad.push('raid: C still draws A after A left the surface');
         C.__endRaid('abandon'); try{ C.__topClear(); }catch(e){}
-        return wait(function(){ return /party is back/i.test(st(fa).status||'')?true:null; },3000,'copy A to stop spectating after C abandoned');
+        return wait(function(){ return /party (is )?back/i.test(st(fa).status||'')?true:null; },3000,'copy A to stop spectating after C abandoned (A PARTY status: '+(st(fa).status||'')+')');
       }).then(function(){ rep.hostLeftMs=Date.now()-tq; log('raid: C abandoned and A stopped spectating; A PARTY status: '+(st(fa).status||''));
         var pa=el(fa,'oc_party'), pc=el(fc,'oc_party'), ta=pa?String(pa.textContent):'', tc=pc?String(pc.textContent):'';
         log('summary: A card reads '+JSON.stringify(ta)+'; C card reads '+JSON.stringify(tc));
-        if(pa&&(ta.indexOf('PARTY')<0||(ta.match(/ABANDONED/g)||[]).length<2)) bad.push('summary: A card does not show both players abandoned');
-        if(pc&&(tc.indexOf('PARTY')<0||(tc.match(/ABANDONED/g)||[]).length<2)) bad.push('summary: C card does not show both players abandoned'); },
+        if(pa&&(!/party/i.test(ta)||(ta.match(/abandoned/gi)||[]).length<2)) bad.push('summary: A card does not show both players abandoned');
+        if(pc&&(!/party/i.test(tc)||(tc.match(/abandoned/gi)||[]).length<2)) bad.push('summary: C card does not show both players abandoned'); },
         function(e){ bad.push('raid: '+e.message); });
     }).then(function(){ clearInterval(keepAlive); comeDown(A,C); A.__net.open(); C.__net.open(); },function(e){ clearInterval(keepAlive); comeDown(A,C); A.__net.open(); C.__net.open(); throw e; });
     });
@@ -883,7 +910,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
     ls0={main:ls(MAIN),as:ls(AS),p2:ls(P2K)};
     log('before: main save '+(ls0.main?(ls0.main.length+' chars'):'none')+', save pointer '+ls0.as+', player 2 save '+(ls0.p2?(ls0.p2.length+' chars'):'none'));
     // The stand-in window: the address A asks for goes into copy C, and C is the window A is handed.
-    A.open=function(url,name,feat){ opened={url:String(url),name:name,feat:feat}; log('A asked for a window: '+url+' ('+feat+')'); fc.src=url; return fc.contentWindow; };
+    A.open=function(url,name,feat){ opened={url:String(url),name:name,feat:feat}; log('A asked for a window: '+url+' ('+feat+')'); fc.src=url; armC(A); return fc.contentWindow; };
     try{ if(A.__hubEnter) A.__hubEnter(); }catch(e){}
     rngA0=A.__net.rngs();
     t0=Date.now();
@@ -893,13 +920,13 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
     if(sm.same!=='host'||sm.mode!=='coop'||!sm.chan) bad.push('after the co-op row copy A is not the host in co-op with a channel open: '+JSON.stringify(sm));
     if(!opened) bad.push('the co-op row did not ask for a second window');
     else if(!(/[?&]p2=1(&|$)/).test(opened.url)||!(/[?&]mode=coop(&|$)/).test(opened.url)||opened.url.indexOf('pair='+sm.pair)<0||opened.url.indexOf(location.origin)!==0) bad.push('the second window address is wrong: '+opened.url);
-    wait(function(){ return W(fc)&&W(fc).__net&&W(fc).__net.p2; },30000,'copy C to boot as the player 2 window').then(function(){
+    wait(function(){ return W(fc)&&W(fc).__net&&W(fc).__net.p2&&!W(fc).__preReload&&W(fc).__net.same().chan; },30000,'copy C to boot as the player 2 window with its link channel open').then(function(){
       C=W(fc); rngC0=C.__net.rngs(); rep.key=C.__net.key;
       log('C booted as player 2 on save '+C.__net.key+', '+(Date.now()-t0)+' ms after the row; its window title reads '+(C.document.title||'?')+'; its same machine state '+JSON.stringify(C.__net.same()));
       if(!/^salvagerun:profile(:[1-8])?$/.test(C.__net.key)||C.__net.key===A.__net.key) bad.push('the player 2 window plays '+C.__net.key+' (player 1 plays '+A.__net.key+')');   // v17.93: a numbered save of its own, never player 1 save
       if(C.__net.key===A.__net.key) bad.push('both windows play the same save');
       var p2l=el(fc,'p2line'), mc=el(fc,'modecoop');
-      if(!p2l||p2l.style.display==='none'||p2l.textContent.indexOf('PLAYER 2')<0) bad.push('the player 2 window does not say it is player 2 on its title');
+      if(!p2l||p2l.style.display==='none'||!/player 2/i.test(p2l.textContent)) bad.push('the player 2 window does not say it is player 2 on its title');
       if(mc&&mc.offsetParent!==null&&getComputedStyle(mc).display!=='none') bad.push('the player 2 window still offers the mode rows');
       return wait(function(){ return st(fa).roster.length===2&&st(fc).roster.length===2; },20000,'both rosters to show two');
     }).then(function(){
@@ -913,10 +940,10 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       C.__net.open();
       var ml=el(fc,'partymode');
       log('C PARTY window mode line: '+(ml?ml.textContent:'none'));
-      if(!ml||ml.style.display==='none'||ml.textContent.indexOf('CO-OP')<0||ml.textContent.indexOf('SAME MACHINE')<0) bad.push('the PARTY window on copy C does not name the mode');
+      if(!ml||ml.style.display==='none'||!/co-op/i.test(ml.textContent)||!/same machine/i.test(ml.textContent)) bad.push('the PARTY window on copy C does not name the mode');
       A.__net.open();
       var mla=el(fa,'partymode');
-      if(!mla||mla.style.display==='none'||mla.textContent.indexOf('CO-OP')<0) bad.push('the PARTY window on copy A does not name the mode');
+      if(!mla||mla.style.display==='none'||!/co-op/i.test(mla.textContent)) bad.push('the PARTY window on copy A does not name the mode');
       // THE FLOOR: each draws the other where it stands.
       try{ if(C.__hubEnter) C.__hubEnter(); }catch(e){}
       rngC0=C.__net.rngs();
@@ -968,6 +995,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
     (function(){ try{ var s2=localStorage.getItem('salvagerun:activeSlot2'); if(s2){ var k2=(s2==='1')?'salvagerun:profile':('salvagerun:profile:'+s2); [k2,k2+':prerestore',k2+':precrash',k2+':unreadable'].forEach(function(x){ localStorage.removeItem(x); }); } localStorage.removeItem('salvagerun:activeSlot2'); }catch(e){} })();   // v17.93: player 2 own pointer and the slot it picked
     // BUILD 5: and the two sound switches kept for next time.
     ['salvagerun:samesound:host','salvagerun:samesound:p2'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} });
+    ['salvagerun:p2live','salvagerun:p2raid'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} });   // 11-01 (job 260): and the player 2 live and raid marks, left behind when a Chrome was ended mid raid
     log('wiped the two net saves, the player 2 save, the controller picks and the sound switches; reloading the copies');
     load();
   }

@@ -7,3 +7,5 @@ Do: reproduce with a long run in corpus order (tools/handoff and the corpus runn
 Check (must FAIL on the current build): run the leaking earlier check, then draw the frozen raid frame twice at dt 0: the two pictures are identical.
 Rules: no player-visible change; seed 4242 fingerprint must hold. Say plainly in DESIGN.md what was leaking.
 TASK DONE when it shipped and is ON HIS PC and the five checks pass in the next full run.
+
+COORDINATOR 11-01 14:20: decided the VM substitute, CLOSED. a673cf901 makes check pages draw on the processor on every PC, the VM condition, so graphics card raster no longer enters a full run. VM full run corpus-1101-1057 (81d104220, has a673cf901): 8.85, 8.89, 9.07, 33.51 green. Removed the v8.85, v9.07, v33.51 lines and reworded the line 105 note in stable-known-red.txt. v34.90 stays listed: its real red is the tracer height ("drawn 19.1 over the round, his flash 21.6 up"), split out as tasks/261-check-3490-tracer-height.md. If a graphics card full run shows the unsteady text again, reopen this job.

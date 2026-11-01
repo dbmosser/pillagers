@@ -74,14 +74,22 @@ function plan(jsonPath, mkPath, appliedPath, outPath) {
   j.edits.forEach((e, i) => {
     const n = i + 1;
     if (!e || typeof e.anchor !== 'string' || typeof e.replacement !== 'string') { errs.push('edit ' + n + ': needs "anchor" and "replacement" as strings (replacement may be "" to delete)'); return; }
-    const anchor = fix(e.anchor), repl = fix(e.replacement), h = sha(nl(e.anchor) + NUL + nl(e.replacement));
+    const h = sha(nl(e.anchor) + NUL + nl(e.replacement));
     if (applied.has(h)) { put('EDIT', n + ' state=applied-before'); return; }
-    if (!anchor.trim()) { errs.push('edit ' + n + ': the anchor is empty'); return; }
+    if (!nl(e.anchor).trim()) { errs.push('edit ' + n + ': the anchor is empty'); return; }
+    // 11-01 (task 220 item 5, o-00g): the fixture has mixed LF and CRLF blocks. Match the anchor as LF, as CRLF and as written against the
+    // real file; the variant that occurs exactly once wins (the file's main style first), and the replacement takes its line ends.
+    const lfA = nl(e.anchor), crA = lfA.replace(/\n/g, '\r\n');
+    const variants = eol === '\r\n' ? [['crlf', crA], ['lf', lfA]] : [['lf', lfA], ['crlf', crA]];
+    if (e.anchor !== lfA && e.anchor !== crA) variants.push(['as-written', e.anchor]);
+    const countIn = (a) => { let k = 0, q = -1; while ((q = mk.indexOf(a, q + 1)) >= 0) { k++; if (k > 5) break; } return k; };
+    let anchor = variants[0][1], kind = variants[0][0], c = countIn(anchor);
+    for (let vi = 1; vi < variants.length && c !== 1; vi++) { const k = countIn(variants[vi][1]); if (k === 1 || (c === 0 && k > 0)) { anchor = variants[vi][1]; kind = variants[vi][0]; c = k; } }
+    const repl = kind === 'crlf' ? nl(e.replacement).replace(/\n/g, '\r\n') : kind === 'lf' ? nl(e.replacement) : e.replacement;
     if (anchor === repl) { errs.push('edit ' + n + ': the replacement equals the anchor, so it changes nothing'); return; }
     const bad = repl.match(/[^\x00-\x7f]/);
     if (bad) { errs.push('edit ' + n + ': the replacement has a non-ASCII character (code ' + bad[0].charCodeAt(0) + '); Windows PowerShell 5.1 misreads it. Write ASCII only, use \\u escapes inside the JS'); return; }
-    let c = 0, pos = -1, p = -1;
-    while ((p = mk.indexOf(anchor, p + 1)) >= 0) { if (c === 0) pos = p; c++; if (c > 5) break; }
+    const pos = c === 1 ? mk.indexOf(anchor) : -1;
     if (c !== 1) {
       errs.push('edit ' + n + ': the anchor occurs ' + (c > 5 ? 'more than 5' : c) + ' times in tools/mkfixture.ps1 and must occur exactly once ' + show(e.anchor)
         + (c === 0 && repl && mk.indexOf(repl) >= 0 ? ' (its replacement text is already in the file: was this edit applied already? then remove it from the file)' : ''));

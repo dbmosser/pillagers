@@ -32,3 +32,4 @@
 - 220-camera-flakes.md (parked 11-01 12:19 by lane c): coordinator to apply patches A to D from notes/220-camera-flakes.md, then run the three-recipe 4K check
 - 254-retarget-1031-reds.md (parked 11-01 12:37 by lane c): coordinator delete lines 137 to 153 (the 11-01 block) from tools/handoff/stable-known-red.txt; all 16 checks pass on the fixture
 - e1-advisor-trial.md (parked 11-01 12:57 by lane b): coordinator to set up the paired runs with per-job model choice and `/usage` readings (see notes/e1-advisor-trial.md)
+- 11-01 14:20 coordinator: 254 DONE (16 pass on v37.13, known-red block gone); 241 DONE (VM run 1101-1057 green, 3 lines out, 34.90 to tasks/261); 213 back to tasks/ (still red at 1920x1080: 764 on screen); 260 nettest.html copied, waits for the next main PC soak; 220 B/C/D applied, A waits for a night 4K test; 134 now logged by every robot raid (fuzz.ps1 pics=), waits for 3 h of lines; 0p14-94 and e1 not now (RAM, he is at the PC).

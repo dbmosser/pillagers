@@ -93,3 +93,5 @@ the lane meant the coord-07 scripts below.) Steps, at night with 4 GB+ free, nev
 6. Stop the Chrome: powershell -NoProfile -ExecutionPolicy Bypass -File tools/handoff/console/notes/coord-07/stop9371.ps1
 7. Close the job (move it to done/) with the new numbers in notes/94-ladder-sheds-sooner.md. No ship is needed unless the numbers are
    worse than before; then write a new job, not a rerun of this one.
+
+COORDINATOR 11-01 14:20: NOT RUN. The VM had 1.7 to 2.2 GB free (the step needs 4 GB+) and he is at the PC (13:00 to 16:00). Left for the night window 23:00 to 06:00 with 4 GB+ free; the steps above are unchanged.

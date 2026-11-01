@@ -37,3 +37,5 @@ Fix:
 Rules: never 8802; never ask him anything; say plainly in the notes which of a) or b) it was.
 TASK DONE when a soak run of 6 passes at least 5 on the VM with the fix in place (write the six result lines in notes/260-soak.md) and, for a game fix, it is
 ON HIS PC. TASK PARTIAL with what is left.
+
+COORDINATOR 11-01 14:20: copied notes/260/nettest.html.new over tools/nettest.html (read the diff: harness only, the opener hand-off, case-blind text, new status words, pad-lost clear, p2 mark wipe), committed and pushed; the main PC runner takes it from master. STILL OPEN: the VM soak was 3 of 6 (half second frame hitches). CHECK THE NEXT MAIN PC SOAK (git show origin/spare-results:spare/JUL26/soak-last.txt, status line "soak vNN.NN: N of 6"): 5 or more of 6 = move this job to done/; "frames stalled" again = write a perf job for the hitch (map, menu, save under random keys), not a harness job. Stays in waiting/ until that soak is read.

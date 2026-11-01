@@ -7,3 +7,5 @@ Do: run ten mid-weight fix jobs from tasks/ in pairs: one on Sonnet 5.5 high wit
 Log per job: plan points used (claude -p "/usage" before and after, nothing else running), preflight fails, ships, ON HIS PC, critic score.
 Result: one line per job and a verdict in this file. If Sonnet + advisor matches Opus high on gate passes for clearly less plan, make it the
 rung 3 default in START-HERE's model ladder and in console-lane.sh (ESC_MODEL); otherwise keep the ladder as it is.
+
+COORDINATOR 11-01 14:20: NOT NOW. Parked: it needs ten lane jobs run in pairs with nothing else running for a clean /usage reading, which the always-on lanes do not allow today. Not trivially runnable.

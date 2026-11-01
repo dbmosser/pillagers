@@ -475,8 +475,14 @@ function P2-Poll([string]$mode){
 $GFXQ='(function(){ try{ var g=G&&G.tel&&G.tel.gfx; return (g&&g.n>0)?(g.n+"/"+g.p50+"/"+g.p95+"/"+g.slow+"/"+g.q):""; }catch(e){ return ""; } })()'
 function Gfx-Now([string]$pg){ try{ Pg-Use $pg; return [string](Gx $GFXQ 8000) }catch{ return '' }finally{ try{ Pg-Use 'p1' }catch{} } }
 function Work-Now([string]$pg,[bool]$reset){ try{ Pg-Use $pg; return [string](Ev ('(window.__fz&&window.__fz.work)?window.__fz.work('+$(if($reset){'1'}else{'0'})+'):""') 8000) }catch{ return '' }finally{ try{ Pg-Use 'p1' }catch{} } }
+# 11-01 (job 134, coordinator): pics= and pics2= on each raid line = the game's own picStoreTotal(true) (v37.02) in each window:
+# count/MB/count per store. The page lives the whole robot session, raid after raid, so a store whose count keeps climbing is a leak.
+$PICQ='(function(){ try{ if(typeof picStoreTotal!=="function") return ""; var p=picStoreTotal(true), s=[], k; for(k in p.by) s.push(k+":"+p.by[k][0]); return p.n+"/"+(Math.round(p.b/104857.6)/10)+"mb/"+s.join(","); }catch(e){ return ""; } })()'
+function Pic-Now([string]$pg){ try{ Pg-Use $pg; return ([string](Gx $PICQ 8000)) -replace '\s','_' }catch{ return '' }finally{ try{ Pg-Use 'p1' }catch{} } }
 function Gfx-Keep($res){
   $g=Gfx-Now 'p1'; if($g){ $res.gfx=$g }
+  $g=Pic-Now 'p1'; if($g){ $res.pics=$g }
+  if($res.mode -eq 'demo2p' -and $script:pgs.ContainsKey('p2')){ $g=Pic-Now 'p2'; if($g){ $res.pics2=$g } }
   $g=Work-Now 'p1' $false; if($g){ $res.work=$g }
   if($res.mode -eq 'demo2p' -and $script:pgs.ContainsKey('p2')){ $g=Gfx-Now 'p2'; if($g){ $res.gfx2=$g }; $g=Work-Now 'p2' $false; if($g){ $res.work2=$g } }
 }
@@ -500,7 +506,7 @@ function Run-Raid([string]$mode,[int]$rseed,[int]$secs){
     for($i=0;$i -lt $n;$i++){ $ks+=("'"+$pool[$rng.Next(0,$pool.Count)]+"'") }
     $kit='['+($ks -join ',')+']'
   }
-  $res=[ordered]@{ mode=$mode; seed=$rseed; map=$mapIx; god=[int]$god; sec=0; end=''; ticks=0; events=0; heap=0; score=0; ents=0; travel=0; fires=0; menuPct=0; p2=''; gfx=''; gfx2=''; work=''; work2='' }
+  $res=[ordered]@{ mode=$mode; seed=$rseed; map=$mapIx; god=[int]$god; sec=0; end=''; ticks=0; events=0; heap=0; score=0; ents=0; travel=0; fires=0; menuPct=0; p2=''; gfx=''; gfx2=''; work=''; work2=''; pics=''; pics2='' }
   $script:raidSw=[Diagnostics.Stopwatch]::StartNew()
   if($mode -eq 'demo1'){ $js='(function(){ try{ __topClear(); __runPrep(); CAREER_ON=0; var r=arcadeSoloPick(); var ok=arcadeDeploy({mapIx:'+$mapIx+',seed:'+$rseed+'}); return JSON.stringify({ok:!!(ok&&G&&G.arcade&&ARCADE.solo),r:r,arc:!!(G&&G.arcade)}); }catch(e){ return "ERR "+e+" "+String(e&&e.stack||"").slice(0,200); } })()' }
   elseif($mode -eq 'demo2'){ $js='(function(){ try{ __topClear(); __runPrep(); CAREER_ON=0; var ok=arcadeDeploy({mapIx:'+$mapIx+',seed:'+$rseed+'}); return JSON.stringify({ok:!!(ok&&G&&G.arcade&&!ARCADE.solo),arc:!!(G&&G.arcade)}); }catch(e){ return "ERR "+e+" "+String(e&&e.stack||"").slice(0,200); } })()' }
@@ -723,7 +729,7 @@ try{
         if($script:p2Fails -ge 3 -and -not $script:p2Off){ $script:p2Off=$true; LogLine ((Stamp)+' FUZZ 2P ROBOTS OFF: three 2-window starts in a row failed, so the 2-player share runs as demo2 (this window as host alone) for the rest of this run') }
       } else { $script:p2Fails=0 }
     }
-    LogLine ((Stamp)+' raid '+$script:raidNo+' '+$m+' raidSeed='+$rs+' map='+$rres.map+' god='+$rres.god+' sec='+$rres.sec+' end='+$rres.end+' problems='+$script:raidProblems+' newUnique='+$script:newUniq+' totalUnique='+$script:uniq.Count+' totalProblems='+$totProb+' events='+$rres.events+' score='+$rres.score+' ents='+$rres.ents+' travelPx='+$rres.travel+' fires='+$rres.fires+' menuPct='+$rres.menuPct+' heapMB='+$rres.heap+' p2='+(([string]$rres.p2) -replace '\s','_')+' gfx='+$(if($rres.gfx){ $rres.gfx }else{ 'none' })+$(if($rres.gfx2){ ' gfx2='+$rres.gfx2 }else{ '' })+' work='+$(if($rres.work){ $rres.work }else{ 'none' })+$(if($rres.work2){ ' work2='+$rres.work2 }else{ '' })+' build='+$script:ver)   # build= stays LAST: tools\stable.mjs counts robot minutes per version with endsWith(' build='+ver)
+    LogLine ((Stamp)+' raid '+$script:raidNo+' '+$m+' raidSeed='+$rs+' map='+$rres.map+' god='+$rres.god+' sec='+$rres.sec+' end='+$rres.end+' problems='+$script:raidProblems+' newUnique='+$script:newUniq+' totalUnique='+$script:uniq.Count+' totalProblems='+$totProb+' events='+$rres.events+' score='+$rres.score+' ents='+$rres.ents+' travelPx='+$rres.travel+' fires='+$rres.fires+' menuPct='+$rres.menuPct+' heapMB='+$rres.heap+' p2='+(([string]$rres.p2) -replace '\s','_')+' gfx='+$(if($rres.gfx){ $rres.gfx }else{ 'none' })+$(if($rres.gfx2){ ' gfx2='+$rres.gfx2 }else{ '' })+' work='+$(if($rres.work){ $rres.work }else{ 'none' })+$(if($rres.work2){ ' work2='+$rres.work2 }else{ '' })+$(if($rres.pics){ ' pics='+$rres.pics }else{ '' })+$(if($rres.pics2){ ' pics2='+$rres.pics2 }else{ '' })+' build='+$script:ver)   # build= stays LAST: tools\stable.mjs counts robot minutes per version with endsWith(' build='+ver)
     if($rres.end -eq 'lightflag'){ $stopWhy='light.flag (he is back)'; break }
     if($Mode -ne ''){ $stopWhy='replay done'; break }
   }
