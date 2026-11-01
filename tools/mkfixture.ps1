@@ -6177,6 +6177,13 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'37.08',what:'the gun jam branches are out of the fire code and the jam cleared line is gone (cw-dead5): guns never jam',
+   run:function(){
+     var s=[].slice.call(document.scripts).map(function(x){ return x.text||''; }).join('\n'), bad=[];
+     if(s.indexOf('JAM '+'CLEARED')>=0) bad.push('the jam cleared line is still there');
+     if(s.indexOf('p.wep.jam>0&&'+'rr()<p.wep.jam')>=0) bad.push('the player jam roll is still there');
+     if(s.indexOf('var jr=(p.wep.jam'+'>0)')>=0) bad.push('the bot jam roll is still there');
+     return bad.length?bad.join('; '):null; }},
   {v:'37.07',what:'the dead title fight code is gone, tskOn stays (cw-dead4)',
    run:function(){
      var bad=[];

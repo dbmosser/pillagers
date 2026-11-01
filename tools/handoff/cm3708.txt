@@ -1,0 +1,7 @@
+v37.08: dead code out 5
+
+Nothing a player can see changes.
+
+Check 37.08. Fails on v37.07.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
