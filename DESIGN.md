@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.00 - ONLY MACHINES ARE GOLDEN
+
+Co-op hunt while he was away. His words 10-31: there should not be golden pillager bots, pillager bots are meant to replicate live players since we will take the game online eventually. The golden enemy is now picked only from machines (crawler, sentry, bulwark, howler, listener); no pillager of any kind is ever gilded. The pick stays on its own side stream, only the candidate list shrank, so the seed 4242 fingerprint holds; a raid with no machine far enough away has no golden enemy. RULE FOR LATER: pillager bots stand in for live players, so they get no boss-style buffs. The bounty pillager raid event is not part of this order and is left alone (logged as a question).
+
+MEASURED. Check 37.00 passes, and fails on v36.99.
 ## v36.99 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v36.83 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay.

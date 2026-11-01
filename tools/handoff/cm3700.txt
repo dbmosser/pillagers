@@ -1,0 +1,7 @@
+v37.00: only machines are golden
+
+Only machines are golden. The golden enemy is never a pillager. WATCH: a raid where the golden enemy is always a machine; if a raid has none far enough away, no golden enemy that raid.
+
+Check 37.00. Fails on v36.99.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

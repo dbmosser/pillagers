@@ -3929,8 +3929,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.99';
-var VER_AT='2026-11-01 10:18';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.00';
+var VER_AT='2026-11-01 10:22';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -57098,7 +57098,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.99: The what is new stamp keeps up with the build; the three notes are unchanged. Check 36.99 fails on v36.98',
+  now:'v37.00: Only machines are golden. The golden enemy is never a pillager. WATCH: a raid where the golden enemy is always a machine; if a raid has none far enough away, no golden enemy that raid. Check 37.00 fails on v36.99',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -68751,7 +68751,9 @@ function goldRunTick(e,dt){
 }
 function goldS(){ var S=flowS(); if(!S.gold) S.gold={ref:null,hp0:0,dead:0,tried:0}; return S.gold; }
 function goldOk(e,p){
-  return !!e&&e.hp>0&&!!GOLD.kinds[e.kind]&&!e.boss&&!e.merc&&!e.friendlyPC&&!e.neutral&&!e.summoned&&!e.golden&&!(e.kind==='raider'&&!e.hostile)&&Math.hypot(e.x-p.x,e.y-p.y)>=GOLD.minD;
+  // v37.xx (cw-nogoldpillager), HIS WORDS (2026-10-31): "there should not be golden pillager bots -- pillager bots are meant to replicate live players since we will take the game online eventually".
+  // Only machines are golden: a pillager of any kind never qualifies. Rule for later: pillagers stand in for live players, so they get no boss-style buffs.
+  return !!e&&e.hp>0&&e.kind!=='raider'&&!!GOLD.kinds[e.kind]&&!e.boss&&!e.merc&&!e.friendlyPC&&!e.neutral&&!e.summoned&&!e.golden&&!(e.kind==='raider'&&!e.hostile)&&Math.hypot(e.x-p.x,e.y-p.y)>=GOLD.minD;
 }
 // the index in G.ents the seed gilds (-1 when nothing qualifies); no body is changed
 function goldPickIx(){
