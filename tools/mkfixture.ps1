@@ -6393,7 +6393,7 @@ window.__REGRESS=[
        g.bag=[w[0]]; a=Math.round(sellPriceOf(w[0])*pedBuyRate()); b=Math.round(mktPriceAt(w[0],d,1)*pedBuyRate());
        if(window.__textTrace){ tr=__textTrace(function(){ drawTrade(); }); need(tr.some(function(q){ return q.t==='wanted +50%'; }),'NINE: the Peddler panel draws no wanted line'); }
        pedSellAll();
-       need(g.bag.length===0&&g.pedCarry===a,'NINE: the stall paid '+g.pedCarry+' for wanted '+w[0]+', not '+a);
+       need(g.bag.length===0&&g.pedSold===a,'NINE: the stall paid '+g.pedSold+' for wanted '+w[0]+', not '+a);   // cw-m1nocash: the sale total, banked at the sale since v37.21 (G.pedCarry stays 0)
        need(a>b,'NINE: the stall pays '+a+' for wanted '+w[0]+', no more than '+b+' unwanted');
        need(P.mkt.s[d][w[0]]===1,'NINE: the stall sale is not in the market record');
        g.trade=null; __endRaid('abandon');
