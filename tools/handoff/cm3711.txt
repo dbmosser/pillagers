@@ -1,0 +1,7 @@
+v37.11: the last minute turns the world red and drops ash
+
+The last minute of a raid slowly reddens the world and ash falls.
+
+Check 37.11. Fails on v37.10.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

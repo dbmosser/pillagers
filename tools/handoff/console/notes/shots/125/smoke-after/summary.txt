@@ -1,0 +1,2 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  gfx-b-machine-damage                   staged       9.7s    | spot 2420,1880 clear 118 tier 2 hp 104/26 of 260 pins 136 steps 40 t 24.72 eye 1 spark 1 dmg 2/1

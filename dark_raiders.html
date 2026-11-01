@@ -3929,8 +3929,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.10';
-var VER_AT='2026-11-01 13:05';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.11';
+var VER_AT='2026-11-01 13:08';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -41388,6 +41388,32 @@ function adsCameraFrame(dt){
   }else if(!aiming) G.adsCam=null;
   return {x:camClamp(x,W/z,WORLD_W),y:camClamp(y,H/z,WORLD_H),z:z,pad:pad,angle:angle,reach:reach};
 }
+// v37.xx (cw-burnash), HIS ANSWER g-48 ("Yes, ash and a red glow"): in the last minute the world slowly turns red and ash falls, so the burn coming reads on a TV.
+// Render layer only, each window draws its own, no sound (no hum). 1) A full-frame red wash, 0 at 1:00 to 0.16 at 0:00 (no edge frame, no pulse).
+// 2) Up to 70 grey flakes (fewer when the quality ladder sheds detail), 1.5 to 3 px times hudRes, falling 22 to 40 px/s and drifting 6 to 14 px/s,
+// fading in over the first 3 s. Positions use Math.random, never rr or rnd, so the seed is untouched. BURN counts what the last frame drew.
+// Reduce motion (job 137) has not shipped: when it does it should switch the ash off and keep the glow.
+var BURN={ash:0,k:0,fl:[]};
+function burnFx(c,dt,w,h){
+  BURN.ash=0; BURN.k=0;
+  if(!G||G.over||G.nuking||!raidClockOn()) return;
+  var tl=+G.timeLeft;
+  if(!(tl>0&&tl<=CLOCK_RED)) return;
+  var f=1-tl/CLOCK_RED, k=0.16*f, r=Math.max(1,(typeof hudRes==='function')?hudRes():1), fl=BURN.fl;
+  var n=Math.round(70*(0.4+0.6*GFXQ.detail)), fin=Math.min(1,(CLOCK_RED-tl)/3), i, q, s, t;
+  BURN.k=k; dt=clamp(+dt||0,0,0.1);
+  c.save(); c.globalCompositeOperation='source-over';
+  c.globalAlpha=1; c.fillStyle='rgba(150,24,10,'+k.toFixed(4)+')'; c.fillRect(0,0,w,h);
+  while(fl.length<n){ t=Math.random(); fl.push({x:Math.random()*w,y:Math.random()*h,s:1.5+1.5*Math.random(),vy:22+18*Math.random(),vx:6+8*Math.random(),a:0.3+0.25*Math.random(),c:'rgb('+Math.round(154-60*t)+','+Math.round(148-58*t)+','+Math.round(140-54*t)+')'}); }
+  if(fl.length>n) fl.length=n;
+  for(i=0;i<fl.length;i++){
+    q=fl[i]; s=q.s*r;
+    q.y+=q.vy*r*dt; q.x+=q.vx*r*dt;
+    if(q.y>h+s){ q.y=-s; q.x=Math.random()*w; } else if(q.x>w+s) q.x=-s;
+    c.globalAlpha=q.a*fin; c.fillStyle=q.c; c.fillRect(q.x,q.y,s,s); BURN.ash++;
+  }
+  c.restore();
+}
 function render2D(dt){
   gfxqEase(dt); // v28.xx (cw-cx-laddereffects): ease decorative HUD and weather changes over one second.
   var p=G.player,i,j;
@@ -43500,6 +43526,7 @@ wc.drawImage(fogC,0,0,W,H);   // v18.03: stretched back over the frame
   }
   try{ drawBolts(wc,dt,Z,ox,oy,W,H); }catch(_bk){}   // v35.xx (cw-skybolt): the sky bolt, top edge to the strike, over the flash and under the HUD
   try{ gfxScreen(dt); }catch(_gsc){}   // v23.xx (gfx2): screen effects hook, before the HUD
+  try{ burnFx(wc,dt,W,H); }catch(_bfx){}   // v37.xx (cw-burnash): the last minute, red wash and falling ash, after the light, fog and flashes and before the HUD
   gfxpMark('wx');   // v23.xx (gfx1): rain, weather fog and the overlays
   try{ drawHUD(); } finally { GFXWT=null; }   // v23.xx (gfx5): the world text hand-off is this frame's only
   drawBuzzFx();
@@ -56968,7 +56995,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.10: A hurt machine trails clear dark smoke from its body. Check 37.10 fails on v37.09',
+  now:'v37.11: The last minute of a raid slowly reddens the world and ash falls. Check 37.11 fails on v37.10',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
