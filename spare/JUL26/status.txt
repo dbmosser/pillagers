@@ -1,6 +1,6 @@
 host=JUL26
-seen=2026-11-01 01:11
-epoch=1793513472
+seen=2026-11-01 01:21
+epoch=1793514075
 game=a0e2b6ad v36.95
 test_run=idle
 robots=1
@@ -10,7 +10,7 @@ runner=651454FA
 mode=idle
 ram_total_gb=31.9
 cpu_threads=16
-cpu_pct=8
+cpu_pct=4
 cpu=AMD Ryzen 7 5800X3D 8-Core Processor
 soak=soak v36.95: 0 of 6 passed
 spare_pc=not answering (192.168.1.246), 01:56
