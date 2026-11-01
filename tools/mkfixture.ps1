@@ -62721,6 +62721,7 @@ class Audio {
      function lbls(){ return g.labels.map(function(l){ return String(l.txt); }); }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile(); keys={};
+       __P().hud={};   // no folded panels left over from an earlier check: a folded pillager board has no N dead line
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: staging: no raid';
        p=g.player; g.bagOpen=false; g.mapOpen=false; p.downed=false;
@@ -113968,7 +113969,7 @@ class Audio {
      p.iv=9999; p.downed=false; p.hp=72;
      g.legendOn=1;
      // retarget (v35.36 cw-quiethud change 3): the run info card is a 300 by 38 fold at rest; his arrow opens it for good (P.hud.cond.o), so open it to measure the card itself
-     var P9=__P(); P9.hud=P9.hud||{}; P9.hud.cond=P9.hud.cond||{}; P9.hud.cond.o=1;
+     var P9=__P(); P9.hud={cond:{o:1}};   // a fresh set of panel folds: an earlier check may have left the pillager board folded
      for(var f=0;f<4;f++) __loop(performance.now()+f*16.7);
      __frame(0.016);
      var B=__hudBox();
