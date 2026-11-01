@@ -1,0 +1,7 @@
+v37.22: the wanted strip moves into the stash header
+
+the three wanted items sit in the stash header row beside the held count (label, icon, name, price in the warn colour), so the grid keeps its full height
+
+Check 37.22. Fails on v37.21.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -3695,7 +3695,7 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
       <div class="invtabs" id="stashtabs"></div>
       <div id="invcols" style="display:flex;gap:0;flex:1;min-height:0">
         <div class="invside" style="flex:1.35">
-          <div class="lohead">STASH<em><span id="stashn">0</span> held</em></div>
+          <div class="lohead">STASH<span id="wanted" style="display:none;margin-left:auto;margin-right:16px;align-items:center;gap:16px;white-space:nowrap;overflow:hidden;min-width:0;font-size:14px;font-weight:400;letter-spacing:.06em;color:var(--tx-1)"></span><em><span id="stashn">0</span> held</em></div><!-- v37.xx (cw-m1mkt2): the wanted strip in the header row -->
           <div class="invgrid" id="stashgrid"></div>
         </div>
         <div id="kitcol" class="invside" style="flex:1;border-left:1px solid var(--steel-hi)">
@@ -3742,7 +3742,6 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
       <div id="stashdetail" style="padding:8px 12px;border-top:1px solid var(--steel-hi);
            min-height:52px;font-size:13px;color:var(--ash)"></div>
       <div style="padding:8px 12px;border-top:1px solid var(--steel-hi)">
-        <div id="wanted" style="display:none;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px"></div><!-- v37.xx (cw-m1mkt): the three wanted items of the day -->
         <button id="sellall" style="width:100%">SELL JUNK AND LOOSE SALVAGE</button>
         <div id="buyback" style="display:none;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px"></div><!-- v37.xx (cw-m1sell): today's sales, buy back -->
         <!-- v20.94, from the whole-game bug hunt of 2026-10-08 (V-B3), seen on the 4K stash picture: THE SELL NOTE LINES UP WITH THE SELL
@@ -3933,8 +3932,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.21';
-var VER_AT='2026-11-01 16:05';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.22';
+var VER_AT='2026-11-01 16:08';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -57462,7 +57461,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.21: RANKS: scrounger i at 0, scrounger ii at 20,000 (about two good early raids), each step about 6 percent more than the last (20,000 then 21,000, 23,000 ... 99,000, 107,000), warlord v at 1,500,000 (about 120 raids, six weeks at about 20 raids a week). Rewards alternate cash (2,500 rising to 25,000 at warlord v, 121,000 in all) and kits of existing items (bandages, frags, medkits, plates, stims, smokes, decoys, data cores); a reward is not earnings. A rank is paid once when reached (P.rankPaid) with one floor line (rank up: sacker ii and its reward); a buy back or spending never lowers the rank. An old save is stamped once (P.mig1r): every rank its lifetime earnings reach is marked paid without paying. The Mainframe has a strip on every tab (rank, lifetime earnings, next rank, its reward, a bar); the stats page has a lifetime earnings card with the rank. A new profile starts with 1,000 dollars (was 900) Check 37.21 fails on v37.20',
+  now:'v37.22: the three wanted items sit in the stash header row beside the held count (label, icon, name, price in the warn colour), so the grid keeps its full height Check 37.22 fails on v37.21',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -59722,11 +59721,11 @@ try{ renderFreeKit(); }catch(_fk){}
     var _wl=trDemo()?[]:mktWanted(), _wh='', _wi, _wn;
     for(_wi=0;_wi<_wl.length;_wi++){
       _wn=String(ITEMS[_wl[_wi]]?ITEMS[_wl[_wi]].name:_wl[_wi]).toLowerCase();
-      _wh+='<span data-want="'+_wl[_wi]+'" style="height:28px;padding:0 8px;font-size:16px;letter-spacing:.04em;border:1px solid var(--ui-line-hi);border-radius:4px;display:inline-flex;align-items:center;gap:6px">'+
-        iconImgHTML(_wl[_wi],20,1)+'<span>'+escHtml(_wn)+'</span><b style="color:var(--amber);font-weight:600">$'+sellPriceOf(_wl[_wi]).toLocaleString()+'</b></span>';
+      _wh+='<span data-want="'+_wl[_wi]+'" style="display:inline-flex;align-items:center;gap:6px">'+   // v37.xx (cw-m1mkt2): flat, in the header row
+        iconImgHTML(_wl[_wi],18,1)+'<span>'+escHtml(_wn)+'</span><b style="color:var(--warn);font-weight:700">$'+sellPriceOf(_wl[_wi]).toLocaleString()+'</b></span>';
     }
-    _wd.innerHTML=_wh?('<span style="font-size:16px;letter-spacing:.04em;color:var(--amber)">wanted +50%</span>'+_wh):'';
-    _wd.style.display=_wh?'flex':'none';
+    _wd.innerHTML=_wh?('<span style="font-weight:700;letter-spacing:.1em;color:var(--tx-2)">wanted +50%</span>'+_wh):'';
+    _wd.style.display=_wh?'inline-flex':'none';
   }
   // v37.xx (cw-m1sell), his answer 39: TODAY'S SALES, newest first, under the sell button. A chip is one sale (its item, count and the $ it paid);
   // pressing it buys that sale back at exactly that price. The strip folds away when nothing was sold today.

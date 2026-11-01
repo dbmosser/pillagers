@@ -163,17 +163,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "A clean, consistent dark card with a clear selected row, but small low-contrast type, an explaining sentence, a clipped list, and a dead right pane keep it from looking polished.",
+  "verdict": "The new version adds a rank banner that pushes the list down 88px and crowds the screen, and none of the earlier advice was applied: the list, selected row, tagline, header sentence, detail pane and toast are the same as before.",
   "findings": [
-   "P1 list rows, detail pane and header: Row name 20px tx-1. Sub-lines ('pays', progress) at least 16px in tx-2 #aaa498. Tab labels 20px. The stash/bag legend 16px minimum. Drop the 'standard' tag from every row, since it is identical on all of them and the detail pane already shows it.",
-   "P1 under the tabs ('stuff for you to do.') and the list header ('hard work needs 3 more credits (a hard card is worth 2, an elite 3)'): Delete the tab subtitle. Replace the list header with a short stat such as 'done 0 · credits 0/3', 16px, tx-2.",
-   "P1 contract list bottom edge: Snap the list height to a whole number of rows, or fade the bottom 24px. Make the scrollbar 6px in --ui-line-hi. Move the toast 24px above the card edge or into the footer row.",
-   "P1 selected row: Use the --ui-raised #1e2225 fill, a 3px solid #e6ff3d left bar, and a 1px --ui-line-hi border. Set the selected name to tx-1 at weight 700.",
-   "P1 right detail pane: Stretch the pane to the list height (y=227 to 1002), pin the action button to the bottom, and put the reward '$520' at 56px hero size. The disabled button should show a 1px border and tx-2 text."
+   "P1 rank banner (y=140-214): Fold the rank into the header row as a single 16px tx-2 line ('scrounger i · $0 of $20,000'). Or drop the banner and keep only the thin progress bar. Keep lime for the selected row only, and make the rank name tx-1 at 32px.",
+   "P1 banner text: 'rank', 'lifetime earnings', 'next scrounger ii $20,000', 'reward': Set all labels to 16px f-cond 600 at +.04em in #aaa498. Set the reward text in tx-1, or show it as a small icon chip. Remove 'lifetime earnings $0', or show it only once it is above 0.",
+   "P1 under tabs ('stuff for you to do.') and list header ('hard work needs 3 more credits (a hard card is worth 2, an elite 3)'): Delete the tab subtitle. Replace the list header with 'done 0 · credits 0/3' at 16px tx-2. This recovers about 28px of height.",
+   "P1 selected row, row sub-lines and the 'standard' tag: Fill the selected row with #1e2225, add a 3px #e6ff3d left bar and a 1px #4a5257 border, and set the name to tx-1 at weight 700. Remove the 'standard' tag from rows that have it, since the detail pane already shows it. Set the sub-lines to 16px #aaa498.",
+   "P1 right detail pane (y=315-663): Stretch the pane to y=315-1002 and pin the button to its bottom edge. Set the reward '$400' at 56px f-cond 800. Give the disabled button a 1px #4a5257 border and tx-2 text."
   ],
-  "pic": "tools/handoff/console/notes/shots/88-undercroft-windows-recipes-1/12-mainframe-contracts-1080.jpg",
-  "task": "88-undercroft-windows",
-  "when": "2026-10-21T20:04"
+  "pic": "tools/handoff/console/notes/shots/00p-m1e-after/12-mainframe-contracts-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-01T21:08"
  },
  "14-mainframe-racks": {
   "score": 3,

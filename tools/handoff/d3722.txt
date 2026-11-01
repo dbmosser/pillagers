@@ -1,0 +1,5 @@
+## v37.22 - THE WANTED STRIP MOVES INTO THE STASH HEADER
+
+Co-op hunt while he was away. the critic on v37.20 (P0): the wanted strip above the sell button took height from the stash grid and cut its last row in half Watch: the three wanted items sit in the stash header row beside the held count (label, icon, name, price in the warn colour), so the grid keeps its full height
+
+MEASURED. Check 37.22 passes, and fails on v37.21.
