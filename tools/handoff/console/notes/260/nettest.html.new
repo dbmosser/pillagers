@@ -536,7 +536,11 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       log('pad loot: C searched box '+box.cid+' with pad X held on the host and forwarded: '+(itemsC()-it0)+' items landed, '+rep.padLootMs+' ms; '+state());
     },function(e){ bad.push('pad loot: '+e.message+' ('+state()+')'); }).then(function(){
       dn=false; return sleep(200);
-    }).then(function(){ A.navigator.getGamepads=NGA; A.document.hasFocus=HFA; C.document.hasFocus=HFC; });
+    }).then(function(){ A.navigator.getGamepads=NGA; A.document.hasFocus=HFA; C.document.hasFocus=HFC;
+      if(typeof C.__gx!=='function') return;   // 11-01 (job 260): the pad was pulled, so C pauses on pad lost; it is cleared for the mouse steps after
+      var tl=Date.now();
+      return wait(function(){ return C.__gx('!!(PAD.lost&&pauseOpen)')?1:null; },3000,'pad lost').then(function(){ log('pad loot: the pad was taken away and C paused on pad lost '+(Date.now()-tl)+' ms later; put back to mouse and keys'); },function(){ log('pad loot: C did not pause on pad lost within 3 s'); }).then(function(){ try{ C.__gx('PAD.lost=null;PAD.lossIx=-1;padLostUi(false,false);if(pauseOpen)togglePauseBox(false);1'); }catch(e){ log('pad loot: clear '+e.message); } });
+    });
   }
   function lootStep(A,C,bad,rep){
     if(typeof A.__net.cont!=='function'||typeof C.__net.cont!=='function'||typeof C.__net.stand!=='function'){ bad.push('this fixture has no container view in its net handle (a build before v15.91), so the loot step cannot run'); return Promise.resolve(); }

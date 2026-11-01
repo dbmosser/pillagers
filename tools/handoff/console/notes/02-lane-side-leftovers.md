@@ -12,6 +12,12 @@ Seen: in both windows, day and rainy night, the sentry and the hostile pillager 
 Critic: night p1 1080 = 3 ("yes" better than Codex round 3); day p2 1080+4K = 3 ("same"). Findings are all general raid HUD (hp bar too heavy, hotbar slots 2..0 are bare numerals, panels differ, bots list long, "25 / 24" ammo reads like a bug, 'chill row cache' label chip). None is about the tracers.
 Follow-ups: (a) 4K raid: hotbar is small next to the ammo card and slot numerals 9/0 touch a building (day-p2-4k.jpg), looks like the hotbar does not scale with height at 4K; (b) ammo card shows "25 / 24" in the camera scene (probably staging, not a game bug; check only if it can happen in play).
 
+## Job 3: o-120c-wallet-double-text (v35.01/v35.48)
+Pictures: notes/shots/02-o-120c-wallet-double-text/wallet-{hub-p1,hub-p2,linked-career-p1-legacy,linked-career-p2,linked-demo-p1,linked-demo-p2}-{1080,4k}.jpg. 4K: 5 of 6 staged; wallet-linked-career-p2 at 4K did not link (flaky pair, 1080 of it staged fine), so that jpg is not a usable picture.
+Seen: hub at 4K, both windows: ONE cash figure in the top right ("$4,471,337" then xp, then "stash $0" and "bag $0", which are separate labelled values, not a second cash). The recipe's own counters at 4K and 1080: hub pageCash 1 / canvasCash 0 in every sample (empty and full bag); raid (career and demo, both windows): pageCash 0 / canvasCash 0, the DOM wallet is hidden in the raid and the only money is "you $x" in the value-at-risk panel. So no double text at 4K.
+Critic: hub p1 1080+4K = 3 ("same" as Codex round 3). Findings: currency row has no panel and mixed sizes, hotbar slots low contrast, station chips differ, undercroft card at x82 not on the margin, "bag $0" runs onto the black letterbox bar at 1080. No finding is about a second cash figure.
+Follow-ups: (a) hub top-right wallet row sits on bare art with no panel and "bag $0" reaches into the letterbox strip (critic P1/P2, hub-p1-1080.jpg); (b) the "the last pour ***experimental feature may glitch***" chip is his experimental flag, left alone.
+
 ## Job 1: o-00v-239-ping-and-map-mark-are-one (v36.53)
 Pictures (solo, staged): notes/shots/02-o-00v-239-ping-and-map-mark-are-one/mark-solo-raid-{1080,4k}.jpg, mark-solo-map-{1080,4k}.jpg
 Seen: solo, the middle mouse mark in the raid is an amber diamond with a "mark . 28m" tag at the reticle; the same amber diamond with a "mark" chip shows on the sector map and the top-right minimap. Same shape and colour in all three. Good at 4K, nothing clipped.

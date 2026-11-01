@@ -1,0 +1,8 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  06-terms                               staged       5.2s  total   1: clip 1 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  condition-sp-extracted-host            staged       8.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | sp 2315 cash 2000
+  condition-sp-extracted-guest           staged       8.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | sp 2315 cash 2000
+== 4k : window 3876x2265, viewport 3840x2160
+  06-terms                               staged       5.4s  total   2: clip 1 off 1 small 0 contrast 0 font 0 overlap 0 focus 0
+  condition-sp-extracted-host            staged       9.4s  total   1: clip 1 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | sp 2315 cash 2000
+  condition-sp-extracted-guest           staged       9.4s  total   1: clip 1 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | sp 2315 cash 2000

@@ -1,0 +1,28 @@
+{
+  "about": "o-02-172 copy for lane a: terms expect uses U.on (U.modal is not in the default helper), career query gets its leading question mark (the fixture did not load without it)",
+  "prelude": "window.__uis=window.__uis||(function(){var U={};U.wait=function(ms){return new Promise(function(resolve){setTimeout(resolve,ms);});};U.on=function(sel){var e=document.querySelector(sel);if(!e)return false;var b=e.getBoundingClientRect();return b.width>0&&b.height>0;};U.prep=async function(){__runPrep();__topClear();};return U;})();",
+  "screens": [
+    {
+      "name": "06-terms",
+      "screen": "Terms modal (lift T)",
+      "before": "__hubEnter(); __station('lift','KeyT')",
+      "query": "",
+      "expect": "U.on('#termsmodal')",
+      "js": "__gx(\"__resetCfg();__pinDefaults(0);__cleanProfile();__hubEnter();P.terms=['known','patrols'];CFG.xfPix=0;renderTerms();openModal('termsmodal');\");document.querySelector('#termslist button[aria-pressed=true]').focus();await U.wait(350);"
+    },
+    {
+      "name": "condition-sp-extracted-host",
+      "screen": "Career night/fog extraction with one signed condition, host Terms",
+      "query": "?career=1",
+      "expect": "U.on('#outcome')&&__gx(\"G.careerLb.score===2315&&G.careerCash===2000\")",
+      "js": "__gx(\"__runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();CFG.xfPix=0;CFG.superhot=1;CAREER_ON=1;DMUL_ON=1;P.pname='condition test';P.cond='night';P.wxPick='fog';P.terms=['known'];__deploy({kit:[],safe:null,mapIx:0,seed:4242});G.terms=['known'];G.dmul=1;G.career=1;G.cs={s:1000,k:4,b:{kill:700,style:300}};G.bag=['core'];G.carriedIn=0;G.pedCarry=0;P.credits=10000;P.racks=0;P.arrays=0;G.player.hp=100;G.player.iv=99999;G.tel.kills={crawler:4};G.tel.containers=3;G.t=150;G.player.downed=false;if(Math.abs(raidConditionMul()-Math.pow(1.05,3))>0.000001)throw new Error('condition camera factors not staged');__endRaid('extract');\");await U.wait(3500);__gx('ocLgSkip()');return __gx(\"'sp '+G.careerLb.score+' cash '+G.careerCash\");"
+    },
+    {
+      "name": "condition-sp-extracted-guest",
+      "screen": "Career night/fog extraction with one signed condition, guest Terms",
+      "query": "?career=1",
+      "expect": "U.on('#outcome')&&__gx(\"G.careerLb.score===2315&&G.careerCash===2000\")",
+      "js": "__gx(\"__runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();CFG.xfPix=0;CFG.superhot=1;CAREER_ON=1;DMUL_ON=1;P.pname='condition test';P.cond='night';P.wxPick='fog';P.terms=['known'];__deploy({kit:[],safe:null,mapIx:0,seed:4242});G.terms=['known'];P.terms=[];G.dmul=1;G.career=1;G.cs={s:1000,k:4,b:{kill:700,style:300}};G.bag=['core'];G.carriedIn=0;G.pedCarry=0;P.credits=10000;P.racks=0;P.arrays=0;G.player.hp=100;G.player.iv=99999;G.tel.kills={crawler:4};G.tel.containers=3;G.t=150;G.player.downed=false;if(Math.abs(raidConditionMul()-Math.pow(1.05,3))>0.000001)throw new Error('condition camera factors not staged');__endRaid('extract');\");await U.wait(3500);__gx('ocLgSkip()');return __gx(\"'sp '+G.careerLb.score+' cash '+G.careerCash\");"
+    }
+  ]
+}

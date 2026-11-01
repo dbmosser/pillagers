@@ -2158,3 +2158,8 @@
 2026-11-01 0.28632209999999997 124-gfx-coloured-flash-light
 2026-11-01 0.1202 critic-manual
 2026-11-01 0.1001 critic-manual
+2026-11-01 0.1188 critic-manual
+2026-11-01 0.9665002 134-picture-store-total-and-soak
+2026-11-01 0.0813654 134-picture-store-total-and-soak-wait
+2026-11-01 0.1112 critic-manual
+2026-11-01 0.1001 critic-manual

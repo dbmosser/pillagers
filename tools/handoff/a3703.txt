@@ -1,0 +1,1 @@
+| THE PROFILE KEEPS A SECOND COPY IN INDEXEDDB AND ASKS THE BROWSER TO KEEP IT | v37.03 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 37.03 passes, fails on v37.02 |

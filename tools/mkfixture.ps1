@@ -6171,6 +6171,82 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'37.03',what:'the profile keeps a second copy in IndexedDB: a save is mirrored, a cleared or unreadable localStorage save comes back from the copy, an erased save does not, and the browser is asked once to keep the storage',
+   run:function(){
+     if(typeof saveCopyPut!=='function'||typeof saveCopyRestore!=='function'||typeof savePersistAsk!=='function') return 'the profile has no second copy (no saveCopyPut, saveCopyRestore or savePersistAsk)';
+     var q=[], fake, od=Object.getOwnPropertyDescriptor(window,'indexedDB'), ls0=null, slot3=null, un0=null, origRestore=saveCopyRestore, calls=0, got=null, raw, per=0, asked0=SAVE_PERSIST.asked, DB='pillagers-save';
+     function drain(){ var n=0; while(q.length&&n++<500) q.shift()(); }
+     function mkReq(){ return {}; }
+     fake={data:{},open:function(name){
+       var r=mkReq(), db=fake.data[name], fresh=!db, dbo;
+       if(!db) db=fake.data[name]={};
+       dbo={close:function(){},createObjectStore:function(n){ db[n]=db[n]||{}; return {}; },
+         transaction:function(n){
+           var tx={}, os={
+             put:function(v,k){ db[n][k]=v; q.push(function(){ if(tx.oncomplete) tx.oncomplete(); }); return {}; },
+             delete:function(k){ delete db[n][k]; q.push(function(){ if(tx.oncomplete) tx.oncomplete(); }); return {}; },
+             openCursor:function(){
+               var rq={}, keys=Object.keys(db[n]), at=-1;
+               function step(){ at++;
+                 rq.result=(at<keys.length)?{key:keys[at],value:db[n][keys[at]],continue:function(){ q.push(step); }}:null;
+                 if(rq.onsuccess) rq.onsuccess(); }
+               q.push(step); return rq; }
+           };
+           tx.objectStore=function(){ return os; };
+           return tx; }};
+       r.result=dbo;
+       q.push(function(){ if(fresh&&r.onupgradeneeded) r.onupgradeneeded(); if(r.onsuccess) r.onsuccess(); });
+       return r; }};
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       ls0=localStorage.getItem(SKEY); slot3=localStorage.getItem('salvagerun:profile:3'); un0=localStorage.getItem(SKEY+':unreadable');
+       Object.defineProperty(window,'indexedDB',{configurable:true,value:fake});
+       if(SAVE_COPY.timer){ clearTimeout(SAVE_COPY.timer); SAVE_COPY.timer=0; } SAVE_COPY.pending=null;
+       // 1. a save is mirrored
+       raw=JSON.stringify(P);
+       storeSet(raw); saveCopyFlush(); drain();
+       if(!fake.data[DB]||!fake.data[DB].profile||!fake.data[DB].profile[SKEY]||fake.data[DB].profile[SKEY].raw!==raw) return 'a save did not reach the IndexedDB copy';
+       // 2. localStorage cleared: the boot read comes from the copy and puts it back
+       localStorage.removeItem(SKEY);
+       saveCopyRestore=function(b,cb){ calls++; return origRestore(b,cb); };
+       storeGet(); drain();
+       if(calls!==1) return 'storeGet did not fall back to the copy when localStorage had no save';
+       if(localStorage.getItem(SKEY)!==raw) return 'the copy was not put back into localStorage after a cleared save';
+       storeGet(); drain();
+       if(calls!==1) return 'storeGet went to the copy although localStorage held a good save';
+       saveCopyRestore=origRestore;
+       // 3. an unreadable save: the copy wins and the bad value is kept aside; a lost numbered save comes back too
+       fake.data[DB].profile['salvagerun:profile:3']={raw:raw,t:1}; localStorage.removeItem('salvagerun:profile:3');
+       localStorage.setItem(SKEY,'{bad');
+       got=null; saveCopyRestore('{bad',function(r){ got=r; }); drain();
+       if(!got||got.value!==raw) return 'an unreadable save did not come back from the copy';
+       if(localStorage.getItem(SKEY)!==raw) return 'the unreadable save was not replaced by the copy';
+       if(localStorage.getItem(SKEY+':unreadable')!=='{bad') return 'the unreadable save was not kept aside';
+       if(localStorage.getItem('salvagerun:profile:3')!==raw) return 'a numbered save lost from localStorage was not put back';
+       // 4. an erased save does not come back
+       saveCopyDel(SKEY); drain();
+       localStorage.removeItem(SKEY);
+       got='x'; saveCopyRestore(null,function(r){ got=r; }); drain();
+       if(got!==null) return 'an erased save still came back from the copy';
+       // 5. the browser is asked once
+       try{ Object.defineProperty(navigator,'storage',{configurable:true,value:{persist:function(){ per++; return Promise.resolve(true); }}}); }catch(_n){ return 'SKIP: navigator.storage cannot be stubbed'; }
+       SAVE_PERSIST.asked=false; savePersistAsk(); savePersistAsk();
+       if(per!==1) return 'the browser was asked to keep the storage '+per+' times, not once';
+       if(!SAVE_PERSIST.armed&&!asked0) return 'no first-click hook asks the browser to keep the storage';
+       return null;
+     } finally {
+       saveCopyRestore=origRestore;
+       try{ if(od) Object.defineProperty(window,'indexedDB',od); else delete window.indexedDB; }catch(_i){}
+       try{ delete navigator.storage; }catch(_s){}
+       SAVE_PERSIST.asked=asked0;
+       if(SAVE_COPY.timer){ clearTimeout(SAVE_COPY.timer); SAVE_COPY.timer=0; } SAVE_COPY.pending=null;
+       try{
+         if(ls0===null) localStorage.removeItem(SKEY); else localStorage.setItem(SKEY,ls0);
+         if(slot3===null) localStorage.removeItem('salvagerun:profile:3'); else localStorage.setItem('salvagerun:profile:3',slot3);
+         if(un0===null) localStorage.removeItem(SKEY+':unreadable'); else localStorage.setItem(SKEY+':unreadable',un0);
+       }catch(_l){}
+       __topClear();
+     } }},
   {v:'37.02',what:'the game keeps ONE running total of its off screen picture stores (count and estimated bytes) in the frame telemetry, the run record and the flight recorder line (research row 17, the 3 hour party)',
    run:function(){
      var bad=[], g=null, T=null, t0, t1, cv, pre=null, rec=null, ex='', want=0, nm;

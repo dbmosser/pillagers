@@ -67,17 +67,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The earlier advice was mostly followed: the title now sits at the top left, the focused row has a lime bar, and signed is a lime fill. The card still looks half-built, because the list ends at y=648 and about 370px of the card is empty below it.",
+  "verdict": "The card now has a pinned footer, a hero total and a clean lime focus row, but the 1080 list is still short with dead space below it, and the 4K version clips the last row and sits in a different card.",
   "findings": [
-   "P1 whole card, y=650-1024: Make the rows 100px tall so the list fills y=200-760. Pin a 72px footer at the bottom of the card with 'sign nothing' on the left and the 'sp x1.10' total on the right. Use a 48px side margin so the column spans x=145-1775 and lines up with the X.",
-   "P1 row descriptions, x=287-571, y=262-613: Set them to 16px --tx-2 with a minimum 4.5:1 contrast. Cut each to 4 words or fewer, for example 'machines +40%' and 'raid clock -33%'. Remove the trailing period and the colon.",
-   "P1 sign buttons, x=1513-1633: Use a 2px --ui-line-hi border on idle buttons and 18px label text in --tx-1. Replace the double ring on the focused button with a single 3px --acc-hover outline offset 2px.",
-   "P1 bonus text '+5% sp', x=1443-1497: Keep the signed bonus in --tx-1 and the idle bonus in --tx-2. Reserve lime for the button fill and the focus bar. Show the +5% once in the header ('each term +5% sp') or only on the active rows.",
-   "P2 total 'sp x1.10', x=1604-1659, y=686: Draw it at the 56px hero size in f-cond 800, right-aligned in the footer row, with a 16px --tx-2 label 'score bonus' above it. Remove the hairline at y=711."
+   "P1 4K shot, card y=140-985 (display coords), last row 'silent running' at y=780-857: Size the card to 90% of the viewport height at every resolution (972px at 1080, 1944px at 4K). Make the rows flex to fit, or set the row height to 100px x scale so all five rows show with no scrollbar.",
+   "P1 1080 shot, y=708-870 (empty band between the list and the footer): Make the rows 120px tall (5 x 120 = 600, so the list spans y=205-805), or centre the list vertically in the space above the footer. Reduce the gap to the footer hairline to 24px.",
+   "P1 Title 'the terms' and the X, 1080 x=167-285, y=128-158; X at x=1760-1822: Put the title and the X on one 56px header row, both centred on y=84. Use a 32px f-cond 700 title and move the X to 16px from the card's top and right edges. Keep the hairline directly under that row.",
+   "P1 Lime usage: signed fills, +5% sp, 'sp x1.10' total, focus bar: Make 'signed' an outlined button with a 2px --ok border and a check. Reserve the lime fill for the focused row's button only. Draw the 'sp x1.10' hero in --tx-1 and turn it lime only while at least one term is signed. Replace the double ring with a single 3px outline offset 2px.",
+   "P2 Row descriptions, 1080 x=193-471, y=262-668: Set them to 16px --tx-2 at weight 600. Shorten 'sentries, crawlers, criers, pillagers +40%' to 'all patrols +40%' and 'all pillagers hostile and searching' to 'all hostile, searching'."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-02-172-night-pays-cash-recipes-2/06-terms-1080.jpg",
-  "task": "o-02-172-night-pays-cash",
-  "when": "2026-10-28T15:24"
+  "pic": "tools/handoff/console/notes/shots/02-o-02-172-retry/06-terms-4k.jpg",
+  "task": "manual",
+  "when": "2026-11-01T16:06"
  },
  "07-party-coop": {
   "score": 2,
@@ -1827,17 +1827,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The controls panel is now folded to a one-line 'f1 controls' hint and the feed lane is tidier, but the HUD still has inconsistent panel styles, a sub-minimum 'chill row cache' label, and a hotbar that reads as scattered slots instead of one strip.",
+  "verdict": "This is a clean dark hub with a good lime 'enter raid!' call-out, but the top-right money row has no panel and a shaky hierarchy, the hotbar is still low-contrast, and the room beyond it reads as busy scenery rather than a designed layout.",
   "findings": [
-   "P1 hotbar x555-1475 y960-1062: Draw all 10 slots as 64px --ui-panel squares with a 1px --ui-line-hi border, 8px apart, on a 70% void strip. Put the slot number at 16px tx-1 in the top-left. Change the selected border to a 2px --acc.",
-   "P1 top-centre timer x905-1030 y10-75: Put the timer and the extract line in one 220px --ui-panel with a 1px --ui-line divider. Set the timer to 56px f-cond 800 tx-1, the moon to 16px tx-2, and the extract line to 16px --extract. Keep 16px of padding.",
-   "P1 left panels x8-368 y142-260 and x14-170 y325-360: Use one panel recipe for both: --ui-panel at 85% opacity, a 1px --ui-line-hi border, a 4px radius and 16px padding. Set the row text to 16px f-cond 600. Make 'you' tx-1 and the rest tx-2 at 4.5:1 or better. Align the name bar to the same x24 left edge.",
-   "P1 'chill row cache' label x1388-1518 y115-140: Render it as a 16px f-cond 600 tx-1 label on a 70% --ui-void chip with a 4px radius and 8px/4px padding. Drop the pink.",
-   "P1 hp bar x24-430 y1035-1070: Make the bar 20px high at x24 with a 48px bottom margin. Set 'hp 100' to 20px f-cond 700 in --acc-ink on the fill. Put the two status icons in a 40px --ui-panel row 8px above the bar."
+   "P1 top-right currency row x1350-1900 y20-60 (image 2): Put the row in one --ui-panel at 85% opacity with a 1px --ui-line-hi border, 4px radius and 16px padding, anchored at the 48px margin. Make '$' the single 32px f-cond 800 hero in tx-1. Set xp, stash and bag to 20px with 16px tx-2 labels, all the same size, in one vertical or evenly spaced list per cw-trcol. Use the image 2 sizing, not image 1.",
+   "P1 hotbar x455-1468 y965-1062 (image 2): Use 64px --ui-panel squares with a 1px --ui-line-hi border and 8px gaps. Draw empty-slot glyphs at tx-2 (4.5:1 or better) and slot numbers at 16px tx-1 top-left. Give the selected slot a 2px --acc border with a --ui-raised fill. Have slot 1 follow the same rule. Hold the strip to 70% void.",
+   "P1 station labels (the gambler, shop/craft/hire, settings, last pour, stash, fashion) x325-1640: Standardise every chip: --ui-panel, 1px --ui-line-hi, 4px radius, 20px f-cond 600 tx-1 and 8px/4px padding. Add a 3px left bar in the station colour. Remove the asterisks and either drop the glitch line or turn it into a 16px --warn glyph tag. Make the rewards chip a 16px count badge, for example '6' in a --acc dot, on the mainframe chip.",
+   "P1 'the undercroft' card x82-280 y48-118: Set the title to 32px f-cond 700 and delete the sub-line, since the stash value already shows in the currency row. Anchor the card at 48px from the left and top of the screen edge, with the same panel recipe as the currency row, and match its top edge to the currency row at y48.",
+   "P2 'enter raid!' call-out x835-1087 y88-150: Draw it as an --acc fill, --acc-ink 32px f-cond 800 label, 4px radius and 16px/8px padding, with an 'e' key chip (16px) to the right. Drop the '!'. Raise it 16px so the pillar tops do not touch the card."
   ],
-  "pic": "tools/handoff/console/notes/shots/02-o-140-red-enemy-tracers/red-tracers-night-p1-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/02-o-120c-wallet-double-text/wallet-hub-p1-1080.jpg",
   "task": "manual",
-  "when": "2026-11-01T15:42"
+  "when": "2026-11-01T15:53"
  },
  "p2-1080": {
   "score": 3,
@@ -3059,17 +3059,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The card is tidy and the lime leaderboard button reads as the main action, but it holds too many stacked elements, the stats contradict the score, the type is tiny, and the amber, teal, gold and lime colours compete.",
+  "verdict": "Much improved: the panels are neutral, the 2,315 sp hero is lime and the captions are gone, but the card is now too tall and crowded, and the panel and content column are off-centre.",
   "findings": [
-   "P1 stat chips row (kills 0, accuracy 0%, containers 0, time 0:00, health 100): Remove the row, or fix the values. If it stays, drop the duplicate kills chip and use real values at 20px for the number and 16px for the label.",
-   "P1 hierarchy, the whole card: Make the 2,000 sp total the single hero at 56px, f-cond 800. Drop $2,520 to 32px in tx-1. Keep the title at 32px.",
-   "P1 labels and captions: stat chip labels, medal names, 'out clean · never spotted', 'personal best', +148 xp: Set every label to 16px minimum, 600 weight. Use tx-1 for the xp line at 20px. Delete the 'out clean · never spotted' explaining sentence.",
-   "P1 colour use: amber score panel, teal money panel, gold medals, lime button: Make both panels --ui-panel with a --ui-line-hi border. Use tx-1 for the values, with lime only on the hero total. Keep teal only on the 'extracted' title. Use a 3px rarity-gold bar on the medals, with no fill.",
-   "P1 vertical rhythm, between the gem tile, stat chips, medals, xp, feedback button and leaderboard: Remove the unlabelled gem tile or give it a name. Put gaps on the 8px grid at 24px between groups. Make the content column the full card width minus 48px padding."
+   "P1 card layout, all three shots: Centre the content column on the card axis with 48px side padding. Cut the content so no scrollbar is needed. Remove the clipped element above the button, or give it a 24px gap.",
+   "P1 raid score panel vs money panel: Make both panels the same height and pin both totals to the bottom row on one baseline. Put a 16px gap between the label and the hero number. Fill the money panel's empty space with a quiet row or shrink both panels.",
+   "P1 gem tile with 'data core' caption and the two check lines: Remove the tile and its caption, and delete the sentence lines. If the data core matters, add it as a row in the money panel, such as 'data core 1' at 20px.",
+   "P1 vertical rhythm, panels to leaderboard button: Use 24px between all groups and 8px inside a group. Group stats, medals and xp into one block.",
+   "P2 stat chips and medals: Drop the chips that read 0 or 0:00, or fix their data. Make the medal icons 48px with a 3px rarity-gold bar directly under the icon, and put the 16px label below it."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-02-172-night-pays-cash-recipes-1/condition-sp-extracted-host-1080.jpg",
-  "task": "o-02-172-night-pays-cash",
-  "when": "2026-10-28T14:35"
+  "pic": "tools/handoff/console/notes/shots/02-o-02-172-retry/condition-sp-extracted-host-4k.jpg",
+  "task": "manual",
+  "when": "2026-11-01T16:06"
  },
  "finalrush-host-raid": {
   "score": 2,
@@ -5260,5 +5260,21 @@
   "pic": "tools/handoff/console/notes/shots/02-o-140-red-enemy-tracers/red-tracers-day-p2-4k.jpg",
   "task": "manual",
   "when": "2026-11-01T15:43"
+ },
+ "p1-4k": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "This is a clean dark hub with a good lime 'enter raid!' call-out, but the top-right money row has no panel and a shaky hierarchy, the hotbar is still low-contrast, and the room beyond it reads as busy scenery rather than a designed layout.",
+  "findings": [
+   "P1 top-right currency row x1350-1900 y20-60 (image 2): Put the row in one --ui-panel at 85% opacity with a 1px --ui-line-hi border, 4px radius and 16px padding, anchored at the 48px margin. Make '$' the single 32px f-cond 800 hero in tx-1. Set xp, stash and bag to 20px with 16px tx-2 labels, all the same size, in one vertical or evenly spaced list per cw-trcol. Use the image 2 sizing, not image 1.",
+   "P1 hotbar x455-1468 y965-1062 (image 2): Use 64px --ui-panel squares with a 1px --ui-line-hi border and 8px gaps. Draw empty-slot glyphs at tx-2 (4.5:1 or better) and slot numbers at 16px tx-1 top-left. Give the selected slot a 2px --acc border with a --ui-raised fill. Have slot 1 follow the same rule. Hold the strip to 70% void.",
+   "P1 station labels (the gambler, shop/craft/hire, settings, last pour, stash, fashion) x325-1640: Standardise every chip: --ui-panel, 1px --ui-line-hi, 4px radius, 20px f-cond 600 tx-1 and 8px/4px padding. Add a 3px left bar in the station colour. Remove the asterisks and either drop the glitch line or turn it into a 16px --warn glyph tag. Make the rewards chip a 16px count badge, for example '6' in a --acc dot, on the mainframe chip.",
+   "P1 'the undercroft' card x82-280 y48-118: Set the title to 32px f-cond 700 and delete the sub-line, since the stash value already shows in the currency row. Anchor the card at 48px from the left and top of the screen edge, with the same panel recipe as the currency row, and match its top edge to the currency row at y48.",
+   "P2 'enter raid!' call-out x835-1087 y88-150: Draw it as an --acc fill, --acc-ink 32px f-cond 800 label, 4px radius and 16px/8px padding, with an 'e' key chip (16px) to the right. Drop the '!'. Raise it 16px so the pillar tops do not touch the card."
+  ],
+  "pic": "tools/handoff/console/notes/shots/02-o-120c-wallet-double-text/wallet-hub-p1-4k.jpg",
+  "task": "manual",
+  "when": "2026-11-01T15:53"
  }
 }

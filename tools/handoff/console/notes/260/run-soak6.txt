@@ -1,0 +1,9 @@
+go: go
+C at 12s: {"url":"about:blank","title":"","p2":null,"same":null,"C":"TypeError: Cannot read properties of undefined (reading 'state')","A":{"on":false,"role":null,"seat":-1,"roster":[],"status":"","err":"","made":0,"codeLen":0,"links":0},"Asame":{"mode":"","pick":"coop","same":"","pair":"","p2url":"","chan":false,"busy":false,"p2win":false}}
+run 1 {"pass":false,"bad":["after the co-op row copy A is not the host in co-op with a channel open: {\"mode\":\"\",\"pick\":\"coop\",\"same\":\"\",\"pair\":\"\",\"p2url\":\"\",\"chan\":false,\"busy\":false,\"p2win\":false}","the co-op row did not ask for a second window","timed out after 30000 ms waiting for copy C to boot as the player 2 window with its link channel open"],"trade":0,"drop":0,"relink":0}
+go: go
+run 2 {"pass":false,"bad":["soak: frames stalled: A drew 2 frames in second 41; C drew 2 frames in second 41"],"trade":790,"drop":700,"relink":1209,"errors":0,"saved":0,"drops":0,"fps":{"A":2,"C":2},"soakSec":120}
+go: go
+run 3 {"pass":true,"bad":[],"trade":601,"drop":513,"relink":619,"errors":0,"saved":0,"drops":0,"fps":{"A":3,"C":3},"soakSec":120}
+go: go
+run 4 {"pass":true,"bad":[],"trade":713,"drop":561,"relink":908,"errors":0,"saved":0,"drops":0,"fps":{"A":3,"C":3},"soakSec":120}

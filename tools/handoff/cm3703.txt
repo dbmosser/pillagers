@@ -1,0 +1,7 @@
+v37.03: the profile keeps a second copy in indexeddb and asks the browser to keep it
+
+The save now has a second copy the browser keeps apart from the main one, so another game on the same site clearing the storage no longer wipes progress. Watch for: a save you erased on the title staying gone, and no change at all in a normal load. Firefox may show a small permission box about keeping storage after the first click.
+
+Check 37.03. Fails on v37.02.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

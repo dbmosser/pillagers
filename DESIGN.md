@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.03 - THE PROFILE KEEPS A SECOND COPY IN INDEXEDDB AND ASKS THE BROWSER TO KEEP IT
+
+Co-op hunt while he was away. Release fix for itch.io: games on itch default domain share one storage area that other games can read or clear, and Safari can delete script data after seven days without a click. The profile lived only in localStorage. Every save is now also mirrored into IndexedDB (written 0.4 s after saves go quiet, and when the page is hidden), the boot reads the copy back when localStorage has no save or one that will not parse (and puts back lost numbered saves), erasing a save on the title erases its copy, and navigator.storage.persist() is called once after the first click, key or touch. The key salvagerun:profile and the profile shape are unchanged.
+
+MEASURED. Check 37.03 passes, and fails on v37.02.
 ## v37.02 - THE PICTURE STORES KEEP A RUNNING TOTAL
 
 Co-op hunt while he was away. The research brief of 10-25 (row 17): the game counted each off screen picture store on its own but kept no total, and the party runs about three hours (one store grew once before, v32.75). One running total (pictures and estimated bytes, the peak, and the count in each store) now sits in the frame telemetry, the run record and the flight recorder run line, so a long session shows which store grows.
