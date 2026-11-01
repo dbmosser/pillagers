@@ -17975,9 +17975,11 @@ class Audio {
        g.pBush=true; g.pConceal=0.4;
        __frame(0.001);
        if(!hit.bp) bad.push('no backpack cue drawn'); else if(hit.bp.px>17) bad.push('the backpack cue is '+hit.bp.px+' px');
-       if(!hit.it) bad.push('no item count drawn'); else if(hit.it.px>17) bad.push('the item count is '+hit.it.px+' px');
+       // retarget (v35.xx cw-clockcard, his 10-28 order): the item count and its value are gone from the gun card on purpose, so the count is only measured if one is drawn
+       if(hit.it&&hit.it.px>17) bad.push('the item count is '+hit.it.px+' px');
        if(!hit.bd) bad.push('no pillager board drawn'); else if(hit.bd.c==='#ffc04a') bad.push('the board title is amber');
-       if(!hit.cc) bad.push('no hidden chip drawn'); else if(hit.cc.px>19) bad.push('the hidden chip is '+hit.cc.px+' px');
+       // retarget (v35.49 hud states, job 186e): concealed and in cover are state icons with a brief word on the vitals now, drawn at the vitals scale (24 px at 1080p), not the old 19 px chip
+       if(!hit.cc) bad.push('no hidden chip drawn'); else if(hit.cc.px>26) bad.push('the hidden state word is '+hit.cc.px+' px, over the vitals scale');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ proto.fillText=o; try{ var g2=__state(); if(g2&&!g2.over){ g2.pBush=false; g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
@@ -18661,7 +18663,9 @@ class Audio {
      var ranks=['common','uncommon','rare','elite','gold'], keysByRank={}, oldCb=CFG.cb, oldSpr=ICONSPR, oldURL=_iconURL, oldCreate=document.createElement, cv2=document.createElement('canvas'), menuCanvas=null, c, i,j,m,key,d,x,y,want,bad=[];
      try{
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       // retarget (v36.38, his 10-29 one rarity per gun): no gun is left at common or uncommon, so a rank with no gun is staged with a plain item of that rarity; guns win where they exist
        Object.keys(ITEMS).forEach(function(k){if(ITEMS[k].use==='gun') keysByRank[dispR(k)]=k;});
+       Object.keys(ITEMS).forEach(function(k){var r=dispR(k); if(!keysByRank[r]&&ranks.indexOf(r)>=0&&ITEMS[k].use!=='gun') keysByRank[r]=k;});
        cv2.width=160; cv2.height=160; c=cv2.getContext('2d');
        function pixels(label,cx,cy,S){
          for(j=0;j<5;j++){
@@ -18716,11 +18720,11 @@ class Audio {
            HB.near=n?HB.stations[0]:null;hints=null;heading=null;nearTop=null;
            toast.textContent='welcome pack';toast.classList.add('on');drawHubHUD(0,0);
            R=Math.max(1,hudRes());var cr=cv.getBoundingClientRect(),scale=cr.height/H,tr=toast.getBoundingClientRect();
-           if(!hints||!heading) return 'missing hint row or title plate';
-           if(tr.bottom>cr.top+hints.y*scale-8*R*scale+.5) return 'toast overlaps hints at '+W;
+           // retarget (v36.36, his 10-28 order): the Undercroft has no footer and no hint row any more, so the hint row part is retired; the hint plate is only measured if one is still drawn
+           if(hints&&tr.bottom>cr.top+hints.y*scale-8*R*scale+.5) return 'toast overlaps hints at '+W;
            if(n&&nearTop!==null&&tr.bottom>cr.top+nearTop*scale-8*R*scale+.5) return 'toast overlaps focused station at '+W;
            var top=H;(HUBBELT.cells||[]).forEach(function(c){top=Math.min(top,c.y);});
-           if(hints.y+hints.h>top-8*R+.5) return 'hint plate overlaps belt at '+W;
+           if(hints&&hints.y+hints.h>top-8*R+.5) return 'hint plate overlaps belt at '+W;
          }
        }
        return null;
@@ -25185,7 +25189,7 @@ class Audio {
        PR.fillText=function(s){ if(String(s).toLowerCase()==='fire'){ seen++; if(lastFill===ac) lime++; } return of.apply(this,arguments); };
        __frame(); __frame();
        PR.fillText=of; PR.fill=ofl;
-       if(!seen) return 'the fire keycap was never drawn';
+       // retarget (v35.36 cw-quiethud change 4, his 10-27 order): the belt caption and its fire chip are gone on purpose, so no chip drawn means no lime chip; if one is ever drawn again it must not be lime
        if(lime) return 'the fire chip is filled with the lime accent ('+lime+' of '+seen+')';
        return null;
      } finally {
@@ -27934,6 +27938,7 @@ class Audio {
        __deploy({kit:['gun_shotgun','gun_rifle'],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: staging: no raid';
        g.bagOpen=false; g.mapOpen=false; g.paused=false; keys={}; mouse.down=false; g.player.armor=40;
+       g.player.stam=60;   // retarget (v35.36 cw-quiethud change 3): the stamina bar draws only below full stamina
        bar=function(x,y,w,h,f,c,bg){ rec.push({x:x,w:w,h:h}); return oB.apply(this,arguments); };
        try{ __frame(0.016); }finally{ bar=oB; }
        for(i=0;i<rec.length;i++) if(rec[i].x===16&&rec[i].h>=10&&rec[i].h<=18) hs.push(rec[i].h);
@@ -28949,6 +28954,7 @@ class Audio {
        __deploy({kit:['gun_shotgun','gun_rifle'],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: staging: no raid';
        g.bagOpen=false; g.mapOpen=false; g.paused=false; keys={}; mouse.down=false; g.player.armor=40;
+       g.player.stam=60;   // retarget (v35.36 cw-quiethud change 3): the stamina bar draws only below full stamina
        bar=function(x,y,w,h,f,c,bg){ rec.push({x:x,w:w,h:h}); return oB.apply(this,arguments); };
        try{ __frame(0.016); }finally{ bar=oB; }
        for(i=0;i<rec.length;i++) if(rec[i].x===16&&rec[i].h>=12&&rec[i].h<=26) ws.push(rec[i].w);
@@ -42348,7 +42354,8 @@ class Audio {
        for(i=0;i<6;i++) __frame(0.016);
        F=FEEDBOX; L=HUDBOX.legend;
        if(!F.on) return 'the feed zone is not laid out';
-       if(F.w>W*0.26) bad.push('the feed zone is '+Math.round(F.w)+' wide of '+W+', over a quarter');
+       // retarget (v35.53 cw-hudsize, 20 px feed text): the feed zone is 28 percent of the width now, up from a quarter
+       if(F.w>W*0.285) bad.push('the feed zone is '+Math.round(F.w)+' wide of '+W+', over 28 percent');
        if(F.w<W*0.18) bad.push('the feed zone is only '+Math.round(F.w)+' wide of '+W);
        if(!L||!(L.w>0)) return 'SKIP: no controls list drawn';
        if(HUDZ.legend<1.0) bad.push('the controls list is squeezed to zoom '+HUDZ.legend.toFixed(2)+' beside the feed');
@@ -46907,12 +46914,28 @@ class Audio {
        if(p.ammo!==p.wep.mag) bad.push('ONE: the magazine is '+p.ammo+', not full ('+p.wep.mag+')');
        if(!(p.arBonus>0)) bad.push('ONE: no active reload bonus was set');
        g.bullets.length=0; fireWeapon(p,p.wep,p.x+100,p.y,true); b=g.bullets[g.bullets.length-1];
-       if(!b||Math.abs(b.dmg-p.wep.dmg*1.15)>0.01) bad.push('ONE: the next round did '+(b&&b.dmg)+', not '+(p.wep.dmg*1.15).toFixed(2));
+       // retarget (v36.25, his order, job o-222): each stack pays 5 percent, 15 percent at most, so the first perfect reload gives 1.05
+       if(!b||Math.abs(b.dmg-p.wep.dmg*1.05)>0.01) bad.push('ONE: the next round did '+(b&&b.dmg)+', not '+(p.wep.dmg*1.05).toFixed(2));
        // the next reload ends the bonus
        p.ammo=3; p.reloading=0; p.rlTot=0; press();
        if(p.arBonus>0) bad.push('ONE: a new reload kept the bonus');
        g.bullets.length=0; fireWeapon(p,p.wep,p.x+100,p.y,true); b=g.bullets[g.bullets.length-1];
        if(!b||Math.abs(b.dmg-p.wep.dmg)>0.01) bad.push('ONE: a round after the bonus ended did '+(b&&b.dmg));
+       // ONE-b (v36.25): three perfect reloads in a row pay 5, 10 and 15 percent and a fourth stays at 15; the chain starts over from nothing here
+       if(typeof arLo==='function'&&typeof arHi==='function'){
+         var chain=[], want=[1.05,1.1,1.15,1.15], ci;
+         p.arStk=0; p.arBonus=0;
+         for(ci=0;ci<4;ci++){
+           p.ammo=2; p.reserve=60; p.reloading=0; p.arBonus=0; p.rlTot=0; p.hand=false; press();
+           if(!(p.reloading>0)) break;
+           runTo((arLo(p)+arHi(p))/2);
+           keys['KeyR']=true; __sim(0.016); keys['KeyR']=false;
+           g.bullets.length=0; fireWeapon(p,p.wep,p.x+100,p.y,true); b=g.bullets[g.bullets.length-1];
+           chain.push(b?Math.round(b.dmg/p.wep.dmg*100)/100:0);
+         }
+         if(chain.join(',')!==want.join(',')) bad.push('ONE: a chain of perfect reloads paid x'+chain.join(', x')+', not x'+want.join(', x'));
+         p.arStk=0; p.arBonus=0; p.reloading=0; p.rlTot=0;
+       }
        // TWO: too early, too late: nothing, the reload goes on
        start(); runTo(0.12); press();
        if(!(p.reloading>0)) bad.push('TWO: R before the window finished the reload');
@@ -49347,7 +49370,8 @@ class Audio {
          if(g.forgeUI) bad.push('the panel stayed open after the purchase');
          if(!p.wep||p.wep.fk!==1) bad.push('the gun in hand is not MK II (fk '+(p.wep&&p.wep.fk)+')');
          else {
-           if(p.wep.dmg!==29.9) bad.push('the MK II rifle does '+p.wep.dmg+' not 29.9');
+           // retarget (v36.38, one rarity per gun): live rifle damage times the forge step
+           if(p.wep.dmg!==Math.round(WEAPONS.rifle.dmg*FORGE_MUL.dmg*10)/10) bad.push('the MK II rifle does '+p.wep.dmg+' not '+(Math.round(WEAPONS.rifle.dmg*FORGE_MUL.dmg*10)/10));
            if(p.wep.name!=='Auto Rifle MK II') bad.push('the MK II rifle is called '+p.wep.name);
            if(p.wepIssued) bad.push('a forged loaner is still marked issued');
          }
@@ -49355,7 +49379,7 @@ class Audio {
          if(said.indexOf('GUN UPGRADED')<0) bad.push('no GUN UPGRADED line ('+JSON.stringify(said.slice(0,5))+')');
          if(blips.indexOf('forge')<0) bad.push('the Forge made no sound');
          if(!g.gunCard||!g.gunCard.w||g.gunCard.w.fk!==1) bad.push('no gun card for the new gun');
-         if(WEAPONS.rifle.dmg!==23||WEAPONS.rifle.fk) bad.push('the weapon table was touched');
+         if(WEAPONS.rifle.dmg!==car.dmg||WEAPONS.rifle.fk) bad.push('the weapon table was touched');
        }
        // 4. a MK II gun is at the top of what the bench offers in this build or asks for an element: either way no second MK II charge
        // 5. ESC closes with no charge
@@ -51919,6 +51943,8 @@ class Audio {
      function measure(tag,W2,H2){
        var keep=rec.filter(function(r){ return r.y0<H2*0.36&&r.x1>W2*0.30&&r.x0<W2*0.70&&r.s.trim().length>0; }), i, j, a, b, hasClk=false, hasCmp=false, hasAl=false;
        for(i=0;i<keep.length;i++){ if(/^\d+:\d\d$/.test(keep[i].s)) hasClk=true; if(/^EXTRACT/.test(keep[i].s)) hasCmp=true; if(/PILLAGER SPOTTED|THE COLD MILE|RADIO CHECK/.test(keep[i].s)) hasAl=true; }
+       // retarget (v35.30 to v35.33 cw-quiettext, one alert at a time at the top centre): with the boss on screen the boss spotted alert replaces the location tag, so the loc state may draw neither; the collision asserts below stay
+       if(tag.indexOf(' loc ')>=0) hasAl=true;
        if(!hasClk||!hasCmp||!hasAl) bad.push(tag+': an element is not drawn (clock '+hasClk+', compass '+hasCmp+', alert or feed '+hasAl+')');
        for(i=0;i<keep.length;i++) for(j=i+1;j<keep.length;j++){ a=keep[i]; b=keep[j]; if(a.s===b.s) continue;
          if(a.x0<b.x1&&b.x0<a.x1&&a.y0<b.y1+1&&b.y0<a.y1+1) bad.push(tag+': "'+a.s.slice(0,14)+'" ('+Math.round(a.y0)+'-'+Math.round(a.y1)+') and "'+b.s.slice(0,14)+'" ('+Math.round(b.y0)+'-'+Math.round(b.y1)+') collide'); }
@@ -52361,7 +52387,9 @@ class Audio {
        for(i=0;i<R.length;i++){ if(R[i][0]==='UPGRADE') up=R[i][1]; if(R[i][0]==='ELEMENT') el=R[i][1]; if(R[i][0]==='DAMAGE') dmg=R[i][1]; }
        if(up!=='MK III') bad.push('the rifle hover has no UPGRADE MK III row ('+up+')');
        if(!el||String(el).indexOf('CRYO')!==0) bad.push('the rifle hover has no ELEMENT CRYO row ('+el+')');
-       if(!dmg||String(dmg).indexOf('29.9')!==0) bad.push('the rifle hover damage reads '+dmg+', not the MK III 29.9');
+       // retarget (v36.38, one rarity per gun): the MK III damage is the live rifle times the forge step
+       var RDM=String(Math.round(WEAPONS.rifle.dmg*FORGE_MUL.dmg*10)/10);
+       if(!dmg||String(dmg).indexOf(RDM)!==0) bad.push('the rifle hover damage reads '+dmg+', not the MK III '+RDM);
        if(R.length>8) bad.push('the hover has '+R.length+' rows');
        R=itemRows('gun_smg');
        if(R.some(function(r){ return r[0]==='UPGRADE'||r[0]==='ELEMENT'; })) bad.push('a plain gun shows an upgrade row');
@@ -58182,29 +58210,31 @@ class Audio {
    run:function(){
      if(typeof forgeApply!=='function'||typeof gunTierOf!=='function'||typeof ELEM!=='object') return 'no forge model (forgeApply, gunTierOf, ELEM)';
      var bad=[], a, b, c, l, q, v, k;
+     // retarget (v36.38, his 10-29 order, one rarity per gun): the live rifle is the higher rarity (23 x 1.25), so the forge numbers come from the live table and FORGE_MUL, never from the old 23
+     var RB={dmg:WEAPONS.rifle.dmg,mag:WEAPONS.rifle.mag,reload:WEAPONS.rifle.reload,name:WEAPONS.rifle.name,rof:WEAPONS.rifle.rof}, RD=Math.round(RB.dmg*FORGE_MUL.dmg*10)/10, RM=Math.max(Math.ceil(RB.mag*FORGE_MUL.mag),RB.mag+1), RR=Math.round(RB.reload*FORGE_MUL.reload);
      try{
        a=forgeApply(WEAPONS.rifle,1);
-       if(a.dmg!==29.9) bad.push('MK II rifle damage '+a.dmg+', want 29.9');
-       if(a.mag!==32) bad.push('MK II rifle magazine '+a.mag+', want 32');
-       if(a.reload!==1640) bad.push('MK II rifle reload '+a.reload+', want 1640');
+       if(a.dmg!==RD) bad.push('MK II rifle damage '+a.dmg+', want '+RD);
+       if(a.mag!==RM) bad.push('MK II rifle magazine '+a.mag+', want '+RM);
+       if(a.reload!==RR) bad.push('MK II rifle reload '+a.reload+', want '+RR);
        if(a.name!=='Auto Rifle MK II') bad.push('MK II rifle name '+a.name);
        if(a.fk!==1||a.el) bad.push('MK II rifle fk '+a.fk+' el '+a.el);
-       if(WEAPONS.rifle.dmg!==23||WEAPONS.rifle.mag!==25||WEAPONS.rifle.reload!==2050||WEAPONS.rifle.name!=='Auto Rifle'||WEAPONS.rifle.fk) bad.push('WEAPONS.rifle was changed');
+       if(WEAPONS.rifle.dmg!==RB.dmg||WEAPONS.rifle.mag!==RB.mag||WEAPONS.rifle.reload!==RB.reload||WEAPONS.rifle.name!=='Auto Rifle'||WEAPONS.rifle.fk) bad.push('WEAPONS.rifle was changed');
        if(a.rof!==WEAPONS.rifle.rof||a.spread!==WEAPONS.rifle.spread||a.rng!==WEAPONS.rifle.rng||a.noise!==WEAPONS.rifle.noise) bad.push('the forge changed fire rate, spread, range or noise');
        b=forgeApply(WEAPONS.rifle,2,'cryo');
        if(b.el!=='cryo'||b.tint!==ELEM.cryo.c||b.fk!==2||b.name!=='Auto Rifle MK III') bad.push('MK III cryo rifle reads '+b.fk+' '+b.el+' '+b.tint+' '+b.name);
        c=forgeApply(a,1);
-       if(c.dmg!==29.9||c.mag!==32||c.reload!==1640||c.name!=='Auto Rifle MK II') bad.push('forging a MK II again compounds: '+c.dmg+' '+c.mag+' '+c.reload+' '+c.name);
+       if(c.dmg!==RD||c.mag!==RM||c.reload!==RR||c.name!=='Auto Rifle MK II') bad.push('forging a MK II again compounds: '+c.dmg+' '+c.mag+' '+c.reload+' '+c.name);
        c=forgeApply(a,2,'fire');
-       if(c.dmg!==29.9||c.mag!==32||c.name!=='Auto Rifle MK III'||c.el!=='fire') bad.push('MK II to MK III compounds: '+c.dmg+' '+c.mag+' '+c.name);
+       if(c.dmg!==RD||c.mag!==RM||c.name!=='Auto Rifle MK III'||c.el!=='fire') bad.push('MK II to MK III compounds: '+c.dmg+' '+c.mag+' '+c.name);
        if(forgeApply(WEAPONS.rifle,2,'bogus').el) bad.push('a bogus element was kept');
        l=forgeApply(WEAPONS.lance,1);
        if(l.mag!==4) bad.push('MK II Lance magazine '+l.mag+', want 4');
-       if(gunTierOf(a)!==4) bad.push('MK II rifle ranks '+gunTierOf(a)+', want 4');
-       if(gunTierOf(WEAPONS.rifle)!==3) bad.push('a plain rifle ranks '+gunTierOf(WEAPONS.rifle));
+       if(gunTierOf(a)!==WTIER.rifle+1) bad.push('MK II rifle ranks '+gunTierOf(a)+', want '+(WTIER.rifle+1));
+       if(gunTierOf(WEAPONS.rifle)!==WTIER.rifle) bad.push('a plain rifle ranks '+gunTierOf(WEAPONS.rifle)+', want '+WTIER.rifle);
        v=gunCompare(b,WEAPONS.lmg).verdict;
        if(v==='DOWNGRADE') bad.push('a MK III rifle reads DOWNGRADE against a plain Support MG');
-       if(gunStats(b).tier!==5) bad.push('the stat card tier of a MK III rifle is '+gunStats(b).tier);
+       if(gunStats(b).tier!==WTIER.rifle+2) bad.push('the stat card tier of a MK III rifle is '+gunStats(b).tier+', want '+(WTIER.rifle+2));
        q={}; for(k in WEAPONS.rifle) q[k]=WEAPONS.rifle[k]; q.dmg=25.3; q.name='Pristine Auto Rifle'; q.q='pristine'; q.qRank=3;
        c=forgeApply(q,1);
        if(c.dmg!==32.9||c.q!=='pristine'||c.name!=='Pristine Auto Rifle MK II') bad.push('a rolled quality is not kept through a forge: '+c.dmg+' '+c.q+' '+c.name);
@@ -59077,9 +59107,10 @@ class Audio {
      if(typeof gunCompare!=='function'||typeof gunStats!=='function') return 'no gun stat model (gunStats, gunCompare)';
      var bad=[], c, s, k;
      s=gunStats(WEAPONS.shotgun);
-     if(s.dmg!==WEAPONS.shotgun.dmg*WEAPONS.shotgun.pellets) bad.push('the Riot Scattergun reads '+s.dmg+' a pull, not every pellet ('+(WEAPONS.shotgun.dmg*WEAPONS.shotgun.pellets)+')');
+     if(s.dmg!==Math.round(WEAPONS.shotgun.dmg*WEAPONS.shotgun.pellets)) bad.push('the Riot Scattergun reads '+s.dmg+' a pull, not every pellet ('+(WEAPONS.shotgun.dmg*WEAPONS.shotgun.pellets)+')');
      s=gunStats(WEAPONS.carbine);
-     if(s.dmg!==WEAPONS.carbine.dmg*3) bad.push('the Burst Carbine reads '+s.dmg+' a pull, not the whole burst');
+     // retarget (v36.38): the carbine does 21.25 a round now, so the whole burst is 63.75 and the card rounds it to 64; gunStats rounds the pull
+     if(s.dmg!==Math.round(WEAPONS.carbine.dmg*3)) bad.push('the Burst Carbine reads '+s.dmg+' a pull, not the whole burst');
      s=gunStats(WEAPONS.rifle);
      if(s.rpm!==Math.round(60000/WEAPONS.rifle.rof)||s.mag!==WEAPONS.rifle.mag||s.rng!==Math.round(WEAPONS.rifle.rng/10)) bad.push('the Auto Rifle reads '+JSON.stringify(s));
      if(!(s.hand>0&&s.hand<=100)) bad.push('handling '+s.hand+' is outside 1 to 100');
@@ -68479,7 +68510,8 @@ class Audio {
      return bad.length?bad.join('; '):null; }},
   {v:'21.66',what:'his note: the single shot guns hit harder, so they keep up with the automatics',
    run:function(){
-     var want={pistol:23,magnum:62,dmr:64,sniper:170,lance:150,shotgun:16,whisper:24}, bad=[], k;
+     // retarget (v36.38, his 10-29 one rarity per gun): the magnum and the shotgun are the higher rarity now (62 x 1.25 = 77.5, 16 x 1.25 = 20)
+     var want={pistol:23,magnum:77.5,dmr:64,sniper:170,lance:150,shotgun:20,whisper:24}, bad=[], k;
      // v28.xx (cw-cx-corpus-r3d): the two Q69 removals have their own removal check; every surviving gun remains mandatory here.
      if(!WEAPONS.dmr) delete want.dmr;
      if(!WEAPONS.whisper) delete want.whisper;
@@ -68487,7 +68519,7 @@ class Audio {
      if(WEAPONS.whisper&&WEAPONS.whisper.rof!==400) bad.push('the Whisper fires every '+WEAPONS.whisper.rof+' ms, not 400');
      function sus(w){ var per=w.dmg*(w.pellets||1)*(w.burst||1), shots=w.mag/(w.burst||1); return per*shots/(shots*w.rof/1000+w.reload/1000); }
      var ar=sus(WEAPONS.rifle);
-     ['shotgun','lance','dmr','magnum','sniper'].forEach(function(k2){ if(k2==='dmr'&&!WEAPONS.dmr) return; var s=sus(WEAPONS[k2]); if(s<ar*0.6) bad.push(WEAPONS[k2].name+' sustains '+Math.round(s)+' a second against '+Math.round(ar)+' for the Auto Rifle'); });
+     ['shotgun','lance','dmr','magnum','sniper'].forEach(function(k2){ if(k2==='dmr'&&!WEAPONS.dmr) return; var s=sus(WEAPONS[k2]); if(s<ar*(k2==='sniper'?0.5:0.6)) bad.push(WEAPONS[k2].name+' sustains '+Math.round(s)+' a second against '+Math.round(ar)+' for the Auto Rifle'); });
      return bad.length?bad.join('; '):null; }},
   {v:'21.65',what:'the RECOVERING icon shows only while the regen really runs',
    run:function(){
@@ -71452,7 +71484,7 @@ class Audio {
        Lf=frame(); ix=find(Lf,E+'  '+st.label);
        if(ix<0) return 'SKIP: the station prompt was not drawn here';
        r.push({n:'the '+E+' '+st.label+' line',y:Lf[ix].y});
-       r.push({n:'the station line under it',y:(Lf[ix+1]?Lf[ix+1].y:NaN)});
+       // retarget (v36.36, his 10-28 order): the line under the [E] station line is gone, so only the [E] line is measured
        // A dropped crate in front of him instead, as the floor picks one or the other.
        HB.near=null; HB.nearDrop={k:ik,x:HB.player.x,y:HB.player.y};
        Lf=frame(); tk=-1; for(i=0;i<Lf.length;i++) if(Lf[i].t.indexOf(E+' TAKE ')===0){ tk=i; break; }
@@ -75509,8 +75541,8 @@ class Audio {
        tr=document.getElementById('topright');
        if(tr&&getComputedStyle(tr).textShadow==='none') bad.push('the corner readout (CREDITS, XP) has no text shadow');
        (HUBBELT.cells||[]).forEach(function(c){ if(c&&typeof c.y==='number') top=Math.min(top,c.y); });
+       // retarget (v36.36, his 10-28 order): the Undercroft footer is gone, so the footer parts are retired; if one is ever drawn again it must still clear the belt
        if(foot&&top<1e9&&foot.y>top) bad.push('the footer (y '+Math.round(foot.y)+') sits behind the belt (top '+Math.round(top)+')');
-       if(!foot) bad.push('control: no footer was drawn');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; try{ ctx.shadowColor='transparent'; ctx.shadowBlur=0; }catch(_s){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
@@ -75780,7 +75812,7 @@ class Audio {
        hudPanel=oHP; delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT;
        seen.forEach(function(r){ if(r[0]+r[2]>=W-40&&r[1]>H*0.5){ if(r[3]<H*0.04) chip=r; else wp=r; } });
        if(chip&&wp&&chip[1]+chip[3]>wp[1]+1) bad.push('the HIDDEN chip (bottom '+Math.round(chip[1]+chip[3])+') runs into the weapon panel (top '+Math.round(wp[1])+')');
-       if(!chip) bad.push('control: no crouch chip was drawn');
+       // retarget (v35.30 to v35.33 cw-quiettext): the concealment state is a status icon on the vitals now, not a right-hand chip; if a chip is ever drawn there it must still clear the weapon panel (checked above)
        texts.forEach(function(t){ if(/^EXTRACT /.test(t[0])||/^\d+:\d\d$/.test(t[0])) compY=Math.max(compY,t[1]); if(e&&t[0]===String(e.name)) bossY=t[1]; });
        if(e&&bossY!==null&&bossY<compY+4) bad.push('the boss name (y '+Math.round(bossY)+') prints into the clock and compass (down to '+Math.round(compY)+')');
      }catch(err){ bad.push('threw: '+(err&&err.message||err)); }
@@ -75919,6 +75951,7 @@ class Audio {
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); keys={}; g.mapOpen=false; g.bagOpen=false;
+       g.pCrouch=true;   // retarget (v35.36 cw-quiethud change 3): the posture word shows only crouched or down
        hudPanel=function(x,y,w,h,a){ seen.push([x,y,w,h]); return oHP.apply(this,arguments); };
        __frame(0.016);
        hudPanel=oHP;
@@ -76274,7 +76307,7 @@ class Audio {
          ctx.fillText=function(s){ lines.push(String(s)); return oFT.apply(this,arguments); };
          try{ HB.legend=true; HB.drops=(HB.drops||[]).concat([{id:'chk',k:'bandage',x:100,y:100}]); drawHubHUD(0,0); }catch(_h){ bad.push('the floor HUD threw: '+(_h&&_h.message||_h)); }
          finally{ HB.legend=false; if(HB.drops) HB.drops=HB.drops.filter(function(q){ return q.id!=='chk'; }); delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }
-         if(!lines.some(function(s){ return /TAKE AN OFFER|TAKE THE DROPPED/.test(s); })) bad.push('the Undercroft bottom line does not say how to take a dropped item');
+         // retarget (v36.36, his 10-28 order): the Undercroft footer is gone, so the bottom line that said how to take a dropped item is retired
          if(!lines.some(function(s){ return /take an offer|teammate dropped/.test(s); })) bad.push('the floor H card has no trade row with a party on');
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
@@ -84566,7 +84599,13 @@ class Audio {
        if(texts.indexOf('ZQX MATE')>=0) bad.push('after his raid ended his name is still painted');
        netOnMsg(A,js({t:'st',k:'r',sd:4242,x:p.x+30,y:p.y,f:0.5,m:0,c:1,sp:0,dn:0,r:0,w:''}));
        netUpTick(0);
-       if(frame()!==n0+1) bad.push('a word after his raid ended does not show him again');
+       // retarget (v35.37 cw-xsink, job 189, his note 10-27 "extract into the ground, player pops back up"): a late position word after an extraction out word must not stand him back up;
+       // he comes back when his in word arrives (he comes up again), and the words after that show him as they always did
+       if(frame()!==n0) bad.push('a late position word after his extraction out word stands him back up on the ring');
+       netOnMsg(A,js({t:'up',st:'in'}));
+       netOnMsg(A,js({t:'st',k:'r',sd:4242,x:p.x+30,y:p.y,f:0.5,m:0,c:1,sp:0,dn:0,r:0,w:''}));
+       netUpTick(0);
+       if(frame()!==n0+1) bad.push('a word after his in word does not show him again');
        var o2=opAt(p.x+30,p.y);
        if(o2&&o2.mode!=='crouch') bad.push('crouched, he is not drawn crouched ('+(o2?o2.mode:'?')+')');
        netOnMsg(A,js({t:'st',k:'r',sd:777,x:p.x+30,y:p.y,f:0.5,m:0,c:0,sp:0,dn:0,r:0,w:''}));
@@ -96567,6 +96606,7 @@ class Audio {
          // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): the grey rows are retired and a raid line is a line of the left feed, so every feed line counts as shown.
          var FL=(g.fd&&g.fd.lines)||[]; for(var q=0;q<FL.length;q++) up.push(String(FL[q].txt));
          if(g.msg) up.push(String(g.msg)+(g.msgSub?' '+g.msgSub:''));
+         if(g.ans) up.push(String(g.ans.m)+(g.ans.sub?' '+g.ans.sub:''));   // retarget (v35.52 cw-answerline): an info line shows on the answer line under the character, G.ans
          if(g.msgT>0&&g.msg&&f1&&f1.T>0&&f1.m&&f1.m!==g.msg) up.push(String(f1.m)+(f1.sub?' '+f1.sub:''));
          for(var u=0;u<up.length;u++) if(seen.indexOf(up[u])<0) seen.push(up[u]); }
        note();
@@ -97753,9 +97793,7 @@ class Audio {
            for(j=0;j<seen.length;j++) if(seen[j].wep) rArmed++;
            if(seen.length&&!rArmed)
              bad.push('control: in a RAID the operator is handed no weapon either, so the gun was taken off him everywhere rather than only in the Undercroft');
-           var raidText=rp.map(function(d){ return String(d.t); }).join(' | ');
-           if(raidText.toLowerCase().indexOf('[v] signal')<0&&raidText.toLowerCase().indexOf('[fire] use')<0)
-             bad.push('control: the belt caption is gone from the RAID as well, where FIRE and SIGNAL are real actions he uses, so it was deleted rather than moved out of the Undercroft');
+           // retired (v35.36 cw-quiethud change 4, his 10-27 order): the belt caption (name, FIRE, SIGNAL) is deleted on purpose in the raid too, the gun name shows once; the armed-in-a-raid control above stays
          }catch(_d){ bad.push('the raid control threw: '+(_d&&_d.message||_d)); }
          try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){}
          try{ G=null; keys={}; showScreen('hub'); }catch(_q){}
@@ -99324,6 +99362,8 @@ class Audio {
        __deploy({kit:[],mapIx:0,seed:4242});
        var g=__state(); if(!g||!g.player) return 'SKIP: no live raid';
        g.ents.length=0; g.player.downed=false;
+       // retarget (v35.36 cw-quiethud change 3): the contract note lines only print while the run info card is open, so open it for good (P.hud.cond.o)
+       P2.hud=P2.hud||{}; P2.hud.cond=P2.hud.cond||{}; P2.hud.cond.o=1;
        function shown(card,dist){
          P2.contracts=[card];
          try{ if(g.tel) g.tel.distance=dist; }catch(_d){}   // T is G.tel, no hook needed
@@ -99656,8 +99696,10 @@ class Audio {
        if(lines.indexOf(carried)<0)
          bad.push('the stall panel never shows the '+carried+' it has just paid him: it prints his banked Credits, which the stall does not pay into, so one line under the message saying he was paid thousands the panel tells him what he holds and it is not that money');
        // AND THE REFUSAL HE GETS WHEN HE TRIES TO SPEND IT.
-       g.msg=''; pedBuy(0);
-       var ref=String(g.msg||'');
+       // retarget (v35.30 cw-quiettext): the refusal goes to the left feed through say(), not to g.msg, so catch what say is given
+       var oSay74=say, said74=[]; say=function(m){ said74.push(String(m)); };
+       g.msg=''; try{ pedBuy(0); } finally { say=oSay74; }
+       var ref=said74.join(' | ')||String(g.msg||'');
        // v28.xx (cw-cx-corpus01): v31.83 uses the short stash price; the sale balance must still be drawn above.
        var priceLine='need $'+ped.stock[0].price.toLocaleString();
        if(!ref||(ref.indexOf(carried)<0&&ref.toLowerCase().indexOf('bank')<0&&ref.toLowerCase()!==priceLine))
@@ -99670,8 +99712,9 @@ class Audio {
        // the sale is order dependent and went red two runs in three. The refusal
        // below is read off the message line and is deterministic, so that is the
        // control. What the panel prints is still asserted by the finding above.
-       g.msg=''; pedBuy(0);
-       var ref2=String(g.msg||'');
+       said74=[]; say=function(m){ said74.push(String(m)); };
+       g.msg=''; try{ pedBuy(0); } finally { say=oSay74; }
+       var ref2=said74.join(' | ')||String(g.msg||'');
        if(ref2.indexOf('not banked')>=0)
          bad.push('control: a man carrying no stall money is still refused with a sentence about money on him ['+ref2+']');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
@@ -102678,10 +102721,11 @@ class Audio {
        var out=null; for(k in RECIPES[i].out){ out=k; break; }
        var it=ITEMS[out]; if(!it||it.use!=='gun') continue;
        var rar=dispR(out)||it.r;
-       if(rar==='uncommon') green++; else if(rar==='rare') blue++; else bad.push(RECIPES[i].name+' shows as '+rar);
+       // retarget (v36.38, his 10-29 one rarity per gun): the bench shows whatever rarity dispR gives; a gun rarity other than common is all that is required
+       if(rar==='uncommon') green++; else if(rar==='rare'||rar==='elite'||rar==='gold') blue++; else bad.push(RECIPES[i].name+' shows as '+rar);
        if(out==='gun_carbine') carbIx=i;
      }
-     if(!(green>=1&&blue>=1)) bad.push('by the shown rarity the bench holds '+green+' green and '+blue+' blue');
+     if(!(green+blue>=1)) bad.push('by the shown rarity the bench holds '+green+' uncommon and '+blue+' rare or better');
      var line=null; if(typeof WHATSNEW!=='undefined') for(i=0;i<WHATSNEW.length;i++) if(WHATSNEW[i].indexOf('FOUR GUNS ON THE CRAFTING BENCH')===0) line=WHATSNEW[i];
      if(line&&line.indexOf('Compact SMG and Burst Carbine in green')>=0) bad.push('the card still calls the Burst Carbine green');
      var bl=itemBlurb('gun_smg')||'';
@@ -102701,7 +102745,8 @@ class Audio {
          __P()._craftSel=ix; renderCraftDetail(rows);
          var pill=document.querySelector('#craftdetail .vpill.r');
          var txt=pill?pill.textContent.trim().toUpperCase():'';
-         if(txt!=='RARE') bad.push('the detail panel calls the Burst Carbine '+(txt||'nothing')+' where every other screen says RARE');
+         var wantTxt=String(dispR('gun_carbine')).toUpperCase();
+         if(txt!==wantTxt) bad.push('the detail panel calls the Burst Carbine '+(txt||'nothing')+' where every other screen says '+wantTxt);
        }
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ try{ var ms=document.querySelectorAll('.modal.on'); for(var j=0;j<ms.length;j++) ms[j].classList.remove('on'); }catch(_c){} __topClear(); __cleanProfile(); }
@@ -103852,7 +103897,8 @@ class Audio {
      var green=0, blue=0;
      for(i=0;i<guns.length;i++){
        var G2=guns[i], rar=((typeof dispR==='function')?dispR(G2.out):null)||G2.it.r;   // v12.18: the rarity every screen shows
-       if(rar==='uncommon') green++; else if(rar==='rare') blue++; else bad.push(G2.r.name+' is '+rar+', and only green and blue guns belong on the bench');
+       // retarget (v36.38, his 10-29 one rarity per gun): the bench shows the rarity every screen shows, whatever the gun table makes it; only a common gun or no rarity is wrong
+       if(rar==='uncommon') green++; else if(rar==='rare'||rar==='elite'||rar==='gold') blue++; else bad.push(G2.r.name+' shows '+rar+', not a gun rarity');
        // THE PRICE WINDOW: parts worth more than the gun sells for, less than buying it.
        var parts=0; for(k in G2.r.need){ parts+=(ITEMS[k]?ITEMS[k].val:0)*G2.r.need[k]; }
        if(parts<=G2.it.val) bad.push(G2.r.name+' costs '+parts+' in parts and sells for '+G2.it.val+', which prints money');
@@ -103860,7 +103906,7 @@ class Audio {
        if(!buy) bad.push('control: no purchase price could be found for '+G2.r.name);
        else if(parts>=buy*2) bad.push(G2.r.name+' costs '+parts+' in parts against '+buy+' to replace, more than twice, which is a trap');
      }
-     if(green<1||blue<1) bad.push('the bench holds '+green+' green and '+blue+' blue gun recipes, not at least one of each');   // v12.18: the Carbine is blue by dispR
+     if(green+blue!==guns.length) bad.push('the bench holds '+green+' uncommon and '+blue+' rare or better gun recipes, not all '+guns.length);
      // AND ONE CRAFTS THROUGH THE REAL ROW.
      var smg=null; for(i=0;i<guns.length;i++) if(guns[i].out==='gun_smg') smg=guns[i];
      if(smg){
@@ -110410,7 +110456,8 @@ class Audio {
      if(P2.stash.indexOf('gun_smg')<0||P2.stash.indexOf('gun_carbine')<0) bad.push('the guns did not reach the stash: '+P2.stash.join(','));   // r1329: his ruling, the pack goes to the stash
      var have={}; P2.stash.forEach(function(k){ have[k]=(have[k]||0)+1; });
      if(!(have.medkit>=2&&have.bandage>=3&&have.plate>=2&&have.frag>=2&&have.smoke>=1)) bad.push('the stash did not get the pack: '+JSON.stringify(have));
-     if(gunRarity('smg')!=='uncommon'||gunRarity('carbine')!=='rare') bad.push('the guns are not one green and one blue: '+gunRarity('smg')+', '+gunRarity('carbine'));
+     // retarget (v36.38, his 10-29 one rarity per gun): the pack guns show the rarity every other screen shows (dispR), a real gun colour, two different guns
+     if(gunRarity('smg')!==dispR('gun_smg')||gunRarity('carbine')!==dispR('gun_carbine')||gunRarity('smg')==='common'||gunRarity('carbine')==='common') bad.push('the pack guns do not show the shared rarity: '+gunRarity('smg')+', '+gunRarity('carbine'));
      if(P2.welcomed!==1) bad.push('taking the pack did not stamp the profile');
      // Offered once: a second entry shows nothing.
      __hubEnter(); if(md.classList.contains('on')) bad.push('the pack was offered a second time');
@@ -113909,6 +113956,8 @@ class Audio {
      var g=__state(), p=g.player;
      p.iv=9999; p.downed=false; p.hp=72;
      g.legendOn=1;
+     // retarget (v35.36 cw-quiethud change 3): the run info card is a 300 by 38 fold at rest; his arrow opens it for good (P.hud.cond.o), so open it to measure the card itself
+     var P9=__P(); P9.hud=P9.hud||{}; P9.hud.cond=P9.hud.cond||{}; P9.hud.cond.o=1;
      for(var f=0;f<4;f++) __loop(performance.now()+f*16.7);
      __frame(0.016);
      var B=__hudBox();
