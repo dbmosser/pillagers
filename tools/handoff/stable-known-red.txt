@@ -134,3 +134,21 @@ v9.13    # control wants the 1080p backpack at 862x606; it is 862x624 with the g
 v24.22   # flake: only 3 of the five station words found in 1512, green before and not touched by v36.55
 # CEO 10-29 21:30 (his order: stable build for the party): cosmetic resize hatch on HUD panels, fix job o-240 stays open
 v30.62   # resize hatch shows without hover; cosmetic, job o-240
+# check-in sort 2026-11-01 from run corpus-1031-1437 on v36.95 (19 newly red; green in corpus-1031-0632 on v36.71 unless noted); each pins the layout or text of a screen his critic passes changed on purpose; retarget in job 254
+v18.78   # Terms window rebuilt in v36.57: heading text capped at 1400, list at 1632 (red since corpus-1030-0746)
+v23.12   # v36.59 lower-cased the recording callout detail to saved to downloads; the check pins the capitals (red since corpus-1030-1153)
+v8.93    # v36.76 pillager board reads at 16 px: the default board is 388x218, the check wants 361x175
+v21.55   # v36.76 same change: board rows are taller, the check wants the board to end under its last name by under a row
+v30.73   # v36.73 one inset for the corner panels: the gun card right edge moved from 8 to 16 in, the check finds it by the old edge (same cause as 34.89)
+v31.25   # v36.84 undercroft hub polish: the stash and bag part is plain labelled text now, no .trsub span
+v18.63   # v36.84 undercroft hub polish: the experimental caption is the second line of the last pour sign plate, the check wants it clear of the name plate
+v32.12   # v36.73 one card for the clock and the extract line: the card is drawn before the clock text, no plate fill right before the extract words
+v35.84   # v36.75 one danger at a time: the same keyed danger (final rush) does not show again for 10 s, so the second seat of the check sees no banner
+v35.83   # v36.75 same rule: the second seat of the check gets no g.alert final rush within 10 s of the first
+v34.41   # v36.80 the downed card self-revive key is a hudKey keycap now, not text in the accent colour
+v16.30   # v36.79 the inbound line has two spaces either side of the ring letter; the check pins the old one-space source text
+v26.69   # v36.87 the first demo pack (no wave yet) brings no ambush extras; the check stages the ambush with waveN 0
+v23.37   # v36.87 the first demo pack lands 480 to 640 away (his answer 2.62 b), the check wants 700 to 1200
+v32.30   # v36.91 sector map polish: the strongbox word sits close to its icon on purpose (his 10-31 order), the check wants 12 px
+v32.33   # v36.91 and v36.92 sector map polish and word chips: loot tags sit nearer their icons, the check wants 11.5 and 15.5 px
+# not listed on purpose: v26.59 (job 252) and v36.30 (job 253) may be real; v31.04 has job 208
