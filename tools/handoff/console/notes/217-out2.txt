@@ -1,0 +1,10 @@
+24.47: PASS
+23.95: SKIP: removed by his order (no throwable or plate cells on the bar; the wheel has fixed eight slots)
+23.74: PASS
+23.62: PASS
+24.27: PASS
+26.73: PASS
+27.42: PASS
+23.49: SKIP: retarget (cw-nobagfull): the BACKPACK FULL refusal is gone (his ruling: no bag limit, no weight, ever), so this holds on the old build and is skipped on the new one
+23.46: PASS
+ALL DONE

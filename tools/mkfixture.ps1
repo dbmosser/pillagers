@@ -6175,6 +6175,20 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'37.05',what:'dead functions with no caller are gone, batch 2 (cw-dead2)',
+   run:function(){
+     var bad=[];
+     if(typeof gfxLightNow!=='undefined') bad.push('gfxLightNow');
+     if(typeof gfxWet!=='undefined') bad.push('gfxWet');
+     if(typeof sizeTag!=='undefined') bad.push('sizeTag');
+     if(typeof countArmor!=='undefined') bad.push('countArmor');
+     if(typeof uiKey!=='undefined') bad.push('uiKey');
+     if(typeof goalsHud!=='undefined') bad.push('goalsHud');
+     if(typeof arcadeBagFree!=='undefined') bad.push('arcadeBagFree');
+     if(typeof arcadeQuickHeal!=='undefined') bad.push('arcadeQuickHeal');
+     if(typeof arcadeAutoSrch!=='undefined') bad.push('arcadeAutoSrch');
+     if(bad.length) return 'still defined: '+bad.join(', ');
+     return null; }},
   {v:'37.04',what:'dead functions with no caller are gone (cw-dead1)',
    run:function(){
      var bad=[];

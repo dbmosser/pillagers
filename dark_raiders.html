@@ -3929,8 +3929,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.04';
-var VER_AT='2026-11-01 12:19';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.05';
+var VER_AT='2026-11-01 12:31';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19711,13 +19711,6 @@ var PADLABEL_HUB={KeyE:'A',KeyR:'X',KeyF:'Y',KeyT:'RB'};
 var PAD_PS={A:'CROSS',B:'CIRCLE',X:'SQUARE',Y:'TRIANGLE',LB:'L1',RB:'R1',LT:'L2',RT:'R2',LS:'L3',RS:'R3',VIEW:'SHARE',MENU:'OPTIONS',BACK:'SHARE'};
 function padBrandOf(gp){ return 'xbox'; }   // v28.xx (cw-cx-xboxonly): his 2.35 a: Xbox button pictures only, for local and handed-over pads.
 function padB(s){ if(typeof s!=='string'||typeof PAD==='undefined'||!PAD||PAD.brand!=='ps') return s; return s.replace(/\b(LB|RB|LT|RT|LS|RS|VIEW|MENU|BACK|A|B|X|Y)\b/g,function(m){ return PAD_PS[m]||m; }); }
-// v24.27, UI REDESIGN ui7 (his #50): uiKey(code) is the DOM keycap of a key, named as keyLabel names it (the key as set, or the pad
-// button through padB on a controller): a key for the keyboard, a coloured round button for A, B, X and Y, a pill for the bumpers.
-function uiKey(code,fallback){
-  var L=String(keyLabel(code,fallback)), c='ui-key';
-  if(padOn()&&HUDKEY_PAD[L]) c+=' pad pad-'+L.toLowerCase(); else if(padOn()&&(/^(LB|RB|LT|RT|LS|RS|VIEW|MENU|BACK)$/).test(L)) c+=' pill';
-  return '<span class="'+c+'">'+L.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</span>';
-}
 function keyLabel(code,fallback){
   if(padOn()){
     if(state==='hub'&&PADLABEL_HUB[code]) return padB(PADLABEL_HUB[code]);
@@ -28703,11 +28696,6 @@ function beltThrowTick(){
     if(n>0&&!shown[tk]){ G.pouch[tk]=0; while(n-->0) G.bag.push(tk); }
   }
 }
-function countArmor(){
-  var n=0;
-  for(var i=0;i<G.bag.length;i++){ var it=ITEMS[G.bag[i]]; if(it&&it.use==='armor') n++; }
-  return n;
-}
 function findArmor(){
   for(var i=0;i<G.bag.length;i++){ var it=ITEMS[G.bag[i]]; if(it&&it.use==='armor') return i; }
   return -1;
@@ -36885,7 +36873,7 @@ function gfxqSync(){
 }
 function gfxqNext(q){ var l; for(l=q+1;l<=3;l++){ if(gfxqCan(l)) return l; } return q; }
 function gfxqPrev(q){ var l=q-1; while(l>0&&!gfxqCan(l)) l--; return Math.max(0,l); }
-function gfxLightNow(){ var l=(CFG.gfxLight===0)?0:((CFG.gfxLight===1)?1:2); if(l===2&&!GFXQ.shadow) l=1; return l; }
+// v28.xx (cw-dead2): dead code out, no caller anywhere (audit 2026-10-28): gfxLightNow, gfxWet, sizeTag, countArmor, uiKey, goalsHud, arcadeBagFree, arcadeQuickHeal, arcadeAutoSrch.
 function gfxPostNow(){ return CFG.gfxPost!==0&&GFXQ.post!==0; }
 function gfxScaleNow(){ var s=+CFG.gfxScale; s=(s>0&&s<=1)?s:1; return (CFG.gfxAuto===0)?s:Math.min(s,DRS.scale); }
 // v28.xx (cw-cx-laddersteady): page-session quality, never saved into a profile or shared between windows.
@@ -56378,7 +56366,6 @@ function gfxEmit(x,y,r,col,a){
   if(GFX.emit.length<256) GFX.emit.push({x:x,y:y,r:r,c:col,a:a});
   return true;
 }   // F2: bloom sources, registered during the frame
-function gfxWet(){ return GFX.bypass?0:(+GFX.WET||0); }   // D: how wet the ground is, 0 to 1
 // v23.xx (gfx5), HIS ORDER (2026-10-12) on the graphics program: "add ALL of this stuff", item 11, render scale. WORLD TEXT DRAWS ON
 // THE HUD CANVAS. The nameplates, the party tags, the damage numbers and the floating labels (loot found, targets down, WEAK SPOT)
 // were filled on the world canvas, so a lower Render resolution or an Auto resolution step softened every one of them with the
@@ -57200,7 +57187,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.04: Nothing a player can see changes. Check 37.04 fails on v37.03',
+  now:'v37.05: Nothing a player can see changes. Check 37.05 fails on v37.04',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -66608,17 +66595,6 @@ function arcadeShieldOff(){
 // AIM, FIRE, ROLL, RELOAD, SWITCH GUN, HEAL and EXTRACT. The keyboard names follow CHANGE KEYS (keysOf, keyName) and the pad names
 // go through padB, so a PlayStation pad reads its own buttons (only the button word, so the A of IN A TEAL RING stays a word). The
 // HOW TO PLAY attract page now draws the same rows. Only an arcade raid draws the card, so a normal raid is unchanged.
-// v23.46, HIS YES (2026-10-11) to the five recommendations, arcade23: ONE-BUTTON QUICK HEAL. Belt-then-fire is the heal control a
-// walk-up player never finds, so in an arcade raid G on the keyboard (the key as set in CHANGE KEYS) and D-DOWN on the pad heal at
-// once through useMedical: the same picker (findHeal), the same wind-up (startPrep), the same refusals and his ruling that a
-// Bandage stops at 85 (healCeil) and only a Medkit reaches 100. Only a standing player heals this way; down, G and D-DOWN keep
-// their old jobs (the belt words and the self-revive). Outside the arcade G still uses the selected belt item and D-DOWN is unchanged.
-function arcadeQuickHeal(){
-  var p=G&&G.player;
-  if(!G||!G.arcade||G.sim||G.over||G.paused||!p||p.downed||p.dying||p.specOut) return false;
-  try{ useMedical(); }catch(_qh){}
-  return true;
-}
 var ARCADE_CARD_T=4;   // seconds the card stays after the shield drops
 function arcadeCardRows(){
   function kn(c){ try{ return keyName(keysOf(c)); }catch(_k){ return keyName(c); } }
@@ -67774,30 +67750,6 @@ function goalsTick(dt){
     if(v>=gl.n){ gl.done=1; goalReward(gl,false); }   // v28.xx (cw-cx-goalrewards): no goal ever feeds SP.
   }
   if(!S.gtold&&(G.t||0)>=1.5){ S.gtold=1; }   // v27.42 (info1): the goals are rows of RUN INFO all raid, no callout for them at the start
-}
-function goalsHud(c){
-  var S=G.flow, gl, i, z, U, w, lh, pad, h, x, y, hb, yy, n=0;
-  if(!S||!S.goals||!S.goals.length||G.bagOpen||G.mapOpen||G.over) return 0;
-  z=Math.max(1,hudRes()); U=function(v){ return LH(v)*z; };
-  lh=U(15); pad=U(9); h=pad*2+lh*(S.goals.length+1);
-  hb=HUDBOX.cond;
-  if(hb&&isFinite(hb.y)&&isFinite(hb.x)){ x=hb.x; w=hb.w; y=hb.y+hb.h+Math.round(8*z); }
-  else { w=U(176); x=W-Math.round(16*z)-w; y=(MMAP.box?mmBottom():Math.max(topRightBottom(),U(60)))+Math.round(10*z); }
-  c.save();
-  hudPanel(x,y,w,h,0.84);
-  EDGEBOX.goals={x:x,y:y,w:w,h:h};   // v27.17 (gcfix): where the run goals are, so the gun card and the kill feed keep clear of them
-  c.textBaseline='alphabetic'; c.textAlign='left'; c.font=hudFS(TYPE.micro);
-  c.fillStyle='#ffc04a'; hudText('RUN GOALS',x+pad,y+pad+lh*0.8);
-  for(i=0;i<S.goals.length;i++){
-    gl=S.goals[i]; yy=y+pad+lh*(i+1)+lh*0.8;
-    c.textAlign='left'; c.fillStyle=gl.done?'#7fc4a0':'#cdd6dd';
-    hudText(gl.t+((!gl.done&&gl.n>1)?('  '+gl.v+'/'+gl.n):''),x+pad,yy);
-    c.textAlign='right'; c.fillStyle=gl.done?'#7fc4a0':'#ffc04a';
-    hudText((gl.done?'done ':'')+goalRewardText(gl),x+w-pad,yy);
-    n++;
-  }
-  c.restore();
-  return n;
 }
 // v26.xx (flow4), HIS YES (2026-10-14) to suggestion 7, in his words: "fire as a hazard that makes spots impassable, NOT from the map edges". FIRE HAZARDS.
 // A raid plans FIRE.n (2) fuel fires on the side stream FIRE.tag of its seed: spots on open, reachable floor at least 700 from the drop and 300
@@ -69595,28 +69547,6 @@ function arcadeKillPerks(){
 // plates and keys go where they always went. A pile the player dropped, a box a teammate holds and a hired man are never
 // searched by walking over them. Everything is behind G.arcade, so a normal raid is unchanged.
 var ARCADE_SRCH=1, ARCADE_LOOT_DIV=1;   // v23.xx: his order, hold E to loot at the usual speed (was 6, walk-over loot); v23.56 (arcade31): a valuable scores its full credit value (was 10)
-function arcadeAutoSrch(ct){
-  var me;
-  if(!ct||typeof G==='undefined'||!G||!G.arcade||G.sim||G.over||ct.opened||ct.dropped||ct.mercSrc) return false;
-  if(!Array.isArray(ct.loot)||!ct.loot.length) return false;
-  me=(typeof NET==='object'&&NET&&NET.on&&NET.role==='join')?(NET.seat|0):0;
-  if(typeof ct.netBy==='number'&&ct.netBy>=0&&ct.netBy!==me) return false;
-  return true;
-}
-// v23.49, HIS YES (2026-10-11) to the five recommendations, arcade25 (a low finding of the arcade 7-13 review): VALUABLES IGNORE A FULL
-// BACKPACK. The search refused any box with BACKPACK FULL once the backpack was at its cap, even a box whose loot never enters the
-// backpack: in the arcade a valuable turns into points and pot (arcadeLoot), ammo goes to the reserve and a throwable to the pouch.
-// The cap is unlimited on his 2026-08-22 order, so this is latent today, but the arcade rule is that the full test counts only what
-// actually goes into the bag. arcadeBagFree(ct) is true when every item left in the box is one of those, and the search then neither
-// refuses the box nor sheds the worst of the backpack (autoCull) to make room it does not need. A box with anything else in it is
-// refused as before, and a normal raid is unchanged.
-function arcadeBagFree(ct){
-  var j, it;
-  if(!ct||typeof G==='undefined'||!G||!G.arcade||G.sim||ct.mercSrc) return false;
-  if(!Array.isArray(ct.loot)||!ct.loot.length) return false;
-  for(j=0;j<ct.loot.length;j++){ it=ITEMS[ct.loot[j]]; if(!it||(it.use&&it.use!=='ammo'&&it.use!=='throw')) return false; }
-  return true;
-}
 function arcadeLoot(key){
   var n=Math.max(1,Math.round(ival(key)/ARCADE_LOOT_DIV));
   ARCADE.mine=(ARCADE.mine|0)+n; ARCADE.pot=(ARCADE.pot|0)+n;
@@ -73323,21 +73253,6 @@ var SECTOR_MEAS=[
   {ext:39.2,fc:35, cont:5.2,haul:1865},
   {ext:38.3,fc:37, cont:5.5,haul:1690}
 ];
-// v7.54, his note: the size difference stated next to the name. Only the
-// extremes are tagged, so a third mid-sized map would stay untagged.
-function sizeTag(ix){
-  var minA=1e15,maxA=0,minI=0,maxI=0;
-  for(var q=0;q<FIXED_MAPS.length;q++){
-    if(!mapOffered(FIXED_MAPS[q])) continue;   // v23.6x (feat0b): a frozen map is not measured, so the lone card carries no size tag
-    var A=FIXED_MAPS[q].w*FIXED_MAPS[q].h;
-    if(A<minA){ minA=A; minI=q; }
-    if(A>maxA){ maxA=A; maxI=q; }
-  }
-  if(minI===maxI) return '';
-  if(ix===minI) return '(SMALLER MAP)';
-  if(ix===maxI) return '(LARGER MAP)';
-  return '';
-}
 // v17.79, THE VISUAL PASS (2026-10-02): A MAP OF EACH SECTOR ON THE SECTOR PAGE. WHERE ARE YOU GOING? was two rows of text over an
 // empty page. Each row now carries a drawn map of its sector from the fixed layout (no build, no seeded draw): the ground, the
 // named zones, the buildings and landmarks, and the extraction points as rings. Drawn once per render into a small canvas.

@@ -1,0 +1,44 @@
+{
+    "title":  "DEAD CODE OUT 2",
+    "why":  "Audit 2026-10-28 item 10: 9 more functions that nothing calls (no player change). Batch 2 of the cleanup.",
+    "now":  "Nothing a player can see changes.",
+    "edits":  [
+                  {
+                      "anchor":  "function gfxLightNow(){ var l=(CFG.gfxLight===0)?0:((CFG.gfxLight===1)?1:2); if(l===2\u0026\u0026!GFXQ.shadow) l=1; return l; }\n",
+                      "replacement":  "// v28.xx (cw-dead2): dead code out, no caller anywhere (audit 2026-10-28): gfxLightNow, gfxWet, sizeTag, countArmor, uiKey, goalsHud, arcadeBagFree, arcadeQuickHeal, arcadeAutoSrch.\n"
+                  },
+                  {
+                      "anchor":  "function gfxWet(){ return GFX.bypass?0:(+GFX.WET||0); }   // D: how wet the ground is, 0 to 1\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "// v7.54, his note: the size difference stated next to the name. Only the\n// extremes are tagged, so a third mid-sized map would stay untagged.\nfunction sizeTag(ix){\n  var minA=1e15,maxA=0,minI=0,maxI=0;\n  for(var q=0;q\u003cFIXED_MAPS.length;q++){\n    if(!mapOffered(FIXED_MAPS[q])) continue;   // v23.6x (feat0b): a frozen map is not measured, so the lone card carries no size tag\n    var A=FIXED_MAPS[q].w*FIXED_MAPS[q].h;\n    if(A\u003cminA){ minA=A; minI=q; }\n    if(A\u003emaxA){ maxA=A; maxI=q; }\n  }\n  if(minI===maxI) return \u0027\u0027;\n  if(ix===minI) return \u0027(SMALLER MAP)\u0027;\n  if(ix===maxI) return \u0027(LARGER MAP)\u0027;\n  return \u0027\u0027;\n}\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "function countArmor(){\n  var n=0;\n  for(var i=0;i\u003cG.bag.length;i++){ var it=ITEMS[G.bag[i]]; if(it\u0026\u0026it.use===\u0027armor\u0027) n++; }\n  return n;\n}\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "// v24.27, UI REDESIGN ui7 (his #50): uiKey(code) is the DOM keycap of a key, named as keyLabel names it (the key as set, or the pad\n// button through padB on a controller): a key for the keyboard, a coloured round button for A, B, X and Y, a pill for the bumpers.\nfunction uiKey(code,fallback){\n  var L=String(keyLabel(code,fallback)), c=\u0027ui-key\u0027;\n  if(padOn()\u0026\u0026HUDKEY_PAD[L]) c+=\u0027 pad pad-\u0027+L.toLowerCase(); else if(padOn()\u0026\u0026(/^(LB|RB|LT|RT|LS|RS|VIEW|MENU|BACK)$/).test(L)) c+=\u0027 pill\u0027;\n  return \u0027\u003cspan class=\"\u0027+c+\u0027\"\u003e\u0027+L.replace(/\u0026/g,\u0027\u0026amp;\u0027).replace(/\u003c/g,\u0027\u0026lt;\u0027)+\u0027\u003c/span\u003e\u0027;\n}\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "function goalsHud(c){\n  var S=G.flow, gl, i, z, U, w, lh, pad, h, x, y, hb, yy, n=0;\n  if(!S||!S.goals||!S.goals.length||G.bagOpen||G.mapOpen||G.over) return 0;\n  z=Math.max(1,hudRes()); U=function(v){ return LH(v)*z; };\n  lh=U(15); pad=U(9); h=pad*2+lh*(S.goals.length+1);\n  hb=HUDBOX.cond;\n  if(hb\u0026\u0026isFinite(hb.y)\u0026\u0026isFinite(hb.x)){ x=hb.x; w=hb.w; y=hb.y+hb.h+Math.round(8*z); }\n  else { w=U(176); x=W-Math.round(16*z)-w; y=(MMAP.box?mmBottom():Math.max(topRightBottom(),U(60)))+Math.round(10*z); }\n  c.save();\n  hudPanel(x,y,w,h,0.84);\n  EDGEBOX.goals={x:x,y:y,w:w,h:h};   // v27.17 (gcfix): where the run goals are, so the gun card and the kill feed keep clear of them\n  c.textBaseline=\u0027alphabetic\u0027; c.textAlign=\u0027left\u0027; c.font=hudFS(TYPE.micro);\n  c.fillStyle=\u0027#ffc04a\u0027; hudText(\u0027RUN GOALS\u0027,x+pad,y+pad+lh*0.8);\n  for(i=0;i\u003cS.goals.length;i++){\n    gl=S.goals[i]; yy=y+pad+lh*(i+1)+lh*0.8;\n    c.textAlign=\u0027left\u0027; c.fillStyle=gl.done?\u0027#7fc4a0\u0027:\u0027#cdd6dd\u0027;\n    hudText(gl.t+((!gl.done\u0026\u0026gl.n\u003e1)?(\u0027  \u0027+gl.v+\u0027/\u0027+gl.n):\u0027\u0027),x+pad,yy);\n    c.textAlign=\u0027right\u0027; c.fillStyle=gl.done?\u0027#7fc4a0\u0027:\u0027#ffc04a\u0027;\n    hudText((gl.done?\u0027done \u0027:\u0027\u0027)+goalRewardText(gl),x+w-pad,yy);\n    n++;\n  }\n  c.restore();\n  return n;\n}\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "// v23.49, HIS YES (2026-10-11) to the five recommendations, arcade25 (a low finding of the arcade 7-13 review): VALUABLES IGNORE A FULL\n// BACKPACK. The search refused any box with BACKPACK FULL once the backpack was at its cap, even a box whose loot never enters the\n// backpack: in the arcade a valuable turns into points and pot (arcadeLoot), ammo goes to the reserve and a throwable to the pouch.\n// The cap is unlimited on his 2026-08-22 order, so this is latent today, but the arcade rule is that the full test counts only what\n// actually goes into the bag. arcadeBagFree(ct) is true when every item left in the box is one of those, and the search then neither\n// refuses the box nor sheds the worst of the backpack (autoCull) to make room it does not need. A box with anything else in it is\n// refused as before, and a normal raid is unchanged.\nfunction arcadeBagFree(ct){\n  var j, it;\n  if(!ct||typeof G===\u0027undefined\u0027||!G||!G.arcade||G.sim||ct.mercSrc) return false;\n  if(!Array.isArray(ct.loot)||!ct.loot.length) return false;\n  for(j=0;j\u003cct.loot.length;j++){ it=ITEMS[ct.loot[j]]; if(!it||(it.use\u0026\u0026it.use!==\u0027ammo\u0027\u0026\u0026it.use!==\u0027throw\u0027)) return false; }\n  return true;\n}\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "// v23.46, HIS YES (2026-10-11) to the five recommendations, arcade23: ONE-BUTTON QUICK HEAL. Belt-then-fire is the heal control a\n// walk-up player never finds, so in an arcade raid G on the keyboard (the key as set in CHANGE KEYS) and D-DOWN on the pad heal at\n// once through useMedical: the same picker (findHeal), the same wind-up (startPrep), the same refusals and his ruling that a\n// Bandage stops at 85 (healCeil) and only a Medkit reaches 100. Only a standing player heals this way; down, G and D-DOWN keep\n// their old jobs (the belt words and the self-revive). Outside the arcade G still uses the selected belt item and D-DOWN is unchanged.\nfunction arcadeQuickHeal(){\n  var p=G\u0026\u0026G.player;\n  if(!G||!G.arcade||G.sim||G.over||G.paused||!p||p.downed||p.dying||p.specOut) return false;\n  try{ useMedical(); }catch(_qh){}\n  return true;\n}\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "function arcadeAutoSrch(ct){\n  var me;\n  if(!ct||typeof G===\u0027undefined\u0027||!G||!G.arcade||G.sim||G.over||ct.opened||ct.dropped||ct.mercSrc) return false;\n  if(!Array.isArray(ct.loot)||!ct.loot.length) return false;\n  me=(typeof NET===\u0027object\u0027\u0026\u0026NET\u0026\u0026NET.on\u0026\u0026NET.role===\u0027join\u0027)?(NET.seat|0):0;\n  if(typeof ct.netBy===\u0027number\u0027\u0026\u0026ct.netBy\u003e=0\u0026\u0026ct.netBy!==me) return false;\n  return true;\n}\n",
+                      "replacement":  ""
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027dead functions with no caller are gone, batch 2 (cw-dead2)\u0027,\n   run:function(){\n     var bad=[];\n     if(typeof gfxLightNow!==\u0027undefined\u0027) bad.push(\u0027gfxLightNow\u0027);\n     if(typeof gfxWet!==\u0027undefined\u0027) bad.push(\u0027gfxWet\u0027);\n     if(typeof sizeTag!==\u0027undefined\u0027) bad.push(\u0027sizeTag\u0027);\n     if(typeof countArmor!==\u0027undefined\u0027) bad.push(\u0027countArmor\u0027);\n     if(typeof uiKey!==\u0027undefined\u0027) bad.push(\u0027uiKey\u0027);\n     if(typeof goalsHud!==\u0027undefined\u0027) bad.push(\u0027goalsHud\u0027);\n     if(typeof arcadeBagFree!==\u0027undefined\u0027) bad.push(\u0027arcadeBagFree\u0027);\n     if(typeof arcadeQuickHeal!==\u0027undefined\u0027) bad.push(\u0027arcadeQuickHeal\u0027);\n     if(typeof arcadeAutoSrch!==\u0027undefined\u0027) bad.push(\u0027arcadeAutoSrch\u0027);\n     if(bad.length) return \u0027still defined: \u0027+bad.join(\u0027, \u0027);\n     return null; }},"
+}

@@ -1,0 +1,17 @@
+18.78: termsmodal text lines are capped at 1400px, its list at 1632px
+23.12: the build has no "'SAVED TO DOWNLOADS'"
+8.93: the default board is 388x218, it should be about 361x175
+21.55: the board ends 13 px under its last name, a full empty row
+30.73: the gun card panel is not drawn (career false, demo false)
+31.25: the readout has no stash and bag part
+18.63: the warning under THE LAST POUR prints into its name plate
+32.12: the extract distance line is bare text, drawn with no plate under it (0 of 2)
+35.84: seat 1 missing clock, score, navigation or rush
+35.83: seat 1 start callout [["final rush","warn","kills x1.05 sp"]]
+34.41: no self-revive key drawn on its own
+16.30: the extraction banner does not say INBOUND
+26.69: A: the ambush added 3 bodies
+23.37: a wave raider landed 613 from the player; a wave crawler landed 617 from the player; a wave crawler landed 578 from the player
+32.30: less than 12px label clearance at 2160p: STRONGBOX
+32.33: loot labels below 16px clearance at 2160p; loot label crowds a map icon at 2160p
+ALL DONE

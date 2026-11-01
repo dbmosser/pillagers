@@ -1,0 +1,45 @@
+9.66: control: these panels barely drew at all, so a size comparison means nothing: raiders 11725; the board now has room for about 0 rows, which is not a board
+12.80: control: another conduct contract in the same state now prints nothing either, so this build has silenced the panel and not one line
+12.74: PASS
+13.08: PASS
+32.24: PASS
+31.38: PASS
+31.17: PASS
+18.41: PASS
+18.49: PASS
+25.66: PASS
+15.79: PASS
+16.43: PASS
+16.46: PASS
+23.02: the board does not count the dead as N dead
+23.10: PASS
+34.26: PASS
+27.35: PASS
+13.32: PASS
+16.44: PASS
+31.50: the demo 1080p: the column is 250.0 px wide, not 300 (300 at 1080p, his menu survey pick); the demo for 2 players 1080p: the column is 250.0 px wide, not 300 (300 at 1080p, his menu survey pick); control: the 2 player score plate ends at x 1062 and the 1 player one at 1060, so the 2 player arm prove
+30.96: PASS
+27.22: PASS
+26.46: PASS
+27.37: PASS
+26.47: PASS
+27.36: PASS
+23.56: PASS
+22.32: PASS
+26.42: PASS
+32.89: a setup tile has no name or picture
+26.56: PASS
+18.62: PASS
+34.00: PASS
+20.50: PASS
+18.25: PASS
+21.66: PASS
+24.03: PASS
+25.58: PASS
+26.21: no gun card for the new gun
+23.78: PASS
+10.29: PASS
+11.79: PASS
+12.18: PASS
+34.01: PASS
+ALL DONE

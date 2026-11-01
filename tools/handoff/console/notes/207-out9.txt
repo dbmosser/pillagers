@@ -1,0 +1,7 @@
+9.66: PASS
+12.80: PASS
+23.02: PASS
+31.50: control: the 2 player score plate ends at x 1062 and the 1 player one at 1060, so the 2 player arm proves nothing
+32.89: PASS
+26.21: PASS
+ALL DONE
