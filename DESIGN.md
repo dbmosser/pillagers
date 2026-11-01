@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.10 - MACHINE SMOKE READS AT 1080P
+
+Co-op hunt while he was away. His photo of v34.78 (one bulwark at 40 percent, one at 10) showed no smoke. The puffs started at the top of the body and rose into the name plate that is drawn over them, and they were small, 0.4 opaque and dark on dark ground. They now start on the upper body, are bigger, 0.7 opaque (0.85 near death) with a light grey rim.
+
+MEASURED. Check 37.10 passes, and fails on v37.09.
 ## v37.09 - DEAD CODE OUT 6
 
 Co-op hunt while he was away. Audit 2026-10-28 item 10: 2 more functions that nothing calls (no player change). Batch 6 of the cleanup.

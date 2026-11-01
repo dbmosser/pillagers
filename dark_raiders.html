@@ -3929,8 +3929,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.09';
-var VER_AT='2026-11-01 13:01';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.10';
+var VER_AT='2026-11-01 13:05';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -55589,11 +55589,17 @@ function gfxDamageFx(dt){
     if(!fowLive(e.x,e.y)) continue;   // v28.xx (cw-cx-fowlive-rest): damaged machine smoke and sparks stay with the visible body
     lv=gfxDmgLevel(e); if(!lv) continue;
     H=elemBodyH(e); ph=grit((e.nid|0)*7+3,11)*6.2832; nS++;
-    wc.fillStyle=lv>1?'#1c1917':'#2a2623';
-    for(j=0;j<2+lv;j++){
-      t=(G.t*.45+j/(2+lv)+ph)%1;
-      wc.globalAlpha=(lv>1?.5:.4)*(1-t)*k;
-      x=e.x+Math.sin(t*5+ph+j)*3; y=e.y-H-t*18; s=2.5+t*4;
+    // v37.09 (cw-machsmoke), his photo of v34.78 (two bulwarks at 40 and 10 percent, no smoke to be seen): the puffs started at the top of the body and
+    // rose 18 units into the name plate, which is drawn later and covers them, and they were small, 0.4 opaque and dark on dark ground. They now start
+    // on the upper body, rise 12, grow to 8 units across, sit at 0.7 (0.85 near death) with a light grey rim so they read on dark and light ground.
+    for(j=0;j<3+lv;j++){
+      t=(G.t*.45+j/(3+lv)+ph)%1;
+      x=e.x+Math.sin(t*5+ph+j)*(e.r||14)*.35; y=e.y-H*.7-t*12; s=3.5+t*5;
+      wc.globalAlpha=(lv>1?.85:.7)*(1-t*.7)*k*.5;
+      if(pix) pixFxSquare(wc,x,y,s*2+3,'#8c8782');
+      else{ wc.fillStyle='#8c8782'; wc.beginPath(); wc.arc(x,y,s+1.5,0,6.2832); wc.fill(); }
+      wc.globalAlpha=(lv>1?.85:.7)*(1-t*.7)*k;
+      wc.fillStyle=lv>1?'#1c1917':'#2a2623';
       if(pix) pixFxSquare(wc,x,y,s*2,wc.fillStyle);
       else{ wc.beginPath(); wc.arc(x,y,s,0,6.2832); wc.fill(); }
     }
@@ -56962,7 +56968,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.09: Nothing a player can see changes. Check 37.09 fails on v37.08',
+  now:'v37.10: A hurt machine trails clear dark smoke from its body. Check 37.10 fails on v37.09',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

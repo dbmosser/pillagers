@@ -1,0 +1,7 @@
+v37.10: machine smoke reads at 1080p
+
+A hurt machine trails clear dark smoke from its body.
+
+Check 37.10. Fails on v37.09.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
