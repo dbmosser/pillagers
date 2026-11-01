@@ -1459,17 +1459,17 @@
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "The wanted strip moved into the grid header, which fixes the old stacked footer, but the footer, the empty right pane, the three competing money numbers and the tiny prices are all still there, so the screen only moved sideways.",
+  "verdict": "The only change is a new 'wanted +50%' price strip crammed into the stash sub-header, which adds clutter. None of the earlier layout problems (duplicate backpack label, empty right pane, stacked footer, header money) were fixed.",
   "findings": [
-   "P1 stash header strip, y≈190, 'wanted +50% / stim injector $366 / orbital relay $2,807 / circuit board $263': Set the text to 16px f-cond 600 in tx-2 and the prices in tx-1 or --warn (not lime). Keep the label 'wanted +50%' and show only 2 items with 24px gaps, or move the strip to its own 32px row above the grid. Drop the 8px glyphs.",
-   "P1 right pane, y≈240-850: Delete the duplicate 'backpack' sub-label and the zero counts. Use solid 1px --ui-line slots on an 8px gap. Make the hotbar slots 72px. Fill the lower pane with an item detail card: name at 20px, rarity bar, stats at 16px.",
-   "P1 footer stack, y≈860-1005 (legend, sell all salvage, freebie kit/take): Merge into one 72px footer. Legend on the left at 14px tx-2. On the right, 'sell all salvage $2,719' as a 40px outlined button with 20px f-cond 700 text and a lime focus state. Move 'freebie kit' + 'take' (160x40) into the right pane or a header chip.",
-   "P1 header, top right ($48,250 / stash $12,635 / bag $0): Make '$48,250' the single 32px f-cond 800 hero. Drop 'stash $12,635' and 'bag $0' to 16px tx-2, or delete bag, which is $0 and already shown as '$0 going up'. Leave a 24px gap before the X.",
-   "P2 tab row, y≈147: Shrink search to about 280px. Put sort, armory and trophies in tx-2 with a 1px --ui-line divider before them. Dim empty tabs to 50% opacity. Keep one lime 2px underline for the active tab."
+   "P1 stash sub-header, y≈190, 'wanted +50% / stim injector $366 / orbital relay $2,807 / circuit board $263 / 30 held': Move it out of the sub-header into its own 32px row above the grid, or delete it. If kept: 16px f-cond 600 in tx-2 with prices in tx-1, no glyphs, 24px gaps, and at most 2 items. 'wanted +50%' stays as a --warn label.",
+   "P1 right pane, y≈240-850: Delete the duplicate 'backpack' label and the zero counts. Use solid 1px --ui-line slots on an 8px gap. Make hotbar slots 72px. Fill the lower pane with a detail card: name at 20px, rarity bar, stats at 16px.",
+   "P1 footer stack, y≈860-1005: Merge into one 72px footer. Put a trimmed legend on the left at 14px tx-2. On the right, put 'sell all salvage $2,719' as a 40px outlined button, 20px f-cond 700, with a lime focus state. Move 'freebie kit / take' into the right pane or a header chip.",
+   "P1 header top right, '$48,250 / stash $12,635 / bag $0': Make '$48,250' a 32px f-cond 800 hero. Set 'stash $12,635' at 16px tx-2. Delete 'bag $0'. Leave a 24px gap before the X.",
+   "P2 tab row, y≈147: Shrink search to about 280px. Put sort, armory and trophies in tx-2 after a 1px --ui-line divider. Dim empty tabs to 50% opacity. Keep one lime 2px underline for the active tab."
   ],
-  "pic": "tools/handoff/console/notes/shots/00p-m1d-after2/67-career-stash-stocked-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/00p-m1d-after3/67-career-stash-stocked-1080.jpg",
   "task": "manual",
-  "when": "2026-11-01T21:10"
+  "when": "2026-11-01T21:19"
  },
  "68-settings-sec-the-raid": {
   "score": 3,

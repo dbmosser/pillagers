@@ -3932,8 +3932,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.24';
-var VER_AT='2026-11-01 16:17';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.25';
+var VER_AT='2026-11-01 16:19';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7439,9 +7439,9 @@ function payGear(g){
     // v20.70, from the whole-game bug hunt of 2026-10-08 (H33): THE VALUE THE GAME SHOWS FOR THAT GUN. This paid the raw table value,
     // while the stash, Tag as junk and Sell one all say and pay the value scaled by How much is out there (ival, v15.93), so on Rich
     // the receipt paid less than the gun was worth everywhere else, and on Lean more. The receipt and the payment use ival now.
-    var _pgv=ival('gun_'+g.k);
-    if(_pgv>0){ P.credits=(P.credits||0)+_pgv;
-      return WEAPONS[g.k].name+', already yours, so its value of '+'$'+_pgv.toLocaleString()+' instead'; }
+    // v37.xx (cw-m1nocash), his 11-01 ruling (contracts "pay in gear and items to sell"): no $; the spare goes to the stash, to sell or keep.
+    if(ITEMS['gun_'+g.k]){ P.stash.push('gun_'+g.k);
+      return WEAPONS[g.k].name+', a spare to the stash'; }
     return WEAPONS[g.k].name+', which you already own';
   }
   if(g.kind==='key'){
@@ -16846,7 +16846,7 @@ function pedOpen(){ return true; }
 // stall money moved onto G.pedCarry and became payable only on extraction. The
 // death screen has said "Stall money lost where you fell" the whole time.
 function pedSellPromise(){
-  return Math.round(pedBuyRate()*100)+'% of value, paid now. You still have to walk it out.';
+  return Math.round(pedBuyRate()*100)+'% of value, banked now';   // v37.xx (cw-m1nocash): banked at the sale, a death keeps it
 }
 // v8.27: the word for a number. Used by the stats card and by the banner that
 // fires when it changes, so the two can never call the same score two things.
@@ -16986,14 +16986,15 @@ function strayGive(e){
   // is the one that gets overwritten; say() holds one line, so what he did is
   // one sentence, built below and appended to the cache line.
   var pay=ri(900,1500);
-  P.credits+=pay;
-  G.strayPaid=(G.strayPaid||0)+pay;
+  // v37.xx (cw-m1nocash), his 11-01 ruling ("no cash in riads"): the same roll is paid in salvage of about that value into the backpack, beside
+  // his gift, through the one grant; no $. A death loses it with the backpack.
+  var _sPay=payItemsFor(pay), _sq;
   var gift=pick(['titan','core','optic','servo']);
-  try{ grantLoot(mkContainer(e.x,e.y,'crate'),[gift]); G.strayGave=gift; }catch(_sg){}
+  try{ grantLoot(mkContainer(e.x,e.y,'crate'),[gift].concat(_sPay)); G.strayGave=gift; }catch(_sg){}
+  G.strayPaid=(G.strayPaid||0)+keysWorth(_sPay)+(G.strayGave?ival(gift):0);
   // v22.56 (R18): what he pays and what he hands over are rows in the pickup stack tagged FROM THE SURVIVOR, and the cache he
   // marks is one objective line, CACHE MARKED, instead of a sentence of up to 110 characters.
-  if(G.strayGave) pickTag(gift,'FROM THE SURVIVOR');
-  say('+'+'$'+pay.toLocaleString(),'pick',{tag:'FROM THE SURVIVOR',c:'gain'});
+  if(G.strayGave){ pickTag(gift,'FROM THE SURVIVOR'); for(_sq=0;_sq<_sPay.length;_sq++) pickTag(_sPay[_sq],'FROM THE SURVIVOR'); }
   var c=strayReveal();
   if(c){
     c.revealed=1;
@@ -17007,7 +17008,7 @@ function strayGive(e){
     sayWhenFree('NOTORIETY DOWN TO '+P.notoriety,'info');   // v13.39: waits for the cache and pay line above; v22.76 (R31): the HUD voice
   }
   saveProfile();
-  label(e.x,e.y-34,'+$'+pay,'#ffc04a',0.35,false);
+
 }
 // v13.70: the copies the tactical belt claims, per key, the way bagStacks counts them (v8.78).
 function pedBeltClaims(){
@@ -17065,7 +17066,9 @@ function pedSellAll(){
   // v7.62, his order: stall money is CARRIED, not banked. It rides the raid on
   // G.pedCarry, pays out only if you walk out, and dies where you fall. This is
   // also sim-safe for free - nothing touches P until the extract branch.
-  G.pedCarry=(G.pedCarry||0)+tot;
+  // v37.xx (cw-m1nocash), HIS RULING OF 11-01: "no cash in riads, keep it like a credit card". The stall pays straight onto the account at the
+  // sale, so a death never takes it, and it counts in lifetime earnings. Nothing in a raid holds money (G.pedCarry stays 0). A sim raid touches no P.
+  if(!G.sim&&P){ P.credits=(P.credits||0)+tot; lifeEarnAdd(tot); try{ saveProfile(); }catch(_psv){} }
   G.pedSold=(G.pedSold||0)+tot;
   if(G.tel) G.tel.pedSold=G.pedSold;
   if(G.trade) G.trade.traded=1;
@@ -17087,7 +17090,7 @@ function pedSellAll(){
     // rows in the middle of the screen. The money is now a +$ row in the pickup stack in the gain colour, tagged CARRIED (it rides
     // with him and pays out only if he walks out, v7.62), and one short line keeps the other half of the trade (v3.27): what the
     // same backpack is worth carried home. The stall panel still shows the carried total (v12.74).
-    say('+'+'$'+tot.toLocaleString(),'pick',{tag:'CARRIED',c:'gain'});
+    say('+'+'$'+tot.toLocaleString(),'pick',{tag:'BANKED',c:'gain'});   // v37.xx (cw-m1nocash): banked at the sale, so not CARRIED
     say('SOLD '+n+(n===1?' ITEM':' ITEMS'),'info',{sub:'Worth '+'$'+_full.toLocaleString()+' carried home.'});
     blip('pick'); ping(G.trade.x,G.trade.y,190,false,false,'player','move');
   }
@@ -35606,7 +35609,8 @@ function raidConditionMul(){
 // row from before the stall figure has no pedSold and sums as it did. No price, no dial and no seeded draw moved.
 // v20.47 (H18): and less what was carried up and then sold at the stall (kitSold), which a sale now takes out of carriedIn, so the
 // sum is what it was: everything that came out, stall money included, less everything that went up. An older row has no kitSold.
-function runEarnings(rec){ return ((rec.outcome==='extract')?((rec.haul||0)+(rec.pedSold||0)):0)-(rec.carriedIn||0)-(rec.kitSold||0); }
+// v37.xx (cw-m1nocash): a stall sale is banked at the sale since this build (pedBank on the row), so it counts whatever the outcome; an older row as before.
+function runEarnings(rec){ return ((rec.outcome==='extract')?(rec.haul||0):0)+((rec.outcome==='extract'||rec.pedBank)?(rec.pedSold||0):0)-(rec.carriedIn||0)-(rec.kitSold||0); }
 function netEarnFromLog(){ var t=0, L=(P&&P.log)||[]; for(var i=0;i<L.length;i++) t+=runEarnings(L[i]||{}); return t; }
 // v11.63: the one place the night and weather multipliers are applied to a run's
 // base XP. addProgress banks it; the outcome card prints it (times the dose
@@ -35919,7 +35923,9 @@ silentExit:T.silentExit||0,
   var _mfLine=null;
   if(!G.sim&&how==='extract'&&mfPayPer()>0){
     var _mfPay=mfPayPer();
-    P.credits+=_mfPay;
+    // v37.xx (cw-m1nocash), HIS RULING OF 11-01 on racks: "make them pay materials instead of $". The same value, in rack parts, to the stash.
+    var _mfMats=rackMatsFor(_mfPay), _mfi;
+    for(_mfi=0;_mfi<_mfMats.length;_mfi++) P.stash.push(_mfMats[_mfi]);
     if(G.tel) G.tel.rackPay=_mfPay;
     // v6.68, his note: it is a bonus, so it reads with the totals at the bottom rather
     // than as the headline. Paid here, printed later.
@@ -35932,8 +35938,7 @@ silentExit:T.silentExit||0,
     // the summary row it now sits under, because he says it is not that
     // important. _mfWhat is still built above and is no longer printed; the
     // count of racks and arrays is a thing he can read at the Mainframe itself.
-    _mfLine='<span style="color:var(--ash)">Mainframe server bonus: $'+
-      _mfPay.toLocaleString()+'</span>';
+    _mfLine='<span style="color:var(--ash)">mainframe parts: '+escHtml(keysLine(_mfMats))+'</span>';   // v37.xx (cw-m1nocash): parts, not $
   }
   // v17.22, co-op hunt 2026-09-28: not on a party raid this window joined (G.netUp). That raid carried the host hire; P.merc here is
   // this window own hire, put back by netUpStart for a later raid, and settling it spent his fee on a man who never went up.
@@ -35967,7 +35972,7 @@ silentExit:T.silentExit||0,
       var mhaul=0;
       for(var mb=0;mb<mercEnt.bag.length;mb++) mhaul+=ival(mercEnt.bag[mb]);
       var cut=Math.round(mhaul*0.10);
-      P.credits+=cut;
+      P.credits+=cut; lifeEarnAdd(cut);   // v37.xx (cw-m1nocash): every $ earned counts in lifetime earnings
       var _mnear=(G.active&&dist(mercEnt,G.active)<260)||dist(mercEnt,G.player)<200;
       lines.push('<span style="color:var(--coolant)">'+mname+(_mnear?' extracts behind you with ':' makes his own way out with ')+'$'+mhaul.toLocaleString()+'. Your cut '+'$'+cut.toLocaleString()+'.</span>');
       var mr2=idRec(P.merc); mr2.standing=(mr2.standing||0)+(_mnear?2:1); mr2.met++;
@@ -35980,7 +35985,7 @@ silentExit:T.silentExit||0,
         if(_R3.ref&&_R3.ref.merc){ _mrow=_R3; break; } }
       if(_mrow&&_mrow.out&&how==='extract'){
         var cut2=Math.round((_mrow.val||0)*0.10);
-        P.credits+=cut2;
+        P.credits+=cut2; lifeEarnAdd(cut2);   // v37.xx (cw-m1nocash)
         lines.push('<span style="color:var(--coolant)">'+mname+' extracted earlier with '+'$'+(_mrow.val||0).toLocaleString()+'. Your cut '+'$'+cut2.toLocaleString()+'.</span>');
         var mr4=idRec(P.merc); mr4.standing=(mr4.standing||0)+1; mr4.met++;
       } else if(mercEnt&&how==='extract'){
@@ -36012,20 +36017,10 @@ silentExit:T.silentExit||0,
   // was quietly worth nothing on the long track.
   var tPay=termsPay(1);   // v20.31 (H27): the Terms this raid was built with
   // v37.xx (cw-m1xpoff), his 11-01 order ("lets get rid of the concept of xp altogether"): the card has no XP line and no next reward line.
-  if(G.strayPaid){
-    // v11.86, HIS NOTE: no "already banked"; and the gift, on the card of a run
-    // that brought it home (a death or an abandonment lost the bag it went into).
-    lines.push('<span style="color:var(--coolant)">The survivor paid you '+'$'+G.strayPaid.toLocaleString()+
-      (how==='extract'&&G.strayGave&&ITEMS[G.strayGave]?' and gave you a '+escHtml(ITEMS[G.strayGave].name):'')+'.</span>');
-  }
-  if(G.pedSold){
-    lines.push(how==='extract'
-      ?'<span style="color:var(--coolant)">Stall money carried out: '+'$'+(G.pedCarry||0).toLocaleString()+', banked.</span>'
-      :(how==='dead'
-        ?'<span style="color:var(--rust)">Stall money lost where you fell: '+'$'+(G.pedCarry||0).toLocaleString()+'.</span>'
-        // v13.77, downed and extraction audit: an abandoned run did not fall anywhere.
-        :'<span style="color:var(--rust)">Stall money left behind: '+'$'+(G.pedCarry||0).toLocaleString()+'.</span>'));
-  }
+  // v37.xx (cw-m1nocash): the survivor pays salvage into the backpack, so his gift is on the card of a run that brought it home.
+  if(G.strayPaid&&how==='extract') lines.push('<span style="color:var(--coolant)">survivor gift worth $'+G.strayPaid.toLocaleString()+'</span>');
+  // v37.xx (cw-m1nocash): the stall banks at the sale, so every outcome kept it.
+  if(G.pedSold) lines.push('<span style="color:var(--coolant)">stall sales $'+G.pedSold.toLocaleString()+' banked</span>');
   if(G.pedBought){
     lines.push('<span style="color:var(--ash)">Spent '+'$'+G.pedBought.toLocaleString()+' at the stall.</span>');
   }
@@ -36073,7 +36068,7 @@ var _cdone=contractExtract(G.bag,haul);
     var _issB=G.issuedBandages||0;   // v13.54: the issued Bandages still carried go back to the quartermaster, not the stash
     var _issN=0;   // v13.78: how many issued Bandages were handed back, for the secured line below
     for(i=0;i<G.bag.length;i++){ if(_issB>0&&G.bag[i]==='bandage'){ _issB--; _issN++; continue; } var bm=bankItem(G.bag[i]); if(bm) lines.push(bm); }
-    if(G.pedCarry&&!G.sim){ P.credits+=G.pedCarry; }
+    // v37.xx (cw-m1nocash): no stall money rides the raid any more; it was banked at the sale.
     // Both hands count. Extracting with the sidearm up used to throw away the
     // Marksman Rifle holstered in the other slot. Issued kit is a loaner and is
     // never banked: banking it silently ended the fresh starter roll forever,
@@ -36192,6 +36187,11 @@ var _cdone=contractExtract(G.bag,haul);
       if(keys.length>8) s+='<span style="color:var(--ash);margin-left:6px">+'+(keys.length-8)+' more</span>';
       if(n) lines.push('<span class="haulstrip" data-sec="'+_secV+'" style="display:inline-block;margin:4px 0 2px">'+s+'</span>');   // v26.xx (career7): the value the card secured, for the reveal total
     })();
+    // v37.xx (cw-m1nocash), HIS PICK OF 11-01 (answer 36): an extraction pays a bonus of about 10% of the haul's value, the value this card just
+    // said was secured, straight onto the account and into lifetime earnings. A death or an abandon never reaches this branch, so pays none.
+    var _xb=extractBonusFor(_secV);
+    if(_xb>0){ P.credits=(P.credits||0)+_xb; lifeEarnAdd(_xb); lines.push('<span style="color:var(--amber)">extraction bonus +$'+_xb.toLocaleString()+'</span>'); }
+    if(G.tel) G.tel.extBonus=_xb;
     lines.push('You extracted with '+Math.round(G.player.hp)+' of 100 health');
   } else if(how==='dead'){
     P.died++;
@@ -36481,7 +36481,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
     rivalMet:T.rivalMet||0,parleys:T.parleys||0,ringCrowd:T.ringCrowd||null,
     pgLook:T.pgLook||null,
     strayHelped:T.strayHelped||0,strayKilled:T.strayKilled||0,strayOut:T.strayOut||0,wildKilled:T.wildKilled||0,
-    pedSold:T.pedSold||0,pedKilled:T.pedKilled||0,rackPay:T.rackPay||0,
+    pedSold:T.pedSold||0,pedBank:1,pedKilled:T.pedKilled||0,rackPay:T.rackPay||0,
     crewRevives:T.crewRevives||0,mercRevives:T.mercRevives||0,raiderRevives:T.raiderRevives||0,
     lastHitName:T.lastHitName||null,
     inRunNotes:T.notes.slice(),tags:[],note:''
@@ -57151,13 +57151,40 @@ var RACK_PAY=200;
 var ARRAY_RACKS=10, ARRAY_PAY=2600;
 function arrayCount(){ return P.arrays||0; }
 function mfPayPer(){ return (P.racks||0)*RACK_PAY + arrayCount()*ARRAY_PAY; }
+// v37.xx (cw-m1nocash), HIS RULINGS OF 11-01 (season zero m1): "no cash in riads, keep it like a credit card"; "it shouldn't pay cash beyond just
+// selling what you have and maybe some sort of bonus"; contracts "pay in gear and items to sell"; racks "make them pay materials instead of $".
+// Two fills, both without dice (no RNGS, no FXS), so nothing seeded moves and the board can show exactly what a claim pays:
+// payItemsFor(v) is salvage worth about v, the dearest that fits first and the four materials last (the survivor, raid goals, contracts);
+// rackMatsFor(v) is the four rack parts worth about v, taken in turn (board, cell, wire, scrap) so a payout is a mix.
+var PAY_POOL=['blackbox','titan','core','servo','optic','board','cell','wire','scrap'], RACK_MATS=['board','cell','wire','scrap'];
+function payItemsFor(v){
+  var out=[], rem=Math.round(+v||0), i, k, c;
+  for(i=0;i<PAY_POOL.length&&out.length<16;i++){ k=PAY_POOL[i]; c=ival(k); if(!(c>0)) continue; while(rem>=c&&out.length<16){ out.push(k); rem-=c; } }
+  return out;
+}
+function rackMatsFor(v){
+  var out=[], rem=Math.round(+v||0), i=0, miss=0, k, c;
+  while(miss<RACK_MATS.length&&out.length<400){ k=RACK_MATS[i%RACK_MATS.length]; i++; c=ival(k); if(c>0&&c<=rem){ out.push(k); rem-=c; miss=0; } else miss++; }
+  return out;
+}
+function keysWorth(L){ var t=0, i; for(i=0;i<(L||[]).length;i++) t+=ival(L[i]); return t; }
+function keysLine(L){
+  var n={}, o=[], i, k;
+  for(i=0;i<(L||[]).length;i++){ k=L[i]; if(!n[k]){ n[k]=0; o.push(k); } n[k]++; }
+  return o.map(function(q){ return String(ITEMS[q]?ITEMS[q].name:q).toLowerCase()+(n[q]>1?(' x'+n[q]):''); }).join(', ');
+}
+// What a contract pays besides its gear: salvage worth about its old $ reward.
+function contractPayKeys(c){ return payItemsFor((c&&typeof c.reward==='number'&&c.reward>0)?c.reward:0); }
+// HIS PICK (answer 36): the extraction bonus is about 10% of the haul's value.
+var EXTRACT_BONUS=0.10;
+function extractBonusFor(v){ return Math.round(Math.max(0,+v||0)*EXTRACT_BONUS); }
 function buildArray(){
   if((P.racks||0)<ARRAY_RACKS){ say('An Array takes '+ARRAY_RACKS+' racks. You have '+(P.racks||0)+'.'); return; }
   P.racks-=ARRAY_RACKS;
   P.arrays=arrayCount()+1;
   saveProfile();
   blip('pick');
-  say('Array '+P.arrays+' comes online. The wall is clear again, and it pays $'+
+  say('Array '+P.arrays+' comes online. The wall is clear again, and it pays parts worth $'+
       ARRAY_PAY.toLocaleString()+' every time you make it home.');
   renderMainframe(); try{ renderHub(); }catch(e){}
 }
@@ -57194,7 +57221,7 @@ function buildRack(){
   // mfPayPer, racks and Arrays together, and the Mainframe status line says so: with one Array the new rack said $200.
   // v15.18, mainframe audit finding 3: AND THE RACK LINE NAMES THEM. One sentence is added after the pay, in the same toast,
   // because a second toast would write over the first; the two sentences before it are unchanged.
-  say('Rack '+P.racks+' hums to life. '+'$'+mfPayPer().toLocaleString()+' every time you make it home.'+
+  say('Rack '+P.racks+' hums to life. Parts worth '+'$'+mfPayPer().toLocaleString()+' every time you make it home.'+
       (_usedPacked.length?' Used '+_usedPacked.join(', ')+' out of your backpack.':''));
   renderMainframe(); try{ renderHub(); }catch(e){}
 }
@@ -57341,7 +57368,7 @@ function renderMainframe(){
   var _ar=arrayCount();
   st.innerHTML=bars+'<div class="rkinfo"><b class="rkcount">'+r+' of '+RACK_CAP+' racks</b>'+
     (_ar>0?'<b class="rkarr">'+_ar+' array'+(_ar===1?'':'s')+'</b>':'')+
-    (mfPayPer()>0?'<span class="rkpay">+$'+mfPayPer().toLocaleString()+' per extraction</span>':'')+'</div>';
+    (mfPayPer()>0?'<span class="rkpay">+$'+mfPayPer().toLocaleString()+' in parts per extraction</span>':'')+'</div>';
   var bt=document.getElementById('mfbuild'), hn=document.getElementById('mfhint');
   if(bt){ bt.disabled=(r>=RACK_CAP)||!rackAfford(); bt.textContent=(r>=RACK_CAP)?'THE WALL IS FULL':'BUILD A RACK'; }
   // v6.76: the wall being full is now a step rather than the end of the road.
@@ -57463,7 +57490,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.24: the wanted strip is 16px with 24px between items; the label is in the warn colour, the names in the second text colour and the prices in the first Check 37.24 fails on v37.23',
+  now:'v37.25: an extraction pays a bonus of 10 percent of the secured haul onto the account and into lifetime earnings, shown as extraction bonus on the card; a death or a walk out pays none; the stall banks a sale at once so a death keeps it; the survivor and the raid goals pay salvage of the same value instead of money; a contract pays salvage worth its old reward plus its gear, and a gun you own comes as a spare to the stash; racks and arrays pay rack parts worth what they paid; hire cuts count in lifetime earnings Check 37.25 fails on v37.24',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -59866,7 +59893,7 @@ P.contracts.forEach(function(c,ci){
     // weight, and no XP on any path, so both surfaces were advertising a reward
     // that has never existed. Making it TRUE instead would be an XP economy
     // change and that is his call.
-    st.innerHTML=Math.min(c.prog,c.n)+' / '+c.n+' &middot; <b>'+'$'+c.reward.toLocaleString()+'</b>';
+    st.innerHTML=Math.min(c.prog,c.n)+' / '+c.n+' &middot; <b>worth '+'$'+c.reward.toLocaleString()+'</b>';   // v37.xx (cw-m1nocash): it pays items of that worth
     cp.appendChild(st);
     if(c.prog>=c.n){
       var b=document.createElement('button'); b.textContent='Claim';
@@ -59878,7 +59905,7 @@ P.contracts.forEach(function(c,ci){
         if(P.contracts[ci]!==c) return;
         var r=claimContractAt(ci);
         if(!r) return;
-        say2('Contract paid: '+'$'+r.pay.toLocaleString()+''+(r.gear?' and '+r.gear:'')+'.');
+        say2('contract paid: '+keysLine(r.items||[])+(r.gear?', '+r.gear:''));   // v37.xx (cw-m1nocash): items, no $
         saveProfile(); renderHub();
       };
       cp.appendChild(b);
@@ -60757,16 +60784,16 @@ function renderConDetail(){
   rw.innerHTML='<div class="crlab" style="margin:0 0 7px">REWARDS</div>';
   var line=document.createElement('div'); line.className='crewline';
   var money=document.createElement('div'); money.className='crewc';
-  money.innerHTML='$'+(c.reward||0).toLocaleString();   // v8.42: see the note on the contract row. v35.88 (cw-menupolish1): money reads $N (his rule: $ for money), never N c
+  money.innerHTML='worth $'+(c.reward||0).toLocaleString();   // v37.xx (cw-m1nocash): the items below are worth this   // v8.42: see the note on the contract row. v35.88 (cw-menupolish1): money reads $N (his rule: $ for money), never N c
   line.appendChild(money);
-  var gks=gearKeys(c.gear),seen={};
+  var gks=gearKeys(c.gear).concat(contractPayKeys(c)),seen={};   // v37.xx (cw-m1nocash): and the salvage the claim pays
   for(var gi=0;gi<gks.length;gi++) seen[gks[gi]]=(seen[gks[gi]]||0)+1;
   for(var gkey in seen){
     if(!ITEMS[gkey]) continue;
     var cell=document.createElement('div'); cell.className='crewcell';
     cell.innerHTML=iconImgHTML(gkey,26,1)+
       (seen[gkey]>1?('<span class="cnt">'+seen[gkey]+'</span>'):'');
-    cell.title=((c.gear&&(c.gear.kind==='wep'||c.gear.kind==='key'))?gearLabel(c.gear):ITEMS[gkey].name)+(seen[gkey]>1?('  x'+seen[gkey]):'');   // v20.46 (H28): the gun goes to the armoury, not as the field item, and the key is the room the claim rolls
+    cell.title=((c.gear&&(c.gear.kind==='wep'||c.gear.kind==='key')&&PAY_POOL.indexOf(gkey)<0)?gearLabel(c.gear):ITEMS[gkey].name)+(seen[gkey]>1?('  x'+seen[gkey]):'');   // v20.46 (H28): the gun goes to the armoury, not as the field item, and the key is the room the claim rolls
     line.appendChild(cell);
   }
   rw.appendChild(line);
@@ -60985,27 +61012,28 @@ function itemStatsHTML(k){
 function claimContractAt(ci){
   var c=P.contracts[ci];
   if(!c||typeof c.reward!=='number'||c.prog<c.n) return null;
-  // v5.78: a contract pays money, not standing.
-  P.credits+=c.reward;
+  // v37.xx (cw-m1nocash), HIS RULING OF 11-01: contracts "pay in gear and items to sell". Salvage worth about its old $ reward goes to the
+  // stash (contractPayKeys, no dice, so the board shows exactly this), with the gear it carries. No $.
+  var _ck=contractPayKeys(c), _cq;
+  for(_cq=0;_cq<_ck.length;_cq++) P.stash.push(_ck[_cq]);
   var got=payGear(c.gear);
   var TT2=CTIER[c.tier]||CTIER.std;
   P.cstand=cstand()+TT2.w;
   P.cdone=(P.cdone||0)+1;   // v12.66: and one contract, which is what the board says it counts
   P.contracts[ci]=freshContract(ci);
-  return {pay:c.reward, gear:got};
+  return {pay:keysWorth(_ck), gear:got, items:_ck};
 }
 // His order: all of them at once. One pass, one total, one line.
 function claimAllContracts(){
-  var got=0,total=0,gear=[];
+  var got=0,total=0,gear=[],items=[];
   for(var i=0;i<P.contracts.length;i++){
     var r=claimContractAt(i);
     if(!r) continue;
-    got++; total+=r.pay; if(r.gear) gear.push(r.gear);
+    got++; total+=r.pay; items=items.concat(r.items||[]); if(r.gear) gear.push(r.gear);
   }
   if(!got){ say2('Nothing finished to claim.'); return; }
   saveProfile();
-  say2(got+' contract'+(got===1?'':'s')+' paid: '+'$'+total.toLocaleString()+
-       (gear.length?(' and '+gear.join(', ')):'')+'.');
+  say2(got+' contract'+(got===1?'':'s')+' paid: '+keysLine(items)+(gear.length?(', '+gear.join(', ')):''));   // v37.xx (cw-m1nocash): items, no $
   renderHub();
 }
 function renderWork(){
@@ -67976,7 +68004,7 @@ function flowChip(n,head,sub){
 function goalPaysItem(gl){ return /^(vault|pill3|elite|ward)$/.test(gl.id); }
 function goalRewardText(gl){
   if(G.arcade) return 'power-up';
-  return goalPaysItem(gl)?'bonus loot':('$'+((gl.chip|0)*5).toLocaleString());   // v28.xx (cw-hudstack): the cache roll reads bonus loot, not item
+  return goalPaysItem(gl)?'bonus loot':'bonus salvage';   // v37.xx (cw-m1nocash): no $ in a raid   // v28.xx (cw-hudstack): the cache roll reads bonus loot, not item
 }
 function goalReward(gl,quiet){
   var R, item=null, kd=null, total=0, pick=0, i, p=G.player;
@@ -67993,8 +68021,8 @@ function goalReward(gl,quiet){
     if(goalPaysItem(gl)){
       sideStream((G.seed>>>0)||1,GOAL_TAG+200+GOAL_IDS.indexOf(gl.id),function(){ item=rollLoot(LOOT.cache); });
       if(item&&ITEMS[item]) R.items.push(item);
-      else R.cash+=(gl.chip|0)*5;
-    } else R.cash+=(gl.chip|0)*5;
+      else R.items=R.items.concat(payItemsFor((gl.chip|0)*5));
+    } else R.items=R.items.concat(payItemsFor((gl.chip|0)*5));   // v37.xx (cw-m1nocash): salvage of the old $ value, banked on extraction, lost on a death
   }
   if(!quiet) say('GOAL DONE','ext',{sub:goalRewardText(gl)+(G.arcade?'':' at undercroft')});
   return 1;
@@ -68009,8 +68037,8 @@ function goalsSettle(how,lines){
   if(R.cash) lines.push('<span class="goalreward">run goals $'+R.cash.toLocaleString()+'</span>');
   for(i=0;i<R.items.length;i++){
     k=R.items[i]; bankItem(k); G.goalPaid.value+=ival(k);
-    lines.push('<span class="goalreward">run goals '+escHtml(ITEMS[k].name.toLowerCase())+'</span>');
   }
+  if(R.items.length) lines.push('<span class="goalreward">run goals '+escHtml(keysLine(R.items))+'</span>');   // v37.xx (cw-m1nocash): one line for the lot
   return R.cash|0;
 }
 function goalsTick(dt){

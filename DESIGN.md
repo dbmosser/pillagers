@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.25 - SEASON ZERO M1: NO CASH IN RAIDS
+
+Co-op hunt while he was away. his rulings of 11-01 (m1): no cash in raids, keep it like a credit card; money comes from selling gear and a bonus; contracts pay in gear and items to sell; racks pay materials instead of money; his pick 36, an extraction bonus of about 10 percent of the haul Watch: an extraction pays a bonus of 10 percent of the secured haul onto the account and into lifetime earnings, shown as extraction bonus on the card; a death or a walk out pays none; the stall banks a sale at once so a death keeps it; the survivor and the raid goals pay salvage of the same value instead of money; a contract pays salvage worth its old reward plus its gear, and a gun you own comes as a spare to the stash; racks and arrays pay rack parts worth what they paid; hire cuts count in lifetime earnings
+
+MEASURED. Check 37.25 passes, and fails on v37.24.
 ## v37.24 - THE WANTED STRIP READS FROM THE COUCH
 
 Co-op hunt while he was away. the critic on v37.22 (P1): the wanted strip in the stash header was 12.9px at 1080p and its prices sat in the warn colour Watch: the wanted strip is 16px with 24px between items; the label is in the warn colour, the names in the second text colour and the prices in the first

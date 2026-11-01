@@ -1,0 +1,6 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  04-stash-terminal                      staged       7.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  67-career-stash-stocked                staged       5.8s  total   2: clip 0 off 0 small 1 contrast 1 font 0 overlap 0 focus 0
+== 4k : window 3876x2265, viewport 3840x2160
+  04-stash-terminal                      staged       7.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  67-career-stash-stocked                staged       6.1s  total   2: clip 0 off 0 small 1 contrast 1 font 0 overlap 0 focus 0
