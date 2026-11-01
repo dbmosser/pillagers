@@ -27,3 +27,7 @@ Shape: three loops.
 - Every session: rank names + $ to spend (Reach); worn gear, 6 slots, 4 rarities, 1-2 traits, a few sets, enchant points per piece (Diablo-lite, Minecraft Dungeons); 2P combo moves (Chrono Trigger dual techs).
 - Every week, season zero: skill tree (ARC); Undercroft stations built from materials (Duckov, ARC); a hub law each week with a tradeoff (Frostpunk); a season pass that never expires (Halo Infinite); a weekly seeded challenge raid with modifiers (Balatro, DRG).
 Open: is worn gear lost on death (no insurance ruling 09-30); is $ for earned cosmetics "earned"?
+
+## Round 3 (11-01, his picks)
+His words: "2play combos is probably the least compelling to me" / "i like the idea of worn gear that you lose upon death -- makes dying more costly" / "amulet".
+So: co-op combos dropped; worn gear is lost on death (no insurance); slots hat, cloak, armor, pants, amulet, two rings. Full plan page: tools/handoff/progression-plan.html (published as an artifact).

@@ -1,0 +1,382 @@
+<title>Pillagers Progression Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column like a field dossier. Top: where we are headed. Middle: each system as a filed sheet with the same rows. Bottom: the build plan as milestones, then his calls. Dark-first, like the game. */
+:root {
+  --bg: #12161c; --panel: #1a2029; --line: #2b3440; --fg: #e3e6ea; --muted: #97a2b0;
+  --accent: #f0a53a;
+  --scrap: #9aa3ad; --sound: #6fbf73; --rare: #5aa0f0; --relic: #e0b44a;
+  --good: #6fbf73; --warn: #e0b44a; --cut: #c96b6b;
+  --display: "Saira Condensed", "Arial Narrow", sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) {
+  --bg: #f3f1ec; --panel: #ffffff; --line: #d9d4ca; --fg: #1d2127; --muted: #5d6672;
+  --accent: #b5680c; --scrap: #6f7781; --sound: #2f8a3a; --rare: #2366b8; --relic: #9a7410;
+  --good: #2f8a3a; --warn: #9a7410; --cut: #a33d3d; color-scheme: light; } }
+:root[data-theme="light"] {
+  --bg: #f3f1ec; --panel: #ffffff; --line: #d9d4ca; --fg: #1d2127; --muted: #5d6672;
+  --accent: #b5680c; --scrap: #6f7781; --sound: #2f8a3a; --rare: #2366b8; --relic: #9a7410;
+  --good: #2f8a3a; --warn: #9a7410; --cut: #a33d3d; color-scheme: light; }
+
+body { background: var(--bg); color: var(--fg); font: 15px/1.6 var(--body); }
+.wrap { max-width: 880px; margin: 0 auto; padding-block: 32px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: .02em; text-wrap: balance; margin: 0; line-height: 1.1; text-transform: lowercase; }
+h1 { font-size: clamp(34px, 6vw, 52px); }
+h2 { font-size: 26px; }
+h3 { font-size: 20px; }
+p { margin: 0; max-width: 70ch; }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.lede { color: var(--muted); font-size: 16px; }
+header { display: grid; gap: 10px; }
+nav { display: flex; flex-wrap: wrap; gap: 6px 14px; font: 500 13px var(--mono); }
+nav a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; }
+nav a:hover, nav a:focus-visible { border-bottom-color: var(--accent); outline: none; }
+
+.pick { border: 1px solid var(--accent); background: var(--panel); border-radius: 6px; padding: 20px; display: grid; gap: 12px; }
+.pick h2 { color: var(--accent); }
+
+.loop { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 8px; }
+.loop div { border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; display: grid; gap: 4px; align-content: start; }
+.loop b { font-family: var(--display); font-size: 19px; text-transform: lowercase; color: var(--accent); }
+.loop span { color: var(--muted); font-size: 13.5px; }
+
+section.sheet { display: grid; gap: 14px; padding-top: 10px; border-top: 2px solid var(--line); scroll-margin-top: 16px; }
+.sheet .head { display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; justify-content: space-between; }
+.chip { font: 500 11px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: 5px 7px; border-radius: 3px; border: 1px solid currentColor; white-space: nowrap; }
+.c-core { color: var(--accent); } .c-yes { color: var(--good); } .c-later { color: var(--warn); } .c-cut { color: var(--cut); }
+.rows { display: grid; gap: 10px; }
+.row { display: grid; grid-template-columns: 128px 1fr; gap: 14px; }
+.row .k { font: 500 12px/1.6 var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); padding-top: 2px; }
+.row .v { min-width: 0; }
+.row ul { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+
+.slots { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.slot { border: 1px solid var(--line); background: var(--panel); border-radius: 4px; padding: 10px 12px; display: grid; gap: 2px; }
+.slot b { font-family: var(--display); font-size: 18px; text-transform: lowercase; }
+.slot span { color: var(--muted); font-size: 13px; }
+.rar { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px; }
+.rar div { border-left: 4px solid; padding: 6px 10px; background: var(--panel); }
+.rar b { font-family: var(--display); font-size: 18px; text-transform: lowercase; display: block; }
+.rar span { color: var(--muted); font-size: 13px; }
+.r-scrap { border-color: var(--scrap); } .r-scrap b { color: var(--scrap); }
+.r-sound { border-color: var(--sound); } .r-sound b { color: var(--sound); }
+.r-rare { border-color: var(--rare); } .r-rare b { color: var(--rare); }
+.r-relic { border-color: var(--relic); } .r-relic b { color: var(--relic); }
+
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 4px; }
+table { border-collapse: collapse; width: 100%; min-width: 620px; font-size: 14px; }
+th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+th { font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); background: var(--panel); }
+td.m { font-family: var(--mono); font-size: 13px; white-space: nowrap; color: var(--accent); }
+td.d { font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--muted); }
+tr.cut td { border-bottom: 2px dashed var(--warn); }
+
+.ms { display: grid; gap: 12px; }
+.m { border: 1px solid var(--line); background: var(--panel); border-radius: 6px; padding: 14px 16px; display: grid; gap: 8px; }
+.m .top { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: baseline; justify-content: space-between; }
+.m h3 span { font-family: var(--mono); font-size: 13px; color: var(--accent); margin-right: 8px; text-transform: none; }
+.m ul { margin: 0; padding-left: 18px; display: grid; gap: 3px; }
+.m .see { color: var(--muted); font-size: 13.5px; }
+.m .see b { color: var(--fg); font-weight: 600; }
+
+.qs { border: 1px solid var(--accent); background: var(--panel); border-radius: 6px; padding: 18px 20px; display: grid; gap: 10px; }
+.qs ol { margin: 0; padding-left: 20px; display: grid; gap: 10px; }
+.qs .def { color: var(--muted); }
+code { font-family: var(--mono); font-size: 12.5px; }
+footer { color: var(--muted); font-size: 13px; }
+
+@media (max-width: 560px) { .row { grid-template-columns: 1fr; gap: 2px; } }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">pillagers · season zero · plan only, nothing built yet</div>
+  <h1>progression plan</h1>
+  <p class="lede">Where we are headed: a career where every raid pays toward a named rank, what you wear makes you stronger and is lost when you die, how it looked stays yours forever, and each week brings a new law and a new challenge raid. This page has the design for each piece, then the build order.</p>
+  <nav aria-label="sections">
+    <a href="#loop">the loop</a><a href="#ranks">ranks and $</a><a href="#gear">worn gear</a><a href="#wardrobe">wardrobe</a><a href="#relics">relics</a><a href="#picks">level-up picks</a><a href="#overclocks">overclocks</a><a href="#tree">skill tree</a><a href="#stations">stations</a><a href="#pass">pass</a><a href="#weekly">weekly raid</a><a href="#law">hub law</a><a href="#build">build plan</a><a href="#calls">his calls</a>
+  </nav>
+</header>
+
+<div class="pick" id="loop">
+  <div class="eyebrow">the loop</div>
+  <h2>what a session feels like when this is done</h2>
+  <div class="loop">
+    <div><b>before you ascend</b><span>Pick what to wear and what to leave home. Spend $ at the seller, upgrade a station, check the week's law.</span></div>
+    <div><b>in the raid</b><span>Machines fill your surge bar: pick 1 of 3 upgrades. Forge your gun and pick an overclock. Find gear and maybe a relic.</span></div>
+    <div><b>getting home</b><span>Every bar that moved on one screen: rank, pass, new looks, gear pips, station materials.</span></div>
+    <div><b>dying</b><span>Everything worn and carried is gone. Your rank, skill points, looks and stations stay.</span></div>
+    <div><b>each week</b><span>A new hub law and a new seeded challenge raid with its own high score.</span></div>
+  </div>
+  <p>Gear is the risk, rank and skills are the safety net, looks are the trophies. All ten ideas you liked fit that shape. Two-player combo moves are cut on your word.</p>
+</div>
+
+<section class="sheet" id="ranks">
+  <div class="head"><h2>ranks and $ to spend</h2><span class="chip c-yes">you liked</span></div>
+  <div class="rows">
+    <div class="row"><div class="k">ranks</div><div class="v"><ul>
+      <li>30 ranks in six names of five steps: scrounger, cutpurse, sacker, reaver, marauder, warlord (warlord v is the top).</li>
+      <li>XP comes from what already pays it: kills, loot, doors, selling, extracting. Dying still pays half.</li>
+      <li>Paced so a regular player reaches warlord in about six weeks of season zero.</li>
+      <li>The rank shows on your name over your head, at the lift, and on the raid-end screen.</li>
+    </ul></div></div>
+    <div class="row"><div class="k">each rank-up</div><div class="v">A $ payout, one skill point, and every fifth rank a deeper stock at the gear seller.</div></div>
+    <div class="row"><div class="k">what $ buys</div><div class="v"><ul>
+      <li>Gear at the seller (stock rotates each day, deepens with rank).</li>
+      <li>Consumables and guns, as today.</li>
+      <li>Station upgrades (with materials), and rerolling one trait on a piece at the workbench.</li>
+      <li>Losing gear on death keeps $ meaningful: there is always something to replace.</li>
+    </ul></div></div>
+    <div class="row"><div class="k">today</div><div class="v">The level exists but does nothing and is hidden. XP already flows. The shop has 8 consumables and 2 guns.</div></div>
+  </div>
+</section>
+
+<section class="sheet" id="gear">
+  <div class="head"><h2>worn gear, lost on death</h2><span class="chip c-core">core</span></div>
+  <div class="slots">
+    <div class="slot"><b>hat</b><span>awareness: sight range in fog, ping range, threat warning</span></div>
+    <div class="slot"><b>cloak</b><span>stealth: footstep noise, how far machines spot you</span></div>
+    <div class="slot"><b>armor</b><span>toughness. Your armor rigs today become this slot, with rarity and traits added.</span></div>
+    <div class="slot"><b>pants</b><span>movement: speed, stamina, crouch speed</span></div>
+    <div class="slot"><b>amulet</b><span>one big effect; relic amulets break a rule</span></div>
+    <div class="slot"><b>ring</b><span>gun handling: reload, recoil, magazine</span></div>
+    <div class="slot"><b>ring</b><span>second ring; the same effect twice does not stack</span></div>
+  </div>
+  <div class="rar">
+    <div class="r-scrap"><b>scrap</b><span>1 small trait. Most drops.</span></div>
+    <div class="r-sound"><b>sound</b><span>2 traits.</span></div>
+    <div class="r-rare"><b>rare</b><span>2 stronger traits.</span></div>
+    <div class="r-relic"><b>relic</b><span>2 traits and a rule-breaker.</span></div>
+  </div>
+  <div class="rows">
+    <div class="row"><div class="k">risk</div><div class="v"><ul>
+      <li>You dress at the stash before you ascend. Die and every worn piece is gone, like the rest of what you carry. No insurance, no keepsake pocket (the old safe pocket was removed in v12.35).</li>
+      <li>The choice is the game: wear the relic and play scared, or leave it home and play loose.</li>
+    </ul></div></div>
+    <div class="row"><div class="k">growth</div><div class="v">Extract wearing a piece and it earns a pip, up to 3. Each pip strengthens its traits by a third. Losing a 3-pip relic should hurt.</div></div>
+    <div class="row"><div class="k">drops</div><div class="v">Machine wrecks (bigger machines, better odds), keycard rooms, wardens (always rare or better), contract rewards, the seller. A raid averages two or three pieces.</div></div>
+    <div class="row"><div class="k">traits</div><div class="v">About 20 to start, each a small step: 8% faster reload, 10% less machine damage, quieter footsteps, 6% move speed, faster bandages, longer downed time, faster revives. Total gear power caps near +25%, so a fresh player is never helpless.</div></div>
+    <div class="row"><div class="k">salvage</div><div class="v">Unwanted pieces break into the materials you already carry home (scrap, wire, cell, board), which build stations.</div></div>
+    <div class="row"><div class="k">demo mode</div><div class="v">Both players get the same preset kit, so walk-up play stays equal. Nothing is saved, as today.</div></div>
+  </div>
+</section>
+
+<section class="sheet" id="wardrobe">
+  <div class="head"><h2>cosmetics become the wardrobe</h2><span class="chip c-core">rethink</span></div>
+  <p>Your point: if gear drops on death, cosmetics need a rethink. The answer: death takes the stats, never the look.</p>
+  <div class="rows">
+    <div class="row"><div class="k">how it plays</div><div class="v"><ul>
+      <li>What you wear shows on your pillager: hat, cloak, armor and pants.</li>
+      <li>The first time you extract wearing a piece, its look joins your wardrobe for good.</li>
+      <li>At the stash any slot can show a wardrobe look over the real piece. Stats come from what you wear; the look is your choice.</li>
+      <li>Today's cosmetics from the Discount Fashion Depot move into the same wardrobe, so nothing earned is lost. Hair, face, skin and the rest stay as they are.</li>
+      <li>A relic look is a trophy: it says you got one home at least once. Your partner sees your looks over the network, as with cosmetics today.</li>
+    </ul></div></div>
+    <div class="row"><div class="k">new art</div><div class="v">There is no cloak look today, so cloaks are new art. Hats, vests and pads have looks already to build from.</div></div>
+  </div>
+</section>
+
+<section class="sheet" id="relics">
+  <div class="head"><h2>rule-breaking relics</h2><span class="chip c-yes">you liked</span></div>
+  <div class="rows">
+    <div class="row"><div class="k">examples</div><div class="v"><ul>
+      <li>reloading drops a mine at your feet</li>
+      <li>every 5th shot costs no ammo</li>
+      <li>bandaging heals your partner too</li>
+      <li>opening a container pings every machine nearby on your map</li>
+      <li>while crouched your shots are silent</li>
+      <li>a kill at full health gives a short sprint</li>
+    </ul></div></div>
+    <div class="row"><div class="k">rules</div><div class="v">Only relic rings and amulets carry one, so at most three run at once. About 12 at first, growing to 20.</div></div>
+  </div>
+</section>
+
+<section class="sheet" id="picks">
+  <div class="head"><h2>level-up picks in raid</h2><span class="chip c-yes">you liked</span></div>
+  <div class="rows">
+    <div class="row"><div class="k">how it plays</div><div class="v"><ul>
+      <li>Machine kills, containers and doors fill a surge bar. When it fills, three small cards slide in at the bottom of the screen.</li>
+      <li>No pause. Press 1, 2 or 3 (d-pad on a pad), or it picks for you after 8 seconds.</li>
+      <li>About 6 to 8 picks a raid, gone when the raid ends.</li>
+      <li>Max two related picks and they combine into a stronger one, so each raid has a build to chase.</li>
+      <li>In two-player each player picks their own.</li>
+    </ul></div></div>
+    <div class="row"><div class="k">examples</div><div class="v">faster reload · kills heal 2 · a third grenade · shots ricochet once · pickups pull from further · machines show through walls for 3 s after a kill</div></div>
+    <div class="row"><div class="k">watch for</div><div class="v">Screen clutter, and overlap with the Forge. The cards stay small and low; the Forge stays about your gun.</div></div>
+  </div>
+</section>
+
+<section class="sheet" id="overclocks">
+  <div class="head"><h2>forge overclocks</h2><span class="chip c-yes">you liked</span></div>
+  <div class="rows">
+    <div class="row"><div class="k">how it plays</div><div class="v">At MK II and MK III the Forge offers two overclocks and you take one. Each gives and takes: heavy rounds (more damage, slower reload), hair trigger (faster fire, more spread), deep mag (bigger magazine, slower aim), quiet barrel (no noise ring, less range).</div></div>
+    <div class="row"><div class="k">keeps</div><div class="v">An overclocked gun goes home with you on extract, like a forged gun today.</div></div>
+  </div>
+</section>
+
+<section class="sheet" id="tree">
+  <div class="head"><h2>skill tree</h2><span class="chip c-yes">you liked</span></div>
+  <div class="rows">
+    <div class="row"><div class="k">shape</div><div class="v"><ul>
+      <li>Spent at the Mainframe. One point per rank, 30 in season zero. Points never leave.</li>
+      <li>Three branches of 6 skills, each skill up to 2 points, then a capstone where you pick one of two. That is 39 points of tree for 30 points, so you cannot take everything.</li>
+      <li><b>scavenger:</b> quieter searching, keycards that last longer, more materials from salvage. Capstone: see gear rarity through walls, or one extra pick per raid.</li>
+      <li><b>gunhand:</b> steadier aim on the move, faster swaps, cheaper Forge. Capstone: a third overclock choice, or a free MK II once per raid.</li>
+      <li><b>iron:</b> faster bandages, longer downed time, more stamina, faster revives. Capstone: get up once per raid by yourself, or armor pieces take a hit for you before breaking.</li>
+      <li>Free respec at the Mainframe.</li>
+    </ul></div></div>
+  </div>
+</section>
+
+<section class="sheet" id="stations">
+  <div class="head"><h2>build the undercroft</h2><span class="chip c-yes">you liked</span></div>
+  <div class="rows">
+    <div class="row"><div class="k">stations</div><div class="v"><ul>
+      <li><b>workbench:</b> more recipes; reroll a gear trait; at level 3, add a pip.</li>
+      <li><b>stash:</b> more room for gear you are keeping home.</li>
+      <li><b>rack hall:</b> more racks and a better payout (today's racks move here).</li>
+      <li><b>peddler:</b> sells at 55%, then 62%, then 70%.</li>
+      <li><b>seller's counter:</b> one more gear slot in the daily stock per level.</li>
+    </ul></div></div>
+    <div class="row"><div class="k">cost</div><div class="v">Three levels each, paid in carried-home materials plus $. Each level changes how the station looks in the hub, so you can see it grow.</div></div>
+  </div>
+</section>
+
+<section class="sheet" id="pass">
+  <div class="head"><h2>season zero pass, never expires</h2><span class="chip c-yes">you liked</span></div>
+  <div class="rows">
+    <div class="row"><div class="k">how it plays</div><div class="v"><ul>
+      <li>The 100-step ladder you already have (top 1.2 million XP today) is retuned so a regular player finishes in about six weeks.</li>
+      <li>Rewards become gear crates, $, wardrobe looks and a few relics.</li>
+      <li>It never expires. When season one comes, season zero stays claimable.</li>
+    </ul></div></div>
+  </div>
+</section>
+
+<section class="sheet" id="weekly">
+  <div class="head"><h2>weekly challenge raid</h2><span class="chip c-yes">you liked</span></div>
+  <div class="rows">
+    <div class="row"><div class="k">how it plays</div><div class="v"><ul>
+      <li>One raid a week from the lift, the same map seed for every player that week.</li>
+      <li>Three modifiers stacked on it, for example double machines, no map, half ammo, fog all raid.</li>
+      <li>Played with a preset kit, so your gear is not at risk and scores compare fairly.</li>
+      <li>Your best SP is kept for the week. Friends compare by trading a short score code (no server).</li>
+      <li>Finishing it once pays a weekly look.</li>
+    </ul></div></div>
+    <div class="row"><div class="k">today</div><div class="v">A daily seeded raid already exists in the code, switched off. This turns it weekly and adds modifiers.</div></div>
+  </div>
+</section>
+
+<section class="sheet" id="law">
+  <div class="head"><h2>weekly hub law</h2><span class="chip c-yes">you liked</span></div>
+  <div class="rows">
+    <div class="row"><div class="k">how it plays</div><div class="v">Each week the Mainframe offers three laws; you sign one and it holds until the week ends. Each gives and takes, so the week plays differently:</div></div>
+    <div class="row"><div class="k">examples</div><div class="v"><ul>
+      <li>double contract pay, but machines hit harder</li>
+      <li>relics drop twice as often, but you carry less</li>
+      <li>the peddler pays 80%, but the seller charges double</li>
+      <li>surge bar fills faster, but no Forge</li>
+      <li>wardens roam every district, and pay in rare gear</li>
+      <li>dying keeps your rings, but costs $1,000</li>
+    </ul></div></div>
+  </div>
+</section>
+
+<section class="sheet" id="build">
+  <div class="head"><h2>build plan</h2><span class="eyebrow">order, size, what you will see</span></div>
+  <p>Each milestone ships as several small builds through the usual pipeline: a job file, the gate with a new check that fails before and passes after, pictures of every screen, then on your PC. Old saves keep loading; the save key never changes. The raid layout on seed 4242 stays identical, because gear drops draw from a side dice roll. You playtest at the end of each milestone before the next starts, so we change direction early if it does not feel right.</p>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>#</th><th>milestone</th><th>builds</th><th>days</th><th>you will see</th></tr></thead>
+    <tbody>
+      <tr><td class="m">m0</td><td>foundation</td><td class="d">3 to 4</td><td class="d">2</td><td>nothing yet: gear pieces that remember their own traits, one place every stat reads gear from, side-roll drops</td></tr>
+      <tr><td class="m">m1</td><td>ranks and $</td><td class="d">3</td><td class="d">1 to 2</td><td>your rank over your head, rank-ups paying $, a bigger seller</td></tr>
+      <tr><td class="m">m2</td><td>worn gear</td><td class="d">6 to 8</td><td class="d">4 to 6</td><td>the doll at the stash, gear drops in raid, lost on death, pips on extract, salvage</td></tr>
+      <tr><td class="m">m3</td><td>wardrobe</td><td class="d">3 to 4</td><td class="d">2 to 3</td><td>gear shows on your pillager, looks kept forever, cloaks</td></tr>
+      <tr><td class="m">m4</td><td>relics</td><td class="d">3</td><td class="d">2</td><td>the first 12 rule-breakers on rings and amulets</td></tr>
+      <tr><td class="m">m5</td><td>forge overclocks</td><td class="d">2</td><td class="d">1</td><td>a pick of two at each Forge upgrade</td></tr>
+      <tr class="cut"><td class="m">m6</td><td>pass and raid-end screen</td><td class="d">2 to 3</td><td class="d">1 to 2</td><td>a pass you can finish, every moved bar after a raid</td></tr>
+      <tr><td class="m">m7</td><td>level-up picks</td><td class="d">4 to 5</td><td class="d">3</td><td>the surge bar and the three cards</td></tr>
+      <tr><td class="m">m8</td><td>skill tree</td><td class="d">4</td><td class="d">3</td><td>the tree at the Mainframe</td></tr>
+      <tr><td class="m">m9</td><td>stations</td><td class="d">4</td><td class="d">3</td><td>the Undercroft growing as you build</td></tr>
+      <tr><td class="m">m10</td><td>weekly raid and hub law</td><td class="d">3 to 4</td><td class="d">2</td><td>the week's law and challenge raid</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>The dashed line is the Thanksgiving cut: m0 to m6 is about two to three weeks and lands before the 11/26 release with time to settle. m7 to m10 follow after, as season zero updates. If it goes faster, more of it lands before Thanksgiving; nothing is held back for a date.</p>
+
+  <div class="ms">
+    <div class="m">
+      <div class="top"><h3><span>m0</span>foundation</h3><span class="chip c-core">first</span></div>
+      <ul>
+        <li>Today an item is just a name in the stash. Gear needs pieces that remember their slot, rarity, traits and pips, so the save gains a gear list beside the stash, added the first time an old save loads.</li>
+        <li>One gear lookup that speed, stamina, reload, spread, noise, detection, bandage, downed and revive times all read from. With nothing worn it changes nothing, which the gate proves on every old check.</li>
+        <li>Gear drops roll on a side dice roll, so seed 4242 stays the same raid.</li>
+      </ul>
+      <p class="see"><b>Watch for:</b> nothing; this milestone is invisible on purpose.</p>
+    </div>
+    <div class="m">
+      <div class="top"><h3><span>m1</span>ranks and $</h3></div>
+      <ul><li>Rank names and curve, rank-up moment, the name tag, the raid-end line, seller stock by rank.</li></ul>
+      <p class="see"><b>Watch for:</b> whether the first ranks come fast enough to feel good.</p>
+    </div>
+    <div class="m">
+      <div class="top"><h3><span>m2</span>worn gear</h3><span class="chip c-core">the big one</span></div>
+      <ul>
+        <li>Armor rigs become the armor slot; six new slots around them.</li>
+        <li>The doll at the stash with compare tips; the backpack shows gear in its rarity color.</li>
+        <li>Drops from machines, keycard rooms, wardens and contracts; the seller's gear stock.</li>
+        <li>Death wipes worn gear with the rest; extract adds a pip; salvage into materials.</li>
+        <li>Two-player: each player's gear works on their own machine and the partner sees it.</li>
+        <li>Demo mode gets a preset kit.</li>
+      </ul>
+      <p class="see"><b>Watch for:</b> drop rate (two or three a raid), whether deaths now feel costly but fair, and the backpack still feeling like it does today.</p>
+    </div>
+    <div class="m">
+      <div class="top"><h3><span>m3</span>wardrobe</h3></div>
+      <ul><li>Gear looks on the sprite, cloak art, looks unlocked on extract, slot override at the stash, today's cosmetics moved in.</li></ul>
+      <p class="see"><b>Watch for:</b> whether you can read your partner's gear at a glance.</p>
+    </div>
+    <div class="m">
+      <div class="top"><h3><span>m4 · m5 · m6</span>relics, overclocks, pass</h3></div>
+      <ul>
+        <li>12 rule-breakers; two overclocks per Forge step; the pass retuned to about six weeks and filled with gear and looks; the raid-end screen showing every bar that moved.</li>
+      </ul>
+      <p class="see"><b>Watch for:</b> a relic that breaks the game in a bad way; we trim it.</p>
+    </div>
+    <div class="m">
+      <div class="top"><h3><span>m7 to m10</span>after the cut</h3><span class="chip c-later">season zero updates</span></div>
+      <ul><li>Level-up picks, the skill tree, stations, then the weekly raid and law. Each gets its own playtest stop.</li></ul>
+    </div>
+  </div>
+
+  <div class="rows">
+    <div class="row"><div class="k">who builds</div><div class="v">m0 and m2 on the stronger model (design-heavy, touches the save); the rest on the regular helpers. ChatGPT (Codex) takes jobs again from Wednesday.</div></div>
+    <div class="row"><div class="k">risks</div><div class="v"><ul>
+      <li>The save: gear adds to it. Every build reloads an old save in the gate before it ships.</li>
+      <li>Balance: power caps near +25% and gets tuned from your playtests and the run logs.</li>
+      <li>Release: m2 is large. If it slips, the cut line moves, not the release.</li>
+    </ul></div></div>
+  </div>
+</section>
+
+<div class="qs" id="calls">
+  <div class="eyebrow">his calls · I go with the default unless he says otherwise</div>
+  <ol>
+    <li>Gear shows in the backpack and loot rows as a new kind of item in its rarity color. Your rule is that nobody touches the loot rows unless you ask. <span class="def">Default: yes, gear appears there, and how looting feels stays the same.</span></li>
+    <li>A higher rank deepens the seller's stock, which overrides your 10-12 "no level-up unlocks". <span class="def">Default: yes, every fifth rank.</span></li>
+    <li>Can $ buy looks at the Mainframe, Reach style? <span class="def">Default: no, looks come only from playing (your 09-03 answer).</span></li>
+    <li>The Thanksgiving cut at m6. <span class="def">Default: as drawn.</span></li>
+  </ol>
+</div>
+
+<footer>Plan files: tools/handoff/progression-plan.html and progression-brainstorm-1101.md. Season zero until he says otherwise. Nothing is built until he says go.</footer>
+</div>
