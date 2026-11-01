@@ -1,0 +1,7 @@
+v37.16: season zero foundation: worn gear pieces
+
+the save holds stash gear and nine worn slots, each piece with a kind, rarity, power, traits and pips, rolled on its own dice; every load checks them; nothing drops or is worn yet
+
+Check 37.16. Fails on v37.15.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

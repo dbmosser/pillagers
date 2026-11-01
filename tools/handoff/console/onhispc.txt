@@ -181,3 +181,4 @@
 11-01 13:13 v37.12 cw-machsmoke2 on his pc after 33s (8802 serves 37.12) week 3%
 11-01 13:19 v37.13 cw-nomachpip on his pc after 18s (8802 serves 37.13) week 3%
 11-01 14:33 v37.14 cw-p0acct on his pc after 18s (8802 serves 37.14) week 4%
+11-01 14:39 v37.15 cw-cardstamp on his pc after 18s (8802 serves 37.15) week 4%

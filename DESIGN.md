@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.16 - SEASON ZERO FOUNDATION: WORN GEAR PIECES
+
+Co-op hunt while he was away. his progression plan of 11-01 (m0): nine worn slots, four rarities, power that follows your gear, pips, lost on death; gear needs to be a saved piece of its own, rolled on its own dice so seed 4242 stays the same raid Watch: the save holds stash gear and nine worn slots, each piece with a kind, rarity, power, traits and pips, rolled on its own dice; every load checks them; nothing drops or is worn yet
+
+MEASURED. Check 37.16 passes, and fails on v37.15.
 ## v37.15 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v36.99 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay. Watch: The what is new stamp keeps up with the build; the three notes are unchanged.

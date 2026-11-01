@@ -1,0 +1,14 @@
+# 00p-m1b-no-raid-cash : season zero m1, build 2 of 5: no cash in raids, the extraction bonus, contracts and racks stop paying $
+model: opus
+WAIT ON 00p-m1a-xp-off (both edit endRaid): if 00p-m1a-xp-off is in tasks/, waiting/, blocked/ or a lane holds it, end your run with exactly TASK WAITING: 00p-m1a-xp-off and nothing else.
+His rulings (11-01, binding): "no cash in riads, keep it like a credit card"; "it shouldn't pay cash beyond just selling what you have and maybe some sort of bonus, but most the money should come from selling gear"; contracts "pay in gear and items to sell"; racks "make them pay materials instead of $". Plan m1. Read tools/handoff/console/notes/progression/README.md first.
+Every place $ comes in today (v37.14, grep the text): payGear (P.credits+=_pgv), strayGive (pay=ri(900,1500)), endRaid mfPayPer (racks, P.credits+=_mfPay), endRaid hire cuts (cut, cut2), endRaid G.pedCarry (stall money carried out), claimContractAt (P.credits+=c.reward), goalsSettle (R.cash), the stash and Peddler sales (00p-m1c owns those), claimTier (gone with m1a).
+Do:
+1. Nothing in a raid holds money. The in-raid Peddler (pedCarry) pays straight onto the account at the moment of the sale, like a card, so a death never takes it; strayGive and raid goals pay items of about the same value into the raid bag instead of $ (use existing items; no new item kinds; the stray roll must stay on the stream it uses today so seed 4242 holds, or move to a side stream with sideStream if it must change, and prove the fingerprint).
+2. The extraction bonus: on an extract, about 10% of the haul's value (his pick 36; the same haul value the raid-end card already shows) is paid onto the account and through lifeEarnAdd. A death or an abandon pays none. One line on the raid-end card: "extraction bonus +$N".
+3. Contracts pay items to sell (the gear they already carry, or items worth about the old $ reward); racks pay materials (scrap, wire, cell, board: the existing materials, worth about what the rack paid). No $.
+4. Every $ that is still earned (the bonus, hire cuts if kept, the stall money) goes through lifeEarnAdd. Spending never touches lifetime earnings.
+Check (must FAIL on the current build): __deploy, put known items in the bag, __endRaid('extract'): credits rise by exactly round(haul x 0.10) plus any stall money, lifetime earnings by the same, and the card shows the bonus line; __endRaid('dead') on the same staging: no bonus, no $; a claimed contract adds items and no $; a rack payout adds materials and no $; seed 4242 fingerprint holds. Old save reload rule from the README.
+Rules: never touch the pickup stack, loot sounds or loot rows; demo untouched (its own money rules stay); lower case, $.
+Pictures: raid-end card after an extract and after a death, contracts board, 1080p and 4K.
+TASK DONE when it shipped and is ON HIS PC, with one line in notes/progression/log.md.

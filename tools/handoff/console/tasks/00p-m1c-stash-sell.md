@@ -1,0 +1,13 @@
+# 00p-m1c-stash-sell : season zero m1, build 3 of 5: sell from the stash screen, buy back today's sales, net worth, sales count in lifetime earnings
+model: opus
+His answers (11-01, binding): 37 "the Peddler, or straight from the stash screen"; 39 buy back what you sold today, at the same price: yes; 44 show net worth (stash cash plus stash value): yes; 47 lifetime earnings counts "every dollar earned". Plan m1. Read tools/handoff/console/notes/progression/README.md first.
+Area this job owns: the stash screen and the sale code (the sell lines at the stash panel and the Peddler: grep "P.credits+=ival(key)" and "P.credits+=gained"). NOT the Mainframe (00p-m1a, 00p-m1e) and NOT endRaid.
+Do:
+1. A sell action on the stash screen for one item and for a stack (follow the stash screen's existing controls and style guide, tools/handoff/console/notes/ui/style-guide.md; one control per job, never a second row for an existing control). A locked item (P.keep) cannot be sold. Price: what the Peddler pays today (00p-m1d makes it a market later; route every price through one function, sellPriceOf(k), so m1d changes one place).
+2. Every sale, here and at the Peddler, adds its $ to lifetime earnings with lifeEarnAdd and stops adding XP (remove the P.xp+= on these lines).
+3. Buy back: today's sales (local calendar day) are listed on the stash screen and can be bought back at exactly the price paid; a buy back takes the $ back and takes the same amount OFF a separate today counter so lifetime earnings never count a sale that was undone (lifetime earnings never go down: keep the undone amount in P.sellDay and skip it at the next lifeEarnAdd, or add sales to lifetime earnings only when the day closes; pick the simpler honest one and say which in DESIGN.md). The list clears at the next day.
+4. Net worth on the account card: stash cash plus what the stash would sell for (sellPriceOf over P.stash; worn gear and P.gear count once m3 gives them a price).
+Check (must FAIL on the current build): sell one known item from the stash screen through its real control: credits up by sellPriceOf, item gone, lifetime earnings up by the same; buy it back: credits back, item back, and lifetime earnings end where they started; a locked item refuses; net worth on the account card equals credits plus the summed prices; an old save reload rule from the README (P.sellDay absent loads fine).
+Rules: never touch the pickup stack, loot sounds or loot rows; lower case, $; no explaining sentences.
+Pictures: stash screen with the sell control and buy back list, account card, 1080p and 4K.
+TASK DONE when it shipped and is ON HIS PC, with one line in notes/progression/log.md.
