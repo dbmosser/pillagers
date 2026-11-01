@@ -1,0 +1,68 @@
+{
+    "title":  "DEAD CODE OUT 1",
+    "why":  "Audit 2026-10-28 item 10: 15 functions that nothing calls (no player change). Batch 1 of the cleanup.",
+    "now":  "Nothing a player can see changes.",
+    "edits":  [
+                  {
+                      "anchor":  "function forgeName(gk,fk){ var b=WEAPONS[gk]; return (b?b.name:String(gk||\u0027\u0027))+forgeMk(fk|0); }\n",
+                      "replacement":  "// v28.xx (cw-dead1): dead code out, no caller anywhere (audit 2026-10-28): forgeName, woodsCell, bigSpine, forgeChamfer, msgVictim, msgQDrop, cycleHeal, unkeyedHeals, countHeals, gunDef, placeName, tabOf, netSndLabel, netSndOtherLabel, sectorTitle.\n"
+                  },
+                  {
+                      "anchor":  "  function woodsCell(r2,c2){\n    for(var wq=0;wq\u003c(map.woods||[]).length;wq++) if(map.woods[wq].r===r2\u0026\u0026map.woods[wq].c===c2) return true;\n    return false;\n  }\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "  function bigSpine(hORv,r2,c2){\n    for(var bq=0;bq\u003c(map.bigPairs||[]).length;bq++){\n      var B=map.bigPairs[bq];\n      if(B.horiz\u0026\u0026hORv===\u0027v\u0027\u0026\u0026B.r===r2\u0026\u0026B.c+1===c2) return true;\n      if(!B.horiz\u0026\u0026hORv===\u0027h\u0027\u0026\u0026B.r+1===r2\u0026\u0026B.c===c2) return true;\n    }\n    return false;\n  }\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "function forgeChamfer(x,y,w,h,c){ ctx.beginPath(); ctx.moveTo(x+c,y); ctx.lineTo(x+w,y); ctx.lineTo(x+w,y+h-c); ctx.lineTo(x+w-c,y+h); ctx.lineTo(x,y+h); ctx.lineTo(x,y+c); ctx.closePath(); }\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "function msgVictim(rows,rk,now,drain){\n  var best=null, i, r, rr;\n  for(i=0;i\u003crows.length;i++){\n    r=rows[i]; rr=MSGK[msgKind(r.k)].r;\n    if(msgProt(r,now)\u0026\u0026(drain||rr\u003erk)) continue;\n    if(!best||rr\u003cbest.rr||(rr===best.rr\u0026\u0026(+r.at||-1e9)\u003c(+best.r.at||-1e9))) best={r:r,rr:rr};\n  }\n  return best?best.r:null;\n}\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "function msgQDrop(m,key){ var i; while((i=msgQFind(m,key))\u003e=0){ G.msgQ.splice(i,1); G.msgQM.splice(i,1); } }\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "// J: the next non-empty medical key, round, as U does for the grenades.\nfunction cycleHeal(){\n  var sl=hotbarSlots(), cs=medCells(sl), cur=medSelIx(sl), at=-1, i, nx;\n  if(!cs.length){ say((findHeal()\u003e=0)?\u0027NO HEAL ON HOTBAR\u0027:\u0027NO MEDICAL SUPPLIES\u0027); return false; }\n  for(i=0;i\u003ccs.length;i++) if(cs[i]===cur) at=i;\n  nx=cs[(at+1)%cs.length];\n  G.msel=sl[nx].itemKey;\n  say((ITEMS[G.msel].name+\u0027 ready\u0027).toUpperCase());\n  return true;\n}\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "function unkeyedHeals(){\n  // v14.84: the heals in the backpack whose item is on no belt key.\n  var n=0, keyed={};\n  for(var s in (G.hotAssign||{})) keyed[G.hotAssign[s]]=1;\n  for(var i=0;i\u003cG.bag.length;i++){ var it=ITEMS[G.bag[i]]; if(it\u0026\u0026it.use===\u0027heal\u0027\u0026\u0026!keyed[G.bag[i]]) n++; }\n  return n;\n}\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "function countHeals(){\n  var n=0;\n  for(var i=0;i\u003cG.bag.length;i++){ var it=ITEMS[G.bag[i]]; if(it\u0026\u0026it.use===\u0027heal\u0027) n++; }\n  return n;\n}\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "function gunDef(w){ return GUNDEF[(w\u0026\u0026w.id)||\u0027rifle\u0027]||GUNDEF.rifle; }\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "// A place already called \"THE something\" brings its own article.\nfunction placeName(n){\n  n=String(n).toLowerCase();\n  return n.indexOf(\u0027the \u0027)===0?n.slice(4):n;\n}\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "  function tabOf(k){ return stashTabOf(k); }\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "function netSndLabel(on){ return on?\u0027SOUND ON\u0027:\u0027SOUND OFF\u0027; }\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "function netSndOtherLabel(){ return (NET.sndOther===1)?\u0027sound on\u0027:((NET.sndOther===0)?\u0027sound off\u0027:\u0027not said yet\u0027); }\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "// v13.26: the map name the way he wrote it in the sector line, Cold Storage and The\n// Cold Mile, from the upper-case name the heading uses.\nfunction sectorTitle(n){ return String(n||\u0027\u0027).toLowerCase().replace(/\\b[a-z]/g,function(c){ return c.toUpperCase(); }); }\n",
+                      "replacement":  ""
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027dead functions with no caller are gone (cw-dead1)\u0027,\n   run:function(){\n     var bad=[];\n     if(typeof forgeName!==\u0027undefined\u0027) bad.push(\u0027forgeName\u0027);\n     if(typeof forgeChamfer!==\u0027undefined\u0027) bad.push(\u0027forgeChamfer\u0027);\n     if(typeof msgVictim!==\u0027undefined\u0027) bad.push(\u0027msgVictim\u0027);\n     if(typeof msgQDrop!==\u0027undefined\u0027) bad.push(\u0027msgQDrop\u0027);\n     if(typeof cycleHeal!==\u0027undefined\u0027) bad.push(\u0027cycleHeal\u0027);\n     if(typeof unkeyedHeals!==\u0027undefined\u0027) bad.push(\u0027unkeyedHeals\u0027);\n     if(typeof countHeals!==\u0027undefined\u0027) bad.push(\u0027countHeals\u0027);\n     if(typeof gunDef!==\u0027undefined\u0027) bad.push(\u0027gunDef\u0027);\n     if(typeof placeName!==\u0027undefined\u0027) bad.push(\u0027placeName\u0027);\n     if(typeof netSndLabel!==\u0027undefined\u0027) bad.push(\u0027netSndLabel\u0027);\n     if(typeof netSndOtherLabel!==\u0027undefined\u0027) bad.push(\u0027netSndOtherLabel\u0027);\n     if(typeof sectorTitle!==\u0027undefined\u0027) bad.push(\u0027sectorTitle\u0027);\n     if(bad.length) return \u0027still defined: \u0027+bad.join(\u0027, \u0027);\n     return null; }},"
+}

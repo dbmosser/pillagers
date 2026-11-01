@@ -1,0 +1,22 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  golden-linked-p1                       NOT STAGED  16.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: golden did not replicate to the guest window
+    at gWait (<anonymous>:8:9)
+    at async partyGold (<anonymous>:73:3)
+    at async <anonymous>:80:48
+    at async <anonymous>:1:21
+  golden-linked-p2                       NOT STAGED  13.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: golden did not replicate to the guest window
+    at gWait (<anonymous>:8:9)
+    at async partyGold (<anonymous>:73:3)
+    at async <anonymous>:80:48
+    at async <anonymous>:1:21
+== 4k : window 3876x2265, viewport 3840x2160
+  golden-linked-p1                       NOT STAGED  20.9s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: golden did not replicate to the guest window
+    at gWait (<anonymous>:8:9)
+    at async partyGold (<anonymous>:73:3)
+    at async <anonymous>:80:48
+    at async <anonymous>:1:21
+  golden-linked-p2                       NOT STAGED  16.0s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION Error: golden did not replicate to the guest window
+    at gWait (<anonymous>:8:9)
+    at async partyGold (<anonymous>:73:3)
+    at async <anonymous>:80:48
+    at async <anonymous>:1:21

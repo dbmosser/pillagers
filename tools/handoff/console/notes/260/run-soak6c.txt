@@ -1,0 +1,13 @@
+go: go
+C at 12s: {"url":"http://localhost:8817/fixture-soak.html?p2=1&mode=coop&pair=up58yyeox2gw&emb=1","title":"Pillagers, player 2","p2":{"t":"player 2 window","disp":"","css":"none"},"same":{"mode":"coop","pick":"","same":"p2","pair":"up58yyeox2gw","p2url":"","chan":true,"busy":false,"p2win":false},"C":{"on":true,"role":"join","seat":1,"roster":[{"seat":0,"pid":"ad84c49f","name":"PILLAGER","host":true},{"seat":1,"pid":"4b1b5764","name":"PILLAGER","host":false}],"status":"party ascended","err":"","made":1,"codeLen":1090,"links":1},"A":{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"ad84c49f","name":"PILLAGER","host":true},{"seat":1,"pid":"4b1b5764","name":"PILLAGER","host":false}],"status":"","err":"","made":1,"codeLen":1186,"links":1},"Asame":{"mode":"coop","pick":"coop","same":"host","pair":"up58yyeox2gw","p2url":"http://localhost:8817/fixture-soak.html?p2=1&mode=coop&pair=up58yyeox2gw&emb=1","chan":true,"busy":false,"p2win":true}}
+run 1 {"pass":false,"bad":["soak: frames stalled: A drew 2 frames in second 11; C drew 2 frames in second 11; A drew 2 frames in second 47"],"trade":776,"drop":791,"relink":920,"errors":0,"saved":0,"drops":0,"fps":{"A":2,"C":2},"soakSec":120}
+go: go
+run 2 {"pass":false,"bad":["soak: frames stalled: A drew 2 frames in second 2; C drew 2 frames in second 2; A drew 2 frames in second 13"],"trade":751,"drop":555,"relink":688,"errors":0,"saved":0,"drops":0,"fps":{"A":2,"C":2},"soakSec":120}
+go: go
+run 3 {"pass":false,"bad":["soak: frames stalled: A drew 2 frames in second 13; C drew 2 frames in second 13; A drew 2 frames in second 50"],"trade":857,"drop":563,"relink":838,"errors":0,"saved":0,"drops":0,"fps":{"A":2,"C":2},"soakSec":120}
+go: go
+run 4 {"pass":false,"bad":["soak: frames stalled: A drew 2 frames in second 5; C drew 2 frames in second 5; A drew 2 frames in second 14"],"trade":760,"drop":589,"relink":697,"errors":0,"saved":0,"drops":0,"fps":{"A":2,"C":2},"soakSec":120}
+go: go
+run 5 {"pass":false,"bad":["soak: frames stalled: A drew 2 frames in second 23; C drew 2 frames in second 23; A drew 2 frames in second 26"],"trade":757,"drop":534,"relink":512,"errors":0,"saved":0,"drops":0,"fps":{"A":2,"C":2},"soakSec":120}
+go: go
+run 6 {"pass":true,"bad":[],"trade":734,"drop":799,"relink":785,"errors":0,"saved":0,"drops":0,"fps":{"A":3,"C":3},"soakSec":120}

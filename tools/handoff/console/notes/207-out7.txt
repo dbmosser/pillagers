@@ -1,0 +1,9 @@
+23.10: PASS
+23.02: the board does not count the dead as N dead
+32.89: a setup tile has no name or picture
+26.42: PASS
+26.37: PASS
+23.56: PASS
+31.50: the demo 1080p: the column is 250.0 px wide, not 300 (300 at 1080p, his menu survey pick); the demo for 2 players 1080p: the column is 250.0 px wide, not 300 (300 at 1080p, his menu survey pick); control: the 2 player score plate ends at x 1062 and the 1 player one at 1060, so the 2 player arm prove
+30.96: PASS
+ALL DONE

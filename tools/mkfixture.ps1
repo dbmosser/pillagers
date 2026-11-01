@@ -6175,6 +6175,23 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'37.04',what:'dead functions with no caller are gone (cw-dead1)',
+   run:function(){
+     var bad=[];
+     if(typeof forgeName!=='undefined') bad.push('forgeName');
+     if(typeof forgeChamfer!=='undefined') bad.push('forgeChamfer');
+     if(typeof msgVictim!=='undefined') bad.push('msgVictim');
+     if(typeof msgQDrop!=='undefined') bad.push('msgQDrop');
+     if(typeof cycleHeal!=='undefined') bad.push('cycleHeal');
+     if(typeof unkeyedHeals!=='undefined') bad.push('unkeyedHeals');
+     if(typeof countHeals!=='undefined') bad.push('countHeals');
+     if(typeof gunDef!=='undefined') bad.push('gunDef');
+     if(typeof placeName!=='undefined') bad.push('placeName');
+     if(typeof netSndLabel!=='undefined') bad.push('netSndLabel');
+     if(typeof netSndOtherLabel!=='undefined') bad.push('netSndOtherLabel');
+     if(typeof sectorTitle!=='undefined') bad.push('sectorTitle');
+     if(bad.length) return 'still defined: '+bad.join(', ');
+     return null; }},
   {v:'37.03',what:'the profile keeps a second copy in IndexedDB: a save is mirrored, a cleared or unreadable localStorage save comes back from the copy, an erased save does not, and the browser is asked once to keep the storage',
    run:function(){
      if(typeof saveCopyPut!=='function'||typeof saveCopyRestore!=='function'||typeof savePersistAsk!=='function') return 'the profile has no second copy (no saveCopyPut, saveCopyRestore or savePersistAsk)';

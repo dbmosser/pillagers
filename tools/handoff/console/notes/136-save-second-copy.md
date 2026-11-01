@@ -1,0 +1,2 @@
+# 136-save-second-copy
+Shipped v37.03 (cw-savecopy), ON HIS PC. IndexedDB db pillagers-save / store profile, key = save key. Mirrored 0.4 s after saves go quiet and on page hide; read back at boot only when localStorage has no save or an unparsable one (bad value kept under :unreadable); lost numbered saves 2-8 put back; title erase deletes the copy; persist() once after first click/key/touch. Check uses a fake IndexedDB (checks are synchronous), so the real IndexedDB path is untested by the gate: watch a real reload, and a cleared-site-data boot.

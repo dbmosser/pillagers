@@ -1,0 +1,6 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  golden-linked-p1                       staged      15.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"ok":true,"seat":1,"info":["{\"golden\":1,\"ents\":1,\"kinds\":[\"crawler*@556,0\"],\"smooth\":true}","{\"golden\":0,\"ents\":1,\"kinds\":[\"crawler@598,-30\"],\"smooth\":true}"]}
+  golden-linked-p2                       staged      11.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"ok":true,"seat":2,"info":["{\"golden\":1,\"ents\":1,\"kinds\":[\"crawler*@564,0\"],\"smooth\":true}","{\"golden\":0,\"ents\":1,\"kinds\":[\"crawler@598,-30\"],\"smooth\":true}"]}
+== 4k : window 3876x2265, viewport 3840x2160
+  golden-linked-p1                       staged      20.3s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"ok":true,"seat":1,"info":["{\"golden\":1,\"ents\":1,\"kinds\":[\"crawler*@297,0\"],\"smooth\":true}","{\"golden\":0,\"ents\":1,\"kinds\":[\"crawler@331,-30\"],\"smooth\":true}"]}
+  golden-linked-p2                       staged      15.4s  total   1: clip 0 off 0 small 1 contrast 0 font 0 overlap 0 focus 0  | {"ok":true,"seat":2,"info":["{\"golden\":1,\"ents\":1,\"kinds\":[\"crawler*@297,0\"],\"smooth\":true}","{\"golden\":0,\"ents\":1,\"kinds\":[\"crawler@331,-30\"],\"smooth\":true}"]}

@@ -1,0 +1,13 @@
+go: go
+C at 12s: {"url":"http://localhost:8817/fixture-soak.html?p2=1&mode=coop&pair=rlow0osvrrhn&emb=1","title":"Pillagers, player 2","p2":{"t":"player 2 window","disp":"","css":"none"},"same":{"mode":"coop","pick":"","same":"p2","pair":"rlow0osvrrhn","p2url":"","chan":true,"busy":false,"p2win":false},"C":{"on":true,"role":"join","seat":1,"roster":[{"seat":0,"pid":"291d0be7","name":"PILLAGER","host":true},{"seat":1,"pid":"5d68627c","name":"PILLAGER","host":false}],"status":"party ascended","err":"","made":1,"codeLen":1088,"links":1},"A":{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"291d0be7","name":"PILLAGER","host":true},{"seat":1,"pid":"5d68627c","name":"PILLAGER","host":false}],"status":"","err":"","made":1,"codeLen":1188,"links":1},"Asame":{"mode":"coop","pick":"coop","same":"host","pair":"rlow0osvrrhn","p2url":"http://localhost:8817/fixture-soak.html?p2=1&mode=coop&pair=rlow0osvrrhn&emb=1","chan":true,"busy":false,"p2win":true}}
+run 1 {"pass":true,"bad":[],"trade":710,"drop":601,"relink":582,"errors":0,"saved":0,"drops":0,"fps":{"A":3,"C":3},"med":{"A":30,"C":30},"soakSec":120}
+go: go
+run 2 {"pass":false,"bad":["soak: frames stalled: A drew 2 frames in second 50 (its usual second draws 26); C drew 2 frames in second 50 (its usual second draws 26)"],"trade":732,"drop":579,"relink":645,"errors":0,"saved":0,"drops":0,"fps":{"A":2,"C":2},"med":{"A":26,"C":26},"soakSec":120}
+go: go
+run 3 {"pass":false,"bad":["soak: frames stalled: A drew 2 frames in second 41 (its usual second draws 27); A drew 2 frames in second 50 (its usual second draws 27); A drew 2 frames in second 80 (its usual second draws 27)"],"trade":737,"drop":518,"relink":638,"errors":0,"saved":0,"drops":0,"fps":{"A":2,"C":2},"med":{"A":27,"C":27},"soakSec":120}
+go: go
+run 4 {"pass":true,"bad":[],"trade":738,"drop":541,"relink":563,"errors":0,"saved":0,"drops":0,"fps":{"A":18,"C":18},"med":{"A":29,"C":29},"soakSec":120}
+go: go
+run 5 {"pass":true,"bad":[],"trade":742,"drop":478,"relink":582,"errors":0,"saved":0,"drops":0,"fps":{"A":3,"C":3},"med":{"A":29,"C":29},"soakSec":120}
+go: go
+run 6 {"pass":false,"bad":["soak: frames stalled: A drew 2 frames in second 17 (its usual second draws 27); A drew 2 frames in second 47 (its usual second draws 27); A drew 2 frames in second 107 (its usual second draws 27)"],"trade":776,"drop":561,"relink":625,"errors":0,"saved":0,"drops":0,"fps":{"A":2,"C":2},"med":{"A":27,"C":27},"soakSec":120}

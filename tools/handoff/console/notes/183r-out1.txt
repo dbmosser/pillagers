@@ -1,0 +1,4 @@
+34.89: PASS
+34.90: the survivor tracer is drawn 19.1 over the round, his flash 21.6 up
+30.17: PASS
+ALL DONE

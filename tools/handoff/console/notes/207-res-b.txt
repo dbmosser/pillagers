@@ -1,0 +1,26 @@
+27.37: TWO: no debris was planned in 240 seeds; TWO: no bounty was planned in 240 seeds
+26.47: ONE: a fresh profile has xhSz 1.3, not 1; ONE: clicking xhSz steps it 1.3 > 1.6 > 0.8 > 1 > 1.3, not 1 > 1.3 > 1.6 > 0.8 > 1
+27.44: PASS
+27.36: 1920 host: the plate overlaps the gear card; 1920 host: the plate ends at 1903, not flush with the right edge of the gun card (1912); 1920 host: the plate is not above the gun card (plate bottom 916, card top 892); 1920 join: staging: no power-up chips drawn; 1920 join: the plate overlaps the gear c
+25.86: the raid clock dial is 900 in a DEMO raid, 540 in a CAREER raid; the first weather change is at 200.65452275797725 s in a DEMO raid and 102.35072496160865 s in a CAREER raid built from the same seed
+24.76: a DEMO hit of 20 took 14, a CAREER hit took 20
+23.21: the arcade dials are raidSec 900, extractWait 20
+25.75: PASS
+25.67: PASS
+18.27: the key list TEAM section has no Z drop row
+18.17: the key list has no TEAM section with a Z row for trading
+17.55: PASS
+15.59: PASS
+26.72: PASS
+10.64: PASS
+11.27: PASS
+11.38: PASS
+11.26: PASS
+23.56: a valuable worth 70 raised the pot by 95, not 70; a valuable worth 70 raised the score by 95, not 70; the pickup tag reads +95 SP, not +70 SP
+22.32: the Pillbox line is drawn in 800 30px "Barlow Condensed", "Bahnschrift SemiCondensed", "Arial Narrow", "Roboto Condensed", sans-serif, not the callout size 800 29.7px "Barlow Condensed","Bahnschrift SemiCondensed","Arial Narrow","Roboto Condensed",sans-serif
+23.18: the damage number and the party copy do not both ask hitKills
+26.37: PASS
+26.42: SKIP: the plates drew 18 tiles, not 17
+32.89: expected 17 setup tiles, got 18
+27.21: ONE: the tab order is wrong (ALL  12|GUNS  4|CONSUMABLES  2|PARTS  6|SALVAGE  0|KEYCARDS  0|VALUABLES  3|LOCKED  3|SORT: DEFAULT|ARMORY  10/10|TROPHIES  7/8)
+ALL DONE

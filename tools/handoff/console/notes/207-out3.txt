@@ -1,0 +1,5 @@
+26.46: PASS
+26.47: PASS
+27.37: PASS
+27.36: 1920 join: staging: no power-up chips drawn
+ALL DONE

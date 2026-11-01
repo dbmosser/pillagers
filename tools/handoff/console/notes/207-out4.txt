@@ -1,0 +1,4 @@
+27.36: PASS
+27.22: the empty key 9 draws no silhouette; the 8 empty keys draw 7 different silhouettes
+22.32: PASS
+ALL DONE

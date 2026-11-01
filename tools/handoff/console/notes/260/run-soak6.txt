@@ -7,3 +7,7 @@ go: go
 run 3 {"pass":true,"bad":[],"trade":601,"drop":513,"relink":619,"errors":0,"saved":0,"drops":0,"fps":{"A":3,"C":3},"soakSec":120}
 go: go
 run 4 {"pass":true,"bad":[],"trade":713,"drop":561,"relink":908,"errors":0,"saved":0,"drops":0,"fps":{"A":3,"C":3},"soakSec":120}
+go: go
+run 5 {"pass":true,"bad":[],"trade":709,"drop":501,"relink":576,"errors":0,"saved":0,"drops":0,"fps":{"A":3,"C":3},"soakSec":120}
+go: go
+run 6 {"pass":true,"bad":[],"trade":718,"drop":540,"relink":628,"errors":0,"saved":0,"drops":0,"fps":{"A":3,"C":3},"soakSec":120}

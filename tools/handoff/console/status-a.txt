@@ -1,1 +1,1 @@
-11-01 10:29 running 02-lane-side-leftovers on Claude Code, sonnet high, run 1 (your plan: week 1% of the 5.0% line, 5-hour 0%)
+11-01 11:55 running 217-dead-code-cleanup on Claude Code, sonnet high, run 1 (your plan: week 3% of the 5.7% line, 5-hour 0%)

@@ -995,6 +995,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
     (function(){ try{ var s2=localStorage.getItem('salvagerun:activeSlot2'); if(s2){ var k2=(s2==='1')?'salvagerun:profile':('salvagerun:profile:'+s2); [k2,k2+':prerestore',k2+':precrash',k2+':unreadable'].forEach(function(x){ localStorage.removeItem(x); }); } localStorage.removeItem('salvagerun:activeSlot2'); }catch(e){} })();   // v17.93: player 2 own pointer and the slot it picked
     // BUILD 5: and the two sound switches kept for next time.
     ['salvagerun:samesound:host','salvagerun:samesound:p2'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} });
+    ['salvagerun:p2live','salvagerun:p2raid'].forEach(function(x){ try{ localStorage.removeItem(x); }catch(e){} });   // 11-01 (job 260): and the player 2 live and raid marks, left behind when a Chrome was ended mid raid
     log('wiped the two net saves, the player 2 save, the controller picks and the sound switches; reloading the copies');
     load();
   }

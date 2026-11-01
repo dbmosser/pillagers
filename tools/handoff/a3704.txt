@@ -1,0 +1,1 @@
+| DEAD CODE OUT 1 | v37.04 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 37.04 passes, fails on v37.03 |

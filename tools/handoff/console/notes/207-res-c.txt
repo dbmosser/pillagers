@@ -1,0 +1,18 @@
+27.46: FOUR: the label HOLD TO BREACH is not drawn at the gate (said: HOLD E TO BREACH)
+26.56: ONE: the next round did 24.150000000000002, not 26.45
+18.62: control: no footer was drawn
+34.00: missing hint row or title plate
+20.50: the station line under it is drawn at y NaN, under the floor belt that starts at y 866 on a 1882x973 screen; the station line under it left the bottom of the screen (y NaN)
+18.25: the Undercroft bottom line does not say how to take a dropped item
+21.66: magnum does 77.5, not 62; shotgun does 20, not 16; Longshot sustains 76 a second against 134 for the Auto Rifle
+24.03: MK II rifle damage 37.4, want 29.9; WEAPONS.rifle was changed; forging a MK II again compounds: 37.4 32 1640 Auto Rifle MK II; MK II to MK III compounds: 37.4 32 Auto Rifle MK III; MK II rifle ranks 5, want 4; a plain rifle ranks 4; the stat card tier of a MK III rifle is 6
+25.58: the rifle hover damage reads 37.4 a hit   ~283/sec held, not the MK III 29.9
+26.21: the MK II rifle does 37.4 not 29.9; no gun card for the new gun; the weapon table was touched
+23.78: the Burst Carbine reads 64 a pull, not the whole burst
+10.29: the guns are not one green and one blue: rare, elite
+11.79: Burst Carbine is elite, and only green and blue guns belong on the bench; Auto Rifle is elite, and only green and blue guns belong on the bench; Riot Scattergun is elite, and only green and blue guns belong on the bench; the bench holds 0 green and 1 blue gun recipes, not at least one of each
+12.18: Burst Carbine shows as elite; Auto Rifle shows as elite; Riot Scattergun shows as elite; by the shown rarity the bench holds 0 green and 1 blue; the detail panel calls the Burst Carbine ELITE where every other screen says RARE
+34.01: no gun staged for uncommon
+31.64: the page has no t:'3 PILLAGERS'
+9.13: control: the 1080p panel changed to 862x624, it was 862x606
+ALL DONE

@@ -1,0 +1,26 @@
+9.66: control: these panels barely drew at all, so a size comparison means nothing: raiders 11725; the board now has room for about 0 rows, which is not a board
+12.80: control: another conduct contract in the same state now prints nothing either, so this build has silenced the panel and not one line
+12.74: the stall refused him with [], which names neither the money on him nor the fact that it is not banked yet, so the refusal reads as being broke one second after being paid
+13.08: control: the belt caption is gone from the RAID as well, where FIRE and SIGNAL are real actions he uses, so it was deleted rather than moved out of the Undercroft
+32.24: the fire keycap was never drawn
+31.38: fewer than two small vitals bars drawn (1)
+31.17: fewer than three vitals bars drawn (2)
+18.41: no posture chip panel (4 panels)
+18.49: control: no crouch chip was drawn
+25.66: career loc 1920x1080: an element is not drawn (clock true, compass true, alert or feed false); demo loc 1920x1080: an element is not drawn (clock true, compass true, alert or feed false); career loc 3840x2160: an element is not drawn (clock true, compass true, alert or feed false); demo loc 3840x216
+15.79: a word after his raid ended does not show him again; control: back on this seed he is not drawn
+16.43: N does not ping; a controller cannot ping
+16.46: D-UP does not ping
+23.02: a ping on a Crier is not drawn naming the CRIER with its distance (drawn: ["zqxkid  ú  danger  ú  8m","zqxkid  ú  crier  ú  8m"]); the board does not count the dead as N dead
+23.10: the two CONTRACT DONE lines drew 0 feed lines in the same frame, not one and then the other; the open contract line is not showing or waiting (rows and queue: []); the district contract line is not showing or waiting (rows and queue: [])
+32.69: PASS
+34.26: no item count drawn; the hidden chip is 24.2 px
+27.35: the feed zone is 527 wide of 1882, over a quarter
+13.32: a player who takes the quick ascent with nothing equipped lands with a loaner and is never told his own gun waits in the stash [shown: ]
+16.44: damage to player 2 is not scaled
+31.50: career 1080p: no score and clock plate was drawn at the top centre; career 1080p: no score and clock plate was drawn at the top centre; career 1080p: no score and clock plate was drawn at the top centre; career 4k: no score and clock plate was drawn at the top centre; the demo 1080p: the column is 2
+30.96: no plate hangs from the top edge behind the score (2 plates)
+27.22: the empty key 9 draws no silhouette; a silhouette is drawn at alpha 0.12150000000000001, not 0.2 to 0.35; the 8 empty keys draw 7 different silhouettes; the key the gun was dragged off did not go back to its ghost
+26.46: ONE: a fresh profile has shake 0.5, not 1; ONE: clicking shake steps it 0.5 > 1 > 1.5 > 0 > 0.5, not 1 > 1.5 > 0 > 0.5 > 1
+33.01: PASS
+ALL DONE

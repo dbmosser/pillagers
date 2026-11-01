@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.04 - DEAD CODE OUT 1
+
+Co-op hunt while he was away. Audit 2026-10-28 item 10: 15 functions that nothing calls (no player change). Batch 1 of the cleanup.
+
+MEASURED. Check 37.04 passes, and fails on v37.03.
 ## v37.03 - THE PROFILE KEEPS A SECOND COPY IN INDEXEDDB AND ASKS THE BROWSER TO KEEP IT
 
 Co-op hunt while he was away. Release fix for itch.io: games on itch default domain share one storage area that other games can read or clear, and Safari can delete script data after seven days without a click. The profile lived only in localStorage. Every save is now also mirrored into IndexedDB (written 0.4 s after saves go quiet, and when the page is hidden), the boot reads the copy back when localStorage has no save or one that will not parse (and puts back lost numbered saves), erasing a save on the title erases its copy, and navigator.storage.persist() is called once after the first click, key or touch. The key salvagerun:profile and the profile shape are unchanged.

@@ -3929,8 +3929,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.03';
-var VER_AT='2026-11-01 11:05';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.04';
+var VER_AT='2026-11-01 12:19';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -4727,7 +4727,7 @@ var ELEM={
 };
 var ELEM_ORDER=['fire','shock','cryo','acid'];
 function forgeMk(fk){ return fk===2?' MK III':(fk===1?' MK II':''); }
-function forgeName(gk,fk){ var b=WEAPONS[gk]; return (b?b.name:String(gk||''))+forgeMk(fk|0); }
+// v28.xx (cw-dead1): dead code out, no caller anywhere (audit 2026-10-28): forgeName, woodsCell, bigSpine, forgeChamfer, msgVictim, msgQDrop, cycleHeal, unkeyedHeals, countHeals, gunDef, placeName, tabOf, netSndLabel, netSndOtherLabel, sectorTitle.
 function gunTierOf(w){ return w?((WTIER[w.id]||0)+((w.fk===1||w.fk===2)?w.fk:0)):0; }
 function forgeApply(w,fk,el){
   var base=w&&WEAPONS[w.id], g={}, k, s;
@@ -14131,18 +14131,6 @@ function bakeGround(map){
   // Roads are drawn per cell edge now, not as full length lines, and they skip
   // woods and the shared spine of a two cell building. That is what breaks
   // "every block is the same length": some blocks merge, some stop at a grove.
-  function woodsCell(r2,c2){
-    for(var wq=0;wq<(map.woods||[]).length;wq++) if(map.woods[wq].r===r2&&map.woods[wq].c===c2) return true;
-    return false;
-  }
-  function bigSpine(hORv,r2,c2){
-    for(var bq=0;bq<(map.bigPairs||[]).length;bq++){
-      var B=map.bigPairs[bq];
-      if(B.horiz&&hORv==='v'&&B.r===r2&&B.c+1===c2) return true;
-      if(!B.horiz&&hORv==='h'&&B.r+1===r2&&B.c===c2) return true;
-    }
-    return false;
-  }
   // HIS NOTE, 2026-08-23: "Buildings are built OVERTOP a road, makes no sense."
   // He is right and the cause is historical. This road grid is inherited from
   // the procedural generator, where buildings were PLACED in the cells the grid
@@ -15333,7 +15321,6 @@ function forgeClick(){
 }
 // The panel, in his graphite menu style: a chamfered plate with the amber tick, Barlow Condensed caps, a keycap on every key it names.
 // Drawn on the HUD canvas at the size the rest of the HUD grows to (hudRes), centred; the cards it draws are also its mouse targets.
-function forgeChamfer(x,y,w,h,c){ ctx.beginPath(); ctx.moveTo(x+c,y); ctx.lineTo(x+w,y); ctx.lineTo(x+w,y+h-c); ctx.lineTo(x+w-c,y+h); ctx.lineTo(x,y+h); ctx.lineTo(x,y+c); ctx.closePath(); }
 function forgeKeycap(label,x,yb,font){
   var a, sw, of=ctx.font;
   ctx.font=font; a=ctx.measureText('M').actualBoundingBoxAscent||LH(12);
@@ -23061,15 +23048,6 @@ function msgKind(k){ return (typeof k==='string'&&MSGK.hasOwnProperty(k))?k:'inf
 // msgProt: is this row still protected at time now. A row with no time (set by hand) is not. msgVictim: the row a line of rank
 // rk takes, or null when it must wait. msgFree: may a waiting line come out now. msgEnq: add a line to the waiting queue.
 function msgProt(r,now){ var pt=(r&&(r.k==='obj'||r.k==='crit'))?2.0:1.2; return !!r&&(now-r.at)<pt; }
-function msgVictim(rows,rk,now,drain){
-  var best=null, i, r, rr;
-  for(i=0;i<rows.length;i++){
-    r=rows[i]; rr=MSGK[msgKind(r.k)].r;
-    if(msgProt(r,now)&&(drain||rr>rk)) continue;
-    if(!best||rr<best.rr||(rr===best.rr&&(+r.at||-1e9)<(+best.r.at||-1e9))) best={r:r,rr:rr};
-  }
-  return best?best.r:null;
-}
 function msgFree(){
   if(!G||!(G.msgT>0)||!G.msg) return true;
   var f=G.feed&&G.feed[1], now=G.t||0;
@@ -23104,7 +23082,6 @@ function msgQFind(m,key){
   for(i=0;i<q.length;i++) if((q[i]===m&&!msgDiffKey(qm[i]&&qm[i].o&&qm[i].o.key,key))||(key&&qm[i]&&qm[i].o&&qm[i].o.key===key)) return i;   // v23.xx (tr9fixk): two keyed lines with one headline are two lines
   return -1;
 }
-function msgQDrop(m,key){ var i; while((i=msgQFind(m,key))>=0){ G.msgQ.splice(i,1); G.msgQM.splice(i,1); } }
 function msgEnq(m,kind,o){
   var q, qm, now=G.t||0, k=msgKind(kind), i, lo, lr, r;
   msgQPrune(now); q=G.msgQ; qm=G.msgQM;
@@ -25068,16 +25045,6 @@ function medSelIx(sl){
   if(pk.i>=0) return pk.i;
   for(i=0;i<cs.length;i++) if(sl[cs[i]].kind==='heal') return cs[i];
   return -1;
-}
-// J: the next non-empty medical key, round, as U does for the grenades.
-function cycleHeal(){
-  var sl=hotbarSlots(), cs=medCells(sl), cur=medSelIx(sl), at=-1, i, nx;
-  if(!cs.length){ say((findHeal()>=0)?'NO HEAL ON HOTBAR':'NO MEDICAL SUPPLIES'); return false; }
-  for(i=0;i<cs.length;i++) if(cs[i]===cur) at=i;
-  nx=cs[(at+1)%cs.length];
-  G.msel=sl[nx].itemKey;
-  say((ITEMS[G.msel].name+' ready').toUpperCase());
-  return true;
 }
 // Tap H: the SELECTED medical item (medSelIx), not the cheapest. ix names a key instead (the digits 7 and 8). A heal is refused at full
 // health or past its ceiling and says why; a Stim is used whatever the health.
@@ -28735,18 +28702,6 @@ function beltThrowTick(){
     tk=THROWKEYS[i]; n=G.pouch[tk]|0;
     if(n>0&&!shown[tk]){ G.pouch[tk]=0; while(n-->0) G.bag.push(tk); }
   }
-}
-function unkeyedHeals(){
-  // v14.84: the heals in the backpack whose item is on no belt key.
-  var n=0, keyed={};
-  for(var s in (G.hotAssign||{})) keyed[G.hotAssign[s]]=1;
-  for(var i=0;i<G.bag.length;i++){ var it=ITEMS[G.bag[i]]; if(it&&it.use==='heal'&&!keyed[G.bag[i]]) n++; }
-  return n;
-}
-function countHeals(){
-  var n=0;
-  for(var i=0;i<G.bag.length;i++){ var it=ITEMS[G.bag[i]]; if(it&&it.use==='heal') n++; }
-  return n;
 }
 function countArmor(){
   var n=0;
@@ -38109,7 +38064,6 @@ var GUNDEF=(function(){
     R(24,-4.6,1.6,9.2,'d'), R(36,-5.4,5,10.8,'d','H'), R(38.4,-2.4,2.6,4.8,'r','O'), R(6,-7.4,8,2.4,'d','H'), R(13.4,-7.1,0.7,1.8,'g','O')]};
   return D;
 })();
-function gunDef(w){ return GUNDEF[(w&&w.id)||'rifle']||GUNDEF.rifle; }
 function gunPath(c,q){
   var a, i;
   c.beginPath();
@@ -52792,11 +52746,6 @@ function outHint(urgent){
   if(no.d<no.z.r) return 'Hold '+_K+' to call for extraction';   // v22.xx (tr3fixc): the shooter voice   // v22.xx (tr9fixa): his v9.59 verb, you call FOR extraction
   return 'Nearest extraction '+far+'m '+dir+'.';
 }
-// A place already called "THE something" brings its own article.
-function placeName(n){
-  n=String(n).toLowerCase();
-  return n.indexOf('the ')===0?n.slice(4):n;
-}
 // HOW MUCH BIGGER THE UNDERCROFT IS DRAWN THAN IT IS AUTHORED, v5.82, on his
 // instruction to assume 1080p or higher. The room is 700 by 470 in room units
 // and that does not change; this is the lens. Fill the tighter axis, never shrink
@@ -57251,7 +57200,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.03: The save now has a second copy the browser keeps apart from the main one, so another game on the same site clearing the storage no longer wipes progress. Watch for: a save you erased on the title staying gone, and no change at all in a normal load. Firefox may show a small permission box about keeping storage after the first click. Check 37.03 fails on v37.02',
+  now:'v37.04: Nothing a player can see changes. Check 37.04 fails on v37.03',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -59123,7 +59072,6 @@ try{ renderFreeKit(); }catch(_fk){}
   // Salvage, Keys, Other if needed. ALL first, because it is the whole stash.
   var TABS=[['all','ALL'],['gun','GUNS'],['use','CONSUMABLES'],['part','PARTS'],
             ['salvage','SALVAGE'],['key','KEYCARDS'],['other','OTHER'],['val','VALUABLES'],['lock','LOCKED']];   // v26.xx (career8): and VALUABLES and LOCKED on the one row
-  function tabOf(k){ return stashTabOf(k); }
   if(P.stashChip!==undefined){ if(P.stashChip==='val'||P.stashChip==='lock') P.stashTab=P.stashChip; delete P.stashChip; }   // v26.xx (career8): the v27.02 chip moves into the tab, once
   if(!P.stashTab) P.stashTab='all';
   var tb=document.getElementById('stashtabs');
@@ -62989,8 +62937,6 @@ function netSndInit(){ netSndLoad(); NET.sndOther=-1; netSndRoute(); netSndApply
 // only put the master gain back to 1. The panner kept its side, so every sound after it, guns, steps, the ambience and the
 // Undercroft music, came out of one speaker until a reload, and the rows that set it only show in a party. It goes back to the middle.
 function netSndRelease(){ NET.sndOther=-1; if(NET.sndG){ try{ NET.sndG.gain.value=1; }catch(e){} } if(NET.musG){ try{ NET.musG.gain.value=1; }catch(e3){} } if(NET.musP){ try{ NET.musP.pan.value=0; }catch(e4){} }   /* v21.22 (R6): the music comes back with the rest when the party ends */ if(NET.sndP){ try{ NET.sndP.pan.value=0; }catch(e2){} } return true; }
-function netSndLabel(on){ return on?'SOUND ON':'SOUND OFF'; }
-function netSndOtherLabel(){ return (NET.sndOther===1)?'sound on':((NET.sndOther===0)?'sound off':'not said yet'); }
 // What a test page reads: the switch, the other window's word, and the master gain as the game holds it.
 function netSndView(){
   var v=null;
@@ -73392,9 +73338,6 @@ function sizeTag(ix){
   if(ix===maxI) return '(LARGER MAP)';
   return '';
 }
-// v13.26: the map name the way he wrote it in the sector line, Cold Storage and The
-// Cold Mile, from the upper-case name the heading uses.
-function sectorTitle(n){ return String(n||'').toLowerCase().replace(/\b[a-z]/g,function(c){ return c.toUpperCase(); }); }
 // v17.79, THE VISUAL PASS (2026-10-02): A MAP OF EACH SECTOR ON THE SECTOR PAGE. WHERE ARE YOU GOING? was two rows of text over an
 // empty page. Each row now carries a drawn map of its sector from the fixed layout (no build, no seeded draw): the ground, the
 // named zones, the buildings and landmarks, and the extraction points as rings. Drawn once per render into a small canvas.

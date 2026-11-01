@@ -1,0 +1,6 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  91-public-news-window                  staged       7.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | 1. experimental switches in settings2. one feed for loot, kills and sp3. full raid log with copy report
+  91-public-report-recorder              staged       6.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | 0 runs, 0 notes ready to send
+== 4k : window 3876x2265, viewport 3840x2160
+  91-public-news-window                  staged       7.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | 1. experimental switches in settings2. one feed for loot, kills and sp3. full raid log with copy report
+  91-public-report-recorder              staged       6.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | 0 runs, 0 notes ready to send

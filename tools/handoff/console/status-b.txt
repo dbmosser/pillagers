@@ -1,1 +1,1 @@
-11-01 10:57 running 136-save-second-copy on Claude Code, sonnet high, run 1 (your plan: week 1% of the 5.2% line, 5-hour 0%)
+11-01 11:52 running 207-retarget-12-known-red on Claude Code, sonnet high, run 2 (your plan: week 3% of the 5.7% line, 5-hour 0%)

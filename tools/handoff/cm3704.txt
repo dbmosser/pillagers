@@ -1,0 +1,7 @@
+v37.04: dead code out 1
+
+Nothing a player can see changes.
+
+Check 37.04. Fails on v37.03.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

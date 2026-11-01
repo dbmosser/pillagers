@@ -1,0 +1,7 @@
+16.43: PASS
+16.46: PASS
+16.44: PASS
+23.56: a valuable worth 70 raised the pot by 95, not 70; a valuable worth 70 raised the score by 95, not 70; the pickup tag reads +95 SP, not +70 SP
+31.50: career 1080p: the cache name was not drawn 14 px under the score and clock plate (x 960, y 120), where it clears the HUD; career 1080p: the nameplate was not drawn 14 px under the score and clock plate (x 960, y 120), where it clears the HUD; career 1080p: the strongbox name was not drawn 14 px unde
+30.96: the plate ends at 81, above the bottom of the clock row 168
+ALL DONE

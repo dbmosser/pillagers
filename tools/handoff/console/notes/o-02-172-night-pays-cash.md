@@ -84,3 +84,9 @@ Sector and Terms previously met the score-3 target. Extraction cards still requi
 Task 211-verify-linked-condition-sp.md remains in tasks and owns the real two-window reward verification. This run cannot run Chrome or claim that verification.
 Coordinator handoff: process corrected post-ship camera recipes and critic, and complete task 211. All development and local validation for this task are complete; visual acceptance remains unverified.
 LINKED REVIEW NEEDED: synced, already tracked by task 211.
+
+--- lane a, job 211, 2026-11-01 ---
+RESULT: right, with one limit. Two live linked windows could not be opened (the worker may run only the project test scripts, and none of them drives a pair). Instead the guest path ran for real in the fixture: new check 35.79g (commit 67d71936b) calls netUpStart with a host word (night, fog, host Terms known + blackout) while the guest's own saved Terms are silence.
+PASS: the guest raid holds the HOST Terms and its own saved Terms are put back untouched; 4 conditions (night, foggy, blackout protocol, they know you) give x1.05^4; score 1000 -> 2431; bank +$2000 exactly (no condition cash); the end card "credits banked" equals the bank gain; the card shows 4 x1.05 condition rows (plus the separate "settings" row, a different multiplier). XP carries no factor (check 35.79); host and guest settle the same (check 35.79).
+Quirk, not a bug for this job: conditions are read at the moment of settlement, so weather that clears before extraction earns no weather factor.
+Watch in play: a night + fog + signed Terms extraction in both windows shows 3 condition rows x1.05, and credits banked is 2 x the raid score before conditions.

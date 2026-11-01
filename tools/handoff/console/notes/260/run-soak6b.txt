@@ -1,0 +1,13 @@
+go: go
+C at 12s: {"url":"http://localhost:8817/fixture-soak.html?p2=1&mode=coop&pair=l1ruqbx8hlin&emb=1","title":"Pillagers, player 2","p2":{"t":"player 2 window","disp":"","css":"none"},"same":{"mode":"coop","pick":"","same":"p2","pair":"l1ruqbx8hlin","p2url":"","chan":true,"busy":false,"p2win":false},"C":{"on":true,"role":"join","seat":1,"roster":[{"seat":0,"pid":"15932c7f","name":"PILLAGER","host":true},{"seat":1,"pid":"c70b70cd","name":"PILLAGER","host":false}],"status":"party ascended","err":"","made":1,"codeLen":1090,"links":1},"A":{"on":true,"role":"host","seat":0,"roster":[{"seat":0,"pid":"15932c7f","name":"PILLAGER","host":true},{"seat":1,"pid":"c70b70cd","name":"PILLAGER","host":false}],"status":"","err":"","made":1,"codeLen":1192,"links":1},"Asame":{"mode":"coop","pick":"coop","same":"host","pair":"l1ruqbx8hlin","p2url":"http://localhost:8817/fixture-soak.html?p2=1&mode=coop&pair=l1ruqbx8hlin&emb=1","chan":true,"busy":false,"p2win":true}}
+run 1 {"pass":false,"bad":["soak: frames stalled: A drew 2 frames in second 43; C drew 2 frames in second 43; A drew 2 frames in second 71"],"trade":743,"drop":504,"relink":501,"errors":0,"saved":0,"drops":0,"fps":{"A":2,"C":2},"soakSec":120}
+go: go
+run 2 {"pass":true,"bad":[],"trade":600,"drop":502,"relink":511,"errors":0,"saved":0,"drops":0,"fps":{"A":3,"C":3},"soakSec":120}
+go: go
+run 3 {"pass":true,"bad":[],"trade":628,"drop":494,"relink":561,"errors":0,"saved":0,"drops":0,"fps":{"A":3,"C":3},"soakSec":120}
+go: go
+run 4 {"pass":true,"bad":[],"trade":721,"drop":525,"relink":577,"errors":0,"saved":0,"drops":0,"fps":{"A":3,"C":3},"soakSec":120}
+go: go
+run 5 {"pass":false,"bad":["soak: frames stalled: A drew 2 frames in second 71; C drew 2 frames in second 71"],"trade":624,"drop":513,"relink":502,"errors":0,"saved":0,"drops":0,"fps":{"A":2,"C":2},"soakSec":120}
+go: go
+run 6 {"pass":false,"bad":["soak: frames stalled: A drew 2 frames in second 53; C drew 2 frames in second 53"],"trade":739,"drop":489,"relink":585,"errors":0,"saved":0,"drops":0,"fps":{"A":2,"C":2},"soakSec":120}
