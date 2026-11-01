@@ -29688,7 +29688,7 @@ class Audio {
        proto.fillText=function(){ txt.push(String(arguments[0])); return oFt.apply(this,arguments); };
        try{ __frame(0.016); } finally { proto.fillText=oFt; }
        if(!txt.some(function(s){ return /(superhot|timelord)/i.test(s); })) bad.push('the F1 controls list does not mention Superhot');
-       if(txt.indexOf('`')<0&&!txt.some(function(s){ return /^left of 1$/i.test(s); })) bad.push('the F1 controls list does not show the key left of 1');   // retargeted (cw-shkey2): the key is shown as the tick or in words
+       if(txt.indexOf('`')<0&&!txt.some(function(s){ return /^(hold )?left of 1$/i.test(s); })) bad.push('the F1 controls list does not show the key left of 1');   // retargeted (cw-shkey2): the key is shown as the tick or in words; retargeted (job 208): since cw-cx-timelordhold the row reads HOLD LEFT OF 1
        g.legendOn=1;
        // THE PLAYER 2 WINDOW: it follows the host. Its own press says so and changes nothing; the host flipping it mid raid is said there too.
        if(hasNet){
