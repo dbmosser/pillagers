@@ -1,0 +1,5 @@
+## v36.97 - A FORGE UPGRADE RAISES NO WEAPON CARD
+
+Co-op hunt while he was away. His words 10-31: after i upgrade a weapon, i do not need to see a weapon card; it should only show when mousing over the weapon in the hotbar. The Forge upgrade set G.gunCard, which popped the new gun against the old with the cost. It sets nothing now. The sparks, the upgrade sound, the ping and the gun upgraded line stay, and the hotbar hover card is unchanged.
+
+MEASURED. Check 36.97 passes, and fails on v36.96.

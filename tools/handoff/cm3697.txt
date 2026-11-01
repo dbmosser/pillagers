@@ -1,0 +1,7 @@
+v36.97: a forge upgrade raises no weapon card
+
+No weapon card after an upgrade; hover the hotbar to see it.
+
+Check 36.97. Fails on v36.96.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.97 - A FORGE UPGRADE RAISES NO WEAPON CARD
+
+Co-op hunt while he was away. His words 10-31: after i upgrade a weapon, i do not need to see a weapon card; it should only show when mousing over the weapon in the hotbar. The Forge upgrade set G.gunCard, which popped the new gun against the old with the cost. It sets nothing now. The sparks, the upgrade sound, the ping and the gun upgraded line stay, and the hotbar hover card is unchanged.
+
+MEASURED. Check 36.97 passes, and fails on v36.96.
 ## v36.96 - UNDERCROFT: WHOEVER STANDS LOWER ON SCREEN IS DRAWN IN FRONT
 
 Co-op hunt while he was away. His note with a picture (10-31): his pillager was painted over a crowd pillager standing lower on screen, and it should be behind. The crowd was drawn in its own pass before him. Each crowd body now goes into the same y-sorted list as the walls, the posts, the party and him, keyed on its feet y, so the one lower on screen is drawn later and covers the one behind.

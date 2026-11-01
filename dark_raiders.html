@@ -3929,8 +3929,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='36.96';
-var VER_AT='2026-11-01 10:04';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='36.97';
+var VER_AT='2026-11-01 10:08';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -15150,7 +15150,7 @@ function forgeBuy(ix){
   arSetHeldGun(p,nw); p.wepIssued=false;
   col=(o.k==='el')?ELEM[o.el].c:FORGE_GOLD; tag=(o.k==='el')?ELEM[o.el].name:'MK II';
   say('gun upgraded','obj',{sub:String(nw.name).toLowerCase()+((o.k==='el')?('  \u00b7  '+ELEM[o.el].name):'')});
-  G.gunCard={gk:nw.id,w:nw,vs:w,route:'cost '+forgeMoney(o.cost),t0:G.t||0};   // v28.xx (cw-cx-forgeread): name the debit as the upgrade cost.
+  // v28.xx (cw-no-gun-card), HIS WORDS (2026-10-31): "after i upgrade a weapon, i don't need to see a weapon card. The only time a weapon card should show up is when mousing over the weapon in the hotbar". The upgrade used to set G.gunCard (the new gun against the old, "cost $N"); it sets nothing now. The sparks, the upgrade sound, the ping and the "gun upgraded" line stay; the card shows on the hotbar hover (beltHoverHud).
   blip('forge'); if(o.k==='el'&&ELEM[o.el]&&ELEM[o.el].snd) blip(ELEM[o.el].snd);   // v26.xx (forgest3): and the element's own sound
   if(F&&isFinite(F.x)){
     spark(F.x,F.y-26,col,40,420); flash(F.x,F.y-30,130,col,0.5);
@@ -57038,7 +57038,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v36.96: In the Undercroft you stand behind a pillager who is lower on screen than you, and in front of one who is higher. Check 36.96 fails on v36.95',
+  now:'v36.97: No weapon card after an upgrade; hover the hotbar to see it. Check 36.97 fails on v36.96',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
