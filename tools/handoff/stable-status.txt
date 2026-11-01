@@ -1,10 +1,10 @@
 Latest stable: v36.55 (2026-10-29 22:13)
-Checked: 2026-11-01 14:29
+Checked: 2026-11-01 15:31
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1101-1057  v37.02  failing 99, new 19  robots 49 min/0 problems  -> 19 check(s) newly failing, e.g. v8.93 a HUD panel can be resized by its corner grip, and the | v35.84 final rush HUD gives its banner 416px and 24px cleara
+  corpus-1101-1057  v37.02  failing 99, new 19  robots 59 min/0 problems  -> 19 check(s) newly failing, e.g. v8.93 a HUD panel can be resized by its corner grip, and the | v35.84 final rush HUD gives its banner 416px and 24px cleara
   corpus-1101-0634  v36.95  failing 99, new 19  robots 701 min/0 problems  -> 19 check(s) newly failing, e.g. v8.93 a HUD panel can be resized by its corner grip, and the | v36.30 forge and seal world labels keep their whole shared p
   corpus-1031-1437  v36.95  failing 100, new 19  robots 701 min/0 problems  -> 19 check(s) newly failing, e.g. v8.93 a HUD panel can be resized by its corner grip, and the | v36.30 forge and seal world labels keep their whole shared p
   corpus-1031-1034  v36.89  failing 102, new 18  robots 233 min/0 problems  -> 18 check(s) newly failing, e.g. v8.93 a HUD panel can be resized by its corner grip, and the | v36.30 forge and seal world labels keep their whole shared p

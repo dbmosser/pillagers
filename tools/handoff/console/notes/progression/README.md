@@ -9,12 +9,12 @@ Account and pillager (cw-p0acct, v37.14), all at file scope beside rigBuyback:
 - lifeEarnAdd(n): THE ONLY WRITER of lifetime earnings. Call it for every $ earned (sales, extraction bonus, retire bonus). Never for refunds or buybacks of your own sale. Spending never lowers it.
 - ladderPayout(p): pays every earned and unclaimed XP ladder reward as $ and marks it claimed (safe to run again). seasonZeroMig ran it once (P.mig0p). The job that removes the ladder runs it once more under its own stamp, so rewards earned between m0 and m1 are paid too.
 - szNoteShow(): the one-time hub line pattern (P.szNote {c, n, shown}); never shown in the demo.
-Worn gear (cw-p0gear, v37.15 or later):
+Worn gear (cw-p0gear, v37.16):
 - WORN_SLOTS (head, amulet, armor, pants, ring1, ring2, boots, gloves, pack), WORN_KINDS (kind to name and slots), WORN_RARS (scrap, sound, rare, relic: trait count, multiplier, colour = RCOL loot row colours), WORN_STATS (spd, stam, reload, steady, quiet, hide, heal, grit, revive, search, tough: base and cap), WORN_POOL (slot themes).
 - A piece: {id, k, r 0..3, pw 1..100, tr [{s, v}], pip 0..3, dye, rule}. P.gear = stash pieces (no limit), P.worn = slot to piece, P.gearN = id counter.
 - wornMake(k, r, pw, seed): rolls on its own dice (wornRand), never RNGS or FXS, so seed 4242 never moves. In a raid seed it from G.seed and something fixed per container or wreck.
 - wornAdd(p, piece), wornWear(p, id, slot), wornOff(p, slot), wornClean(p) (every load), wornMods(worn) (the sum: rings with one trait take the stronger; every stat capped), wornTraitV(piece, trait) (pips: a third stronger each), wornName(piece).
-Stats (cw-p0stat): raidWornMods() sums P.worn onto the raid body as G.player.wm at buildRaid; wornM(stat) is the only reader (0 with nothing worn, in G.sim, in the demo). Sites: tools/handoff/console/notes/progression/stat-sites.md. Not yet carried for a co-op partner (m3 sends it over the net link).
+Stats (cw-p0stat, v37.17): raidWornMods() sums P.worn onto the raid body as G.player.wm at buildRaid; wornM(stat) is the only reader (0 with nothing worn, in G.sim, in the demo). Sites: tools/handoff/console/notes/progression/stat-sites.md. Not yet carried for a co-op partner (m3 sends it over the net link).
 
 ## Rules for every 00p job
 - Ship only through mk script, preflight, shipq (RULES.md). Check must FAIL on the build before. Seed 4242 fingerprint must hold.

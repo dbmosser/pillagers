@@ -1,0 +1,5 @@
+## v37.18 - SEASON ZERO: SELL FROM THE STASH AND BUY BACK
+
+Co-op hunt while he was away. his answers of 11-01 (m1): sell from the stash screen (37), buy back what you sold today at the same price (39), show net worth (44), lifetime earnings count every dollar earned (47); the plan has no XP, so a sale pays only $ Watch: every stash sale pays one price (sellPriceOf) in $ only and counts in lifetime earnings; the sales of the day show as buy back chips under the sell button and a chip buys that sale back at the price paid; a locked item never sells; the stats page shows net worth (cash plus the stash at sale prices)
+
+MEASURED. Check 37.18 passes, and fails on v37.17.

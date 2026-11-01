@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.18 - SEASON ZERO: SELL FROM THE STASH AND BUY BACK
+
+Co-op hunt while he was away. his answers of 11-01 (m1): sell from the stash screen (37), buy back what you sold today at the same price (39), show net worth (44), lifetime earnings count every dollar earned (47); the plan has no XP, so a sale pays only $ Watch: every stash sale pays one price (sellPriceOf) in $ only and counts in lifetime earnings; the sales of the day show as buy back chips under the sell button and a chip buys that sale back at the price paid; a locked item never sells; the stats page shows net worth (cash plus the stash at sale prices)
+
+MEASURED. Check 37.18 passes, and fails on v37.17.
 ## v37.17 - SEASON ZERO FOUNDATION: WHAT YOU WEAR CHANGES HOW YOU PLAY
 
 Co-op hunt while he was away. his progression plan of 11-01 (m0): one place every stat reads gear from, so worn pieces make the pillager stronger; with nothing worn it changes nothing Watch: move speed, stamina, reload, spread, noise, how far you are seen, bandage time, time on the floor, reviving and searching all read what you wear, summed once per raid; nothing is worn yet so every raid plays exactly as before, the robots and the demo never read it

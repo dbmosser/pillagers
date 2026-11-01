@@ -183,3 +183,4 @@
 11-01 14:33 v37.14 cw-p0acct on his pc after 18s (8802 serves 37.14) week 4%
 11-01 14:39 v37.15 cw-cardstamp on his pc after 18s (8802 serves 37.15) week 4%
 11-01 14:47 v37.16 cw-p0gear on his pc after 130s (8802 serves 37.16) week 4%
+11-01 14:55 v37.17 cw-p0stat on his pc after 50s (8802 serves 37.17) week 4%

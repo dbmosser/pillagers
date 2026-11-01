@@ -1,0 +1,6 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  01-title-mode-menu                     staged       5.6s  
+  03-hub-floor                           staged       6.7s  
+  12-mainframe-contracts                 staged       7.1s    | opmodal
+  15-mainframe-stats                     staged       7.1s    | opmodal
+  38-extracted-card                      staged       9.5s  

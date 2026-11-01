@@ -1,0 +1,7 @@
+v37.18: season zero: sell from the stash and buy back
+
+every stash sale pays one price (sellPriceOf) in $ only and counts in lifetime earnings; the sales of the day show as buy back chips under the sell button and a chip buys that sale back at the price paid; a locked item never sells; the stats page shows net worth (cash plus the stash at sale prices)
+
+Check 37.18. Fails on v37.17.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

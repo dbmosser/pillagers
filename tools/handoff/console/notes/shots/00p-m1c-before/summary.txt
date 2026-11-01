@@ -1,0 +1,4 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  04-stash-terminal                      staged       7.8s  
+  15-mainframe-stats                     staged       7.3s    | opmodal
+  67-career-stash-stocked                staged       6.0s  

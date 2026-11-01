@@ -1,0 +1,9 @@
+{
+    "title":  "PIPELINE PROBE",
+    "why":  "probe",
+    "now":  "probe only",
+    "edits":  [
+
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027pipeline probe, never shipped\u0027,\n   run:function(){ return (typeof xpOffMig===\u0027function\u0027)?null:\u0027no xpOffMig\u0027; }},"
+}
