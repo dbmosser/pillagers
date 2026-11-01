@@ -2142,3 +2142,4 @@
 2026-10-31 1.0501096999999997 0p18-221-red-34.89-medal-row-over-folded-chip
 2026-10-31 1.2171083000000005 0p18-221-red-34.89-medal-row-over-folded-chip
 2026-11-01 0.612564 00a-245-undercroft-crowd-draw-order
+2026-11-01 0.9844275999999996 00b-247-no-gun-card-after-upgrade

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v36.98 - THE SEAL OPENS IN TWO THIRDS OF THE TIME AND CALLS A WAVE
+
+Co-op hunt while he was away. His order of 10-31: make the seal 50 percent faster to open, and make enemies spawn and attack when you start opening it. The need is now two thirds of the old one at every stage (23, 37, 51 and on). The first frame of cutting calls one wave of machines on the opener from 700 to 1000 away, a few more arrive one by one while the cut runs, once per seal per raid; a teammate window asks the host, which runs the wave for the party. Draws are on the effects side stream.
+
+MEASURED. Check 36.98 passes, and fails on v36.97.
 ## v36.97 - A FORGE UPGRADE RAISES NO WEAPON CARD
 
 Co-op hunt while he was away. His words 10-31: after i upgrade a weapon, i do not need to see a weapon card; it should only show when mousing over the weapon in the hotbar. The Forge upgrade set G.gunCard, which popped the new gun against the old with the cost. It sets nothing now. The sparks, the upgrade sound, the ping and the gun upgraded line stay, and the hotbar hover card is unchanged.

@@ -1,0 +1,7 @@
+v36.98: the seal opens in two thirds of the time and calls a wave
+
+The seal opens in two thirds of the time but calls a wave of machines on you the moment you start cutting it.
+
+Check 36.98. Fails on v36.97.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
