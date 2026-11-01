@@ -1,0 +1,7 @@
+32.92: PASS
+31.23: PASS
+28.72: PASS
+27.00: PASS
+15.78: SKIP: retired by v17.70, one sound setting for the pair replaced the per-window sound buttons this check drove
+15.76: PASS
+ALL DONE

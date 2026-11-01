@@ -1,0 +1,1 @@
+| DEAD CODE OUT 3 | v37.06 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 37.06 passes, fails on v37.05 |

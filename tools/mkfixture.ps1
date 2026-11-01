@@ -6177,6 +6177,19 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'37.06',what:'dead functions with no caller are gone, batch 3 (cw-dead3)',
+   run:function(){
+     var bad=[];
+     if(typeof notoBite!=='undefined') bad.push('notoBite');
+     if(typeof mapFirstFoot!=='undefined') bad.push('mapFirstFoot');
+     if(typeof autoCull!=='undefined') bad.push('autoCull');
+     if(typeof needGlow!=='undefined') bad.push('needGlow');
+     if(typeof netSndToggle!=='undefined') bad.push('netSndToggle');
+     if(typeof netP2Key!=='undefined') bad.push('netP2Key');
+     if(typeof legDock!=='undefined') bad.push('legDock');
+     if(typeof pixSwap!=='undefined') bad.push('pixSwap');
+     if(bad.length) return 'still defined: '+bad.join(', ');
+     return null; }},
   {v:'37.05',what:'dead functions with no caller are gone, batch 2 (cw-dead2)',
    run:function(){
      var bad=[];

@@ -1,0 +1,17 @@
+18.78: PASS
+23.12: PASS
+8.93: PASS
+21.55: PASS
+30.73: PASS
+31.25: PASS
+18.63: PASS
+32.12: PASS
+35.84: PASS
+35.83: normal wave arrived early
+34.41: PASS
+16.30: PASS
+26.69: E: a first pack crawler landed 456 away, not 480 to 640
+23.37: PASS
+32.30: PASS
+32.33: PASS
+ALL DONE

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.06 - DEAD CODE OUT 3
+
+Co-op hunt while he was away. Audit 2026-10-28 item 10: 8 more functions that nothing calls (no player change). Batch 3 of the cleanup.
+
+MEASURED. Check 37.06 passes, and fails on v37.05.
 ## v37.05 - DEAD CODE OUT 2
 
 Co-op hunt while he was away. Audit 2026-10-28 item 10: 9 more functions that nothing calls (no player change). Batch 2 of the cleanup.

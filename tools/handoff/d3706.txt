@@ -1,0 +1,5 @@
+## v37.06 - DEAD CODE OUT 3
+
+Co-op hunt while he was away. Audit 2026-10-28 item 10: 8 more functions that nothing calls (no player change). Batch 3 of the cleanup.
+
+MEASURED. Check 37.06 passes, and fails on v37.05.

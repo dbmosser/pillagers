@@ -171,3 +171,4 @@
 11-01 10:54 v37.02 cw-picstoretotal on his pc after 50s (8802 serves 37.02) week 1%
 11-01 11:07 v37.03 cw-savecopy on his pc after 66s (8802 serves 37.03) week 1%
 11-01 12:21 v37.04 cw-dead1 on his pc after 51s (8802 serves 37.04) week 3%
+11-01 12:33 v37.05 cw-dead2 on his pc after 66s (8802 serves 37.05) week 3%

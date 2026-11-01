@@ -1,0 +1,40 @@
+{
+    "title":  "DEAD CODE OUT 3",
+    "why":  "Audit 2026-10-28 item 10: 8 more functions that nothing calls (no player change). Batch 3 of the cleanup.",
+    "now":  "Nothing a player can see changes.",
+    "edits":  [
+                  {
+                      "anchor":  "// And what it just cost him, in one clause, for the banner.\nfunction notoBite(n){\n  n=n||0;\n  // v11.68: the stall never shuts (pedOpen, his v8.28 ruling); this said it did.\n  if(n\u003e=2) return \u0027Word has spread. Hires cost more and pillagers trust you less.\u0027;\n  return \u0027Hires cost more and pillagers trust you less.\u0027;\n}\n",
+                      "replacement":  "// v28.xx (cw-dead3): dead code out, no caller anywhere (audit 2026-10-28): notoBite, mapFirstFoot, autoCull, needGlow, netSndToggle, netP2Key, legDock, pixSwap.\n"
+                  },
+                  {
+                      "anchor":  "function mapFirstFoot(){ var z=(typeof hudRes===\u0027function\u0027)?hudRes():1; return Math.max(70,Math.round((LH(43)+18)*z)); }\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "// Shed the least useful things until there is room to search again. Returns how\n// many went. Refuses rather than gutting a bag of nothing but rares.\nfunction autoCull(cap){\n  var shed=0;\n  while(bagWeight()\u003e=cap){\n    var w=worstBagIndex();\n    if(w\u003c0) break;\n    var key=dropItem(w);\n    if(!key) break;\n    // Audit: the shed crate landed inside pickup range, stole the search\n    // target, and the loop re-ate its own discard forever. Auto-shed crates\n    // are ignored by the chooser for 8 seconds and never fire contracts.\n    var shedCt=G.containers[G.containers.length-1];\n    if(shedCt\u0026\u0026shedCt.dropped){ shedCt.auto=1; shedCt.dropT=G.t; }\n    shed++;\n    if(!G.sim) label(G.player.x,G.player.y-26,\u0027Dropped \u0027+ITEMS[key].name,\u0027#9aa8d0\u0027,0,false);\n    // Loop guard only. The real stop is running out of things worth dropping;\n    // this is set beyond any bag a raid can actually produce, because at 12 it\n    // was firing first and leaving the pack still over capacity.\n    if(shed\u003e80) break;\n  }\n  return shed;\n}\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "function needGlow(wc,ct,lift,d2){\n  var cx=ct.x, cy=ct.y-lift-d2-3, pu=.55+.45*Math.sin((+G.t||0)*4.2+ct.x*.03);\n  wc.save();\n  wc.globalCompositeOperation=\u0027lighter\u0027;\n  wc.globalAlpha=.24*pu; wc.fillStyle=\u0027#ffd452\u0027; wc.beginPath(); wc.arc(cx,cy,27,0,6.2832); wc.fill();\n  wc.globalAlpha=Math.min(1,.8*pu+.2); wc.strokeStyle=\u0027#ffd452\u0027; wc.lineWidth=2.4; wc.beginPath(); wc.arc(cx,cy,17,0,6.2832); wc.stroke();\n  wc.globalAlpha=.95; wc.fillStyle=\u0027#fff0b0\u0027;\n  wc.beginPath(); wc.moveTo(cx,cy-32); wc.lineTo(cx+5,cy-26); wc.lineTo(cx,cy-20); wc.lineTo(cx-5,cy-26); wc.closePath(); wc.fill();\n  wc.restore();\n}\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "function netSndToggle(){ return netSndSet(!NET.sndOn); }\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "function netP2Key(){ return \u0027salvagerun:profile:p2\u0027; }\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "function legDock(s){\n  var rs=Math.max(1,hudRes()), u=hudUserZ(\u0027legend\u0027), x, z=LEGZ0, w, b, q, k, A, on=0, v=VITBOX, fr, mr;\n  if(!s) return null;\n  fr=(FEEDBOX.on\u0026\u0026FEEDBOX.w\u003e0)?FEEDBOX.x+FEEDBOX.w+Math.round(LH(10)*rs):0; mr=(MEDALBOX.on\u0026\u0026MEDALBOX.w\u003e0)?MEDALBOX.x+MEDALBOX.w+Math.round(LH(10)*rs):0;\n  x=Math.max(s.x,fr,mr);\n  if(LEGMW\u003e0) z=Math.max(0.9,Math.min(LEGZ0,((W*0.47-x)/LEGMW)/(rs*u)));\n  w=LEGMW*z*rs*u;\n  if(LEGMW\u003e0\u0026\u0026x+w\u003eW*0.47) x=Math.max(fr,mr,Math.round(LH(6)*rs),Math.floor(W*0.47-w));   // a short screen: back left toward the old place, so it ends before 47 percent (or as far left as the feed and the medal spot let it: its rows stay 16 px)\n  b=Math.min(s.y+s.h,Math.round(s.belt-LH(6)*rs));\n  if(BELTCAP\u0026\u0026x\u003cBELTCAP.x+BELTCAP.w\u0026\u0026x+w\u003eBELTCAP.x) b=Math.min(b,Math.round(BELTCAP.y-LH(6)*rs));\n  q=useBandBox(); if(q\u0026\u0026x\u003cq.x+q.w\u0026\u0026x+w\u003eq.x-LH(6)*rs) b=Math.min(b,Math.round(q.y-LH(6)*rs));\n  A=(G\u0026\u0026G.pwr\u0026\u0026G.pwr.act)?G.pwr.act:null; if(A) for(k in A) if(Object.prototype.hasOwnProperty.call(A,k)\u0026\u0026A[k]\u003e0) on=1;\n  q=EDGEBOX.chips; if(on\u0026\u0026q\u0026\u0026q.w\u003e0\u0026\u0026x\u003cq.x+q.w\u0026\u0026x+w\u003eq.x) b=Math.min(b,Math.round(q.y-LH(6)*rs));   // the power up timer chips (only while one runs, so a row left from another raid never counts)\n  if(v\u0026\u0026v.w\u003e0\u0026\u0026x\u003cv.x+v.w+LH(2)*rs) b=Math.min(b,Math.round(v.top-LH(6)*rs));   // over the vitals columns: on top of them\n  return {x:x,z:z,w:w,b:b};\n}\n",
+                      "replacement":  ""
+                  },
+                  {
+                      "anchor":  "function pixSwap(src,map){   // palette swap at bake time: map is {\u0027#rrggbb\u0027:\u0027#rrggbb\u0027}; every other pixel is kept\n  var s=pixCanvas(src.width,src.height), d, p, k, key, to={}, a;\n  for(a in map){ if(Object.prototype.hasOwnProperty.call(map,a)){ k=parseInt(a.slice(1),16); to[(k\u003e\u003e16)+\u0027,\u0027+((k\u003e\u003e8)\u0026255)+\u0027,\u0027+(k\u0026255)]=parseInt(map[a].slice(1),16); } }\n  s.x.drawImage(src,0,0); d=s.x.getImageData(0,0,s.w,s.h); p=d.data;\n  for(k=0;k\u003cp.length;k+=4){\n    if(!p[k+3]) continue;\n    key=p[k]+\u0027,\u0027+p[k+1]+\u0027,\u0027+p[k+2];\n    if(to[key]!==undefined){ a=to[key]; p[k]=a\u003e\u003e16; p[k+1]=(a\u003e\u003e8)\u0026255; p[k+2]=a\u0026255; }\n  }\n  s.x.putImageData(d,0,0); return s.c;\n}\n",
+                      "replacement":  ""
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027dead functions with no caller are gone, batch 3 (cw-dead3)\u0027,\n   run:function(){\n     var bad=[];\n     if(typeof notoBite!==\u0027undefined\u0027) bad.push(\u0027notoBite\u0027);\n     if(typeof mapFirstFoot!==\u0027undefined\u0027) bad.push(\u0027mapFirstFoot\u0027);\n     if(typeof autoCull!==\u0027undefined\u0027) bad.push(\u0027autoCull\u0027);\n     if(typeof needGlow!==\u0027undefined\u0027) bad.push(\u0027needGlow\u0027);\n     if(typeof netSndToggle!==\u0027undefined\u0027) bad.push(\u0027netSndToggle\u0027);\n     if(typeof netP2Key!==\u0027undefined\u0027) bad.push(\u0027netP2Key\u0027);\n     if(typeof legDock!==\u0027undefined\u0027) bad.push(\u0027legDock\u0027);\n     if(typeof pixSwap!==\u0027undefined\u0027) bad.push(\u0027pixSwap\u0027);\n     if(bad.length) return \u0027still defined: \u0027+bad.join(\u0027, \u0027);\n     return null; }},"
+}
