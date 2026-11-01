@@ -6177,6 +6177,18 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'37.07',what:'the dead title fight code is gone, tskOn stays (cw-dead4)',
+   run:function(){
+     var bad=[];
+     if(typeof tskRnd!=='undefined') bad.push('tskRnd');
+     if(typeof tskInit!=='undefined') bad.push('tskInit');
+     if(typeof tskSpark!=='undefined') bad.push('tskSpark');
+     if(typeof tskShot!=='undefined') bad.push('tskShot');
+     if(typeof tskStep!=='undefined') bad.push('tskStep');
+     if(typeof tskDraw!=='undefined') bad.push('tskDraw');
+     if(typeof tskOn!=='function') bad.push('tskOn is gone');
+     if(bad.length) return 'wrong: '+bad.join(', ');
+     return null; }},
   {v:'37.06',what:'dead functions with no caller are gone, batch 3 (cw-dead3)',
    run:function(){
      var bad=[];
