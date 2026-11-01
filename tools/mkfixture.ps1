@@ -11339,6 +11339,7 @@ class Audio {
        waveTier=function(){ return 4; }; flowAmbushOk=function(){ return false; };
        arcadeWaveSpot=function(){ return {x:g.player.x+900,y:g.player.y}; };
        arcadeWaveBody=function(m,q,c){ return c; };
+       ARCADE.waveN=1;   // retargeted 2026-11-01 (v36.87, job 254): the first demo pack (no wave yet) comes at 11 s whatever the tier, so the normal interval is read from the second pack on
        if(wave(90.001,13,1,false,0)!==0) throw Error('normal wave arrived early');
        n=wave(90.001,14,1,false,0); if(n!==4) throw Error('normal wave size '+n);
        n=wave(90,11.21,1,false,0); if(n!==5) throw Error('rush wave size or interval '+n);
@@ -46318,7 +46319,7 @@ class Audio {
        nearCut(); dropWaves(); ARCADE.waveN=0; ARCADE.waveT=0; p.face=fcs[0]; lines.length=0;
        g.flow={dir:{st:0,hp:p.hp,quiet:0,ph:'build',phT:0,waves:0,amb:0,lastAmb:-999,pace:1}};
        n0=g.ents.length; arcadeWaveTick(fr.iv+0.05);
-       for(j=n0;j<g.ents.length;j++){ e=g.ents[j]; if(!e||!e.arcWave) continue; nbFirst++; if(dist(e,p)<fr.minR||dist(e,p)>fr.maxR) bad.push('E: a first pack '+e.kind+' landed '+Math.round(dist(e,p))+' away, not '+fr.minR+' to '+fr.maxR); if(e.dirAmb) bad.push('E: a first pack body is flagged as an ambush'); }
+       for(j=n0;j<g.ents.length;j++){ e=g.ents[j]; if(!e||!e.arcWave) continue; nbFirst++; if(dist(e,p)<fr.minR-51||dist(e,p)>fr.maxR+51) bad.push('E: a first pack '+e.kind+' landed '+Math.round(dist(e,p))+' away, not '+fr.minR+' to '+fr.maxR+' (the pack centre) give or take its 36 px scatter'); if(e.dirAmb) bad.push('E: a first pack body is flagged as an ambush'); }
        if(!nbFirst) bad.push('E: no first pack at '+fr.iv+' s');
        else if(nbAmb&&nbFirst+2>nbAmb) bad.push('E: the first pack ('+nbFirst+' bodies) is not two fewer than an ambush ('+nbAmb+')');
        for(j=0;j<lines.length;j++) if(lines[j].indexOf(needle)>=0) bad.push('E: the first pack called an ambush');
@@ -61356,7 +61357,7 @@ class Audio {
          e=g.ents[i];
          if(!e.arcWave) bad.push('a new body ('+e.kind+') is not flagged arcWave');
          d=dist(e,g.player);
-         if(d<fr.minR||d>fr.maxR) bad.push('the first pack '+e.kind+' landed '+Math.round(d)+' from the player, not '+fr.minR+' to '+fr.maxR);
+         if(d<fr.minR-51||d>fr.maxR+51) bad.push('the first pack '+e.kind+' landed '+Math.round(d)+' from the player, not '+fr.minR+' to '+fr.maxR+' (the pack centre) give or take its 36 px scatter');   // 51 = 36 x the square root of 2, the corner of the body scatter round the centre (arcadeWaveBody)
          if(e.state!=='investigate') bad.push('a wave '+e.kind+' is in state '+e.state);
          if(!(e.alert>=3)) bad.push('a wave '+e.kind+' has alert '+e.alert);
          if(dist({x:e.tx,y:e.ty},g.player)>90) bad.push('a wave '+e.kind+' heads somewhere else');
