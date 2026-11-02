@@ -198,7 +198,7 @@ async function host() {
   } catch (e) { step(false, 'stopped: ' + e.message); }
   finally { if (t) { try { await t.ev('__p2.keep(false),1'); } catch {} } await chromeClose(cdp); }
   const head = 'p2 online test ' + id + ': ' + (bad.length ? 'FAIL (' + bad.length + ')' : 'PASS') + ', host ' + HOST + ' v' + ver + ', guest ' + (guest ? guest.host + ' v' + guest.ver : '?');
-  const txt = [head, '(VM hosts in a headless Chrome on a test port; the spare PC joins from its own test copy; codes by text through the p2-mailbox branch; keyboard and mouse input)', ...steps, '', 'guest notes: ' + (guest ? (guest.notes || []).join(' | ') : '-'), '', 'log:', ...LOG].join('\r\n') + '\r\n';
+  const txt = [head, '(the host runs in a headless Chrome on a test port; the spare PC joins from its own test copy; codes by text through the p2-mailbox branch; keyboard and mouse input)', ...steps, '', 'guest notes: ' + (guest ? (guest.notes || []).join(' | ') : '-'), '', 'log:', ...LOG].join('\r\n') + '\r\n';
   fs.mkdirSync(path.dirname(out), { recursive: true }); fs.writeFileSync(out, txt);
   try { await mbPut('host-' + id + '.json', { id, head, steps }); } catch {}
   console.log(head); process.exitCode = bad.length ? 1 : 0;

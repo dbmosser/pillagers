@@ -421,7 +421,7 @@ $script:playWhy=''
 # looked away from the game for a moment and was stopped a minute later (22:10 to 22:21: seven starts while he played, his game froze
 # twice, at 22:12 and 22:20, the second at 30 fps).
 $script:fgPlayT=(Get-Date).AddDays(-1)
-$P2Want='1030a'   # 10-30: the online 2 player test this main PC hosts once (see the robot lines); a new value asks for one more run
+$P2Want=(Get-Date).ToString('MMdd')   # 11-02: the online 2 player test this main PC hosts, once a day on the newest build (see the robot lines). It was one run on 10-30, so nothing tested the two machines from v36.58 to v37.39
 # 10-29 (Main PC Correspondent, from the FPS chat): the main PC game check (host-night-memory.ps1 -GameCheck, as SYSTEM, no view of his
 # screen) counts a game only at 15% of the graphics card; his 1440p game at 60 fps sits under that, so it had not seen him play since 10-28
 # 14:36 and held the VM to 50% instead of 30% while he played. While the game is in front now, or a pad was used in the last minute, this
@@ -1077,7 +1077,8 @@ function SparePC([string]$n='DESKTOP-82BKOP4'){
   if(Test-Connection -ComputerName $ip -Count 1 -Quiet -ErrorAction SilentlyContinue){ $v='on ('+$ip+' answers a ping)' }
   if(-not $v){ foreach($port in 445,135){ $c=New-Object Net.Sockets.TcpClient; try { if($c.ConnectAsync($ip,$port).Wait(1500) -and $c.Connected){ $v='on ('+$ip+' port '+$port+')'; break } } catch { } finally { $c.Dispose() } } }
   if(-not $v -and @(Get-NetNeighbor -IPAddress $ip -ErrorAction SilentlyContinue | Where-Object { [string]$_.State -eq 'Reachable' }).Count){ $v='on ('+$ip+' is on the network but answers nothing else)' }
-  if(-not $v){ $v='not answering ('+$ip+')' }
+  # 11-02: no reply here is not "off": the spare PC's firewall drops these looks while it reports fine, and "not answering" read as a dead PC for 3 days. Say what its own last report says.
+  if(-not $v){ $sn=''; try { $sl=@(Get-Content -LiteralPath ($Res+'\spare\'+$n+'\status.txt') -ErrorAction Stop | Where-Object { $_ -like 'seen=*' }); if($sl.Count){ $sn=$sl[0].Substring(5) } } catch { }; $v=$(if($sn){ 'no reply on the home network ('+$ip+'), its own last report '+$sn }else{ 'not answering ('+$ip+')' }) }
   $script:spV=$v+', '+(Get-Date).ToString('HH:mm'); return $script:spV
 }
 function Write-Status([string]$corpus,[int]$robots){
@@ -1287,7 +1288,8 @@ while($true){
     # ahead of the robot, also while he works at the PC (tools\p2online\p2.mjs host: test port 8817, Chrome 9361, never 8802; about 15
     # minutes; no AI). The spare PC's runner joins as player 2. It starts with 5 GB free; Watch ends it like a light robot once he plays or
     # under 4 GB at two looks; 3 tries at most. Its result goes out with the next status (spare\JUL26\p2-online-test.txt on spare-results).
-    # A new $P2Want asks for one more run.
+    # A new $P2Want asks for one more run: since 11-02 that is each new day.
+    $script:P2Want=(Get-Date).ToString('MMdd')
     $p2Run=(Running 'p2\.mjs"?\s+host(\s|$)')
     if($p2Run -eq 0 -and (GetS 'p2_done') -ne $P2Want -and (GetS 'p2_t') -and (GetS 'p2_want') -eq $P2Want){
       $pf=$T+'\handoff\spare\p2-online-test.txt'; $pi=Get-Item -LiteralPath $pf -ErrorAction SilentlyContinue

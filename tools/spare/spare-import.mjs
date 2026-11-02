@@ -163,6 +163,7 @@ if (seen && ago < 30 && !paused) {
 }
 if (stall.length) line = `STALLED: ${stall.join('; ')}; ` + line;
 for (const [h, st, ep] of idleHosts) line += `; main PC ${h} last seen ${st.seen || '?'} (${ep ? Math.round((Date.now() / 1000 - ep) / 60) : '?'} min ago): ${st.test_run || '?'}, robots ${st.robots || '0'}${st.spare_pc ? `; spare PC as the main PC sees it: ${st.spare_pc}` : ''}`;
+{ let p2 = ''; try { p2 = blob('spare/JUL26/p2-online-test.txt').toString('utf8').split(/\r?\n/)[0].trim(); } catch { } if (p2) line += '; ' + p2; }   // 11-02: the newest online 2 player test, main PC host and spare PC guest
 for (const h of fs.readdirSync(SP)) { const p = perf4k(path.join(SP, h, 'fuzz.log'), h); if (p) line += '; ' + p; }
 try { writePerf4k(SP); } catch (e) { console.log(`${stamp().slice(6)} perf-4k.txt not written: ${String(e.message || e).slice(0, 120)}`); }   // 10-28: one line per build for the 4K jobs
 { const p = perf4k(path.join(R, 'tools', 'handoff', 'fuzz', 'fuzz.log'), 'the VM'); if (p) line += '; ' + p; }   // 10-22: the VM's own second robot plays at 4K
