@@ -1,0 +1,7 @@
+v37.32: the overseer ignores decoys
+
+The Overseer no longer follows a decoy.
+
+Check 37.32. Fails on v37.31.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

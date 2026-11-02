@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.32 - THE OVERSEER IGNORES DECOYS
+
+Co-op hunt while he was away. His answer g-13 (10-25): No, the Overseer ignores decoys. A decoy pinged 420 every 0.8 s for 6 s and woke every body in reach, the Overseer too, which then walked off its lair toward it. The decoy ping now carries a flag and the Overseer skips it. Every other machine still hears decoys, and the Overseer still hears shots, steps and blasts. Watch: The Overseer no longer follows a decoy.
+
+MEASURED. Check 37.32 passes, and fails on v37.31.
 ## v37.31 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v37.15 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay. Watch: The what is new stamp keeps up with the build; the three notes are unchanged.

@@ -3932,8 +3932,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.31';
-var VER_AT='2026-11-01 22:32';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.32';
+var VER_AT='2026-11-01 22:35';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23546,7 +23546,7 @@ var SH=G.shells[shI];
   for(i=G.smokes.length-1;i>=0;i--){ G.smokes[i].t+=dt; if(G.smokes[i].t>G.smokes[i].life) G.smokes.splice(i,1); }
   for(i=G.decoys.length-1;i>=0;i--){
     var dc=G.decoys[i]; dc.t+=dt; dc.acc+=dt;
-    if(dc.acc>=.8){ dc.acc=0; if(!dc.fx) ping(dc.x,dc.y,420,false,false,'env','move'); }   // v17.29, co-op hunt 2026-09-28: a decoy passed on for drawing calls nothing; the host world hears it
+    if(dc.acc>=.8){ dc.acc=0; if(!dc.fx){ PING_DECOY=1; try{ ping(dc.x,dc.y,420,false,false,'env','move'); } finally { PING_DECOY=0; } } }   // v37.xx (cw-ovdecoy): flagged so the Overseer skips it. v17.29, co-op hunt 2026-09-28: a decoy passed on for drawing calls nothing; the host world hears it   // v17.29, co-op hunt 2026-09-28: a decoy passed on for drawing calls nothing; the host world hears it
     if(dc.t>dc.life) G.decoys.splice(i,1);
   }
   for(i=G.frags.length-1;i>=0;i--){
@@ -24834,6 +24834,9 @@ var SNDCOL={
   player: {move:'#FFF6DC', fire:'#FFF6DC'},
   env:    {move:'#ffd54f', fire:'#ffd54f'}
 };
+// v37.xx (cw-ovdecoy), his answer g-13 (2026-10-25): "No, the Overseer ignores decoys". PING_DECOY is 1 only while a decoy calls ping; the body loop
+// below skips the boss then. Every other body still hears a decoy, and the Overseer still hears shots, steps and blasts.
+var PING_DECOY=0;
 function ping(x,y,s,h,quiet,src,typ,ent,pre){
   if(!G) return;
   // v17.30, co-op hunt 2026-09-28: pre is set only for a teammate noise the host takes (netFxTake, k z). His own window already
@@ -24867,6 +24870,7 @@ function ping(x,y,s,h,quiet,src,typ,ent,pre){
   for(var i=0;i<G.ents.length;i++){
     var e=G.ents[i];
     if(e.kind==='listener') continue;             // it does not take orders from noise twice
+    if(PING_DECOY&&e.boss) continue;   // v37.xx (cw-ovdecoy): the Overseer ignores decoys
     // v14.33, weather audit finding 3: NOISE DOES NOT ALERT THE PEDDLER OR THE STRAY. Their update branches never decay alert,
     // so one shot or bolt within earshot left them alerted for the rest of the raid, and the ambient bed counts any alerted
     // entity as a threat: standing at the stall played the sound of a machine on top of you. Skipped the way the hire and
@@ -57660,7 +57664,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.31: The what is new stamp keeps up with the build; the three notes are unchanged. Check 37.31 fails on v37.30',
+  now:'v37.32: The Overseer no longer follows a decoy. Check 37.32 fails on v37.31',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
