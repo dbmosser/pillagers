@@ -108,6 +108,10 @@ async function aiPoll() {
     execFile(process.execPath, [js, 'login', 'status'], { env, timeout: 30e3, windowsHide: true }, (e, o, er) => { aiLive.codexLogin = String(o || er || '').trim().split(/\r?\n/)[0] || ''; }); }
 }
 aiPoll(); setInterval(aiPoll, 30e3);
+// 11-02: what his main PC's game check says (why nothing new starts, and whether its memory rule is the newest one), from the bridge share; free
+let mainGame = { what: '', memrule: '' };
+function gamePoll() { execFile(process.execPath, [R + '/tools/bridge/hostctl.mjs', 'share-get', 'name=gaming.txt'], { timeout: 20000, windowsHide: true }, (err, out) => { try { const j = JSON.parse(out); if (j.ok && j.base64) { const t = Buffer.from(j.base64, 'base64').toString(); mainGame = { what: (/^what=(.*)$/m.exec(t) || [])[1] || '', memrule: (/^memrule=(\d+)/m.exec(t) || [])[1] || '' }; } } catch {} }); }
+gamePoll(); setInterval(gamePoll, 60e3);
 function revList() {
   try { return readdirSync(SR + '/reviews').filter(f => f.endsWith('.md')).map(f => ({ f, m: statSync(SR + '/reviews/' + f).mtimeMs })).sort((a, b) => b.m - a.m).map(x => {
     const t = rd(SR + '/reviews/' + x.f), n = (t.match(/^BUG\s*\d+/gm) || []).length, m = /^(v[\d.]+|[0-9a-f]{8})-(\w+)\.md$/.exec(x.f) || [0, x.f, '?'];
@@ -187,7 +191,7 @@ function data() {
   const op = tail(C + '/onhispc.txt', 20).reverse().map(l => /^(\d\d-\d\d \d\d:\d\d) .*\(8802 serves ([\d.]+)\)/.exec(l)).find(Boolean);
   const after = existsSync(C + '/after-nov1') ? readdirSync(C + '/after-nov1').filter(f => f.endsWith('.md') && f !== 'README.md').length : 0;
   return { now: new Date().toLocaleTimeString(), ver: ver(), shipsToday, cpu, notes, spare, spareInfo: spareInfo(),
-    onPc: op ? { ver: op[2], at: op[1] } : null, itch: rd(N + '/itch-ver.txt').trim(), afterNov1: after,
+    onPc: op ? { ver: op[2], at: op[1] } : null, itch: rd(N + '/itch-ver.txt').trim(), afterNov1: after, playing: kv(N + '/state.txt').gaming === '1', mainGame, memClick: (m => !!(mainGame.memrule && m && mainGame.memrule !== m[1]))(/'memrule=(\d+)'/.exec(rd(R + '/tools/migrate/host-night-memory.ps1'))),
     link: { ok: snapOkAt > snapFailAt, okAt: snapOkAt, failAt: snapFailAt },
     stable: { version: st.version || '', at: st.at || '', address: st.address || '', frozen: existsSync(R + '/tools/handoff/stable.freeze') }, report: latestReport(), ramFree: +(os.freemem() / 2 ** 30).toFixed(1), ramTot: Math.round(os.totalmem() / 2 ** 30), cpus: os.cpus().length,
     procs, runnerAgeS: hb, lockOwner, titles, lanes, stopFile: existsSync(C + '/STOP'),
