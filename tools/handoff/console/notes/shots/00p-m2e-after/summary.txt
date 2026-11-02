@@ -1,0 +1,16 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  e1-retire-row                          staged       8.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  e2-retire-hold                         staged       7.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  e3-retire-ask                          staged       7.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  e4-birth-after-retire                  staged       7.6s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  e5-lobby-name                          staged       7.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  e6-run-card                            staged      11.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  e7-over-head                           staged       9.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 4k : window 3876x2265, viewport 3840x2160
+  e1-retire-row                          staged       8.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  e2-retire-hold                         staged       7.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  e3-retire-ask                          staged       7.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  e4-birth-after-retire                  staged       7.7s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  e5-lobby-name                          staged       7.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  e6-run-card                            staged      11.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  e7-over-head                           staged       9.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0

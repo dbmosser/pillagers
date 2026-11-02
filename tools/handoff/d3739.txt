@@ -1,0 +1,5 @@
+## v37.39 - RETIRE: THE BUTTON READS AS DANGER, THE PAD CONFIRM STARTS ON NOT YET
+
+Co-op hunt while he was away. the critic on the retire row and the confirm card, P1: retiring ends a pillager, yet the button looked like any other, and on a pad a double tap of A could end one Watch: the retire button has a red border and red text while it can be pressed; on a pad the confirm card starts on not yet
+
+MEASURED. Check 37.39 passes, and fails on v37.38.

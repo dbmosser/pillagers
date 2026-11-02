@@ -1,0 +1,7 @@
+v37.39: retire: the button reads as danger, the pad confirm starts on not yet
+
+the retire button has a red border and red text while it can be pressed; on a pad the confirm card starts on not yet
+
+Check 37.39. Fails on v37.38.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

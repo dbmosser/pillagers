@@ -204,3 +204,4 @@
 11-01 22:52 v37.35 cw-m2birth2 on his pc after 35s (8802 serves 37.35) week 8%
 11-01 22:56 v37.36 cw-m2hallb on his pc after 34s (8802 serves 37.36) week 8%
 11-01 23:01 v37.37 cw-m2birth3 on his pc after 34s (8802 serves 37.37) week 8%
+11-01 23:21 v37.38 cw-m2retire on his pc after 19s (8802 serves 37.38) week 8%

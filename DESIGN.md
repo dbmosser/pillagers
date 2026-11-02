@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.39 - RETIRE: THE BUTTON READS AS DANGER, THE PAD CONFIRM STARTS ON NOT YET
+
+Co-op hunt while he was away. the critic on the retire row and the confirm card, P1: retiring ends a pillager, yet the button looked like any other, and on a pad a double tap of A could end one Watch: the retire button has a red border and red text while it can be pressed; on a pad the confirm card starts on not yet
+
+MEASURED. Check 37.39 passes, and fails on v37.38.
 ## v37.38 - SEASON ZERO M2: RETIRE A PILLAGER, RENAME AT THE MAINFRAME, THE ACCOUNT NAME IN MENUS AND THE LOBBY, THE LINEAGE IN THE RESTORE CODE
 
 Co-op hunt while he was away. his rulings of 11-01, plan m2: a living pillager can retire into the hall for 250 a level with its worn gear going to the stash; rename at the Mainframe (answer 6); account and pillager names are separate, the account name in menus and the two-player lobby (answer 7); a restore never wears the lineage of another account Watch: the hall tab has a rename box and a retire row: hold to retire pays 250 a level into lifetime earnings, moves worn gear to the stash, puts the pillager in the hall and opens the birth card (keys and pad get a confirm card, one raid needed first); the title name is the account name in menus, save slots and the lobby; the partner sees the pillager name with numeral over the head; the run card names the pillager; restore codes carry the lineage and old codes still restore
