@@ -74,7 +74,7 @@ const hashOf = {};
   } }
 const runs = files.map(f => {
   const txt = rd(S + '/' + f);
-  return { file: f, done: /ALL DONE/.test(txt), partial: /STALLED|result could not be read/.test(txt), fails: failsOf(txt), hash: hashOf[f] || '' };
+  return { file: f, done: /ALL DONE/.test(txt), partial: /^\[\d+,\d+\) (?:STALLED at index|result could not be read)/m.test(txt), fails: failsOf(txt), hash: hashOf[f] || '' };
 }).filter(r => r.done && !r.partial).slice(-MAX_RUNS);
 
 // ---- which game version each run tested (the version inside the commit the runner tested)

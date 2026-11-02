@@ -547,6 +547,9 @@ function Slice-Next([string]$f){
   try{ foreach($l in [IO.File]::ReadAllLines($f)){ if($l -match '^\[\d+,\d+\) STALLED at index (\d+)'){ $n=[int]$Matches[1]+1 } elseif($l -match '^\[\d+,(\d+)\)'){ $n=[int]$Matches[1] } } }catch{ return 0 }
   return $n
 }
+# 11-02: a run with a stalled slice or a slice whose result could not be read is not a whole run. tools/stable.mjs leaves it out (the same test), so on the
+# spare PC it does not use up the build's result (the main loop leaves tested_blob alone), and a stopped one starts again instead of going on.
+$RxPartial='(?m)^\[\d+,\d+\) (?:STALLED at index|result could not be read)'
 # a full run stopped before its end: its try back, and where it goes on, if a slice finished. How many checks it has is in OUT.n (corpq.sh).
 function Give-Back([string]$cf,[string]$cause){
   $cb=GetS 'corpus_blob'; $t=[int]('0'+(GetS 'tries'))
@@ -554,7 +557,9 @@ function Give-Back([string]$cf,[string]$cause){
   PutS 'corpus_done' $cf   # so the main loop does not report it as "ended without finishing"
   $ne=''; try{ $ne=([IO.File]::ReadAllText($cf+'.n')).Trim() }catch{}
   $nx=Slice-Next $cf; $said='full test run '+(Split-Path $cf -Leaf)+' stopped before its end because '+$cause+': its try is given back, and '
-  if($ne -match '^\d+$' -and $nx -gt 0){ PutS 'resume_end' $ne; PutS 'resume_file' $cf; PutS 'resume_t' ([string](Epoch)); Say ($said+'it goes on from check '+$nx+' of '+$ne) }
+  $ct=''; try{ $ct=[IO.File]::ReadAllText($cf) }catch{}
+  if($ct -match $RxPartial){ PutS 'resume_file' ''; Say ($said+'with a part of it already missing it starts again') }
+  elseif($ne -match '^\d+$' -and $nx -gt 0){ PutS 'resume_end' $ne; PutS 'resume_file' $cf; PutS 'resume_t' ([string](Epoch)); Say ($said+'it goes on from check '+$nx+' of '+$ne) }
   else { PutS 'resume_file' ''; Say ($said+'with no slice finished it starts again') }
 }
 # a run this PC's restart or shutdown ended (the heartbeat is old, so nobody was looking; none of its parts is left): a stopped run like any other
@@ -1235,7 +1240,9 @@ while($true){
     $cf=GetS 'corpus_file'
     if($cf -and (GetS 'corpus_done') -ne $cf -and (Test-Path -LiteralPath $cf)){
       PutS 'corpus_done' $cf
-      if([IO.File]::ReadAllText($cf) -match 'ALL DONE'){ PutS 'tested_blob' (GetS 'corpus_blob'); Say ('full test run finished: '+(Split-Path $cf -Leaf)); $why='test run done' }
+      $ct=''; try{ $ct=[IO.File]::ReadAllText($cf) }catch{}
+      if(-not $Idle -and $ct -match 'ALL DONE' -and $ct -match $RxPartial){ Say ('full test run ended with a part missing: '+(Split-Path $cf -Leaf)+': no result for this build, '+$(if((GetS 'try_blob') -eq (GetS 'corpus_blob') -and [int]('0'+(GetS 'tries')) -ge 2){ 'and its 2 tries are used, so it waits for the next build' }else{ 'and it keeps its next try' })); $why='test run done' }
+      elseif($ct -match 'ALL DONE'){ PutS 'tested_blob' (GetS 'corpus_blob'); Say ('full test run finished: '+(Split-Path $cf -Leaf)); $why='test run done' }
       else { Say ('full test run ended without finishing: '+(Split-Path $cf -Leaf)) }
     }
     # 11-01: a stopped full run goes on first, whether GitHub answers or not
