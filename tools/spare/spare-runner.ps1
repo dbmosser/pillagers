@@ -449,6 +449,23 @@ function VMResizeSoon(){ if((FollowAway) -gt 0){ return $false }; $hm=HourMin; r
 # 10-31 (CEO, his party night): no tests at all on this PC from Sat 10/31 17:00 to Sun 11/1 06:00, whatever the memory. 8802, the party
 # copy and the bridge are looked after as always.
 function PartyHold(){ $n=Get-Date; return ($n -ge [datetime]'2026-10-31 17:00' -and $n -lt [datetime]'2026-11-01 06:00') }
+# 11-01 (Main PC Correspondent, from the Fortnite island chat): Fortnite's editor (UEFN) and the Fortnite game are going on this PC, sometimes
+# with him away and a Claude here driving them, and together they can want well over 16 GB. A quiet editor sits under the game check's 15%
+# of the graphics card, so the VM could grow and the tests start under it, and his 4 GB floor goes. While one of them runs: no tests (main
+# loop and Watch), and playing.txt tells the game check it is a game, so the VM goes to its day size and does not grow. No setup needed: the
+# installed game check already reads playing.txt. Named by program, or by where it runs from (FortniteGame\Binaries only: UnrealTraceServer
+# in Engine\Binaries stays behind after the editor closes). Epic's launcher, downloading or not, never counts. fake-epic.txt in the share
+# (until=EPOCH) is a self-test. After one closes, tests wait 11 minutes more: the game check holds 10, then the VM takes its memory first.
+$script:epicT=[long]0; $script:epicWho=''; $script:epicSeen=[long]0
+function EpicGame(){
+  try{ $t=[IO.File]::ReadAllText((Join-Path $env:LOCALAPPDATA 'PillagersBridge\share\fake-epic.txt')); if($t -match 'until=(\d+)' -and [long]$Matches[1] -gt (Epoch)){ $script:epicSeen=Epoch; return 'a self-test' } }catch{}
+  if(((Epoch)-$script:epicT) -lt 15){ return $script:epicWho }
+  $script:epicT=Epoch; $n=@()
+  foreach($p in @(Get-Process -ErrorAction SilentlyContinue)){ if($p.ProcessName -match '^(UnrealEditor|FortniteClient|FortniteLauncher)' -or [string]$p.Path -match '\\FortniteGame\\Binaries\\'){ $n+=$p.ProcessName } }
+  $script:epicWho=(@($n | Sort-Object -Unique) -join ', ')
+  if($script:epicWho){ $script:epicSeen=Epoch }
+  return $script:epicWho
+}
 function VMNight(){ if((FollowAway) -gt 0){ return $false }; $hm=HourMin; return ($hm -ge 2240 -or $hm -lt 645) }
 # ends only what this runner started: the test scripts run from C:\PillagersIdle, and the test Chromes (debug port and pillagers-cdp profile)
 # 10-26 SPARE-PRESENCE-PAUSE, SPARE PC only (IDLE MODE keeps the match above, unchanged): a test part is one of the runner's own launch
@@ -611,6 +628,7 @@ function Watch([int]$sec){
     if($Idle -and ($k % 6) -eq 0){
       if((FreeGB) -lt 4){ $lo++ }else{ $lo=0 }
       if($lo -ge 2){ if(-not $script:fakeLow){ PutS 'lowstop_t' ([string](Epoch)) }; Stop-Work 'paused: low ram, under 4 GB free at two looks' -LowRam; return }
+      $eg=EpicGame; if($eg){ PlayNote 'the fortnite editor or game'; Stop-Work ('fortnite is running: '+$eg); return }
       if(PartyHold){ Stop-Work 'party night: no tests until Sun 06:00'; return }
       if(VMResizeSoon){ Stop-Work 'the VM takes its night memory at 23:00'; return }
       # 10-28: if the main PC's game check reads the 4K robot as him playing (it skips pillagers-cdp Chromes since 10-24), the VM would be
@@ -1086,15 +1104,16 @@ while($true){
     # 4 GB stay free (his 10-28 afternoon "can we knock it down to only leave 4gb free?"; it was 6).
     $fw=FollowAway
     # 10-30: while the online 2 player test is still wanted, a start needs 5 GB free (his 4 GB floor plus its one Chrome), not 6
-    $ng=$(if(VMResizeSoon -or (PartyHold)){ 999 }elseif($script:working){ 3 }elseif($vmn){ 10 }elseif((GetS 'p2_done') -ne $P2Want){ 5 }else{ 6 })
+    $eg=EpicGame; if($eg){ PlayNote 'the fortnite editor or game' }
+    $ng=$(if((VMResizeSoon) -or (PartyHold) -or $eg){ 999 }elseif($script:working){ 3 }elseif($vmn){ 10 }elseif((GetS 'p2_done') -ne $P2Want){ 5 }else{ 6 })
     $na=$(if($script:working -or $fw -le 0){ 900 }else{ [Math]::Max(900,($fw+2)*60) })
-    $grow=(-not $script:working) -and ($fw -gt 0) -and (VmGrowing)
+    $grow=(-not $script:working) -and ($fw -gt 0) -and ((VmGrowing) -or (((Epoch)-$script:epicSeen) -lt 660))
     $lowW=(-not $script:working) -and (((Epoch)-[long]('0'+(GetS 'lowstop_t'))) -lt 1800)
     # 10-28: at the PC but not playing (his "what about daytime testing when i'm at the pc?"): one light robot may run (1080p, below normal)
     $light=($away -lt 900) -and (LightOK)
     $busy=(($away -lt $na) -and -not $light)
     if($busy -or $fg -lt $ng -or $grow -or $lowW){
-      $pw=$(if(PartyHold){ 'paused: party night, no tests until Sun 06:00' }elseif($away -lt 900 -and -not $light){ 'paused: he is using the PC'+$(if($script:playWhy){ ' ('+$script:playWhy+')' }else{ '' }) }elseif($busy -or $grow){ 'paused: the VM takes its memory first' }elseif($lowW){ 'paused: 30 minutes after a memory stop' }elseif($vmn){ 'paused: the VM has the memory at night' }else{ 'paused: low ram, under '+$ng+' GB free' })
+      $pw=$(if($eg){ 'paused: fortnite is running: '+$eg }elseif(PartyHold){ 'paused: party night, no tests until Sun 06:00' }elseif($away -lt 900 -and -not $light){ 'paused: he is using the PC'+$(if($script:playWhy){ ' ('+$script:playWhy+')' }else{ '' }) }elseif($busy -or $grow){ 'paused: the VM takes its memory first' }elseif($lowW){ 'paused: 30 minutes after a memory stop' }elseif($vmn){ 'paused: the VM has the memory at night' }else{ 'paused: low ram, under '+$ng+' GB free' })
       if($script:working){ $lr=((-not $busy) -and $ng -lt 999 -and $fg -lt $ng); if($lr -and -not $script:fakeLow){ PutS 'lowstop_t' ([string](Epoch)) }; Stop-Work $pw -LowRam:$lr }
       Refresh-Party
       Ensure-Bridge
