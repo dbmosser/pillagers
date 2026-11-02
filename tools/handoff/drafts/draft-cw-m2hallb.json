@@ -1,0 +1,28 @@
+{
+    "title":  "the hall: its sign sits at its ring, gen has room, the empty line is quiet",
+    "why":  "Critic on the hall (3 of 5, P1 and P2 on this job): the hall sign sat about 30 room units below its ring and read as detached; gen sat 16px from how it ended; the hall is empty was a title size line floating in the void. His words stay, the hall is empty. The sign moves under the ring, gen gets a 32px gutter, the line becomes a quiet 20px left aligned row. The plaque itself keeps its size, the bay between the pier and the lift holds three at this size.",
+    "now":  "The hall sign sits right under the ring by the wall. Watch for: nothing else changes.",
+    "edits":  [
+                  {
+                      "anchor":  "var ly=(s3.labelBelow?s3.y+s3.r+4:s3.y-56)+10;",
+                      "replacement":  "var ly=(s3.labelY!==undefined)?s3.labelY:((s3.labelBelow?s3.y+s3.r+4:s3.y-56)+10);   // v37.xx (cw-m2hallb), critic 3 of 5 on the hall wall: its sign sat 30 below its ring, detached"
+                  },
+                  {
+                      "anchor":  "wallSt:1,labelBelow:1,acts:",
+                      "replacement":  "wallSt:1,labelY:101,acts:"
+                  },
+                  {
+                      "anchor":  "    #opane_hall #hallempty{ padding:32px 16px; font:600 28px/1.2 var(--f-cond); color:var(--tx-2); text-align:center; }\n",
+                      "replacement":  "    #opane_hall #hallempty{ padding:16px; font:400 20px/1.4 var(--f-body); color:var(--tx-2); text-align:left; }\n    #opane_hall .hallgrid \u003e :nth-child(2){ margin-right:16px; }   /* v37.xx (cw-m2hallb), critic: gen sat 16px from how it ended, 32 now */\n"
+                  },
+                  {
+                      "anchor":  "#opane_hall .hv{ font:700 36px/1.15 var(--f-cond); color:var(--tx-1); margin-top:8px;",
+                      "replacement":  "#opane_hall .hv{ font:700 36px/1.35 var(--f-cond); color:var(--tx-1); margin-top:4px;"
+                  },
+                  {
+                      "anchor":  "#opane_hall .hname{ font:700 28px/1.2 var(--f-cond);",
+                      "replacement":  "#opane_hall .hname{ font:700 28px/1.35 var(--f-cond);"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-m2hallb, critic on the hall (3 of 5): the sign of the hall wall sits right under its ring, gen has a 32px gutter before how it ended, and the empty line is a quiet left aligned row at 20px\u0027,\n   run:function(){\n     if(!(window.__runPrep\u0026\u0026window.__cleanProfile\u0026\u0026window.__topClear\u0026\u0026window.__hubEnter)) return \u0027SKIP: no hub fixture\u0027;\n     if(typeof renderHall!==\u0027function\u0027||typeof hubStationNames!==\u0027function\u0027||typeof openOps!==\u0027function\u0027) return \u0027SKIP: no hall here\u0027;\n     var bad=[], saved=P, st, y=null, o, S, a, b, e, cs, rg;\n     function need(ok,msg){ if(!ok) bad.push(msg); }\n     try{\n       P=JSON.parse(JSON.stringify(saved));\n       __runPrep(); __topClear(); __cleanProfile(); __hubEnter(); [].forEach.call(document.querySelectorAll(\u0027.modal.on\u0027),function(x){ x.classList.remove(\u0027on\u0027); });\n       st=hubStationById(\u0027hall\u0027);\n       need(!!st,\u0027no hall station\u0027);\n       S=hubScale(); o=wc.fillText;\n       wc.fillText=function(s,x,yy){ if(String(s)===st.label) y=yy; return o.apply(this,arguments); };\n       wc.save(); wc.setTransform(1,0,0,1,0,0);\n       try{ hubStationNames(S,0,0); }finally{ wc.restore(); delete wc.fillText; if(wc.fillText!==o) wc.fillText=o; }\n       rg=st.y+6+st.r*0.42;\n       need(y!==null\u0026\u0026y\u003erg\u0026\u0026y-rg\u003c=16,\u0027the sign is at y \u0027+y+\u0027, the ring ends at \u0027+rg);\n       P.hall=[]; P.pil=null; P.pilGen=0; pilNow(); P.runs=0; P.ext=0; P.best=0; P.achN={};\n       openOps(\u0027hall\u0027);\n       e=document.getElementById(\u0027hallempty\u0027); cs=e?getComputedStyle(e):null;\n       need(!!e\u0026\u0026cs.textAlign===\u0027left\u0027\u0026\u0026Math.abs(parseFloat(cs.fontSize)-20)\u003c0.5,\u0027the empty line: \u0027+(cs?cs.textAlign+\u0027 \u0027+cs.fontSize:\u0027missing\u0027));\n       a=document.querySelector(\u0027#halllist .hallhead \u003e :nth-child(2)\u0027); b=document.querySelector(\u0027#halllist .hallhead \u003e :nth-child(3)\u0027);\n       cs=a?getComputedStyle(a):null;\n       need(!!a\u0026\u0026!!b\u0026\u0026parseFloat(cs.marginRight)===16\u0026\u0026parseFloat(getComputedStyle(a.parentNode).columnGap)===16,\u0027gen gutter: margin \u0027+(cs\u0026\u0026cs.marginRight));\n       P.hall=[{name:\u0027brakka\u0027,gen:1,raids:3,kills:1,best:50,lvl:1,end:{how:\u0027dead\u0027}}]; P.pil=pilMake(\u0027live\u0027,2); renderHall();\n       [].forEach.call(document.querySelectorAll(\u0027#opane_hall .hv,#opane_hall .hname\u0027),function(el){ var l=parseFloat(getComputedStyle(el).lineHeight)/parseFloat(getComputedStyle(el).fontSize); need(l\u003e=1.3,\u0027a name line of \u0027+l+\u0027 cuts its tails: \u0027+el.textContent); });\n     }catch(e2){ bad.push(\u0027threw: \u0027+(e2\u0026\u0026e2.message||e2)); }\n     finally{\n       P=saved;\n       try{ document.getElementById(\u0027opmodal\u0027).classList.remove(\u0027on\u0027); HALLW.k=\u0027\u0027; __topClear(); __cleanProfile(); }catch(_c){}\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

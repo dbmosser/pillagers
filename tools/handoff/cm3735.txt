@@ -1,0 +1,7 @@
+v37.35: the birth card fills its frame and the map page names the kit
+
+birth card: wrap 1200 to 1480px and centred, heir names 40px, traits 24px, rows 72px, the whole figure at 280px, the default button 72px high at the right end of the footer, key and pad hints that switch live, the floor line above the frame. Map page: the kit tile and the line under the row both name the paid kit, in words short enough not to wrap. The pad letter picker works on the name box
+
+Check 37.35. Fails on v37.34.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -1,0 +1,96 @@
+{
+    "title":  "THE BIRTH CARD FILLS ITS FRAME AND THE MAP PAGE NAMES THE KIT",
+    "why":  "seen on the first pictures of the birth card: a third of the frame stood empty, the figure lost its hat, the default button was small and off to one side, the footer did not say what the keys and pad do, and on the map page the line under the kit row still said freebie kit with a paid kit on",
+    "now":  "birth card: wrap 1200 to 1480px and centred, heir names 40px, traits 24px, rows 72px, the whole figure at 280px, the default button 72px high at the right end of the footer, key and pad hints that switch live, the floor line above the frame. Map page: the kit tile and the line under the row both name the paid kit, in words short enough not to wrap. The pad letter picker works on the name box",
+    "edits":  [
+                  {
+                      "anchor":  "  \u0027#root #birthmodal #birthwrap{width:100%;max-width:1200px;display:flex;flex-direction:column;gap:16px;margin:0 auto}\u0027+",
+                      "replacement":  "  // v37.xx (cw-m2birth2), seen on the first pictures: a third of the frame stood empty and the hat was cut off. Wrap 1200 to 1480px and centred, heir names 32 to 40px, traits 20 to 24px, rows 56 to 72px, figure 200 to 280px.\n  \u0027#root #birthmodal #birthwrap{width:100%;max-width:1480px;flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:24px;margin:0 auto}\u0027+\n  \u0027#root #birthmodal #birthhints{display:flex;align-items:center;gap:24px;font:500 var(--fs-body)/1 var(--f-cond);color:var(--tx-2)}\u0027+\n  \u0027#root #birthmodal #birthhints span{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}\u0027+\n  \u0027#root #birthmodal #birthhints i{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:30px;padding:0 10px;border:1px solid var(--ui-line-hi);border-radius:4px;font:600 16px var(--f-cond);font-style:normal;color:var(--tx-1)}\u0027+\n  \u0027body:not(.padon) #birthmodal #birthhints .bp,body.padon #birthmodal #birthhints .bk{display:none!important}\u0027+\n  \u0027body:has(#birthmodal.on) #hubtoast{bottom:auto!important;top:12px}\u0027+"
+                  },
+                  {
+                      "anchor":  "gap:4px;min-height:136px;padding:16px 24px;background:var(--ui-panel)",
+                      "replacement":  "gap:8px;min-height:176px;padding:24px 32px;background:var(--ui-panel)"
+                  },
+                  {
+                      "anchor":  "  \u0027#root #birthmodal .bhcard b{font:700 var(--fs-title)/1.15 var(--f-cond);color:var(--tx-1)}\u0027+",
+                      "replacement":  "  \u0027#root #birthmodal .bhcard b{font:700 40px/1.15 var(--f-cond);color:var(--tx-1)}\u0027+"
+                  },
+                  {
+                      "anchor":  "  \u0027#root #birthmodal .bhcard i{font:600 var(--fs-body)/1.3 var(--f-cond);font-style:normal}\u0027+",
+                      "replacement":  "  \u0027#root #birthmodal .bhcard i{font:600 24px/1.3 var(--f-cond);font-style:normal}\u0027+"
+                  },
+                  {
+                      "anchor":  "#birthmid{display:grid;grid-template-columns:232px minmax(0,1fr);gap:16px}",
+                      "replacement":  "#birthmid{display:grid;grid-template-columns:320px minmax(0,1fr);gap:24px}"
+                  },
+                  {
+                      "anchor":  "  \u0027#root #birthmodal #birthcv{width:200px;height:236px;flex:none}\u0027+",
+                      "replacement":  "  \u0027#root #birthmodal #birthcv{width:280px;height:330px;flex:none}\u0027+"
+                  },
+                  {
+                      "anchor":  "\u003ccanvas id=\"birthcv\" width=\"200\" height=\"236\"\u003e\u003c/canvas\u003e",
+                      "replacement":  "\u003ccanvas id=\"birthcv\" width=\"280\" height=\"330\"\u003e\u003c/canvas\u003e"
+                  },
+                  {
+                      "anchor":  "  var S=pixOn()?4:Math.max(5.2,c.height/62);",
+                      "replacement":  "  var S=pixOn()?4:Math.max(5.2,c.height/(cv?52:62));"
+                  },
+                  {
+                      "anchor":  "  \u0027#root #birthmodal #birthlook{width:100%;min-height:48px;font:600 var(--fs-body)/1 var(--f-cond)}\u0027+",
+                      "replacement":  "  \u0027#root #birthmodal #birthlook{width:100%;min-height:56px;font:600 24px/1 var(--f-cond)}\u0027+"
+                  },
+                  {
+                      "anchor":  "  \u0027#root #birthmodal .bhlab{font:600 var(--fs-label)/1.2 var(--f-cond);color:var(--tx-2)}\u0027+",
+                      "replacement":  "  \u0027#root #birthmodal .bhlab{font:600 var(--fs-body)/1.2 var(--f-cond);color:var(--tx-2)}\u0027+"
+                  },
+                  {
+                      "anchor":  "width:100%;height:56px;padding:0 16px;background:var(--ui-panel);border:1px solid var(--ui-line-hi);border-radius:var(--rad);color:var(--tx-1);font:700 var(--fs-title)/1 var(--f-cond);text-transform:none}",
+                      "replacement":  "width:100%;height:72px;padding:0 24px;background:var(--ui-panel);border:1px solid var(--ui-line-hi);border-radius:var(--rad);color:var(--tx-1);font:700 40px/1 var(--f-cond);text-transform:none}"
+                  },
+                  {
+                      "anchor":  "grid-template-columns:160px minmax(0,1fr) auto;align-items:center;gap:16px;min-height:56px;padding:8px 16px;",
+                      "replacement":  "grid-template-columns:200px minmax(0,1fr) auto;align-items:center;gap:24px;min-height:72px;padding:8px 24px;"
+                  },
+                  {
+                      "anchor":  "  \u0027#root #birthmodal .bkit b{font:700 var(--fs-body)/1.2 var(--f-cond);color:inherit}\u0027+",
+                      "replacement":  "  \u0027#root #birthmodal .bkit b{font:700 28px/1.2 var(--f-cond);color:inherit}\u0027+"
+                  },
+                  {
+                      "anchor":  "  \u0027#root #birthmodal .bkit span{font:500 var(--fs-body)/1.2 var(--f-cond);color:var(--tx-2);",
+                      "replacement":  "  \u0027#root #birthmodal .bkit span{font:500 24px/1.2 var(--f-cond);color:var(--tx-2);"
+                  },
+                  {
+                      "anchor":  "  \u0027#root #birthmodal #birthgo{min-height:56px;font:700 var(--fs-body)/1 var(--f-cond)}\u0027);",
+                      "replacement":  "  \u0027#root #birthmodal #birthgo{min-height:72px;min-width:480px;margin-left:auto;font:700 var(--fs-title)/1 var(--f-cond)}\u0027);"
+                  },
+                  {
+                      "anchor":  "    \u003cbutton id=\"birthgo\" class=\"deploy\" style=\"padding:8px 22px\"\u003eascend\u003c/button\u003e",
+                      "replacement":  "    \u003cdiv id=\"birthhints\"\u003e\u003c/div\u003e\n    \u003cbutton id=\"birthgo\" class=\"deploy\" style=\"padding:8px 22px\"\u003eascend\u003c/button\u003e"
+                  },
+                  {
+                      "anchor":  "  document.getElementById(\u0027birthgo\u0027).textContent=\u0027ascend as \u0027+birthShown();",
+                      "replacement":  "  document.getElementById(\u0027birthgo\u0027).textContent=\u0027ascend as \u0027+birthShown();\n  document.getElementById(\u0027birthhints\u0027).innerHTML=\u0027\u003cspan class=\"bk\"\u003e\u003ci\u003eenter\u003c/i\u003eascend\u003c/span\u003e\u003cspan class=\"bk\"\u003e\u003ci\u003eesc\u003c/i\u003eclose\u003c/span\u003e\u003cspan class=\"bk\"\u003e\u003ci\u003earrows\u003c/i\u003epick\u003c/span\u003e\u0027+\n    \u0027\u003cspan class=\"bp\"\u003e\u003ci\u003e\u0027+escHtml(padB(\u0027A\u0027))+\u0027\u003c/i\u003epick\u003c/span\u003e\u003cspan class=\"bp\"\u003e\u003ci\u003e\u0027+escHtml(padB(\u0027B\u0027))+\u0027\u003c/i\u003eclose\u003c/span\u003e\u0027;"
+                  },
+                  {
+                      "anchor":  "function kitGunNow(){ return (G\u0026\u0026G.freeKitK\u0026\u0026G.freeKitK.gun)||FREEKIT_GUN; }",
+                      "replacement":  "function kitGunNow(){ return (G\u0026\u0026G.freeKitK\u0026\u0026G.freeKitK.gun)||FREEKIT_GUN; }\nfunction kitInfoOf(k){ var K=(k===\u0027free\u0027)?freeKitNow():null; return K?[K.n+\u0027 kit\u0027,K.s]:KIT_INFO[k]; }   // v37.xx (cw-m2birth2): one source for the tile and the line under the row"
+                  },
+                  {
+                      "anchor":  "s:\u0027compact smg \\u00b7 3 bandages\u0027",
+                      "replacement":  "s:\u0027smg \\u00b7 3 bandages\u0027"
+                  },
+                  {
+                      "anchor":  "s:\u0027burst carbine \\u00b7 2 items\u0027",
+                      "replacement":  "s:\u0027carbine \\u00b7 2 items\u0027"
+                  },
+                  {
+                      "anchor":  "  (function(){ var K=freeKitNow(), b=host.querySelector(\u0027.kitb[data-kit=\"free\"]\u0027), sp=b?b.querySelectorAll(\u0027span\u0027):[]; KIT_INFO.free=K?[K.n+\u0027 kit\u0027,K.s]:[\u0027FREEBIE KIT\u0027,\u0027SCAV PISTOL \\u00b7 4 ITEMS\u0027]; if(sp.length\u003e1){ sp[0].textContent=KIT_INFO.free[0]; sp[1].textContent=KIT_INFO.free[1]; } })();",
+                      "replacement":  "  (function(){ var Q=kitInfoOf(\u0027free\u0027), b=host.querySelector(\u0027.kitb[data-kit=\"free\"]\u0027), sp=b?b.querySelectorAll(\u0027span\u0027):[]; if(sp.length\u003e1){ sp[0].textContent=Q[0]; sp[1].textContent=Q[1]; } })();"
+                  },
+                  {
+                      "anchor":  "\u003cb\u003e\u0027+KIT_INFO[_kp][0]+\u0027\u003c/b\u003e\u003ci\u003e\u0027+KIT_INFO[_kp][1]+\u0027\u003c/i\u003e",
+                      "replacement":  "\u003cb\u003e\u0027+kitInfoOf(_kp)[0]+\u0027\u003c/b\u003e\u003ci\u003e\u0027+kitInfoOf(_kp)[1]+\u0027\u003c/i\u003e"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-m2birth2: the birth card footer has its key and pad hints; the figure canvas holds the whole body; the pad letter picker works on the name box and its name goes on the default button; with a paid kit the map page tile and the line under the kit row both name that kit and neither says freebie; with no paid kit the tile says freebie again\u0027,\n   run:function(){\n     if(!(window.__runPrep\u0026\u0026window.__resetCfg\u0026\u0026window.__pinDefaults\u0026\u0026window.__cleanProfile\u0026\u0026window.__deploy\u0026\u0026window.__endRaid\u0026\u0026window.__state)) return \u0027SKIP: this fixture cannot stage\u0027;\n     if(typeof birthOpen!==\u0027function\u0027||typeof padNameStart!==\u0027function\u0027) return \u0027no birth card in this build\u0027;\n     if(typeof kitInfoOf!==\u0027function\u0027) return \u0027no one source for the kit words (kitInfoOf)\u0027;\n     var saved=P, cfg={}, k, oldStore=storeSet, oldSave=saveProfile, bad=[], q, el, st, sum;\n     function need(ok,msg){ if(!ok) bad.push(msg); }\n     function E(id){ return document.getElementById(id); }\n     for(k in CFG) cfg[k]=CFG[k];\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       storeSet=function(){}; saveProfile=function(){};\n       P.cond=\u0027day\u0027; P.terms=[]; P.merc=\u0027\u0027; CFG.safeSlots=0; P.pilNote=null; P.credits=2000; P.birthKit=null; P.freeKit=0; P.kitPick=\u0027mine\u0027; BIRTH=null;\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); q=__state(); q.bag=[]; q.carriedIn=0; q.carriedKit=[]; q.issuedBandages=0; q.pedCarry=0; q.pedSold=0; q.strayPaid=0; q.goalRewards=null; q.player.downed=false; q.player.hp=100; q.ents.length=0; q.player.iv=99; q.tel.kills={}; q.tel.deathKiller=\u0027warden\u0027; q.tel.lastHitName=null;\n       __endRaid(\u0027dead\u0027);\n       showScreen(\u0027hub\u0027);\n       need(E(\u0027birthmodal\u0027).classList.contains(\u0027on\u0027),\u0027the card did not open\u0027);\n       el=E(\u0027birthhints\u0027);\n       need(el\u0026\u0026el.querySelectorAll(\u0027.bk\u0027).length===3\u0026\u0026el.querySelectorAll(\u0027.bp\u0027).length===2,\u0027the footer hints are \u0027+(el?el.innerHTML:\u0027missing\u0027));\n       need(E(\u0027birthcv\u0027).height\u003e=330\u0026\u0026E(\u0027birthcv\u0027).width\u003e=280,\u0027the figure canvas is \u0027+E(\u0027birthcv\u0027).width+\u0027x\u0027+E(\u0027birthcv\u0027).height);\n       // the pad letter picker on the name box\n       need(padNameStart(E(\u0027birthname\u0027))===true\u0026\u0026PADNAME\u0026\u0026PADNAME.input===E(\u0027birthname\u0027),\u0027the pad letter picker did not open on the name box\u0027);\n       if(PADNAME){\n         padNamePoll(function(){ return false; });\n         need(!!PADNAME,\u0027the pad letter picker shut itself over the birth card\u0027);\n         if(PADNAME){ PADNAME.l=(\u0027vosk\u0027+\u0027                \u0027).slice(0,16).split(\u0027\u0027); padNameClose(true); }\n       }\n       need(birthState().name===\u0027vosk\u0027\u0026\u0026E(\u0027birthgo\u0027).textContent.indexOf(\u0027ascend as vosk\u0027)===0,\u0027the picked name did not reach the card: \u0027+JSON.stringify(birthState())+\u0027 \u0027+E(\u0027birthgo\u0027).textContent);\n       padSetFocus(null); PAD.focus=null;\n       // the kit\u0027s words on the map page\n       document.querySelector(\u0027#birthkits [data-bkit=\"basic\"]\u0027).click();\n       E(\u0027birthgo\u0027).click();\n       need(E(\u0027sectormodal\u0027).classList.contains(\u0027on\u0027),\u0027the default button did not end on the map page\u0027);\n       st=document.querySelector(\u0027#sectorkitpick .kitb[data-kit=\"free\"]\u0027);\n       need(st\u0026\u0026st.querySelectorAll(\u0027span\u0027)[0].textContent===\u0027basic kit\u0027\u0026\u0026st.querySelectorAll(\u0027span\u0027)[1].textContent.indexOf(\u00273 bandages\u0027)\u003e=0,\u0027the kit tile reads \u0027+(st?st.textContent:\u0027nothing\u0027));\n       sum=document.querySelector(\u0027#sectormodal .srsum\u0027);\n       need(sum\u0026\u0026sum.textContent.indexOf(\u0027basic kit\u0027)\u003e=0\u0026\u0026!/freebie/i.test(sum.textContent),\u0027the line under the kit row reads \u0027+(sum?JSON.stringify(sum.textContent):\u0027nothing\u0027));\n       // no paid kit: the freebie has its own words back\n       P.birthKit=null; syncSectorKitPick();\n       need(/freebie/i.test(st.querySelectorAll(\u0027span\u0027)[0].textContent),\u0027with no paid kit the tile reads \u0027+st.textContent);\n     }catch(e2){ bad.push(\u0027threw: \u0027+(e2\u0026\u0026e2.message||e2)); }\n     finally{\n       try{ if(PADNAME) padNameClose(false); }catch(_pn){}\n       try{ q=__state(); if(q\u0026\u0026!q.over){ q.player.downed=false; q.tel.shots=0; __endRaid(\u0027abandon\u0027); } }catch(_e){}\n       try{ E(\u0027birthmodal\u0027).classList.remove(\u0027on\u0027); E(\u0027sectormodal\u0027).classList.remove(\u0027on\u0027); }catch(_m){}\n       BIRTH=null;\n       P=saved; storeSet=oldStore; saveProfile=oldSave;\n       for(k in CFG) if(!(k in cfg)) delete CFG[k]; for(k in cfg) CFG[k]=cfg[k];\n       try{ __topClear(); __cleanProfile(); }catch(_c){}\n     }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

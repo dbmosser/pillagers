@@ -200,3 +200,4 @@
 11-01 22:33 v37.31 cw-cardstamp on his pc after 67s (8802 serves 37.31) week 8%
 11-01 22:37 v37.32 cw-ovdecoy on his pc after 33s (8802 serves 37.32) week 8%
 11-01 22:39 v37.33 cw-m2birth on his pc after 17s (8802 serves 37.33) week 8%
+11-01 22:45 v37.34 cw-m2hall on his pc after 66s (8802 serves 37.34) week 8%

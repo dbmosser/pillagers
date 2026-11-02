@@ -5264,5 +5264,53 @@
   "pic": "tools/handoff/console/notes/shots/02-o-120c-wallet-double-text/wallet-hub-p1-4k.jpg",
   "task": "manual",
   "when": "2026-11-01T15:53"
+ },
+ "h3-hall-wall": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The hall tab is a clean, consistent table with a good hero-name row, but the empty state contradicts its own data, the hall wall in the hub is a small unlabelled-looking clump, and spacing and size tokens are loose.",
+  "findings": [
+   "P1 h2 empty state: Hide the living row when no pillager has died, or title the message 'no fallen pillagers yet'. Left-align it under the table at fs-body 20px in tx-2. Cut the dead space, or add a quiet 'die in a raid to fill the hall' line at fs-label 16px.",
+   "P1 h3 hub, hall wall at top: Anchor the 'the hall' label directly under the plaque, with an 8px gap. Make the portrait tiles 72px with 8px gutters and 16px of padding inside a --ui-panel fill with a 1px --ui-line-hi border. Move the plaque 24px down from the screen edge. Give the pad a proper ring in the style of the other stations, or drop the ring.",
+   "P1 hub, enter raid banner: Set it to 'enter raid' with no '!', at fs-title 32px / 700, as a lime-bordered panel in the --ui-panel fill. Alternatively keep fs-hero 56px but drop the glow. Leave 24px of clearance from the hall plaque.",
+   "P1 hub, last pour tag: Delete the line. If a flag is needed, use a small 'beta' chip in --warn at fs-label 16px.",
+   "P2 h1 hall tab, table: Use the same fs-body 20px for the how-it-ended text and the name. Align the cells to the vertical centre of the 86px row. Give 'gen' a fixed 64px right-aligned column with a 32px gutter before 'how it ended'. Set the secondary lines to --tx-2 at 16px with a minimum 4.5:1 contrast."
+  ],
+  "pic": "tools/handoff/console/notes/shots/00p-m2d-after/h3-hall-wall-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-02T03:49"
+ },
+ "h1-hall-tab": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The hall tab is a clean, consistent table with a good hero-name row, but the empty state contradicts its own data, the hall wall in the hub is a small unlabelled-looking clump, and spacing and size tokens are loose.",
+  "findings": [
+   "P1 h2 empty state: Hide the living row when no pillager has died, or title the message 'no fallen pillagers yet'. Left-align it under the table at fs-body 20px in tx-2. Cut the dead space, or add a quiet 'die in a raid to fill the hall' line at fs-label 16px.",
+   "P1 h3 hub, hall wall at top: Anchor the 'the hall' label directly under the plaque, with an 8px gap. Make the portrait tiles 72px with 8px gutters and 16px of padding inside a --ui-panel fill with a 1px --ui-line-hi border. Move the plaque 24px down from the screen edge. Give the pad a proper ring in the style of the other stations, or drop the ring.",
+   "P1 hub, enter raid banner: Set it to 'enter raid' with no '!', at fs-title 32px / 700, as a lime-bordered panel in the --ui-panel fill. Alternatively keep fs-hero 56px but drop the glow. Leave 24px of clearance from the hall plaque.",
+   "P1 hub, last pour tag: Delete the line. If a flag is needed, use a small 'beta' chip in --warn at fs-label 16px.",
+   "P2 h1 hall tab, table: Use the same fs-body 20px for the how-it-ended text and the name. Align the cells to the vertical centre of the 86px row. Give 'gen' a fixed 64px right-aligned column with a 32px gutter before 'how it ended'. Set the secondary lines to --tx-2 at 16px with a minimum 4.5:1 contrast."
+  ],
+  "pic": "tools/handoff/console/notes/shots/00p-m2d-after/h1-hall-tab-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-02T03:49"
+ },
+ "h2-hall-empty": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "The hall tab is a clean, consistent table with a good hero-name row, but the empty state contradicts its own data, the hall wall in the hub is a small unlabelled-looking clump, and spacing and size tokens are loose.",
+  "findings": [
+   "P1 h2 empty state: Hide the living row when no pillager has died, or title the message 'no fallen pillagers yet'. Left-align it under the table at fs-body 20px in tx-2. Cut the dead space, or add a quiet 'die in a raid to fill the hall' line at fs-label 16px.",
+   "P1 h3 hub, hall wall at top: Anchor the 'the hall' label directly under the plaque, with an 8px gap. Make the portrait tiles 72px with 8px gutters and 16px of padding inside a --ui-panel fill with a 1px --ui-line-hi border. Move the plaque 24px down from the screen edge. Give the pad a proper ring in the style of the other stations, or drop the ring.",
+   "P1 hub, enter raid banner: Set it to 'enter raid' with no '!', at fs-title 32px / 700, as a lime-bordered panel in the --ui-panel fill. Alternatively keep fs-hero 56px but drop the glow. Leave 24px of clearance from the hall plaque.",
+   "P1 hub, last pour tag: Delete the line. If a flag is needed, use a small 'beta' chip in --warn at fs-label 16px.",
+   "P2 h1 hall tab, table: Use the same fs-body 20px for the how-it-ended text and the name. Align the cells to the vertical centre of the 86px row. Give 'gen' a fixed 64px right-aligned column with a 32px gutter before 'how it ended'. Set the secondary lines to --tx-2 at 16px with a minimum 4.5:1 contrast."
+  ],
+  "pic": "tools/handoff/console/notes/shots/00p-m2d-after/h2-hall-empty-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-02T03:49"
  }
 }

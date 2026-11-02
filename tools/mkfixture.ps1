@@ -6179,6 +6179,57 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'37.35',what:'cw-m2birth2: the birth card footer has its key and pad hints; the figure canvas holds the whole body; the pad letter picker works on the name box and its name goes on the default button; with a paid kit the map page tile and the line under the kit row both name that kit and neither says freebie; with no paid kit the tile says freebie again',
+   run:function(){
+     if(!(window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile&&window.__deploy&&window.__endRaid&&window.__state)) return 'SKIP: this fixture cannot stage';
+     if(typeof birthOpen!=='function'||typeof padNameStart!=='function') return 'no birth card in this build';
+     if(typeof kitInfoOf!=='function') return 'no one source for the kit words (kitInfoOf)';
+     var saved=P, cfg={}, k, oldStore=storeSet, oldSave=saveProfile, bad=[], q, el, st, sum;
+     function need(ok,msg){ if(!ok) bad.push(msg); }
+     function E(id){ return document.getElementById(id); }
+     for(k in CFG) cfg[k]=CFG[k];
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       storeSet=function(){}; saveProfile=function(){};
+       P.cond='day'; P.terms=[]; P.merc=''; CFG.safeSlots=0; P.pilNote=null; P.credits=2000; P.birthKit=null; P.freeKit=0; P.kitPick='mine'; BIRTH=null;
+       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); q=__state(); q.bag=[]; q.carriedIn=0; q.carriedKit=[]; q.issuedBandages=0; q.pedCarry=0; q.pedSold=0; q.strayPaid=0; q.goalRewards=null; q.player.downed=false; q.player.hp=100; q.ents.length=0; q.player.iv=99; q.tel.kills={}; q.tel.deathKiller='warden'; q.tel.lastHitName=null;
+       __endRaid('dead');
+       showScreen('hub');
+       need(E('birthmodal').classList.contains('on'),'the card did not open');
+       el=E('birthhints');
+       need(el&&el.querySelectorAll('.bk').length===3&&el.querySelectorAll('.bp').length===2,'the footer hints are '+(el?el.innerHTML:'missing'));
+       need(E('birthcv').height>=330&&E('birthcv').width>=280,'the figure canvas is '+E('birthcv').width+'x'+E('birthcv').height);
+       // the pad letter picker on the name box
+       need(padNameStart(E('birthname'))===true&&PADNAME&&PADNAME.input===E('birthname'),'the pad letter picker did not open on the name box');
+       if(PADNAME){
+         padNamePoll(function(){ return false; });
+         need(!!PADNAME,'the pad letter picker shut itself over the birth card');
+         if(PADNAME){ PADNAME.l=('vosk'+'                ').slice(0,16).split(''); padNameClose(true); }
+       }
+       need(birthState().name==='vosk'&&E('birthgo').textContent.indexOf('ascend as vosk')===0,'the picked name did not reach the card: '+JSON.stringify(birthState())+' '+E('birthgo').textContent);
+       padSetFocus(null); PAD.focus=null;
+       // the kit's words on the map page
+       document.querySelector('#birthkits [data-bkit="basic"]').click();
+       E('birthgo').click();
+       need(E('sectormodal').classList.contains('on'),'the default button did not end on the map page');
+       st=document.querySelector('#sectorkitpick .kitb[data-kit="free"]');
+       need(st&&st.querySelectorAll('span')[0].textContent==='basic kit'&&st.querySelectorAll('span')[1].textContent.indexOf('3 bandages')>=0,'the kit tile reads '+(st?st.textContent:'nothing'));
+       sum=document.querySelector('#sectormodal .srsum');
+       need(sum&&sum.textContent.indexOf('basic kit')>=0&&!/freebie/i.test(sum.textContent),'the line under the kit row reads '+(sum?JSON.stringify(sum.textContent):'nothing'));
+       // no paid kit: the freebie has its own words back
+       P.birthKit=null; syncSectorKitPick();
+       need(/freebie/i.test(st.querySelectorAll('span')[0].textContent),'with no paid kit the tile reads '+st.textContent);
+     }catch(e2){ bad.push('threw: '+(e2&&e2.message||e2)); }
+     finally{
+       try{ if(PADNAME) padNameClose(false); }catch(_pn){}
+       try{ q=__state(); if(q&&!q.over){ q.player.downed=false; q.tel.shots=0; __endRaid('abandon'); } }catch(_e){}
+       try{ E('birthmodal').classList.remove('on'); E('sectormodal').classList.remove('on'); }catch(_m){}
+       BIRTH=null;
+       P=saved; storeSet=oldStore; saveProfile=oldSave;
+       for(k in CFG) if(!(k in cfg)) delete CFG[k]; for(k in cfg) CFG[k]=cfg[k];
+       try{ __topClear(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'37.34',what:'cw-m2hall, his rulings of 11-01 (season zero m2): the hall of the fallen. pilEpithet gives the documented epithet for crafted records; with three records the Mainframe hall tab draws through its real route with the living one first and marked living, every name, epithet, killer and place, and the records row picks the right pillager each; an empty hall draws the hall is empty; old records with no end field draw; generation one from an old save shows its old totals; an old save loads twice with nothing lost; the list scrolls with the wheel and the pad; a real wall stands on the hub map clear of every station, every station is still reached on foot from the lift, E at the wall opens the tab, and drawing the hub twice bakes the portraits once, each in its own look',
    run:function(){
      if(!(window.__runPrep&&window.__cleanProfile&&window.__topClear&&window.__hubEnter)) return 'SKIP: no hub fixture';

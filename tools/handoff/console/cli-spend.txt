@@ -2219,3 +2219,4 @@
 2026-11-01 0.1292262 00p-m2e-retire-wait
 2026-11-01 0.5058542000000001 146-overseer-ignores-decoys
 2026-11-01 0.5624005 243-retarget-0712-reds-wait
+2026-11-01 0.1414 critic-manual

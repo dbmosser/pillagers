@@ -3600,7 +3600,7 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
   <div id="birthwrap">
     <div id="birthheirs"></div>
     <div id="birthmid">
-      <div id="birthfig"><canvas id="birthcv" width="200" height="236"></canvas><button id="birthlook">edit look</button></div>
+      <div id="birthfig"><canvas id="birthcv" width="280" height="330"></canvas><button id="birthlook">edit look</button></div>
       <div id="birthside">
         <div class="bhlab">name</div>
         <input id="birthname" maxlength="16" autocomplete="off" spellcheck="false" aria-label="name">
@@ -3610,6 +3610,7 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
     </div>
   </div>
   <div style="display:flex;gap:8px;margin-top:10px">
+    <div id="birthhints"></div>
     <button id="birthgo" class="deploy" style="padding:8px 22px">ascend</button>
     <button id="closebirth" data-esc="1" style="padding:8px 22px;margin-left:auto">close</button>
   </div>
@@ -3976,8 +3977,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.34';
-var VER_AT='2026-11-01 22:43';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.35';
+var VER_AT='2026-11-01 22:51';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -53173,7 +53174,7 @@ function syncSectorKitPick(){
   if(!host) return;
   bs=host.querySelectorAll('.kitb');
   // v37.xx (cw-m2birth): with a starter kit paid for, the freebie tile is that kit
-  (function(){ var K=freeKitNow(), b=host.querySelector('.kitb[data-kit="free"]'), sp=b?b.querySelectorAll('span'):[]; KIT_INFO.free=K?[K.n+' kit',K.s]:['FREEBIE KIT','SCAV PISTOL \u00b7 4 ITEMS']; if(sp.length>1){ sp[0].textContent=KIT_INFO.free[0]; sp[1].textContent=KIT_INFO.free[1]; } })();
+  (function(){ var Q=kitInfoOf('free'), b=host.querySelector('.kitb[data-kit="free"]'), sp=b?b.querySelectorAll('span'):[]; if(sp.length>1){ sp[0].textContent=Q[0]; sp[1].textContent=Q[1]; } })();
   for(i=0;i<bs.length;i++) bs[i].classList.toggle('on',bs[i].getAttribute('data-kit')===cur);
 }
 (function(){
@@ -57860,7 +57861,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.34: The Mainframe has a hall tab (R, or click it): records on top, then every pillager with an epithet, and the living one first. A new wall stands left of the lift: the newest three fallen, press E there for the same tab. Watch for: a body in the Undercroft stuck near the new wall, and how the portraits read at your screen size. Check 37.34 fails on v37.33',
+  now:'v37.35: birth card: wrap 1200 to 1480px and centred, heir names 40px, traits 24px, rows 72px, the whole figure at 280px, the default button 72px high at the right end of the footer, key and pad hints that switch live, the floor line above the frame. Map page: the kit tile and the line under the row both name the paid kit, in words short enough not to wrap. The pad letter picker works on the name box Check 37.35 fails on v37.34',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -74285,7 +74286,7 @@ function syncSectorKit(){
   try{ syncSectorPack(); }catch(_sp){}   // v28.xx (cw-preraid)
   try{ syncSectorPlan(); }catch(_spl){}   // cw-hotfix1: the belt plan on the lift screen
   var chip=function(a,b){ return '<span class="gc">'+(a?'<i>'+a+'</i>':'')+(b?'<b>'+b+'</b>':'')+'</span>'; };
-  if(kitPickOf()!=='mine'){ var _kp=kitPickOf(); el.innerHTML='<div class="srsum"><span class="gc" style="flex-basis:100%"><b>'+KIT_INFO[_kp][0]+'</b><i>'+KIT_INFO[_kp][1]+'</i></span>'+chip('THIS RAID ONLY','')+'</div>'; return; }   // v26.xx (kit1): a kit picked on this page is what goes up
+  if(kitPickOf()!=='mine'){ var _kp=kitPickOf(); el.innerHTML='<div class="srsum"><span class="gc" style="flex-basis:100%"><b>'+kitInfoOf(_kp)[0]+'</b><i>'+kitInfoOf(_kp)[1]+'</i></span>'+chip('THIS RAID ONLY','')+'</div>'; return; }   // v26.xx (kit1): a kit picked on this page is what goes up
   // v28.xx (cw-nogunline), HIS NOTE (2026-10-25): "the 'gun' line on the raid prep screen doesn't really make sense--- not sure what you were going there for but I am taking a bunch of guns into the raid so why does it say gun = compact smg?!? get rid of that". The gun, gun 2 and own gun in stash chips are gone (the pack rows list every gun he takes up); only the armour warning is left, as it was. Armed and armoured, the box is empty and takes no room (#sectorkit:empty).
   var line='<div class="srsum">';
   // v10.13, his answer 7: the armour warning lives here, on the way up, and only when it is true: a packed armour item takes it away
@@ -74909,12 +74910,13 @@ var FREEKIT_GUN='pistol';
 // a death takes it. So a kit can never be bought and sold back at home for more than it cost. P.birthKit is the kit paid for and not yet taken up.
 var BIRTH_KITS={
   none:{id:'none',n:'nothing',c:0,t:'your own pack',items:[],gun:null},
-  basic:{id:'basic',n:'basic',c:300,t:'compact smg, 3 bandages',s:'compact smg \u00b7 3 bandages',items:['bandage','bandage','bandage'],gun:'smg'},
-  priv:{id:'priv',n:'privileged',c:1500,t:'burst carbine, medkit, armor plate',s:'burst carbine \u00b7 2 items',items:['medkit','plate'],gun:'carbine'}
+  basic:{id:'basic',n:'basic',c:300,t:'compact smg, 3 bandages',s:'smg \u00b7 3 bandages',items:['bandage','bandage','bandage'],gun:'smg'},
+  priv:{id:'priv',n:'privileged',c:1500,t:'burst carbine, medkit, armor plate',s:'carbine \u00b7 2 items',items:['medkit','plate'],gun:'carbine'}
 };
 var BIRTH_KIT_ORDER=['none','basic','priv'];
 function freeKitNow(){ var K=(typeof P==='object'&&P&&P.birthKit)?BIRTH_KITS[P.birthKit]:null; return (K&&K.gun)?K:null; }
 function kitGunNow(){ return (G&&G.freeKitK&&G.freeKitK.gun)||FREEKIT_GUN; }
+function kitInfoOf(k){ var K=(k==='free')?freeKitNow():null; return K?[K.n+' kit',K.s]:KIT_INFO[k]; }   // v37.xx (cw-m2birth2): one source for the tile and the line under the row
 function freeKitText(){
   if(freeKitNow()) return freeKitNow().t;   // v37.xx (cw-m2birth)
   return 'A Scav Pistol, two Bandages, one Frag Charge and one Armour Plate.';
@@ -75061,26 +75063,32 @@ document.getElementById('closesector').onclick=function(){
 // with nobody living opens it again. An old save has a living pillager and never sees it; nor does the demo or the player 2 window, which keeps today's rules until m3f.
 careerStyle('birthcss',
   '#root #birthmodal{align-items:center}'+
-  '#root #birthmodal #birthwrap{width:100%;max-width:1200px;display:flex;flex-direction:column;gap:16px;margin:0 auto}'+
+  // v37.xx (cw-m2birth2), seen on the first pictures: a third of the frame stood empty and the hat was cut off. Wrap 1200 to 1480px and centred, heir names 32 to 40px, traits 20 to 24px, rows 56 to 72px, figure 200 to 280px.
+  '#root #birthmodal #birthwrap{width:100%;max-width:1480px;flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;gap:24px;margin:0 auto}'+
+  '#root #birthmodal #birthhints{display:flex;align-items:center;gap:24px;font:500 var(--fs-body)/1 var(--f-cond);color:var(--tx-2)}'+
+  '#root #birthmodal #birthhints span{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}'+
+  '#root #birthmodal #birthhints i{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:30px;padding:0 10px;border:1px solid var(--ui-line-hi);border-radius:4px;font:600 16px var(--f-cond);font-style:normal;color:var(--tx-1)}'+
+  'body:not(.padon) #birthmodal #birthhints .bp,body.padon #birthmodal #birthhints .bk{display:none!important}'+
+  'body:has(#birthmodal.on) #hubtoast{bottom:auto!important;top:12px}'+
   '#root #birthmodal #birthheirs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}'+
-  '#root #birthmodal .bhcard{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:4px;min-height:136px;padding:16px 24px;background:var(--ui-panel);border:2px solid var(--ui-line-hi);border-radius:var(--rad);color:var(--tx-1);text-align:left;text-transform:none}'+
+  '#root #birthmodal .bhcard{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:8px;min-height:176px;padding:24px 32px;background:var(--ui-panel);border:2px solid var(--ui-line-hi);border-radius:var(--rad);color:var(--tx-1);text-align:left;text-transform:none}'+
   '#root #birthmodal .bhcard.on{border-color:var(--acc);background:var(--ui-raised)}'+
-  '#root #birthmodal .bhcard b{font:700 var(--fs-title)/1.15 var(--f-cond);color:var(--tx-1)}'+
-  '#root #birthmodal .bhcard i{font:600 var(--fs-body)/1.3 var(--f-cond);font-style:normal}'+
-  '#root #birthmodal #birthmid{display:grid;grid-template-columns:232px minmax(0,1fr);gap:16px}'+
+  '#root #birthmodal .bhcard b{font:700 40px/1.15 var(--f-cond);color:var(--tx-1)}'+
+  '#root #birthmodal .bhcard i{font:600 24px/1.3 var(--f-cond);font-style:normal}'+
+  '#root #birthmodal #birthmid{display:grid;grid-template-columns:320px minmax(0,1fr);gap:24px}'+
   '#root #birthmodal #birthfig{display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px 16px 16px;background:var(--ui-panel);border:1px solid var(--ui-line-hi);border-radius:var(--rad)}'+
-  '#root #birthmodal #birthcv{width:200px;height:236px;flex:none}'+
-  '#root #birthmodal #birthlook{width:100%;min-height:48px;font:600 var(--fs-body)/1 var(--f-cond)}'+
+  '#root #birthmodal #birthcv{width:280px;height:330px;flex:none}'+
+  '#root #birthmodal #birthlook{width:100%;min-height:56px;font:600 24px/1 var(--f-cond)}'+
   '#root #birthmodal #birthside{display:flex;flex-direction:column;gap:8px;min-width:0}'+
-  '#root #birthmodal .bhlab{font:600 var(--fs-label)/1.2 var(--f-cond);color:var(--tx-2)}'+
-  '#root #birthmodal #birthname{box-sizing:border-box;width:100%;height:56px;padding:0 16px;background:var(--ui-panel);border:1px solid var(--ui-line-hi);border-radius:var(--rad);color:var(--tx-1);font:700 var(--fs-title)/1 var(--f-cond);text-transform:none}'+
+  '#root #birthmodal .bhlab{font:600 var(--fs-body)/1.2 var(--f-cond);color:var(--tx-2)}'+
+  '#root #birthmodal #birthname{box-sizing:border-box;width:100%;height:72px;padding:0 24px;background:var(--ui-panel);border:1px solid var(--ui-line-hi);border-radius:var(--rad);color:var(--tx-1);font:700 40px/1 var(--f-cond);text-transform:none}'+
   '#root #birthmodal #birthkits{display:flex;flex-direction:column;gap:8px}'+
-  '#root #birthmodal .bkit{display:grid;grid-template-columns:160px minmax(0,1fr) auto;align-items:center;gap:16px;min-height:56px;padding:8px 16px;background:var(--ui-panel);border:2px solid var(--ui-line-hi);border-radius:var(--rad);color:var(--tx-1);text-align:left;text-transform:none}'+
+  '#root #birthmodal .bkit{display:grid;grid-template-columns:200px minmax(0,1fr) auto;align-items:center;gap:24px;min-height:72px;padding:8px 24px;background:var(--ui-panel);border:2px solid var(--ui-line-hi);border-radius:var(--rad);color:var(--tx-1);text-align:left;text-transform:none}'+
   '#root #birthmodal .bkit.on{border-color:var(--acc);background:var(--ui-raised)}'+
   '#root #birthmodal .bkit:disabled{opacity:.45}'+
-  '#root #birthmodal .bkit b{font:700 var(--fs-body)/1.2 var(--f-cond);color:inherit}'+
-  '#root #birthmodal .bkit span{font:500 var(--fs-body)/1.2 var(--f-cond);color:var(--tx-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'+
-  '#root #birthmodal #birthgo{min-height:56px;font:700 var(--fs-body)/1 var(--f-cond)}');
+  '#root #birthmodal .bkit b{font:700 28px/1.2 var(--f-cond);color:inherit}'+
+  '#root #birthmodal .bkit span{font:500 24px/1.2 var(--f-cond);color:var(--tx-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'+
+  '#root #birthmodal #birthgo{min-height:72px;min-width:480px;margin-left:auto;font:700 var(--fs-title)/1 var(--f-cond)}');
 var BIRTH=null;
 function birthOn(){ var m=document.getElementById('birthmodal'); return !!(m&&m.classList.contains('on')); }
 function birthNeed(){
@@ -75109,6 +75117,8 @@ function birthDraw(){
   document.getElementById('birthkits').innerHTML=h;
   if(nm&&document.activeElement!==nm) nm.value=B.name||L[B.i].name;
   document.getElementById('birthgo').textContent='ascend as '+birthShown();
+  document.getElementById('birthhints').innerHTML='<span class="bk"><i>enter</i>ascend</span><span class="bk"><i>esc</i>close</span><span class="bk"><i>arrows</i>pick</span>'+
+    '<span class="bp"><i>'+escHtml(padB('A'))+'</i>pick</span><span class="bp"><i>'+escHtml(padB('B'))+'</i>close</span>';
   try{ drawAvatarCanvas(document.getElementById('birthcv')); }catch(_bd){}
 }
 function birthOpen(){
@@ -76789,7 +76799,7 @@ function drawAvatarCanvas(cv){
   var c=cv||document.getElementById('avcv'); if(!c||typeof drawOp!=='function') return;   // v37.xx (cw-m2birth): the birth card draws the same figure
   var x2=c.getContext('2d'); if(!x2) return;
   x2.setTransform(1,0,0,1,0,0); x2.clearRect(0,0,c.width,c.height);
-  var S=pixOn()?4:Math.max(5.2,c.height/62); // v28.xx (cw-cx-pixpreview): job 86c asks for whole 4x previews with smoothing off
+  var S=pixOn()?4:Math.max(5.2,c.height/(cv?52:62)); // v28.xx (cw-cx-pixpreview): job 86c asks for whole 4x previews with smoothing off
   c.style.imageRendering=pixOn()?'pixelated':'';
   x2.imageSmoothingEnabled=true; // v28.xx (cw-cx-pixhubframe): keep the existing soft ground shadow; pxBlit independently disables smoothing for each 4x body layer
   var base=pixOn()?Math.round((c.height+PXB.TARGET*S)/2):c.height-16; // v28.xx (cw-cx-pixpreview): center the 4x figure in the existing turntable canvas
