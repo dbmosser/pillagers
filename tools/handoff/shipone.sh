@@ -13,6 +13,10 @@ undo(){ cd "$R" || return; local p="$H/console/log/unshipped-$NEW-$K-$(date +%m%
   git diff -- dark_raiders.html tools/mkfixture.ps1 DESIGN.md AUDIT.md > "$p" 2>/dev/null
   git checkout -q -- dark_raiders.html tools/mkfixture.ps1 DESIGN.md AUDIT.md && echo "undone: the tree is back at HEAD (the drafted build is in $p)"; }
 cd "$R" || exit 1
+# 11-02 (his orders "move pillagers html development to the main PC permanently", "use the JTPC for pillagers html testing"): with GATE_REMOTE=1 no Chrome starts here. The one job on
+# the spare PC (tools/handoff/gate-remote.sh, tools/spare/gate-job.ps1) holds the gate, the older checks and the fingerprint on the drafted build, and the same tests below read what
+# each stage printed there. The answer must name this draft, patches, drafted game and base, and after ship.sh start the game and fixture must be what the answer tested.
+REMOTE=$(bash "$H/gate-remote.sh" on)
 # 10-25: a stale index stat (several helpers run git at once) showed the fixture as changed with an empty diff and stopped 3 jobs;
 # refresh the index first so only a real edit stops a ship.
 git update-index -q --refresh >/dev/null 2>&1
@@ -27,19 +31,29 @@ NOW=$(powershell -NoProfile -Command "(Get-Content -Raw '$(cygpath -w "$D/draft-
 [ -z "$NOW" ] && die "no now text"
 g=$(ps -File "$(cygpath -w "$D/gen-draft.ps1")" -Key "$K" -New "$NEW"); echo "gen: $g"
 echo "$g" | grep -q "^generated" || die "gen-draft failed"
-dr=$(ps -File "$(cygpath -w "$H/dryrun.ps1")" -Prev "$PREV" -New "$NEW"); echo "$dr" | tail -4
+if [ "$REMOTE" = 1 ]; then rm -rf "$TEMP/pillagers-dry/dry$PREV" "$TEMP/pillagers-dry/dry$NEW"; dr=$(ps -File "$(cygpath -w "$H/dryrun.ps1")" -Prev "$PREV" -New "$NEW" -NoFixture); else dr=$(ps -File "$(cygpath -w "$H/dryrun.ps1")" -Prev "$PREV" -New "$NEW"); fi; echo "$dr" | tail -4
 echo "$dr" | grep -q "^p$NEW -> OK" || die "the build patch did not apply"
 echo "$dr" | grep -q "^f$NEW -> OK" || die "the check patch did not apply"
-gt=$(ps -File "$(cygpath -w "$R/tools/gate.ps1")" -NN "$NN" -V "$V" -Cdp $GCDP); echo "$gt" | cut -c1-400
+if [ "$REMOTE" = 1 ]; then
+  GF="$TEMP/pillagers-dry/dry$NEW"
+  gr=$(bash "$H/gate-remote.sh" run ship "$K" "$NN" "$V" "$NEW" "$D/draft-$K.json" "$H/p$NEW.ps1" "$H/f$NEW.ps1" "$GF/dark_raiders.html" "$GF/mkfixture.ps1"); grc=$?
+  { [ $grc = 0 ] && echo "$gr" | grep -q "^REMOTE VERIFIED"; } || die "no answer from the spare pc this ship can trust: $(echo "$gr" | tail -2 | cut -c1-300)"
+  GS=$(bash "$H/gate-remote.sh" hash-game "$GF/dark_raiders.html"); XS=$(bash "$H/gate-remote.sh" hash "$GF/mkfixture.ps1")
+  gt=$(echo "$gr" | grep "^parse: \|^dry \|^control \|^TIMEOUT")
+else gt=$(ps -File "$(cygpath -w "$R/tools/gate.ps1")" -NN "$NN" -V "$V" -Cdp $GCDP); fi; echo "$gt" | cut -c1-400
 echo "$gt" | grep -q "^parse: PASS" || die "parse check"
 echo "$gt" | grep -q "^dry fxdry$NN check $V: PASS / PASS" || die "new check does not pass twice on the drafted build"
 c=$(echo "$gt" | grep "^control fxctl$NN check $V:")
 [ -z "$c" ] && die "no control result"
 echo "$c" | grep -q "check $V: PASS\|check $V: SKIP\|NO CHECK\|TIMEOUT" && die "control did not fail: $c"
-rc=$(ps -File "$(cygpath -w "C:/claudecode/dark raiders/tools/handoff/recent.ps1")" -NN "$NN" -Cdp $GCDP); echo "$rc" | cut -c1-300
+if [ "$REMOTE" = 1 ]; then rc=$(echo "$gr" | grep "^REGRESS \|^recent: \|^RECENT ERROR"); else rc=$(ps -File "$(cygpath -w "C:/claudecode/dark raiders/tools/handoff/recent.ps1")" -NN "$NN" -Cdp $GCDP); fi; echo "$rc" | cut -c1-300
 echo "$rc" | grep -q "^recent: 0 new" || die "an older check fails on the drafted build: $(echo "$rc" | head -3)"
 STARTED=1; bash "$H/ship.sh" start "$PREV" "$NEW" 2>&1 | tail -6
-fx=$(ps -File "$(cygpath -w "$R/tools/gate.ps1")" -Fix -V "$V" -Cdp $GCDP); echo "$fx" | cut -c1-400
+if [ "$REMOTE" = 1 ]; then
+  [ "$(bash "$H/gate-remote.sh" hash-game "$R/dark_raiders.html")" = "$GS" ] || die "the game ship.sh wrote is not the build the spare pc tested"
+  [ "$(bash "$H/gate-remote.sh" hash "$R/tools/mkfixture.ps1")" = "$XS" ] || die "the fixture ship.sh wrote is not the fixture the spare pc tested"
+  fx=$(echo "$gr" | grep "^fixture\.html check \|^verifySafe: ")
+else fx=$(ps -File "$(cygpath -w "$R/tools/gate.ps1")" -Fix -V "$V" -Cdp $GCDP); fi; echo "$fx" | cut -c1-400
 echo "$fx" | grep -q "check $V: PASS / PASS" || die "the new check fails on the shipped fixture"
 echo "$fx" | grep -q '"pass":true' || die "verifySafe did not pass"
 echo "$fx" | grep -q '"ents":{"0":85,"1":374}' || die "entity fingerprint moved"

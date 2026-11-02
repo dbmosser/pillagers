@@ -17,7 +17,8 @@ v=$ver; nw=$((v+1))
 if ! powershell -NoProfile -ExecutionPolicy Bypass -File "$S/mk-$K.ps1" >/dev/null 2>"$S/mkerr-$K.txt"; then
   m="$(date +%H:%M) $K: MK FAIL $(head -c 600 "$S/mkerr-$K.txt" | tr '\r\n' '  ')"; echo "$m" >> "$LOG"; echo "$m"; exit 1
 fi
-out=$(GATE_CDP=9346 bash tools/handoff/shipone.sh "$K" "$v" "$nw" 2>&1 | grep -v '^warning')
+exec 8>&1   # 11-02: the remote gate's "waiting for the spare pc" lines (tools/handoff/gate-remote.sh) reach the caller while the rest of the output is held back
+out=$(GATE_SAY_FD=8 GATE_CDP=9346 bash tools/handoff/shipone.sh "$K" "$v" "$nw" 2>&1 | grep -v '^warning')
 if echo "$out" | grep -q "^SHIPPED"; then
   echo "$(date +%H:%M) $K: SHIPPED v${nw:0:2}.${nw:2}" >> "$LOG"; echo "$out" | tail -4
   # 10-27 (the trap is cleared first: after the wait it would remove the NEXT holder lock), his "stuff you told me you did, you didn't do": free the lock, then wait for his main PC to serve the build

@@ -1,32 +1,65 @@
 #!/bin/bash
 # shipone.sh KEY PREV NEW : the strict one-build chain for a reviewed draft in tools/handoff/drafts/draft-KEY.json.
 # Stops at the first gate that does not hold. Uses gate Chrome 9335 and :8806.
-K=$1; PREV=$2; NEW=$3
+K=$1; PREV=$2; NEW=$3; GCDP=${GATE_CDP:-9344}   # GATE_CDP=9346 to ship on a second gate Chrome while 9344 is busy
 R="/c/claudecode/dark raiders"; H="$R/tools/handoff"; D="$H/drafts"
 V="${NEW:0:2}.${NEW:2}"; NN="${NEW:2}"
 ps(){ powershell -NoProfile -ExecutionPolicy Bypass "$@" 2>&1; }
-die(){ echo "STOP $NEW ($K): $*"; exit 1; }
+die(){ echo "STOP $NEW ($K): $*"; [ -n "$STARTED" ] && undo; exit 1; }
+# 10-21 02:23: verifySafe timed out (Windows was out of virtual memory) AFTER ship.sh start had written v33.57 into the tree, and
+# nothing put it back, so every ship STOPped on "uncommitted changes" for 40 minutes. A stop after the start now saves the drafted
+# build as a patch and puts the four files it wrote back at HEAD.
+undo(){ cd "$R" || return; local p="$H/console/log/unshipped-$NEW-$K-$(date +%m%d-%H%M).patch"
+  git diff -- dark_raiders.html tools/mkfixture.ps1 DESIGN.md AUDIT.md > "$p" 2>/dev/null
+  git checkout -q -- dark_raiders.html tools/mkfixture.ps1 DESIGN.md AUDIT.md && echo "undone: the tree is back at HEAD (the drafted build is in $p)"; }
 cd "$R" || exit 1
-[ -n "$(git status --porcelain dark_raiders.html tools/mkfixture.ps1)" ] && die "the game or fixture has uncommitted changes"
+# 11-02 (his orders "move pillagers html development to the main PC permanently", "use the JTPC for pillagers html testing"): with GATE_REMOTE=1 no Chrome starts here. The one job on
+# the spare PC (tools/handoff/gate-remote.sh, tools/spare/gate-job.ps1) holds the gate, the older checks and the fingerprint on the drafted build, and the same tests below read what
+# each stage printed there. The answer must name this draft, patches, drafted game and base, and after ship.sh start the game and fixture must be what the answer tested.
+REMOTE=$(bash "$H/gate-remote.sh" on)
+# 10-25: a stale index stat (several helpers run git at once) showed the fixture as changed with an empty diff and stopped 3 jobs;
+# refresh the index first so only a real edit stops a ship.
+git update-index -q --refresh >/dev/null 2>&1
+# 11-01 (CEO): 22 of 43 recent ship STOPs were this line while another worker was mid-edit for a minute or two. Look again up to 3 times,
+# 60 s apart, before stopping; if the game moved on to another version while this ship waited, stop (PREV and NEW are stale).
+dirty(){ git update-index -q --refresh >/dev/null 2>&1; [ -n "$(git status --porcelain dark_raiders.html tools/mkfixture.ps1)" ]; }
+waited=0; for w in 1 2 3; do dirty || break; echo "wait $w of 3: the game or fixture has uncommitted changes (another worker mid-edit?); looking again in 60 s"; sleep ${SHIP_DIRTY_WAIT:-60}; waited=1; done
+dirty && die "the game or fixture has uncommitted changes (still after 3 looks, 60 s apart)"
+if [ $waited = 1 ]; then pv=$(grep -m1 "^var VER='" dark_raiders.html | sed "s/var VER='\([0-9]*\)\.\([0-9]*\)'.*/\1\2/")
+  [ "$pv" != "$PREV" ] && die "the game moved to v${pv:0:2}.${pv:2} while this ship waited; run it again"; fi
 NOW=$(powershell -NoProfile -Command "(Get-Content -Raw '$(cygpath -w "$D/draft-$K.json")' | ConvertFrom-Json).now")
 [ -z "$NOW" ] && die "no now text"
 g=$(ps -File "$(cygpath -w "$D/gen-draft.ps1")" -Key "$K" -New "$NEW"); echo "gen: $g"
 echo "$g" | grep -q "^generated" || die "gen-draft failed"
-dr=$(ps -File "$(cygpath -w "$H/dryrun.ps1")" -Prev "$PREV" -New "$NEW"); echo "$dr" | tail -4
+if [ "$REMOTE" = 1 ]; then rm -rf "$TEMP/pillagers-dry/dry$PREV" "$TEMP/pillagers-dry/dry$NEW"; dr=$(ps -File "$(cygpath -w "$H/dryrun.ps1")" -Prev "$PREV" -New "$NEW" -NoFixture); else dr=$(ps -File "$(cygpath -w "$H/dryrun.ps1")" -Prev "$PREV" -New "$NEW"); fi; echo "$dr" | tail -4
 echo "$dr" | grep -q "^p$NEW -> OK" || die "the build patch did not apply"
 echo "$dr" | grep -q "^f$NEW -> OK" || die "the check patch did not apply"
-gt=$(ps -File "$(cygpath -w "$R/tools/gate.ps1")" -NN "$NN" -V "$V" -Cdp 9344); echo "$gt" | cut -c1-400
+if [ "$REMOTE" = 1 ]; then
+  GF="$TEMP/pillagers-dry/dry$NEW"
+  gr=$(bash "$H/gate-remote.sh" run ship "$K" "$NN" "$V" "$NEW" "$D/draft-$K.json" "$H/p$NEW.ps1" "$H/f$NEW.ps1" "$GF/dark_raiders.html" "$GF/mkfixture.ps1"); grc=$?
+  { [ $grc = 0 ] && echo "$gr" | grep -q "^REMOTE VERIFIED"; } || die "no answer from the spare pc this ship can trust: $(echo "$gr" | tail -2 | cut -c1-300)"
+  GS=$(bash "$H/gate-remote.sh" hash-game "$GF/dark_raiders.html"); XS=$(bash "$H/gate-remote.sh" hash "$GF/mkfixture.ps1")
+  gt=$(echo "$gr" | grep "^parse: \|^dry \|^control \|^TIMEOUT")
+else gt=$(ps -File "$(cygpath -w "$R/tools/gate.ps1")" -NN "$NN" -V "$V" -Cdp $GCDP); fi; echo "$gt" | cut -c1-400
 echo "$gt" | grep -q "^parse: PASS" || die "parse check"
 echo "$gt" | grep -q "^dry fxdry$NN check $V: PASS / PASS" || die "new check does not pass twice on the drafted build"
 c=$(echo "$gt" | grep "^control fxctl$NN check $V:")
 [ -z "$c" ] && die "no control result"
 echo "$c" | grep -q "check $V: PASS\|check $V: SKIP\|NO CHECK\|TIMEOUT" && die "control did not fail: $c"
-bash "$H/ship.sh" start "$PREV" "$NEW" 2>&1 | tail -6
-fx=$(ps -File "$(cygpath -w "$R/tools/gate.ps1")" -Fix -V "$V" -Cdp 9344); echo "$fx" | cut -c1-400
+if [ "$REMOTE" = 1 ]; then rc=$(echo "$gr" | grep "^REGRESS \|^recent: \|^RECENT ERROR"); else rc=$(ps -File "$(cygpath -w "C:/claudecode/dark raiders/tools/handoff/recent.ps1")" -NN "$NN" -Cdp $GCDP); fi; echo "$rc" | cut -c1-300
+echo "$rc" | grep -q "^recent: 0 new" || die "an older check fails on the drafted build: $(echo "$rc" | head -3)"
+STARTED=1; bash "$H/ship.sh" start "$PREV" "$NEW" 2>&1 | tail -6
+if [ "$REMOTE" = 1 ]; then
+  [ "$(bash "$H/gate-remote.sh" hash-game "$R/dark_raiders.html")" = "$GS" ] || die "the game ship.sh wrote is not the build the spare pc tested"
+  [ "$(bash "$H/gate-remote.sh" hash "$R/tools/mkfixture.ps1")" = "$XS" ] || die "the fixture ship.sh wrote is not the fixture the spare pc tested"
+  fx=$(echo "$gr" | grep "^fixture\.html check \|^verifySafe: ")
+else fx=$(ps -File "$(cygpath -w "$R/tools/gate.ps1")" -Fix -V "$V" -Cdp $GCDP); fi; echo "$fx" | cut -c1-400
 echo "$fx" | grep -q "check $V: PASS / PASS" || die "the new check fails on the shipped fixture"
 echo "$fx" | grep -q '"pass":true' || die "verifySafe did not pass"
 echo "$fx" | grep -q '"ents":{"0":85,"1":374}' || die "entity fingerprint moved"
 echo "$fx" | grep -q '"containers":{"0":165,"1":593}' || die "container fingerprint moved"
 cd "$H" && bash ship.sh commit "$NEW" "cm$NEW.txt" 2>&1 | tail -3
-cd "$R" && git push -q origin master 2>&1 | tail -2
+git -C "$R" log -1 --format=%s | grep -q "^v$V:" || die "the save step did not commit v$V (10-19: a missing tools/publish folder let SHIPPED print with nothing saved)"
+# 10-27 night: a push rejected because GitHub moved first (v35.44 sat waiting for a build GitHub never got) now merges origin/master and pushes again, up to 3 tries.
+cd "$R" && for pt in 1 2 3; do po=$(git push -q origin master 2>&1) && break; echo "$po" | tail -2; git fetch -q origin master && git merge -q --no-edit origin/master 2>&1 | tail -2; done
 echo "SHIPPED v$V ($K): $(git log --oneline -1)"

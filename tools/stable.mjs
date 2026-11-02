@@ -98,7 +98,7 @@ let spareLogs = []; try { spareLogs = readdirSync(SPARE, { withFileTypes: true }
 // 10-31: a raid that ended in the 3 minutes before a FUZZ ABORT reason=low ram line (the main PC runner stopped for memory) is left out:
 // a low-RAM stall is not a game failure
 const ts = l => Date.parse(l.slice(0, 19).replace(' ', 'T'));
-const fuzzLines = [FUZZ, ...spareLogs].flatMap(p => { const L = rd(p).split(/\r?\n/), ab = L.filter(l => / FUZZ ABORT reason=low ram/.test(l)).map(ts);
+const fuzzLines = [FUZZ, ...spareLogs].flatMap(p => { const L = rd(p).split(/\r?\n/), ab = L.filter(l => / FUZZ ABORT reason=(?:low ram|gate job)/.test(l)).map(ts);   // 11-02: a remote gate job stops the spare PC's robot too (tools/spare/spare-runner.ps1 Gate-Start)
   return ab.length ? L.filter(l => !/ raid \d+ /.test(l) || !ab.some(a => ts(l) <= a && a - ts(l) <= 180000)) : L; });
 function robots(ver) {
   let sec = 0, problems = 0, raids = 0;

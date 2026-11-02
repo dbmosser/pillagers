@@ -483,14 +483,15 @@ function VMNight(){ if((FollowAway) -gt 0){ return $false }; $hm=HourMin; return
 # explorer: started by hand) is left alone, and so is a test Chrome on a port such a test uses.
 $RxRunner='-File\s+(?:"[^"]*[\\/]spare-runner\.ps1"|[^"\s]*[\\/]spare-runner\.ps1)(?=\s|$)'
 $RxRobot='-File\s+(?:"[^"]*[\\/]tools[\\/]fuzz\.ps1"|[^"\s]*[\\/]tools[\\/]fuzz\.ps1)\s.*-Port\s+(9331|9332)(\s|$)'
-$RxCdp='-File\s+(?:"[^"]*[\\/](?:cdp|pause)\.ps1"|[^"\s]*[\\/](?:cdp|pause)\.ps1)\s.*-Port\s+(9344|9331|9332)(\s|$)'
+$RxCdp='-File\s+(?:"[^"]*[\\/](?:cdp|pause)\.ps1"|[^"\s]*[\\/](?:cdp|pause)\.ps1)\s.*-Port\s+(9344|9331|9332|9347)(\s|$)'
+$RxGateJob='-File\s+(?:"[^"]*[\\/]gate-job\.ps1"|[^"\s]*[\\/]gate-job\.ps1)(?=\s|$)'   # 11-02 the remote gate (see Gate-Tick)
 $RxRun='^\s*(?:"[^"]*[\\/](?:ba)?sh(?:\.exe)?"|(?:[^"\s]*[\\/])?(?:ba)?sh(?:\.exe)?)\s+"?(?:tools/handoff/shipkit/corpq\.sh|tools/corpus-slices\.sh)"?\s+"?C:/PillagersSpare/out/corpus/corpus-\d{4}-\d{4}\.txt(?:"|\s|$)'
 function Spare-Role($p){
   $c=[string]$p.CommandLine; $n=[string]$p.Name
   if(-not $c){ return '' }
-  if($n -eq 'powershell.exe' -or $n -eq 'pwsh.exe'){ if($c -match $RxRunner){ return 'runner' }; if($c -match $RxRobot){ return 'robot' }; if($c -match $RxCdp){ return 'cdp' }; return '' }
+  if($n -eq 'powershell.exe' -or $n -eq 'pwsh.exe'){ if($c -match $RxRunner){ return 'runner' }; if($c -match $RxRobot){ return 'robot' }; if($c -match $RxCdp){ return 'cdp' }; if($c -match $RxGateJob){ return 'gatejob' }; return '' }
   if($n -eq 'bash.exe' -or $n -eq 'sh.exe'){ if($c -match $RxRun){ return 'run' }; return '' }
-  if($n -eq 'chrome.exe' -and (($c -match 'remote-debugging-port=(9344|9331|9332)(\s|$)' -and $c -match 'pillagers-cdp') -or $c -match 'pillagers-cdp(9344|9331|9332)\b')){ return 'chrome' }
+  if($n -eq 'chrome.exe' -and (($c -match 'remote-debugging-port=(9344|9331|9332|9347)(\s|$)' -and $c -match 'pillagers-cdp') -or $c -match 'pillagers-cdp(9344|9331|9332|9347)\b' -or $c -match 'pillagers-uishots-9348\b')){ return 'chrome' }
   return ''
 }
 # every process under $roots by parent id (a child is never older than its parent, so an older process with a reused parent id is not
@@ -571,7 +572,7 @@ function Run-Lost(){
   if((Test-Path -LiteralPath $cf) -and ([IO.File]::ReadAllText($cf) -match 'ALL DONE')){ return }
   Give-Back $cf 'this PC was off or restarted'
 }
-function Stop-Work([string]$why,[switch]$Refund,[switch]$LowRam){
+function Stop-Work([string]$why,[switch]$Refund,[switch]$LowRam,[string]$OnlyRx=''){
   if($Idle){
     # 10-31: a stop for low RAM is an abort, not a game failure: fuzz.log gets a FUZZ ABORT line (tools/stable.mjs leaves out the raids
     # that ended in the 3 minutes before it), and a stopped online 2 player test gets its try back
@@ -612,6 +613,7 @@ function Stop-Work([string]$why,[switch]$Refund,[switch]$LowRam){
     $kill=@{}
     foreach($p in $roots){
       $id=[int]$p.ProcessId; if($own[$id] -eq 'hand'){ continue }; $c=[string]$p.CommandLine
+      if($OnlyRx -and $c -notmatch $OnlyRx){ continue }   # 11-02 the remote gate stops the robots alone, or its own parts alone
       if($role[$id] -eq 'chrome' -and ($c -match 'remote-debugging-port=(\d+)' -or $c -match 'pillagers-cdp(\d{4})') -and $hand.ContainsKey($Matches[1])){ continue }
       $kill[$id]=$p; if($role[$id] -eq 'run'){ $corp[$c]=1 }
     }
@@ -658,6 +660,7 @@ function Watch([int]$sec){
     # 15-minute task allows, and it started a second runner beside the first, which nothing ends (02:35). Spare PC only: IDLE MODE stays as it was.
     if(-not $Idle){ [IO.File]::WriteAllText($Hb,[string](Epoch),$Enc) }
     if((AwaySec) -lt 30){ if($Idle){ if($fullRun -or (-not $script:lightRun) -or -not (LightOK)){ Stop-Work $(if($script:playWhy){ 'he is playing ('+$script:playWhy+')' }else{ 'he is back at the PC' }); return } }else{ Stop-Work ('someone is at the PC: '+$script:awayWhy) -Refund; return } }
+    if(-not $Idle){ Gate-Tick; if($script:gateAgain){ $script:gateAgain=$false; return } }   # 11-02: a job is done, so a round goes before the next job (a new full run, the robot, a new runner)
     if($Idle -and ($k % 6) -eq 0){
       if((FreeGB) -lt 4){ $lo++ }else{ $lo=0 }
       if($lo -ge 2){ if(-not $script:fakeLow){ PutS 'lowstop_t' ([string](Epoch)) }; Stop-Work 'paused: low ram, under 4 GB free at two looks' -LowRam; return }
@@ -1102,6 +1105,7 @@ function Write-Status([string]$corpus,[int]$robots){
   if($Idle){ $L+=('spare_pc='+(SparePC)); $L+=('party='+(GetS 'party_ver')+' '+(GetS 'party_head')); $L+=('play8802='+(Play8802)); $L+=('receiver8799='+(Receiver8799)) } else {
     if($corpus -like 'paused*' -and (GetS 'pause_t')){ $L+=('paused_since='+(GetS 'pause_t')) }
     if($corpus -like 'running*' -and (GetS 'corpus_resumed') -eq (GetS 'corpus_file')){ $L+='resumed=1' }   # older than the newest build because a pause came in between
+    $L+='gate_cap=1'; if(GetS 'gate_id'){ $L+=('gate=running '+(GetS 'gate_id')) }   # 11-02 the remote gate: the shipper reads these (tools/handoff/gate-remote.sh)
     if($script:noIn){ $L+='presence=off' }   # the presence checks did not load: it tests without pausing for anyone (see runner.log)
   }
   [IO.File]::WriteAllLines($StatusF,[string[]]$L,$Enc)
@@ -1134,6 +1138,113 @@ function Publish([string]$why){
     if($script:gx -ne 0){ [void](G -C $Res merge --abort); $o=$o+' / merge: '+$m; break }
   }
   if($script:gx -ne 0){ PutS 'push_ok' '0'; Say ('PROBLEM: results push failed: '+(Short $o)) } else { PutS 'push_ok' '1'; PutS 'pub_t' ([string](Epoch)) }
+}
+
+# 11-02 REMOTE GATE (his orders "move pillagers html development to the main PC permanently", "use the JTPC for pillagers html testing"): the machine
+# that ships starts no Chrome. It puts a job on the gate-jobs branch (tools/handoff/gate-remote.sh); this runner looks there every 30 s and runs one
+# job at a time in its own process (tools/spare/gate-job.ps1), from its own copy at the job's base commit (C:\PillagersSpare\gate\game), on Chrome 9347
+# and test server 8823. Ship jobs first, then the oldest. The answer goes out on spare-results as spare/HOST/gate/ID.txt as soon as it is there.
+# A job takes priority over the other test work without losing it: the robot stops (its raids get a FUZZ ABORT line, so tools/stable.mjs does not count a
+# cut-off raid) and starts again at the next round; a full run goes on beside the job at below-normal priority, so its slices and its try are kept. No new
+# full run and no new runner while a job runs. Someone at the PC stops a job with the other test parts (Stop-Work): it waits, and runs again from the start
+# when the PC is free, which costs it no try. A job that dies by itself gets 3 tries, one that runs over 45 minutes none; then its answer says infra=1,
+# which the shipper never reads as a pass. Never in IDLE MODE: the main PC stays test-free (NoTestsHere), so nothing here runs there.
+$GateHome=$W+'\gate'; $GateCopy=$GateHome+'\game'; $GateWork=$GateHome+'\work'; $GateDone=$GateHome+'\done'; $GateMaxSec=2700
+$RxGateParts='gate-job\.ps1|(-Port\s+|remote-debugging-port=|pillagers-cdp)9347\b|pillagers-uishots-9348\b'
+$script:gateT=[long]0; $script:gateTip=''; $script:gateRev=''; $script:gateJobs=@(); $script:gateYT=[long]0; $script:gateAgain=$false
+function Gate-Note([string]$why){
+  $cs='idle'; if(GetS 'pause_why'){ $cs=GetS 'pause_why' } elseif((Running 'corpq\.sh|corpus-slices\.sh') -gt 0){ $cs='running '+(Split-Path (GetS 'corpus_file') -Leaf) }
+  Write-Status $cs (Running 'fuzz\.ps1'); Publish $why
+}
+# the full run's scripts and browser: below normal while a job runs, normal after
+function Gate-Yield([bool]$on){
+  $cl=$(if($on){ [Diagnostics.ProcessPriorityClass]::BelowNormal }else{ [Diagnostics.ProcessPriorityClass]::Normal })
+  foreach($p in @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue)){
+    $c=[string]$p.CommandLine; $n=[string]$p.Name; if(-not $c){ continue }
+    if(($n -eq 'chrome.exe' -and $c -match '(remote-debugging-port=|pillagers-cdp)9344\b') -or (($n -eq 'bash.exe' -or $n -eq 'sh.exe') -and $c -match 'corpq\.sh|corpus-slices\.sh') -or ($n -eq 'powershell.exe' -and $c -match 'cdp\.ps1.*-Port\s+9344')){
+      $g=$null; try{ $g=[Diagnostics.Process]::GetProcessById([int]$p.ProcessId); $g.PriorityClass=$cl }catch{} finally{ if($g){ $g.Dispose() } }
+    }
+  }
+}
+function Gate-Infra([string]$id,[string]$why){
+  $d=$GateWork+'\'+$id; New-Item -ItemType Directory -Force -Path $d | Out-Null
+  [IO.File]::WriteAllText($d+'\result.txt',('id='+$id+"`nhost="+$HostN+"`nresult=FAIL`ninfra=1`nreason="+$why+"`n--- stages`n--- end`ndone=1`n"),$Enc)
+}
+function Gate-Finish([string]$id){
+  $d=$GateWork+'\'+$id; $dst=$Res+'\spare\'+$HostN+'\gate'; New-Item -ItemType Directory -Force -Path $dst,$GateDone | Out-Null
+  Copy-Item -LiteralPath ($d+'\result.txt') -Destination ($dst+'\'+$id+'.txt') -Force
+  if(Test-Path -LiteralPath ($d+'\shots')){ Copy-Item -LiteralPath ($d+'\shots') -Destination ($dst+'\'+$id+'-shots') -Recurse -Force }
+  # the newest 40 answers stay on the branch
+  $old=@(Get-ChildItem -LiteralPath $dst -Filter '*.txt' | Sort-Object LastWriteTime -Descending | Select-Object -Skip 40)
+  foreach($f in $old){ Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue; Remove-Item -LiteralPath ($dst+'\'+$f.BaseName+'-shots') -Recurse -Force -ErrorAction SilentlyContinue }
+  Get-ChildItem -LiteralPath $GateDone -File -ErrorAction SilentlyContinue | Where-Object { $_.LastWriteTime -lt (Get-Date).AddDays(-7) } | Remove-Item -Force -ErrorAction SilentlyContinue
+  [IO.File]::WriteAllText($GateDone+'\'+$id,[string](Epoch),$Enc)
+  $rs=''; try{ $rs=@([IO.File]::ReadAllLines($d+'\result.txt') | Where-Object { $_ -match '^(result|reason)=' }) -join ' ' }catch{}
+  Say ('gate job '+$id+' done: '+(Short $rs))
+  PutS 'gate_id' ''; PutS 'gate_pid' ''; Gate-Yield $false; $script:gateT=Epoch; $script:gateAgain=$true
+  Gate-Note ('gate '+$id)
+  Remove-Item -LiteralPath $d -Recurse -Force -ErrorAction SilentlyContinue
+}
+function Gate-Start($job){
+  $id=[string]$job['id']; $d=$GateWork+'\'+$id
+  Remove-Item -LiteralPath $d -Recurse -Force -ErrorAction SilentlyContinue; New-Item -ItemType Directory -Force -Path $d | Out-Null
+  $tar=$d+'\job.tar'
+  $o=G -c core.autocrlf=false -C $Res archive -o $tar $script:gateRev ('gate/jobs/'+$id)
+  if($script:gx -ne 0){ throw ('could not take the job: '+$o) }
+  $tx=Join-Path $env:SystemRoot 'System32\tar.exe'; & $tx -xf $tar -C $d 2>&1 | Out-Null
+  if(-not (Test-Path -LiteralPath ($d+'\gate\jobs\'+$id+'\job.txt'))){ throw 'the job did not unpack' }
+  Get-ChildItem -LiteralPath ($d+'\gate\jobs\'+$id) -File | Move-Item -Destination $d -Force
+  Remove-Item -LiteralPath ($d+'\gate') -Recurse -Force -ErrorAction SilentlyContinue; Remove-Item -LiteralPath $tar -Force -ErrorAction SilentlyContinue
+  if((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -gt 0){
+    try{ [IO.File]::AppendAllText($FzOut+'\fuzz.log',(Get-Date).ToString('yyyy-MM-dd HH:mm:ss')+' FUZZ ABORT reason=gate job, not a game failure'+"`r`n",$Enc) }catch{}
+    Stop-Work 'a gate job goes first' -OnlyRx '(-Port\s+|remote-debugging-port=|pillagers-cdp)933[12]\b'
+  }
+  Gate-Yield $true; $script:gateYT=Epoch
+  $pr=Start-Process -FilePath powershell.exe -WindowStyle Hidden -PassThru -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-WindowStyle','Hidden','-File',('"'+$T+'\spare\gate-job.ps1"'),'-Job',('"'+$d+'"'),'-Copy',('"'+$GateCopy+'"'),'-Main',('"'+$R+'"'))
+  PutS 'gate_id' $id; PutS 'gate_pid' ([string]$pr.Id); PutS 'gate_t' ([string](Epoch))
+  Say ('gate job '+$id+' started ('+[string]$job['kind']+' of '+[string]$job['key']+' on '+([string]$job['base']).Substring(0,8)+')')
+  Gate-Note ('gate start '+$id)
+}
+function Gate-Tick([switch]$Paused){
+  try{
+    $id=GetS 'gate_id'
+    if($id){
+      if(Test-Path -LiteralPath ($GateWork+'\'+$id+'\result.txt')){ Gate-Finish $id; return }
+      $live=$false; $gp=[int]('0'+(GetS 'gate_pid')); if($gp -gt 0){ $live=[bool](Get-Process -Id $gp -ErrorAction SilentlyContinue) }
+      if($live){
+        if(((Epoch)-[long]('0'+(GetS 'gate_t'))) -gt $GateMaxSec){ Stop-Work 'a gate job ran over 45 minutes' -OnlyRx $RxGateParts; Gate-Infra $id 'it ran over 45 minutes on the spare pc'; Gate-Finish $id; return }
+        if(((Epoch)-$script:gateYT) -ge 30){ $script:gateYT=Epoch; Gate-Yield $true }
+        return
+      }
+      PutS 'gate_id' ''; PutS 'gate_pid' ''; Gate-Yield $false
+      if($Paused){ Say ('gate job '+$id+' stopped because someone came to the PC: it runs again when the PC is free'); return }
+      $tr=$(if((GetS 'gate_try_id') -eq $id){ [int]('0'+(GetS 'gate_tries')) }else{ 0 })+1; PutS 'gate_try_id' $id; PutS 'gate_tries' ([string]$tr)
+      Say ('gate job '+$id+' ended with no answer (try '+$tr+')')
+      if($tr -ge 3){ Gate-Infra $id 'it ended with no answer in 3 tries on the spare pc'; Gate-Finish $id }
+      return
+    }
+    if($Paused -or ((Epoch)-$script:gateT) -lt 30){ return }
+    $script:gateT=Epoch
+    $tip=G -C $Res ls-remote origin refs/heads/gate-jobs
+    if($script:gx -ne 0){ return }
+    $tip=([string]$tip -split '\s+')[0]
+    if($tip -ne $script:gateTip){
+      $L=@()
+      if($tip){
+        [void](G -C $Res fetch -q origin gate-jobs); if($script:gx -ne 0){ return }
+        $script:gateRev=G -C $Res rev-parse FETCH_HEAD
+        foreach($f in ((G -C $Res ls-tree --name-only ($script:gateRev+':gate/jobs')) -split "`n")){
+          $f=$f.Trim(); if(-not $f -or $f -notmatch '^[A-Za-z0-9_.-]+$'){ continue }
+          $h=@{}; foreach($ln in ((G -C $Res show ($script:gateRev+':gate/jobs/'+$f+'/job.txt')) -split "`n")){ $ix=$ln.IndexOf('='); if($ix -gt 0){ $h[$ln.Substring(0,$ix)]=$ln.Substring($ix+1).Trim() } }
+          if([string]$h['id'] -eq $f){ $L+=$h }
+        }
+      }
+      $script:gateJobs=$L; $script:gateTip=$tip
+    }
+    $now=Epoch
+    $pick=@($script:gateJobs | Where-Object { [long]('0'+$_['expires']) -gt $now -and -not (Test-Path -LiteralPath ($GateDone+'\'+$_['id'])) } | Sort-Object @{Expression={ if($_['kind'] -eq 'ship'){ 0 }else{ 1 } }},@{Expression={ [long]('0'+$_['submitted']) }})
+    if($pick.Count -gt 0 -and -not (Arrived)){ Gate-Start $pick[0] }
+  }catch{ Say ('PROBLEM: gate job: '+(Short "$_")) }
 }
 
 # 10-22 review: a copy that restarted itself for a new runner from GitHub left its robots (or a test run) going; this copy looks after them,
@@ -1215,6 +1326,7 @@ while($true){
     if($away -lt 900){
       $pw='paused: someone is using the PC'
       Stop-Work ($pw+', '+$script:awayWhy) -Refund
+      Gate-Tick -Paused
       $chg=((GetS 'pause_why') -ne $pw)
       if($chg){ PutS 'pause_why' $pw; PutS 'pause_t' ([string](Epoch)); Say ($pw+' ('+$script:awayWhy+')') }
       $pt=[Math]::Max([long]('0'+(GetS 'pub_t')),$script:pubTry)
@@ -1235,6 +1347,7 @@ while($true){
     if((GetS 'pause_why')){ PutS 'pause_why' ''; PutS 'pause_t' ''; PutS 'pub_t' '0'; Say ('nobody has been at the PC for '+[int]($away/60)+' minutes: testing again') }
     if((GetS 'seen_t') -or (GetS 'human_t')){ PutS 'seen_t' ''; PutS 'human_t' '' }
     $script:working=$true
+    Gate-Tick
   }
   Ensure-Server
   Refresh-Party
@@ -1242,7 +1355,7 @@ while($true){
   Ensure-Play
   $cr=Running 'corpq\.sh|corpus-slices\.sh'
   $why=''
-  if($cr -eq 0){
+  if($cr -eq 0 -and -not (GetS 'gate_id')){   # 11-02: not while a gate job runs (see Gate-Tick); in IDLE MODE gate_id is never set
     $cf=GetS 'corpus_file'
     if($cf -and (GetS 'corpus_done') -ne $cf -and (Test-Path -LiteralPath $cf)){
       PutS 'corpus_done' $cf
@@ -1344,7 +1457,7 @@ while($true){
       else { $atPc=((AwaySec) -lt 900); $script:gcAtStart=(GameChrome); Start-Robot 9332 'fixture-soak-spare2.html' $(if($atPc -or $script:gcAtStart -or $sf -lt 7 -or (GetS 'no4k') -eq (Get-Date).ToString('yyyy-MM-dd')){ '' }else{ '3840x2160' }) -Low:$atPc }
     }
   } else {
-    if((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -eq 0){ Start-Robot 9331 'fixture-soak-spare1.html' }
+    if((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -eq 0 -and -not (GetS 'gate_id')){ Start-Robot 9331 'fixture-soak-spare1.html' }   # 11-02: not while a gate job runs
     # 10-30, his "yes i want the auto test": the online 2 player test joins from here. tools\p2online\p2.mjs guest-daemon looks in the
     # p2-mailbox branch every 20 s for an invite from the VM and plays player 2 in a headless Chrome on 9362 (it calls no AI).
     if((Test-Path -LiteralPath ($T+'\p2online\p2.mjs')) -and (Running 'p2\.mjs.*guest-daemon') -eq 0){ Start-Process -FilePath $Node -ArgumentList @(('"'+$T+'\p2online\p2.mjs"'),'guest-daemon','--root',('"'+$R+'"')) -WindowStyle Hidden | Out-Null }

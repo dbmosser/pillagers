@@ -32,6 +32,17 @@ if(-not $Recipes){ $Recipes=Join-Path $Root 'tools\handoff\shots\ui-screens-js.j
 if(-not $Out){ $Out=Join-Path $Root ('tools\handoff\shots\ui-qa\'+(Get-Date -Format 'yyyyMMdd-HHmm')) }
 if(-not (Test-Path $Out)){ New-Item -ItemType Directory -Force $Out | Out-Null }
 $Out=(Resolve-Path $Out).Path
+# 11-02 (his orders "move pillagers html development to the main PC permanently", "use the JTPC for pillagers html testing"): with GATE_REMOTE=1 no Chrome starts here, so the same
+# command takes its pictures of the current build on the spare PC and brings them back into -Out (tools/handoff/gate-remote.sh shots). A -Url names a page on this machine, which the
+# spare PC cannot open, so it is refused rather than run here. -Port and -Merge mean nothing there: its report.json replaces the one in -Out.
+$gr=$env:GATE_REMOTE; if(-not $gr){ try{ $gr=(@([IO.File]::ReadAllLines((Join-Path $PSScriptRoot 'handoff\console\caps.txt')) | Where-Object { $_ -match '^GATE_REMOTE=' }) | Select-Object -Last 1) -replace '^GATE_REMOTE=','' }catch{} }
+if("$gr".Trim() -eq '1' -and -not $env:GATE_JOB -and $env:COMPUTERNAME -ne 'DESKTOP-82BKOP4'){
+  if($PSBoundParameters.ContainsKey('Url')){ Write-Output 'uishots: refused: with the remote gate on, a -Url page cannot be pictured from here (ship it, then take the plain command)'; exit 3 }
+  $ga=@((Join-Path $PSScriptRoot 'handoff\gate-remote.sh').Replace('\','/'),'shots',$Screens,$Res,$Out,$(if($NoLint){ '1' }else{ '0' }),
+    $(if($PSBoundParameters.ContainsKey('Recipes')){ (Resolve-Path $Recipes).Path }else{ '-' }),$(if($LintJs){ (Resolve-Path $LintJs).Path }else{ '-' }),$(if($PSBoundParameters.ContainsKey('LintOpts')){ $LintOpts }else{ '-' }))
+  & 'C:\Program Files\Git\bin\bash.exe' @ga
+  exit $LASTEXITCODE
+}
 if($Port -eq 8802 -or $Url -match ':8802'){ throw 'never the play port' }
 $spec=[IO.File]::ReadAllText($Recipes) | ConvertFrom-Json
 $all=@($spec.screens)

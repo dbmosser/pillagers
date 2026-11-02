@@ -1,7 +1,7 @@
 param([string]$NN,[int]$N=80,[int]$Cdp=9344)
 # Runs the newest $N checks (except the new one) on fxdry$NN and fxctl$NN and prints any check that fails on the drafted
 # build but not on the control: a check this build broke. Prints REGRESS lines, then a count.
-$c='C:\claudecode\dark raiders\tools\cdp.ps1'
+$c=Join-Path (Split-Path $PSScriptRoot) 'cdp.ps1'   # 11-02: beside this script, whichever copy it runs from
 $e="(function(){ var o={}, R=__REGRESS.slice().sort(function(a,b){ return parseFloat(b.v)-parseFloat(a.v); }).slice(0,$N+1), i, t, r; for(i=1;i<R.length;i++){ t=R[i]; try{ __runPrep(); __topClear(); r=t.run(); }catch(x){ r='threw '+x; } if(r&&String(r).indexOf('SKIP')!==0&&!(r&&typeof r.then==='function')) o[t.v]=String(r).slice(0,160); } return JSON.stringify(o); })()"
 # 2026-10-18: a tab that is not in front runs its JavaScript many times slower in the headless test Chrome (Windows lowers it), so the
 # 80-check run on fxdry timed out while fxctl was in front (dry=TIMEOUT stopped every ship from 11:48). Each page is brought to the front first.

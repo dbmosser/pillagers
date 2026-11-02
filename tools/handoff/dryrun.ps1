@@ -1,4 +1,5 @@
-param([string]$Prev, [string]$New)
+param([string]$Prev, [string]$New, [switch]$NoFixture)
+# 11-02 (remote gate, tools/handoff/gate-remote.sh): -NoFixture applies the patches only; the test copies are built on the spare PC.
 # dryrun.ps1 -Prev 1366 -New 1367
 # Applies p<New> and f<New> to a scratch copy of the previous build (the previous dry copy if one
 # exists, else HEAD, which is right once Prev has shipped) and builds two fixtures for :8803:
@@ -19,6 +20,7 @@ foreach ($f in "p$New", "f$New") {
   [IO.File]::WriteAllText("$sp\$f.ps1", $t, (New-Object Text.UTF8Encoding $false))
   Write-Output "$f -> $(powershell -NoProfile -ExecutionPolicy Bypass -File "$sp\$f.ps1")"
 }
+if ($NoFixture) { exit 0 }
 $n2 = $New.Substring(2)
 Write-Output ("dry: " + (powershell -NoProfile -ExecutionPolicy Bypass -File "$sp\mkfixture.ps1" -Src "$sp\dark_raiders.html" -Dst "$root\tools\fxdry$n2.html" 2>&1 | Select-Object -Last 1))
 Write-Output ("ctl: " + (powershell -NoProfile -ExecutionPolicy Bypass -File "$sp\mkfixture.ps1" -Src "$a\dark_raiders.html" -Dst "$root\tools\fxctl$n2.html" 2>&1 | Select-Object -Last 1))
