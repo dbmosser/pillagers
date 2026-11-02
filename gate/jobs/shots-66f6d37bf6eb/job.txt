@@ -1,0 +1,14 @@
+id=shots-66f6d37bf6eb
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=f677d049f8c7c23f411b6f96aa4060ee17274744
+screens=01
+res=1080
+nolint=0
+lintopts=
+from=VM_Oct2026
+submitted=1793635372
+expires=1793641972
