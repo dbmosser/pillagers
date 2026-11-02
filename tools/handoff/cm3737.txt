@@ -1,0 +1,7 @@
+v37.37: the birth card: a kit you cannot pay for stays readable, the picked heir has a bar
+
+a kit he cannot pay for keeps its words in grey with the price in red at full opacity, still not selectable; the picked heir card has a 6px lime bar on its left edge
+
+Check 37.37. Fails on v37.36.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

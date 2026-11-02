@@ -3978,8 +3978,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.36';
-var VER_AT='2026-11-01 22:54';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.37';
+var VER_AT='2026-11-01 23:00';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -57862,7 +57862,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.36: The hall sign sits right under the ring by the wall. Watch for: nothing else changes. Check 37.36 fails on v37.35',
+  now:'v37.37: a kit he cannot pay for keeps its words in grey with the price in red at full opacity, still not selectable; the picked heir card has a 6px lime bar on its left edge Check 37.37 fails on v37.36',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -75073,7 +75073,7 @@ careerStyle('birthcss',
   'body:has(#birthmodal.on) #hubtoast{bottom:auto!important;top:12px}'+
   '#root #birthmodal #birthheirs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}'+
   '#root #birthmodal .bhcard{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:8px;min-height:176px;padding:24px 32px;background:var(--ui-panel);border:2px solid var(--ui-line-hi);border-radius:var(--rad);color:var(--tx-1);text-align:left;text-transform:none}'+
-  '#root #birthmodal .bhcard.on{border-color:var(--acc);background:var(--ui-raised)}'+
+  '#root #birthmodal .bhcard.on{border-color:var(--acc);background:var(--ui-raised);box-shadow:inset 6px 0 0 var(--acc)}'+   // v37.xx (cw-m2birth3), critic P1: the picked heir carries a 6px lime bar
   '#root #birthmodal .bhcard b{font:700 40px/1.15 var(--f-cond);color:var(--tx-1)}'+
   '#root #birthmodal .bhcard i{font:600 24px/1.3 var(--f-cond);font-style:normal}'+
   '#root #birthmodal #birthmid{display:grid;grid-template-columns:320px minmax(0,1fr);gap:24px}'+
@@ -75086,7 +75086,9 @@ careerStyle('birthcss',
   '#root #birthmodal #birthkits{display:flex;flex-direction:column;gap:8px}'+
   '#root #birthmodal .bkit{display:grid;grid-template-columns:200px minmax(0,1fr) auto;align-items:center;gap:24px;min-height:72px;padding:8px 24px;background:var(--ui-panel);border:2px solid var(--ui-line-hi);border-radius:var(--rad);color:var(--tx-1);text-align:left;text-transform:none}'+
   '#root #birthmodal .bkit.on{border-color:var(--acc);background:var(--ui-raised)}'+
-  '#root #birthmodal .bkit:disabled{opacity:.45}'+
+  // v37.xx (cw-m2birth3), critic P1: a kit he cannot pay for stays readable, grey words and a red price, instead of the whole row at opacity .45
+  '#root #birthmodal .bkit:disabled{opacity:1!important;color:var(--tx-2)}'+
+  '#root #birthmodal .bkit:disabled b:last-child{color:var(--danger)}'+
   '#root #birthmodal .bkit b{font:700 28px/1.2 var(--f-cond);color:inherit}'+
   '#root #birthmodal .bkit span{font:500 24px/1.2 var(--f-cond);color:var(--tx-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'+
   '#root #birthmodal #birthgo{min-height:72px;min-width:480px;margin-left:auto;font:700 var(--fs-title)/1 var(--f-cond)}');

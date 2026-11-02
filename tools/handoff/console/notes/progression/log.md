@@ -1,4 +1,5 @@
 # Season zero build log (one line per ship: job, version, what he can see)
+- m2d cw-m2hall + cw-m2hallb, v37.34 and v37.36: the hall of the fallen. A "the hall" tab at the Mainframe (R, or click it): records on top (longest life, richest haul, most kills, highest level), then the living pillager first and every ended one newest first with its epithet, generation, how and where it ended, killer, level, raids, best haul and kills. A new wall in the back wall's bay left of the lift shows the newest three fallen with their names; E there opens the same tab. Generation one from an old save shows its old totals while living; once dead its record holds only what was counted since v37.29.
 
 - m0 cw-p0acct, v37.14: nothing new in play; an old save is paid once in $ for ladder rewards it earned and never claimed ("$N paid for unclaimed rewards" on the floor once); account name, living pillager (generation one), hall, lifetime earnings in the save.
 - m0 cw-p0gear, v37.16: nothing new in play; stash gear and nine worn slots in the save, pieces rolled on their own dice.

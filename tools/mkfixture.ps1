@@ -6179,6 +6179,37 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'37.37',what:'cw-m2birth3: on the birth card a kit he cannot pay for is disabled at full opacity with its price in the danger colour and its other words not, and the picked heir card has a lime bar the others do not',
+   run:function(){
+     if(!(window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot stage';
+     if(typeof birthOpen!=='function') return 'no birth card in this build';
+     var saved=P, oldStore=storeSet, oldSave=saveProfile, bad=[], b, cs, L, red;
+     function need(ok,msg){ if(!ok) bad.push(msg); }
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       storeSet=function(){}; saveProfile=function(){};
+       P.credits=100; P.birthKit=null; BIRTH=null;
+       pilEnd(P,{how:'dead'}); pilHeirs(P);
+       showScreen('hub');
+       need(document.getElementById('birthmodal').classList.contains('on'),'the card did not open');
+       b=document.querySelector('#birthkits [data-bkit="basic"]');
+       cs=getComputedStyle(b);
+       need(b.disabled&&parseFloat(cs.opacity)===1,'the unaffordable row: disabled '+b.disabled+', opacity '+cs.opacity);
+       L=b.querySelectorAll('b');
+       red=document.createElement('i'); red.style.color='var(--danger)'; document.body.appendChild(red);
+       need(getComputedStyle(L[L.length-1]).color===getComputedStyle(red).color,'the price is '+getComputedStyle(L[L.length-1]).color+', not the danger colour '+getComputedStyle(red).color);
+       need(getComputedStyle(L[0]).color!==getComputedStyle(red).color,'the kit name is red too');
+       red.remove();
+       L=document.querySelectorAll('#birthheirs .bhcard');
+       need(/rgb/.test(getComputedStyle(L[0]).boxShadow)&&getComputedStyle(L[1]).boxShadow==='none','the bar: picked '+getComputedStyle(L[0]).boxShadow+', other '+getComputedStyle(L[1]).boxShadow);
+     }catch(e2){ bad.push('threw: '+(e2&&e2.message||e2)); }
+     finally{
+       try{ document.getElementById('birthmodal').classList.remove('on'); }catch(_m){}
+       BIRTH=null;
+       P=saved; storeSet=oldStore; saveProfile=oldSave;
+       try{ __topClear(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'37.36',what:'cw-m2hallb, critic on the hall (3 of 5): the sign of the hall wall sits right under its ring, gen has a 32px gutter before how it ended, and the empty line is a quiet left aligned row at 20px',
    run:function(){
      if(!(window.__runPrep&&window.__cleanProfile&&window.__topClear&&window.__hubEnter)) return 'SKIP: no hub fixture';

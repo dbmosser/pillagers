@@ -2220,3 +2220,6 @@
 2026-11-01 0.5058542000000001 146-overseer-ignores-decoys
 2026-11-01 0.5624005 243-retarget-0712-reds-wait
 2026-11-01 0.1414 critic-manual
+2026-11-01 0.0954 critic-manual
+2026-11-01 0.1255 critic-manual
+2026-11-01 5.6437326 00p-m2d-hall

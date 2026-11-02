@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.37 - THE BIRTH CARD: A KIT YOU CANNOT PAY FOR STAYS READABLE, THE PICKED HEIR HAS A BAR
+
+Co-op hunt while he was away. the critic on the birth card, P1: the whole row of a kit he cannot pay for faded to about 3:1, and only a 1px outline marked the picked heir Watch: a kit he cannot pay for keeps its words in grey with the price in red at full opacity, still not selectable; the picked heir card has a 6px lime bar on its left edge
+
+MEASURED. Check 37.37 passes, and fails on v37.36.
 ## v37.36 - the hall: its sign sits at its ring, gen has room, the empty line is quiet
 
 Co-op hunt while he was away. Critic on the hall (3 of 5, P1 and P2 on this job): the hall sign sat about 30 room units below its ring and read as detached; gen sat 16px from how it ended; the hall is empty was a title size line floating in the void. His words stay, the hall is empty. The sign moves under the ring, gen gets a 32px gutter, the line becomes a quiet 20px left aligned row. The plaque itself keeps its size, the bay between the pier and the lift holds three at this size. Watch: The hall sign sits right under the ring by the wall. Watch for: nothing else changes.
