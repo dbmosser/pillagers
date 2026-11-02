@@ -1123,17 +1123,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The new rank strip and the removal of the notoriety paragraph help, but a duplicate stat card, an orphaned fourth card and an unchanged clipped scroller keep this at a 3.",
+  "verdict": "The only change is a new 'your 1st pillager' card that pushes the grid to five uneven cards with a hole at the bottom right, and none of last round's fixes (duplicate earnings, header stash mismatch, clipped achievements, small lime/label type) were applied.",
   "findings": [
-   "P1 stats cards (x120-1793, y325-685): Use one row of 4 equal columns (about 410px each, 16px gutters, 150px tall), or fold 'went down' into the rank strip. Put every value at card top+80 and use 16px sub-lines.",
-   "P1 'lifetime earnings' card (x965-1370, y325-512) versus the rank strip (x353-480, y155-200): Delete the 'lifetime earnings' card and its 'rank scrounger i' sub-line. Keep one earnings figure (strip or card, not both). Give the 'net lifetime earnings' card a 16px tx-2 sub-line such as 'after losses', or drop it.",
-   "P1 rank strip (x120-1800, y140-214): Set strip labels to 16px tx-2. Make 'scrounger i' tx-1 at 32px and keep lime for the progress fill only. Change the reward text to tx-1. Make the bar 8px tall with a --ui-line-hi track. Align its label baseline with the 'lifetime earnings' value.",
-   "P1 net worth card sub-line (y482) and header money (x1450-1745, y78-104): Fix the data so the header and the card use the same stash value. Add a 'cash' label before $1,000 in the header. Make all three labels 16px tx-2 with 8px gaps. Put the card sub-line at 16px tx-2.",
-   "P1 achievements grid and scroller clip (x120-1793, y770-1003): Add a 32px fade-to-panel gradient and 24px of bottom padding, and end the clip at y=1000. Cut the tiles to 72px tall. Add a 40px icon square, a right-aligned 16px '0/1', and tx-2 at 60% on locked names. Move the scrollbar to x=1802, 6px wide."
+   "P1 stats cards (x120-1793, y330-690): Delete the card or fold the character name into the rank strip. Lay the stats out as 4 equal columns of about 410px with 16px gutters and 150px height. Put net worth first and keep the hero number alone.",
+   "P1 'lifetime earnings' card (x1387-1793, y330-518) vs rank strip (x353-480, y155-205): Delete the lifetime earnings card and its sub-line. Give 'net lifetime earnings' a 16px tx-2 sub-line such as 'after losses', or drop it. Set every value baseline to card top+80.",
+   "P1 header money (x1450-1745, y78-104) vs net worth sub-line (y488): Use one stash value in both places. Add a 16px tx-2 'cash' label. Raise all three labels to 16px with 8px gaps.",
+   "P1 rank strip (x120-1800, y140-220): Set labels to 16px tx-2 and the values to 20-32px tx-1. Make the bar 8px tall on a --ui-line-hi track with a lime fill. Right-align the reward at 16px tx-1.",
+   "P1 achievements grid (x120-1793, y775-1003): End the clip at y=1000 with 24px of bottom padding and a 32px fade gradient. Cut the tiles to 72px with a 40px icon square and a right-aligned '0/1'. Dim locked names to tx-2 at 60%. Move the 6px scrollbar to x=1802."
   ],
-  "pic": "tools/handoff/console/notes/shots/00p-m1e-after/15-mainframe-stats-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/00p-m2b-after/15-mainframe-stats-1080.jpg",
   "task": "manual",
-  "when": "2026-11-01T21:09"
+  "when": "2026-11-02T01:14"
  },
  "74-pad-player-1": {
   "score": 3,

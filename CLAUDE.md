@@ -3,6 +3,8 @@
 ## What this project is
 **Scope boundary: this project is the 2.5D 3/4 top-down version, and only that.** The owner runs three separate Claude projects for this game: this one keeps the 3/4 top-down view, and two others are complete, independent rewrites as a first-person shooter and a third-person shooter. Those are separate instances of the game with no shared assets or code. Do not convert the renderer here, do not add WebGL or a raycaster, and do not port work in from the other two. If you find first-person, third-person, raycaster or 3D code in this working tree, it arrived by mistake from another project: park it on a branch, restore the canonical file, and tell the owner rather than building on it.
 
+**Fortnite island:** a fourth, separate project lives in `C:\claudecode\pillagers-fortnite`. Nothing for it goes in this folder, and nothing here gets copied into it.
+
 PILLAGERS (it was called Dark Raiders early on; the file and folder names still say dark_raiders): a single-file HTML5 extraction shooter. The entire game is `dark_raiders.html` (a 3/4 top-down 2D canvas renderer over a flat top-down simulation, about 5 MB). Current version: read `var VER` near the top of `dark_raiders.html` (and `git log -1`); do not restate it here, it goes stale.
 
 **Where to start:** read the CURRENT block at the top of `tools/handoff/START-HERE.md`. Helper lanes also follow `tools/handoff/console/RULES.md` (it holds the veto list: things he has banned for good). `tools/handoff/RULEBOOK.md` has older standing rules; where it disagrees with his 10-18 answers, the answers win.

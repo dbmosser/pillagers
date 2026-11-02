@@ -1,1 +1,1 @@
-11-01 20:07 waiting for RAM: 2 GB free, a helper starts at 3; 00p-m2d-hall kept
+11-01 22:26 running 146-overseer-ignores-decoys on Claude Code, sonnet high, run 1 (your plan: week 8% of the 10.7% line, 5-hour 0%)

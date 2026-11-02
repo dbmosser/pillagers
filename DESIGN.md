@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.31 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v37.15 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay. Watch: The what is new stamp keeps up with the build; the three notes are unchanged.
+
+MEASURED. Check 37.31 passes, and fails on v37.30.
 ## v37.30 - three heirs with small traits and rough names for the next pillager
 
 Co-op hunt while he was away. His rulings of 11-01 (season zero m2): choose 1 of 3 heirs, each with small traits, auto named like Rogue Legacy; no $ bonus for a worse draw (answer 3); names show as name and numeral (brakka iv) and the generation shows too (your 14th pillager). 17 traits (10 good, 7 bad), each a small signed stat in the gear vocabulary at a third to a half of one gear trait, are added onto the gear sum so the one gear reader carries them (caps on the plus side, a floor of minus the base on the minus side). 40 rough names; the numeral counts that name in the hall and the living pillager. The three heirs are rolled on side dice from the account name, its first birth time and the generation, so a reload shows the same three and seed 4242 never moves; P.heirs keeps the roll until one is chosen; pilBirth(P, i) makes heir i the next generation, and pilBirth(P) takes the first. Generation one keeps no traits. Watch: Your stats has a card for the living pillager: your Nth pillager, its name, and its traits in green and red. The next pillager after a death comes with one or two small traits and a rough name. Watch for: nothing changes in play until a pillager dies, generation one has no traits.

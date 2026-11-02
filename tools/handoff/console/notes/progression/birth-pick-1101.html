@@ -1,0 +1,119 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>birth card: pick a layout</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+/* layout: one column of cards, each option a 16:9 drawing of the screen with its letter above it */
+:root{--bg:#0f1112;--panel:#171a1c;--line:#2c3134;--fg:#e8ebe6;--muted:#9aa29e;--acc:#e6ff3d;--ink:#121400;--ok:#7ddc6f;--bad:#ff6b5e;color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font:400 17px/1.5 system-ui,"Segoe UI",sans-serif;margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 16px 64px;display:grid;gap:28px}
+h1{font:700 clamp(30px,5vw,44px)/1.1 "Arial Narrow",Arial,sans-serif;margin:0}
+.lede{margin:8px 0 0;color:var(--muted);max-width:66ch}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:20px;display:grid;gap:14px}
+.card h2{font:700 26px/1.2 "Arial Narrow",Arial,sans-serif;margin:0}
+.tag{font:600 14px/1 "Arial Narrow",Arial,sans-serif;letter-spacing:.12em;color:var(--muted)}
+.card p{margin:0;max-width:70ch}
+/* the drawing: sizes in cqw so the whole thing scales like the game does */
+.scr{container-type:inline-size;width:100%;aspect-ratio:16/9;background:radial-gradient(ellipse at 50% 60%,#262b28 0,#0a0c0d 70%);border:1px solid var(--line);border-radius:4px;overflow:hidden;position:relative;font-family:"Arial Narrow",Arial,sans-serif}
+.in{position:absolute;inset:0;padding:2.4cqw 4cqw;display:flex;flex-direction:column;gap:1.2cqw;box-sizing:border-box}
+.ttl{font-weight:700;font-size:2.6cqw;line-height:1.1}
+.h{background:#14181a;border:.14cqw solid #3a4145;border-radius:.3cqw;padding:1cqw 1.3cqw;display:flex;flex-direction:column;gap:.3cqw;min-width:0}
+.h.on{border-color:var(--acc);background:#1d2316}
+.nm{font-weight:700;font-size:2cqw;line-height:1.1}
+.g{color:var(--ok);font-size:1.25cqw}.b{color:var(--bad);font-size:1.25cqw}
+.lab{color:var(--muted);font-size:1cqw}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:1cqw}
+.kit{background:#14181a;border:.14cqw solid #3a4145;border-radius:.3cqw;padding:.7cqw 1cqw;font-size:1.2cqw;display:flex;justify-content:space-between;gap:1cqw}
+.kit.on{border-color:var(--acc)}.kit.off{opacity:.42}
+.kit b{font-size:1.35cqw}
+.kit span{color:var(--muted)}
+.fig{background:#14181a;border:.14cqw solid #3a4145;border-radius:.3cqw;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:.5cqw;padding:.7cqw}
+.man{width:5.4cqw;height:9.6cqw;border-radius:2.6cqw 2.6cqw .7cqw .7cqw;background:linear-gradient(#b08a68 0 26%,#3d4a3f 26% 72%,#2a2f33 72%)}
+.btn{font-size:1.15cqw;border:.12cqw solid #4a5257;border-radius:.3cqw;padding:.4cqw .8cqw;color:var(--fg);text-align:center}
+.name{background:#0b0d0e;border:.14cqw solid #4a5257;border-radius:.3cqw;padding:.5cqw .8cqw;font-size:1.5cqw}
+.foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center}
+.go{background:var(--acc);color:var(--ink);font-weight:700;font-size:1.6cqw;border-radius:.3cqw;padding:.8cqw 2cqw}
+.close{color:var(--muted);font-size:1.25cqw;border:.12cqw solid #4a5257;border-radius:.3cqw;padding:.6cqw 1.4cqw}
+.row{display:flex;gap:1cqw;min-height:0}
+.floor{position:absolute;left:0;right:0;bottom:0;height:40%;background:repeating-linear-gradient(90deg,#1b1f20 0 6cqw,#16191a 6cqw 12cqw);border-top:.14cqw solid #2c3134}
+.who{display:flex;flex-direction:column;align-items:center;gap:.4cqw;width:15cqw}
+.arrow{font-size:4cqw;color:var(--muted);align-self:center}
+.dots{display:flex;gap:.5cqw;justify-content:center}.dots i{width:.8cqw;height:.8cqw;border-radius:50%;background:#4a5257}.dots i.on{background:var(--acc)}
+</style>
+<div class="wrap">
+<header>
+<h1>The birth card: pick a layout</h1>
+<p class="lede">After a death, this card opens when you land in the Undercroft. You pick one of three heirs, rename it, change its look, and pick a starter kit. Option a is the one built in the game. Tell the Gameplay Edit Intaker chat a, b or c, and a follow-up job swaps it if you want a different one. These are drawings of the layout, not game pictures.</p>
+</header>
+
+<section class="card">
+<span class="tag">option a (built)</span>
+<h2>Three heir cards side by side</h2>
+<p>All three heirs show at once with their traits, so you compare at a glance. Everything is on one screen and one button goes. Best from the couch at 4K: the names and traits are big and nothing is hidden.</p>
+<div class="scr"><div class="in">
+  <div><div class="ttl">your 2nd pillager</div></div>
+  <div class="grid3">
+    <div class="h on"><div class="nm">brakka ii</div><div class="g">light step</div><div class="b">slow hands</div></div>
+    <div class="h"><div class="nm">vosk</div><div class="g">field medic</div></div>
+    <div class="h"><div class="nm">tamsin</div><div class="g">deep lungs</div><div class="g">keen eye</div></div>
+  </div>
+  <div class="row" style="flex:1">
+    <div class="fig" style="width:15cqw"><div class="man"></div><div class="btn">edit look</div></div>
+    <div style="flex:1;display:flex;flex-direction:column;gap:.7cqw;min-width:0">
+      <div class="lab">name</div><div class="name">brakka</div>
+      <div class="lab">starter kit</div>
+      <div class="kit on"><b>nothing</b><span>your own pack</span><b>free</b></div>
+      <div class="kit"><b>basic</b><span>compact smg, 3 bandages</span><b>$300</b></div>
+      <div class="kit off"><b>privileged</b><span>burst carbine, medkit, armor plate</span><b>$1,500</b></div>
+    </div>
+  </div>
+  <div class="foot"><div class="go">ascend as brakka ii</div><div class="close">close</div></div>
+</div></div>
+</section>
+
+<section class="card">
+<span class="tag">option b</span>
+<h2>One big heir with arrows</h2>
+<p>One heir fills the middle with a large figure; arrows or the pad bumpers flip to the next. It feels like a character select, but you only see one heir's traits at a time.</p>
+<div class="scr"><div class="in">
+  <div class="ttl" style="text-align:center">your 2nd pillager</div>
+  <div class="row" style="flex:1;align-items:stretch">
+    <div class="arrow">&#8249;</div>
+    <div class="fig" style="flex:1"><div class="man" style="width:9cqw;height:16cqw;border-radius:4.4cqw 4.4cqw 1cqw 1cqw"></div><div class="btn">edit look</div></div>
+    <div class="h" style="flex:1;justify-content:center;gap:.8cqw">
+      <div class="nm" style="font-size:3.2cqw">brakka ii</div><div class="g" style="font-size:1.7cqw">light step</div><div class="b" style="font-size:1.7cqw">slow hands</div>
+      <div class="dots"><i class="on"></i><i></i><i></i></div>
+      <div class="lab">name</div><div class="name">brakka</div>
+    </div>
+    <div class="arrow">&#8250;</div>
+  </div>
+  <div class="grid3">
+    <div class="kit on"><b>nothing</b><b>free</b></div>
+    <div class="kit"><b>basic</b><b>$300</b></div>
+    <div class="kit off"><b>privileged</b><b>$1,500</b></div>
+  </div>
+  <div class="foot"><div class="go">ascend as brakka ii</div><div class="close">close</div></div>
+</div></div>
+</section>
+
+<section class="card">
+<span class="tag">option c</span>
+<h2>A lineup on the Undercroft floor</h2>
+<p>The three heirs stand on the floor and the controls sit in a strip at the bottom. It has the most mood and costs the most room: the name, look and kit controls get squeezed into one strip.</p>
+<div class="scr"><div class="floor"></div><div class="in">
+  <div class="ttl">your 2nd pillager</div>
+  <div class="row" style="justify-content:center;gap:6cqw;flex:1;align-items:flex-end;padding-bottom:1cqw">
+    <div class="who"><div class="man"></div><div class="h on" style="width:100%;align-items:center"><div class="nm">brakka ii</div><div class="g">light step</div><div class="b">slow hands</div></div></div>
+    <div class="who"><div class="man"></div><div class="h" style="width:100%;align-items:center"><div class="nm">vosk</div><div class="g">field medic</div></div></div>
+    <div class="who"><div class="man"></div><div class="h" style="width:100%;align-items:center"><div class="nm">tamsin</div><div class="g">deep lungs</div><div class="g">keen eye</div></div></div>
+  </div>
+  <div class="row" style="align-items:center">
+    <div class="name" style="width:14cqw">brakka</div><div class="btn">edit look</div>
+    <div class="kit on" style="flex:1"><b>nothing</b><b>free</b></div>
+    <div class="kit" style="flex:1"><b>basic</b><b>$300</b></div>
+    <div class="kit off" style="flex:1"><b>privileged</b><b>$1,500</b></div>
+  </div>
+  <div class="foot"><div class="go">ascend as brakka ii</div><div class="close">close</div></div>
+</div></div>
+</section>
+</div>

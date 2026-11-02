@@ -12,6 +12,13 @@ Key cw-p2heirs, mk script S\mk-cw-p2heirs.ps1, draft tools\handoff\drafts\draft-
 - wornMods(worn, add): add = trait sum; floor -base, cap on plus. raidWornMods passes pilTraitMods(P.pil); null when nothing.
 - Account card = stats page card "your Nth pillager", value pilName, sub trait names in var(--ok) / var(--danger).
 
+## Result
+- SHIPPED v37.30 (bc971fa5a), ON HIS PC v37.30. Preflight passed first time; the card moved to the end of the list (order -3) because the stats
+  stylesheet hides and spans cards by nth-child.
+- Critic 15: 3 (finish line 3). P1 "delete the card" skipped (his order). Other P1s are older parts of the screen.
+- Watch on his next play: nothing changes in play until a pillager dies; generation one has no traits. m2a (v37.29) births with pilBirth(P), which now
+  takes heir 0 with its traits.
+
 ## Pictures
 - Screen 15-mainframe-stats. The fixture profile is generation one with no traits, so the picture shows the card without trait lines; the check proves
   the trait lines in the DOM.

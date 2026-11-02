@@ -1,0 +1,20 @@
+{
+    "title":  "THE OVERSEER IGNORES DECOYS",
+    "why":  "His answer g-13 (10-25): No, the Overseer ignores decoys. A decoy pinged 420 every 0.8 s for 6 s and woke every body in reach, the Overseer too, which then walked off its lair toward it. The decoy ping now carries a flag and the Overseer skips it. Every other machine still hears decoys, and the Overseer still hears shots, steps and blasts.",
+    "now":  "The Overseer no longer follows a decoy.",
+    "edits":  [
+                  {
+                      "anchor":  "function ping(x,y,s,h,quiet,src,typ,ent,pre){",
+                      "replacement":  "// v37.xx (cw-ovdecoy), his answer g-13 (2026-10-25): \"No, the Overseer ignores decoys\". PING_DECOY is 1 only while a decoy calls ping; the body loop\n// below skips the boss then. Every other body still hears a decoy, and the Overseer still hears shots, steps and blasts.\nvar PING_DECOY=0;\nfunction ping(x,y,s,h,quiet,src,typ,ent,pre){"
+                  },
+                  {
+                      "anchor":  "if(e.kind===\u0027listener\u0027) continue;             // it does not take orders from noise twice",
+                      "replacement":  "if(e.kind===\u0027listener\u0027) continue;             // it does not take orders from noise twice\n    if(PING_DECOY\u0026\u0026e.boss) continue;   // v37.xx (cw-ovdecoy): the Overseer ignores decoys"
+                  },
+                  {
+                      "anchor":  "if(dc.acc\u003e=.8){ dc.acc=0; if(!dc.fx) ping(dc.x,dc.y,420,false,false,\u0027env\u0027,\u0027move\u0027); }",
+                      "replacement":  "if(dc.acc\u003e=.8){ dc.acc=0; if(!dc.fx){ PING_DECOY=1; try{ ping(dc.x,dc.y,420,false,false,\u0027env\u0027,\u0027move\u0027); } finally { PING_DECOY=0; } } }   // v37.xx (cw-ovdecoy): flagged so the Overseer skips it. v17.29, co-op hunt 2026-09-28: a decoy passed on for drawing calls nothing; the host world hears it"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a decoy pings a plain warden but not the Overseer (his answer g-13: the Overseer ignores decoys)\u0027,\n   run:function(){\n     if(typeof mkWarden!==\u0027function\u0027||typeof bossLair!==\u0027function\u0027||typeof updateThrowables!==\u0027function\u0027||typeof __ents!==\u0027function\u0027) return \u0027SKIP: no warden, lair or throwable helper\u0027;\n     var g=null, p, ls, ov, wd, dx, dy;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); if(!g||!g.player) return \u0027SKIP: no raid\u0027;\n       p=g.player; p.iv=99; p.hp=100; p.downed=false;\n       ls=bossLair();\n       ov=mkWarden(ls.x,ls.y); ov.boss=1; ov.name=BOSS_NAME; ov.lairX=ls.x; ov.lairY=ls.y; ov.tx=ls.x; ov.ty=ls.y; ov.state=\u0027patrol\u0027; ov.cd=9; ov.seenYou=false; ov.alert=0;\n       wd=mkWarden(ls.x+100,ls.y); wd.state=\u0027patrol\u0027; wd.cd=9; wd.seenYou=false; wd.alert=0; wd.tx=wd.x; wd.ty=wd.y;\n       g.ents=[ov,wd]; g.decoys.length=0; g.pings.length=0;\n       p.x=ls.x+(ls.x\u003e1500?-1400:1400); p.y=ls.y;\n       dx=ls.x+200; dy=ls.y;\n       g.decoys.push({x:dx,y:dy,t:0,life:6,acc:.7});\n       updateThrowables(0.12); __ents(0.12);   // 0.7+0.1 is 0.7999 in floats and would not ping yet\n       if(Math.abs(wd.tx-dx)\u003e2||Math.abs(wd.ty-dy)\u003e2) return \u0027SKIP: the decoy did not reach the plain warden (\u0027+Math.round(wd.tx)+\u0027,\u0027+Math.round(wd.ty)+\u0027), staging is off\u0027;\n       if(Math.abs(ov.tx-ls.x)\u003e2||Math.abs(ov.ty-ls.y)\u003e2) return \u0027a decoy pulled the Overseer off its lair (tx,ty \u0027+Math.round(ov.tx)+\u0027,\u0027+Math.round(ov.ty)+\u0027)\u0027;\n       return null;\n     } finally {\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){}\n       __topClear();\n     } }},"
+}
