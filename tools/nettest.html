@@ -518,7 +518,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
   function boxOf(f,cid){ var v=W(f).__net.cont(), i; for(i=0;i<v.list.length;i++) if(v.list[i].cid===cid) return v.list[i]; return null; }
   // PAD LOOT (2026-09-27, his report: player 2 looting is broken in real play while a keyboard E on C passes lootStep). C is
   // stood beside the nearest unopened box it holds and the pad X button is HELD ON THE HOST, as in real play (A in front reads
-  // the pads and forwards them; C plays the forwarded pad), for up to 5 s. The box must open and the loot land in C.
+  // the pads and forwards them; C plays the forwarded pad), for up to 15 s of real time (11-02, job 260: 5 s was short of a fresh locker when the game clock runs slow). The box must open and the loot land in C.
   function padLootStep(A,C,bad,rep){
     if(typeof C.__net.cont!=='function'||typeof C.__net.stand!=='function'||typeof A.__net.pad!=='function') return Promise.resolve();
     var vc=C.__net.cont(), me=C.__net.up().me, box=null, bd=1e9, i, b, d, NGA=A.navigator.getGamepads, HFA=A.document.hasFocus, HFC=C.document.hasFocus, t0=0, it0=0, dn=false;
@@ -531,7 +531,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
     try{ A.document.hasFocus=function(){ return true; }; C.document.hasFocus=function(){ return false; }; }catch(e){}
     A.navigator.getGamepads=function(){ return [mkPad()]; };
     it0=itemsC(); t0=Date.now();
-    return sleep(400).then(function(){ dn=true; return wait(function(){ var q=boxOf(fc,box.cid); return ((q&&q.op)||itemsC()>it0)?1:null; },5000,'the box C stands at to open on a forwarded pad X'); }).then(function(){
+    return sleep(400).then(function(){ dn=true; return wait(function(){ var q=boxOf(fc,box.cid); return ((q&&q.op)||itemsC()>it0)?1:null; },15000,'the box C stands at to open on a forwarded pad X'); }).then(function(){
       rep.padLootMs=Date.now()-t0;
       log('pad loot: C searched box '+box.cid+' with pad X held on the host and forwarded: '+(itemsC()-it0)+' items landed, '+rep.padLootMs+' ms; '+state());
     },function(e){ bad.push('pad loot: '+e.message+' ('+state()+')'); }).then(function(){
@@ -544,7 +544,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
   }
   function lootStep(A,C,bad,rep){
     if(typeof A.__net.cont!=='function'||typeof C.__net.cont!=='function'||typeof C.__net.stand!=='function'){ bad.push('this fixture has no container view in its net handle (a build before v15.91), so the loot step cannot run'); return Promise.resolve(); }
-    var vc=C.__net.cont(), va=A.__net.cont(), me=C.__net.up().me, box=null, bd=1e9, i, b, d, t0=0, tA=null, tC=null, tBag=null, bagC0=0, bagA0=0, itC0=0, n=0, ba=null, msgs=[];
+    var vc=C.__net.cont(), va=A.__net.cont(), me=C.__net.up().me, box=null, bd=1e9, i, b, d, t0=0, gt0=0, tA=null, tC=null, tBag=null, bagC0=0, bagA0=0, itC0=0, n=0, ba=null, msgs=[];
     // Items granted to C are counted on its own run tally (G.tel.items, one per item grantLoot hands over), not its backpack
     // length: ammo goes to the reserve and a gun to a weapon slot, so a box of ammo landed in C with its backpack unchanged.
     function itemsC(){ try{ var g=C.__state(); return (g&&g.tel)?(g.tel.items|0):0; }catch(e){ return 0; } }
@@ -562,20 +562,22 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
     clearFloor(fc);
     // C's next word tells A where it now stands, so the request is not refused as far away.
     return sleep(250).then(function(){
-      var holdMs=Math.round((ba.tm||1)*1200+600), held, watch; msgs=[];
-      t0=Date.now();
+      // 11-02 (job 260): E is held by the host's game clock, not real time. A frame adds at most 0.05 s to the game clock (the game loop's dt clamp), so under 20 frames a
+      // second a real time hold lets go before the box can fill. The box still has to fill in about its listed game time; the 30 s is only a ceiling for a stuck search.
+      var holdS=(ba.tm||1)*1.2+0.6, watch; msgs=[];
+      t0=Date.now(); gt0=A.__state().t;
       var CW=W(fc), KE=CW.KeyboardEvent, eUpd=false; function eUp(){ if(eUpd) return; eUpd=true; CW.dispatchEvent(new KE('keyup',{code:'KeyE',key:'e',bubbles:true,cancelable:true})); }
       CW.dispatchEvent(new KE('keydown',{code:'KeyE',key:'e',bubbles:true,cancelable:true}));   // E is let go once the listed items are in: held longer it searches the next box at C's feet (overnight 10-01: a Wire from a pile)
-      held=sleep(holdMs).then(eUp);
       watch=wait(function(){
         var a=boxOf(fa,box.cid), c=boxOf(fc,box.cid), bc=itemsC()-itC0, gm;
         try{ gm=C.__state(); if(gm&&gm.msg&&msgs.indexOf(gm.msg)<0) msgs.push(gm.msg); if(gm&&Array.isArray(gm.pick)) gm.pick.forEach(function(r){ var t=(r&&r.item)?('PICK '+r.m):''; if(t&&msgs.indexOf(t)<0) msgs.push(t); }); }catch(_m){}   // 2026-10-11: a pickup is a pickup stack row since the raid text work (R16)
         if(a&&a.op&&tA===null) tA=Date.now();
         if(c&&c.op&&tC===null) tC=Date.now();
         if(bc>=n&&tBag===null){ tBag=Date.now(); eUp(); }
+        var gh=A.__state(); if(gh&&gh.t-gt0>=holdS) eUp();
         return (tA!==null&&tC!==null&&tBag!==null)?true:null;
-      },holdMs+1500,'the box to read searched on both copies with the loot in C');
-      return Promise.all([held,watch]);
+      },30000,'the box to read searched on both copies with the loot in C');
+      return watch.then(function(){ eUp(); },function(e){ eUp(); throw e; });
     }).then(function(){
       var vc2=C.__net.cont(), va2=A.__net.cont(), bc=itemsC()-itC0, a=boxOf(fa,box.cid);
       (function(){ var g=C.__state(), nb=(g&&g.netBoard)||null, live=0, k; if(nb) for(k=0;k<nb.length;k++) if(!nb[k].out&&nb[k].st!=='DEAD') live++;
@@ -584,7 +586,7 @@ must not gain. Copy A must say it owns the boxes for the party and copy C that i
       rep.lootMsgs=msgs; log('loot: C read these lines while it searched: '+JSON.stringify(msgs));
       if(!msgs.some(function(q){ return (/^Took |^PICK /).test(q); })) bad.push('loot: C never read a Took line or a pickup row naming what it pulled');
       rep.lootItems=bc; rep.lootMs=Math.max(Math.abs(tA-tBag),Math.abs(tC-tBag),Math.abs(tA-tC));
-      log('loot: C searched box '+box.cid+' with a real E held; '+bc+' items landed in C (its backpack was '+JSON.stringify(rep.lootBag0)+', now '+JSON.stringify(vc2.bag)+'); A drew it searched '+(tA-t0)+' ms after the hold began, C '+(tC-t0)+' ms, the last item landed in C at '+(tBag-t0)+' ms; the widest gap is '+rep.lootMs+' ms');
+      log('loot: C searched box '+box.cid+' with a real E held; '+bc+' items landed in C (its backpack was '+JSON.stringify(rep.lootBag0)+', now '+JSON.stringify(vc2.bag)+'); A drew it searched '+(tA-t0)+' ms after the hold began, C '+(tC-t0)+' ms, the last item landed in C at '+(tBag-t0)+' ms; the widest gap is '+rep.lootMs+' ms; the game clock ran at '+(rep.lootRate=+((A.__state().t-gt0)/((Date.now()-t0)/1000)).toFixed(2))+' of real time');
       var opn=vc2.list.filter(function(q){ return q.op&&!op0[q.cid]&&q.cid!==box.cid; }).map(function(q){ return q.cid+' '+q.ty; });
       if(bc!==n) bad.push('loot: '+bc+' items landed in C, not the '+n+' A listed (other boxes opened in the hold: '+JSON.stringify(opn)+'; box '+box.cid+' held '+JSON.stringify((ba&&ba.keys)||null)+'; backpack was '+JSON.stringify(rep.lootBag0)+', now '+JSON.stringify(vc2.bag)+'; lines '+JSON.stringify(msgs)+')');
       if(rep.lootMs>500) bad.push('loot: the copies took '+rep.lootMs+' ms to agree the box is searched with the loot in C (the limit is 500)');
