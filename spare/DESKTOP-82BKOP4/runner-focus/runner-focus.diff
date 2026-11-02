@@ -1,0 +1,143 @@
+diff --git a/tools/spare/spare-runner.ps1 b/tools/spare/spare-runner.ps1
+index 7f4b73a..7a01e90 100644
+--- a/tools/spare/spare-runner.ps1
++++ b/tools/spare/spare-runner.ps1
+@@ -194,6 +194,64 @@ public static bool PadMoved(){
+   return act;
+ }
+ '@ }catch{ $script:noPres=$true; Say ('PROBLEM: the pad, other-account and full-screen checks did not load, so only the keyboard, mouse, sound and graphics card say someone is at the PC: '+(Short "$_")) }
++  # 11-02 (CEO, job 260's finding: measured on this PC 11-02 with Chrome and Notepad, open and close): a change of the window in front moves the Windows last input time
++  # with no key or mouse at all (a headless program moves nothing), so a program that took the front read as someone at the PC, stopped a gate job and paused the tests
++  # 15 minutes. FocusWatch looks about 10 times a second from a thread of its own, because a 5-second look cannot tell the two apart. One move of the input time, alone,
++  # within half a second of a change of window in front is a window move, not a key or the mouse. Anything else is a person: two moves together (a key has a press and a
++  # release; Alt+Tab or a click has more), a move with no change, a third window move within 30 s, or a sixth within 10 minutes, which goes back to an open pause for a program
++  # that keeps taking the front, so the status says so and the VM takes over. Known limits: a press and release inside one look that changes the
++  # window, with no mouse move before it, is missed until the next input. A window move does not hold the tests 15 minutes: it starts the passive signs' 2 hours (AwaySec)
++  # and FocusHold, so a game that came to the front with no key, mouse or pad pauses at its first passive sign (full screen, sound, the graphics card), work already
++  # running goes on until then, and one that shows no sign does not pause. It reads only the input time and the handle and process of the window in front, never a key, a title or the mouse position. If it cannot load,
++  # or its thread stops looking for 3 s, every later move of the input time counts as before. A new copy's first look counts what it finds as a person. Spare PC only: IDLE MODE
++  # never loads it.
++  $script:noFocus=$true; $script:focusN=[uint32]0; $script:burstN=[uint32]0; $script:holdN=[uint32]0
++  try{ Add-Type -Namespace PillagersSpare -Name FocusWatch -ErrorAction Stop -MemberDefinition @'
++[StructLayout(LayoutKind.Sequential)] public struct LII { public uint cbSize; public uint dwTime; }
++[DllImport("user32.dll")] static extern bool GetLastInputInfo(ref LII p);
++[DllImport("user32.dll")] static extern IntPtr GetForegroundWindow();
++[DllImport("user32.dll")] static extern uint GetWindowThreadProcessId(IntPtr h, out uint p);
++const int NearMs = 500; const int BurstMs = 30000; const int CeilMs = 600000; const int StaleMs = 3000;
++static readonly object K = new object();
++static bool on = false, first = true, pend = false, one = false, haveFg = false, haveFocus = false, have1 = false, have2 = false;
++static uint seen, person, pend0, fgT, polled, focus, ig1, ig2, count, bursts, fgPid;
++static IntPtr fg;
++static uint[] last5 = new uint[5]; static int n5 = 0;   // the last five window moves, oldest at last5[n5 % 5] once there are five
++static uint Now(){ return (uint)Environment.TickCount; }
++static bool Stamp(out uint t){ LII p = new LII(); p.cbSize = 8; bool ok = GetLastInputInfo(ref p); t = p.dwTime; return ok; }
++static int Gap(uint a, uint b){ return unchecked((int)(a - b)); }
++static long Dist(uint a, uint b){ return Math.Abs((long)Gap(a, b)); }
++// pend0 and fgT are both the look that saw the move, so a late look cannot part them
++public static void Look(uint now, uint stamp, IntPtr f, uint fpid){ lock (K) {
++  polled = now;
++  if (first) { first = false; seen = stamp; person = stamp; fg = f; return; }
++  if (f != IntPtr.Zero && f != fg) { fg = f; fgT = now; haveFg = true; fgPid = fpid; }   // the front is often NULL for a moment while it changes: that is not a change of its own
++  if (stamp != seen) { seen = stamp; if (pend) { one = false; } else { pend = true; one = true; pend0 = now; } }
++  if (!pend) return;
++  if (one && haveFg && Dist(fgT, pend0) <= NearMs) {
++    pend = false; haveFg = false;
++    if ((have2 && unchecked(seen - ig2) <= (uint)BurstMs) || (n5 >= 5 && unchecked(seen - last5[n5 % 5]) <= (uint)CeilMs)) { person = seen; bursts++; return; }
++    ig2 = ig1; have2 = have1; ig1 = seen; have1 = true; last5[n5 % 5] = seen; n5++; focus = seen; haveFocus = true; count++;
++    return;
++  }
++  if (Gap(now, pend0) > NearMs) { pend = false; haveFg = false; person = seen; }
++} }
++static void Run(){ while (true) {
++  try { uint st; if (Stamp(out st)) { IntPtr f = GetForegroundWindow(); uint p = 0; GetWindowThreadProcessId(f, out p); Look(Now(), st, f, p); } } catch { }
++  System.Threading.Thread.Sleep(100);
++} }
++public static void Start(){ lock (K) { if (on) return; on = true; } System.Threading.Thread t = new System.Threading.Thread(Run); t.IsBackground = true; t.Priority = System.Threading.ThreadPriority.Highest; t.Start(); }
++public static double PersonIdleSec(){ uint st; bool ok = Stamp(out st); lock (K) {
++  uint now = Now();   // after the input time and inside the lock, so it cannot be older than what they say
++  if (!on || first || (Dist(now, polled) > StaleMs && !(ok && st == seen && !pend))) return ok ? unchecked(now - st) / 1000.0 : 0;   // stale, but the input time has not moved and that move was judged: its answer stands
++  int g = Gap(now, person); if (g < 0 && g > -60000) return 0;
++  return unchecked(now - person) / 1000.0;
++} }
++public static double FocusOnlyAgo(){ lock (K) { return haveFocus ? unchecked(Now() - focus) / 1000.0 : 1e9; } }
++public static uint Count(){ lock (K) { return count; } }
++public static uint Bursts(){ lock (K) { return bursts; } }
++public static uint LastPid(){ lock (K) { return fgPid; } }
++'@; [PillagersSpare.FocusWatch]::Start(); $script:noFocus=$false }catch{ Say ('PROBLEM: the window-in-front watch did not load, so a change of window counts as someone at the PC, as before: '+(Short "$_")) }
+   # sound: the default output's loudness meter, and per program only when it is not quiet (Core Audio, read only; it says only how loud,
+   # never what). The code of pause-watch.ps1, unchanged: every failure comes back as "ERR ...", the meter is made again every 5 minutes
+   # (the default output can change) and not tried again for 60 s after a failure, and every COM object is released. In its own type,
+@@ -346,11 +404,18 @@ function AwaySec(){
+   if($o){ $script:conT=$now }
+   if($o -ne $script:conOn){ $script:conOn=$o; Say $(if($o){ 'another Windows account is in use at the screen' }else{ 'no other Windows account in use at the screen now' }) }
+   $a=[PillagersIdle.Input]::IdleSec(); $w='keyboard or mouse'
++  # 11-02: a move of the input time that only came with a change of the window in front is not a key or the mouse (see FocusWatch above); it still starts the passive signs' 2 hours
++  $fo=[double]1e9
++  if(-not $script:noFocus){ try{
++    $a=[double][PillagersSpare.FocusWatch]::PersonIdleSec(); $fo=[double][PillagersSpare.FocusWatch]::FocusOnlyAgo()
++    $n=[PillagersSpare.FocusWatch]::Count(); if($n -ne $script:focusN){ $script:focusN=$n; $pn='a program'; $lp=[int][PillagersSpare.FocusWatch]::LastPid(); if($lp -gt 0){ try{ $pn=[string](Get-Process -Id $lp -ErrorAction Stop).ProcessName }catch{} }; Say ('the input time moved as the window in front changed to '+$pn+': not counted as someone at the PC') }
++    $n=[PillagersSpare.FocusWatch]::Bursts(); if($n -ne $script:burstN){ $script:burstN=$n; Say 'the window in front keeps changing (3 times in 30 s or 6 in 10 minutes): counted as someone at the PC' }
++  }catch{ $a=[PillagersIdle.Input]::IdleSec(); $fo=[double]1e9 } }
+   $s=($now-$script:padT).TotalSeconds; if($s -lt $a){ $a=$s; $w='game pad' }
+   $s=($now-$script:conT).TotalSeconds; if($s -lt $a){ $a=$s; $w='another account at the screen' }
+   if($script:holdH -gt 0){ $s=[double]($e-$script:holdH); if($s -lt $a){ $a=$s; $w='someone used the PC before this runner restarted' } }
+   $script:humanAgo=$a
+-  if($a -lt $PassCapSec){
++  if([Math]::Min($a,$fo) -lt $PassCapSec){
+     $script:capSaid=$false
+     $mine=$true; if(-not $script:noPres){ try{ $mine=[PillagersSpare.Presence]::MineAtScreen($MySid) }catch{} }
+     if($mine){
+@@ -645,6 +710,9 @@ function IdleWork(){
+   @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessId -ne $PID -and $_.CommandLine -and
+     $_.CommandLine -match 'PillagersIdle' -and $_.CommandLine -match 'fuzz\.ps1|corpq\.sh|corpus-slices\.sh|soak-run\.ps1' }).Count
+ }
++# 11-02: a window move may be a game coming up by itself. For 65 s no new test work starts (two graphics-card looks are 30 s apart, so up to 60 s while something is looking);
++# what is running goes on, and the round goes on, so the status, a push and a new runner still happen. Asked where a gate job, a full run and the robot start.
++function FocusHold(){ if($Idle -or $script:noFocus -ne $false){ return $false }; try{ if([PillagersSpare.FocusWatch]::FocusOnlyAgo() -ge 65){ return $false }; $n=[PillagersSpare.FocusWatch]::Count(); if($n -ne $script:holdN){ $script:holdN=$n; Say 'a window came to the front: no new test work starts for 65 s, what is running goes on' }; return $true }catch{ return $false } }
+ # SPARE-PRESENCE-PAUSE: someone came to the spare PC during this round (a fetch, a test copy build or a push can take a minute), so it
+ # starts nothing more; the next round pauses. Always false in IDLE MODE.
+ function Arrived(){ if($Idle){ return $false }; return ((AwaySec) -lt 30) }
+@@ -1032,6 +1100,7 @@ function Start-Corpus(){
+   # SPARE-PRESENCE-PAUSE: someone came to the spare PC while the test copy was built (a minute or so): the run is not started and its try
+   # is given back; the next round pauses
+   if(Arrived){ PutS 'tries' ([string]$tries); Say ('someone came to the PC while the test copy was built ('+$script:awayWhy+'): the full run waits, its try is given back'); return }
++  if(FocusHold){ PutS 'tries' ([string]$tries); Say 'a window came to the front while the test copy was built: the full run waits for the next round, its try is given back'; return }
+   PutS 'fx_blob' $blob   # corpq.sh copies this test copy to fxcorpus.html, which the robots play
+   $name='corpus-'+(Get-Date -Format 'MMdd-HHmm')+'.txt'; $outF=$CorpDir+'\'+$name
+   [IO.File]::WriteAllText($outF+'.head',$head+"`n",$Enc)
+@@ -1243,7 +1312,7 @@ function Gate-Tick([switch]$Paused){
+     }
+     $now=Epoch
+     $pick=@($script:gateJobs | Where-Object { [long]('0'+$_['expires']) -gt $now -and -not (Test-Path -LiteralPath ($GateDone+'\'+$_['id'])) } | Sort-Object @{Expression={ if($_['kind'] -eq 'ship'){ 0 }else{ 1 } }},@{Expression={ [long]('0'+$_['submitted']) }})
+-    if($pick.Count -gt 0 -and -not (Arrived)){ Gate-Start $pick[0] }
++    if($pick.Count -gt 0 -and -not (Arrived) -and -not (FocusHold)){ Gate-Start $pick[0] }
+   }catch{ Say ('PROBLEM: gate job: '+(Short "$_")) }
+ }
+ 
+@@ -1365,7 +1434,7 @@ while($true){
+       else { Say ('full test run ended without finishing: '+(Split-Path $cf -Leaf)) }
+     }
+     # 11-01: a stopped full run goes on first, whether GitHub answers or not
+-    if(-not $Idle -and (GetS 'resume_file') -and -not (Arrived) -and (Resume-Corpus)){ }
++    if(-not $Idle -and (GetS 'resume_file') -and -not (Arrived) -and -not (FocusHold) -and (Resume-Corpus)){ }
+     elseif(Update-Game){
+       if((NewRunnerOK)){
+         if($why){ Write-Status 'idle' (Running 'fuzz\.ps1'); Publish $why }
+@@ -1375,7 +1444,7 @@ while($true){
+         exit 0
+       }
+       if(Arrived){ continue }   # SPARE-PRESENCE-PAUSE (never in IDLE MODE)
+-      if(-not $Idle -or (AwaySec) -ge 900){ Start-Corpus }   # 10-28: never a full run while he is at the main PC (only the light robot)
++      if((-not $Idle -or (AwaySec) -ge 900) -and -not (FocusHold)){ Start-Corpus }   # 10-28: never a full run while he is at the main PC (only the light robot)
+     }
+   }
+   if(Arrived){ continue }
+@@ -1457,7 +1526,7 @@ while($true){
+       else { $atPc=((AwaySec) -lt 900); $script:gcAtStart=(GameChrome); Start-Robot 9332 'fixture-soak-spare2.html' $(if($atPc -or $script:gcAtStart -or $sf -lt 7 -or (GetS 'no4k') -eq (Get-Date).ToString('yyyy-MM-dd')){ '' }else{ '3840x2160' }) -Low:$atPc }
+     }
+   } else {
+-    if((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -eq 0 -and -not (GetS 'gate_id')){ Start-Robot 9331 'fixture-soak-spare1.html' }   # 11-02: not while a gate job runs
++    if((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -eq 0 -and -not (GetS 'gate_id') -and -not (FocusHold)){ Start-Robot 9331 'fixture-soak-spare1.html' }   # 11-02: not while a gate job runs
+     # 10-30, his "yes i want the auto test": the online 2 player test joins from here. tools\p2online\p2.mjs guest-daemon looks in the
+     # p2-mailbox branch every 20 s for an invite from the VM and plays player 2 in a headless Chrome on 9362 (it calls no AI).
+     if((Test-Path -LiteralPath ($T+'\p2online\p2.mjs')) -and (Running 'p2\.mjs.*guest-daemon') -eq 0){ Start-Process -FilePath $Node -ArgumentList @(('"'+$T+'\p2online\p2.mjs"'),'guest-daemon','--root',('"'+$R+'"')) -WindowStyle Hidden | Out-Null }
