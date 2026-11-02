@@ -147,7 +147,7 @@ const stall = [];
 if (seen && ago < 30 && !paused) {
   const sha = (seenSt.game || '').split(' ')[0], now = Date.now() / 1000;
   const behind = /^[0-9a-f]{7,40}$/.test(sha) ? gameTimes(sha) : null;
-  if (behind && behind.length && now - Math.min(...behind) >= 3 * 3600) stall.push(`its game copy ${seenSt.game} is ${((now - Math.min(...behind)) / 3600).toFixed(1)} h behind (${behind.length} newer game commits)`);
+  if (behind && behind.length && !seenSt.resumed && now - Math.min(...behind) >= 3 * 3600) stall.push(`its game copy ${seenSt.game} is ${((now - Math.min(...behind)) / 3600).toFixed(1)} h behind (${behind.length} newer game commits)`);
   let last = '', lastH = '';
   for (const [h, list] of Object.entries(hosts)) for (const n of list) { const m = /^corpus\/corpus-(\d{4}-\d{4})\.txt\.head$/.exec(n); if (m && m[1] > last) { last = m[1]; lastH = h; } }
   if (last) {

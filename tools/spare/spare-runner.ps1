@@ -34,7 +34,7 @@
 # screen and unlocked, when a full-screen program runs (a game or a film), a program other than a test browser plays sound, or a program
 # that is not a test browser works the graphics card (15% or more of its 3D engine at two looks in a row, a game). These are the signs
 # of the stopgap pause-watch.ps1, which retires once this text is in the runner. A full test run stopped because someone is there gives
-# its try back, so visits never use up a build's two tries. While paused its status says "paused: someone is using the PC" and when that
+# its try back, so visits never use up a build's two tries, and goes on from its last finished slice afterwards (11-01, Resume-Corpus below). While paused its status says "paused: someone is using the PC" and when that
 # began (paused_since=); the VM then runs the tests itself (tools/spare/spare-import.mjs, 64d6fec3). It stops only its own test parts,
 # by the shape of the runner's own launches; one started by hand from a Windows program (Claude's PowerShell, a terminal window) and an
 # editor or a search that only names a test script are left alone (one started from Git bash looks like the runner's and is stopped
@@ -538,9 +538,32 @@ function Kill-One($p){
 # or another runner, nor node serve.mjs (the runner's 8806 server). The scripts go first, then what they started, then the browsers: a
 # robot whose browser dies under it records a "cdp" problem (fuzz.ps1 Run-Raid) that keeps that build out of stable (tools/stable.mjs),
 # and a hashtable gives its keys in any order. A second look 2 s later catches a browser that was being started at that moment.
-# -Refund (someone is at the PC): the runner's full run (state.txt corpus_file), stopped before its end, gives its try back once, so it
-# starts again from the beginning once the PC is free (while it is paused the VM runs the tests, so a day of short visits still gets
-# full runs there).
+# -Refund (someone is at the PC): the runner's full run (state.txt corpus_file), stopped before its end, gives its try back once, and
+# 11-01 goes on from its last finished slice once the PC is free (Resume-Corpus; a run with no slice finished starts again).
+# where a stopped full run goes on: after its last slice in its file (after a STALLED slice, past the check it stalled in, as
+# corpus-slices.sh does). 0 when no slice finished.
+function Slice-Next([string]$f){
+  $n=0
+  try{ foreach($l in [IO.File]::ReadAllLines($f)){ if($l -match '^\[\d+,\d+\) STALLED at index (\d+)'){ $n=[int]$Matches[1]+1 } elseif($l -match '^\[\d+,(\d+)\)'){ $n=[int]$Matches[1] } } }catch{ return 0 }
+  return $n
+}
+# a full run stopped before its end: its try back, and where it goes on, if a slice finished. How many checks it has is in OUT.n (corpq.sh).
+function Give-Back([string]$cf,[string]$cause){
+  $cb=GetS 'corpus_blob'; $t=[int]('0'+(GetS 'tries'))
+  if($cb -and (GetS 'try_blob') -eq $cb -and $t -gt 0){ PutS 'tries' ([string]($t-1)) }
+  PutS 'corpus_done' $cf   # so the main loop does not report it as "ended without finishing"
+  $ne=''; try{ $ne=([IO.File]::ReadAllText($cf+'.n')).Trim() }catch{}
+  $nx=Slice-Next $cf; $said='full test run '+(Split-Path $cf -Leaf)+' stopped before its end because '+$cause+': its try is given back, and '
+  if($ne -match '^\d+$' -and $nx -gt 0){ PutS 'resume_end' $ne; PutS 'resume_file' $cf; PutS 'resume_t' ([string](Epoch)); Say ($said+'it goes on from check '+$nx+' of '+$ne) }
+  else { PutS 'resume_file' ''; Say ($said+'with no slice finished it starts again') }
+}
+# a run this PC's restart or shutdown ended (the heartbeat is old, so nobody was looking; none of its parts is left): a stopped run like any other
+function Run-Lost(){
+  $cf=GetS 'corpus_file'
+  if(-not $HbOld -or -not $cf -or (GetS 'corpus_done') -eq $cf -or (Running 'corpq\.sh|corpus-slices\.sh') -gt 0){ return }
+  if((Test-Path -LiteralPath $cf) -and ([IO.File]::ReadAllText($cf) -match 'ALL DONE')){ return }
+  Give-Back $cf 'this PC was off or restarted'
+}
 function Stop-Work([string]$why,[switch]$Refund,[switch]$LowRam){
   if($Idle){
     # 10-31: a stop for low RAM is an abort, not a game failure: fuzz.log gets a FUZZ ABORT line (tools/stable.mjs leaves out the raids
@@ -605,10 +628,7 @@ function Stop-Work([string]$why,[switch]$Refund,[switch]$LowRam){
   # only the run state.txt names (its output file is in the stopped bash's command line), only once per run, and not a run that ended
   if($corp.Count -and $Refund -and $cf -and (GetS 'corpus_done') -ne $cf -and @($corp.Keys | Where-Object { $_.IndexOf((Split-Path $cf -Leaf),[StringComparison]::OrdinalIgnoreCase) -ge 0 }).Count -and
      -not ((Test-Path -LiteralPath $cf) -and ([IO.File]::ReadAllText($cf) -match 'ALL DONE'))){
-    $cb=GetS 'corpus_blob'; $t=[int]('0'+(GetS 'tries'))
-    if($cb -and (GetS 'try_blob') -eq $cb -and $t -gt 0){ PutS 'tries' ([string]($t-1)) }
-    PutS 'corpus_done' $cf   # so the main loop does not report it as "ended without finishing"; the next start writes a new file
-    Say ('full test run '+(Split-Path $cf -Leaf)+' stopped before its end because someone is at the PC: its try is given back')
+    Give-Back $cf 'someone is at the PC'
   }
 }
 # the test scripts this runner's copies started (the same match Stop-Work uses)
@@ -669,6 +689,10 @@ function Update-Game(){
   if($script:gx -ne 0){ Say ('GitHub fetch failed: '+(Short $o)); return $false }
   $want=G -C $R rev-parse origin/master; $have=G -C $R rev-parse HEAD
   if($want -and $want -ne $have){
+    # 11-01: a stopped full run that will go on keeps this copy as it is, as a run that is going does, so game= in the status stays the build
+    # under test (the main PC's OtherPC and the dashboard read it) and its tools stay the ones it began with. A new runner waits too (35 came in
+    # the 8 days to 11-01, so a stop would often lose its slices), but only for 2 hours, so a fix still reaches a PC that is paused for longer.
+    if(-not $Idle -and (GetS 'resume_file') -and (((Epoch)-[long]('0'+(GetS 'resume_t'))) -lt 7200 -or (G -C $R rev-parse ($want+':tools/spare/spare-runner.ps1')) -eq (G -C $R rev-parse 'HEAD:tools/spare/spare-runner.ps1'))){ return $true }
     $o=G -C $R -c advice.detachedHead=false checkout -q -f --detach $want
     if($script:gx -ne 0){ Say ('could not take the new game: '+(Short $o)); return $false }
     Say ('game copy now at '+$want.Substring(0,8)+' (v'+(GameVer)+')')
@@ -937,7 +961,28 @@ function OtherPC([string]$head){
   return ''
 }
 
+# 11-01 (CEO: no full run had finished for 57 hours, and every one of 10 starts was stopped by a touch at the PC, the longest at 20 of its
+# 24 slices, and began again from nothing): a run stopped because someone is at the PC goes on from its last finished slice, on the same
+# frozen test copy, and a run this PC's going off ended does too, so it ends as long as the gaps between stops leave room for a slice, and its
+# result names the build it began on (its .head). Only then does the newest build get its run. Not when the run is over a day old, its
+# test copy is gone or a new runner moved the game copy. One go per stop: a run that ends by itself is not gone on with.
+function Resume-Corpus(){
+  $cf=GetS 'resume_file'; if(-not $cf){ return $false }
+  PutS 'resume_file' ''
+  $end=[int]('0'+(GetS 'resume_end')); $nx=Slice-Next $cf; $cb=GetS 'corpus_blob'; $no=''; $hd=''; try{ $hd=([IO.File]::ReadAllText($cf+'.head')).Trim() }catch{}
+  if($cf -ne (GetS 'corpus_file') -or $end -le 0 -or $nx -le 0){ $no='its record does not fit' }
+  elseif(((Epoch)-[long]('0'+(GetS 'corpus_t'))) -gt 86400){ $no='it began over a day ago' }
+  elseif((GetS 'fx_blob') -ne $cb -or -not (Test-Path -LiteralPath ($T+'\fxcorpus.html'))){ $no='its test copy is gone' }
+  elseif($hd -ne (G -C $R rev-parse HEAD)){ $no='a new runner moved the game copy' }
+  if($no){ Say ('full test run '+(Split-Path $cf -Leaf)+' does not go on: '+$no); return $false }
+  $tries=0; if((GetS 'try_blob') -eq $cb){ $tries=[int]('0'+(GetS 'tries')) }
+  PutS 'try_blob' $cb; PutS 'tries' ([string]($tries+1)); PutS 'corpus_done' ''; PutS 'corpus_resumed' $cf
+  Start-Process -FilePath $Bash -ArgumentList @('tools/handoff/shipkit/corpq.sh',('"'+($cf -replace '\\','/')+'"'),[string]$nx,[string]$end) -WorkingDirectory $R -WindowStyle Hidden | Out-Null
+  Say ('full test run '+(Split-Path $cf -Leaf)+' goes on from check '+$nx+' of '+$end)
+  return $true
+}
 function Start-Corpus(){
+  if(-not $Idle -and (GetS 'resume_file')){ [void](Resume-Corpus); return }   # if it cannot go on, the next round takes the newest build first
   $blob=G -C $R rev-parse 'HEAD:dark_raiders.html'; $head=G -C $R rev-parse HEAD
   if(-not $blob -or $blob -eq (GetS 'tested_blob')){ return }
   if($Idle){
@@ -1042,6 +1087,7 @@ function Write-Status([string]$corpus,[int]$robots){
   # SPARE-PRESENCE-PAUSE: on the spare PC, when its pause began (epoch), for whoever reads the status; the VM goes by test_run=paused alone
   if($Idle){ $L+=('spare_pc='+(SparePC)); $L+=('party='+(GetS 'party_ver')+' '+(GetS 'party_head')); $L+=('play8802='+(Play8802)); $L+=('receiver8799='+(Receiver8799)) } else {
     if($corpus -like 'paused*' -and (GetS 'pause_t')){ $L+=('paused_since='+(GetS 'pause_t')) }
+    if($corpus -like 'running*' -and (GetS 'corpus_resumed') -eq (GetS 'corpus_file')){ $L+='resumed=1' }   # older than the newest build because a pause came in between
     if($script:noIn){ $L+='presence=off' }   # the presence checks did not load: it tests without pausing for anyone (see runner.log)
   }
   [IO.File]::WriteAllLines($StatusF,[string[]]$L,$Enc)
@@ -1089,6 +1135,7 @@ if($Idle -and (IdleWork) -gt 0){ $script:working=$true; Say 'an earlier copy lef
 if(-not $Idle){
   $script:working=$true
   if($HbOld -and (GetS 'pause_why')){ PutS 'pause_why' ''; PutS 'pause_t' ''; PutS 'pub_t' '0'; Say 'the last pause ended with this PC off or its runner stopped' }
+  Run-Lost
   Load-Hold
   if(-not $script:noIn){ for($i=0;$i -lt 8;$i++){ [IO.File]::WriteAllText($Hb,[string](Epoch),$Enc); if((AwaySec) -lt 900){ break }; if($i -lt 7){ Start-Sleep -Seconds 5 } } }
 }
@@ -1188,7 +1235,9 @@ while($true){
       if([IO.File]::ReadAllText($cf) -match 'ALL DONE'){ PutS 'tested_blob' (GetS 'corpus_blob'); Say ('full test run finished: '+(Split-Path $cf -Leaf)); $why='test run done' }
       else { Say ('full test run ended without finishing: '+(Split-Path $cf -Leaf)) }
     }
-    if(Update-Game){
+    # 11-01: a stopped full run goes on first, whether GitHub answers or not
+    if(-not $Idle -and (GetS 'resume_file') -and -not (Arrived) -and (Resume-Corpus)){ }
+    elseif(Update-Game){
       if((NewRunnerOK)){
         if($why){ Write-Status 'idle' (Running 'fuzz\.ps1'); Publish $why }
         Say 'a new copy of this runner came from GitHub: restarting'
