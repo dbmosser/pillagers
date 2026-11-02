@@ -644,6 +644,9 @@ function Watch([int]$sec){
   $end=(Get-Date).AddSeconds($sec); $k=0; $lo=0
   while((Get-Date) -lt $end){
     Start-Sleep -Seconds 5; $k++
+    # 11-02: the heartbeat was only written at the top of a round, so a slow round (4 to 6 minutes at 100% CPU) plus this wait passed the 10 minutes the
+    # 15-minute task allows, and it started a second runner beside the first, which nothing ends (02:35). Spare PC only: IDLE MODE stays as it was.
+    if(-not $Idle){ [IO.File]::WriteAllText($Hb,[string](Epoch),$Enc) }
     if((AwaySec) -lt 30){ if($Idle){ if((-not $script:lightRun) -or -not (LightOK)){ Stop-Work $(if($script:playWhy){ 'he is playing ('+$script:playWhy+')' }else{ 'he is back at the PC' }); return } }else{ Stop-Work ('someone is at the PC: '+$script:awayWhy) -Refund; return } }
     if($Idle -and ($k % 6) -eq 0){
       if((FreeGB) -lt 4){ $lo++ }else{ $lo=0 }
