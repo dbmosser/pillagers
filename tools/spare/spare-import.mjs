@@ -148,8 +148,11 @@ if (seen && ago < 30 && !paused) {
   const sha = (seenSt.game || '').split(' ')[0], now = Date.now() / 1000;
   const behind = /^[0-9a-f]{7,40}$/.test(sha) ? gameTimes(sha) : null;
   if (behind && behind.length && !seenSt.resumed && now - Math.min(...behind) >= 3 * 3600) stall.push(`its game copy ${seenSt.game} is ${((now - Math.min(...behind)) / 3600).toFixed(1)} h behind (${behind.length} newer game commits)`);
+  // 11-02: the newest WHOLE finished run. A partial one (tools/stable.mjs's test) is left out here too, or a check that hangs on every build keeps this alarm quiet.
   let last = '', lastH = '';
-  for (const [h, list] of Object.entries(hosts)) for (const n of list) { const m = /^corpus\/corpus-(\d{4}-\d{4})\.txt\.head$/.exec(n); if (m && m[1] > last) { last = m[1]; lastH = h; } }
+  const heads = [];
+  for (const [h, list] of Object.entries(hosts)) for (const n of list) { const m = /^corpus\/corpus-(\d{4}-\d{4})\.txt\.head$/.exec(n); if (m) heads.push([m[1], h]); }
+  for (const [k, h] of heads.sort((a, b) => (a[0] < b[0] ? 1 : -1))) { let t = ''; try { t = blob(`spare/${h}/corpus/corpus-${k}.txt`).toString('latin1'); } catch { } if (!/^\[\d+,\d+\) (?:STALLED at index|result could not be read)/m.test(t)) { last = k; lastH = h; break; } }
   if (last) {
     const d = new Date(new Date().getFullYear(), +last.slice(0, 2) - 1, +last.slice(2, 4), +last.slice(5, 7), +last.slice(7, 9));
     if (d > new Date()) d.setFullYear(d.getFullYear() - 1);
