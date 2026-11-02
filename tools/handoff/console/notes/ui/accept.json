@@ -387,17 +387,17 @@
   "score": 3,
   "pass": false,
   "need": 4,
-  "verdict": "the card is clean and the lime primary action is clear, but the earlier layout advice was mostly not applied: the title is small, the objective row still sits between the header and the haul, the spacing is uneven, and the feedback button is still a weak outlined box.",
+  "verdict": "The card is clean, but almost none of the last round's advice was applied: the title is still small, the objective row is still above the haul, the bonus is still detached from it, and the optional button still competes with the primary one.",
   "findings": [
-   "P1 title 'extracted' and subline 'out clean · never spotted': Set the title to 32px/700 with 8px below it. Make the subline 16px tx-2 and cut it to 'never spotted'.",
-   "P1 '✓ burst carbine' row between the subline and 'haul': Move it below the stat strip with a 16px 'objectives' label above it. Colour the ✓ var(--ok). Keep 32px between groups.",
-   "P1 vertical rhythm of the card; image 2 gap above the stat strip: Use three groups with 32px between them. Put the bonus inside the haul group, 8px under the hero number, as '+$313 bonus' in 16px tx-2. Give the card 32px top and bottom padding.",
-   "P1 'how did that run feel +' button: Make it 44px tall with 16px/600 text and a 1px --ui-line-hi border, and put 24px between it and the primary button. Shorten the label to 'rate run ›' and drop the '+'.",
-   "P2 stat strip and the tags line 'first out · untouched · ghost': Set the labels to 16px/600 with +.04em. Dim 0 values to tx-2. Draw each tag as a chip with a 1px --ui-line-hi border, 8px gaps and 8px by 16px padding."
+   "P1 title 'extracted' and subline 'out clean · never spotted': Set the title to 32px/700, with 8px below it. Cut the subline to 'never spotted' at 16px tx-2. Set the 'haul' label to 16px/600 +.04em tx-2.",
+   "P1 '✓ burst carbine' row between the subline and 'haul': Move it below the stat strip under a 16px 'objectives' label. Colour the ✓ var(--ok). Leave 32px between the header and the haul group.",
+   "P1 Image 2: 'extraction bonus +$313' floating between the item tiles and the stat strip: Put '+$313 bonus' at 16px tx-2 directly under the hero number, with 8px between them, and put the item tiles below it. Use one 32px gap before the stat strip. Reserve the bonus line's height in both states.",
+   "P1 'how did that run feel +' button above 'log run and return': Make it 44px tall with a 1px --ui-line-hi border and 16px/600 text. Relabel it 'rate run ›'. Put 24px between it and the primary, and 32px between the tags and it.",
+   "P2 stat strip: 0 / 0 / 0% / 0:02 and the labels containers, kills, accuracy, time: Set the values to 24px/700. Dim 0 values to tx-2. Set the labels to 16px/600 +.04em. Pad the strip 16px top and bottom."
   ],
-  "pic": "tools/handoff/console/notes/shots/00p-m1b-after/38-extracted-card-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/00p-m1b-after2/38-extracted-card-1080.jpg",
   "task": "manual",
-  "when": "2026-11-01T21:23"
+  "when": "2026-11-01T21:30"
  },
  "40-whats-new-card": {
   "score": 3,

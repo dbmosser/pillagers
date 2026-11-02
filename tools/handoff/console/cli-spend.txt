@@ -2206,3 +2206,6 @@
 2026-11-01 5.673400200000002 00p-m1d-market
 2026-11-01 0.0947 critic-manual
 2026-11-01 0.1004 critic-manual
+2026-11-01 0.0954 critic-manual
+2026-11-01 4.7288578 00p-m1b-no-raid-cash
+2026-11-01 0.1926891 z-163-burn-ash-and-red-glow-wait

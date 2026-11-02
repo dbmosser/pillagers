@@ -1,0 +1,7 @@
+v37.27: the teammate row shows his gun and his rounds
+
+The teammate row under the bars shows his gun and his rounds and reserve. Watch the left column at 4K and with three or more teammates: the rows are taller now.
+
+Check 37.27. Fails on v37.26.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

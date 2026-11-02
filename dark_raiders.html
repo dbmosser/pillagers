@@ -3932,8 +3932,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.26';
-var VER_AT='2026-11-01 16:28';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.27';
+var VER_AT='2026-11-01 19:39';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -57490,7 +57490,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.26: the extraction bonus line is its own block in the secondary text colour with 24px under it Check 37.26 fails on v37.25',
+  now:'v37.27: The teammate row under the bars shows his gun and his rounds and reserve. Watch the left column at 4K and with three or more teammates: the rows are taller now. Check 37.27 fails on v37.26',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -62218,7 +62218,7 @@ function netOnState(peer,m){
   // full stop). It now reads REVIVE and his name in caps, the verb his [E] REVIVE prompt uses at his body. The Peddler plate beside a
   // crate not yet searched reads THE PEDDLER, a middle dot, SEARCH CRATE FIRST, in the caps of every other nameplate.
   if(up&&m.dn&&!g.dn&&g.n>1&&typeof G!=='undefined'&&G&&!G.over&&!G.sim&&(G.seed>>>0)===((+m.sd)>>>0)){ try{ say('TEAMMATE DOWN','crit',{sub:'REVIVE '+String(netSeatName(s)||'your teammate').toUpperCase(),key:'tmdown'+s,icon:'party',col:mapSeatColor(s|0),hold:(function(gg){ return function(){ return !!(gg&&gg.dn); }; })(g)}); padRumble(0.55,420); try{ sndDowned(0,x,y); }catch(_dn){} try{ sndMateAlert(); }catch(_mq){} }catch(_md){} }   // v24.xx (his order 2026-10-12): and heard, where he fell
-  if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.fk=(m.fk===1||m.fk===2)?m.fk:0; g.el=(g.fk===2&&typeof m.el==='string'&&ELEM[m.el])?m.el:''; g.sd=(+m.sd)>>>0; g.pz=m.pz?1:0; g.mf=(m.mf===1||m.mf===2)?m.mf:0; g.hp=+m.hp||0; g.mh=+m.mh||100; g.ar=+m.ar||0; g.ac=+m.ac||0; g.dt=+m.dt||0; g.sa=(m.sa===undefined)?1:(m.sa?1:0); g.hd=m.hd?1:0; }   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in; v16.20: paused; v16.23: health and armour // v28.47 (cloud-coop-teammate-bare-hands), CLOUD HUNT 2026-10-15: hd kept; a word without it (an older window) reads as empty hands
+  if(up){ g.cr=m.c?1:0; g.sp=m.sp?1:0; g.dn=m.dn?1:0; g.w=netClean(m.w,24); g.fk=(m.fk===1||m.fk===2)?m.fk:0; g.el=(g.fk===2&&typeof m.el==='string'&&ELEM[m.el])?m.el:''; g.sd=(+m.sd)>>>0; g.pz=m.pz?1:0; g.mf=(m.mf===1||m.mf===2)?m.mf:0; g.hp=+m.hp||0; g.mh=+m.mh||100; g.ar=+m.ar||0; g.ac=+m.ac||0; g.dt=+m.dt||0; g.sa=(m.sa===undefined)?1:(m.sa?1:0); g.hd=m.hd?1:0; g.am=(typeof m.am==='number'&&isFinite(m.am))?Math.max(0,Math.min(999,m.am|0)):-1; g.rs=(typeof m.rs==='number'&&isFinite(m.rs))?Math.max(-1,Math.min(99999,m.rs|0)):0; }   // v28.xx (cw-partnergun): his rounds and reserve for the teammate row; a word without them (an older window) draws no gun line   // v15.79: crouched, sprinting, downed, the gun in hand and the seed of the raid he is in; v16.20: paused; v16.23: health and armour // v28.47 (cloud-coop-teammate-bare-hands), CLOUD HUNT 2026-10-15: hd kept; a word without it (an older window) reads as empty hands
   if(up&&(m.sh||g.sh)) g.sh=m.sh?1:0;   // v23.30 (arcade9): the teammate spawn shield
   if(up) g.xo=m.xo?1:0;   // v35.xx (cw-xsink): an extraction took him (the DEMO host out for the run); a word without it (an older window) reads as not out
   if(up) g.shold=(m.shold===1)?1:0;   // v28.xx (cw-cx-bothsearch): search input, not a granted box or the busy-hands pose
@@ -62227,7 +62227,7 @@ function netOnState(peer,m){
   if(lk) g.lk=lk;
   if(NET.role==='host'){
     out={t:'st',s:s,x:+x.toFixed(1),y:+y.toFixed(1),f:+f.toFixed(2),m:g.mv,r:+g.roll.toFixed(2)};
-    if(up){ out.k='r'; out.sd=g.sd; out.c=g.cr; out.sp=g.sp; out.dn=g.dn; out.w=g.w; out.pz=g.pz; out.mf=g.mf|0; out.hp=g.hp; out.mh=g.mh; out.ar=g.ar; out.ac=g.ac; out.dt=g.dt; out.sa=g.sa; out.hd=g.hd; }   // v15.79: passed on as it came // v28.47 (cloud-coop-teammate-bare-hands), CLOUD HUNT 2026-10-15: hd passed on too
+    if(up){ out.k='r'; out.sd=g.sd; out.c=g.cr; out.sp=g.sp; out.dn=g.dn; out.w=g.w; out.pz=g.pz; out.mf=g.mf|0; out.hp=g.hp; out.mh=g.mh; out.ar=g.ar; out.ac=g.ac; out.dt=g.dt; out.sa=g.sa; out.hd=g.hd; out.am=g.am; out.rs=g.rs; }   // v15.79: passed on as it came // v28.47 (cloud-coop-teammate-bare-hands), CLOUD HUNT 2026-10-15: hd passed on too
     if(lk) out.lk=lk;
     if(up&&g.fk){ out.fk=g.fk; if(g.el) out.el=g.el; }   // v23.xx (forge8)
     if(up&&g.xo) out.xo=1;   // v35.xx (cw-xsink): passed on as it came
@@ -63664,7 +63664,7 @@ function netUpTick(dt){
   NET.upAcc=Math.max(0,Math.min(NET.upAcc-NET_HUB_STEP,NET_HUB_STEP));   // v28.xx (cw-cx-bothsearch): an input edge may send before the position clock is due
   msg={t:'st',k:'r',sd:NET.upSeed>>>0,x:+(+p.x||0).toFixed(1),y:+(+p.y||0).toFixed(1),f:+(+p.face||0).toFixed(2),m:p.moving?1:0,r:(p.roll>0)?+(+p.roll).toFixed(2):0,
        c:(G.pCrouch||crouchHeld())?1:0,sp:G.sprinting?1:0,dn:p.downed?1:0,w:(p.wep&&p.wep.id)?String(p.wep.id):'',fk:(p.wep&&(p.wep.fk===1||p.wep.fk===2))?p.wep.fk:0,el:(p.wep&&p.wep.fk===2&&p.wep.el)?String(p.wep.el):'',pz:G.paused?1:0,mf:mapFirstWord(),
-       hp:Math.round(p.hp||0),mh:Math.round(p.maxhp||100),ar:Math.round(p.armor||0),ac:Math.round(armorCap()||0),dt:p.downed?Math.max(0,Math.ceil(p.downT||0)):0,sa:(!CFG.superhot||G.shAct)?1:0,hd:(G.handsT>0||p.hand)?1:0,xo:ascOut(p)?1:0};   // v16.20: pz, this player is paused; v16.23: health and armour, for a teammate's bandage or plate // v28.47 (cloud-coop-teammate-bare-hands), CLOUD HUNT 2026-10-15: hd, his hands are busy (a grenade or heal out, a search or a seal), so his teammate draws him without his gun as he sees himself
+       hp:Math.round(p.hp||0),mh:Math.round(p.maxhp||100),ar:Math.round(p.armor||0),ac:Math.round(armorCap()||0),dt:p.downed?Math.max(0,Math.ceil(p.downT||0)):0,sa:(!CFG.superhot||G.shAct)?1:0,hd:(G.handsT>0||p.hand)?1:0,xo:ascOut(p)?1:0,am:Math.max(0,p.ammo|0),rs:(isFinite(rsvShow(p))?Math.max(0,Math.round(rsvShow(p))):-1)};   // v28.xx (cw-partnergun): am, rounds in his magazine; rs, his reserve as his own HUD shows it (-1 is endless)   // v16.20: pz, this player is paused; v16.23: health and armour, for a teammate's bandage or plate // v28.47 (cloud-coop-teammate-bare-hands), CLOUD HUNT 2026-10-15: hd, his hands are busy (a grenade or heal out, a search or a seal), so his teammate draws him without his gun as he sees himself
   if(NET.role==='host') msg.s=NET.seat;   // a friend names no seat: the host files him under the seat of his link
   msg.shold=held;   // v28.xx (cw-cx-bothsearch): one backward-safe bit for keyboard E or the pad search input
   lk=netLook(); ls=JSON.stringify(lk);
@@ -64458,7 +64458,7 @@ function netTeamHud(by){
   // below the board when it sits over that place in their left column, and then never past the bottom of the screen.
   var _trb=HUDBOX.raiders, _tun=0, _trh, _tj;
   try{ for(_tj=0;_tj<(NET.up||[]).length;_tj++) if(netUpShown(NET.up[_tj])) _tun++; }catch(_tu){}
-  _trh=Math.max(1,_tun)*Math.round(44*_thr);
+  _trh=Math.max(1,_tun)*Math.round(56*_thr);
   if(_trb&&_trb.x<170*_thr&&_trb.x+_trb.w>12*_thr&&_trb.y<_tt+_trh+8*_thr&&_trb.y+_trb.h>_tt-8*_thr){
     _tt=Math.round(_trb.y+_trb.h+16*_thr);
     if(_tt+_trh>H-8*_thr) _tt=Math.max(0,Math.round(H-8*_thr-_trh));
@@ -64467,12 +64467,12 @@ function netTeamHud(by){
   if(typeof G==='undefined'||!G||G.over) return 0;
   for(i=0;i<NET.up.length;i++){
     g=NET.up[i]; if(!netUpShown(g)) continue;
-    y=Math.round(H*0.30)+n*44; n++;   // v16.27, his note: the rows sat on the belt help line; they now run down the left edge, clear of it
-    _ty=_tt+(n-1)*Math.round(44*_thr)+Math.round(15*_thr); ctx.save(); ctx.translate(0,_ty-_thr*y); ctx.scale(_thr,_thr);   // v19.07: this row drawn at its screen place and size
-    NETTEAMBOX={n:n,x:hudIns(),y:_tt,w:Math.round(158*_thr),h:Math.round(n*44*_thr)};
+    y=Math.round(H*0.30)+n*56; n++;   // v16.27, his note: the rows sat on the belt help line; they now run down the left edge, clear of it
+    _ty=_tt+(n-1)*Math.round(56*_thr)+Math.round(15*_thr); ctx.save(); ctx.translate(0,_ty-_thr*y); ctx.scale(_thr,_thr);   // v19.07: this row drawn at its screen place and size
+    NETTEAMBOX={n:n,x:hudIns(),y:_tt,w:Math.round(158*_thr),h:Math.round(n*56*_thr)};
     x=hudIns()/_thr+4; var _hfMate=hudFadeBegin('partner-'+g.seat);
     try{
-    hudPanel(x-4,y-15,w+8,36,undefined,1);   // v28.xx (cw-hudinset), the critic on the party windows: the teammate rows were a 62 percent blue-black box on their own margin. The shared panel (fill, 1px line, 4px radius), its left edge on the shared inset
+    hudPanel(x-4,y-15,w+8,48,undefined,1);   // v28.xx (cw-hudinset), the critic on the party windows: the teammate rows were a 62 percent blue-black box on their own margin. The shared panel (fill, 1px line, 4px radius), its left edge on the shared inset
     ctx.font=FS(TYPE.label); ctx.textAlign='left';
     ctx.fillStyle=g.dn?HUDC.danger:HUDC.ally; ctx.fillText(netSeatName(g.seat)||'PILLAGER',x,y);   // v22.70 (R27): one teammate colour
     if(g.dn){ t=(g.dt>0)?(' '+g.dt+'s'):''; ctx.fillStyle='#ff5a4a'; ctx.textAlign='right'; ctx.fillText('DOWN'+t,x+w,y); ctx.textAlign='left'; }
@@ -64480,6 +64480,14 @@ function netTeamHud(by){
     ctx.fillStyle='rgba(255,255,255,.12)'; ctx.fillRect(x,y+5,w,7);
     ctx.fillStyle=g.dn?'#8a2a22':(f<0.35?'#e2564a':'#6fe0a0'); ctx.fillRect(x,y+5,w*f,7);
     if(g.ac>0){ ctx.fillStyle='rgba(255,255,255,.10)'; ctx.fillRect(x,y+14,w,4); ctx.fillStyle='#6fb8ff'; ctx.fillRect(x,y+14,w*clamp((g.ar||0)/g.ac,0,1),4); }
+    // v28.xx (cw-partnergun), HIS ANSWER g-64 (10-25, "Add ammo and gun"): a third line under the bars, the gun he holds on the left, rounds / reserve on the right. Nothing when he holds no gun or his hands are busy.
+    if(g.w&&g.w!=='fists'&&!g.hd&&g.am>=0&&WEAPONS[g.w]&&WEAPONS[g.w].mag>0){
+      var _gn=String(WEAPONS[g.w].name||g.w)+forgeMk(g.fk), _ga=g.am+' / '+(g.rs<0?'\u221e':g.rs), _gw;
+      ctx.font=FS(TYPE.micro); ctx.textAlign='right'; ctx.fillStyle=(g.am===0)?HUDC.danger:HUDC.dim; ctx.fillText(_ga,x+w,y+30);
+      _gw=w-ctx.measureText(_ga).width-8; ctx.textAlign='left'; ctx.fillStyle=HUDC.dim;
+      while(_gn.length>3&&ctx.measureText(_gn).width>_gw) _gn=_gn.slice(0,-1);
+      ctx.fillText(_gn,x,y+30);
+    }
     } finally { hudFadeEnd(_hfMate); }
     ctx.restore();   // v19.07: the row's own scale ends before the edge arrow, which works in screen space
     try{ netMateArrow(g); }catch(_ma){}   // v16.41: an arrow at the screen edge to a teammate off screen

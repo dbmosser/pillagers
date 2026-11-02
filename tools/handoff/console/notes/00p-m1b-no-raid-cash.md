@@ -16,6 +16,12 @@ m1a done (v37.19), so no wait. Key cw-m1nocash, mk S\mk-cw-m1nocash.ps1 + mk-cw-
 - Racks/arrays: rack parts worth mfPayPer to the stash; card "mainframe parts: ..."; rack texts say parts worth $N.
 - Hire cuts kept, now through lifeEarnAdd.
 
+## Result
+SHIPPED v37.25 (e84de4c5c, ON HIS PC) after one gate flake (36.98, passed on retry) and a market ship in between (check now reads
+sellPriceOf; fixture f9068d8cb retargeted 37.20 NINE to G.pedSold). Follow-up cw-m1bonusgap v37.26 (ON HIS PC): bonus line block, 24px under.
+Critic: 38 extracted 3, 3 ("same"); 12 contracts 3 ("same"). Its remaining asks are the older card layout (move the bonus under the hero
+number with the tiles below it, title 32px, objective row, rate button) for the card polish job. Pictures 00p-m1b-after, 00p-m1b-after2.
+
 ## Old checks this breaks (not in the newest 80): 9.40 now SKIPs (extract no longer banks pedCarry); checks near fixture 12128-12160,
 12504, 89633-89669, 95192-95230, 100312-100339 (pedCarry), 96714/104301 ("survivor paid"), 91979/100877 (payGear $), 100742 (claim $),
 9701-9772 (36.33/36.34 goal cash). Logged in alarms.md.

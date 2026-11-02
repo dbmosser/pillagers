@@ -1,0 +1,44 @@
+{
+    "title":  "THE TEAMMATE ROW SHOWS HIS GUN AND HIS ROUNDS",
+    "why":  "His answer g-64 (10-25, Add ammo and gun): two players on one couch should see what the other holds. The st word now carries am (rounds in the magazine) and rs (the reserve as his own HUD shows it), the host relays both, and the teammate row gets a third line under the bars: the gun name on the left, rounds / reserve on the right. The row box grows from 36 to 48 high and the row step from 44 to 56. Nothing is shown for fists or while his hands are busy.",
+    "now":  "The teammate row under the bars shows his gun and his rounds and reserve. Watch the left column at 4K and with three or more teammates: the rows are taller now.",
+    "edits":  [
+                  {
+                      "anchor":  ",hd:(G.handsT\u003e0||p.hand)?1:0,xo:ascOut(p)?1:0};",
+                      "replacement":  ",hd:(G.handsT\u003e0||p.hand)?1:0,xo:ascOut(p)?1:0,am:Math.max(0,p.ammo|0),rs:(isFinite(rsvShow(p))?Math.max(0,Math.round(rsvShow(p))):-1)};   // v28.xx (cw-partnergun): am, rounds in his magazine; rs, his reserve as his own HUD shows it (-1 is endless)"
+                  },
+                  {
+                      "anchor":  "g.hd=m.hd?1:0; }   // v15.79: crouched",
+                      "replacement":  "g.hd=m.hd?1:0; g.am=(typeof m.am===\u0027number\u0027\u0026\u0026isFinite(m.am))?Math.max(0,Math.min(999,m.am|0)):-1; g.rs=(typeof m.rs===\u0027number\u0027\u0026\u0026isFinite(m.rs))?Math.max(-1,Math.min(99999,m.rs|0)):0; }   // v28.xx (cw-partnergun): his rounds and reserve for the teammate row; a word without them (an older window) draws no gun line   // v15.79: crouched"
+                  },
+                  {
+                      "anchor":  "out.hd=g.hd; }   // v15.79: passed on as it came",
+                      "replacement":  "out.hd=g.hd; out.am=g.am; out.rs=g.rs; }   // v15.79: passed on as it came"
+                  },
+                  {
+                      "anchor":  "_trh=Math.max(1,_tun)*Math.round(44*_thr);",
+                      "replacement":  "_trh=Math.max(1,_tun)*Math.round(56*_thr);"
+                  },
+                  {
+                      "anchor":  "y=Math.round(H*0.30)+n*44; n++;",
+                      "replacement":  "y=Math.round(H*0.30)+n*56; n++;"
+                  },
+                  {
+                      "anchor":  "_ty=_tt+(n-1)*Math.round(44*_thr)+Math.round(15*_thr);",
+                      "replacement":  "_ty=_tt+(n-1)*Math.round(56*_thr)+Math.round(15*_thr);"
+                  },
+                  {
+                      "anchor":  "h:Math.round(n*44*_thr)};",
+                      "replacement":  "h:Math.round(n*56*_thr)};"
+                  },
+                  {
+                      "anchor":  "hudPanel(x-4,y-15,w+8,36,undefined,1);",
+                      "replacement":  "hudPanel(x-4,y-15,w+8,48,undefined,1);"
+                  },
+                  {
+                      "anchor":  "if(g.ac\u003e0){ ctx.fillStyle=\u0027rgba(255,255,255,.10)\u0027; ctx.fillRect(x,y+14,w,4); ctx.fillStyle=\u0027#6fb8ff\u0027; ctx.fillRect(x,y+14,w*clamp((g.ar||0)/g.ac,0,1),4); }",
+                      "replacement":  "if(g.ac\u003e0){ ctx.fillStyle=\u0027rgba(255,255,255,.10)\u0027; ctx.fillRect(x,y+14,w,4); ctx.fillStyle=\u0027#6fb8ff\u0027; ctx.fillRect(x,y+14,w*clamp((g.ar||0)/g.ac,0,1),4); }\n    // v28.xx (cw-partnergun), HIS ANSWER g-64 (10-25, \"Add ammo and gun\"): a third line under the bars, the gun he holds on the left, rounds / reserve on the right. Nothing when he holds no gun or his hands are busy.\n    if(g.w\u0026\u0026g.w!==\u0027fists\u0027\u0026\u0026!g.hd\u0026\u0026g.am\u003e=0\u0026\u0026WEAPONS[g.w]\u0026\u0026WEAPONS[g.w].mag\u003e0){\n      var _gn=String(WEAPONS[g.w].name||g.w)+forgeMk(g.fk), _ga=g.am+\u0027 / \u0027+(g.rs\u003c0?\u0027\\u221e\u0027:g.rs), _gw;\n      ctx.font=FS(TYPE.micro); ctx.textAlign=\u0027right\u0027; ctx.fillStyle=(g.am===0)?HUDC.danger:HUDC.dim; ctx.fillText(_ga,x+w,y+30);\n      _gw=w-ctx.measureText(_ga).width-8; ctx.textAlign=\u0027left\u0027; ctx.fillStyle=HUDC.dim;\n      while(_gn.length\u003e3\u0026\u0026ctx.measureText(_gn).width\u003e_gw) _gn=_gn.slice(0,-1);\n      ctx.fillText(_gn,x,y+30);\n    }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027the teammate row shows his gun and his rounds under the bars: a carbine with 18 in the magazine and 90 in reserve draws burst carbine and 18 / 90; fists and busy hands draw no gun line; the word carries, stores and relays am and rs\u0027,\n   run:function(){\n     if(!(window.__deploy\u0026\u0026window.__state\u0026\u0026window.__endRaid)) return \u0027SKIP: this fixture cannot deploy\u0027;\n     if(typeof netTeamHud!==\u0027function\u0027||typeof netUpShown!==\u0027function\u0027) return \u0027SKIP: no co-op HUD here\u0027;\n     var bad=[], g, NK={}, k, oShown=netUpShown, oName=netSeatName, oFT=ctx.fillText, seen=[], row;\n     for(k in NET) NK[k]=NET[k];\n     try{\n       __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242});\n       g=__state(); g.bagOpen=false; g.mapOpen=false;\n       row={seat:1,hp:70,mh:100,ar:30,ac:50,x:g.player.x+40,y:g.player.y,dn:0,w:\u0027carbine\u0027,fk:0,hd:0,am:18,rs:90};\n       NET.on=true; NET.up=[row];\n       netUpShown=function(u){ return !!u; }; netSeatName=function(s){ return (s===1)?\u0027ZQMATE\u0027:oName(s); };\n       ctx.fillText=function(s){ seen.push(String(s).toLowerCase()); return oFT.apply(this,arguments); };\n       ctx.save(); try{ netTeamHud(H); } finally { ctx.restore(); }\n       if(seen.indexOf(\u0027burst carbine\u0027)\u003c0) bad.push(\u0027the gun name was not drawn on the teammate row (drew: \u0027+seen.join(\u0027 | \u0027)+\u0027)\u0027);\n       if(seen.indexOf(\u002718 / 90\u0027)\u003c0) bad.push(\u0027the rounds and reserve 18 / 90 were not drawn on the teammate row\u0027);\n       seen=[]; row.w=\u0027fists\u0027; row.am=0; row.rs=0;\n       ctx.save(); try{ netTeamHud(H); } finally { ctx.restore(); }\n       if(seen.some(function(t){ return (/ \\/ /).test(t); })) bad.push(\u0027a teammate with fists got a rounds line\u0027);\n       seen=[]; row.w=\u0027carbine\u0027; row.am=18; row.rs=90; row.hd=1;\n       ctx.save(); try{ netTeamHud(H); } finally { ctx.restore(); }\n       if(seen.indexOf(\u002718 / 90\u0027)\u003e=0) bad.push(\u0027a teammate with busy hands still shows his gun line\u0027);\n       if(!(/g\\.am=/).test(String(netOnState))||!(/out\\.am=g\\.am/).test(String(netOnState))) bad.push(\u0027the teammate word is not stored and relayed with am and rs\u0027);\n       if(!(/am:Math\\.max\\(0,p\\.ammo/).test(String(netUpTick))) bad.push(\u0027the st word does not carry am\u0027);\n     }catch(e){ bad.push(\u0027threw: \u0027+(e\u0026\u0026e.message||e)); }\n     finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; netUpShown=oShown; netSeatName=oName; for(k in NET) if(!(k in NK)) delete NET[k]; for(k in NK) NET[k]=NK[k]; try{ var g2=__state(); if(g2\u0026\u0026!g2.over){ g2.player.downed=false; __endRaid(\u0027abandon\u0027); } }catch(_e){} __topClear(); __cleanProfile(); }\n     return bad.length?bad.join(\u0027; \u0027):null; }},"
+}

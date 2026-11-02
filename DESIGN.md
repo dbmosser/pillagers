@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.27 - THE TEAMMATE ROW SHOWS HIS GUN AND HIS ROUNDS
+
+Co-op hunt while he was away. His answer g-64 (10-25, Add ammo and gun): two players on one couch should see what the other holds. The st word now carries am (rounds in the magazine) and rs (the reserve as his own HUD shows it), the host relays both, and the teammate row gets a third line under the bars: the gun name on the left, rounds / reserve on the right. The row box grows from 36 to 48 high and the row step from 44 to 56. Nothing is shown for fists or while his hands are busy. Watch: The teammate row under the bars shows his gun and his rounds and reserve. Watch the left column at 4K and with three or more teammates: the rows are taller now.
+
+MEASURED. Check 37.27 passes, and fails on v37.26.
 ## v37.26 - EXTRACTED CARD: ROOM UNDER THE BONUS LINE
 
 Co-op hunt while he was away. the critic on screen 38 after v37.25 found the new extraction bonus line 12px from the stat strip Watch: the extraction bonus line is its own block in the secondary text colour with 24px under it
