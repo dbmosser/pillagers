@@ -7,3 +7,5 @@ MAIN PC CLAUDE (10-29): if tools/handoff/console/notes/for-main-pc-claude.md has
 USAGE METER (11-01): claude -p "/usage" is a paid model call since Claude Code 2.1.304, so no script calls it while console/usage-manual.txt exists. Every check-in: call mcp__ccd_session_mgmt__get_usage and write "<5-hour %> <week all-models %> <epoch>" to tools/handoff/console/plan-usage.txt (a 5-hour row missing = 0), and append "<epoch> <5h> <week>" to plan-usage-log.txt. The lanes pace on that.
 
 WEEKLY AUDIT (11-01): on the first check-in after Sunday 08:00, if weekly-audit.last does not hold this Sunday's date, run tools/handoff/console/weekly-audit.md.
+
+JTPC (his order 11-01, BINDING): the spare PC and its chat "Pillagers JTPC setup" are always available unless his son is gaming on it; never ask him. Every check-in: if the spare PC is stalled, has finished no full run, or has stopped reporting, SendMessage that chat the problem and read its answer. No answer or a game running means his son is on it: leave it alone and try next check-in.
