@@ -198,3 +198,4 @@
 11-01 20:07 v37.29 cw-m2death on his pc after 33s (8802 serves 37.29) week 6%
 11-01 20:13 v37.30 cw-p2heirs on his pc after 66s (8802 serves 37.30) week 6%
 11-01 22:33 v37.31 cw-cardstamp on his pc after 67s (8802 serves 37.31) week 8%
+11-01 22:37 v37.32 cw-ovdecoy on his pc after 33s (8802 serves 37.32) week 8%

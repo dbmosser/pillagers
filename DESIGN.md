@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.33 - SEASON ZERO M2: THE BIRTH CARD IN THE UNDERCROFT
+
+Co-op hunt while he was away. his rulings of 11-01: choose 1 of 3 heirs; rename it; set its face and hair, random to start, edit what you like; pick a starter kit; quick to skip through. Open question 2 default: nothing free, basic 300, privileged 1500. Plan m2 the lineage, build 3 of 5, picture a of the three mockups Watch: after a death nobody is living and three heirs wait. The first arrival in the Undercroft opens the birth card: three heir cards with traits in green and red, a typed name, the figure with edit look (random once per birth, edits kept), and the starter kit row with prices, a kit he cannot pay for greyed. One button, ascend as name, births what is lit and opens the map page; close, esc and B birth what is lit and stay on the floor. A kit goes up the way the freebie does and costs its price in cash, never touching lifetime earnings. Nothing can ascend with nobody living. An old save, the demo and the player 2 window never see the card
+
+MEASURED. Check 37.33 passes, and fails on v37.32.
 ## v37.32 - THE OVERSEER IGNORES DECOYS
 
 Co-op hunt while he was away. His answer g-13 (10-25): No, the Overseer ignores decoys. A decoy pinged 420 every 0.8 s for 6 s and woke every body in reach, the Overseer too, which then walked off its lair toward it. The decoy ping now carries a flag and the Overseer skips it. Every other machine still hears decoys, and the Overseer still hears shots, steps and blasts. Watch: The Overseer no longer follows a decoy.

@@ -3570,6 +3570,26 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
   </div>
 </div>
 <!-- v10.29, his note: the WELCOME PACK, offered once to a new character. -->
+<!-- v37.xx (cw-m2birth): the birth card, picture a of tools/handoff/console/notes/progression/birth-pick-1101.html -->
+<div class="modal" id="birthmodal">
+  <h3><span id="birthhead">your next pillager</span></h3>
+  <div id="birthwrap">
+    <div id="birthheirs"></div>
+    <div id="birthmid">
+      <div id="birthfig"><canvas id="birthcv" width="200" height="236"></canvas><button id="birthlook">edit look</button></div>
+      <div id="birthside">
+        <div class="bhlab">name</div>
+        <input id="birthname" maxlength="16" autocomplete="off" spellcheck="false" aria-label="name">
+        <div class="bhlab">starter kit</div>
+        <div id="birthkits"></div>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;margin-top:10px">
+    <button id="birthgo" class="deploy" style="padding:8px 22px">ascend</button>
+    <button id="closebirth" data-esc="1" style="padding:8px 22px;margin-left:auto">close</button>
+  </div>
+</div>
 <div class="modal" id="welcomemodal">
   <h3>WELCOME PACK</h3>
   <div class="msub">free, once. take it or go without.</div>
@@ -3932,8 +3952,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.32';
-var VER_AT='2026-11-01 22:35';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.33';
+var VER_AT='2026-11-01 22:38';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6348,9 +6368,10 @@ function acctEnsure(p){
   if(typeof p.acctName!=='string'||!p.acctName) p.acctName=(typeof p.pname==='string'&&p.pname)?p.pname:'PILLAGER';
   if(!Array.isArray(p.hall)) p.hall=[];
   if(typeof p.lifeEarn!=='number'||!isFinite(p.lifeEarn)||p.lifeEarn<0) p.lifeEarn=0;
-  if(!p.pil||typeof p.pil!=='object'||Array.isArray(p.pil)){ g=Math.max(p.pilGen|0,p.hall.length)+1; p.pil=pilMake(p.pname,g); }
-  pilClean(p.pil);
-  if(typeof p.pilGen!=='number'||!isFinite(p.pilGen)||p.pilGen<p.pil.gen) p.pilGen=p.pil.gen;
+  // v37.xx (cw-m2birth): a pillager that ended (it is in the hall) leaves nobody living until the birth card; only a save with no lineage at all gets its first one here.
+  if(!p.pil||typeof p.pil!=='object'||Array.isArray(p.pil)){ if(p.hall.length) p.pil=null; else { g=Math.max(p.pilGen|0,p.hall.length)+1; p.pil=pilMake(p.pname,g); } }
+  if(p.pil) pilClean(p.pil);
+  if(typeof p.pilGen!=='number'||!isFinite(p.pilGen)||(p.pil&&p.pilGen<p.pil.gen)) p.pilGen=p.pil?p.pil.gen:p.hall.length;
   if(p.heirs!==undefined){ if(pilHeirsOk(p,pilNext(p))) p.heirs.forEach(function(q){ pilClean(q); }); else delete p.heirs; }   // v37.xx (cw-p2heirs)
   return p.pil;
 }
@@ -6707,13 +6728,14 @@ function pilHeirs(p){
 }
 // Heir i becomes the living pillager (the next generation) and the roll is cleared. With no heir the first is taken, so a birth with no
 // screen still works; a name given instead of an heir renames the first.
-function pilBirth(p,a){
+function pilBirth(p,a,nm){
   var g, L, r;
   if(!p||typeof p!=='object') return null;
   if(!Array.isArray(p.hall)) p.hall=[];
   g=pilNext(p); L=pilHeirs(p);
   r=JSON.parse(JSON.stringify(L[(typeof a==='number'&&a>=0&&a<L.length)?Math.floor(a):0]));
   if(typeof a==='string'&&a){ r.name=a.slice(0,24); r.num=pilNum(p,r.name); }
+  if(typeof nm==='string'&&nm&&nm!==r.name){ r.name=nm.slice(0,24); r.num=pilNum(p,r.name); }   // v37.xx (cw-m2birth): the name he typed on the birth card
   r.gen=g; r.born=Date.now();
   p.pil=pilClean(r); p.pilGen=g; delete p.heirs;
   return p.pil;
@@ -6751,8 +6773,8 @@ function pilRaidEnd(how,sec,lost){
   r=pilEnd(P,{how:how==='dead'?'dead':'quit', map:(FIXED_MAPS[ix]&&FIXED_MAPS[ix].id)||'', zone:pilZoneNow(), by:String(kn).toLowerCase(),
     lost:Math.max(0,Math.round((lost&&+lost.v)||0)), items:((lost&&Array.isArray(lost.k))?lost.k:[]).slice(0,7),
     worn:JSON.parse(JSON.stringify(P.worn||{})), look:pilLookNow()});
-  pilBirth(P);
-  if(r) P.pilNote={t:String(r.name).toLowerCase()+' is gone  pillager '+P.pilGen,shown:0};
+  pilHeirs(P);   // v37.xx (cw-m2birth), his rulings of 11-01: no birth here any more; the card in the Undercroft births one of these
+  if(r) P.pilNote={t:String(r.name).toLowerCase()+' is gone  pillager '+pilNext(P),shown:0};
   return r;
 }
 // The one short floor line after a death, at the next arrival there. Never in the demo.
@@ -18590,7 +18612,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
       // that hands the kit out runs LATER in this same function and a profile flag
       // cleared at this point is invisible to it. That is exactly the bug the first
       // version shipped with.
-      if(P.freeKit&&!g.sim){ P.dropKit=[]; g.freeKit=1; P.freeKit=0; }
+      if(P.freeKit&&!g.sim){ P.dropKit=[]; g.freeKit=1; P.freeKit=0; g.freeKitK=freeKitNow(); if(g.freeKitK) P.birthKit=null; }   // v37.xx (cw-m2birth): a starter kit he paid for goes up here and only here
       var _dk=(P.dropKit||[]).slice(); P.dropKit=[];
       // v8.53, audit: the armour ceiling that used to be computed here was never
       // read. A plate in the drop kit goes into the BAG, per v6.71 - you land with
@@ -18611,15 +18633,16 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
     // into a run he did not ask for.
     if(g.freeKit){
       var _fcap=(g.player.armorCap===undefined?ARMOR_MAX:g.player.armorCap);
-      for(var _fk=0;_fk<FREEKIT.length;_fk++){
-        var _fi=ITEMS[FREEKIT[_fk]]; if(!_fi) continue;
-        if(_fi.use==='throw'){ if(g.pouch[FREEKIT[_fk]]!==undefined) g.pouch[FREEKIT[_fk]]++; }
+      var _fkL=g.freeKitK?g.freeKitK.items:FREEKIT, _fkG=g.freeKitK?g.freeKitK.gun:FREEKIT_GUN;   // v37.xx (cw-m2birth)
+      for(var _fk=0;_fk<_fkL.length;_fk++){
+        var _fi=ITEMS[_fkL[_fk]]; if(!_fi) continue;
+        if(_fi.use==='throw'){ if(g.pouch[_fkL[_fk]]!==undefined) g.pouch[_fkL[_fk]]++; }
         else if(_fi.use==='ammo'){ g.player.reserve+=_fi.amt; }
 
-        else g.bag.push(FREEKIT[_fk]);
+        else g.bag.push(_fkL[_fk]);
       }
-      if(WEAPONS[FREEKIT_GUN]){
-        arSetHeldGun(g.player,WEAPONS[FREEKIT_GUN]);
+      if(WEAPONS[_fkG]){
+        arSetHeldGun(g.player,WEAPONS[_fkG]);
         g.player.ammo=g.player.wep.mag;
         g.player.reserve=g.player.wep.mag*2;   // v14.01, loadout audit: its own two magazines, not the home gun's
         // v6.88, his spec: "if they take the freebie and extract, then they keep the
@@ -20432,7 +20455,7 @@ function padNameOp(op){
 }
 // v28.xx (cw-cx-padnameview), J4 critic 10-20: a couch-readable letter row and one footer, with the title focus hidden behind the scrim.
 function padNameStart(input){
-  if(PADNAME||!input||input.id!=='pnamein')return false;
+  if(PADNAME||!input||(input.id!=='pnamein'&&input.id!=='birthname'))return false;
   var st,card,v=String(input.value||'pillager').toLowerCase().slice(0,16),l=(v+'                ').slice(0,16).split('');
   if(!document.getElementById('padnamecss')){
     st=document.createElement('style'); st.id='padnamecss';
@@ -20469,7 +20492,7 @@ function padNameStart(input){
 function padNamePoll(pressed){
   var n=PADNAME,nw=[],i;
   if(!n)return false;
-  if(!document.getElementById('title').classList.contains('on')){padNameClose(false);return false;}
+  if(!document.getElementById('title').classList.contains('on')&&!birthOn()){padNameClose(false);return false;}
   for(i=0;i<17;i++){ if(pressed(i)&&!PAD.prev[i])nw.push(i); PAD.prev[i]=pressed(i); }
   if(n.dev!==padOn())padNameDraw(); // v28.xx (cw-cx-padnameview): an idle open picker follows the last input device too.
   padNameOp(padLetterInput(nw,PAD.ax,n,'ay')); return true;
@@ -20517,7 +20540,7 @@ function padFocusables(root){
   for(var i=0;i<q.length;i++){
     var el=q[i],cs=getComputedStyle(el);
     // v28.xx (cw-cx-padname), J4: only the career name has a pad text route. Delete and reset words remain keyboard only.
-    if(el.tagName==='TEXTAREA'||el.isContentEditable||(el.tagName==='INPUT'&&el.id!=='pnamein'&&!/^(button|submit|reset|checkbox|radio|range)$/.test(el.type)))continue;
+    if(el.tagName==='TEXTAREA'||el.isContentEditable||(el.tagName==='INPUT'&&el.id!=='pnamein'&&el.id!=='birthname'&&!/^(button|submit|reset|checkbox|radio|range)$/.test(el.type)))continue;
     // v16.52, stability (controller audit): the PARTY window opens with the pad highlight on its CONTROLLER row, and one press of
     // A there cycled the pick: with one pad plugged in the second press chose a pad that is not there, so player 2 lost all input
     // (B could no longer shut the window), the pick was saved, and player 1 took the pad. END THE PARTY was one press with no
@@ -20697,7 +20720,7 @@ function padMenu(pressed){
   // the mouse press that starts a drag (stashPadAct), the highlight is then the cursor, and A on the target is the release:
   // every backpack cell, stash cell and belt key, every rule and every word are the mouse drop. A control that cannot be
   // dragged, and A with nothing held on a button, is the click it always was.
-  if(tap(0)&&PAD.focus){ PAD.aSpent=1; if(md.id==='outcome'&&haulRevealSkip()){} else if(md.id==='outcome'&&PAD.focus.id==='oc_btn'&&ocLbNext()){} else if(PAD.focus.id==='pnamein') padNameStart(PAD.focus); else if(!stashPadAct(PAD.focus)) PAD.focus.click(); }   // v26.xx (career7): A on the card skips the haul reveal first
+  if(tap(0)&&PAD.focus){ PAD.aSpent=1; if(md.id==='outcome'&&haulRevealSkip()){} else if(md.id==='outcome'&&PAD.focus.id==='oc_btn'&&ocLbNext()){} else if(PAD.focus.id==='pnamein'||PAD.focus.id==='birthname') padNameStart(PAD.focus); else if(!stashPadAct(PAD.focus)) PAD.focus.click(); }   // v26.xx (career7): A on the card skips the haul reveal first
   // v14.23: on the pause box B and Menu resume the run. The search for a way out below would click the hidden RETURN TO
   // CHARACTER SELECTION first, which does nothing in a raid.
   // v14.26: B on the title does nothing. The search for a way out below finds no button there and would strip the title's
@@ -20720,6 +20743,7 @@ function padMenu(pressed){
     // B backs out: the panel's own Leave or Close if it has one, so any cleanup that
     // button does still runs, and only otherwise the blunt instrument.
     if(GRAB&&GRAB.pad){ grabEnd(); return true; }   // v16.80: B lets a pad grab go, and closes nothing else on that press
+    if(md.id==='birthmodal'){ birthFinish(false); padSetFocus(null); PAD.focus=null; return true; }   // v37.xx (cw-m2birth): a trait name must never pass for the way out
     if(md===IMENU){ closeItemMenu(); padSetFocus(null); PAD.focus=null; return true; }   // v17.16, co-op hunt 2026-09-28: B shuts the menu, which has no button to find
     var back=null,bs=md.querySelectorAll('button');
     // v27.68 (cloud-menus-pad-b-closes-settings), CLOUD HUNT 2026-10-15: B took the first button whose words read like a way out, and in Settings the MINIMAP ZOOM row reading CLOSE
@@ -36059,6 +36083,7 @@ silentExit:T.silentExit||0,
     // branch returned with the list still saved. The next raid to end badly, with no freebie kit taken, counted that old
     // list against the stash and told him on the card that packed items were waiting there. Every other raid end clears
     // the list; this one now does too.
+    if(!G.sim&&G.freeKitK){ P.birthKit=G.freeKitK.id; P.freeKit=1; P.kitPick='free'; }   // v37.xx (cw-m2birth): he paid for it and went nowhere, so it is still his
     if(!G.sim){ P.kitBeforeFree=null; P.hotBeforeFree=null; P.gunBeforeFree=null; dropDeadKeys(); saveProfile(); }
     G=null; keys={};
     showScreen('hub');
@@ -36251,13 +36276,13 @@ var _cdone=contractExtract(G.bag,haul);
         _d3w=(_d3p.wep&&_d3p.wep.id===_d3g)?0:((_d3p.sec&&_d3p.sec.id===_d3g)?1:-1);
         if(_d3w>=0){
           _d3h=_d3w?[_d3p.secIssued,_d3p.secFromArmory]:[_d3p.wepIssued,_d3p.wepFromArmory];
-          if(_d3h[0]||((G.freeKit||G.spawnGun)&&_d3g===FREEKIT_GUN&&!_d3h[1])) continue;   // v26.17 (noloaner): the spawn pistol is the kit pistol here
+          if(_d3h[0]||((G.freeKit||G.spawnGun)&&_d3g===kitGunNow()&&!_d3h[1])) continue;   // v26.17 (noloaner): the spawn pistol is the kit pistol here
         } else if(G.bag.indexOf('gun_'+_d3g)<0) continue;
         // v22.49, from the review of build 4: THE FREEBIE KIT PISTOL IN THE BACKPACK IS STILL THE KIT PISTOL. Drawing a backpack gun
         // with the kit pistol in hand puts the pistol in the backpack, still on key 1, and this read then made it gun 1 at home, which
         // v15.58 forbids (the kit never changes the gun he goes up with). On a freebie raid his own guns stay home, so a gun of the
         // kit pistol id in the backpack is the kit pistol, or one found in the raid, which v15.58 never equips from his hands either.
-        if((G.freeKit||G.spawnGun)&&_d3w<0&&_d3g===FREEKIT_GUN) continue;
+        if((G.freeKit||G.spawnGun)&&_d3w<0&&_d3g===kitGunNow()) continue;
         _d3[_d3i]=_d3g;
       }
     }catch(_d3e){ _d3=[null,null]; } }
@@ -36287,7 +36312,7 @@ var _cdone=contractExtract(G.bag,haul);
     // (_egFree): on a freebie raid, a gun of FREEKIT_GUN's id in either hand that did not come out of the armoury. A gun found
     // in the raid still takes gun 1 by the tier sort. This keeps his own choice; it is not a switch to a gun. No player text,
     // no number and no seeded draw moved.
-    var _keq=kept.filter(function(w){ return !((G.freeKit||G.spawnGun)&&w.id===FREEKIT_GUN&&((w===_kp.wep&&!_kp.wepFromArmory)||(w===_kp.sec&&!_kp.secFromArmory))); });
+    var _keq=kept.filter(function(w){ return !((G.freeKit||G.spawnGun)&&w.id===kitGunNow()&&((w===_kp.wep&&!_kp.wepFromArmory)||(w===_kp.sec&&!_kp.secFromArmory))); });
     if(_keq.length) P.equipped=_keq[0].id;
     // v12.38, audit gun-slot-reconcile: SLOT TWO IS RECONCILED WITH SLOT ONE.
     // The line above rewrites gun 1 from the tier sort, so a run where the
@@ -36410,7 +36435,7 @@ var _cdone=contractExtract(G.bag,haul);
       // on the slot, the flag the pickup path has read since the same fault
       // was fixed there; a field-found gun never touches the armoury either.
       var _egp=G.player, _egArm=!!((gone[j]===_egp.wep&&_egp.wepFromArmory)||(gone[j]===_egp.sec&&_egp.secFromArmory));
-      var _egFree=!!((G.freeKit||G.spawnGun)&&!_egArm&&gone[j].id===FREEKIT_GUN);   // v26.17 (noloaner): the spawn pistol is not a gun he owned either
+      var _egFree=!!((G.freeKit||G.spawnGun)&&!_egArm&&gone[j].id===kitGunNow());   // v26.17 (noloaner): the spawn pistol is not a gun he owned either
       if(_egFree) continue;   // out of the ledger entirely, as an issued loaner already is: no count, no price, no line
       _gunN++; if(ITEMS['gun_'+gone[j].id]){ _gunVal+=ival('gun_'+gone[j].id); _pilGK.push('gun_'+gone[j].id); }
       var wi=_egArm?P.weapons.indexOf(gone[j].id):-1;
@@ -52614,7 +52639,7 @@ acts:{KeyE:['go up',function(){
            // This called startRaid directly and never set kitChosen, so the
            // standard-kit fallback fired and the loadout stayed in the vault. The
            // same fault as the ASCEND button at v6.11, in a second place.
-           KeyR:['quick ascent',function(){ if(netGuestHeld()) return; liftResetDay(); commitKit(); ac(); startRaid(); }],   // v26.xx (kit4): the quick ascent skips the map select screen, so it takes what you packed and never a kit from an earlier visit (cloud review 20)   // v26.xx (kit1): the kept kit, if it is not MY LOADOUT   // v12.61: day by default here too, which is his answer 24; v15.91: a party guest is held
+           KeyR:['quick ascent',function(){ if(netGuestHeld()) return; if(birthNeed()){ birthOpen(); return; } liftResetDay(); commitKit(); ac(); startRaid(); }],   // v26.xx (kit4): the quick ascent skips the map select screen, so it takes what you packed and never a kit from an earlier visit (cloud review 20)   // v26.xx (kit1): the kept kit, if it is not MY LOADOUT   // v12.61: day by default here too, which is his answer 24; v15.91: a party guest is held
            // v6.50: the terms moved here from the shop counter. They are hardship you
            // sign for extra pay on the NEXT RAID, so they belong on the station that
            // sends you up, not beside a counter with prices on it.
@@ -52981,6 +53006,8 @@ function syncSectorKitPick(){
   var host=document.getElementById('sectorkitpick'), bs, i, cur=kitPickOf();
   if(!host) return;
   bs=host.querySelectorAll('.kitb');
+  // v37.xx (cw-m2birth): with a starter kit paid for, the freebie tile is that kit
+  (function(){ var K=freeKitNow(), b=host.querySelector('.kitb[data-kit="free"]'), sp=b?b.querySelectorAll('span'):[]; KIT_INFO.free=K?[K.n+' kit',K.s]:['FREEBIE KIT','SCAV PISTOL \u00b7 4 ITEMS']; if(sp.length>1){ sp[0].textContent=KIT_INFO.free[0]; sp[1].textContent=KIT_INFO.free[1]; } })();
   for(i=0;i<bs.length;i++) bs[i].classList.toggle('on',bs[i].getAttribute('data-kit')===cur);
 }
 (function(){
@@ -57664,7 +57691,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.32: The Overseer no longer follows a decoy. Check 37.32 fails on v37.31',
+  now:'v37.33: after a death nobody is living and three heirs wait. The first arrival in the Undercroft opens the birth card: three heir cards with traits in green and red, a typed name, the figure with edit look (random once per birth, edits kept), and the starter kit row with prices, a kit he cannot pay for greyed. One button, ascend as name, births what is lit and opens the map page; close, esc and B birth what is lit and stay on the floor. A kit goes up the way the freebie does and costs its price in cash, never touching lifetime earnings. Nothing can ascend with nobody living. An old save, the demo and the player 2 window never see the card Check 37.33 fails on v37.32',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -58065,7 +58092,7 @@ function openModal(id){
 // the back button at its right end (.ui-back); the stylesheet does the rest. Nothing is moved in the page, so the controller walks
 // the window in the order it always did and B still finds CLOSE by its word.
 var UIFRAME_CLOSE={tradermodal:'closetrader',gamblemodal:'closegamble',appearmodal:'closeappear',barmodal:'closebar',termsmodal:'closeterms',
-  partymodal:'closeparty',opmodal:'closeop',sectormodal:'closesector',settingsmodal:'closesettings',welcomemodal:'welcomeno',codexmodal:'closecodex',trophymodal:'closetrophy'};
+  partymodal:'closeparty',opmodal:'closeop',sectormodal:'closesector',settingsmodal:'closesettings',welcomemodal:'welcomeno',codexmodal:'closecodex',trophymodal:'closetrophy',birthmodal:'closebirth'};
 function uiFrame(id){
   var m=document.getElementById(id), b=m?document.getElementById(UIFRAME_CLOSE[id]):null, row=b?b.parentElement:null;
   if(!m||!b||!row||row.parentElement!==m) return false;
@@ -63528,6 +63555,7 @@ function netUpStart(m){
   // v16.69: the pause box shuts before the snapshot, under this window own dials, so a note typed in it is banked and saved with
   // the save that a surface which does not match puts back, not told Noted and then rolled away. startRaid shuts it for the rest.
   try{ if(pauseOpen) togglePauseBox(false); }catch(_pz0){}
+  if(!m.arc) try{ birthAuto(); }catch(eB){}   // v37.xx (cw-m2birth): the host went up while the card was open, so heir one goes up with him
   snap=netUpSnapP();
   if(!m.arc&&!NET.kitCard&&kitPickOf()!=='mine') try{ kitApply(kitPickOf()); }catch(eK){}   // v28.36 (cloud-coop-p2-kept-kit), CLOUD HUNT 2026-10-15: no kit card was raised (the host lift R, a drop in), so player 2 takes his kept kit as the quick ascent does for player 1
   NET.kitCard=0;   // v28.36 (cloud-coop-p2-kept-kit), CLOUD HUNT 2026-10-15: the card is spent with this raid
@@ -74217,6 +74245,7 @@ function offeredCount(){
 // the check and the quick ascent did before v6.18.
 function ascendNow(){
   if(netGuestHeld()) return false;   // v15.91: before the kit is committed or a window shut, so a guest held at the lift loses nothing
+  if(birthNeed()){ birthOpen(); return false; }   // v37.xx (cw-m2birth): nothing ascends with no living pillager
   commitKit();
   var sm=document.getElementById('stagemodal'); if(sm) sm.classList.remove('on');
   var sc=document.getElementById('sectormodal'); if(sc) sc.classList.remove('on');
@@ -74474,6 +74503,7 @@ function renderStage(prefill){
   (function(){
     var sw=document.getElementById('stagesum'); if(!sw) return;
     if(P.freeKit){
+      if(freeKitNow()){ sw.innerHTML='<span style="color:var(--amber)">'+freeKitNow().n+' kit</span>  &middot;  '+escHtml(freeKitNow().t); return; }   // v37.xx (cw-m2birth)
       var _fkg=WEAPONS[FREEKIT_GUN];
       sw.innerHTML='<span style="color:var(--amber)">FREEBIE KIT</span>  &middot;  '+
         escHtml(_fkg?_fkg.name:'Scav Pistol')+' (issued)  &middot;  no second gun  &middot;  '+
@@ -74704,7 +74734,19 @@ document.getElementById('stageback').onclick=function(){
 // raid that hands it out, because a list written twice is a list that drifts.
 var FREEKIT=['bandage','bandage','frag','plate'];
 var FREEKIT_GUN='pistol';
+// v37.xx (cw-m2birth), HIS RULINGS OF 11-01, open question 2 default: starter kits at each birth, paid in $: nothing (free), basic $300 (a plain gun and bandages), privileged $1,500 (a
+// better gun, a medkit and, until m3 gear drops exist, an armor plate). A kit goes up the way the freebie does: nothing lands in the stash, the raid hands it out, an extract keeps it,
+// a death takes it. So a kit can never be bought and sold back at home for more than it cost. P.birthKit is the kit paid for and not yet taken up.
+var BIRTH_KITS={
+  none:{id:'none',n:'nothing',c:0,t:'your own pack',items:[],gun:null},
+  basic:{id:'basic',n:'basic',c:300,t:'compact smg, 3 bandages',s:'compact smg \u00b7 3 bandages',items:['bandage','bandage','bandage'],gun:'smg'},
+  priv:{id:'priv',n:'privileged',c:1500,t:'burst carbine, medkit, armor plate',s:'burst carbine \u00b7 2 items',items:['medkit','plate'],gun:'carbine'}
+};
+var BIRTH_KIT_ORDER=['none','basic','priv'];
+function freeKitNow(){ var K=(typeof P==='object'&&P&&P.birthKit)?BIRTH_KITS[P.birthKit]:null; return (K&&K.gun)?K:null; }
+function kitGunNow(){ return (G&&G.freeKitK&&G.freeKitK.gun)||FREEKIT_GUN; }
 function freeKitText(){
+  if(freeKitNow()) return freeKitNow().t;   // v37.xx (cw-m2birth)
   return 'A Scav Pistol, two Bandages, one Frag Charge and one Armour Plate.';
 }
 function renderFreeKit(){
@@ -74713,7 +74755,7 @@ function renderFreeKit(){
   // hosts cannot share one id, and one id on two elements is the whole of the bug this
   // fixes: getElementById only ever reached the copy on a screen that no longer opens.
   var html='<div class="fkbox">'+
-    '<b>FREEBIE KIT</b>'+
+    '<b>'+(freeKitNow()?freeKitNow().n+' kit':'FREEBIE KIT')+'</b>'+
     '<span>'+(on?'In use: '+escHtml(freeKitText()):
       escHtml(freeKitText()))+'</span>'+
     '<button class="deploy ghost fkbtn">'+(on?'USE MY OWN GEAR':'TAKE THE FREEBIE KIT')+'</button>'+
@@ -74843,7 +74885,152 @@ document.getElementById('closesector').onclick=function(){
   document.getElementById('sectormodal').classList.remove('on');
   DAILY.on=0;
 };
+// v37.xx (cw-m2birth), HIS RULINGS OF 11-01, plan m2: THE BIRTH MOMENT. After a death nobody is living and P.heirs holds the roll. The first arrival in the Undercroft opens this card:
+// three heirs, a typed name (lower case, the limit the title's name box has), today's look editor (random once per birth, his edits kept, SURPRISE ME lives there) and the starter kit.
+// One default button: what is lit goes, and nothing touched is heir one, the random look and no kit. CLOSE, ESC and B birth what is lit too, so the card cannot be lost; a reload
+// with nobody living opens it again. An old save has a living pillager and never sees it; nor does the demo or the player 2 window, which keeps today's rules until m3f.
+careerStyle('birthcss',
+  '#root #birthmodal{align-items:center}'+
+  '#root #birthmodal #birthwrap{width:100%;max-width:1200px;display:flex;flex-direction:column;gap:16px;margin:0 auto}'+
+  '#root #birthmodal #birthheirs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}'+
+  '#root #birthmodal .bhcard{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:4px;min-height:136px;padding:16px 24px;background:var(--ui-panel);border:2px solid var(--ui-line-hi);border-radius:var(--rad);color:var(--tx-1);text-align:left;text-transform:none}'+
+  '#root #birthmodal .bhcard.on{border-color:var(--acc);background:var(--ui-raised)}'+
+  '#root #birthmodal .bhcard b{font:700 var(--fs-title)/1.15 var(--f-cond);color:var(--tx-1)}'+
+  '#root #birthmodal .bhcard i{font:600 var(--fs-body)/1.3 var(--f-cond);font-style:normal}'+
+  '#root #birthmodal #birthmid{display:grid;grid-template-columns:232px minmax(0,1fr);gap:16px}'+
+  '#root #birthmodal #birthfig{display:flex;flex-direction:column;align-items:center;gap:8px;padding:8px 16px 16px;background:var(--ui-panel);border:1px solid var(--ui-line-hi);border-radius:var(--rad)}'+
+  '#root #birthmodal #birthcv{width:200px;height:236px;flex:none}'+
+  '#root #birthmodal #birthlook{width:100%;min-height:48px;font:600 var(--fs-body)/1 var(--f-cond)}'+
+  '#root #birthmodal #birthside{display:flex;flex-direction:column;gap:8px;min-width:0}'+
+  '#root #birthmodal .bhlab{font:600 var(--fs-label)/1.2 var(--f-cond);color:var(--tx-2)}'+
+  '#root #birthmodal #birthname{box-sizing:border-box;width:100%;height:56px;padding:0 16px;background:var(--ui-panel);border:1px solid var(--ui-line-hi);border-radius:var(--rad);color:var(--tx-1);font:700 var(--fs-title)/1 var(--f-cond);text-transform:none}'+
+  '#root #birthmodal #birthkits{display:flex;flex-direction:column;gap:8px}'+
+  '#root #birthmodal .bkit{display:grid;grid-template-columns:160px minmax(0,1fr) auto;align-items:center;gap:16px;min-height:56px;padding:8px 16px;background:var(--ui-panel);border:2px solid var(--ui-line-hi);border-radius:var(--rad);color:var(--tx-1);text-align:left;text-transform:none}'+
+  '#root #birthmodal .bkit.on{border-color:var(--acc);background:var(--ui-raised)}'+
+  '#root #birthmodal .bkit:disabled{opacity:.45}'+
+  '#root #birthmodal .bkit b{font:700 var(--fs-body)/1.2 var(--f-cond);color:inherit}'+
+  '#root #birthmodal .bkit span{font:500 var(--fs-body)/1.2 var(--f-cond);color:var(--tx-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'+
+  '#root #birthmodal #birthgo{min-height:56px;font:700 var(--fs-body)/1 var(--f-cond)}');
+var BIRTH=null;
+function birthOn(){ var m=document.getElementById('birthmodal'); return !!(m&&m.classList.contains('on')); }
+function birthNeed(){
+  if(!P||(typeof ARCADE==='object'&&ARCADE&&ARCADE.on)||(typeof NETP2!=='undefined'&&NETP2)) return false;
+  return !acctEnsure(P);
+}
+function birthState(){ var g=pilNext(P); if(!BIRTH||BIRTH.g!==g) BIRTH={g:g,i:0,name:'',kit:'none',look:0}; return BIRTH; }
+function birthKitCost(id){ var K=BIRTH_KITS[id]; if(!K) return 0; return P.birthKit===id?0:K.c; }   // a kit paid for and never taken up is not paid for twice
+function birthKitOk(id){ return birthKitCost(id)<=(+P.credits||0); }
+function birthShown(){ var B=birthState(), h=pilHeirs(P)[B.i]; return (B.name&&B.name!==h.name)?pilName({name:B.name,num:pilNum(P,B.name)}):pilName(h); }
+function birthDraw(){
+  var B=birthState(), L=pilHeirs(P), h='', i, j, T, K, c, nm=document.getElementById('birthname');
+  document.getElementById('birthhead').textContent='your '+pilOrd(B.g)+' pillager';
+  for(i=0;i<L.length;i++){
+    T=pilTraitList(L[i]);
+    h+='<button class="bhcard'+(i===B.i?' on':'')+'" data-heir="'+i+'"><b>'+escHtml(i===B.i?birthShown():pilName(L[i]))+'</b>';
+    for(j=0;j<T.length;j++) h+='<i style="color:var('+(pilTraitGood(T[j])?'--ok':'--danger')+')">'+T[j].n+'</i>';
+    h+='</button>';
+  }
+  document.getElementById('birthheirs').innerHTML=h;
+  h='';
+  for(i=0;i<BIRTH_KIT_ORDER.length;i++){
+    K=BIRTH_KITS[BIRTH_KIT_ORDER[i]]; c=birthKitCost(K.id);
+    h+='<button class="bkit'+(K.id===B.kit?' on':'')+'" data-bkit="'+K.id+'"'+(birthKitOk(K.id)?'':' disabled')+'><b>'+K.n+'</b><span>'+K.t+'</span><b>'+(K.c?(c?'$'+c.toLocaleString():'paid'):'free')+'</b></button>';
+  }
+  document.getElementById('birthkits').innerHTML=h;
+  if(nm&&document.activeElement!==nm) nm.value=B.name||L[B.i].name;
+  document.getElementById('birthgo').textContent='ascend as '+birthShown();
+  try{ drawAvatarCanvas(document.getElementById('birthcv')); }catch(_bd){}
+}
+function birthOpen(){
+  var B;
+  if(!birthNeed()) return false;
+  B=birthState(); pilHeirs(P);
+  if(P.birthLook!==B.g){ P.birthLook=B.g; try{ lookRandom(); }catch(_bl){} }   // random once per birth, so a reload or the editor keeps what he made
+  try{ saveProfile(); }catch(_bs){}
+  birthDraw(); openModal('birthmodal');
+  try{ if(padOn()) padSetFocus(document.getElementById('birthgo')); }catch(_bp){}
+  return true;
+}
+// THE ONE DOOR: heir i, the typed name and a kit he can pay for. Returns the pillager, or null with nothing changed.
+function birthBorn(i,name,kit){
+  var K=BIRTH_KITS[kit]||BIRTH_KITS.none, c, r;
+  if(!birthNeed()) return null;
+  c=birthKitCost(K.id);
+  if(c>(+P.credits||0)) return null;
+  r=pilBirth(P,Math.max(0,Math.min(2,i|0)),String(name||'').toLowerCase().trim().slice(0,16));
+  if(K.gun){ P.credits-=c; P.birthKit=K.id; kitApply('free'); P.kitPick='free'; }   // spending: lifetime earnings are not touched
+  BIRTH=null;
+  try{ saveProfile(); }catch(_bb){}
+  return r;
+}
+function birthFinish(go){
+  var B=birthState(), r=birthBorn(B.i,B.name,B.kit)||birthBorn(B.i,B.name,'none');
+  document.getElementById('birthmodal').classList.remove('on');
+  try{ sndUi('ok'); }catch(_bo){}
+  try{ renderHub(); }catch(_bh){}
+  if(go){   // the lift's own door: every route up ends on the map page
+    var S=(HB&&HB.stations)||[], i, d=null;
+    for(i=0;i<S.length;i++) if(S[i].acts&&S[i].acts.KeyE&&S[i].acts.KeyE[0]==='go up'){ d=S[i].acts.KeyE[1]; break; }
+    if(d) d(); else { renderSector(); openModal('sectormodal'); }
+  } else firstRunNext();
+  return r;
+}
+function birthAuto(){
+  var B, r;
+  if(!birthNeed()) return null;
+  B=birthState(); r=birthBorn(B.i,B.name,'none');
+  document.getElementById('birthmodal').classList.remove('on');
+  return r;
+}
+document.getElementById('birthheirs').onclick=function(ev){
+  var b=ev.target.closest('[data-heir]'); if(!b) return;
+  birthState().i=Math.max(0,Math.min(2,+b.getAttribute('data-heir')||0));
+  try{ sndUi('click'); }catch(_bu){}
+  birthDraw();
+};
+document.getElementById('birthkits').onclick=function(ev){
+  var b=ev.target.closest('[data-bkit]'), id; if(!b) return;
+  id=b.getAttribute('data-bkit');
+  if(!BIRTH_KITS[id]||!birthKitOk(id)){ try{ sfx('clank'); }catch(_bc){} return; }
+  birthState().kit=id;
+  try{ sndUi('click'); }catch(_bu){}
+  birthDraw();
+};
+document.getElementById('birthname').oninput=function(){
+  var v=String(this.value||'').toLowerCase().slice(0,16);
+  if(this.value!==v) this.value=v;
+  birthState().name=v.trim();
+  birthDraw();
+};
+document.getElementById('birthlook').onclick=function(){
+  birthState().look=1; P._avSlot=null;
+  renderAvatar('appavatar','appavatarpicker'); openModal('appearmodal');
+};
+document.getElementById('birthgo').onclick=function(){ birthFinish(true); };
+document.getElementById('closebirth').onclick=function(){ birthFinish(false); };
+// The keyboard: left and right walk the heirs, up and down the kits he can pay for, enter is the default button. ESC is the window's own CLOSE.
+window.addEventListener('keydown',function(e){
+  var ae, B, c=e.code, L, ix;
+  if(!birthOn()||e.repeat) return;
+  ae=document.activeElement;
+  if(c==='Enter'||c==='NumpadEnter'){
+    if(ae&&ae.id==='birthname'){ ae.blur(); birthDraw(); e.preventDefault(); e.stopPropagation(); return; }
+    if(ae&&ae.tagName==='BUTTON'&&document.getElementById('birthmodal').contains(ae)) return;
+    e.preventDefault(); e.stopPropagation(); birthFinish(true); return;
+  }
+  if(ae&&ae.id==='birthname') return;
+  B=birthState();
+  if(c==='ArrowLeft'||c==='ArrowRight'){ B.i=(B.i+(c==='ArrowLeft'?2:1))%3; }
+  else if(c==='ArrowUp'||c==='ArrowDown'){
+    L=BIRTH_KIT_ORDER.filter(birthKitOk); ix=L.indexOf(B.kit);
+    B.kit=L[(ix+(c==='ArrowUp'?L.length-1:1))%L.length];
+  } else return;
+  e.preventDefault(); e.stopPropagation();
+  try{ sndUi('move'); }catch(_bk){}
+  birthDraw();
+},true);
 document.getElementById('closeappear').onclick=function(){
+  if(BIRTH&&BIRTH.look){ BIRTH.look=0; document.getElementById('appearmodal').classList.remove('on'); birthOpen(); return; }   // v37.xx (cw-m2birth): back to the birth card, his edits kept
   document.getElementById('appearmodal').classList.remove('on');
 };
 // v6.67: the confirm box. YES runs the stored callback, and the callback is cleared
@@ -74919,6 +75106,7 @@ function maybeShareAsk(){
 // owns its own rule.
 function firstRunNext(){
   if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on) return;   /* v29.94 (cw-partystats): the welcome pack opened under the party attract on a fresh profile and showed through it. No first run card opens while the arcade is up; it waits for the next visit to the Undercroft */
+  if(birthNeed()){ birthOpen(); return; }   // v37.xx (cw-m2birth): no living pillager, so the birth card comes first; closing it comes back here
   if(document.querySelector('.modal.on')) return;   // he is reading one already
   if(typeof maybeWelcome==='function'&&!P.welcomed){ maybeWelcome(); if(document.querySelector('.modal.on')) return; }
   // v10.88, HIS NOTE: the briefing card used to be the third link in this chain
@@ -76427,8 +76615,8 @@ function avTurnStart(){
 }
 // v28.xx (cw-cx-pixrackfit): a shallow preview shadow through the same painter, retaining linked seat rings.
 function pixFashionGround(x,y,st){shadowE(x,y+1,11,.5,.28);var s=seatMarkOf(st);if(s>=0)drawSeatRing(x,y,s);}
-function drawAvatarCanvas(){
-  var c=document.getElementById('avcv'); if(!c||typeof drawOp!=='function') return;
+function drawAvatarCanvas(cv){
+  var c=cv||document.getElementById('avcv'); if(!c||typeof drawOp!=='function') return;   // v37.xx (cw-m2birth): the birth card draws the same figure
   var x2=c.getContext('2d'); if(!x2) return;
   x2.setTransform(1,0,0,1,0,0); x2.clearRect(0,0,c.width,c.height);
   var S=pixOn()?4:Math.max(5.2,c.height/62); // v28.xx (cw-cx-pixpreview): job 86c asks for whole 4x previews with smoothing off

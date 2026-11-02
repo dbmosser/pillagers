@@ -1,1 +1,1 @@
-11-01 22:26 running 146-overseer-ignores-decoys on Claude Code, sonnet high, run 1 (your plan: week 8% of the 10.7% line, 5-hour 0%)
+11-01 22:37 running 243-retarget-0712-reds on Claude Code, sonnet high, run 1 (your plan: week 8% of the 10.8% line, 5-hour 0%)

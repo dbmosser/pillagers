@@ -1,0 +1,5 @@
+## v37.33 - SEASON ZERO M2: THE BIRTH CARD IN THE UNDERCROFT
+
+Co-op hunt while he was away. his rulings of 11-01: choose 1 of 3 heirs; rename it; set its face and hair, random to start, edit what you like; pick a starter kit; quick to skip through. Open question 2 default: nothing free, basic 300, privileged 1500. Plan m2 the lineage, build 3 of 5, picture a of the three mockups Watch: after a death nobody is living and three heirs wait. The first arrival in the Undercroft opens the birth card: three heir cards with traits in green and red, a typed name, the figure with edit look (random once per birth, edits kept), and the starter kit row with prices, a kit he cannot pay for greyed. One button, ascend as name, births what is lit and opens the map page; close, esc and B birth what is lit and stay on the floor. A kit goes up the way the freebie does and costs its price in cash, never touching lifetime earnings. Nothing can ascend with nobody living. An old save, the demo and the player 2 window never see the card
+
+MEASURED. Check 37.33 passes, and fails on v37.32.
