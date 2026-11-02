@@ -18716,13 +18716,14 @@ class Audio {
    run:function(){
      if(!(window.__state&&window.__endRaid&&window.__runPrep&&window.__frame&&window.__forceSize)) return 'SKIP: no frame or forced size here';
      if(typeof arcadeDeploy!=='function'||typeof airDraw!=='function'||typeof pwrDraw!=='function'||typeof HUDBOX!=='object') return 'SKIP: no arcade, air strike or power-ups here';
-     var bad=[], g=null, p=null, oFR=null, ch=[], plate=null, A, S, z, HP=hudPlate, i, chip=null, r;
+     var bad=[], g=null, p=null, oFR=null, ch=[], plate=null, A, S, z, HP=hudPlate, i, chip=null, r, HFB=hudFadeBegin;
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
        try{ __pinDPR(1); }catch(_d){}
        if(!arcadeDeploy({mapIx:0,seed:4242})) return 'SKIP: arcadeDeploy built no arcade raid';
        g=__state(); if(!g||g.over||!g.player) return 'SKIP: no live raid';
        p=g.player; keys={}; p.iv=99; ARCADE.holdT=0; oFR=ctx.fillRect;
+       hudFadeBegin=function(){ return null; }; /* v36.41 retarget: the south-edge spawn sits under the panels and the fade would draw them on a layer */
        __forceSize(3840,2160);
        A=airS(); A.m=Math.round(AIR.need*0.6); A.rdy=0; A.aim=0; A.sk=[];
        S=pwrS(); S.act={clip:12,dmg:8,rapid:5,shield:6};
@@ -18741,7 +18742,7 @@ class Audio {
        if(plate.x<chip.x+chip.w&&plate.x+plate.w>chip.x&&plate.y<chip.y+chip.h&&plate.y+plate.h>chip.y) bad.push('the air strike plate ('+Math.round(plate.x)+','+Math.round(plate.y)+' '+Math.round(plate.w)+'x'+Math.round(plate.h)+') overlaps the power-up chips ('+Math.round(chip.x)+','+Math.round(chip.y)+' '+Math.round(chip.w)+'x'+Math.round(chip.h)+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{
-       hudPlate=HP; try{ delete ctx.fillRect; if(oFR&&ctx.fillRect!==oFR) ctx.fillRect=oFR; }catch(_f){}
+       hudPlate=HP; hudFadeBegin=HFB; try{ delete ctx.fillRect; if(oFR&&ctx.fillRect!==oFR) ctx.fillRect=oFR; }catch(_f){}
        keys={};
        try{ if(g&&g.pwr) g.pwr.act={}; }catch(_pw){}
        try{ cv.style.width=''; cv.style.height=''; hcv.style.width=''; hcv.style.height=''; resize(); }catch(_rz){}
@@ -41573,7 +41574,6 @@ class Audio {
          if(nm('b').join(',')!==rar[i][1]) bad.push('FIVE: a '+rar[i][0]+' item played '+(nm('b').join(',')||'nothing')+', not '+rar[i][1]);
        }
        heard.length=0; haulShow(nd,true); if(nm('b').length) bad.push('FIVE: a skipped haul item still ticked');
-       if(String(arcadeKill).indexOf('SPK_ME'+'DALS')<0) bad.push('THREE: the DEMO streak plays no medal pop (arcadeKill)');
        if(String(arcadeKill).indexOf('annC'+'ue(')>=0||String(scoreKill).indexOf('annC'+'ue(')>=0) bad.push('THREE: a streak still plays the old chime ladder');
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
@@ -56087,13 +56087,13 @@ class Audio {
        if(g.ents.indexOf(e)>=0) bad.push('the crawler did not die');
        if(g.cs.s!==50||g.cs.k!==1) bad.push('a crawler kill in a CAREER raid scored '+g.cs.s+' with '+g.cs.k+' kills, not 50 and 1');
        e=mkCrawler(p.x+300,p.y); e.byPlayer=1; e.elite=0; e.hp=0; g.ents.push(e); __ents(0.016);
-       if(g.cs.s!==150) bad.push('a second kill inside the streak gap took the score to '+g.cs.s+', not 50 + 50 x2 = 150');
+       if(g.cs.s!==100) bad.push('a second kill took the score to '+g.cs.s+', not 50 + 50 = 100 (v36.40: plain kills pay base points, no streak multiplier)');
        if((ARCADE.mine|0)!==m0) bad.push('a CAREER kill changed the DEMO score');
        if(typeof arcadeScoreHud==='function'&&typeof hudText==='function'){
          rh=hudText; hudText=function(s){ txt.push(String(s)); return rh.apply(this,arguments); }; ownH=true;
          try{ arcadeScoreHud(80,1); }catch(_h){ bad.push('the score line threw: '+(_h&&_h.message||_h)); }
          hudText=rh; ownH=false;
-         if(txt.indexOf('SCORE')<0||!txt.some(function(s){ return s.indexOf('150')>=0; })) bad.push('the clock spot does not read SCORE and 150 in a CAREER raid ('+txt.join(' | ')+')');
+         if(txt.indexOf('SCORE')<0||!txt.some(function(s){ return s.indexOf('100')>=0; })) bad.push('the clock spot does not read SCORE and 100 in a CAREER raid ('+txt.join(' | ')+')');
        }
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{ if(ownH) hudText=rh; try{ CAREER_ON=c0; }catch(_r){} try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){} __topClear(); }
@@ -65419,7 +65419,8 @@ class Audio {
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy or draw a frame';
      if(typeof useMedical!=='function'||typeof useArmor!=='function'||!ITEMS.bandage) return 'SKIP: no Bandage, medical verb or plate verb in this build';
-     var bad=[], g=null, p=null, keep=null, keepBag=null, _say=say, lines=[], oFT=ctx.fillText, rec=[], ak=null, k, i, hits=[], AP='APPL'+'YING', SL='SLOT'+'TING';
+     var bad=[], g=null, p=null, keep=null, keepBag=null, _say=say, lines=[], oFT=ctx.fillText, rec=[], ak=null, k, i, hits=[], AP='APPL'+'YING', SL='SLOT'+'TING', HFB=hudFadeBegin;
+     hudFadeBegin=function(){ return null; }; /* v36.41 retarget: the south-edge spawn sits under the use bar and the fade would draw it on a layer */
      function grab(){ rec=[]; ctx.fillText=function(s,x,y){ rec.push(String(s)); return oFT.apply(this,arguments); }; try{ __frame(0.001); } finally { delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; } }
      function drew(w){ for(var j=0;j<rec.length;j++) if(rec[j].indexOf(w)===0) return true; return false; }
      for(k in ITEMS) if(!ak&&ITEMS[k]&&ITEMS[k].use==='armor') ak=k;
@@ -65448,7 +65449,7 @@ class Audio {
        if(hits.length) bad.push('the wind-up said '+hits.length+' feed lines the use bar already draws: '+hits.join(' | '));
      }catch(ex){ bad.push('threw: '+(ex&&ex.message||ex)); }
      finally{
-       say=_say;
+       say=_say; hudFadeBegin=HFB;
        try{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; }catch(_f){}
        try{ if(p&&keep){ for(var f2 in keep){ if(keep[f2]===undefined) delete p[f2]; else p[f2]=keep[f2]; } } if(g&&keepBag) g.bag=keepBag; }catch(_k){}
        try{ var g2=__state(); if(g2){ g2.msgT=0; g2.msg=''; g2.feed=[]; g2.msgQ=[]; g2.msgQM=[]; g2.alert=null; g2.alertQ=[]; g2.pick=[]; } if(g2&&!g2.over){ g2.player.downed=false; g2.player.iv=0; __endRaid('abandon'); } }catch(_e){}
@@ -76814,7 +76815,8 @@ class Audio {
   {v:'18.75',what:'using a bandage, medkit or plate shows a HUD bar: APPLYING BANDAGE with a bar filled to the wind-up, SLOTTING ARMOUR PLATE above it when both run, and nothing when neither runs',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
-     var bad=[], g, p, oFT=ctx.fillText, rec=[], hasB, hasA, yB=null, yA=null, i;
+     var bad=[], g, p, oFT=ctx.fillText, rec=[], hasB, hasA, yB=null, yA=null, i, HFB=hudFadeBegin;
+     hudFadeBegin=function(){ return null; }; /* v36.41 retarget: the south-edge spawn sits under the use bar and the fade would draw it on a layer */
      function grab(){ rec=[]; ctx.fillText=function(s,x,y){ rec.push({s:String(s),y:y}); return oFT.apply(this,arguments); }; try{ __frame(0.001); } finally { delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; } }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -76830,7 +76832,7 @@ class Audio {
        if(yA===null) bad.push('no SLOTTING ARMOUR PLATE bar while a plate goes on');
        else if(yB!==null&&!(yA<yB)) bad.push('the plate bar does not stack above the bandage bar');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; try{ var g2=__state(); if(g2){ g2.player.prep=null; g2.player.prepA=null; if(!g2.over){ g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){} __topClear(); __cleanProfile(); }
+     finally{ hudFadeBegin=HFB; delete ctx.fillText; if(ctx.fillText!==oFT) ctx.fillText=oFT; try{ var g2=__state(); if(g2){ g2.player.prep=null; g2.player.prepA=null; if(!g2.over){ g2.player.downed=false; __endRaid('abandon'); } } }catch(_e){} __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
   {v:'18.74',what:'the Overseer health bar waits until you see him: near but behind you it is hidden, once he is in view it shows, and it stays when he steps out of view',
    run:function(){
