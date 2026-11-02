@@ -1,0 +1,136 @@
+diff --git a/tools/spare/spare-runner.ps1 b/tools/spare/spare-runner.ps1
+index 7a01e90..affb21b 100644
+--- a/tools/spare/spare-runner.ps1
++++ b/tools/spare/spare-runner.ps1
+@@ -28,7 +28,7 @@
+ # is at the PC but not playing, one robot runs at 1080p and below-normal priority; it stops within seconds once he plays (see Playing).
+ # 10-26 SPARE-PRESENCE-PAUSE (his "make it so that the JTPC pauses testing whenever someone is at the JTPC -- eg my son wants to use it
+ # for gaming"): the SPARE PC now stops all its test work (scripts and test Chromes) within seconds of someone being there, and starts
+-# again by itself once nobody has been there for 15 minutes. Someone is there when a key or the mouse was used, a game pad changed since
++# again by itself once nobody has been there for 15 minutes. Someone is there when a key or the mouse was used (not one lone move of the input time, see FocusWatch), a game pad changed since
+ # the look before (a stick, pedal or trigger resting off centre is nobody), or another Windows account is signed in and unlocked at the
+ # screen (the sign-in and lock screens are nobody); and, for up to 2 hours after the last of those and only while this account is at the
+ # screen and unlocked, when a full-screen program runs (a game or a film), a program other than a test browser plays sound, or a program
+@@ -197,30 +197,42 @@ public static bool PadMoved(){
+   # 11-02 (CEO, job 260's finding: measured on this PC 11-02 with Chrome and Notepad, open and close): a change of the window in front moves the Windows last input time
+   # with no key or mouse at all (a headless program moves nothing), so a program that took the front read as someone at the PC, stopped a gate job and paused the tests
+   # 15 minutes. FocusWatch looks about 10 times a second from a thread of its own, because a 5-second look cannot tell the two apart. One move of the input time, alone,
+-  # within half a second of a change of window in front is a window move, not a key or the mouse. Anything else is a person: two moves together (a key has a press and a
+-  # release; Alt+Tab or a click has more), a move with no change, a third window move within 30 s, or a sixth within 10 minutes, which goes back to an open pause for a program
+-  # that keeps taking the front, so the status says so and the VM takes over. Known limits: a press and release inside one look that changes the
+-  # window, with no mouse move before it, is missed until the next input. A window move does not hold the tests 15 minutes: it starts the passive signs' 2 hours (AwaySec)
+-  # and FocusHold, so a game that came to the front with no key, mouse or pad pauses at its first passive sign (full screen, sound, the graphics card), work already
++  # within half a second of a change of window in front is a window move, not a key or the mouse. One move alone with no change of window is a lone move, and is not counted
++  # either (CEO, 11-02: that day the input time moved with no game and no new window at 16:02:48, not logged finely, which stopped the tests, at 16:05:14, perhaps ours, which
++  # lengthened that pause, and at 16:22:32, which stopped them again; the cause is unknown). Anything else is a person: two moves together (a key has a press and a release;
++  # Alt+Tab or a click has more), a move or a window move within 10 s after a lone move (a window may be a tap launching something), a move within 10 s after a person's move
++  # (unless that was a window), a move within 1 s after a window move (the release of a press that changed the window), a third move not counted within 30 s, or a sixth within 10 minutes, which goes back to
++  # an open pause for something that keeps doing it, so the status says so and the VM takes over. A lone move over 1 s after a window move is not counted with it (measured: a
++  # lone move came 6 s after a window opened), but both count towards the third and the sixth. The 10 s is a judgment: the shortest gap measured is 146 s, from 16:02:48, and the
++  # log gives the latest pair's gap and a running count. Known limits: all input between two looks is one move, so a quick tap, a short nudge or a wheel notch can be one lone
++  # move, and with nothing after it is not seen at all; single moves over 10 s apart are seen at the third or the sixth, and over 2 minutes apart never; a press that changes the
++  # window, with no mouse move before it, is missed if it is released over 1 s later (the release is a lone move), or inside the same look, and then so is one more single move. Neither move holds the
++  # tests 15 minutes: each restarts the passive signs' 2 hours (AwaySec) and FocusHold, so a game that came up with no key, mouse or pad pauses at its first passive sign (full screen, sound, the graphics card), work already
+   # running goes on until then, and one that shows no sign does not pause. It reads only the input time and the handle and process of the window in front, never a key, a title or the mouse position. If it cannot load,
+   # or its thread stops looking for 3 s, every later move of the input time counts as before. A new copy's first look counts what it finds as a person. Spare PC only: IDLE MODE
+   # never loads it.
+-  $script:noFocus=$true; $script:focusN=[uint32]0; $script:burstN=[uint32]0; $script:holdN=[uint32]0
++  $script:noFocus=$true; $script:focusN=[uint32]0; $script:burstN=[uint32]0; $script:holdN=[uint32]0; $script:loneN=[uint32]0; $script:pairN=[uint32]0
+   try{ Add-Type -Namespace PillagersSpare -Name FocusWatch -ErrorAction Stop -MemberDefinition @'
+ [StructLayout(LayoutKind.Sequential)] public struct LII { public uint cbSize; public uint dwTime; }
+ [DllImport("user32.dll")] static extern bool GetLastInputInfo(ref LII p);
+ [DllImport("user32.dll")] static extern IntPtr GetForegroundWindow();
+ [DllImport("user32.dll")] static extern uint GetWindowThreadProcessId(IntPtr h, out uint p);
+-const int NearMs = 500; const int BurstMs = 30000; const int CeilMs = 600000; const int StaleMs = 3000;
++const int NearMs = 500; const int ReleaseMs = 1000; const int LoneMs = 10000; const int BurstMs = 30000; const int CeilMs = 600000; const int StaleMs = 3000;
+ static readonly object K = new object();
+-static bool on = false, first = true, pend = false, one = false, haveFg = false, haveFocus = false, have1 = false, have2 = false;
+-static uint seen, person, pend0, fgT, polled, focus, ig1, ig2, count, bursts, fgPid;
++static bool on = false, first = true, pend = false, one = false, haveFg = false, haveFocus = false, have1 = false, have2 = false, haveLone = false, haveWin = false, wasLone = false;
++static uint seen, person, pend0, fgT, polled, focus, ig1, ig2, count, bursts, fgPid, lone0, win0, lones, pairs, pairMs;
+ static IntPtr fg;
+-static uint[] last5 = new uint[5]; static int n5 = 0;   // the last five window moves, oldest at last5[n5 % 5] once there are five
++static uint[] last5 = new uint[5]; static int n5 = 0;   // the last five moves not counted, oldest at last5[n5 % 5] once there are five
+ static uint Now(){ return (uint)Environment.TickCount; }
+ static bool Stamp(out uint t){ LII p = new LII(); p.cbSize = 8; bool ok = GetLastInputInfo(ref p); t = p.dwTime; return ok; }
+ static int Gap(uint a, uint b){ return unchecked((int)(a - b)); }
+ static long Dist(uint a, uint b){ return Math.Abs((long)Gap(a, b)); }
++// a move that is not a key or the mouse so far: true if it stays not counted, false if there have been too many, so it is a person
++static bool Uncounted(){
++  if ((have2 && unchecked(seen - ig2) <= (uint)BurstMs) || (n5 >= 5 && unchecked(seen - last5[n5 % 5]) <= (uint)CeilMs)) { person = seen; bursts++; return false; }
++  ig2 = ig1; have2 = have1; ig1 = seen; have1 = true; last5[n5 % 5] = seen; n5++; focus = seen; haveFocus = true;
++  return true;
++}
+ // pend0 and fgT are both the look that saw the move, so a late look cannot part them
+ public static void Look(uint now, uint stamp, IntPtr f, uint fpid){ lock (K) {
+   polled = now;
+@@ -230,11 +242,18 @@ public static void Look(uint now, uint stamp, IntPtr f, uint fpid){ lock (K) {
+   if (!pend) return;
+   if (one && haveFg && Dist(fgT, pend0) <= NearMs) {
+     pend = false; haveFg = false;
+-    if ((have2 && unchecked(seen - ig2) <= (uint)BurstMs) || (n5 >= 5 && unchecked(seen - last5[n5 % 5]) <= (uint)CeilMs)) { person = seen; bursts++; return; }
+-    ig2 = ig1; have2 = have1; ig1 = seen; have1 = true; last5[n5 % 5] = seen; n5++; focus = seen; haveFocus = true; count++;
++    win0 = seen; haveWin = true;
++    if (wasLone && unchecked(seen - lone0) <= (uint)LoneMs) { pairs++; pairMs = unchecked(seen - lone0); wasLone = false; person = seen; return; }
++    if (Uncounted()) count++;
+     return;
+   }
+-  if (Gap(now, pend0) > NearMs) { pend = false; haveFg = false; person = seen; }
++  if (Gap(now, pend0) > NearMs) {
++    pend = false; haveFg = false;
++    bool pair = haveLone && unchecked(seen - lone0) <= (uint)LoneMs, release = haveWin && unchecked(seen - win0) <= (uint)ReleaseMs;
++    if (one && pair && wasLone) { pairs++; pairMs = unchecked(seen - lone0); }
++    lone0 = seen; haveLone = true; wasLone = false;
++    if (!one || pair || release) person = seen; else if (Uncounted()) { lones++; wasLone = true; }
++  }
+ } }
+ static void Run(){ while (true) {
+   try { uint st; if (Stamp(out st)) { IntPtr f = GetForegroundWindow(); uint p = 0; GetWindowThreadProcessId(f, out p); Look(Now(), st, f, p); } } catch { }
+@@ -250,6 +269,9 @@ public static double PersonIdleSec(){ uint st; bool ok = Stamp(out st); lock (K)
+ public static double FocusOnlyAgo(){ lock (K) { return haveFocus ? unchecked(Now() - focus) / 1000.0 : 1e9; } }
+ public static uint Count(){ lock (K) { return count; } }
+ public static uint Bursts(){ lock (K) { return bursts; } }
++public static uint Lones(){ lock (K) { return lones; } }
++public static uint Pairs(){ lock (K) { return pairs; } }
++public static double PairSec(){ lock (K) { return pairMs / 1000.0; } }
+ public static uint LastPid(){ lock (K) { return fgPid; } }
+ '@; [PillagersSpare.FocusWatch]::Start(); $script:noFocus=$false }catch{ Say ('PROBLEM: the window-in-front watch did not load, so a change of window counts as someone at the PC, as before: '+(Short "$_")) }
+   # sound: the default output's loudness meter, and per program only when it is not quiet (Core Audio, read only; it says only how loud,
+@@ -404,12 +426,14 @@ function AwaySec(){
+   if($o){ $script:conT=$now }
+   if($o -ne $script:conOn){ $script:conOn=$o; Say $(if($o){ 'another Windows account is in use at the screen' }else{ 'no other Windows account in use at the screen now' }) }
+   $a=[PillagersIdle.Input]::IdleSec(); $w='keyboard or mouse'
+-  # 11-02: a move of the input time that only came with a change of the window in front is not a key or the mouse (see FocusWatch above); it still starts the passive signs' 2 hours
++  # 11-02: a move of the input time that only came with a change of the window in front, or that came alone, is not a key or the mouse (see FocusWatch above); it still restarts the passive signs' 2 hours
+   $fo=[double]1e9
+   if(-not $script:noFocus){ try{
+     $a=[double][PillagersSpare.FocusWatch]::PersonIdleSec(); $fo=[double][PillagersSpare.FocusWatch]::FocusOnlyAgo()
+     $n=[PillagersSpare.FocusWatch]::Count(); if($n -ne $script:focusN){ $script:focusN=$n; $pn='a program'; $lp=[int][PillagersSpare.FocusWatch]::LastPid(); if($lp -gt 0){ try{ $pn=[string](Get-Process -Id $lp -ErrorAction Stop).ProcessName }catch{} }; Say ('the input time moved as the window in front changed to '+$pn+': not counted as someone at the PC') }
+-    $n=[PillagersSpare.FocusWatch]::Bursts(); if($n -ne $script:burstN){ $script:burstN=$n; Say 'the window in front keeps changing (3 times in 30 s or 6 in 10 minutes): counted as someone at the PC' }
++    $n=[PillagersSpare.FocusWatch]::Lones(); if($n -ne $script:loneN){ $script:loneN=$n; Say 'the input time moved once, alone, with no change of the window in front within half a second: not counted as someone at the PC unless it moves again within 10 s' }
++    $n=[PillagersSpare.FocusWatch]::Pairs(); if($n -ne $script:pairN){ $script:pairN=$n; Say ('the input time moved again '+[Math]::Round([double][PillagersSpare.FocusWatch]::PairSec(),1)+' s after a lone move (pair '+$n+' since this copy started): counted as someone at the PC') }
++    $n=[PillagersSpare.FocusWatch]::Bursts(); if($n -ne $script:burstN){ $script:burstN=$n; Say 'the input time keeps moving with nobody seen (3 times in 30 s or 6 in 10 minutes): counted as someone at the PC' }
+   }catch{ $a=[PillagersIdle.Input]::IdleSec(); $fo=[double]1e9 } }
+   $s=($now-$script:padT).TotalSeconds; if($s -lt $a){ $a=$s; $w='game pad' }
+   $s=($now-$script:conT).TotalSeconds; if($s -lt $a){ $a=$s; $w='another account at the screen' }
+@@ -710,9 +734,9 @@ function IdleWork(){
+   @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue | Where-Object { $_.ProcessId -ne $PID -and $_.CommandLine -and
+     $_.CommandLine -match 'PillagersIdle' -and $_.CommandLine -match 'fuzz\.ps1|corpq\.sh|corpus-slices\.sh|soak-run\.ps1' }).Count
+ }
+-# 11-02: a window move may be a game coming up by itself. For 65 s no new test work starts (two graphics-card looks are 30 s apart, so up to 60 s while something is looking);
++# 11-02: a window move or a lone move may be a game coming up by itself. For 65 s no new test work starts (two graphics-card looks are 30 s apart, so up to 60 s while something is looking);
+ # what is running goes on, and the round goes on, so the status, a push and a new runner still happen. Asked where a gate job, a full run and the robot start.
+-function FocusHold(){ if($Idle -or $script:noFocus -ne $false){ return $false }; try{ if([PillagersSpare.FocusWatch]::FocusOnlyAgo() -ge 65){ return $false }; $n=[PillagersSpare.FocusWatch]::Count(); if($n -ne $script:holdN){ $script:holdN=$n; Say 'a window came to the front: no new test work starts for 65 s, what is running goes on' }; return $true }catch{ return $false } }
++function FocusHold(){ if($Idle -or $script:noFocus -ne $false){ return $false }; try{ if([PillagersSpare.FocusWatch]::FocusOnlyAgo() -ge 65){ return $false }; $n=[PillagersSpare.FocusWatch]::Count()+[PillagersSpare.FocusWatch]::Lones(); if($n -ne $script:holdN){ $script:holdN=$n; Say 'the input time moved with nobody seen: no new test work starts for at least 65 s, what is running goes on' }; return $true }catch{ return $false } }
+ # SPARE-PRESENCE-PAUSE: someone came to the spare PC during this round (a fetch, a test copy build or a push can take a minute), so it
+ # starts nothing more; the next round pauses. Always false in IDLE MODE.
+ function Arrived(){ if($Idle){ return $false }; return ((AwaySec) -lt 30) }
+@@ -1100,7 +1124,7 @@ function Start-Corpus(){
+   # SPARE-PRESENCE-PAUSE: someone came to the spare PC while the test copy was built (a minute or so): the run is not started and its try
+   # is given back; the next round pauses
+   if(Arrived){ PutS 'tries' ([string]$tries); Say ('someone came to the PC while the test copy was built ('+$script:awayWhy+'): the full run waits, its try is given back'); return }
+-  if(FocusHold){ PutS 'tries' ([string]$tries); Say 'a window came to the front while the test copy was built: the full run waits for the next round, its try is given back'; return }
++  if(FocusHold){ PutS 'tries' ([string]$tries); Say 'the input time moved with nobody seen while the test copy was built: the full run waits for the next round, its try is given back'; return }
+   PutS 'fx_blob' $blob   # corpq.sh copies this test copy to fxcorpus.html, which the robots play
+   $name='corpus-'+(Get-Date -Format 'MMdd-HHmm')+'.txt'; $outF=$CorpDir+'\'+$name
+   [IO.File]::WriteAllText($outF+'.head',$head+"`n",$Enc)
