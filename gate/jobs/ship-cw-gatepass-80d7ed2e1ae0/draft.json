@@ -1,0 +1,12 @@
+{
+    "title":  "REMOTE GATE PROOF, PASS",
+    "why":  "A harmless draft for the remote gate proof. Never shipped.",
+    "now":  "Nothing a player can see.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002737.31\u0027;",
+                      "replacement":  "var GATE_PROBE=1;   // v28.xx (cw-gatepass) remote gate proof, never shipped\nvar WHATSNEW_VER=\u002737.31\u0027;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027remote gate proof: the harmless mark is in the drafted build\u0027,\n   run:function(){\n     if(typeof GATE_PROBE===\u0027undefined\u0027) return \u0027no mark: this is the build before\u0027;\n     return GATE_PROBE===1?null:\u0027the mark reads \u0027+GATE_PROBE;\n   }},"
+}
