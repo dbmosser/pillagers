@@ -39,3 +39,7 @@ TASK DONE when a soak run of 6 passes at least 5 on the VM with the fix in place
 ON HIS PC. TASK PARTIAL with what is left.
 
 COORDINATOR 11-01 14:20: copied notes/260/nettest.html.new over tools/nettest.html (read the diff: harness only, the opener hand-off, case-blind text, new status words, pad-lost clear, p2 mark wipe), committed and pushed; the main PC runner takes it from master. STILL OPEN: the VM soak was 3 of 6 (half second frame hitches). CHECK THE NEXT MAIN PC SOAK (git show origin/spare-results:spare/JUL26/soak-last.txt, status line "soak vNN.NN: N of 6"): 5 or more of 6 = move this job to done/; "frames stalled" again = write a perf job for the hitch (map, menu, save under random keys), not a harness job. Stays in waiting/ until that soak is read.
+
+11-02 (from the main PC Claude): soak 0 of 6 on v36.71 and v36.95, all at the join step ("player 2 window does not say it is player 2", "both rosters to show two" timed out); the v37.17 try stopped on low RAM. His exports show no player 2 window report since 10-22. Could be the headless test or the game, so same-machine join is OPEN until the Main PC Correspondent's nettest in a real window on master reports. If that fails it is a game bug: fix job first in line.
+
+11-02 07:15 (CEO): his order "keep all testing on the JTPC". The main PC runs no soak or nettest any more; the real-window nettest moves to the JTPC chat. The main PC's soak line is frozen at 0 of 6 and no longer means anything new. A fail on the JTPC is a game bug and becomes a fix job first in line.

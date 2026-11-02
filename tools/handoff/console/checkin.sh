@@ -14,7 +14,8 @@ ms=$(timeout 60 node tools/bridge/hostctl.mjs main-status 2>/dev/null | node -e 
 console.log([j.ok?'up':'answers but not ok', 'plays v'+((j.play8802||{}).ver||'?')+' on 8802', 'runner '+(g('mode')||'?')+' (heartbeat '+((j.runner||{}).heartbeatAgeSec??'?')+' s)', g('soak')||'soak ?', 'collector 8799 '+(r.up?'up':'DOWN')].join(', '))}catch(e){}})")
 if [ -z "$ms" ]; then say "main PC: the bridge did not answer (main PC off or asleep?)"
 else say "main PC: $ms"; case "$ms" in *"collector 8799 DOWN"*) flag "the run-report collector (8799) on the main PC is down";; esac
-  printf '%s' "$ms" | grep -q 'soak v[0-9.]*: 0 of [1-9]' && flag "main PC 2 player soak passes 0 runs (job 01-260-main-pc-2p-soak-broken)"; fi
+  : # 11-02: the main PC runs no soak any more (his "keep all testing on the JTPC"), so its frozen soak line is not a LOOK
+  fi
 vv=$(powershell.exe -NoProfile -ExecutionPolicy Bypass -File 'C:\PillagersMove\kit\vm-verify.ps1' -NoNetwork 2>&1)
 say "vm-verify: $(echo "$vv" | grep -m1 '^SUMMARY' | sed 's/SUMMARY: //')"
 # 11-01 (CEO): the collector on 8799 runs on the MAIN PC (main-status above checks it), so vm-verify's "port 8799 answers" FAIL in the VM is a false alarm
