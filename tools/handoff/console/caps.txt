@@ -55,3 +55,4 @@ CLI_COMPACT=400000
 # 11-01 (CEO), his "blow any spare capacity starting at 11pm on saturday night ... always be ending near 100%": final burn before each reset (console-lane.sh)
 FINAL_BURN_MIN_H=2
 FINAL_BURN_RATE=2
+GATE_REMOTE=1

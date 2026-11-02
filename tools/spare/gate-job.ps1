@@ -64,7 +64,9 @@ function Ensure-Chrome(){
 }
 function Run-Lint([string]$file){
   $ld=$Copy+'\tools\lint'
-  if(-not (Test-Path -LiteralPath ($ld+'\node_modules'))){ Push-Location $ld; try{ & npm.cmd ci --no-audit --no-fund 2>&1 | Out-Null }finally{ Pop-Location } }
+  # the mark says an install finished: a job stopped in the middle of one (someone came to the PC) leaves part of a folder, and the checker would then fail
+  $ok=$ld+'\node_modules\.gate-install-ok'
+  if(-not (Test-Path -LiteralPath $ok)){ Push-Location $ld; try{ & npm.cmd ci --no-audit --no-fund 2>&1 | Out-Null; if($LASTEXITCODE -eq 0){ [IO.File]::WriteAllText($ok,'ok') } }finally{ Pop-Location } }
   $o=@(& $Node ($ld+'\lint.mjs') --file $file --gate 2>&1 | ForEach-Object { "$_" })
   Add-Lines ($o | Select-Object -First 8)
   return (@($o | Where-Object { $_ -match '^lint: PASS' }).Count -gt 0)

@@ -28,7 +28,7 @@ echo "$dr" | grep -q "^f$T -> OK" || die "the check patch did not apply: $(echo 
 # function with one name. These stand at zero on the game, so any hit is new in this change (the parse check cannot see them; they throw in the raid).
 df="$TEMP/pillagers-dry/pf$T/dark_raiders.html"
 if [ "$REMOTE" = 1 ]; then
-  echo "preflight of $K goes to the spare pc: about 5 to 10 minutes, more when it is busy (a second call for the same draft joins the same job)" >&2
+  echo "preflight of $K goes to the spare pc: about 3 minutes, more when it is busy or on another draft (a second call for the same draft joins the same job)" >&2
   gr=$(bash "$H/gate-remote.sh" run preflight "$K" "$T" "$V" "$NEW" "$H/drafts/draft-$K.json" "$H/p$T.ps1" "$H/f$T.ps1" "$df" "$TEMP/pillagers-dry/pf$T/mkfixture.ps1"); grc=$?
   { [ $grc = 0 ] && echo "$gr" | grep -q "^REMOTE VERIFIED"; } || die "no answer from the spare pc this copy can trust: $(echo "$gr" | tail -2 | cut -c1-400)"
   echo "$gr" | grep -q "^lint: PASS" || die "code checker: $(echo "$gr" | grep -v '^REMOTE' | tail -5 | cut -c1-300) (a false alarm goes in tools/lint/known.txt)"

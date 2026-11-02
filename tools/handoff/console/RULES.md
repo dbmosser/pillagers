@@ -129,7 +129,7 @@ S = C:\Users\User1\AppData\Local\Temp\claude\C--Users-User1-Desktop-dark-raiders
    itself and saves your build in tools/handoff/console/log/unshipped-*.patch, so the next ship is not blocked. A STOP that says "the game or
    fixture has uncommitted changes" for more than 30 minutes is the coordinator's: write it in your notes and stop; never clean it.
    (11-02) REMOTE GATE: when GATE_REMOTE=1 is in caps.txt the Chrome stages of preflight, ship and the camera run on the spare PC, your commands stay the same, and steps 6 and the
-   Chrome ports do not apply. Preflight takes about 5 to 10 minutes, more behind another job; a ship the same. Give the command the longest timeout you have; if it is cut off, run
+   Chrome ports do not apply. Preflight takes about 3 minutes, a ship job about 4 (measured 11-02), more behind another job or beside a full run. Give the command the longest timeout you have; if it is cut off, run
    the same command again: the same draft on the same base joins the job already there. "waiting for the spare pc" is normal. It gives up with a FAIL or STOP after 60 minutes of
    waiting (someone using that PC, usually); run it again later. A REMOTE: line is no result, never a pass. Notes: tools/handoff/console/notes/move/remote-gate.md
 8. Old checks live in tools\mkfixture.ps1. Retarget an old check only through bash "S/fixq.sh" "MESSAGE" after editing it,
