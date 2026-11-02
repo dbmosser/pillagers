@@ -1,0 +1,7 @@
+v37.34: season zero m2: the hall of the fallen, a mainframe tab and a wall in the undercroft
+
+The Mainframe has a hall tab (R, or click it): records on top, then every pillager with an epithet, and the living one first. A new wall stands left of the lift: the newest three fallen, press E there for the same tab. Watch for: a body in the Undercroft stuck near the new wall, and how the portraits read at your screen size.
+
+Check 37.34. Fails on v37.33.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
