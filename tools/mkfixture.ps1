@@ -200,6 +200,8 @@ window.__cleanProfile=function(){
   // 10-20 (job 68): every worn piece goes back to the default look. v14.71 rolls SURPRISE ME into the saved profile, so a full run
   // after it drew a randomly dressed hero against a plainly dressed body (v28.12, v28.13, v28.16 red; v20.01 and v20.11 when a wide vest rolled)
   try{ if(typeof COSKEY==='object'&&COSKEY&&typeof COSDEF==='object'&&COSDEF){ for(var _ck in COSKEY) if(COSKEY.hasOwnProperty(_ck)&&COSDEF.hasOwnProperty(_ck)) P[COSKEY[_ck]]=COSDEF[_ck]; } }catch(_cz){}
+  // 11-01 (cw-m2death): a death ends the pillager now, so every check starts with generation 1 alive and an empty hall, as a fresh save does
+  try{ if(typeof acctEnsure==='function'){ P.hall=[]; P.pil=null; P.pilGen=0; P.pilNote=null; acctEnsure(P); } }catch(_pz){}
   try{ saveProfile(); }catch(e){}
   return was;
 };
