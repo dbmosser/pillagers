@@ -5,3 +5,4 @@
 {"ts":"2026-11-01 19:27:33","build":"37.26","runSeed":1024287753,"raidNo":7,"mode":"demo2p","raidSeed":1923052035,"raidSec":141,"kind":"hang","msg":"the page stopped answering for 10+ s (demo2p)","where":"CDP timeout","last60":[]}
 {"ts":"2026-11-01 19:54:12","kind":"dup-counts","runSeed":1024287753,"counts":{"start|demo#p raid did not start: ERR CDP timeout":2}}
 {"ts":"2026-11-01 19:56:48","build":"37.26","runSeed":1632097219,"raidNo":1,"mode":"demo2p","raidSeed":321109570,"raidSec":18,"kind":"hang","msg":"the page stopped answering for 10+ s (demo2p)","where":"CDP timeout","last60":[]}
+{"ts":"2026-11-01 20:55:18","build":"37.30","runSeed":1612042807,"raidNo":1,"mode":"demo2p","raidSeed":1416372462,"raidSec":103,"kind":"hang","msg":"the page stopped answering for 10+ s (demo2p)","where":"CDP timeout","last60":[]}
