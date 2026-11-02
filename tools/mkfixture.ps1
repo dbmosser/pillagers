@@ -6179,6 +6179,38 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'37.36',what:'cw-m2hallb, critic on the hall (3 of 5): the sign of the hall wall sits right under its ring, gen has a 32px gutter before how it ended, and the empty line is a quiet left aligned row at 20px',
+   run:function(){
+     if(!(window.__runPrep&&window.__cleanProfile&&window.__topClear&&window.__hubEnter)) return 'SKIP: no hub fixture';
+     if(typeof renderHall!=='function'||typeof hubStationNames!=='function'||typeof openOps!=='function') return 'SKIP: no hall here';
+     var bad=[], saved=P, st, y=null, o, S, a, b, e, cs, rg;
+     function need(ok,msg){ if(!ok) bad.push(msg); }
+     try{
+       P=JSON.parse(JSON.stringify(saved));
+       __runPrep(); __topClear(); __cleanProfile(); __hubEnter(); [].forEach.call(document.querySelectorAll('.modal.on'),function(x){ x.classList.remove('on'); });
+       st=hubStationById('hall');
+       need(!!st,'no hall station');
+       S=hubScale(); o=wc.fillText;
+       wc.fillText=function(s,x,yy){ if(String(s)===st.label) y=yy; return o.apply(this,arguments); };
+       wc.save(); wc.setTransform(1,0,0,1,0,0);
+       try{ hubStationNames(S,0,0); }finally{ wc.restore(); delete wc.fillText; if(wc.fillText!==o) wc.fillText=o; }
+       rg=st.y+6+st.r*0.42;
+       need(y!==null&&y>rg&&y-rg<=16,'the sign is at y '+y+', the ring ends at '+rg);
+       P.hall=[]; P.pil=null; P.pilGen=0; pilNow(); P.runs=0; P.ext=0; P.best=0; P.achN={};
+       openOps('hall');
+       e=document.getElementById('hallempty'); cs=e?getComputedStyle(e):null;
+       need(!!e&&cs.textAlign==='left'&&Math.abs(parseFloat(cs.fontSize)-20)<0.5,'the empty line: '+(cs?cs.textAlign+' '+cs.fontSize:'missing'));
+       a=document.querySelector('#halllist .hallhead > :nth-child(2)'); b=document.querySelector('#halllist .hallhead > :nth-child(3)');
+       cs=a?getComputedStyle(a):null;
+       need(!!a&&!!b&&parseFloat(cs.marginRight)===16&&parseFloat(getComputedStyle(a.parentNode).columnGap)===16,'gen gutter: margin '+(cs&&cs.marginRight));
+       P.hall=[{name:'brakka',gen:1,raids:3,kills:1,best:50,lvl:1,end:{how:'dead'}}]; P.pil=pilMake('live',2); renderHall();
+       [].forEach.call(document.querySelectorAll('#opane_hall .hv,#opane_hall .hname'),function(el){ var l=parseFloat(getComputedStyle(el).lineHeight)/parseFloat(getComputedStyle(el).fontSize); need(l>=1.3,'a name line of '+l+' cuts its tails: '+el.textContent); });
+     }catch(e2){ bad.push('threw: '+(e2&&e2.message||e2)); }
+     finally{
+       P=saved;
+       try{ document.getElementById('opmodal').classList.remove('on'); HALLW.k=''; __topClear(); __cleanProfile(); }catch(_c){}
+     }
+     return bad.length?bad.join('; '):null; }},
   {v:'37.35',what:'cw-m2birth2: the birth card footer has its key and pad hints; the figure canvas holds the whole body; the pad letter picker works on the name box and its name goes on the default button; with a paid kit the map page tile and the line under the kit row both name that kit and neither says freebie; with no paid kit the tile says freebie again',
    run:function(){
      if(!(window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile&&window.__deploy&&window.__endRaid&&window.__state)) return 'SKIP: this fixture cannot stage';

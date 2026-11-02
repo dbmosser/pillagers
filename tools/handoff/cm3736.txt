@@ -1,0 +1,7 @@
+v37.36: the hall: its sign sits at its ring, gen has room, the empty line is quiet
+
+The hall sign sits right under the ring by the wall. Watch for: nothing else changes.
+
+Check 37.36. Fails on v37.35.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

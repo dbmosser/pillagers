@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.36 - the hall: its sign sits at its ring, gen has room, the empty line is quiet
+
+Co-op hunt while he was away. Critic on the hall (3 of 5, P1 and P2 on this job): the hall sign sat about 30 room units below its ring and read as detached; gen sat 16px from how it ended; the hall is empty was a title size line floating in the void. His words stay, the hall is empty. The sign moves under the ring, gen gets a 32px gutter, the line becomes a quiet 20px left aligned row. The plaque itself keeps its size, the bay between the pier and the lift holds three at this size. Watch: The hall sign sits right under the ring by the wall. Watch for: nothing else changes.
+
+MEASURED. Check 37.36 passes, and fails on v37.35.
 ## v37.35 - THE BIRTH CARD FILLS ITS FRAME AND THE MAP PAGE NAMES THE KIT
 
 Co-op hunt while he was away. seen on the first pictures of the birth card: a third of the frame stood empty, the figure lost its hat, the default button was small and off to one side, the footer did not say what the keys and pad do, and on the map page the line under the kit row still said freebie kit with a paid kit on Watch: birth card: wrap 1200 to 1480px and centred, heir names 40px, traits 24px, rows 72px, the whole figure at 280px, the default button 72px high at the right end of the footer, key and pad hints that switch live, the floor line above the frame. Map page: the kit tile and the line under the row both name the paid kit, in words short enough not to wrap. The pad letter picker works on the name box

@@ -3288,18 +3288,19 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
     #opane_hall #hallrecs{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; margin:0 0 16px; }
     #root #opane_hall .hallrec{ box-sizing:border-box; padding:16px; border:1px solid var(--ui-line-hi); background:var(--ui-panel); border-radius:4px; }
     #opane_hall .hk{ font:600 20px/1.25 var(--f-cond); letter-spacing:.04em; color:var(--tx-2); }
-    #opane_hall .hv{ font:700 36px/1.15 var(--f-cond); color:var(--tx-1); margin-top:8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    #opane_hall .hv{ font:700 36px/1.35 var(--f-cond); color:var(--tx-1); margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     #opane_hall .hs{ font:400 20px/1.4 var(--f-body); color:var(--tx-2); }
     #opane_hall .hallgrid{ display:grid; grid-template-columns:minmax(0,1.4fr) 64px minmax(0,2.2fr) 72px 96px 128px 72px; gap:16px; align-items:start; padding:12px 16px; }
     #opane_hall .hallhead{ font:600 20px/1.25 var(--f-cond); letter-spacing:.04em; color:var(--tx-2); border-bottom:1px solid var(--ui-line-hi); }
     #root #opane_hall .hallrow{ border-bottom:1px solid var(--ui-line); font-size:20px; }
-    #opane_hall .hname{ font:700 28px/1.2 var(--f-cond); color:var(--tx-1); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    #opane_hall .hname{ font:700 28px/1.35 var(--f-cond); color:var(--tx-1); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     #opane_hall .hep,#opane_hall .hby{ font:400 20px/1.4 var(--f-body); color:var(--tx-2); }
     #opane_hall .hend{ font:400 20px/1.4 var(--f-body); color:var(--tx-1); }
     #opane_hall .hend.hlive{ font-weight:600; color:var(--ok); }
     #opane_hall .hn{ font:600 28px/1.2 var(--f-cond); color:var(--tx-1); }
     #opane_hall .hr{ text-align:right; }
-    #opane_hall #hallempty{ padding:32px 16px; font:600 28px/1.2 var(--f-cond); color:var(--tx-2); text-align:center; }
+    #opane_hall #hallempty{ padding:16px; font:400 20px/1.4 var(--f-body); color:var(--tx-2); text-align:left; }
+    #opane_hall .hallgrid > :nth-child(2){ margin-right:16px; }   /* v37.xx (cw-m2hallb), critic: gen sat 16px from how it ended, 32 now */
     </style>
     <div id="hallrecs"></div>
     <div id="halllist"></div>
@@ -3977,8 +3978,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.35';
-var VER_AT='2026-11-01 22:51';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.36';
+var VER_AT='2026-11-01 22:54';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -52859,7 +52860,7 @@ acts:{KeyE:['go up',function(){
   // The sub line is BUILT from the acts, so the keys on screen can never drift
   // from the keys that work; a one-act station keeps its authored flavour line.
 stations=stations.filter(function(_st){ return !!_st; });   // v8.40: drop the gated-out entries
-stations.push({id:'hall',x:HALLW.x+HALLW.w/2,y:66,r:36,label:'THE HALL',sub:'',c:'#d8c49a',wallSt:1,labelBelow:1,acts:{KeyE:['the hall',function(){ openOps('hall'); }]}});   // v37.xx (cw-m2hall): walk up to the wall and press E; last in the list, so every other station keeps its place
+stations.push({id:'hall',x:HALLW.x+HALLW.w/2,y:66,r:36,label:'THE HALL',sub:'',c:'#d8c49a',wallSt:1,labelY:101,acts:{KeyE:['the hall',function(){ openOps('hall'); }]}});   // v37.xx (cw-m2hall): walk up to the wall and press E; last in the list, so every other station keeps its place
 stations.forEach(function(st){
     var ks=Object.keys(st.acts);
     if(ks.length>1){
@@ -53696,7 +53697,7 @@ function hubStationNames(S,ox,oy){
     var s3=HB.stations[i], on=HB.near===s3, hero=s3.id==='lift';
     wc.font=uiFont(hero?'hero':'body',z);
     var tw=wc.measureText(s3.label).width, lx=clamp(s3.x,margin+tw/2+pad,HUBW-margin-tw/2-pad);
-    var ly=(s3.labelBelow?s3.y+s3.r+4:s3.y-56)+10;
+    var ly=(s3.labelY!==undefined)?s3.labelY:((s3.labelBelow?s3.y+s3.r+4:s3.y-56)+10);   // v37.xx (cw-m2hallb), critic 3 of 5 on the hall wall: its sign sat 30 below its ring, detached
     var met=wc.measureText(s3.label), asc=Math.max(8*z,met.actualBoundingBoxAscent||((hero?42:15)*z)), dsc=Math.max(2*z,met.actualBoundingBoxDescent||4*z);
     // v36.xx (cw-hubpolish), critic on o-00l (2 of 5): "station signs and the experimental caption need one consistent treatment". The caption is the second line of the bar sign's own plate (it was a second plate 24 below). His v7.74 words and asterisks stay.
     var capRaw=(s3.id==='bar')?'***EXPERIMENTAL***':'', capW=0, capH=0, plW=tw+2*pad, plCx=lx;
@@ -57861,7 +57862,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.35: birth card: wrap 1200 to 1480px and centred, heir names 40px, traits 24px, rows 72px, the whole figure at 280px, the default button 72px high at the right end of the footer, key and pad hints that switch live, the floor line above the frame. Map page: the kit tile and the line under the row both name the paid kit, in words short enough not to wrap. The pad letter picker works on the name box Check 37.35 fails on v37.34',
+  now:'v37.36: The hall sign sits right under the ring by the wall. Watch for: nothing else changes. Check 37.36 fails on v37.35',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

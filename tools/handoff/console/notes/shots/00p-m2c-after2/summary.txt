@@ -1,0 +1,12 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  80-birth-default                       staged      10.9s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  81-birth-basic                         staged      10.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  82-birth-priv                          staged      10.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  83-birth-pad                           staged      10.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  85-birth-sector                        staged      10.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 4k : window 3876x2265, viewport 3840x2160
+  80-birth-default                       staged      11.0s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  81-birth-basic                         staged      10.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  82-birth-priv                          staged      10.6s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  83-birth-pad                           staged      10.6s  total   2: clip 0 off 0 small 0 contrast 2 font 0 overlap 0 focus 0
+  85-birth-sector                        staged      10.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
