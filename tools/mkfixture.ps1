@@ -6357,6 +6357,7 @@ window.__REGRESS=[
        need(Array.isArray(e.end.items)&&e.end.lost===worth(e.end.items)&&e.end.lost>=worth(['core','titan','scrap']),'TWO: end.lost $'+e.end.lost+', not the $'+worth(e.end.items||[])+' its items are worth');
        need(J(e.end.worn)===J(P.worn)&&e.end.worn!==P.worn,'TWO: end.worn '+J(e.end.worn)+' is not a copy of '+J(P.worn));
        need(J(e.end.look)===J({hat:P.cosHat,cut:P.cosCut,skin:P.cosSkin,scheme:P.cosScheme,fit:P.cosFit,outfit:P.cosOutfit}),'TWO: end.look '+J(e.end.look));
+       if(!P.pil) pilBirth(P);   // cw-m2birth: from that build the birth card births; this check only reads the next generation
        need(P.pil&&P.pil!==r0&&P.pil.gen===q0.gen+1&&P.pilGen===q0.gen+1&&P.pil.raids===0,'TWO: the living pillager is '+J(P.pil&&{gen:P.pil.gen,raids:P.pil.raids})+', not a new gen '+(q0.gen+1));
        need(J(A)===J(B),'TWO: the lineage moved the save: '+J(A)+' vs '+J(B));
        need(P.pilNote&&P.pilNote.t===String(q0.name).toLowerCase()+' is gone  pillager '+(q0.gen+1)&&!P.pilNote.shown,'TWO: the floor line is '+J(P.pilNote));
@@ -6372,6 +6373,7 @@ window.__REGRESS=[
        e=P.hall[P.hall.length-1]||{}; e.end=e.end||{};
        need(P.hall.length===h0+1&&e.end.how==='quit'&&e.gen===q0.gen&&e.raids===q0.raids+1,'FOUR: a quit with shots fired did not end the pillager as quit ('+P.hall.length+' vs '+h0+', '+e.end.how+')');
        need(e.end.lost===worth(['core','scrap'])&&J(e.end.items)===J(['core','scrap'].sort(function(a,b){ return ival(b)-ival(a); }))&&e.end.by==='','FOUR: the quit end is '+J(e.end));
+       if(!P.pil) pilBirth(P);   // cw-m2birth
        need(P.pil&&P.pil.gen===q0.gen+1,'FOUR: no new pillager after the quit');
        // FIVE: the free walk-back ends and counts nothing
        g=up([]); g.tel.shots=0; g.tel.containers=0; g.tel.distance=0; h0=P.hall.length; q0=J(P.pil); s0=P.runs;
