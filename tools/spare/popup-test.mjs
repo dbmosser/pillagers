@@ -5,7 +5,7 @@
 // flag, because a script click is not his click, so the blocker and RETRY are not tested here. Everything it starts is ended by PID.
 // Player 1 carries ?netslot=A only because the game gives its test handle to such a copy; its player 2 address is the plain top level one.
 // Usage: node tools/spare/popup-test.mjs [--root DIR] [--port 8818] [--cdp 9336] [--headless]. Exit 0 pass, 1 fail, 2 could not run.
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -35,7 +35,7 @@ const LOOK = "JSON.stringify((function(){var n=window.__net,s=null,r=null,pl=doc
 
 let srv = null, ch = null, code = 2;
 const fixture = path.join(T, 'fixture.html'), copy = path.join(T, PAGE);
-const prof = fs.mkdtempSync(path.join(os.tmpdir(), 'pillagers-popup-'));
+const prof = fs.mkdtempSync(path.join(os.tmpdir(), 'pillagers-cdp-popup-'));
 try {
   if (!CHROME) throw new Error('no Chrome');
   if (!fs.existsSync(fixture)) throw new Error('no ' + fixture);
@@ -43,7 +43,7 @@ try {
   fs.mkdirSync(path.join(prof, 'Default'), { recursive: true });
   fs.writeFileSync(path.join(prof, 'Default', 'Preferences'), JSON.stringify({ download: { default_directory: path.join(prof, 'dl'), prompt_for_download: false }, profile: { default_content_setting_values: { automatic_downloads: 2 } } }));
   srv = spawn(process.execPath, [path.join(T, 'spare', 'serve.mjs'), '--root', T, '--port', String(PORT)], { stdio: 'ignore', windowsHide: true });
-  const flags = ['--remote-debugging-port=' + CDP, '--user-data-dir=' + prof, '--no-first-run', '--no-default-browser-check', '--disable-popup-blocking',
+  const flags = ['--remote-debugging-port=' + CDP, '--user-data-dir=' + prof, '--no-first-run', '--no-default-browser-check', '--disable-popup-blocking', '--mute-audio',
     '--disable-background-timer-throttling', '--disable-renderer-backgrounding', '--disable-backgrounding-occluded-windows', '--autoplay-policy=no-user-gesture-required',
     '--window-size=1280,720', '--window-position=-3000,0', 'http://localhost:' + PORT + '/' + PAGE + '?netslot=A'];
   if (process.argv.includes('--headless')) flags.unshift('--headless=new');
@@ -75,15 +75,16 @@ try {
   if (c && !/player 2/i.test(c.title)) bad.push('its window title reads ' + c.title);
   if (a && c && a.key === c.key) bad.push('both windows play the same save ' + a.key);
   if (!joined) bad.push('both rosters did not show two in 120 s');
+  if (joined) { await sleep(3000); try { a = JSON.parse(await evalIn(A, LOOK)); if (/not linked/i.test(a.msg)) bad.push('player 1 still says ' + a.msg + ' 3 s after the pair linked'); } catch (e) { bad.push('player 1 stopped answering after the pair linked'); } }
   say('player 1: ' + JSON.stringify(a));
   say('player 2: ' + JSON.stringify(c) + (C ? ' at ' + C.url : ''));
   code = bad.length ? 1 : 0;
   say((bad.length ? 'FAIL: ' + bad.join('; ') : 'PASS: same machine co-op joined through a real popup in ' + (Date.now() - t0) + ' ms') + ' (build v' + (a && a.ver) + ')');
 } catch (e) { say('COULD NOT RUN: ' + e.message); }
 finally {
-  for (const p of [ch, srv]) { try { if (p) spawn('taskkill', ['/PID', String(p.pid), '/T', '/F'], { stdio: 'ignore' }); } catch (e) {} }
-  await sleep(1500);
+  for (const p of [ch, srv]) { try { if (p) spawnSync('taskkill', ['/PID', String(p.pid), '/T', '/F'], { stdio: 'ignore', timeout: 20000 }); } catch (e) {} }
+  try { spawnSync('powershell.exe', ['-NoProfile', '-Command', "Get-CimInstance Win32_Process -Filter \"Name='chrome.exe'\" | Where-Object { ([string]$_.CommandLine).Contains('" + path.basename(prof) + "') } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }"], { stdio: 'ignore', timeout: 30000 }); } catch (e) {}
   try { fs.rmSync(copy, { force: true }); } catch (e) {}
-  try { fs.rmSync(prof, { recursive: true, force: true }); } catch (e) {}
+  try { fs.rmSync(prof, { recursive: true, force: true, maxRetries: 20, retryDelay: 500 }); } catch (e) { say('note: the temp profile could not be removed: ' + prof); }
 }
 process.exit(code);
