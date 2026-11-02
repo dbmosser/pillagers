@@ -70,7 +70,7 @@ Runner took the code at 09:58 when full run corpus-1102-0552 ended; its status s
 
 ## Not proved yet, and watch for
 - shipone.sh itself: ship.sh start, the check that the game and fixture on disk are what was tested, the commit. The first real ship with the gate on proves it. If it STOPs after the start, shipone.sh puts the tree back as always.
-- A job beside a running full run (below normal priority) and the robot coming back after a job: no full run was going during the proof.
+- A job beside a running full run (below normal priority): no full run was going during the proof. The robot did come back after the jobs (status 11:13: robots=1, the runner on 6ca12d3d, no pause).
 - A person arriving mid-job: seen once for real at 10:37, the job stopped and ran again from the start at 10:53 with a good result.
 
 ## Does the job itself look like a person at the JTPC?
