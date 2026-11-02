@@ -32,7 +32,7 @@
                         "before":  "",
                         "query":  "",
                         "expect":  "U.on(\u0027#birthmodal\u0027)||U.on(\u0027#sectormodal\u0027)",
-                        "js":  "await U.floor(); __P().credits=1000; __wnseen(1);\n__deploy({kit:[],safe:null,mapIx:0,seed:4242}); var q=__state(); q.player.hp=100; q.ents.length=0; q.bag=[]; q.tel.shots=3; q.tel.deathKiller=\u0027warden\u0027;\n__endRaid(\u0027dead\u0027); await U.wait(1500); __wnseen(1); U.click(\u0027#oc_btn\u0027); await U.wait(1500);\nif(!U.on(\u0027#birthmodal\u0027)) __hubEnter();\nawait U.wait(600);document.querySelector(\u0027#birthheirs [data-heir=\"1\"]\u0027).classList.add(\u0027padfocus\u0027); await U.wait(500); return \"\";"
+                        "js":  "await U.floor(); __P().credits=1000; __wnseen(1);\n__deploy({kit:[],safe:null,mapIx:0,seed:4242}); var q=__state(); q.player.hp=100; q.ents.length=0; q.bag=[]; q.tel.shots=3; q.tel.deathKiller=\u0027warden\u0027;\n__endRaid(\u0027dead\u0027); await U.wait(1500); __wnseen(1); U.click(\u0027#oc_btn\u0027); await U.wait(1500);\nif(!U.on(\u0027#birthmodal\u0027)) __hubEnter();\nawait U.wait(600);document.querySelector(\u0027#birthheirs [data-heir=\"1\"]\u0027).classList.add(\u0027padfocus\u0027); document.body.classList.add(\u0027padon\u0027); await U.wait(500); return \"\";"
                     },
                     {
                         "name":  "85-birth-sector",

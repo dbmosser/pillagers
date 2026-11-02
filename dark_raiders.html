@@ -2981,6 +2981,7 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
 <div class="outcome" id="outcome">
 <div class="ocwin">
   <button type="button" id="oc_x" aria-label="Close" onclick="document.getElementById('oc_btn').click()"></button>   <!-- v28.xx (cw-endx): the card's one X, the same job as the primary -->
+  <div id="oc_pil" style="display:none;font:600 20px/1.2 var(--f-cond);color:var(--tx-2);margin-bottom:8px"></div>   <!-- v37.xx (cw-m2retire): whose raid this was -->
   <h1 id="oc_title">EXTRACTED</h1>
   <div class="sub" id="oc_sub"></div>
   <div class="manifest" id="oc_manifest"></div>
@@ -3301,7 +3302,12 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
     #opane_hall .hr{ text-align:right; }
     #opane_hall #hallempty{ padding:16px; font:400 20px/1.4 var(--f-body); color:var(--tx-2); text-align:left; }
     #opane_hall .hallgrid > :nth-child(2){ margin-right:16px; }   /* v37.xx (cw-m2hallb), critic: gen sat 16px from how it ended, 32 now */
+    #opane_hall #hallme{ display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:16px; align-items:center; margin:0 0 16px; }   /* v37.xx (cw-m2retire) */
+    #opane_hall #hallme .hk{ white-space:nowrap; }
+    #root #opane_hall #hallname{ box-sizing:border-box; width:100%; height:56px; padding:0 16px; background:var(--ui-panel); border:1px solid var(--ui-line-hi); border-radius:var(--rad); color:var(--tx-1); font:700 28px/1 var(--f-cond); text-transform:none; }
+    #root #opane_hall #hallretire{ min-height:56px; padding:0 24px; font:700 24px/1 var(--f-cond); white-space:pre; text-transform:none; }
     </style>
+    <div id="hallme" style="display:none"><span class="hk">rename</span><input id="hallname" maxlength="16" autocomplete="off" spellcheck="false" aria-label="name"><button id="hallretire"></button></div>
     <div id="hallrecs"></div>
     <div id="halllist"></div>
   </div>
@@ -3978,8 +3984,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.37';
-var VER_AT='2026-11-01 23:00';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.38';
+var VER_AT='2026-11-01 23:19';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5264,7 +5270,7 @@ var P={credits:1000,rankPaid:[0],mig1r:1,stash:[],weapons:['pistol'],equipped:'f
   // cut at the great door, was told Banked, reloaded the page, and the second
   // load took it, once, silently. mig945 is the rig buyback, harmless on an
   // empty stash, and is stamped for the same reason: the rule is the rule.
-  mig739:1,mig945:1,beltV:5,hotbarV:10,mig0p:1,lifeEarn:0,mig1x:1,mkt:{s:{}},   // v37.xx (cw-m1xpoff): the second ladder payout stamp, born set (xpOffMig)   // v37.xx (cw-p0acct): season zero records born set (seasonZeroMig)   // v21.93: beltV, the four-gun belt plan, born set (beltSlidePlan)
+  mig739:1,mig945:1,beltV:5,hotbarV:10,mig0p:1,lifeEarn:0,mig1x:1,mig2n:1,mkt:{s:{}},   // v37.xx (cw-m1xpoff): the second ladder payout stamp, born set (xpOffMig)   // v37.xx (cw-p0acct): season zero records born set (seasonZeroMig)   // v21.93: beltV, the four-gun belt plan, born set (beltSlidePlan)
   achScan:1,   // v35.47 (cloud-ach-born-scan), CLOUD AUDIT 2026-10-28: BORN SET. Live runs already count kills (achRun live), so the one-time log scan in achStatsDraw added every run again the first time a new save opened its stats: 14 pillager kills read 28 and unlocked the 25 kill medal
   // v11.73, from the 2026-09-06 menu audit: BORN SET, like dayMigrated above.
   // The pname default lives inside applyLoadedProfile, which only runs when a
@@ -6803,6 +6809,87 @@ function pilRaidEnd(how,sec,lost){
   if(r) P.pilNote={t:String(r.name).toLowerCase()+' is gone  pillager '+pilNext(P),shown:0};
   return r;
 }
+// v37.xx (cw-m2retire), HIS RULINGS OF 11-01, plan m2: "A living pillager can retire into the hall. Its worn gear goes to the stash and it pays a bonus by level: $250 a level, so $5,000 at level 20. Then
+// three heirs line up as on a death." Answer 6: rename "any time but this should happen at the mainframe right?" Answer 7: account and pillager names are separate; the account name shows in menus and the
+// two-player lobby; over the head it is the pillager's. P.pname stays the old field and always holds the account name (the demo renames its own copy to PLAYER 1 or 2).
+// A pillager with no raids cannot retire: birth for free, retire, birth again would print $250 a press and climb the ranks.
+function acctNameMig(p){ if(!p||typeof p!=='object'||p.mig2n===1) return; if(typeof p.pname==='string'&&p.pname) p.acctName=p.pname; p.mig2n=1; }
+// THE ONE WRITER of a typed account name. A save that has not played yet: its first pillager takes the name too.
+function acctNameSet(v){
+  var q;
+  v=String(v||'').trim().slice(0,16)||'PILLAGER';
+  P.pname=v; P.acctName=v; q=acctEnsure(P);
+  if(q&&(q.gen|0)===1&&!(q.raids|0)&&!(P.runs|0)&&!P.hall.length){ q.name=v; q.num=1; }
+  return v;
+}
+// Only on the floor of his own career: never in a raid, the demo or the player 2 window (which keeps today's rules until m3f).
+function pilHome(){ if(!P||state!=='hub') return false; if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on) return false; if(typeof NETP2!=='undefined'&&NETP2) return false; return true; }
+function pilHeadName(){
+  var q;
+  if(!P) return '';
+  if((typeof ARCADE==='object'&&ARCADE&&ARCADE.on)||(typeof NETP2!=='undefined'&&NETP2)) return String(P.pname||'');
+  q=acctEnsure(P);
+  return q?pilName(q):'';
+}
+// The rules of the birth card's name box. The numeral counts the lineage.
+function pilRename(p,name){
+  var q, v=String(name||'').toLowerCase().trim().slice(0,16);
+  if(!v||!pilHome()) return null;
+  q=acctEnsure(p); if(!q) return null;
+  if(v!==String(q.name).toLowerCase()){ q.num=pilNum(p,v); q.name=v; try{ saveProfile(); }catch(_prs){} }
+  return q;
+}
+function retirePay(q){ return 250*Math.max(1,(q&&q.lvl)|0); }
+function pilRetire(){
+  var q, pay, worn, i, r;
+  if(!pilHome()) return null;
+  q=pilNow(); if(!q||(q.raids|0)<1) return null;
+  pay=retirePay(q); wornClean(P); worn=JSON.parse(JSON.stringify(P.worn));
+  for(i=0;i<WORN_SLOTS.length;i++) wornOff(P,WORN_SLOTS[i]);
+  P.credits=(+P.credits||0)+pay; lifeEarnAdd(pay);
+  r=pilEnd(P,{how:'retire',pay:pay,worn:worn,look:pilLookNow()});
+  pilHeirs(P);
+  BIRTH=null;
+  try{ saveProfile(); }catch(_prt){}
+  document.getElementById('opmodal').classList.remove('on');
+  try{ sndUi('ok'); }catch(_pro){}
+  hubToast(pilName(r)+' retired  +$'+pay.toLocaleString(),6);
+  birthOpen();
+  return r;
+}
+// Keys and the pad press a button with no hold, so they get the confirm card instead of retiring on one press.
+function pilRetireAsk(){
+  var q=pilNow(), y=document.getElementById('askyes'), a=document.getElementById('askalt'), n=document.getElementById('askno');
+  if(!q||!pilHome()) return;
+  document.getElementById('askq').textContent='retire '+pilName(q)+'?';
+  document.getElementById('asksub').textContent='+$'+retirePay(q).toLocaleString();
+  ASKYES=function(){ pilRetire(); }; ASKALT=null;
+  kitExtraHide();
+  if(y) y.textContent='retire'; if(a) a.style.display='none'; if(n) n.textContent='not yet';
+  ASKBACK='opmodal';
+  openModal('askmodal');
+}
+// THE ROW ON THE HALL TAB: the living pillager's name box and the retire hold.
+function hallMeDraw(){
+  var m=document.getElementById('hallme'), n=document.getElementById('hallname'), b=document.getElementById('hallretire'), q;
+  if(!m||!n||!b) return;
+  q=pilHome()?pilNow():null;
+  m.style.display=q?'':'none';
+  if(!q) return;
+  if(document.activeElement!==n) n.value=String(q.name).toLowerCase();
+  b.disabled=(q.raids|0)<1;
+  b.textContent=b.disabled?'retire after one raid':('retire '+pilName(q)+'  +$'+retirePay(q).toLocaleString());
+  b.onmousedown=function(e){ if(e&&e.button!==undefined&&e.button!==0) return; craftHoldStart(b,pilRetire); };
+  b.onmouseleave=function(){ craftHoldCancel(); };
+  b.onclick=function(e){ if(e&&e.detail){ try{ say2('Hold for one second to confirm.'); }catch(_prc){} return; } pilRetireAsk(); };
+  n.oninput=function(){
+    var v=String(n.value||'').toLowerCase().slice(0,16);
+    if(n.value!==v) n.value=v;
+    if(v.trim()&&pilRename(P,v)) renderHall();
+  };
+  n.onblur=function(){ var w=pilNow(); if(w) n.value=String(w.name).toLowerCase(); };
+  n.onkeydown=function(e){ if(e.code==='Escape') return; e.stopPropagation(); if(e.code==='Enter'||e.code==='NumpadEnter'){ e.preventDefault(); n.blur(); } };
+}
 // The one short floor line after a death, at the next arrival there. Never in the demo.
 function pilNoteShow(){
   var n=P&&P.pilNote;
@@ -6878,6 +6965,7 @@ function hallEndLines(r){
 }
 // THE TAB: the records, then every pillager. Reads the save, writes nothing.
 function renderHall(){
+  hallMeDraw();   // v37.xx (cw-m2retire)
   var rb=document.getElementById('hallrecs'), lb=document.getElementById('halllist'), L, i, r, h, b, s, any;
   if(!rb||!lb) return;
   L=hallRows(P);
@@ -7283,6 +7371,7 @@ if(typeof FIXED_MAPS!=='undefined'&&typeof mapOffered==='function'){
               _c.desc=_c.desc.replace(/snitches/g,'criers').replace(/snitch/g,'crier');
           });
           try{ gunsGoneSweep(P); }catch(_ggs){}
+          try{ acctNameMig(P); }catch(_anm){}   // v37.xx (cw-m2retire): the name typed since m0 is the account name (once, P.mig2n)
           try{ seasonZeroMig(P); }catch(_szm){}
           try{ xpOffMig(P); }catch(_xom){} try{ rankMig(P); }catch(_rkm){}   // v37.xx (cw-m1xpoff): ladder rewards earned since m0 paid as $ (once, P.mig1x)   // v37.xx (cw-p0acct): unclaimed ladder rewards paid as $, lifetime earnings seeded, the character is generation one (once, P.mig0p)   // v28.xx (cw-gunsgone): a saved Marksman Rifle or Whisper pays its credits first
           if(!Array.isArray(P.stash)) P.stash=[];
@@ -20568,7 +20657,7 @@ function padNameOp(op){
 }
 // v28.xx (cw-cx-padnameview), J4 critic 10-20: a couch-readable letter row and one footer, with the title focus hidden behind the scrim.
 function padNameStart(input){
-  if(PADNAME||!input||(input.id!=='pnamein'&&input.id!=='birthname'))return false;
+  if(PADNAME||!input||(input.id!=='pnamein'&&input.id!=='birthname'&&input.id!=='hallname'))return false;
   var st,card,v=String(input.value||'pillager').toLowerCase().slice(0,16),l=(v+'                ').slice(0,16).split('');
   if(!document.getElementById('padnamecss')){
     st=document.createElement('style'); st.id='padnamecss';
@@ -20605,7 +20694,7 @@ function padNameStart(input){
 function padNamePoll(pressed){
   var n=PADNAME,nw=[],i;
   if(!n)return false;
-  if(!document.getElementById('title').classList.contains('on')&&!birthOn()){padNameClose(false);return false;}
+  if(!document.getElementById('title').classList.contains('on')&&!birthOn()&&!(n.input.id==='hallname'&&document.getElementById('opmodal').classList.contains('on'))){padNameClose(false);return false;}
   for(i=0;i<17;i++){ if(pressed(i)&&!PAD.prev[i])nw.push(i); PAD.prev[i]=pressed(i); }
   if(n.dev!==padOn())padNameDraw(); // v28.xx (cw-cx-padnameview): an idle open picker follows the last input device too.
   padNameOp(padLetterInput(nw,PAD.ax,n,'ay')); return true;
@@ -20653,7 +20742,7 @@ function padFocusables(root){
   for(var i=0;i<q.length;i++){
     var el=q[i],cs=getComputedStyle(el);
     // v28.xx (cw-cx-padname), J4: only the career name has a pad text route. Delete and reset words remain keyboard only.
-    if(el.tagName==='TEXTAREA'||el.isContentEditable||(el.tagName==='INPUT'&&el.id!=='pnamein'&&el.id!=='birthname'&&!/^(button|submit|reset|checkbox|radio|range)$/.test(el.type)))continue;
+    if(el.tagName==='TEXTAREA'||el.isContentEditable||(el.tagName==='INPUT'&&el.id!=='pnamein'&&el.id!=='birthname'&&el.id!=='hallname'&&!/^(button|submit|reset|checkbox|radio|range)$/.test(el.type)))continue;
     // v16.52, stability (controller audit): the PARTY window opens with the pad highlight on its CONTROLLER row, and one press of
     // A there cycled the pick: with one pad plugged in the second press chose a pad that is not there, so player 2 lost all input
     // (B could no longer shut the window), the pick was saved, and player 1 took the pad. END THE PARTY was one press with no
@@ -20833,7 +20922,7 @@ function padMenu(pressed){
   // the mouse press that starts a drag (stashPadAct), the highlight is then the cursor, and A on the target is the release:
   // every backpack cell, stash cell and belt key, every rule and every word are the mouse drop. A control that cannot be
   // dragged, and A with nothing held on a button, is the click it always was.
-  if(tap(0)&&PAD.focus){ PAD.aSpent=1; if(md.id==='outcome'&&haulRevealSkip()){} else if(md.id==='outcome'&&PAD.focus.id==='oc_btn'&&ocLbNext()){} else if(PAD.focus.id==='pnamein'||PAD.focus.id==='birthname') padNameStart(PAD.focus); else if(!stashPadAct(PAD.focus)) PAD.focus.click(); }   // v26.xx (career7): A on the card skips the haul reveal first
+  if(tap(0)&&PAD.focus){ PAD.aSpent=1; if(md.id==='outcome'&&haulRevealSkip()){} else if(md.id==='outcome'&&PAD.focus.id==='oc_btn'&&ocLbNext()){} else if(PAD.focus.id==='pnamein'||PAD.focus.id==='birthname'||PAD.focus.id==='hallname') padNameStart(PAD.focus); else if(!stashPadAct(PAD.focus)) PAD.focus.click(); }   // v26.xx (career7): A on the card skips the haul reveal first
   // v14.23: on the pause box B and Menu resume the run. The search for a way out below would click the hidden RETURN TO
   // CHARACTER SELECTION first, which does nothing in a raid.
   // v14.26: B on the title does nothing. The search for a way out below finds no button there and would strip the title's
@@ -36813,6 +36902,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
   // the two halves of a raid can never disagree again.
   if(!G.sim) commitRun(pendingRun);
   if(!G.sim&&G.achNew&&G.achNew.length) for(var _an=0;_an<G.achNew.length;_an++) lines.push('<span style="color:var(--amber)">ACHIEVEMENT: '+G.achNew[_an].n+'</span>  <span style="color:var(--ash)">'+G.achNew[_an].d+'</span>');   // v17.40: named on the end card
+  try{ (function(){ var _e=document.getElementById('oc_pil'), _h=P&&P.hall, _q=(G.sim||(typeof ARCADE==='object'&&ARCADE&&ARCADE.on)||(typeof NETP2!=='undefined'&&NETP2))?null:((P&&P.pil)||(_h&&_h[_h.length-1])); if(_e){ _e.textContent=_q?pilName(_q):''; _e.style.display=_q?'':'none'; } })(); }catch(_ocp){}   // v37.xx (cw-m2retire): the pillager that went up, on the card whether it lived or not
   var t=document.getElementById('oc_title'),s=document.getElementById('oc_sub');
   if(how==='extract'){ t.textContent='EXTRACTED'; t.style.color='var(--coolant)'; try{ annCue('EXTRACTED'); }catch(_vc){}   // v24.04 (his #45)
     var _fcE=T.firstContact;
@@ -57862,7 +57952,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.37: a kit he cannot pay for keeps its words in grey with the price in red at full opacity, still not selectable; the picked heir card has a 6px lime bar on its left edge Check 37.37 fails on v37.36',
+  now:'v37.38: the hall tab has a rename box and a retire row: hold to retire pays 250 a level into lifetime earnings, moves worn gear to the stash, puts the pillager in the hall and opens the birth card (keys and pad get a confirm card, one raid needed first); the title name is the account name in menus, save slots and the lobby; the partner sees the pillager name with numeral over the head; the run card names the pillager; restore codes carry the lineage and old codes still restore Check 37.38 fails on v37.37',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -59653,7 +59743,7 @@ function hotPlanHTML(where){
 // panel and by renderStage for the ascent check, because each of them rebuilds its own
 // host and a document-wide pass is destroyed by whichever renders second.
 function renderHub(){
-  var _pn=document.getElementById('stashname'); if(_pn)_pn.textContent=String(P.pname||'pillager').toLowerCase(); // v28.xx (cw-cx-padname): save ownership in the stash.
+  var _pn=document.getElementById('stashname'); if(_pn)_pn.textContent=String(P.acctName||P.pname||'pillager').toLowerCase(); // v28.xx (cw-cx-padname): save ownership in the stash.
   try{ codexScan(); }catch(_cxs){}
   try{ trophyScan(true); }catch(_trs){}   // v26.xx (career4): the trophy case files what the profile has earned   // v26.xx (career2): every gun in the armoury, stash or backpack is in the codex
   if(typeof applyMenuZoom==='function') applyMenuZoom();
@@ -60646,7 +60736,7 @@ function rivalsForCode(){
 // this build knows. The time each was earned is shown nowhere, so it stays out of the code, which keeps it short.
 function achForCode(){ var o=[], i; if(typeof ACHS==='undefined'||!P||!P.ach) return o; for(i=0;i<ACHS.length;i++) if(P.ach[ACHS[i].id]) o.push(ACHS[i].id); return o; }
 function restoreMake(){
-  var o={v:1,n:P.pname||'PILLAGER',c:P.credits||0,x:P.xp||0,l:P.xpLevel||1,
+  var o={v:1,n:P.acctName||P.pname||'PILLAGER',c:P.credits||0,x:P.xp||0,l:P.xpLevel||1,   // v37.xx (cw-m2retire): n, the account name
          r:P.runs||0,e:P.ext||0,d:P.died||0,b:P.best||0,no:P.notoriety||0,
          pk:P.pack||0,ra:P.racks||0,ar:P.arrays||0,cs:P.cstand||0,
          sc:(P.spClaimed||[]).slice(),ki:P.kills||{},cb:P.cosBought||{},
@@ -60692,6 +60782,8 @@ function restoreMake(){
   // rounds worn through each, which is what condition is made of.
   o.g={w:(P.weapons||[]).slice(),e:P.equipped||'fists',e2:P.equippedSec||'none',wr:{}};
   for(var wk in (P.wear||{})) if(P.wear[wk]) o.g.wr[wk]=P.wear[wk]|0;
+  // v37.xx (cw-m2retire): THE LINEAGE TRAVELS WITH THE CODE: the living pillager, the hall, the generation and any heirs waiting.
+  acctEnsure(P); o.pl={p:P.pil||null,h:P.hall,g:P.pilGen|0}; if(P.heirs) o.pl.e=P.heirs;
   return o;
 }
 function restoreCode(){
@@ -60727,7 +60819,7 @@ var RESTORE_RELOAD=0, RESTORE_TIMER=null;
 function restoreApply(o){
   if(!o||typeof o.c!=='number') return false;
   oneGunProfile(o); // v28.xx (cw-cx-onerarity): old restore codes keep their guns, locks and records too.
-  P.pname=String(o.n||'PILLAGER').slice(0,16);
+  P.pname=String(o.n||'PILLAGER').slice(0,16); P.acctName=P.pname; P.mig2n=1;   // v37.xx (cw-m2retire)
   P.credits=o.c|0; P.xp=o.x|0; P.xpLevel=o.l||1;
   P.runs=o.r|0; P.ext=o.e|0; P.died=o.d|0; P.best=o.b|0; P.notoriety=o.no|0;
   P.pack=o.pk|0; P.racks=o.ra|0; P.arrays=o.ar|0; P.cstand=o.cs|0;
@@ -60748,6 +60840,18 @@ function restoreApply(o){
   // somebody else. The panel promises this REPLACES the save he is playing.
   P.netEarn=(typeof o.ne==='number')?o.ne:0;
   P.lifeEarn=(typeof o.le==='number'&&o.le>=0)?Math.round(o.le):Math.max(0,P.netEarn);   // v37.xx (cw-p0acct): an older code starts from its net figure
+  // v37.xx (cw-m2retire): A RESTORE NEVER WEARS ANOTHER ACCOUNT'S LINEAGE. The code's pillager, hall, generation and heirs come through. An older code has none, so acctEnsure makes generation one and it
+  // keeps the character's record, as seasonZeroMig does. A death note or a paid kit waiting belonged to the save being replaced.
+  (function(){
+    var L=(o.pl&&typeof o.pl==='object'&&!Array.isArray(o.pl))?o.pl:null, q;
+    P.hall=(L&&Array.isArray(L.h))?L.h.filter(function(r){ return !!r&&typeof r==='object'; }):[];
+    P.pil=(L&&L.p&&typeof L.p==='object'&&!Array.isArray(L.p))?L.p:null;
+    P.pilGen=(L&&typeof L.g==='number'&&isFinite(L.g))?Math.max(0,L.g|0):0;
+    delete P.heirs; if(L&&Array.isArray(L.e)) P.heirs=L.e;
+    delete P.pilNote; delete P.birthKit; delete P.birthLook; BIRTH=null;
+    q=acctEnsure(P);
+    if(!L&&q){ q.raids=Math.max(0,o.r|0); q.ext=Math.max(0,o.e|0); q.best=Math.max(0,+o.b||0); q.kills=Math.max(0,((o.an&&o.an.r)|0)+((o.an&&o.an.m)|0)); q.born=0; }
+  })();
   P.mig1r=0; try{ rankMig(P); }catch(_rkr){}   // v37.xx (cw-m1ranks): the restored character starts at the rank its lifetime earnings reach, nothing paid
   // v15.00, save audit finding 1: THE RESTORED CHARACTER'S GRUDGES, NOT THE REPLACED ONE'S. P.rivals was neither carried nor
   // cleared, so a character who never met a named pillager inherited the grudge of the save he replaced: that pillager shot on
@@ -62045,7 +62149,7 @@ function newNameTake(){
   if(String(o.s)!==String(SLOT)) return '';
   if(Math.abs(Date.now()-(+o.t||0))>120000) return '';
   if((P.runs|0)>0) return '';
-  P.pname=o.n.trim().slice(0,16);
+  acctNameSet(o.n);   // v37.xx (cw-m2retire)
   try{ saveProfile(); }catch(_ns){}
   return P.pname;
 }
@@ -62064,7 +62168,7 @@ function netPidOf(s){
   for(i=0;i<s.length;i++){ h=(h^s.charCodeAt(i))>>>0; h=Math.imul(h,0x01000193)>>>0; }
   return ('0000000'+h.toString(16)).slice(-8);
 }
-function netMe(){ NET.name=netClean(P&&P.pname,16)||'PILLAGER'; NET.pid=netPidOf((P&&P.iid)||netSess()); }
+function netMe(){ NET.name=netClean(P&&(P.acctName||P.pname),16)||'PILLAGER'; NET.pid=netPidOf((P&&P.iid)||netSess()); }
 // THE CODE. Plain is the whole offer as UTF-8 in base64url; packed is the same bytes through deflate-raw. The plain half is
 // synchronous, so a check can hold it to an exact round trip; the packed half needs the browser streams and is async.
 function netUtf8(str){
@@ -62443,6 +62547,7 @@ function netDrop(peer,why){
     if(was==='in'){
       NET.roster=netRosterBuild();
       netBroadcast({t:'roster',roster:NET.roster});
+      if(NET.pn) delete NET.pn[peer.seat];   // v37.xx (cw-m2retire)
       netSrchEndSeat(peer.seat);   // v15.91: a box he was searching is free again
       try{ if(typeof HB==='object'&&HB&&HB.drops) HB.drops=HB.drops.filter(function(q){ return q.by!==peer.seat; }); }catch(_hd){}   // v18.58: his crates leave the floor with him; they go home to his own stash (floorDropsRestore)
       NET.status=peer.name+' left';
@@ -62462,7 +62567,7 @@ function netReset(keepErr){
   NET.specG=null; NET.specHow=''; NET.specTick=false;   // v16.14: a host who ends the party stops running the raid (the party is told bye: abandon, his ruling)
   NET.peers=[];
   for(i=0;i<ps.length;i++){ if(ps[i].state==='in'||ps[i].state==='open') netSend(ps[i],{t:'bye'}); netClose(ps[i]); }
-  NET.pend=null; NET.on=false; NET.role=null; NET.seat=-1; NET.roster=[]; NET.code=''; NET.reply=''; NET.codeLen=0; NET.busy=false;
+  NET.pn={}; NET.pnSent=''; NET.pend=null; NET.on=false; NET.role=null; NET.seat=-1; NET.roster=[];   // v37.xx (cw-m2retire): pn NET.code=''; NET.reply=''; NET.codeLen=0; NET.busy=false;
   if(NET.kitWait){ clearTimeout(NET.kitWait.tm); NET.kitWait=null; }   // v17.34, co-op hunt 2026-09-28: and no kit wait is left to send anyone up
   NET.floor=[]; NET.hubAcc=0; NET.hubN=0; NET.lkSent='';   // v15.75: nobody is left standing on the floor
   NET.up=[]; NET.upAcc=0; NET.upN=0; NET.upSeed=0; NET.upFp=null;   // v15.79: and nobody up top
@@ -62550,12 +62655,13 @@ function netLookClean(lk){
   }
   return out;
 }
+function netPnPut(msg,n){ var nm=netClean(pilHeadName(),24); if(nm&&(nm!==NET.pnSent||n%10===0)){ msg.pn=nm; NET.pnSent=nm; } }   // v37.xx (cw-m2retire)
 function netSeatName(s){
   var r=NET.roster||[], i;
   // v30.xx (cw-p1p2), HIS ORDER (2026-10-18): "there seem to be a lot of inconsistencies between p1 and p2 games, please coordinate them better". The roster
   // keeps the name each save had when the two windows linked, before the party arcade renamed them, so over a head, on the team bar and in the feed one
   // window read a save name or Pillager where the other read Player 2. In the party arcade the two seats are Player 1 and Player 2 in both windows.
-  for(i=0;i<r.length;i++) if(r[i].seat===s) return (typeof ARCADE==='object'&&ARCADE&&ARCADE.on&&!ARCADE.solo&&(s===0||s===1))?('Player '+(s+1)):r[i].name;
+  for(i=0;i<r.length;i++) if(r[i].seat===s) return (typeof ARCADE==='object'&&ARCADE&&ARCADE.on&&!ARCADE.solo&&(s===0||s===1))?('Player '+(s+1)):((NET.pn&&NET.pn[s])||r[i].name);   // v37.xx (cw-m2retire): the name his word carries (his pillager), else the roster's; the lobby reads the roster itself
   return null;
 }
 function netInCount(){ var n=0, i; for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in') n++; return n; }
@@ -62577,6 +62683,7 @@ function netOnState(peer,m){
     s=m.s;
   } else return 'off';
   if(s<0||s>=NET.max||s===NET.seat||netSeatName(s)===null) return 'ignored';
+  if(typeof m.pn==='string'&&netClean(m.pn,24)){ if(!NET.pn) NET.pn={}; NET.pn[s]=netClean(m.pn,24); }   // v37.xx (cw-m2retire); a word without it (an older window) leaves the roster's name
   up=(m.k==='r'); x=clamp(m.x,0,up?NET_UP_MAX:HUBW); y=clamp(m.y,0,up?NET_UP_MAX:HUBH);   // v15.79: k r is a word from up top, where the surface is far bigger than the floor
   f=(typeof m.f==='number'&&isFinite(m.f)&&m.f>-100&&m.f<100)?m.f:0;
   f=f-6.2832*Math.floor(f/6.2832);
@@ -62612,6 +62719,7 @@ function netOnState(peer,m){
     out={t:'st',s:s,x:+x.toFixed(1),y:+y.toFixed(1),f:+f.toFixed(2),m:g.mv,r:+g.roll.toFixed(2)};
     if(up){ out.k='r'; out.sd=g.sd; out.c=g.cr; out.sp=g.sp; out.dn=g.dn; out.w=g.w; out.pz=g.pz; out.mf=g.mf|0; out.hp=g.hp; out.mh=g.mh; out.ar=g.ar; out.ac=g.ac; out.dt=g.dt; out.sa=g.sa; out.hd=g.hd; out.am=g.am; out.rs=g.rs; }   // v15.79: passed on as it came // v28.47 (cloud-coop-teammate-bare-hands), CLOUD HUNT 2026-10-15: hd passed on too
     if(lk) out.lk=lk;
+    if(typeof m.pn==='string'&&NET.pn&&NET.pn[s]) out.pn=NET.pn[s];   // v37.xx (cw-m2retire): passed on as it came
     if(up&&g.fk){ out.fk=g.fk; if(g.el) out.el=g.el; }   // v23.xx (forge8)
     if(up&&g.xo) out.xo=1;   // v35.xx (cw-xsink): passed on as it came
     if(up) out.shold=g.shold;   // v28.xx (cw-cx-bothsearch): forward both press and release
@@ -62649,6 +62757,7 @@ function netHubTick(dt){
   if(NET.role==='host') msg.s=NET.seat;   // a friend names no seat: the host files him under the seat of his link
   lk=netLook(); ls=JSON.stringify(lk);
   if(ls!==NET.lkSent||NET.hubN%10===0){ msg.lk=lk; NET.lkSent=ls; }
+  netPnPut(msg,NET.hubN);   // v37.xx (cw-m2retire)
   NET.hubN++;
   for(i=0;i<NET.peers.length;i++) if(NET.peers[i].state==='in'&&netSendFast(NET.peers[i],msg)) sent++;
   return sent;
@@ -62717,7 +62826,7 @@ function netMateShadowed(){
 }
 // His own name when he has one, else which player he is: the host window is player 1, the other is player 2.
 function netMateName(g){
-  var nm=netClean(g&&g.nm,16);
+  var nm=netClean(g&&g.nm,24);
   if(!nm||/^pillager$/i.test(nm)) nm='Player '+(((g&&g.seat)|0)+1);
   return nm;
 }
@@ -62734,7 +62843,7 @@ function netMateIn(m){
   g=NETMATE.g;
   if(!g||NETMATE.pair!==NET.pair){ g={seat:(NET.same==='host')?1:0,x:x,y:y,f:f,tx:x,ty:y,tf:f,mv:0,roll:0,bob:0,age:0,n:0,lk:null,nm:''}; NETMATE.g=g; NETMATE.pair=NET.pair; }
   else if(g.age>=NET_MATE_STALE||Math.sqrt((x-g.x)*(x-g.x)+(y-g.y)*(y-g.y))>NET_HUB_SNAP){ g.x=x; g.y=y; g.f=f; }
-  g.tx=x; g.ty=y; g.tf=f; g.mv=m.m?1:0; g.roll=clamp(+m.r||0,0,0.38); g.age=0; g.n++; g.nm=netClean(m.nm,16);
+  g.tx=x; g.ty=y; g.tf=f; g.mv=m.m?1:0; g.roll=clamp(+m.r||0,0,0.38); g.age=0; g.n++; g.nm=netClean(m.nm,24);
   if(lk) g.lk=lk;
   return 'hubmate';
 }
@@ -62765,7 +62874,7 @@ function netMateTick(dt){ try{ netSameWatch(Date.now()); }catch(_nw){} try{ netB
   NETMATE.acc+=dt;
   if(NETMATE.on&&NETMATE.acc<NET_MATE_STEP) return 0;
   NETMATE.acc=NETMATE.on?Math.min(NETMATE.acc-NET_MATE_STEP,NET_MATE_STEP):0;
-  msg={t:'hubmate',pair:NET.pair,x:+(+p.x||0).toFixed(1),y:+(+p.y||0).toFixed(1),f:+(+p.face||0).toFixed(2),m:p.moving?1:0,r:(p.rollT>0)?+(+p.rollT).toFixed(2):0,nm:netClean(P&&P.pname,16)};
+  msg={t:'hubmate',pair:NET.pair,x:+(+p.x||0).toFixed(1),y:+(+p.y||0).toFixed(1),f:+(+p.face||0).toFixed(2),m:p.moving?1:0,r:(p.rollT>0)?+(+p.rollT).toFixed(2):0,nm:netClean(pilHeadName(),24)};   // v37.xx (cw-m2retire): over the head in the other window
   lk=netLook(); ls=JSON.stringify(lk);
   if(!NETMATE.on||ls!==NETMATE.lkSent||NETMATE.n%5===0){ msg.lk=lk; NETMATE.lkSent=ls; }   // the first word after arriving on the floor always carries it: the other window drew nobody before
   NETMATE.n++; NETMATE.on=1;
@@ -64053,6 +64162,7 @@ function netUpTick(dt){
   msg.shold=held;   // v28.xx (cw-cx-bothsearch): one backward-safe bit for keyboard E or the pad search input
   lk=netLook(); ls=JSON.stringify(lk);
   if(ls!==NET.lkSent||NET.upN%10===0){ msg.lk=lk; NET.lkSent=ls; }
+  netPnPut(msg,NET.upN);   // v37.xx (cw-m2retire)
   if(G.arcade&&p.arcSh) msg.sh=1;   // v23.30 (arcade9): only while shielded
   if(pwrOn('shield')) msg.pb=1;   // v28.48 (cloud-coop-teammate-shield-bubble), CLOUD HUNT 2026-10-15: pb, his SHIELD BUBBLE power-up is up, so his teammate sees the bubble too
   if(p.wep&&(p.wep.fk===1||p.wep.fk===2)){ msg.fk=p.wep.fk; if(p.wep.fk===2&&p.wep.el&&ELEM[p.wep.el]) msg.el=p.wep.el; }   // v23.xx (forge8): the forged gun in hand, for his glow
@@ -66458,7 +66568,7 @@ function netSumDraw(){
     else if(e.how==='dead'){ st='KILLED'; c='var(--rust)'; }
     else { st='ABANDONED'; c='var(--ash)'; }
     h+='<div style="display:flex;gap:14px;justify-content:center;font-size:13px">'+
-       '<span style="width:150px;text-align:right">'+escHtml(r[i].seat===NET.seat?'YOU':r[i].name)+'</span>'+
+       '<span style="width:150px;text-align:right">'+escHtml(r[i].seat===NET.seat?'YOU':(netSeatName(r[i].seat)||r[i].name))+'</span>'+
        '<span style="width:110px;color:'+c+'">'+st+'</span>'+
        '<span style="width:80px">'+(e?(e.k+(e.k===1?' kill':' kills')):'')+'</span>'+
        '<span style="width:90px;text-align:right">'+(e?('$'+e.v.toLocaleString()):'')+'</span></div>';   // v23.xx (tr9fixn): money is Credits, written $1,234 (R48)
@@ -67186,7 +67296,7 @@ function arcadeSandboxIn(role){
   newpSandbox(sb);   // v35.xx (cw-newpdefs), his order of 10-28 "and for arcade mode": every demo start takes the new player list
   sb.gameOpts.superhot=0; if(sb.tuned) delete sb.tuned.superhot;   // v35.xx (cw-shoff), his order of 10-27 "superhot mode should be off by default": the demo starts with it off too
   ARCADE.role=(role==='p2')?'p2':'host';
-  sb.pname=(ARCADE.role==='p2')?'PLAYER 2':'PLAYER 1';
+  sb.pname=(ARCADE.role==='p2')?'PLAYER 2':'PLAYER 1'; sb.acctName=sb.pname;   // v37.xx (cw-m2retire)
   ARCADE.cfgAll=arcadeCfgCopy(CFG);   // v23.27 (arcfixb)
   ARCADE.realJs=js; ARCADE.on=1;
   netUpPutP(JSON.stringify(sb));
@@ -77126,7 +77236,7 @@ loadProfile().then(function(){
         // v11.73: the same fallback every other reader of the name already has.
         // The default is born set now, but this is the line a player SEES, and
         // a name is not something to print raw.
-        ? ((P.pname||'PILLAGER')+'  \u00b7  '+P.runs+' raid'+(P.runs===1?'':'s')+' logged  \u00b7  '+'$'+P.credits.toLocaleString()+' banked')
+        ? ((P.acctName||P.pname||'PILLAGER')+'  \u00b7  '+P.runs+' raid'+(P.runs===1?'':'s')+' logged  \u00b7  '+'$'+P.credits.toLocaleString()+' banked')
         // v13.27: it promised the Undercroft would walk him through it, and nothing
         // does. This says what actually happens, asking the same question the game
         // asks before it offers the pack.
@@ -77143,7 +77253,7 @@ loadProfile().then(function(){
       try{ var v=localStorage.getItem(slotKey(sn)); if(!v) return null;
         var d=JSON.parse(v);
         if(!d||typeof d.credits!=='number') return {name:'UNREADABLE',runs:0,credits:0,xp:0};
-        return {name:(d.pname||'PILLAGER'),runs:d.runs||0,credits:d.credits||0,xp:d.xp||0};
+        return {name:((d.mig2n===1&&d.acctName)||d.pname||'PILLAGER'),runs:d.runs||0,credits:d.credits||0,xp:d.xp||0};   // v37.xx (cw-m2retire): the account name
       }catch(e){
         // v14.43: a save holding something unreadable is not an empty save. It is listed as UNREADABLE, so CREATE A NEW SAVE
         // does not pick it and write a fresh character over it.
@@ -77251,7 +77361,7 @@ loadProfile().then(function(){
     var psv=document.getElementById('pnamesave');
     if(psv) psv.onclick=function(){
       var v=(pin&&pin.value||'').trim().slice(0,16);
-      P.pname=v||'PILLAGER'; saveProfile(); renderSlots();
+      acctNameSet(v); saveProfile(); renderSlots();   // v37.xx (cw-m2retire)
       // v10.98, HIS CRASH REPORT: this was a third hand-written copy of the name
       // line, reading a variable v10.96 moved into subSync. One copy now.
       subSync();
@@ -77283,7 +77393,7 @@ loadProfile().then(function(){
     var go=function(){
       if(!t.classList.contains('on')) return;
       var _nv=(pin&&pin.value||'').trim().slice(0,16);
-      if(_nv&&_nv!==P.pname&&_nv!==titleNameShown(P.pname)){ P.pname=_nv; saveProfile(); }   // v28.xx (cw-title-saves): the lowered default is not a new name
+      if(_nv&&_nv!==P.pname&&_nv!==titleNameShown(P.pname)){ acctNameSet(_nv); saveProfile(); }   // v28.xx (cw-title-saves): the lowered default is not a new name
       t.classList.remove('on');
       ac(); showScreen('hub');
     };

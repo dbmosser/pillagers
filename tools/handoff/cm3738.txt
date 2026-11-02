@@ -1,0 +1,7 @@
+v37.38: season zero m2: retire a pillager, rename at the mainframe, the account name in menus and the lobby, the lineage in the restore code
+
+the hall tab has a rename box and a retire row: hold to retire pays 250 a level into lifetime earnings, moves worn gear to the stash, puts the pillager in the hall and opens the birth card (keys and pad get a confirm card, one raid needed first); the title name is the account name in menus, save slots and the lobby; the partner sees the pillager name with numeral over the head; the run card names the pillager; restore codes carry the lineage and old codes still restore
+
+Check 37.38. Fails on v37.37.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

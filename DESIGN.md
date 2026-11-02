@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.38 - SEASON ZERO M2: RETIRE A PILLAGER, RENAME AT THE MAINFRAME, THE ACCOUNT NAME IN MENUS AND THE LOBBY, THE LINEAGE IN THE RESTORE CODE
+
+Co-op hunt while he was away. his rulings of 11-01, plan m2: a living pillager can retire into the hall for 250 a level with its worn gear going to the stash; rename at the Mainframe (answer 6); account and pillager names are separate, the account name in menus and the two-player lobby (answer 7); a restore never wears the lineage of another account Watch: the hall tab has a rename box and a retire row: hold to retire pays 250 a level into lifetime earnings, moves worn gear to the stash, puts the pillager in the hall and opens the birth card (keys and pad get a confirm card, one raid needed first); the title name is the account name in menus, save slots and the lobby; the partner sees the pillager name with numeral over the head; the run card names the pillager; restore codes carry the lineage and old codes still restore
+
+MEASURED. Check 37.38 passes, and fails on v37.37.
 ## v37.37 - THE BIRTH CARD: A KIT YOU CANNOT PAY FOR STAYS READABLE, THE PICKED HEIR HAS A BAR
 
 Co-op hunt while he was away. the critic on the birth card, P1: the whole row of a kit he cannot pay for faded to about 3:1, and only a 1px outline marked the picked heir Watch: a kit he cannot pay for keeps its words in grey with the price in red at full opacity, still not selectable; the picked heir card has a 6px lime bar on its left edge
