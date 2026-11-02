@@ -1,11 +1,11 @@
 host=DESKTOP-82BKOP4
-seen=2026-11-02 17:52
-epoch=1793659960
+seen=2026-11-02 17:57
+epoch=1793660275
 game=77983f9b v37.39
 test_run=idle
 robots=1
-ram_free_gb=22.1
-push_ok=1
+ram_free_gb=22.5
+push_ok=0
 runner=A0335F49
 mode=full
 ram_total_gb=32
