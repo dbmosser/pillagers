@@ -140,3 +140,6 @@ Only machines can be golden now (your 10-31 rule: pillagers stand in for live pl
 
 ## 11-01 ranks (season zero m1, v37.21)
 1. May the picture list (tools/handoff/shots/ui-screens-js.json) get a screen that stages a rank up on the floor ("rank up: scrounger ii  bandages and ammo")? None of the 78 shows it today. Without one, the line is proven by the check only, not by a picture.
+
+## 11-01 a death ends the pillager (season zero m2, v37.29)
+1. May the picture list get a "floor after a death" screen (die, log run and return, the floor line "nilo is gone  pillager 2")? Screen 39 returns after an extraction, so today the line is proven by the check only. It uses the same floor toast as the rank up line.

@@ -195,3 +195,4 @@
 11-01 16:29 v37.26 cw-m1bonusgap on his pc after 35s (8802 serves 37.26) week 5%
 11-01 19:41 v37.27 cw-partnergun on his pc after 99s (8802 serves 37.27) week 6%
 11-01 19:53 v37.28 cw-feedicon on his pc after 50s (8802 serves 37.28) week 6%
+11-01 20:07 v37.29 cw-m2death on his pc after 33s (8802 serves 37.29) week 6%

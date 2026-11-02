@@ -1,1 +1,1 @@
-11-01 20:02 waiting for RAM: 2 GB free, a helper starts at 3; 00p-m2d-hall kept
+11-01 20:07 waiting for RAM: 2 GB free, a helper starts at 3; 00p-m2d-hall kept

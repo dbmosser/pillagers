@@ -1,0 +1,7 @@
+v37.30: three heirs with small traits and rough names for the next pillager
+
+Your stats has a card for the living pillager: your Nth pillager, its name, and its traits in green and red. The next pillager after a death comes with one or two small traits and a rough name. Watch for: nothing changes in play until a pillager dies, generation one has no traits.
+
+Check 37.30. Fails on v37.29.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
