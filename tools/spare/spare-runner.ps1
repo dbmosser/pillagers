@@ -647,12 +647,15 @@ function Arrived(){ if($Idle){ return $false }; return ((AwaySec) -lt 30) }
 # the wait between rounds, looking for him every 5 seconds (10-26 SPARE-PRESENCE-PAUSE: on the spare PC too, for anyone)
 function Watch([int]$sec){
   $end=(Get-Date).AddSeconds($sec); $k=0; $lo=0
+  # 11-02 IDLE MODE: never a full run while he is at the main PC, and only a light robot goes on then. But "light" is what the last robot start said: 15 minutes after he
+  # left, a full run can start beside that robot, and then nothing stopped it when he came back. Only a round starts a run, so one look per wait is enough.
+  $fullRun=($Idle -and $script:lightRun -and ((Running 'corpq\.sh|corpus-slices\.sh') -gt 0))
   while((Get-Date) -lt $end){
     Start-Sleep -Seconds 5; $k++
     # 11-02: the heartbeat was only written at the top of a round, so a slow round (4 to 6 minutes at 100% CPU) plus this wait passed the 10 minutes the
     # 15-minute task allows, and it started a second runner beside the first, which nothing ends (02:35). Spare PC only: IDLE MODE stays as it was.
     if(-not $Idle){ [IO.File]::WriteAllText($Hb,[string](Epoch),$Enc) }
-    if((AwaySec) -lt 30){ if($Idle){ if((-not $script:lightRun) -or -not (LightOK)){ Stop-Work $(if($script:playWhy){ 'he is playing ('+$script:playWhy+')' }else{ 'he is back at the PC' }); return } }else{ Stop-Work ('someone is at the PC: '+$script:awayWhy) -Refund; return } }
+    if((AwaySec) -lt 30){ if($Idle){ if($fullRun -or (-not $script:lightRun) -or -not (LightOK)){ Stop-Work $(if($script:playWhy){ 'he is playing ('+$script:playWhy+')' }else{ 'he is back at the PC' }); return } }else{ Stop-Work ('someone is at the PC: '+$script:awayWhy) -Refund; return } }
     if($Idle -and ($k % 6) -eq 0){
       if((FreeGB) -lt 4){ $lo++ }else{ $lo=0 }
       if($lo -ge 2){ if(-not $script:fakeLow){ PutS 'lowstop_t' ([string](Epoch)) }; Stop-Work 'paused: low ram, under 4 GB free at two looks' -LowRam; return }
