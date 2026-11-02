@@ -1,0 +1,7 @@
+v37.28: the kill feed shows what made the kill
+
+A kill line shows a gun, element or blow picture instead of the arrow, in the left feed and in the party list.
+
+Check 37.28. Fails on v37.27.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

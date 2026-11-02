@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.28 - THE KILL FEED SHOWS WHAT MADE THE KILL
+
+Co-op hunt while he was away. His answer g-86 (2026-10-25), "Yes, a small gun or element icon". A kill line showed names only. The arrow between the killer and the victim is now a small picture: the gun for a round, a coloured disc for a burn, shock, acid or cryo kill (the element wins over the gun), and small signs for a crowbar swing, a barrel blast and the air strike. The party list carries it too, in the place of the word killed: the host sends the gun id with a teammates round and the kill word carries the picture. Watch: A kill line shows a gun, element or blow picture instead of the arrow, in the left feed and in the party list.
+
+MEASURED. Check 37.28 passes, and fails on v37.27.
 ## v37.27 - THE TEAMMATE ROW SHOWS HIS GUN AND HIS ROUNDS
 
 Co-op hunt while he was away. His answer g-64 (10-25, Add ammo and gun): two players on one couch should see what the other holds. The st word now carries am (rounds in the magazine) and rs (the reserve as his own HUD shows it), the host relays both, and the teammate row gets a third line under the bars: the gun name on the left, rounds / reserve on the right. The row box grows from 36 to 48 high and the row step from 44 to 56. Nothing is shown for fists or while his hands are busy. Watch: The teammate row under the bars shows his gun and his rounds and reserve. Watch the left column at 4K and with three or more teammates: the rows are taller now.

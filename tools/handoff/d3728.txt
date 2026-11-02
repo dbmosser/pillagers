@@ -1,0 +1,5 @@
+## v37.28 - THE KILL FEED SHOWS WHAT MADE THE KILL
+
+Co-op hunt while he was away. His answer g-86 (2026-10-25), "Yes, a small gun or element icon". A kill line showed names only. The arrow between the killer and the victim is now a small picture: the gun for a round, a coloured disc for a burn, shock, acid or cryo kill (the element wins over the gun), and small signs for a crowbar swing, a barrel blast and the air strike. The party list carries it too, in the place of the word killed: the host sends the gun id with a teammates round and the kill word carries the picture. Watch: A kill line shows a gun, element or blow picture instead of the arrow, in the left feed and in the party list.
+
+MEASURED. Check 37.28 passes, and fails on v37.27.

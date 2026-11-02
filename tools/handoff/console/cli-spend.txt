@@ -2209,3 +2209,4 @@
 2026-11-01 0.0954 critic-manual
 2026-11-01 4.7288578 00p-m1b-no-raid-cash
 2026-11-01 0.1926891 z-163-burn-ash-and-red-glow-wait
+2026-11-01 0.5849488000000002 z-165-partner-row-gun-and-ammo

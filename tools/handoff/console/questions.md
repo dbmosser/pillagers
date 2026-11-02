@@ -1,5 +1,7 @@
 # Questions for him
 
+- z-165 (lane b, 11-01): may I add a camera screen to ui-screens-js.json that stages a raid with fake teammate rows (rifle, down, fists), so the partner row can be photographed at 1080p and 4k? None of the 78 screens shows the raid teammate rows today. Shipped without pictures as v37.27.
+
 ## Cleared (coordinator, 10-18 evening)
 - The two URGENT ship-queue notes (gen-draft failed since v30.69, and .git/index.lock left by v30.64) are stale: ships have run cleanly through v31.16, and there is no index.lock.
 

@@ -1,4 +1,6 @@
-# m2 (the lineage) and m3 (worn gear): the lead ships these itself, side by side, on Opus (design heavy, touches the save)
+# m2 (the lineage) and m3 (worn gear)
+
+11-01 evening, CEO order: m2 went to the lanes as tools/handoff/console/tasks/00p-m2a..e (m2a death ends, m2b heirs, m2d hall run side by side; m2c birth waits on m2a and m2b; m2e retire waits on m2c and m2d). The job files are the source for m2 now; the m2 lines below are the design they came from. m3 is still the lead's, beside m2.
 
 His build order (answer 100): lineage, level and gear together. m2 and m3 land in the same week. Never two writers in one area: m2 owns endRaid's death and abandon branches, the birth screen, the hall and the Mainframe lineage tab; m3 owns loot generation, the stash doll, the workbench and the extract pip line. Where both touch endRaid (m2b death clears the pillager, m3d death takes worn gear), m3d goes after m2a and calls the same pilEnd path.
 Every build: check fails before, old save reload in the check (README rule), seed 4242 holds, pictures at 1080p and 4K.
