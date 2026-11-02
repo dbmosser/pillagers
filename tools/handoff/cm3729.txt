@@ -1,0 +1,7 @@
+v37.29: season zero m2: a death ends the pillager
+
+every raid that settles (never the free walk back, a sim raid or the demo) adds to the living pillager: raids, extracts, kills and the best secured haul. A death or a quit with anything done ends the pillager into the hall with how (dead or quit), map, zone, killer, value lost, up to 7 lost item keys, a copy of the worn slots and the body look, and the next generation is born at once. The floor says it once on the next arrival: name is gone  pillager n. Stash, cash, guns kept, lifetime earnings and rank are not touched. Only his own death ends his pillager in two player; the player 2 window keeps today rules
+
+Check 37.29. Fails on v37.28.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

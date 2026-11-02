@@ -3932,8 +3932,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.28';
-var VER_AT='2026-11-01 19:51';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.29';
+var VER_AT='2026-11-01 20:06';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6643,6 +6643,54 @@ function pilBirth(p,name){
   g=Math.max(p.pilGen|0,p.hall.length)+1;
   p.pil=pilMake(name||p.pname,g); p.pilGen=g;
   return p.pil;
+}
+// v37.xx (cw-m2death), HIS RULINGS OF 11-01 (round 5, answers 28 and 31), plan m2 "the lineage": a death ends the pillager and everything it wore and
+// carried; stash cash, lifetime earnings, rank and the account stay; quitting a raid early counts as a death. Every raid that settles (never the free
+// walk-back, never G.sim, never the demo) goes on the living pillager's record: raids, extracts, kills, and the best secured haul. A death or a quit
+// then ends it into the hall with end {how dead or quit, map, zone, by, lost, items, worn, look} (the hall, m2d, reads this shape) and the next one is
+// born at once (pilBirth; m2c puts a birth card here). Two players: only his own death reaches endRaid on his PC, so a revive keeps the pillager and a
+// partner's death ends nothing here; a host who dies and spectates has died. The player 2 window on this PC keeps today's rules until m3f.
+// P.worn is copied, never cleared here (m3c owns what a death takes from the worn slots).
+function pilLookNow(){ return {hat:P.cosHat,cut:P.cosCut,skin:P.cosSkin,scheme:P.cosScheme,fit:P.cosFit,outfit:P.cosOutfit}; }
+function pilZoneNow(){
+  var p=G&&G.player, z;
+  try{
+    if(G.inLandmark&&G.inLandmark.name) return String(G.inLandmark.name).toLowerCase();
+    if(p&&G.map&&G.map.zoneAt){ z=G.map.zoneAt(p.x,p.y); if(z&&z.name) return String(z.name).toLowerCase(); }
+    if(G.inZoneName) return String(G.inZoneName).toLowerCase();
+  }catch(_pz){}
+  return '';
+}
+function pilRaidEnd(how,sec,lost){
+  var q, k, n=0, tk, T, ix, kn, r;
+  if(!G||G.sim||!P) return null;
+  if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on) return null;
+  if(typeof NETP2!=='undefined'&&NETP2) return null;
+  q=pilNow(); if(!q) return null;
+  T=G.tel||{}; tk=T.kills||{};
+  for(k in tk) if(Object.prototype.hasOwnProperty.call(tk,k)) n+=(+tk[k]||0);
+  q.raids++; if(how==='extract') q.ext++; q.kills+=n;
+  if(how==='extract'&&(+sec||0)>q.best) q.best=Math.round(+sec||0);
+  if(how!=='dead'&&how!=='abandon') return null;
+  ix=clamp(P.mapIx===undefined?0:P.mapIx,0,FIXED_MAPS.length-1);
+  kn=(how==='dead')?((T.lastHitName&&T.deathKiller!=='timer')?T.lastHitName:String(T.deathKiller||'unknown')):'';   // the name the KIA card gives
+  r=pilEnd(P,{how:how==='dead'?'dead':'quit', map:(FIXED_MAPS[ix]&&FIXED_MAPS[ix].id)||'', zone:pilZoneNow(), by:String(kn).toLowerCase(),
+    lost:Math.max(0,Math.round((lost&&+lost.v)||0)), items:((lost&&Array.isArray(lost.k))?lost.k:[]).slice(0,7),
+    worn:JSON.parse(JSON.stringify(P.worn||{})), look:pilLookNow()});
+  pilBirth(P);
+  if(r) P.pilNote={t:String(r.name).toLowerCase()+' is gone  pillager '+P.pilGen,shown:0};
+  return r;
+}
+// The one short floor line after a death, at the next arrival there. Never in the demo.
+function pilNoteShow(){
+  var n=P&&P.pilNote;
+  if(!n||n.shown||typeof n.t!=='string'||!n.t) return false;
+  if(state!=='hub') return false;
+  if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on) return false;
+  n.shown=1;
+  hubToast(n.t,6);
+  try{ saveProfile(); }catch(_pn){}
+  return true;
 }
 // The one-time hub line for an old save's payout. Never in the demo, which plays on a copy.
 function szNoteShow(){
@@ -36271,7 +36319,7 @@ var _cdone=contractExtract(G.bag,haul);
     if(gone.length===1&&gone[0]===_gp0.wep&&_gp0.sec&&_gp0.sec.id===_gp0.wep.id&&!_gp0.secIssued) gone.push(_gp0.sec);
     // v10.72: and they go in the count and in the money. Both branches below
     // print LOST, so both are counted here, once, before the branch.
-    var _gunN=0,_gunVal=0;
+    var _gunN=0,_gunVal=0,_pilGK=[];   // v37.xx (cw-m2death): the lost guns' keys, for the hall
     for(j=0;j<gone.length;j++){
       // v12.03: ONLY A GUN THAT CAME OUT OF THE ARMOURY COMES OFF THE LIST, and
       // the free kit's loaner is not a gun you lost. The splice went by id
@@ -36283,7 +36331,7 @@ var _cdone=contractExtract(G.bag,haul);
       var _egp=G.player, _egArm=!!((gone[j]===_egp.wep&&_egp.wepFromArmory)||(gone[j]===_egp.sec&&_egp.secFromArmory));
       var _egFree=!!((G.freeKit||G.spawnGun)&&!_egArm&&gone[j].id===FREEKIT_GUN);   // v26.17 (noloaner): the spawn pistol is not a gun he owned either
       if(_egFree) continue;   // out of the ledger entirely, as an issued loaner already is: no count, no price, no line
-      _gunN++; if(ITEMS['gun_'+gone[j].id]) _gunVal+=ival('gun_'+gone[j].id);
+      _gunN++; if(ITEMS['gun_'+gone[j].id]){ _gunVal+=ival('gun_'+gone[j].id); _pilGK.push('gun_'+gone[j].id); }
       var wi=_egArm?P.weapons.indexOf(gone[j].id):-1;
       if(wi>=0){ P.weapons.splice(wi,1); (G.forgeGone=G.forgeGone||[]).push(gone[j].id);   // v23.xx (forge12): its forge goes with it
         lines.push((ITEMS['gun_'+gone[j].id]?iconImgHTML('gun_'+gone[j].id,32,1)+' ':'')+'<span style="color:#cdd6dd">'+gone[j].name+'</span><span style="color:var(--rust)">  LOST</span>'); }   // v19.04: and the gun's picture
@@ -36358,6 +36406,15 @@ var _cdone=contractExtract(G.bag,haul);
     // v37.xx (cw-m1xpoff): walking out costs no XP, so the card has no fee line
   }
   if(!G.sim) forgeSweep(how);   // v23.xx (forge12): a death takes the forge of the armoury gun lost; an abandon writes nothing
+  // v37.xx (cw-m2death), his rulings of 11-01: every raid on the pillager's record; a death or a quit ends it (pilRaidEnd). What was lost is what the
+  // card counts: on a death the bag the ledger called LOST and its lost guns ($ the card says gone), on a quit the bag left behind.
+  if(!G.sim){ try{
+    var _plK=[], _plV=0, _pli;
+    if(how==='dead'){ for(_pli=0;_pli<lostIdx.length;_pli++) _plK.push(G.bag[lostIdx[_pli]]); _plK=_plK.concat(_pilGK); _plV=(haul-savedVal-_dIss*ival('bandage'))+_gunVal; }
+    else if(how==='abandon'){ _plK=G.bag.slice(); _plV=haul; }
+    _plK.sort(function(a,b){ return ival(b)-ival(a); });
+    pilRaidEnd(how,how==='extract'?(_secV||0):0,{v:_plV,k:_plK});
+  }catch(_pre){} }
   // v12.87, HIS NOTE 2026-09-11, verbatim: "when a player comes back to the
   // undercroft after dying in a raid or leaving/abandoning a raid, there should
   // be nothing in their loadout. This increases the feeling of loss. So, if they
@@ -54039,7 +54096,7 @@ function showScreen(s){
     // v10.66: one at a time and in order, or one card paints over another
     // and a new player never reads the only card that teaches the game.
     firstRunNext();
-    try{ if(!szNoteShow()) rankNoteShow(); }catch(_szs){}   // v37.xx (cw-p0acct): "$N paid for unclaimed rewards", once; v37.xx (cw-m1ranks): else a rank up reached away from the floor
+    try{ if(!pilNoteShow()&&!szNoteShow()) rankNoteShow(); }catch(_szs){}   // v37.xx (cw-m2death): first "<name> is gone  pillager <n>" after a death   // v37.xx (cw-p0acct): "$N paid for unclaimed rewards", once; v37.xx (cw-m1ranks): else a rank up reached away from the floor
   }
 }
 // Two ways the game could be silently broken by the browser, neither of which had
@@ -57526,7 +57583,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.28: A kill line shows a gun, element or blow picture instead of the arrow, in the left feed and in the party list. Check 37.28 fails on v37.27',
+  now:'v37.29: every raid that settles (never the free walk back, a sim raid or the demo) adds to the living pillager: raids, extracts, kills and the best secured haul. A death or a quit with anything done ends the pillager into the hall with how (dead or quit), map, zone, killer, value lost, up to 7 lost item keys, a copy of the worn slots and the body look, and the next generation is born at once. The floor says it once on the next arrival: name is gone  pillager n. Stash, cash, guns kept, lifetime earnings and rank are not touched. Only his own death ends his pillager in two player; the player 2 window keeps today rules Check 37.29 fails on v37.28',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

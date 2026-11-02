@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.29 - SEASON ZERO M2: A DEATH ENDS THE PILLAGER
+
+Co-op hunt while he was away. his rulings of 11-01 (round 5): a death ends the pillager and everything it wore and carried, stash cash, lifetime earnings, rank and the account stay; answer 31: quitting a raid early counts as a death; answer 28: in two player a pillager revived by the partner lives on. Plan m2 the lineage, build 1 of 5 Watch: every raid that settles (never the free walk back, a sim raid or the demo) adds to the living pillager: raids, extracts, kills and the best secured haul. A death or a quit with anything done ends the pillager into the hall with how (dead or quit), map, zone, killer, value lost, up to 7 lost item keys, a copy of the worn slots and the body look, and the next generation is born at once. The floor says it once on the next arrival: name is gone  pillager n. Stash, cash, guns kept, lifetime earnings and rank are not touched. Only his own death ends his pillager in two player; the player 2 window keeps today rules
+
+MEASURED. Check 37.29 passes, and fails on v37.28.
 ## v37.28 - THE KILL FEED SHOWS WHAT MADE THE KILL
 
 Co-op hunt while he was away. His answer g-86 (2026-10-25), "Yes, a small gun or element icon". A kill line showed names only. The arrow between the killer and the victim is now a small picture: the gun for a round, a coloured disc for a burn, shock, acid or cryo kill (the element wins over the gun), and small signs for a crowbar swing, a barrel blast and the air strike. The party list carries it too, in the place of the word killed: the host sends the gun id with a teammates round and the kill word carries the picture. Watch: A kill line shows a gun, element or blow picture instead of the arrow, in the left feed and in the party list.
