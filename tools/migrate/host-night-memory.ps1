@@ -236,10 +236,13 @@ function MemFollow($vm, [bool]$away, [int]$idle) {
       } catch { $script:MemSay = 'away, Hyper-V refused ' + $target + ' GB'; LogLine ('away: Hyper-V refused ' + $target + ' GB: ' + ($_.Exception.Message -replace '\s+', ' ')) }
       return
     }
-    if (-not ($rok -and $r.epoch -gt $lastEp -and $target -le $cur - 2 -and [math]::Floor($r.freeGB - $VmKeepGB) -ge 2)) {
+    # 11-01: a small dip stayed: 3.6 GB free here with the VM at 14 (22:29 to 23:31), because only a surplus of 2 GB went back. Under the
+    # floor it now goes back by what it takes, and the VM keeps 1 GB free for it, as it does here when this PC is short.
+    $short = ($free -ge 0 -and $free -lt $KeepFreeGB); $akeep = $(if ($short) { 1 } else { $VmKeepGB })
+    if (-not ($rok -and $r.epoch -gt $lastEp -and $(if ($short) { [math]::Floor($r.freeGB - $akeep) -ge 1 } else { $target -le $cur - 2 -and [math]::Floor($r.freeGB - $akeep) -ge 2 }))) {
       $script:MemSay = 'away, VM ' + $asg + ' GB (' + $(if ($cur -ge $MaxGB) { 'its most' } elseif ($target -le $cur) { 'what it uses plus ' + $AwayHeadGB } else { 'no more room: this PC has ' + $free + ' GB free and keeps ' + $KeepFreeGB }) + ')'; return }
-    $to = [int][math]::Max($target, $cur - [int][math]::Floor($r.freeGB - $VmKeepGB)); $mark = $r.epoch
-    $why = 'away and the VM used only ' + [math]::Round($asg - $r.freeGB, 1) + ' GB; the rest goes to this PC'
+    $to = [int][math]::Max([math]::Max($target, $cur - [int][math]::Floor($r.freeGB - $akeep)), [math]::Min($cur, $MinGB)); $mark = $r.epoch
+    $why = $(if ($short) { 'away and this PC had ' + $free + ' GB free, under its ' + $KeepFreeGB } else { 'away and the VM used only ' + [math]::Round($asg - $r.freeGB, 1) + ' GB; the rest goes to this PC' })
   } else {
     $tight = ($free -ge 0 -and $free -lt $KeepFreeGB + $HereHeadGB)
     $low = $(if ($party -or $tight) { $MinGB } else { $day }); $keep = $(if ($party -or $tight) { 1 } else { $VmKeepGB })
@@ -318,7 +321,7 @@ if ($GameCheck) {
         if ($idle -ge 0) { $lines += ('atpc=' + $(if ($atpc) { '1' } else { '0' })) }
         # 10-24: follow=away tells the VM and the main PC tester that the memory follows him (item 8); vmback=1 holds new helpers in the VM
         $lines += @('follow=away', ('awaymin=' + $AwayMin), ('vmgb=' + $VmGB), ('vmback=' + $(if ($VmBack) { '1' } else { '0' })), ('mem=' + $MemSay))
-        $lines += @(('hostfree=' + (HostFreeGB)), ('party=' + $(if (PartyNight) { '1' } else { '0' })), 'memrule=1031')   # 10-31: memrule tells the VM this copy has the 10-31 memory rule
+        $lines += @(('hostfree=' + (HostFreeGB)), ('party=' + $(if (PartyNight) { '1' } else { '0' })), 'memrule=1101')   # 10-31: memrule tells the VM this copy has the current memory rule (1101: a dip under the floor goes back while away)
         # 10-20 evening: tells the VM this copy has the note copying (item 7), so it never has to ask him whether the setup was run again
         $lines += ('notes=' + $(if (Test-Path -LiteralPath $NotesSrc) { 'on, ' + @(Get-ChildItem -LiteralPath $NotesSrc -File -ErrorAction SilentlyContinue | Where-Object { $_.Name -like 'feedback-*' -or $_.Name -like 'run-*' }).Count + ' notes and run reports in ' + $NotesSrc } else { 'on, ' + $NotesSrc + ' is not there' }))
         Set-Content -Path $GameFile -Encoding ASCII -Value $lines } catch { }

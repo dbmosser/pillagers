@@ -770,12 +770,12 @@ function Refresh-Party(){
 $script:brT=0; $script:lastMaster=''; $script:tookMaster=''
 # 10-31 (his "make sure the allocation of ram between the vm and main pc is happening as efficiently as possible"): the new memory rule in
 # tools\migrate\host-night-memory.ps1 runs as SYSTEM, so only his own double-click of night-memory-setup.cmd (and Yes) installs it. Until
-# gaming.txt says memrule=1031, his desktop has a "Pillagers memory setup" shortcut to this copy's setup; once installed it goes away.
+# gaming.txt says memrule=1101, his desktop has a "Pillagers memory setup" shortcut to this copy's setup; once installed it goes away.
 function Memory-Setup-Link(){
   try{
     $g=ShareGaming; if(-not $g){ return }
     $lnk=Join-Path ([Environment]::GetFolderPath('Desktop')) 'Pillagers memory setup.lnk'; $cmd=$T+'\migrate\night-memory-setup.cmd'
-    if($g -match '(?m)^memrule=1031'){ if(Test-Path -LiteralPath $lnk){ Remove-Item -LiteralPath $lnk -Force; Say 'the new memory rule is installed: the desktop setup shortcut is gone' }; return }
+    if($g -match '(?m)^memrule=1101'){ if(Test-Path -LiteralPath $lnk){ Remove-Item -LiteralPath $lnk -Force; Say 'the new memory rule is installed: the desktop setup shortcut is gone' }; return }
     if((Test-Path -LiteralPath $lnk) -or -not (Test-Path -LiteralPath $cmd)){ return }
     $s=(New-Object -ComObject WScript.Shell).CreateShortcut($lnk); $s.TargetPath=$cmd; $s.WorkingDirectory=($T+'\migrate'); $s.Description='Pillagers: install the new VM memory rule (click Yes)'; $s.Save()
     Say 'his desktop has a "Pillagers memory setup" shortcut: one double-click and Yes installs the new memory rule'
