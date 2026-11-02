@@ -15,6 +15,8 @@
 # - A file named STOP in tools/handoff/console pauses it. The always-on runner (tools/nightly.sh) starts it every 5 min when
 #   it is not running and 6 GB of RAM are free.
 R="/c/claudecode/dark raiders"; C="$R/tools/handoff/console"; cd "$R" || exit 1
+# 11-02: on JUL26 this sets the helpers' own CLAUDE_CONFIG_DIR before any claude call (the account guard below reads that login, never his work one)
+ON_MAIN=0; [ -f "$R/tools/handoff/machine.sh" ] && . "$R/tools/handoff/machine.sh"
 # 10-27: caps.txt vanished from this folder twice this morning (cause not found) and every lane sat at "$0.00 allowed"; put the committed copy back
 [ -f "$C/caps.txt" ] || { git show HEAD:tools/handoff/console/caps.txt > "$C/caps.txt.tmp" 2>/dev/null && mv -f "$C/caps.txt.tmp" "$C/caps.txt" && echo "$(date '+%m-%d %H:%M') caps.txt was missing at a lane start; put back from git" >> "$C/caps-restored.log"; }
 L=${1:-a}   # 10-17 LANES (his "max out ... the claude console resources"): one worker per lane at once; lane a = tasks named 0-9*, lane b = b-*, lane c = c-*
@@ -192,12 +194,12 @@ if [ $ENGINE = cli ]; then
   # (gaming.txt vmback=1 from tools/migrate/host-night-memory.ps1, under 10 minutes old), no new helper starts, so each one that finishes
   # frees memory the VM can hand back. Running helpers go on.
   gt=$(timeout 25 node "$R/tools/bridge/hostctl.mjs" share-get name=gaming.txt 2>/dev/null | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{const j=JSON.parse(s);if(j.ok&&j.base64)process.stdout.write(Buffer.from(j.base64,'base64').toString('utf8'))}catch(e){}})" | tr -d '\r')
-  if printf '%s\n' "$gt" | grep -q '^vmback=1$'; then
+  if [ "$ON_MAIN" != 1 ] && printf '%s\n' "$gt" | grep -q '^vmback=1$'; then
     ck=$(printf '%s\n' "$gt" | sed -n 's/^checked=//p' | head -1); cks=$(date -d "$ck" +%s 2>/dev/null || echo 0)
     if [ $(( $(date +%s) - cks )) -lt 600 ]; then echo "$(date '+%m-%d %H:%M') waiting: he is back at the main PC and it is taking its memory back; $name kept" > "$C/status-$L.txt"; exit 0; fi
   fi
   # 10-21: the smaller of free RAM and free virtual memory (Windows ran out of virtual memory at 02:19 with 4 GB of RAM free)
-  rf=$(( $(cap RAM_FLOOR_GB 6) + 1 )); g=$(powershell -NoProfile -Command "\$o=Get-CimInstance Win32_OperatingSystem; [int]([Math]::Min(\$o.FreePhysicalMemory,\$o.FreeVirtualMemory)/1MB)" 2>/dev/null | tr -dc '0-9')
+  rf=$(( $(machine_floor "$(cap RAM_FLOOR_GB 6)") + 1 )); g=$(powershell -NoProfile -Command "\$o=Get-CimInstance Win32_OperatingSystem; [int]([Math]::Min(\$o.FreePhysicalMemory,\$o.FreeVirtualMemory)/1MB)" 2>/dev/null | tr -dc '0-9')
   # 10-28 09:47: the codex lane sat at "waiting for RAM: 0 GB free" while a test Chrome left by an ended preflight (9358, 2.9 GB, two game
   # pages) and six idle ones held the memory. Before a lane waits for RAM it closes LEFTOVER test Chromes (tools/close-leftover-test-chromes.ps1:
   # a pillagers-cdp temp profile on 9331-9399, over 45 min old, no gate or test script using its port), logs each close in runs.log and
@@ -222,6 +224,9 @@ if [ $ENGINE = cli ]; then
     [ "${g:-0}" -lt "$rf" ] && sweepchromes
     [ "${g:-0}" -lt "$rf" ] && { echo "$(date '+%m-%d %H:%M') waiting for RAM: ${g:-0} GB free, a helper starts at $rf; $name kept" > "$C/status-$L.txt"; exit 0; }
   done
+  # 11-02: on JUL26 the Fortnite editor has first call on memory: one helper at a time while it is open (start.lock above makes this check one lane at a time)
+  if [ "$ON_MAIN" = 1 ] && machine_editor_open && [ "$(machine_helpers_running)" -ge 1 ] 2>/dev/null; then rm -rf "$C/start.lock"
+    echo "$(date '+%m-%d %H:%M') waiting: one helper at a time while the Fortnite editor is open; $name kept" > "$C/status-$L.txt"; exit 0; fi
   echo "$(date '+%m-%d %H:%M') running $name on Claude Code (your plan: week $wk% of the $line% line, 5-hour $ses%)" > "$C/status-$L.txt"
   st=$(date +%s)
   # 10-21 02:52: job 85a (11.7 KB) plus RULES.md (21 KB) on the command line passed Windows' 32 KB limit ("env: 'claude': Argument

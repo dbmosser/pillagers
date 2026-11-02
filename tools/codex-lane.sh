@@ -45,6 +45,7 @@ if [ "$MODE" = help ]; then sed -n '2,8p' "$0" | cut -c3-; exit 0; fi
 # ---------------------------------------------------------------- paths (CX_* overrides are for tests only)
 SELF="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
 R=${CX_R:-/c/claudecode/dark raiders}; C=${CX_C:-$R/tools/handoff/console}; X=${CX_X:-$R/tools/handoff/codex}
+[ -f "$R/tools/handoff/machine.sh" ] && . "$R/tools/handoff/machine.sh"   # 11-02: machine_floor on JUL26
 W=${CX_W:-/c/claudecode/pillagers-codex}
 cd "$R" || exit 1
 S=${CX_S:-C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad}
@@ -69,7 +70,7 @@ sweepchromes(){ local o; [ -n "$CX_FREEGB" ] && return 1
   o=$(timeout 90 powershell -NoProfile -ExecutionPolicy Bypass -File "$(cygpath -w "$R/tools/close-leftover-test-chromes.ps1")" -Lane o 2>/dev/null | tr -d '\r')
   printf '%s\n' "$o" | grep '^closed' | while IFS= read -r l; do log "lane $L: $l"; done
   printf '%s\n' "$o" | grep -q '^closed' && { sleep 3; return 0; }; return 1; }
-ramwait(){ local floor g i; floor=$(cap RAM_FLOOR_GB 6)
+ramwait(){ local floor g i; floor=$(cap RAM_FLOOR_GB 6); floor=$(machine_floor "$floor" 2>/dev/null || echo "$floor")
   for i in 1 2 3 4 5 6 7 8 9 10; do g=$(freegb); g=${g:-0}; [ "$g" -ge "$floor" ] && return 0
     sweepchromes && { g=$(freegb); g=${g:-0}; [ "$g" -ge "$floor" ] && return 0; }
     say "waiting for RAM: $g GB free, need $floor (${name:-codex})"; sleep 60; done; return 1; }

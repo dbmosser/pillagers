@@ -40,6 +40,11 @@
 #   30+ robot minutes (what stable.sh needs); each corpus run leaves a .head file beside its output naming the commit it tested.
 S="C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad"
 R="/c/claudecode/dark raiders"; N="$R/tools/handoff/nightly"; mkdir -p "$N"; ST="$N/state.txt"; LOG="$N/nightly.log"; HB="$N/runner.heartbeat"
+# 11-02 (his "move pillagers html development to the main PC"): ON_MAIN, machine_floor, machine_game_holds and the helpers' own CLAUDE_CONFIG_DIR on JUL26; nothing changes elsewhere
+ON_MAIN=0; [ -f "$R/tools/handoff/machine.sh" ] && . "$R/tools/handoff/machine.sh"
+# 11-02: on JUL26 no runner while console/STOP stands: the tasks go on before the VM is dark, and two machines must never push itch, push the dashboard or
+# ship. It writes nothing, so the folder stays clean for the last pull; the task tries again every 15 minutes. The new main PC chat lifts STOP after vm-dark.txt.
+[ "$ON_MAIN" = 1 ] && [ -f "$R/tools/handoff/console/STOP" ] && exit 0
 touch "$ST"
 # 10-27: a copy restarted by itself (below) skips the one-copy check, since its own heartbeat is fresh
 RX=$PILLAGERS_RUNNER_REEXEC; unset PILLAGERS_RUNNER_REEXEC
@@ -94,11 +99,11 @@ while true; do
     put itch_try "$(date +%s)"; (timeout 4200 bash "$R/tools/itch-follow.sh" >> "$LOG" 2>&1) &
   fi
   ram=$(freegb); [ -z "$ram" ] && ram=0
-  rf=$(grep -m1 "^RAM_FLOOR_GB=" "$R/tools/handoff/console/caps.txt" 2>/dev/null | cut -d= -f2 | tr -dc "0-9"); rf=${rf:-6}
+  rf=$(grep -m1 "^RAM_FLOOR_GB=" "$R/tools/handoff/console/caps.txt" 2>/dev/null | cut -d= -f2 | tr -dc "0-9"); rf=${rf:-6}; rf=$(machine_floor "$rf" 2>/dev/null || echo "$rf")
   # 10-19 night: the main PC lends this VM extra memory from 23:00 and takes it back from 06:00 (tools/migrate/host-night-memory.ps1, his answer
   # 45 a). From 05:30 to 06:30, while the VM holds more than its 10 GB day size, start nothing new, so running work ends and the memory can go back.
   hm=$((10#$(date +%H%M)))
-  if [ "$hm" -ge 530 ] && [ "$hm" -lt 630 ]; then
+  if [ "$ON_MAIN" != 1 ] && [ "$hm" -ge 530 ] && [ "$hm" -lt 630 ]; then   # 11-02: not on JUL26, which has 32 GB and lends nothing back
     tg=$(powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).TotalVisibleMemorySize/1MB)" 2>/dev/null | tr -dc '0-9')
     [ "${tg:-0}" -gt 10 ] && ram=0
   fi
@@ -110,6 +115,8 @@ while true; do
     ck=$(printf '%s\n' "$gm" | sed -n 's/^checked=//p' | head -1); cks=$(date -d "$ck" +%s 2>/dev/null || echo 0)
     [ $(( $(date +%s) - cks )) -lt 600 ] && isg=1
   fi
+  # 11-02: on JUL26 an idle Pillagers window or the Fortnite editor is no hold; memory decides (tools/handoff/machine.sh)
+  [ "$ON_MAIN" = 1 ] && [ $isg = 1 ] && ! machine_game_holds "$gm" && isg=0
   # 10-28: the party plays on pads, which move neither the Windows idle clock nor (two game windows) the 15% graphics card line that
   # gaming.txt goes by. The main PC's idle runner reads the pads and writes pad-seen.txt (epoch=) to the bridge share while one is in use:
   # under 10 minutes old it counts as gaming here, so nothing new starts (helpers, robots, the full run, the local AI). No file, no change.

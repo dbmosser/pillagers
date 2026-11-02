@@ -74,6 +74,8 @@ else if (!viaApi || /credit/i.test(String(j.error && j.error.message))) {
   // 10-18: when the month's Console credit is gone, the same review runs once through Claude Code on his plan (Read shows pictures)
   const exe = existsSync(process.env.USERPROFILE + '/.local/bin/claude.exe') ? process.env.USERPROFILE + '/.local/bin/claude.exe' : 'claude';
   const env = { ...process.env }; delete env.ANTHROPIC_API_KEY;
+  // 11-02: on the main PC a critic run from a chat must not land on his work login; the lanes already pass this (tools/handoff/machine.sh)
+  if (String(process.env.COMPUTERNAME || '').toUpperCase() === 'JUL26' && !env.CLAUDE_CONFIG_DIR) env.CLAUDE_CONFIG_DIR = process.env.USERPROFILE + '\\.claude-pillagers';
   // 10-25: it runs in its own folder with copies of the pictures, not in the game folder, so Claude Code does not load the project
   // notes (CLAUDE.md, the memory index) the judge never uses. Measured on a one-word run: $0.111 from the game folder, $0.061 from
   // an empty folder. One fixed folder (not a new one per run) so the run logs stay in one place; file names carry the process id

@@ -8,6 +8,7 @@
 R="/c/claudecode/dark raiders"; H="$R/tools/handoff"; C="$H/console"; FIX=1; [ "$1" = --dry ] && FIX=0
 SP="C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad"
 now=$(date +%s); P=0
+ON_MAIN=0; [ -f "$R/tools/handoff/machine.sh" ] && . "$R/tools/handoff/machine.sh"   # 11-02: the JUL26 differences
 prob(){ echo "PROBLEM: $*"; P=$((P+1)); }
 up(){ curl -s -m 3 -o /dev/null "http://127.0.0.1:$1/$2" 2>/dev/null; }
 procs=$(powershell -NoProfile -Command "Get-CimInstance Win32_Process | ForEach-Object { \$_.CommandLine }" 2>/dev/null | tr -d '\r')
@@ -25,7 +26,9 @@ if [ $age -gt 180 ]; then
   else prob "nothing shipped for $((age/60)) h"; fi
 fi
 # 2 the ship gate browser
-if up 9346 json/version; then echo "gate browser 9346: up"
+# 11-02: no test browser on the main PC, ever (his "keep all testing on the JTPC"); the gate runs on the spare PC there
+if [ "$ON_MAIN" = 1 ]; then echo "gate browser: none on the main PC (the spare PC runs the gate)"
+elif up 9346 json/version; then echo "gate browser 9346: up"
 else if [ $FIX = 1 ]; then powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/cdp.ps1" -Start -Port 9346 >/dev/null 2>&1; up 9346 json/version && echo "gate browser 9346: was down, STARTED" || prob "gate browser 9346 down and would not start"; else prob "gate browser 9346 down"; fi; fi
 # 2b 10-24: the gate browser grows with every ship (2.7 GB after ten ships on 10-24, which held the 10 GB VM at 1 GB free and kept
 # the helpers from starting). Over 1500 MB and no ship or gate running: restart it (a fresh one is about 350 MB).
@@ -93,7 +96,7 @@ if [ -n "$ms" ]; then
   [ "$ma" -le 30 ] && [ -n "$mh" ] && [ "$mr" != "$mh" ] && ! kv test_run | grep -q "^running" && [ $(( now - ${mt:-$now} )) -gt 1200 ] && prob "main PC runner is not on master's copy (it runs $mr, master is $mh): a new runner it could not read, or no update"
   [ -f "$H/spare/perf-4k.txt" ] && echo "4K two windows on the main PC card: $(head -1 "$H/spare/perf-4k.txt" | cut -c1-220)"
 fi
-fm=$(powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB)" 2>/dev/null | tr -d '\r'); echo "free RAM: ${fm} GB"; rf=$(grep -m1 "^RAM_FLOOR_GB=" "$C/caps.txt" 2>/dev/null | cut -d= -f2 | tr -dc "0-9"); rf=${rf:-6}; [ "${fm:-9}" -lt "$rf" ] && prob "free RAM ${fm} GB is under the ${rf} GB floor (RAM_FLOOR_GB in console/caps.txt)"
+fm=$(powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1MB)" 2>/dev/null | tr -d '\r'); echo "free RAM: ${fm} GB"; rf=$(grep -m1 "^RAM_FLOOR_GB=" "$C/caps.txt" 2>/dev/null | cut -d= -f2 | tr -dc "0-9"); rf=${rf:-6}; rf=$(machine_floor "$rf" 2>/dev/null || echo "$rf"); [ "${fm:-9}" -lt "$rf" ] && prob "free RAM ${fm} GB is under the ${rf} GB floor (RAM_FLOOR_GB in console/caps.txt)"
 # 10-21: virtual memory too. At 02:19 Windows ran out of it (31.5 of 31.9 GB) with 4 GB of RAM free and both robots hung.
 fv=$(powershell -NoProfile -Command "\$o=Get-CimInstance Win32_OperatingSystem; '{0} {1}' -f [int](\$o.FreeVirtualMemory/1MB), [int](\$o.TotalVirtualMemorySize/1MB)" 2>/dev/null | tr -d '\r'); echo "free virtual memory: ${fv% *} GB of ${fv#* } GB"; [ "${fv% *}" -lt "$rf" ] 2>/dev/null && prob "free virtual memory ${fv% *} GB is under the ${rf} GB floor: Windows may refuse new programs (see the System log, event 2004)"
 ve=$(powershell -NoProfile -Command "@(Get-WinEvent -FilterHashtable @{LogName='System'; Id=2004; StartTime=(Get-Date).AddHours(-2)} -ErrorAction SilentlyContinue).Count" 2>/dev/null | tr -dc '0-9'); [ "${ve:-0}" -gt 0 ] && prob "Windows ran low on virtual memory ${ve} time(s) in the last 2 h (System log event 2004)"

@@ -5,6 +5,7 @@
 # the cost of a build can be read off console/onhispc.txt. shipq.sh runs it after every SHIPPED, outside the ship lock.
 # Never say a build is done without its ON HIS PC line.
 V=$1; K=${2:-}; R="/c/claudecode/dark raiders"; C="$R/tools/handoff/console"; OUT="$C/onhispc.txt"
+[ -f "$R/tools/handoff/machine.sh" ] && . "$R/tools/handoff/machine.sh"   # 11-02: on JUL26 a ship run from a chat also reads usage on the helpers' login, never his work one
 [ -z "$V" ] && { echo "usage: onhispc.sh NN.NN [KEY]"; exit 2; }
 want=$(echo "$V" | awk -F. '{printf "%d", $1*100+$2}'); t0=$(date +%s); got=""; hit=0; bd=0; via=""
 # 10-28: after the VM's 04:21 restart the Default Switch moved and the bridge stopped answering. When main-status gives nothing, the

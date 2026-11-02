@@ -20,13 +20,18 @@
 //   --file PATH   for share-put: the local file to send
 //   key=VALUE ... extra arguments for the job (parsed as strings)
 //
+// 11-02 (dev moved to the main PC): on JUL26 this runs the same named job in this process, with no network and no key. The agent there binds only
+// the Default Switch address, which may change or stay down with the VM off, and the default gateway there is his router. --local does the same
+// anywhere (tests, with PILLAGERS_BRIDGE_DIR set to a throwaway folder). --host or PILLAGERS_HOST_IP still goes over the network.
+//
 // The key is read from the same file as on the main PC (setup-key.ps1 wrote it; he copied it into the VM once). ASCII only.
 import crypto from 'node:crypto';
 import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { AGENT_PORT, DEFAULT_SWITCH_IP, BRIDGE_VERSION, dataDir, keyFile, readKey, hmac, sha256hex, EMPTY_HASH, sigText } from './bridge-common.mjs';
+import { fileURLToPath } from 'node:url';
+import { AGENT_PORT, DEFAULT_SWITCH_IP, BRIDGE_VERSION, dataDir, keyFile, readKey, shareDir, hmac, sha256hex, EMPTY_HASH, sigText } from './bridge-common.mjs';
 
 // 10-27 night: his XMP restart moved the Default Switch from 192.168.160.0/20 to 172.17.96.0/20 and every bridge call timed out. The
 // main PC is the VM's default gateway on the Default Switch, so read it fresh each run; env PILLAGERS_HOST_IP still wins, 192.168.160.1 is last.
@@ -39,11 +44,13 @@ function gatewayIp() {
 }
 
 function parse(argv) {
-  const o = { host: process.env.PILLAGERS_HOST_IP || gatewayIp() || DEFAULT_SWITCH_IP, port: AGENT_PORT, job: null, args: {}, save: null, file: null };
+  const onMain = String(process.env.COMPUTERNAME || '').toUpperCase() === 'JUL26';
+  const o = { host: process.env.PILLAGERS_HOST_IP || (onMain ? null : gatewayIp()) || DEFAULT_SWITCH_IP, port: AGENT_PORT, job: null, args: {}, save: null, file: null, local: onMain && !process.env.PILLAGERS_HOST_IP };
   const rest = [];
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
-    if (a === '--host') o.host = argv[++i];
+    if (a === '--host') { o.host = argv[++i]; o.local = false; }
+    else if (a === '--local') o.local = true;
     else if (a === '--port') o.port = parseInt(argv[++i], 10) || AGENT_PORT;
     else if (a === '--save') o.save = argv[++i];
     else if (a === '--file') o.file = argv[++i];
@@ -53,6 +60,16 @@ function parse(argv) {
   o.job = rest[0] || null;
   if (rest[1] && o.job === 'kit' && !o.args.key) o.args.key = rest[1];   // allow: kit ollama-status
   return o;
+}
+
+// 11-02: the job itself, here, the way host-agent.mjs would run it; same JSON shape on stdout. Imported only when used, so nothing changes in the VM.
+async function runLocal(opt) {
+  if (opt.job === 'share-put' && opt.file) { opt.args.base64 = fs.readFileSync(opt.file).toString('base64'); if (!opt.args.name) opt.args.name = path.basename(opt.file); }
+  const { JOBS, JOB_NAMES } = await import('./jobs.mjs');
+  if (!JOBS[opt.job]) return { status: 400, json: { ok: false, error: 'unknown job; allowed: ' + JOB_NAMES.join(', ') } };
+  const log = () => {}; log.once = () => {};
+  const json = await JOBS[opt.job](opt.args || {}, { log, shareDir: shareDir(), repoRoot: path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..') });
+  return { status: 200, json: json && typeof json === 'object' ? json : { ok: true, result: json }, raw: '' };
 }
 
 function request(opt, key) {
@@ -83,10 +100,10 @@ function request(opt, key) {
 async function main() {
   const opt = parse(process.argv.slice(2));
   if (!opt.job) { console.error('usage: node hostctl.mjs <ping|stats|top-mem|main-status|kit|share-list|share-get|share-put> [key=value ...]  (see the top of this file)'); process.exit(2); }
-  const key = readKey();
-  if (!key) { console.error('no shared key in ' + keyFile() + '. Copy key.txt from the main PC into ' + dataDir() + ' in this VM (setup-key.ps1 -Show prints it on the main PC).'); process.exit(1); }
+  const key = opt.local ? '' : readKey();
+  if (!opt.local && !key) { console.error('no shared key in ' + keyFile() + '. Copy key.txt from the main PC into ' + dataDir() + ' in this VM (setup-key.ps1 -Show prints it on the main PC).'); process.exit(1); }
   let r;
-  try { r = await request(opt, key); } catch (e) {
+  try { r = opt.local ? await runLocal(opt) : await request(opt, key); } catch (e) {
     console.error(JSON.stringify({ ok: false, error: 'cannot reach the main PC at ' + opt.host + ':' + opt.port + ' (' + (e && e.message ? e.message : e) + '). Is host-agent running on the main PC, and is the firewall rule in place?', bridge: BRIDGE_VERSION }));
     process.exit(1);
   }

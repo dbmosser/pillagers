@@ -4,20 +4,24 @@
 # needs a look, then one VERDICT line. Read-only: it starts, stops and changes nothing.
 R="/c/claudecode/dark raiders"; H="$R/tools/handoff"; C="$H/console"; cd "$R" || exit 1
 look=0; say(){ echo "$*"; }; flag(){ echo "LOOK: $*"; look=1; }
-hn=$(hostname); st=$(grep -m1 '^status=' /c/PillagersMove/kit/host-stopped.txt 2>/dev/null | cut -d= -f2)
-if [ "$hn" = "JUL26" ] || [ "$st" != "stopped" ]; then echo "STOP EVERYTHING: host=$hn host-stopped status=${st:-missing}"; echo "VERDICT: STOP"; exit 0; fi
+hn=$(hostname); ON_MAIN=0; . "$H/machine.sh"
+# 11-02: dev moved to the main PC. There the marker is tools/migrate/host-stopped.txt with devMovedHere=yes (tools/migrate/main-dev-setup.ps1); in the VM the old rule stands.
+if [ "$ON_MAIN" = 1 ]; then st=$(grep -m1 '^devMovedHere=' tools/migrate/host-stopped.txt 2>/dev/null | cut -d= -f2 | tr -d '\r')
+  [ "$st" = yes ] || { echo "STOP EVERYTHING: host=$hn, this PC has no dev-moved marker (tools/migrate/host-stopped.txt)"; echo "VERDICT: STOP"; exit 0; }
+else st=$(grep -m1 '^status=' /c/PillagersMove/kit/host-stopped.txt 2>/dev/null | cut -d= -f2)
+  if [ "$hn" = "JUL26" ] || [ "$st" != "stopped" ]; then echo "STOP EVERYTHING: host=$hn host-stopped status=${st:-missing}"; echo "VERDICT: STOP"; exit 0; fi; fi
 # 11-01 (CEO): this line said "main PC stopped" every time. It reads host-stopped.txt, the 10-19 hand-over note that says dev moved off
 # the main PC to this VM (status=stopped there means "the VM may run the helpers"), not whether the main PC works. Its real state is now
 # asked over the bridge (main-status) on the next line.
-say "machine: $hn (dev handed over from the main PC 10-19, host-stopped.txt)"
+[ "$ON_MAIN" = 1 ] && say "machine: $hn (dev moved here 11-02)" || say "machine: $hn (dev handed over from the main PC 10-19, host-stopped.txt)"
 ms=$(timeout 60 node tools/bridge/hostctl.mjs main-status 2>/dev/null | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{try{const j=JSON.parse(s.slice(s.indexOf('{')));const st=((j.runner||{}).status||[]);const g=k=>((st.find(x=>x.startsWith(k+'='))||'').slice(k.length+1));const r=j.receiver8799||{};
 console.log([j.ok?'up':'answers but not ok', 'plays v'+((j.play8802||{}).ver||'?')+' on 8802', 'runner '+(g('mode')||'?')+' (heartbeat '+((j.runner||{}).heartbeatAgeSec??'?')+' s)', g('soak')||'soak ?', 'collector 8799 '+(r.up?'up':'DOWN')].join(', '))}catch(e){}})")
 if [ -z "$ms" ]; then say "main PC: the bridge did not answer (main PC off or asleep?)"
 else say "main PC: $ms"; case "$ms" in *"collector 8799 DOWN"*) flag "the run-report collector (8799) on the main PC is down";; esac
   : # 11-02: the main PC runs no soak any more (his "keep all testing on the JTPC"), so its frozen soak line is not a LOOK
   fi
-vv=$(powershell.exe -NoProfile -ExecutionPolicy Bypass -File 'C:\PillagersMove\kit\vm-verify.ps1' -NoNetwork 2>&1)
-say "vm-verify: $(echo "$vv" | grep -m1 '^SUMMARY' | sed 's/SUMMARY: //')"
+if [ "$ON_MAIN" = 1 ]; then vv=""; else vv=$(powershell.exe -NoProfile -ExecutionPolicy Bypass -File 'C:\PillagersMove\kit\vm-verify.ps1' -NoNetwork 2>&1)
+say "vm-verify: $(echo "$vv" | grep -m1 '^SUMMARY' | sed 's/SUMMARY: //')"; fi
 # 11-01 (CEO): the collector on 8799 runs on the MAIN PC (main-status above checks it), so vm-verify's "port 8799 answers" FAIL in the VM is a false alarm
 vf=$(echo "$vv" | grep '^\[FAIL' | grep -v 'port 8799 answers')
 [ -n "$vf" ] && { while read -r l; do echo "LOOK: $l"; done <<< "$vf"; look=1; }
@@ -29,7 +33,7 @@ say "$(echo "$hs" | grep -m1 '^full test run:')  (red-fix jobs waiting: ${rj:-no
 for l in a b c; do say "lane $l: $(head -c 140 "$C/status-$l.txt" 2>/dev/null | tr -d '\r\n')"; done
 say "$(echo "$hs" | grep -m1 '^jobs waiting')"
 ram=$(echo "$hs" | grep -m1 '^free RAM' | tr -dc '0-9'); say "free RAM: ${ram:-?} GB, $(echo "$hs" | grep -m1 '^free virtual' | sed 's/free virtual memory: //') virtual"
-[ -n "$ram" ] && [ "$ram" -lt 2 ] && flag "free RAM under 2 GB: stop the newest helper"
+lo=$(machine_floor 2); [ -n "$ram" ] && [ "$ram" -lt "$lo" ] && flag "free RAM under $lo GB: stop the newest helper"
 pu=$(cat "$C/plan-usage.txt" 2>/dev/null); wk=$(echo "$pu" | awk '{print $2}')
 # 11-01 (CEO): the line came only from a lane status that was pacing, so it said "line ?" most of the time. It is now worked out here
 # from caps.txt the same way tools/console-lane.sh does (WEEK_RESET, PLAN_TARGET, PLAN_LINE_END, PLAN_LINE_START/FROM/TARGET).
