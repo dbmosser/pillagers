@@ -134,3 +134,9 @@ v30.62   # resize hatch shows without hover; cosmetic, job o-240
 # not listed on purpose: v26.59 (job 252) and v36.30 (job 253) may be real; v31.04 has job 208
 # his 11-01 order "get rid of the concept of xp altogether", v37.19 (cw-m1a): the career corner readout has no XP word any more; sorted by the check-in 11-01 15:55 (run on v37.19); retarget to credits, stash and bag
 v31.25   # wants the XP label in the one-row corner readout; XP is gone from every screen
+# sorted 2026-11-02 from corpus-1101-1520 (v37.17), read against v37.39; retarget each when convenient
+v17.97   # wants the seal need 34, 55, 76 seconds; the seal opens in two thirds of the time since v36.98 (his 10-31 order), so 23, 37, 51
+v31.83   # wants g.gunCard set after a forge upgrade (priced MK II card); a forge upgrade raises no weapon card since v36.97 (his 10-31 words); the rest of the check passes
+v35.15   # control finds machine damage smoke by the fill colours #1c1917 and #2a2623; v37.12 redrew the smoke in #14110f, #1e1a17 and #9a948e rims, so the control sees none (the fog parts are untested until retargeted)
+v35.65   # control wants the 3 px health pip under a hurt sentry; hurt machines show smoke and sparks, not a health bar since v37.13 (g-83); stage a pillager bot for the pip
+v33.89   # the machine art check calls tskDraw, deleted with the title fight code in v37.07 (dead code out 4, nothing called it since the plain title order)
