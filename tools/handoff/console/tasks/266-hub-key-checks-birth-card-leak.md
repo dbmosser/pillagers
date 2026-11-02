@@ -1,0 +1,15 @@
+# 266-hub-key-checks-birth-card-leak : checks 8.84, 8.95, 8.96, 9.32, 24.35 and 25.34 find the Undercroft covered by a window (full runs corpus-1102-0048 and corpus-1102-0552, v37.39)
+Queue (known-red triage 11-02). One likely cause for six checks, NOT yet proved. A harness fault first, a game bug only if a player can reach it.
+effort: low to medium (read-only first: grep each id in tools/mkfixture.ps1, read about 60 lines around the hit)
+
+What fails, all in the Undercroft and all green in corpus-1101-1520 (v37.17):
+- v8.84 "I opened no backpack at all"; v8.95 "I did not open the Undercroft backpack"; v8.96 and v9.32 "the Undercroft backpack kept no state to drag with". All four press I after __hubEnter() and read hubBagOpen.
+- v24.35 "control: with no window open the floor money line was not painted": drawHubHUD paints "N items in stash" only when !hubWinOn() (dark_raiders.html about line 53864), so a window was on right after __hubEnter().
+- v25.34 "the Undercroft belt did not draw the Riot Scattergun key (staging)": the floor belt is not drawn under a window either.
+The I key handler (about line 19451) does nothing while any `.modal.on` exists, and drawHubHUD and the floor belt stay quiet under one, so one open modal explains all six.
+
+Suspect: the birth card (v37.33 to v37.37, cw-m2birth). showScreen('hub') opens #birthmodal whenever birthNeed() is true, that is when P.pil is null (about lines 75210 and 75240). A death or a quit after doing anything now ends the pillager (v37.29), so any earlier check that ends a raid that way, and any check that enters the hub without calling __cleanProfile first, leaves nobody living and the next __hubEnter() opens the card. 8.84, 24.35 and 25.34 do not call __cleanProfile (tools/mkfixture.ps1 about lines 2358, 59060, 55516). __cleanProfile (line 192) does restore a living pillager, but __topClear (line 117583) does not close #birthmodal, and several m2 checks leave it for later checks.
+
+Do: run these six checks in one slice after a check that dies in a raid and log, right after __hubEnter(), which `.modal.on` is open (document.querySelectorAll('.modal.on')) and birthNeed(). If it is the birth card: make the fixture (not the game) restore a living pillager in __hubEnter or __runPrep (acctEnsure after clearing hall, as __cleanProfile does) and close #birthmodal in __topClear. If some other window is open, name it and fix its source. If a real player could hit it (card left open over the floor, I key dead behind it), fix the game.
+Rules: tools/mkfixture.ps1 only through fixq unless the game needs a change; then shipq. Seed 4242 fingerprint holds; never touch the pickup stack, loot sounds or loot rows. Proof must run in a full slice, not the check alone (the gate runs each check alone and passes it).
+TASK DONE when the six checks pass in a full run, with one line naming the window that was open.

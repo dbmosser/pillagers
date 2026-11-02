@@ -140,3 +140,44 @@ v31.83   # wants g.gunCard set after a forge upgrade (priced MK II card); a forg
 v35.15   # control finds machine damage smoke by the fill colours #1c1917 and #2a2623; v37.12 redrew the smoke in #14110f, #1e1a17 and #9a948e rims, so the control sees none (the fog parts are untested until retargeted)
 v35.65   # control wants the 3 px health pip under a hurt sentry; hurt machines show smoke and sparks, not a health bar since v37.13 (g-83); stage a pillager bot for the pip
 v33.89   # the machine art check calls tskDraw, deleted with the title fight code in v37.07 (dead code out 4, nothing called it since the plain title order)
+# sorted 2026-11-02 from corpus-1102-0552 (v37.39): his 11-01 order "get rid of the concept of xp altogether", v37.19 (cw-m1xpoff): no XP on any card, readout, bar or rack, no rewards tab, no level gates, walking out costs no XP; retarget to $ and the account
+v11.52   # wants the XP figure in the corner readout; the readout is "STASH / BAG" with no XP
+v34.32   # wants the death card xp line "+n xp . 50% penalty"; run cards carry no xp line
+v34.20   # wants Mainframe reward rows with a type cue, claim all and a rewards toast; the rewards tab is gone
+v33.52   # wants kept looks gated by level and extractions; every look is open since v37.19
+v12.12   # wants a death to bank the XP its card printed, dose bonus included; no XP is banked or printed
+v11.63   # wants the "+N XP" line on the outcome card to match the banked xpGot; neither exists
+v11.29   # wants the XP total on the death card of a fresh profile; no XP on the card
+v11.00   # wants the weather bonus to multiply XP ("paid undefined XP"); runs pay no XP
+v10.06   # wants a night raid to pay 1.2 times the XP; runs pay no XP
+v9.96    # wants a drink dose to add 2.5 percent raid XP and the bar to say XP +5%; no XP, the bar says nothing of it
+v10.27   # wants the Experience card on the Mainframe net lifetime earnings screen; the card is gone
+v12.77   # wants the abandon confirm to quote the XP fine (118 for 5000 XP); walking out costs no XP, the button quotes no cost
+v31.78   # wants a cost line (xp or free) under YES, ABANDON THIS RUN; the button quotes no cost since v37.19
+v12.67   # wants selling salvage to move the level and open a level-gated rack; no levels, every rack is open
+v14.29   # wants a reward gun claimed from the Mainframe rewards tab (reward 4); the rewards tab and claims are gone
+v12.98   # wants THE LAST POUR to show the XP bonus percent (+25% for twelve doses); the bar shows no XP bonus
+v13.01   # same as v12.98: the bar blurb check wants the live XP bonus total beside his sentence
+# his 11-01 order "it shouldn't pay cash beyond just selling what you have", v37.25 and v37.26 (cw-m1nocash, cw-m1bonusgap): no cash carried in a raid, an extraction pays a 10 percent bonus, the stall banks a sale at once, the survivor, raid goals and contracts pay salvage; retarget to the salvage and the bonus
+v36.33   # wants run goals' career cash carried as $1,000 until extraction; no cash is carried in a raid
+v35.88   # wants the contract reward to read "$4,321"; the board says "worth $4,321" and lists the items
+v35.79g  # wants a linked guest bank to gain exactly $2000; the 10 percent extraction bonus adds on top (2052)
+v20.70   # wants a contract for a gun he owns to pay the gun's value and receipt it; it comes as a spare to the stash since v37.25
+v12.63   # same as v20.70, the Scav Pistol case: a spare to the stash, no credits
+v20.46   # wants a contract card to draw one reward cell beside Credits; it pays salvage, so three cells
+v13.77   # wants the abandon line to say stall money was left behind; a stall sale is banked at once, none is carried
+v13.71   # reads the stall's payment as carried money; a Peddler sale is banked at once since v37.25
+v13.70   # same as v13.71: SELL BACKPACK is banked at once, the carried-money control reads 0
+v13.39   # reads the survivor's pay as a +$ pickup row tagged SURVIVOR; he pays salvage into the backpack since v37.25
+v11.86   # wants the survivor to pay $900 or more in cash; he pays salvage worth that, the card says "survivor gift worth $1,535"
+# v37.18 (net worth card), v37.21 (lifetime earnings card) and v37.30 (pillager card): your stats opens with more cards
+v33.98   # wants 3 visible stat cards on an empty log; 5 show now
+# v37.38 (cw-m2retire, his m2 order): the account name replaces the typed name in menus, the stash heading and the restore code (P.acctName, not P.pname); the checks set only pname
+v11.03   # sets prof.pname only; the restore code writes P.acctName, so the name reads back as TESTER
+v11.04   # same as v11.03: the code names the account, the check staged pname
+v11.67   # same as v11.03: the long-name round trip stages pname, the code carries acctName
+v12.97   # same as v11.03: the MAKER control stages pname, the restore sets acctName too
+v32.70   # sets P.pname to nilo and wants the stash heading to read it; the heading shows P.acctName since v37.38
+v87.01   # the pad crawl counts every visible text field as a gap; the Mainframe hall tab has a rename box (hallname) the pad edits through pad name entry since v37.38, and station mf tab 2 is no longer rewards
+# v36.18 (his 10-28 order): in-game keys are keycards
+v10.11   # wants the sixth stash tab named KEYS; it reads KEYCARDS
