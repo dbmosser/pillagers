@@ -141,7 +141,9 @@ $gm"; fi
   spl=0; se=$(sed -n 's/^epoch=//p' "$R/tools/handoff/spare/live.txt" 2>/dev/null | head -1 | tr -dc '0-9'); [ -n "$se" ] && [ $(( $(date +%s) - se )) -lt 1800 ] && spl=1
   if [ "$(get spare_live)" != "$spl" ]; then put spare_live "$spl"
     [ "$spl" = 1 ] && echo "$(date +%H:%M) the spare PC runs the full test run and the robots now: the VM starts neither" >> "$LOG"
-    [ "$spl" = 0 ] && [ -n "$se" ] && echo "$(date +%H:%M) the spare PC has been quiet for 30 minutes or paused: the VM runs the full test run and the robots again" >> "$LOG"; fi
+    [ "$spl" = 0 ] && [ -n "$se" ] && echo "$(date +%H:%M) the spare PC has been quiet for 30 minutes or paused: it goes on when it is free" >> "$LOG"; fi
+  #      11-02 (his "keep all testing on the JTPC"): this VM lives on the main PC and its memory goes to FnP, so it starts no full test run and no robots of its own, spare PC quiet or not.
+  spl=1
   pv=$(get atpc); nv=${atp:-?}
   if [ "$pv" != "$nv" ]; then put atpc "$nv"
     [ "$nv" = 1 ] && echo "$(date +%H:%M) he is at the main PC: no new full test run, robots or local AI" >> "$LOG"

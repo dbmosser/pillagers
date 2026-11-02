@@ -135,7 +135,7 @@ function writePerf4k(SP) {
 if (seen) fs.writeFileSync(path.join(SP, 'live.txt'), `epoch=${paused ? 0 : seen}\nhost=${seenHost}\nseen=${seenSt.seen || ''}\n${paused ? 'paused=1\n' : ''}`);
 const ago = seen ? Math.round((Date.now() / 1000 - seen) / 60) : -1;
 let line = !seen ? `no spare PC has reported yet (checked ${stamp()})`
-  : `${seenHost} last seen ${seenSt.seen || '?'} (${ago} min ago${ago >= 30 ? ', QUIET: the VM runs the tests and robots again' : paused ? ', PAUSED (someone is using it): the VM runs the tests and robots' : ''}), game ${seenSt.game || '?'}, ` +
+  : `${seenHost} last seen ${seenSt.seen || '?'} (${ago} min ago${ago >= 30 ? ', QUIET: tests wait for it again' : paused ? ', PAUSED (someone is using it): tests wait for it' : ''}), game ${seenSt.game || '?'}, ` +
     `test run ${seenSt.test_run || '?'}, robots ${seenSt.robots || '?'}, push ${seenSt.push_ok === '0' ? 'FAILING' : 'ok'}` +
     (seenSt.cpu_threads ? `, ram ${seenSt.ram_free_gb || '?'} of ${seenSt.ram_total_gb || '?'} GB free, cpu ${seenSt.cpu_pct || '?'}% of ${seenSt.cpu_threads} threads` : '');
 // 10-28: a spare PC that keeps reporting in but has stopped working. 10-22 10:23 to 10-25 15:26 it sat on v34.13 with no full run for

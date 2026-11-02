@@ -448,7 +448,9 @@ function LightOK(){ if($script:noFg){ return $false }; return (-not (Playing)) }
 function VMResizeSoon(){ if((FollowAway) -gt 0){ return $false }; $hm=HourMin; return ($hm -ge 2240 -and $hm -lt 2310) }
 # 10-31 (CEO, his party night): no tests at all on this PC from Sat 10/31 17:00 to Sun 11/1 06:00, whatever the memory. 8802, the party
 # copy and the bridge are looked after as always.
-function PartyHold(){ $n=Get-Date; return ($n -ge [datetime]'2026-10-31 17:00' -and $n -lt [datetime]'2026-11-01 06:00') }
+# 11-02 (his orders: "stop all pillagers html testing on the main pc, free up RAM to work on FnP", "keep all testing on the JTPC"): no tests at all
+# on the main PC, no end date, whatever the memory. 8802, the party copy and the bridge are looked after as always. The spare PC is unchanged.
+function NoTestsHere(){ return [bool]$Idle }
 # 11-01 (Main PC Correspondent, from the Fortnite island chat): Fortnite's editor (UEFN) and the Fortnite game are going on this PC, sometimes
 # with him away and a Claude here driving them, and together they can want well over 16 GB. A quiet editor sits under the game check's 15%
 # of the graphics card, so the VM could grow and the tests start under it, and his 4 GB floor goes. While one of them runs: no tests (main
@@ -660,7 +662,7 @@ function Watch([int]$sec){
       if((FreeGB) -lt 4){ $lo++ }else{ $lo=0 }
       if($lo -ge 2){ if(-not $script:fakeLow){ PutS 'lowstop_t' ([string](Epoch)) }; Stop-Work 'paused: low ram, under 4 GB free at two looks' -LowRam; return }
       $eg=EpicGame; if($eg){ PlayNote 'the fortnite editor or game'; Stop-Work ('fortnite is running: '+$eg); return }
-      if(PartyHold){ Stop-Work 'party night: no tests until Sun 06:00'; return }
+      if(NoTestsHere){ Stop-Work 'no tests on this pc: all testing is on the spare pc'; return }
       if(VMResizeSoon){ Stop-Work 'the VM takes its night memory at 23:00'; return }
       # 10-28: if the main PC's game check reads the 4K robot as him playing (it skips pillagers-cdp Chromes since 10-24), the VM would be
       # held to 30% of its processors: the robot goes back to 1080p for the rest of the day
@@ -1164,7 +1166,7 @@ while($true){
     $fw=FollowAway
     # 10-30: while the online 2 player test is still wanted, a start needs 5 GB free (his 4 GB floor plus its one Chrome), not 6
     $eg=EpicGame; if($eg){ PlayNote 'the fortnite editor or game' }
-    $ng=$(if((VMResizeSoon) -or (PartyHold) -or $eg){ 999 }elseif($script:working){ 3 }elseif($vmn){ 10 }elseif((GetS 'p2_done') -ne $P2Want){ 5 }else{ 6 })
+    $ng=$(if((VMResizeSoon) -or (NoTestsHere) -or $eg){ 999 }elseif($script:working){ 3 }elseif($vmn){ 10 }elseif((GetS 'p2_done') -ne $P2Want){ 5 }else{ 6 })
     $na=$(if($script:working -or $fw -le 0){ 900 }else{ [Math]::Max(900,($fw+2)*60) })
     $grow=(-not $script:working) -and ($fw -gt 0) -and ((VmGrowing) -or (((Epoch)-$script:epicSeen) -lt 660))
     $lowW=(-not $script:working) -and (((Epoch)-[long]('0'+(GetS 'lowstop_t'))) -lt 1800)
@@ -1172,7 +1174,7 @@ while($true){
     $light=($away -lt 900) -and (LightOK)
     $busy=(($away -lt $na) -and -not $light)
     if($busy -or $fg -lt $ng -or $grow -or $lowW){
-      $pw=$(if($eg){ 'paused: fortnite is running: '+$eg }elseif(PartyHold){ 'paused: party night, no tests until Sun 06:00' }elseif($away -lt 900 -and -not $light){ 'paused: he is using the PC'+$(if($script:playWhy){ ' ('+$script:playWhy+')' }else{ '' }) }elseif($busy -or $grow){ 'paused: the VM takes its memory first' }elseif($lowW){ 'paused: 30 minutes after a memory stop' }elseif($vmn){ 'paused: the VM has the memory at night' }else{ 'paused: low ram, under '+$ng+' GB free' })
+      $pw=$(if($eg){ 'paused: fortnite is running: '+$eg }elseif(NoTestsHere){ 'paused: no tests on this pc, all testing is on the spare pc' }elseif($away -lt 900 -and -not $light){ 'paused: he is using the PC'+$(if($script:playWhy){ ' ('+$script:playWhy+')' }else{ '' }) }elseif($busy -or $grow){ 'paused: the VM takes its memory first' }elseif($lowW){ 'paused: 30 minutes after a memory stop' }elseif($vmn){ 'paused: the VM has the memory at night' }else{ 'paused: low ram, under '+$ng+' GB free' })
       if($script:working){ $lr=((-not $busy) -and $ng -lt 999 -and $fg -lt $ng); if($lr -and -not $script:fakeLow){ PutS 'lowstop_t' ([string](Epoch)) }; Stop-Work $pw -LowRam:$lr }
       Refresh-Party
       Ensure-Bridge
