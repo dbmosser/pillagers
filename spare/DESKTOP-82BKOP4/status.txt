@@ -1,11 +1,11 @@
 host=DESKTOP-82BKOP4
-seen=2026-11-02 03:18
-epoch=1793607499
+seen=2026-11-02 03:24
+epoch=1793607842
 game=94462745 v37.39
 test_run=running corpus-1102-0048.txt
 robots=1
-ram_free_gb=21.3
-push_ok=1
+ram_free_gb=21
+push_ok=0
 runner=CBCABB9C
 mode=full
 ram_total_gb=32
