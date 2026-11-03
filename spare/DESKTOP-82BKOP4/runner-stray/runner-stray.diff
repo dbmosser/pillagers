@@ -1,0 +1,198 @@
+diff --git a/tools/spare/spare-runner.ps1 b/tools/spare/spare-runner.ps1
+index affb21b..220483c 100644
+--- a/tools/spare/spare-runner.ps1
++++ b/tools/spare/spare-runner.ps1
+@@ -209,18 +209,33 @@ public static bool PadMoved(){
+   # window, with no mouse move before it, is missed if it is released over 1 s later (the release is a lone move), or inside the same look, and then so is one more single move. Neither move holds the
+   # tests 15 minutes: each restarts the passive signs' 2 hours (AwaySec) and FocusHold, so a game that came up with no key, mouse or pad pauses at its first passive sign (full screen, sound, the graphics card), work already
+   # running goes on until then, and one that shows no sign does not pause. It reads only the input time and the handle and process of the window in front, never a key, a title or the mouse position. If it cannot load,
+-  # or its thread stops looking for 3 s, every later move of the input time counts as before. A new copy's first look counts what it finds as a person. Spare PC only: IDLE MODE
++  # or its thread stops looking for 3 s, every later move of the input time counts as before. A new copy's first look counts what it finds as a person, unless the old copy was looking a few minutes ago (below). Spare PC only: IDLE MODE
+   # never loads it.
+-  $script:noFocus=$true; $script:focusN=[uint32]0; $script:burstN=[uint32]0; $script:holdN=[uint32]0; $script:loneN=[uint32]0; $script:pairN=[uint32]0
++  # 11-02 evening (CEO, after a false pause at 21:25 that cost 15 minutes of the robot and a run): every move of the input time logged that evening came with hardware mouse reports, 1 or 2 each and at least 92 s apart, five of five,
++  # with nobody at the desk (the owner's word; the owner puts it down to a very sensitive mouse on a shaky table). So the watch also takes raw input reports for the keyboard and the mouse. From each it uses only the kind, the time and whether it came from a device or a program; it never asks for the input data, so it has no key and no mouse position, and it keeps and logs none of that.
++  # A keyboard report from a device is a person at once. 5 mouse reports at least a tenth of a second apart inside 10 s are a person at once: every stray measured counts as 1 that way, a jolt of the table is many reports in a moment and counts as little more, and a hand on a mouse gets there in about half a second at 20 reports a second or more, up to about 0.8 s just above 10. A move of the input time with a
++  # mouse report within half a second, and neither of those, is a stray: not a person, however many looks it spans, not counted towards the third or the sixth, holding nothing and not restarting the passive 2 hours. It is still a person if a
++  # window changes within half a second of it (or a window that moved the input time did, within 1 s before it), or if it comes within 10 s after a move that was not a stray. A window within 10 s after a stray whose last two reports are 40 ms to half a second apart is a person (a click that launches something; two jolts that far apart read the same).
++  # A report from a program, which has no device, is not used: its move goes by the rules above, as does a move with no report near it, which is what every move does if the reports cannot open or a program at a higher level in front keeps them back. Known limits: about 0.4 s of shaking in total within 10 s reads as a person; one click, a double click, a nudge under about half a second, a short wheel flick or notches under 5 in 10 s are not seen until a key or sustained mouse use.
++  # A copy restarting itself writes its person time (watch_t and watch_person in the state, Save-Watch), and the new copy takes it if it is under 5 minutes old (Load-Hold), so a restart is no longer a false pause: that evening the input time moved at 21:36:46, around a restart, with nobody at the desk, and the new copy's first look held the tests 15 minutes. What the first look found still restarts the passive 2 hours. A crash or a reboot still counts what it finds.
++  $script:noFocus=$true; $script:focusN=[uint32]0; $script:burstN=[uint32]0; $script:holdN=[uint32]0; $script:loneN=[uint32]0; $script:pairN=[uint32]0; $script:strayN=[uint32]0; $script:strayT=[long]0; $script:rawSaid=$false
+   try{ Add-Type -Namespace PillagersSpare -Name FocusWatch -ErrorAction Stop -MemberDefinition @'
+ [StructLayout(LayoutKind.Sequential)] public struct LII { public uint cbSize; public uint dwTime; }
+ [DllImport("user32.dll")] static extern bool GetLastInputInfo(ref LII p);
+ [DllImport("user32.dll")] static extern IntPtr GetForegroundWindow();
++[StructLayout(LayoutKind.Sequential)] struct RID { public ushort page; public ushort usage; public uint flags; public IntPtr target; }
++[StructLayout(LayoutKind.Sequential)] struct WMSG { public IntPtr h; public uint m; public IntPtr w; public IntPtr l; public uint t; public int x; public int y; }
++[DllImport("user32.dll", CharSet = CharSet.Unicode)] static extern IntPtr CreateWindowEx(uint ex, string cls, string name, uint style, int x, int y, int w, int h, IntPtr parent, IntPtr menu, IntPtr inst, IntPtr param);
++[DllImport("user32.dll")] static extern bool RegisterRawInputDevices(RID[] d, uint n, uint size);
++[DllImport("user32.dll")] static extern bool PeekMessage(out WMSG m, IntPtr h, uint a, uint b, uint remove);
++[DllImport("user32.dll")] static extern IntPtr DispatchMessage(ref WMSG m);
++[DllImport("user32.dll")] static extern uint GetRawInputData(IntPtr r, uint cmd, byte[] d, ref uint size, uint header);
+ [DllImport("user32.dll")] static extern uint GetWindowThreadProcessId(IntPtr h, out uint p);
+-const int NearMs = 500; const int ReleaseMs = 1000; const int LoneMs = 10000; const int BurstMs = 30000; const int CeilMs = 600000; const int StaleMs = 3000;
++const int NearMs = 500; const int ReleaseMs = 1000; const int LoneMs = 10000; const int BurstMs = 30000; const int CeilMs = 600000; const int StaleMs = 3000; const int MouseN = 5; const int MouseMs = 10000; const int MouseGapMs = 100;
+ static readonly object K = new object();
+-static bool on = false, first = true, pend = false, one = false, haveFg = false, haveFocus = false, have1 = false, have2 = false, haveLone = false, haveWin = false, wasLone = false;
+-static uint seen, person, pend0, fgT, polled, focus, ig1, ig2, count, bursts, fgPid, lone0, win0, lones, pairs, pairMs;
++static bool on = false, first = true, pend = false, one = false, haveFg = false, haveFocus = false, have1 = false, have2 = false, haveLone = false, haveWin = false, wasLone = false, haveKey = false, haveMouse = false, wasStray = false, inUse = false;
++static uint seen, person, pend0, fgT, polled, focus, ig1, ig2, count, bursts, fgPid, lone0, win0, lones, pairs, pairMs, keyT, mouseT, mousePrev, keys, reps, strays, first0, why, whyAt;
++static uint[] mr = new uint[MouseN]; static int nm = 0, mc = 0, rawState = 0;   // the last mouse reports at least MouseGapMs apart, oldest at mr[nm] once there are MouseN
+ static IntPtr fg;
+ static uint[] last5 = new uint[5]; static int n5 = 0;   // the last five moves not counted, oldest at last5[n5 % 5] once there are five
+ static uint Now(){ return (uint)Environment.TickCount; }
+@@ -233,29 +248,65 @@ static bool Uncounted(){
+   ig2 = ig1; have2 = have1; ig1 = seen; have1 = true; last5[n5 % 5] = seen; n5++; focus = seen; haveFocus = true;
+   return true;
+ }
++// one raw input report, by kind: 0 the mouse, 1 the keyboard, anything else is not asked for. A key is a person, and so are MouseN mouse reports at least MouseGapMs apart inside MouseMs, for as long as the reports go on
++public static void Report(uint kind, uint t){ lock (K) {
++  if (kind == 1) { keyT = t; haveKey = true; keys++; person = t; why = 1; whyAt = t; return; }
++  if (kind != 0) return;
++  mousePrev = mouseT; mouseT = t; haveMouse = true; reps++;
++  if (mc == 0 || unchecked(t - mr[(nm + MouseN - 1) % MouseN]) >= (uint)MouseGapMs) {
++    mr[nm] = t; nm = (nm + 1) % MouseN; if (mc < MouseN) mc++;
++    inUse = mc == MouseN && unchecked(t - mr[nm]) <= (uint)MouseMs;
++  }
++  if (inUse) { person = t; why = 2; whyAt = t; }
++} }
+ // pend0 and fgT are both the look that saw the move, so a late look cannot part them
+ public static void Look(uint now, uint stamp, IntPtr f, uint fpid){ lock (K) {
+   polled = now;
+-  if (first) { first = false; seen = stamp; person = stamp; fg = f; return; }
++  if (first) { first = false; seen = stamp; person = stamp; first0 = stamp; fg = f; return; }
+   if (f != IntPtr.Zero && f != fg) { fg = f; fgT = now; haveFg = true; fgPid = fpid; }   // the front is often NULL for a moment while it changes: that is not a change of its own
+   if (stamp != seen) { seen = stamp; if (pend) { one = false; } else { pend = true; one = true; pend0 = now; } }
+   if (!pend) return;
++  bool key = haveKey && Dist(keyT, seen) <= NearMs, mouse = haveMouse && Dist(mouseT, seen) <= NearMs;
+   if (one && haveFg && Dist(fgT, pend0) <= NearMs) {
+     pend = false; haveFg = false;
+     win0 = seen; haveWin = true;
+     if (wasLone && unchecked(seen - lone0) <= (uint)LoneMs) { pairs++; pairMs = unchecked(seen - lone0); wasLone = false; person = seen; return; }
++    if (key) return;
++    if (mouse) { person = seen; why = 2; whyAt = seen; return; }   // a click that changed the window
+     if (Uncounted()) count++;
+     return;
+   }
+   if (Gap(now, pend0) > NearMs) {
++    bool win = haveFg && Gap(fgT, pend0) >= -NearMs;
+     pend = false; haveFg = false;
+     bool pair = haveLone && unchecked(seen - lone0) <= (uint)LoneMs, release = haveWin && unchecked(seen - win0) <= (uint)ReleaseMs;
+-    if (one && pair && wasLone) { pairs++; pairMs = unchecked(seen - lone0); }
+-    lone0 = seen; haveLone = true; wasLone = false;
++    bool counted = key || (mouse && person == mouseT);   // Report has already said so
++    if (mouse && !counted && !win && !release && (!pair || wasStray)) { lone0 = seen; haveLone = true; wasLone = unchecked(mouseT - mousePrev) >= 40 && unchecked(mouseT - mousePrev) <= (uint)NearMs; wasStray = true; strays++; return; }
++    if (one && pair && wasLone && !key && !mouse) { pairs++; pairMs = unchecked(seen - lone0); }
++    lone0 = seen; haveLone = true; wasLone = false; wasStray = false;
++    if (counted) return;
++    if (mouse) { person = seen; why = 2; whyAt = seen; return; }
+     if (!one || pair || release) person = seen; else if (Uncounted()) { lones++; wasLone = true; }
+   }
+ } }
+-static void Run(){ while (true) {
++static void RawOpen(){
++  rawState = -1;
++  IntPtr w = CreateWindowEx(0, "Message", "", 0, 0, 0, 0, 0, new IntPtr(-3), IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
++  if (w == IntPtr.Zero) return;
++  RID[] d = new RID[2];
++  d[0].page = 1; d[0].usage = 2; d[0].flags = 0x100; d[0].target = w;   // the mouse, with no window in front
++  d[1].page = 1; d[1].usage = 6; d[1].flags = 0x100; d[1].target = w;   // the keyboard, the same
++  if (RegisterRawInputDevices(d, 2, (uint)Marshal.SizeOf(typeof(RID)))) rawState = 1;
++}
++static void Pump(){
++  WMSG m; uint hs = (uint)(8 + 2 * IntPtr.Size); byte[] b = new byte[hs];
++  while (PeekMessage(out m, IntPtr.Zero, 0, 0, 1)) {
++    if (m.m == 0xFF) { uint z = hs; if (GetRawInputData(m.l, 0x10000005, b, ref z, hs) == hs && (IntPtr.Size == 8 ? BitConverter.ToInt64(b, 8) : BitConverter.ToInt32(b, 8)) != 0) Report(BitConverter.ToUInt32(b, 0), m.t); }
++    DispatchMessage(ref m);
++  }
++}
++static void Run(){ try { RawOpen(); } catch { rawState = -1; } while (true) {
++  try { if (rawState == 1) Pump(); } catch { }
+   try { uint st; if (Stamp(out st)) { IntPtr f = GetForegroundWindow(); uint p = 0; GetWindowThreadProcessId(f, out p); Look(Now(), st, f, p); } } catch { }
+   System.Threading.Thread.Sleep(100);
+ } }
+@@ -273,6 +324,13 @@ public static uint Lones(){ lock (K) { return lones; } }
+ public static uint Pairs(){ lock (K) { return pairs; } }
+ public static double PairSec(){ lock (K) { return pairMs / 1000.0; } }
+ public static uint LastPid(){ lock (K) { return fgPid; } }
++public static uint Keys(){ lock (K) { return keys; } }
++public static uint Reports(){ lock (K) { return reps; } }
++public static uint Strays(){ lock (K) { return strays; } }
++public static uint PersonWhy(){ lock (K) { return person == whyAt ? why : 0; } }
++public static int RawState(){ lock (K) { return rawState; } }
++// a new copy takes the old copy's person time, unless someone has counted since its first look; what that look found still restarts the passive signs' 2 hours
++public static void Seed(double agoSec){ lock (K) { if (person == first0 && agoSec >= 0 && agoSec <= 864300) { person = unchecked(Now() - (uint)(agoSec * 1000)); if (Gap(first0, person) > 0) { focus = first0; haveFocus = true; } } } }
+ '@; [PillagersSpare.FocusWatch]::Start(); $script:noFocus=$false }catch{ Say ('PROBLEM: the window-in-front watch did not load, so a change of window counts as someone at the PC, as before: '+(Short "$_")) }
+   # sound: the default output's loudness meter, and per program only when it is not quiet (Core Audio, read only; it says only how loud,
+   # never what). The code of pause-watch.ps1, unchanged: every failure comes back as "ERR ...", the meter is made again every 5 minutes
+@@ -426,15 +484,18 @@ function AwaySec(){
+   if($o){ $script:conT=$now }
+   if($o -ne $script:conOn){ $script:conOn=$o; Say $(if($o){ 'another Windows account is in use at the screen' }else{ 'no other Windows account in use at the screen now' }) }
+   $a=[PillagersIdle.Input]::IdleSec(); $w='keyboard or mouse'
+-  # 11-02: a move of the input time that only came with a change of the window in front, or that came alone, is not a key or the mouse (see FocusWatch above); it still restarts the passive signs' 2 hours
++  # 11-02: a move of the input time that only came with a change of the window in front, or that came alone, is not a key or the mouse (see FocusWatch above); it still restarts the passive signs' 2 hours, and a stray mouse report or two does not even do that
+   $fo=[double]1e9
+   if(-not $script:noFocus){ try{
+     $a=[double][PillagersSpare.FocusWatch]::PersonIdleSec(); $fo=[double][PillagersSpare.FocusWatch]::FocusOnlyAgo()
++    $n=[PillagersSpare.FocusWatch]::PersonWhy(); if($n -eq 1){ $w='a key press' }elseif($n -eq 2){ $w='the mouse in use' }
+     $n=[PillagersSpare.FocusWatch]::Count(); if($n -ne $script:focusN){ $script:focusN=$n; $pn='a program'; $lp=[int][PillagersSpare.FocusWatch]::LastPid(); if($lp -gt 0){ try{ $pn=[string](Get-Process -Id $lp -ErrorAction Stop).ProcessName }catch{} }; Say ('the input time moved as the window in front changed to '+$pn+': not counted as someone at the PC') }
+     $n=[PillagersSpare.FocusWatch]::Lones(); if($n -ne $script:loneN){ $script:loneN=$n; Say 'the input time moved once, alone, with no change of the window in front within half a second: not counted as someone at the PC unless it moves again within 10 s' }
+     $n=[PillagersSpare.FocusWatch]::Pairs(); if($n -ne $script:pairN){ $script:pairN=$n; Say ('the input time moved again '+[Math]::Round([double][PillagersSpare.FocusWatch]::PairSec(),1)+' s after a lone move (pair '+$n+' since this copy started): counted as someone at the PC') }
+     $n=[PillagersSpare.FocusWatch]::Bursts(); if($n -ne $script:burstN){ $script:burstN=$n; Say 'the input time keeps moving with nobody seen (3 times in 30 s or 6 in 10 minutes): counted as someone at the PC' }
+-  }catch{ $a=[PillagersIdle.Input]::IdleSec(); $fo=[double]1e9 } }
++    $n=[PillagersSpare.FocusWatch]::Strays(); if($n -ne $script:strayN -and ($e-$script:strayT) -ge 60){ $k=$n-$script:strayN; $script:strayN=$n; $script:strayT=$e; Say ('stray mouse input, '+$k+' since the last such line: not counted as someone at the PC') }
++    if(-not $script:rawSaid){ $n=[PillagersSpare.FocusWatch]::RawState(); if($n -ne 0){ $script:rawSaid=$true; Say $(if($n -gt 0){ 'key and mouse reports are on: a key, or 5 mouse reports at least a tenth of a second apart in 10 s, counts as someone at the PC, and a stray report or two does not' }else{ 'PROBLEM: the key and mouse reports did not open, so the input time alone says who is at the PC, as before' }) } }
++  }catch{ $a=[PillagersIdle.Input]::IdleSec(); $fo=[double]1e9; $w='keyboard or mouse' } }
+   $s=($now-$script:padT).TotalSeconds; if($s -lt $a){ $a=$s; $w='game pad' }
+   $s=($now-$script:conT).TotalSeconds; if($s -lt $a){ $a=$s; $w='another account at the screen' }
+   if($script:holdH -gt 0){ $s=[double]($e-$script:holdH); if($s -lt $a){ $a=$s; $w='someone used the PC before this runner restarted' } }
+@@ -467,10 +528,13 @@ function Save-Hold([double]$away){
+   PutS 'seen_t' ([string]((Epoch)-[long][Math]::Min([Math]::Max($away,0),864000)))
+   PutS 'human_t' ([string]((Epoch)-[long][Math]::Min([Math]::Max($script:humanAgo,0),864000)))
+ }
++# 11-02: a copy restarting itself leaves its person time for the new copy (Load-Hold), so what the new copy's first look finds is not taken for a person. Never in IDLE MODE.
++function Save-Watch(){ if($Idle -or $script:noFocus -ne $false){ return }; try{ [void](AwaySec); $e=Epoch; PutS 'watch_t' ([string]$e); PutS 'watch_person' ([string]($e-[long][Math]::Min([Math]::Max($script:humanAgo,0),864000))) }catch{} }
+ function Load-Hold(){
+   $e=Epoch
+   $v=GetS 'seen_t'; if($v -match '^\d{9,11}$'){ $script:holdE=[Math]::Min([long]$v,$e) }
+   $v=GetS 'human_t'; if($v -match '^\d{9,11}$'){ $script:holdH=[Math]::Min([long]$v,$e) }
++  if($script:noFocus -eq $false -and -not $HbOld){ $v=GetS 'watch_t'; $k=GetS 'watch_person'; if($v -match '^\d{9,11}$' -and $k -match '^\d{9,11}$' -and ($e-[long]$v) -ge 0 -and ($e-[long]$v) -lt 300){ try{ [PillagersSpare.FocusWatch]::Seed([double]($e-[long]$k)) }catch{} } }
+ }
+ # 10-31 (CEO, his "consistent testing especially in low RAM/intermittent RAM scenarios"): a self-test can fake low RAM. fake-lowram.txt in
+ # the bridge share with until=EPOCH makes FreeGB read 1 GB until then (the VM puts it there with hostctl share-put). A fake stop starts no
+@@ -1387,7 +1451,7 @@ while($true){
+       if($script:lastMaster -and $script:lastMaster -ne $script:tookMaster -and ((Running 'corpq\.sh|corpus-slices\.sh') -eq 0)){
+         $script:tookMaster=$script:lastMaster
+         if((Update-Game) -and (NewRunnerOK)){
+-          Say 'a new copy of this runner came from GitHub: restarting'
++          Save-Watch; Say 'a new copy of this runner came from GitHub: restarting'
+           Remove-Item -LiteralPath $Hb -Force -ErrorAction SilentlyContinue
+           Start-Process -FilePath wscript.exe -ArgumentList ('"'+$T+'\spare\spare-start.vbs"') | Out-Null
+           exit 0
+@@ -1398,7 +1462,7 @@ while($true){
+         if((GetS 'pause_why') -ne $pw){ PutS 'pause_why' $pw; Say $pw }
+         Write-Status $pw 0; Publish 'paused'
+         if(((Running 'corpq\.sh|corpus-slices\.sh') -eq 0) -and (Update-Game) -and (NewRunnerOK)){
+-          Say 'a new copy of this runner came from GitHub: restarting'
++          Save-Watch; Say 'a new copy of this runner came from GitHub: restarting'
+           Remove-Item -LiteralPath $Hb -Force -ErrorAction SilentlyContinue
+           Start-Process -FilePath wscript.exe -ArgumentList ('"'+$T+'\spare\spare-start.vbs"') | Out-Null
+           exit 0
+@@ -1426,7 +1490,7 @@ while($true){
+       if($chg -or ((Epoch)-$pt) -ge ($PublishMin*60)){
+         $script:pubTry=[long](Epoch); Write-Status $pw 0; Publish 'paused'
+         if(((Running 'corpq\.sh|corpus-slices\.sh') -eq 0) -and (Update-Game) -and (NewRunnerOK)){
+-          Say 'a new copy of this runner came from GitHub: restarting'
++          Save-Watch; Say 'a new copy of this runner came from GitHub: restarting'
+           Save-Hold $away
+           Remove-Item -LiteralPath $Hb -Force -ErrorAction SilentlyContinue
+           Start-Process -FilePath wscript.exe -ArgumentList ('"'+$T+'\spare\spare-start.vbs"') | Out-Null
+@@ -1462,7 +1526,7 @@ while($true){
+     elseif(Update-Game){
+       if((NewRunnerOK)){
+         if($why){ Write-Status 'idle' (Running 'fuzz\.ps1'); Publish $why }
+-        Say 'a new copy of this runner came from GitHub: restarting'
++        Save-Watch; Say 'a new copy of this runner came from GitHub: restarting'
+         Remove-Item -LiteralPath $Hb -Force -ErrorAction SilentlyContinue
+         Start-Process -FilePath wscript.exe -ArgumentList ('"'+$T+'\spare\spare-start.vbs"') | Out-Null
+         exit 0
