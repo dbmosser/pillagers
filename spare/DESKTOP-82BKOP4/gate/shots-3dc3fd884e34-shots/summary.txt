@@ -1,0 +1,6 @@
+== 4k : window 3876x2265, viewport 3840x2160
+  21-raid-hud-calm                       staged      18.2s  
+  33-raid-fight-alerts                   staged      12.7s    | 3 moved, hp 64
+  34-raid-downed-pickups                 staged      12.3s    | downed true hp 0
+  71-career-alert-long                   staged      12.0s  
+  74-down-revived-rows                   staged      12.9s    | downed true revived true
