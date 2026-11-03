@@ -1,0 +1,12 @@
+{
+    "title":  "JOB 267 SLICE PROBE TWO",
+    "why":  "Runs 10.64 in its own place after the checks before it. Never shipped.",
+    "now":  "Nothing a player can see.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002737.31\u0027;",
+                      "replacement":  "var GATE_PROBE=267;   // v28.xx (cw-t267) job 267 slice probe, never shipped\nvar WHATSNEW_VER=\u002737.31\u0027;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027job 267 slice probe two: 11.27 through 10.64 in list order in one page; never shipped\u0027,\n   run:function(){\n     if(typeof GATE_PROBE===\u0027undefined\u0027) return \u0027no mark: this is the build before\u0027;\n     var call=window.__t267=(window.__t267|0)+1; if(call\u003e1) return \u0027second call: nothing run\u0027;\n     var L=__REGRESS, i, seen={}, red=[], ran=0, t0=performance.now();\n     function ix(v){ for(var q=0;q\u003cL.length;q++) if(L[q].v===v) return q; return -1; }\n     var a=ix(\u002711.27\u0027), b=ix(\u002710.64\u0027);\n     for(i=a;i\u003c=b;i++){\n       if(performance.now()-t0\u003e140000) break;\n       var t=L[i], r; if(String(t.what).indexOf(\u0027job 267\u0027)===0) continue;\n       try{ __topClear(); __ctxHeal(); r=t.run(); }catch(e){ r=\u0027threw \u0027+e; } ran++;\n       if(t.v===\u002711.27\u0027||t.v===\u002710.64\u0027) seen[t.v]=r?String(r).slice(0,60):\u0027ok\u0027;\n       else if(r\u0026\u0026String(r).indexOf(\u0027SKIP: \u0027)!==0) red.push(t.v);\n     }\n     var md=[].map.call(document.querySelectorAll(\u0027.modal.on\u0027),function(x){ return x.id; }).join(\u0027,\u0027);\n     try{ __topClear(); }catch(_t){}\n     return \u0027ran \u0027+a+\u0027-\u0027+(i-1)+\u0027 of \u0027+a+\u0027-\u0027+b+\u0027 n\u0027+ran+\u0027 \u0027+Math.round((performance.now()-t0)/1000)+\u0027s km\u0027+JSON.stringify(P.keymap||{})+\u0027 md[\u0027+md+\u0027] 11.27:\u0027+(seen[\u002711.27\u0027]||\u0027not reached\u0027)+\u0027 10.64:\u0027+(seen[\u002710.64\u0027]||\u0027not reached\u0027)+\u0027 red \u0027+red.slice(0,14).join(\u0027,\u0027);\n   }},"
+}
