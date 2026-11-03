@@ -4,14 +4,13 @@ param([string]$Tag,[switch]$NoFixture,[string]$Root='C:\claudecode\dark raiders'
 # dryrun-pf.ps1 -Tag pfa (2026-10-17, for preflight.sh): dryrun.ps1 under a private tag. Applies p<Tag>.ps1 and f<Tag>.ps1 to a
 # scratch copy of the CURRENT game and fixture and builds tools\fxdry<Tag>.html (the drafted build with its checks) and
 # tools\fxctl<Tag>.html (the current build with the new checks). Nothing in the repo changes.
-# 11-02 evening, his order to drop the old folder name: a shipper on the new folder may send this copy a job before this copy is renamed, so both names count.
-$named = @('C:\claudecode\dark raiders', 'C:\claudecode\pillagers-html'); $root = $Root; $h = "$root\tools\handoff"
+$named = 'C:\claudecode\dark raiders'; $root = $Root; $h = "$root\tools\handoff"
 $sp = Join-Path $env:TEMP ('pillagers-dry\pf' + $Tag)
 Remove-Item -Recurse -Force $sp -ErrorAction SilentlyContinue; New-Item -ItemType Directory -Force $sp | Out-Null
 Copy-Item "$root\dark_raiders.html" "$sp\base.html" -Force; Copy-Item "$sp\base.html" "$sp\dark_raiders.html" -Force
 Copy-Item "$root\tools\mkfixture.ps1" "$sp\mkfixture.ps1" -Force
 foreach ($f in "p$Tag", "f$Tag") {
-  $t = [IO.File]::ReadAllText("$h\$f.ps1"); foreach ($n in $named) { $t = $t.Replace("$n\dark_raiders.html", "$sp\dark_raiders.html").Replace("$n\tools\mkfixture.ps1", "$sp\mkfixture.ps1") }
+  $t = [IO.File]::ReadAllText("$h\$f.ps1").Replace("$named\dark_raiders.html", "$sp\dark_raiders.html").Replace("$named\tools\mkfixture.ps1", "$sp\mkfixture.ps1")
   [IO.File]::WriteAllText("$sp\$f.ps1", $t, (New-Object Text.UTF8Encoding $false))
   Write-Output "$f -> $(powershell -NoProfile -ExecutionPolicy Bypass -File "$sp\$f.ps1")"
 }

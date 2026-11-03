@@ -43,8 +43,6 @@
 param([switch]$Once,[int]$FuzzMinutes=60,[int]$PublishMin=10)
 $ErrorActionPreference='Continue'
 $Idle=($env:COMPUTERNAME -eq 'JUL26')
-# 11-02 evening, his order to drop the old folder name: on the spare PC the new name is a junction to this copy until someone at that PC renames it, so a job naming either path finds the same files. No administrator needed. Does nothing once both names are the same.
-if(-not $Idle -and (Test-Path -LiteralPath 'C:\claudecode\dark raiders') -and -not (Test-Path -LiteralPath 'C:\claudecode\pillagers-html')){ try{ New-Item -ItemType Junction -Path 'C:\claudecode\pillagers-html' -Target 'C:\claudecode\dark raiders' -ErrorAction Stop | Out-Null }catch{} }
 if($Idle){ $R='C:\PillagersIdle\game'; $W='C:\PillagersIdle' } else { $R='C:\claudecode\dark raiders'; $W='C:\PillagersSpare' }
 $T=$R+'\tools'
 $Res=$W+'\results'; $Out=$W+'\out'; $FzOut=$Out+'\fuzz'; $CorpDir=$Out+'\corpus'
