@@ -22122,9 +22122,9 @@ class Audio {
        var tsk0=TSK,seen=0,wrap0=pixWrap;
        try{
          pixWrap=function(key){if(String(key).indexOf('mach|sentry|')===0)seen++;return wrap0.apply(this,arguments);};
-         wc=cx;cx.setTransform(1,0,0,1,220,220);TSK={};e=pixMachSample('sentry');e.dead=0;e.fade=1;pixFrame();tskDraw(e);
+         if(typeof tskDraw==='function'){ wc=cx;cx.setTransform(1,0,0,1,220,220);TSK={};e=pixMachSample('sentry');e.dead=0;e.fade=1;pixFrame();tskDraw(e); }   /* 11-03 (job 268): the title skit is gone since v37.07 (dead code out 4); the build before still has it */
        }finally{TSK=tsk0;pixWrap=wrap0;}
-       if(!seen)fail('title skit did not draw a pixel sentry');
+       if(!seen&&typeof tskDraw==='function')fail('title skit did not draw a pixel sentry');
        return bad.length?bad.join('; '):null;
      }catch(err){return 'machine art check: '+String(err&&err.stack||err);}
      finally{
