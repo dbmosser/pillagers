@@ -2,21 +2,32 @@
 // separate windows app that shows everything that's happening at any given time related to developing the game?").
 // Reads only status files, logs and git; never a key. Serves http://127.0.0.1:8820 (localhost only). Opened as its own window by
 // the desktop shortcut (tools/devdash/open.vbs starts this server if it is not running, then opens Chrome in app mode).
+// 11-03 (OVERLORD, overnight): reworked into two separate projects on one page, FNP (Fortnite Pillagers, first priority) and HTML GAME
+// (back seat), plus what they share. FNP facts come from files and logs (the editor watcher's watch.log, the editor's own log, the test
+// scripts' sess*.out, the lead dev's verse-notes.md); the curated lines (what is proven, what needs his hands) are tools/devdash/status-notes.txt.
+// Light on purpose: this PC is busy with the island. One process look every 90 s that reads command lines of node and powershell ONLY
+// (never the editor's, which holds a login code), one screen count every 5 min, no AI calls (no `claude -p /usage`, ever).
 import http from 'http';
 import os from 'os';
-import { readFileSync, statSync, existsSync, readdirSync, writeFileSync, appendFileSync } from 'fs';
+import { readFileSync, statSync, existsSync, readdirSync, writeFileSync, appendFileSync, openSync, readSync, closeSync, mkdirSync } from 'fs';
 import { execFileSync, execFile, spawn } from 'child_process';
 // 11-02: his order moves development to the main PC; this server then runs there, so what only makes sense in the VM goes by the computer name (tools/handoff/machine.sh)
 const ON_MAIN = /^JUL26$/i.test(process.env.COMPUTERNAME || os.hostname());
+const BOOT_AT = Date.now() - os.uptime() * 1000;   // fixed at start, so the page's change check does not see it move
 const R = 'C:/claudecode/dark raiders', C = R + '/tools/handoff/console', N = R + '/tools/handoff/nightly';
 const S = 'C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad';
 const rd = (p, d = '') => { try { return readFileSync(p, 'utf8'); } catch { return d; } };
 const tail = (p, n) => rd(p).replace(/\r/g, '').trimEnd().split('\n').filter(Boolean).slice(-n);
 const ageS = p => { try { return Math.round((Date.now() - statSync(p).mtimeMs) / 1000); } catch { return null; } };
+const safe = (fn, d = null) => { try { return fn(); } catch { return d; } };
+const textAgeS = s => { const m = /^(\d\d)-(\d\d) (\d\d):(\d\d)/.exec(s || ''); if (!m) return null; const y = new Date().getFullYear(); let t = new Date(y, +m[1] - 1, +m[2], +m[3], +m[4]).getTime(); if (t > Date.now() + 864e5) t = new Date(y - 1, +m[1] - 1, +m[2], +m[3], +m[4]).getTime(); return Math.round((Date.now() - t) / 1000); };
+const b64 = s => Buffer.from(s, 'utf16le').toString('base64');
 let verCache = { m: 0, v: '?' };
-function ver() {
-  try { const m = statSync(R + '/dark_raiders.html').mtimeMs; if (m !== verCache.m) {
-    const t = readFileSync(R + '/dark_raiders.html', 'utf8'); const x = /\nvar VER='([0-9.]+)'/.exec(t); verCache = { m, v: x ? x[1] : '?' }; } } catch {}
+function ver() {   // 11-03: var VER sits about 735 KB into the 5 MB game file, so read the first megabyte, not all of it
+  try { const st = statSync(R + '/dark_raiders.html'), m = st.mtimeMs; if (m !== verCache.m) {
+    const fd = openSync(R + '/dark_raiders.html', 'r'), b = Buffer.alloc(1000000); const n = readSync(fd, b, 0, b.length, 0); closeSync(fd);
+    let x = /\nvar VER='([0-9.]+)'/.exec(b.toString('latin1', 0, n)); if (!x) x = /\nvar VER='([0-9.]+)'/.exec(readFileSync(R + '/dark_raiders.html', 'latin1'));
+    verCache = { m, v: x ? x[1] : '?' }; } } catch {}
   return verCache.v;
 }
 // 10-18: the latest stable build (tools/stable.sh writes tools/handoff/stable.txt) and the latest morning/evening report (tools/report.mjs)
@@ -26,115 +37,100 @@ function latestReport() {
   try { const f = readdirSync(REP).filter(n => /^\d{4}-\d\d-\d\d-(am|pm)\.html$/.test(n)).sort(); if (!f.length) return null;
     const n = f[f.length - 1]; return { name: n, at: Math.round(statSync(REP + '/' + n).mtimeMs) }; } catch { return null; }
 }
-// 10-19, his "add stuff to the dashboard that looks at pacing of my Claude plan weekly usage": the REAL weekly number (claude -p "/usage",
-// free, the same reading the plan helpers pace by) against the even line to PLAN_TARGET% (85) at the weekly reset. Each new reading is
-// kept in console/plan-usage-log.txt so the page can draw the week. Refreshed here every 10 minutes when no helper has done it.
+// 10-19, his "add stuff to the dashboard that looks at pacing of my Claude plan weekly usage". The week's number is written by the
+// CEO/OVERLORD check-in into console/plan-usage.txt (session 5h% week% epoch); each new reading is kept in plan-usage-log.txt so the page can draw the week.
+// 11-03: this server NEVER asks Claude for it (claude -p /usage is a paid call since Claude Code 2.1.304); the old planRefresh() is gone.
+// 11-03 (OVERLORD): the pace that matters now is PACE_H, the most the whole week can average to last past the Saturday 11/7 island test.
 const PU = C + '/plan-usage.txt', PL = C + '/plan-usage-log.txt';
-const CLAUDE = existsSync(process.env.USERPROFILE + '/.local/bin/claude.exe') ? process.env.USERPROFILE + '/.local/bin/claude.exe' : 'claude';
-let planBusy = false, planTried = 0, planLogged = (() => { const l = tail(PL, 1)[0]; return l ? +l.split(' ')[0] : 0; })();
-function planRefresh() {
-  if (existsSync(C + '/usage-manual.txt')) return;   // 11-01 (CEO): claude -p /usage became a paid model call in Claude Code 2.1.304; the CEO check-in writes plan-usage.txt instead
-  if (planBusy || Date.now() - planTried < 10 * 60e3) return; planBusy = true; planTried = Date.now();
-  const env = { ...process.env }; delete env.ANTHROPIC_API_KEY;
-  execFile(CLAUDE, ['-p', '/usage', '--output-format', 'json'], { cwd: R, env, timeout: 90e3, windowsHide: true, maxBuffer: 4e6 }, (err, out) => {
-    planBusy = false; const t = String(out || '');
-    const a = /Current session: (\d+)% used/.exec(t), w = /Current week \(all models\): (\d+)% used/.exec(t);
-    if (a && w) try { writeFileSync(PU, a[1] + ' ' + w[1] + ' ' + Math.round(Date.now() / 1000) + '\n'); } catch {} });
+const PACE_H = 0.68;   // % of the week per hour: OVERLORD 11-03 03:37 ((100 - 31) points over about 101 hours to Sat 11/7 morning)
+function burnRate(H, wk, t1, hrs) {   // points of the week per hour over the last `hrs` hours up to the newest reading
+  const cut = t1 - hrs * 3600e3; let base = null; for (const h of H) if (h[0] <= cut) base = h; if (!base) base = H[0];
+  if (!base) return null; const span = (t1 - base[0]) / 3600e3; if (span < 1.5) return null;
+  return +Math.max(0, (wk - base[1]) / span).toFixed(2);
 }
 function plan() {
   const [ses, wk, at] = rd(PU).trim().split(/\s+/).map(Number);
   const ageS = at ? Math.round(Date.now() / 1000 - at) : null;
-  if (ageS === null || ageS > 600) planRefresh();
-  if (at && at !== planLogged) { try { appendFileSync(PL, at + ' ' + ses + ' ' + wk + '\n'); planLogged = at; } catch {} }
+  const LL = tail(PL, 3000);
+  if (at && (!LL.length || +LL[LL.length - 1].split(' ')[0] !== at)) { try { appendFileSync(PL, at + ' ' + ses + ' ' + wk + '\n'); LL.push(at + ' ' + ses + ' ' + wk); } catch {} }
   const caps = kv(C + '/caps.txt'), target = +(caps.PLAN_TARGET || 85), sesMax = +(caps.PLAN_SESSION_MAX || 75);
   let reset = Date.parse(caps.WEEK_RESET || '2026-10-25T05:00:00Z'); while (Date.now() >= reset) reset += 7 * 864e5;
-  // 10-25: PLAN_LINE_END (his "as ready as possible by Friday night") ends the line early, the same rule tools/console-lane.sh paces by,
-  // so the page shows the line the helpers actually use (it showed the even line to the reset).
+  // 10-25: PLAN_LINE_END ends the helpers' line early, the same rule tools/console-lane.sh paces by
   const start = reset - 7 * 864e5, le = Date.parse(caps.PLAN_LINE_END || ''), end = le > start && le < reset ? le : reset;
-  // 10-27, his "Keep shipping. Pace for 90% use by Friday afternoon": PLAN_LINE_START/PLAN_LINE_FROM start the line at the week's use when
-  // he said it, then it climbs to PLAN_LINE_TARGET% at PLAN_LINE_END (the same rule tools/console-lane.sh paces by).
+  // 10-27: PLAN_LINE_START/PLAN_LINE_FROM start the line at the week's use when he said it, then it climbs to PLAN_LINE_TARGET% at PLAN_LINE_END
   const ls = Date.parse(caps.PLAN_LINE_START || ''), anch = ls >= start && ls < end && end < reset, f0 = anch ? +(caps.PLAN_LINE_FROM || 0) : 0;
   const goal = anch ? +(caps.PLAN_LINE_TARGET || target) : target, s0 = anch ? ls : start, clamp = v => Math.min(1, Math.max(0, v));
   const line = f0 + clamp((Date.now() - s0) / (end - s0)) * (goal - f0);
-  const hist = tail(PL, 3000).map(l => l.split(' ').map(Number)).filter(h => h[0] * 1000 >= start && !isNaN(h[2])).map(h => [h[0] * 1000, h[2]]);
+  const hist = LL.map(l => l.split(' ').map(Number)).filter(h => h[0] * 1000 >= start && !isNaN(h[2])).map(h => [h[0] * 1000, h[2]]).filter((h, i, a) => !i || h[0] !== a[i - 1][0]);
   if (isNaN(wk)) return { wk: null };
-  return { ses, wk, ageS, target: goal, sesMax, pace: String(caps.PLAN_PACE ?? '1').trim() !== '0', reset, start, lineStart: anch ? ls : null, lineFrom: f0, lineEnd: end, line: +line.toFixed(1),
+  const t1 = at ? at * 1000 : Date.now(), b6 = burnRate(hist, wk, t1, 6), b24 = burnRate(hist, wk, t1, 24), left = Math.max(0, 100 - wk);
+  return { ses, wk, ageS, at: t1, target: goal, sesMax, pace: String(caps.PLAN_PACE ?? '1').trim() !== '0', reset, start, lineStart: anch ? ls : null, lineFrom: f0, lineEnd: end, line: +line.toFixed(1),
     catchUp: wk > line ? s0 + clamp((wk - f0) / (goal - f0)) * (end - s0) : null,
-    perDay: +((goal - wk) / Math.max(0.1, (Math.max(end, Date.now() + 864e5) - Date.now()) / 864e5)).toFixed(1), hist };
+    perDay: +((goal - wk) / Math.max(0.1, (Math.max(end, Date.now() + 864e5) - Date.now()) / 864e5)).toFixed(1), hist,
+    paceH: PACE_H, burn6: b6, burn24: b24, runOut6: b6 > 0 ? t1 + left / b6 * 3600e3 : null, runOut24: b24 > 0 ? t1 + left / b24 * 3600e3 : null, paceEnd: t1 + left / PACE_H * 3600e3 };
 }
 let cpuPrev = os.cpus(), cpu = 0;
 setInterval(() => { const c = os.cpus(); let idle = 0, tot = 0;
   c.forEach((k, i) => { const p = cpuPrev[i].times, t = k.times; const d = (t.user + t.nice + t.sys + t.idle + t.irq) - (p.user + p.nice + p.sys + p.idle + p.irq); tot += d; idle += t.idle - p.idle; });
-  cpu = tot ? Math.round(100 * (1 - idle / tot)) : 0; cpuPrev = c; }, 2000);
-let procs = { chrome: 0, fuzz: [], workers: 0, review: 0, ollama: 0, codex: 0, agy: 0, reviewers: [], t: 0 };
+  cpu = tot ? Math.round(100 * (1 - idle / tot)) : 0; cpuPrev = c; }, 5000);
+// 11-03: one look every 90 s. By NAME for the editor, the test game, chrome, ollama and agy (start time only). Command lines are read for
+// node and powershell ONLY (the helpers and checkers are those); the Fortnite editor's command line holds a login code and is never read.
+let procs = { chrome: 0, fuzz: [], workers: 0, review: 0, ollama: 0, codex: 0, agy: 0, reviewers: [], editorStart: 0, clientStart: 0, t: 0 };
+const PS_PROCS = ["$ProgressPreference='SilentlyContinue'", "$o=@()",
+  "foreach($n in 'UnrealEditorFortnite-Win64-Shipping','FortniteClient-Win64-Shipping'){Get-Process -Name $n -ErrorAction SilentlyContinue|ForEach-Object{$o+='P|'+$n+'|'+$_.StartTime.ToUniversalTime().ToString('o')}}",
+  "foreach($n in 'chrome','ollama','agy'){$o+='C|'+$n+'|'+@(Get-Process -Name $n -ErrorAction SilentlyContinue).Count}",
+  "Get-CimInstance Win32_Process -Filter \"Name='node.exe' OR Name='powershell.exe' OR Name='pwsh.exe'\"|ForEach-Object{$o+='L|'+$_.Name+'|'+(($_.CommandLine -replace '[\\r\\n]+',' '))}",
+  "$o"].join(';');
 function pollProcs() {
-  execFile('powershell', ['-NoProfile', '-Command', "Get-CimInstance Win32_Process | ForEach-Object { $_.Name + '|' + $_.CommandLine }"], { maxBuffer: 32e6, windowsHide: true }, (err, out) => {
-    if (err) return; const L = out.split(/\r?\n/);
-    procs = { chrome: L.filter(l => /^chrome\.exe\|/i.test(l)).length,
+  execFile('powershell', ['-NoProfile', '-NonInteractive', '-EncodedCommand', b64(PS_PROCS)], { maxBuffer: 8e6, windowsHide: true, timeout: 30e3 }, (err, out) => {
+    if (err) return; const P = {}, Cn = {}, L = [];
+    String(out).split(/\r?\n/).forEach(l => { const m = /^([PCL])\|([^|]*)\|(.*)$/.exec(l); if (!m) return;
+      if (m[1] === 'P') { const t = Date.parse(m[3]); if (t && (!P[m[2]] || t < P[m[2]])) P[m[2]] = t; } else if (m[1] === 'C') Cn[m[2]] = +m[3]; else L.push(m[2] + '|' + m[3]); });
+    procs = { chrome: Cn.chrome || 0,
       fuzz: L.filter(l => /fuzz\.ps1/.test(l) && /^powershell/i.test(l)).map(l => (/-Port (\d+)/.exec(l) || [0, '9331'])[1]),
       workers: L.filter(l => /run-api\.mjs/.test(l) && /^node/i.test(l)).length,
       review: L.filter(l => /review-batch\.mjs/.test(l) && /^node/i.test(l)).length,
-      ollama: L.filter(l => /^(ollama|llama)/i.test(l)).length,
+      ollama: Cn.ollama || 0,
       codex: L.filter(l => /^node/i.test(l) && /codex\.js/.test(l) && /\bexec\b/.test(l)).length,
-      agy: L.filter(l => /^agy\.exe\|/i.test(l)).length,
-      reviewers: L.filter(l => /^powershell/i.test(l) && /ship-review\.ps1/.test(l)).map(l => (/-Engine (\w+)/i.exec(l) || [0, 'ollama'])[1].toLowerCase()), t: Date.now() };
+      agy: Cn.agy || 0,
+      reviewers: L.filter(l => /^powershell/i.test(l) && /ship-review\.ps1/.test(l)).map(l => (/-Engine (\w+)/i.exec(l) || [0, 'ollama'])[1].toLowerCase()),
+      editorStart: P['UnrealEditorFortnite-Win64-Shipping'] || 0, clientStart: P['FortniteClient-Win64-Shipping'] || 0, t: Date.now() };
   });
 }
-// 10-25 (his "what about updating the dashboard ... is it unduly expensive"): once a minute, not every 15 s. Each listing starts a
-// PowerShell (measured 0.8 s), which every 15 s came to over an hour of processor time a day; a minute is still live for a page of counts.
-pollProcs(); setInterval(pollProcs, 60000);
-function git(args) { try { return execFileSync('git', args, { cwd: R, encoding: 'utf8', windowsHide: true }).trim(); } catch { return ''; } }
-function caps() { const o = {}; rd(C + '/caps.txt').split(/\r?\n/).forEach(l => { const m = /^(\w+)=(.*)$/.exec(l.trim()); if (m) o[m[1]] = m[2]; }); return o; }
-// 10-19, his "the dashboard should be a cmprehensive napshot of everything we are doing to develop the game": the other AI services.
-// ChatGPT (the Codex helper, lane o), Google Antigravity (the bug checker, tools/ship-review.ps1 -Engine agy), the local AI (Ollama on
-// his graphics card). Reads status files, logs and two local answers (Ollama's API, "codex login status"); never a key.
-const SR = R + '/tools/handoff/ship-review', CX = R + '/tools/handoff/codex';
-let aiLive = { ollamaUp: false, models: [], loaded: [], codexLogin: '', t: 0, lt: 0 };
-function getJson(url) { return new Promise(res => { const rq = http.get(url, { timeout: 4000 }, r => { let b = ''; r.on('data', c => b += c); r.on('end', () => { try { res(JSON.parse(b)); } catch { res(null); } }); }); rq.on('error', () => res(null)); rq.on('timeout', () => { rq.destroy(); res(null); }); }); }
-// 10-23: the bug checker in the VM uses the main PC's Ollama (PILLAGERS_OLLAMA_URL, the same rule as ship-review.ps1: only localhost or a
-// private-network address), so the dashboard asks the same place; asking the VM's own port said "not running" while it ran.
-let OLL = String(process.env.PILLAGERS_OLLAMA_URL || '').trim();
-if (!OLL) try { OLL = (execFileSync('reg', ['query', 'HKCU\\Environment', '/v', 'PILLAGERS_OLLAMA_URL'], { encoding: 'utf8', windowsHide: true }).match(/REG_\w+\s+(\S+)/) || [])[1] || ''; } catch {}
-OLL = /^https?:\/\/(localhost|127(\.\d{1,3}){3}|10(\.\d{1,3}){3}|192\.168(\.\d{1,3}){2}|172\.(1[6-9]|2\d|3[01])(\.\d{1,3}){2})(:\d{1,5})?\/*$/.test(OLL) ? OLL.replace(/\/+$/, '') : 'http://127.0.0.1:11434';
-// 10-28: the VM's network moves on a restart (192.168.160.x, then 172.17.96.x, then 172.20.160.x), so when the set address is silent
-// try the main PC at the VM's default gateway too, the same fallback hostctl.mjs uses
-let GW = ''; try { GW = (execFileSync('ipconfig', { encoding: 'utf8', windowsHide: true }).match(/Default Gateway[ .]*:\s*(\d+\.\d+\.\d+\.\d+)/) || [])[1] || ''; } catch {}
-async function aiPoll() {
-  let tags = await getJson(OLL + '/api/tags');
-  if (!tags && GW && !OLL.includes('//' + GW + ':')) { const alt = 'http://' + GW + ':11434'; tags = await getJson(alt + '/api/tags'); if (tags) OLL = alt; }
-  const ps = tags ? await getJson(OLL + '/api/ps') : null;
-  aiLive.ollamaUp = !!tags; aiLive.models = tags ? (tags.models || []).map(m => ({ name: m.name, gb: +(m.size / 2 ** 30).toFixed(1) })) : [];
-  aiLive.loaded = ps ? (ps.models || []).map(m => m.name) : []; aiLive.t = Date.now();
-  if (Date.now() - aiLive.lt > 30 * 60e3) { aiLive.lt = Date.now();   // 10-25: the Codex login check every 30 min (was 10); it starts Codex each time
-    const js = process.execPath.replace(/node\.exe$/i, '') + 'node_modules/@openai/codex/bin/codex.js', env = { ...process.env }; delete env.OPENAI_API_KEY; delete env.CODEX_API_KEY;
-    execFile(process.execPath, [js, 'login', 'status'], { env, timeout: 30e3, windowsHide: true }, (e, o, er) => { aiLive.codexLogin = String(o || er || '').trim().split(/\r?\n/)[0] || ''; }); }
+setTimeout(pollProcs, 2000); setInterval(pollProcs, 90e3);
+// 11-03 (his theory: "My gpu doesn't like the multiple screens"): the screen count, every 5 min, written to LOCALAPPDATA/PillagersDevDash/screens.log
+// only when it changes. It reads the count (the same call tools\screen-toggle uses); it changes nothing and opens no window.
+const LAD = process.env.LOCALAPPDATA || 'C:/Users/User1/AppData/Local', DDIR = LAD + '/PillagersDevDash', SCRLOG = DDIR + '/screens.log';
+let screens = { n: null, t: 0 };
+function screensPoll() {
+  execFile('powershell', ['-NoProfile', '-NonInteractive', '-EncodedCommand', b64('Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.Screen]::AllScreens.Count')], { timeout: 30e3, windowsHide: true }, (err, out) => {
+    const n = parseInt(String(out).trim(), 10); if (err || !(n >= 1 && n <= 12)) return;
+    screens = { n, t: Date.now() };
+    try { mkdirSync(DDIR, { recursive: true }); const last = tail(SCRLOG, 1)[0]; if (!last || +last.split(' ')[1] !== n) appendFileSync(SCRLOG, Math.floor(Date.now() / 1000) + ' ' + n + '\n'); } catch {}
+  });
 }
-aiPoll(); setInterval(aiPoll, 30e3);
-// 11-02: what his main PC's game check says (why nothing new starts, and whether its memory rule is the newest one), from the bridge share; free
+setTimeout(screensPoll, 15e3); setInterval(screensPoll, 300e3);
+function screensAt(ms) { let r = null; tail(SCRLOG, 500).forEach(l => { const [t, n] = l.split(' ').map(Number); if (t * 1000 <= ms) r = n; }); return r; }
+function git(args) { try { return execFileSync('git', args, { cwd: R, encoding: 'utf8', windowsHide: true }).trim(); } catch { return ''; } }
+function caps() { return kv(C + '/caps.txt'); }
+// 10-19: the ChatGPT helper (Codex, lane o). 11-03: the Google checker and the local AI are retired and gone from the page; this reads the
+// helper's status files and, once an hour, "codex login status" (no model call). Never a key.
+const CX = R + '/tools/handoff/codex';
+let aiLive = { codexLogin: '', lt: 0 };
+function aiPoll() {
+  if (Date.now() - aiLive.lt < 60 * 60e3) return; aiLive.lt = Date.now();
+  const js = process.execPath.replace(/node\.exe$/i, '') + 'node_modules/@openai/codex/bin/codex.js', env = { ...process.env }; delete env.OPENAI_API_KEY; delete env.CODEX_API_KEY;
+  execFile(process.execPath, [js, 'login', 'status'], { env, timeout: 30e3, windowsHide: true }, (e, o, er) => { aiLive.codexLogin = String(o || er || '').trim().split(/\r?\n/)[0] || ''; });
+}
+setTimeout(aiPoll, 5000); setInterval(aiPoll, 300e3);
+function ai() {
+  return { codex: { login: aiLive.codexLogin, status: rd(C + '/status-o.txt').trim(), busy: existsSync(C + '/lane-o.lock'), task: rd(C + '/lane-o.lock/task').trim(),
+    running: procs.codex || 0, stop: existsSync(CX + '/STOP'), done: tail(CX + '/runs.txt', 500).filter(l => /done/i.test(l)).length } };
+}
+// 11-02: what his main PC's game check says (why nothing new starts, and whether its memory rule is the newest one), from the bridge share; free. 11-03: every 5 min.
 let mainGame = { what: '', memrule: '' };
 function gamePoll() { execFile(process.execPath, [R + '/tools/bridge/hostctl.mjs', 'share-get', 'name=gaming.txt'], { timeout: 20000, windowsHide: true }, (err, out) => { try { const j = JSON.parse(out); if (j.ok && j.base64) { const t = Buffer.from(j.base64, 'base64').toString(); mainGame = { what: (/^what=(.*)$/m.exec(t) || [])[1] || '', memrule: (/^memrule=(\d+)/m.exec(t) || [])[1] || '' }; } } catch {} }); }
-gamePoll(); setInterval(gamePoll, 60e3);
-function revList() {
-  try { return readdirSync(SR + '/reviews').filter(f => f.endsWith('.md')).map(f => ({ f, m: statSync(SR + '/reviews/' + f).mtimeMs })).sort((a, b) => b.m - a.m).map(x => {
-    const t = rd(SR + '/reviews/' + x.f), n = (t.match(/^BUG\s*\d+/gm) || []).length, m = /^(v[\d.]+|[0-9a-f]{8})-(\w+)\.md$/.exec(x.f) || [0, x.f, '?'];
-    return { ver: m[1], engine: m[2], bugs: n, at: Math.round(x.m) }; }); } catch { return []; }
-}
-function pullState() {   // the local model download (ollama pull, logged in the scratchpad)
-  const t = rd(S + '/pull-qwen38.log').replace(/\x1b\[[0-9;?]*[A-Za-z]/g, ''); if (!t) return '';
-  if (/success/.test(t.slice(-400))) return 'done'; if (/error/i.test(t.slice(-400))) return 'error';
-  const m = [...t.matchAll(/pulling [0-9a-f]+:\s+(\d+)%[^\n\r]*?([\d.]+ [KMG]B)\/\s*([\d.]+ [KMG]B)/g)].pop(); return m ? m[1] + '% (' + m[2] + ' of ' + m[3] + ')' : 'starting';
-}
-function ai() {
-  const day = new Date().toLocaleDateString('en-CA'), revs = revList(), st = e => rd(SR + '/status-' + e + '.txt').trim();
-  return { codex: { login: aiLive.codexLogin, status: rd(C + '/status-o.txt').trim(), busy: existsSync(C + '/lane-o.lock'), task: rd(C + '/lane-o.lock/task').trim(),
-      running: procs.codex || 0, runs: tail(CX + '/runs.txt', 8), stop: existsSync(CX + '/STOP'),
-      done: tail(CX + '/runs.txt', 500).filter(l => /done/i.test(l)).length },
-    google: { off: existsSync(SR + '/agy-off'), status: st('agy'), running: procs.reviewers.includes('agy'), busy: procs.agy || 0 },
-    local: { off: kv(C + '/caps.txt').LOCAL_AI === '0', up: aiLive.ollamaUp, models: aiLive.models, loaded: aiLive.loaded, pull: pullState(), status: st('ollama'), running: procs.reviewers.includes('ollama'),
-      night: tail(R + '/tools/handoff/llm-night/run.log', 1)[0] || '' },
-    reviews: revs.slice(0, 6), reviewsToday: revs.filter(r => new Date(r.at).toLocaleDateString('en-CA') === day).length,
-    findings: tail(SR + '/findings.txt', 6) };
-}
+setTimeout(gamePoll, 8000); setInterval(gamePoll, 300e3);
 // 10-21, his "spare pc should be reflected in the dev dashboard" (he also calls the spare PC the JTPC): what it is doing, from what
 // tools/spare/spare-import.mjs brings in from the spare-results branch (live.txt, its status file, its robot log). Cached for a minute.
 const SPD = R + '/tools/handoff/spare';
@@ -146,67 +142,144 @@ function spareInfo() {
   const st = Object.fromEntries([...raw.replace(/\r?\n/g, ' ').matchAll(/(?:^|\s)(\w+)=(.*?)(?=\s+\w+=|\s*$)/g)].map(m => [m[1], m[2].trim()]));
   const day = new Date().toLocaleDateString('en-CA'), L = host ? tail(SPD + '/' + host + '/fuzz.log', 600) : [];
   const raids = L.filter(l => l.startsWith(day) && / raid \d+ /.test(l));
-  // 10-26: the status file's own epoch first (live.txt says epoch=0 while the spare PC is paused, so the VM takes the tests back)
+  // 10-26: the status file's own epoch first (live.txt says epoch=0 while the spare PC is paused)
   const v = { host, seenEpoch: +st.epoch || +live.epoch || 0, game: st.game || '', testRun: st.test_run || '', robots: +st.robots || 0, ramFree: st.ram_free_gb || '', pushOk: st.push_ok || '', mode: st.mode || '',
-    raidsToday: raids.length, problemsToday: raids.reduce((s, l) => s + +((/ problems=(\d+)/.exec(l) || [0, 0])[1]), 0),
-    lastRaids: raids.slice(-4), lastEnd: L.filter(l => /FUZZ END/.test(l)).slice(-1)[0] || '' };
-  // 10-22: the main PC's idle runs (tools/spare/spare-runner.ps1 IDLE MODE on JUL26): tests only while he is away
-  const mraw = git(['cat-file', 'blob', 'refs/spare-import/spare-results:spare/JUL26/status.txt']);
-  if (mraw) {
-    const ms = Object.fromEntries([...mraw.replace(/\r?\n/g, ' ').matchAll(/(?:^|\s)(\w+)=(.*?)(?=\s+\w+=|\s*$)/g)].map(m => [m[1], m[2].trim()]));
-    const ML = tail(SPD + '/JUL26/fuzz.log', 600), mr = ML.filter(l => l.startsWith(day) && / raid \d+ /.test(l));
-    // 10-26, his "why don't you show detailed info on each PC": memory, mode, whether it can see the spare PC, why its robots last stopped
-    v.mainPc = { seenEpoch: +ms.epoch || 0, testRun: ms.test_run || '', robots: +ms.robots || 0, game: ms.game || '', raidsToday: mr.length,
-      problemsToday: mr.reduce((s, l) => s + +((/ problems=(\d+)/.exec(l) || [0, 0])[1]), 0),
-      ramFree: ms.ram_free_gb || '', mode: ms.mode || '', spareSeen: ms.spare_pc || '', lastEnd: ML.filter(l => /FUZZ END/.test(l)).slice(-1)[0] || '',
-      // 10-27 his "make sure we are always getting game telemetry back from the main pc": the 8799 report receiver, up or down, and the newest report and note
-      receiver: ms.receiver8799 || '' };
-  }
+    raidsToday: raids.length, problemsToday: raids.reduce((s, l) => s + +((/ problems=(\d+)/.exec(l) || [0, 0])[1]), 0) };
   spareCache = { t: Date.now(), v }; return v;
 }
-function data() {
-  const today = new Date().toLocaleDateString('en-CA'), cp = caps();
-  const sp = rd(C + '/spend.txt').split(/\r?\n/).filter(Boolean).map(l => l.split(' '));
-  const spentToday0 = sp.filter(x => x[0] === today).reduce((s, x) => s + (+x[1] || 0), 0);
-  // 10-18: the real Console spend (tools/console-sdk/balance.mjs) wins over the estimate when it is under 3 hours old
-  let real = null; try { const r = JSON.parse(rd(C + '/real-spend.json')); if (r.month === today.slice(0, 7) && Date.now() - Date.parse(r.at) < 3 * 3600e3) real = r; } catch {}
-  const spentAll0 = sp.reduce((s, x) => s + (+x[1] || 0), 0), before = sp.filter(x => x[0] < today).reduce((s, x) => s + (+x[1] || 0), 0);
-  const total = +(cp.TOTAL_USD || 190), end = cp.END_DATE || '2026-10-31';
-  const daysLeft = Math.max(1, Math.round((new Date(end) - new Date(today)) / 864e5) + 1), share = Math.max(0, (total - before) / daysLeft);
+// ---------------------------------------------------------------------------------------------------------------------------------
+// 11-03: FNP (Fortnite Pillagers). pillagers-fortnite is READ-ONLY from here: nothing is written there, nothing is copied from it.
+const FNP = 'C:/claudecode/pillagers-fortnite', FS = FNP + '/tools/fnp-scripts';
+const WATCH = LAD + '/PillagersEditorWatch/watch.log', ELOG = LAD + '/UnrealEditorFortnite/Saved/Logs/UnrealEditorFortnite.log';
+const TEST_AT = new Date(2026, 10, 7, 9, 0).getTime(), FALLBACK_AT = new Date(2026, 10, 14, 9, 0).getTime();   // docs/goals-saturday-1107.md: Saturday morning, else Sat 11/14
+const RECOVERY_AT = new Date(2026, 10, 3, 3, 31, 41).getTime();   // OVERLORD 11-03: one of his three screens came back after the driver restart; hangs after this are "after the partial recovery"
+// the editor watcher's log (FNP CEO's editorwatch): editor open or closed, how long nobody touched the PC, the last island backup
+function watchInfo() {
+  const L = tail(WATCH, 80); if (!L.length) return null; let last = null, backup = null;
+  for (const l of L) { let m = /^(\d\d-\d\d) (\d\d:\d\d) editor (open|closed), island silent (\d+) min, nobody at the PC (\d+) min/.exec(l); if (m) last = { day: m[1], hm: m[2], open: m[3] === 'open', silent: +m[4], away: +m[5] };
+    m = /^(\d\d-\d\d) (\d\d:\d\d) backed up to /.exec(l); if (m) backup = { day: m[1], hm: m[2] }; }
+  return { last, backup, ageS: ageS(WATCH) };
+}
+// the test scripts' output, sess*.out in tools/fnp-scripts: newest by time, with size. Scripts drive the game by commands; nobody plays.
+function parseSess(f, m, sz) {
+  const L = rd(FS + '/' + f).replace(/\r/g, '').split('\n').filter(Boolean), t = { n: +/\d+/.exec(f)[0], file: f, size: sz, m, state: 'early', start: '', last: '', kind: '', pictures: null, freeGB: null, real: null, soft: null, saveBack: false, stop: '' };
+  for (const l of L) { const tm = /^(\d\d:\d\d:\d\d) /.exec(l); if (tm) { t.last = tm[1]; if (!t.start && /\bstart:/.test(l)) t.start = tm[1]; }
+    let x; if ((x = /fresh (\w+) tour/.exec(l))) t.kind = x[1];
+    if (/save read back in a new game/.test(l)) t.saveBack = true;
+    if ((x = /stopping: (.*)$/.exec(l))) t.stop = x[1];
+    if ((x = /end; pictures (\d+) free ([\d.]+) idle \d+ real input (\d+) made by software (\d+)/.exec(l))) { t.state = 'done'; t.pictures = +x[1]; t.freeGB = +x[2]; t.real = +x[3]; t.soft = +x[4]; t.end = tm ? tm[1] : ''; } }
+  if (t.state !== 'done' && Date.now() - m < 5 * 60e3) t.state = 'running';
+  if (/editor gone/.test(L.join('\n'))) t.stop = t.stop || 'editor gone';
+  return t;
+}
+function fnpTests() {
+  const F = readdirSync(FS).filter(f => /^sess\d+\.out$/.test(f)).map(f => { const s = statSync(FS + '/' + f); return { f, m: s.mtimeMs, sz: s.size }; }).sort((a, b) => b.m - a.m);
+  if (!F.length) return { latest: null, recent: [], saveBack: null };
+  const latest = parseSess(F[0].f, F[0].m, F[0].sz), saved = F.slice(0, 8).map(x => parseSess(x.f, x.m, x.sz)).find(t => t.saveBack);
+  return { latest, recent: F.slice(1, 5).map(x => { const t = parseSess(x.f, x.m, x.sz); return { n: t.n, m: t.m, size: t.size, state: t.state, real: t.real }; }), saveBack: saved ? { n: saved.n, m: saved.m } : null };
+}
+// the video card hangs: the lead dev's own notes (docs/verse-notes.md) hold the list; a hang is a "- Hang N: HH:MM" line or a "| HH:MM | GPU hang" table row,
+// dated by the nearest heading that has a date. Screens: written in the hang's line, or what this page's own screen log counted at that time.
+let hangCache = { m: 0, v: [] };
+function hangs() {
+  const f = FNP + '/docs/verse-notes.md'; let m = 0; try { m = statSync(f).mtimeMs; } catch { return hangCache.v; }
+  if (m === hangCache.m) return hangCache.v;
+  const seen = new Map(); let date = '';
+  const add = (d, hh, mm, ss, line) => { const [mo, dy] = d.split('-').map(Number), at = new Date(2026, mo - 1, dy, +hh, +mm, +(ss || 0)).getTime(), key = d + ' ' + hh + ':' + mm;
+    const sc = /\b(\d) screens?\b/i.exec(line) || /\bscreens?[: ]+(\d)\b/i.exec(line); if (!seen.has(key)) seen.set(key, { at, screens: sc ? +sc[1] : null }); };
+  for (const raw of rd(f).split(/\r?\n/)) {
+    if (/^#{1,3} /.test(raw)) { const d = /\b(\d\d-\d\d)\b/.exec(raw); if (d) date = d[1]; continue; }
+    let h = /^- Hang \d+: (?:(\d\d-\d\d) )?(\d\d):(\d\d)(?::(\d\d))?/.exec(raw);
+    if (h && (h[1] || date)) { add(h[1] || date, h[2], h[3], h[4], raw); continue; }
+    h = /^\|\s*(?:(\d\d-\d\d) )?(\d\d):(\d\d)\s*\|\s*GPU hang/.exec(raw);
+    if (h && (h[1] || date)) add(h[1] || date, h[2], h[3], '', raw);
+  }
+  hangCache = { m, v: [...seen.values()].sort((a, b) => a.at - b.at) }; return hangCache.v;
+}
+function fnpHangs() {
+  const L = hangs().map((h, i) => { const rec = h.screens != null ? h.screens : screensAt(h.at); return { n: i + 1, at: h.at, screens: rec, afterRecovery: h.at > RECOVERY_AT }; });
+  return { list: L, screensNow: screens.n, screensAt: screens.t };
+}
+// the island's memory against Epic's 300 MiB budget: the editor's own check ("Memory calculation complete: peak= threshold=") in its log. Scanned
+// forward from where the last look ended; only that one line is kept, the rest of the log is not stored.
+let memScan = { off: 0, ino: 0, last: null, t: 0 };
+function islandMem() {
+  if (Date.now() - memScan.t < 20e3) return memScan.last; memScan.t = Date.now();
+  try {
+    const st = statSync(ELOG); if (st.size < memScan.off || (memScan.ino && st.ino !== memScan.ino)) { memScan.off = 0; } memScan.ino = st.ino;
+    if (st.size - memScan.off > 16e6) memScan.off = st.size - 16e6;
+    if (st.size > memScan.off) {
+      const fd = openSync(ELOG, 'r'), b = Buffer.alloc(st.size - memScan.off); const n = readSync(fd, b, 0, b.length, memScan.off); closeSync(fd);
+      const s = b.toString('latin1', 0, n), cut = s.lastIndexOf('\n'); if (cut >= 0) {
+        for (const x of s.slice(0, cut).matchAll(/\[(\d{4})\.(\d\d)\.(\d\d)-(\d\d)\.(\d\d)\.(\d\d):\d+\]\[[^\]]*\]LogValkyrieMemoryCalculation: Display: Memory calculation complete: peak=(\d+) threshold=(\d+)/g))
+          memScan.last = { at: Date.UTC(+x[1], +x[2] - 1, +x[3], +x[4], +x[5], +x[6]), peak: +x[7], threshold: +x[8] };
+        memScan.off += cut + 1; } }
+  } catch {}
+  return memScan.last;
+}
+// the curated lines (what is proven by script, what is not, what needs his hands): tools/devdash/status-notes.txt, with an "asof=" stamp the page shows
+let curCache = { m: 0, v: null };
+function curated() {
+  const f = R + '/tools/devdash/status-notes.txt'; let m = 0; try { m = statSync(f).mtimeMs; } catch { return null; }
+  if (m === curCache.m && curCache.v) return curCache.v;
+  const v = { asof: 0, by: '', hands: [], script: [], not: [] };
+  for (const l of rd(f).replace(/\r/g, '').split('\n')) {
+    let x; if ((x = /^asof=(\d{4})-(\d\d)-(\d\d) (\d\d):(\d\d)/.exec(l))) { v.asof = new Date(+x[1], +x[2] - 1, +x[3], +x[4], +x[5]).getTime(); continue; }
+    if ((x = /^by=(.*)$/.exec(l))) { v.by = x[1].trim(); continue; }
+    const p = l.split('|'); if (p[0] === 'hands' && p.length >= 4) v.hands.push({ tag: p[1], flags: p[2], text: p.slice(3).join('|') });
+    else if ((p[0] === 'script' || p[0] === 'not') && p.length >= 2) v[p[0]].push(p.slice(1).join('|'));
+  }
+  curCache = { m, v }; return v;
+}
+function fnp() {
+  const e = procs.editorStart, w = watchInfo();
+  return { test: { at: TEST_AT, fallback: FALLBACK_AT }, recoveryAt: RECOVERY_AT,
+    editor: { known: procs.t > 0, open: !!e, since: e || null, client: procs.clientStart || null }, watch: w,
+    tests: safe(fnpTests, { latest: null, recent: [], saveBack: null }), hangs: safe(fnpHangs, { list: [], screensNow: null }), mem: safe(islandMem) };
+}
+// ---------------------------------------------------------------------------------------------------------------------------------
+// HTML GAME side
+let gitC = { t: 0, v: null };
+const verGt = (a, b) => { const x = String(a).split('.').map(Number), y = String(b).split('.').map(Number); return x[0] !== y[0] ? x[0] > y[0] : (x[1] || 0) > (y[1] || 0); };
+function gitInfo() {
+  if (gitC.v && Date.now() - gitC.t < 30e3) return gitC.v;
+  // 10-27: format-local, so a commit made in a cloud chat shows his clock time (02:54 was 22:54 here)
+  const raw = git(['log', '-80', '--format=%h|%ad|%s', '--date=format-local:%m-%d %H:%M']).split('\n').filter(Boolean).map(l => { const i = l.indexOf('|'), j = l.indexOf('|', i + 1); return [l.slice(0, i), l.slice(i + 1, j), l.slice(j + 1)]; });
+  const shipsToday = git(['log', '--since=midnight', '--format=%s']).split('\n').filter(s => /^v\d+\.\d+:/.test(s)).length;
+  const vers = raw.map(c => /^v(\d+\.\d+):/.exec(c[2])).filter(Boolean).map(m => m[1]);
+  gitC = { t: Date.now(), v: { commits: raw.slice(0, 8), shipsToday, vers } }; return gitC.v;
+}
+function data0() {
+  const cp = caps();
   const tasks = existsSync(C + '/tasks') ? readdirSync(C + '/tasks').filter(f => f.endsWith('.md')).sort() : [];
   const lane = f => /^[0-9]/.test(f) ? 'a' : f[0];
-  // 10-27 (Dashboard Correspondent): old marks a helper that is switched off (no news for 2 days, nothing running, nothing queued),
-  // so the page folds D, E and F into one line instead of showing their 10-18 and 10-19 notes as news
+  // 10-27 (Dashboard Correspondent): old marks a helper that is switched off (no news for 2 days, nothing running, nothing queued)
   const lanes = ['a', 'b', 'c', 'd', 'e', 'f', 'o'].filter(l => l < 'd' || existsSync(C + '/status-' + l + '.txt')).map(l => ({ lane: l, status: rd(C + '/status-' + l + '.txt').trim(), busy: existsSync(C + '/lane-' + l + '.lock'),
-    queue: tasks.filter(f => lane(f) === l).map(f => f.replace(/\.md$/, '')) })).map(x => ({ ...x, old: !x.busy && !x.queue.length && (ageS(C + '/status-' + x.lane + '.txt') ?? 1e9) > 2 * 86400 }));
+    queue: tasks.filter(f => lane(f) === l).map(f => f.replace(/\.md$/, '')) })).map(x => ({ ...x, old: !x.busy && !x.queue.length && (textAgeS(x.status) ?? ageS(C + '/status-' + x.lane + '.txt') ?? 1e9) > 2 * 86400 }));   // 11-03: the status line's own date first (D, E and F files get touched, their news is from 10-18 and 10-19)
   const lockOwner = existsSync(S + '/shipq.lock') ? rd(S + '/shipq.owner').trim() : '';
-  // 10-27: format-local, so a commit made in a cloud chat shows his clock time (02:54 was 22:54 here)
-  const commits = git(['log', '-14', '--format=%h|%ad|%s', '--date=format-local:%m-%d %H:%M']).split('\n').filter(Boolean).map(l => l.split('|'));
-  const shipsToday = git(['log', '--since=midnight', '--format=%s']).split('\n').filter(s => /^v\d+\.\d+:/.test(s)).length;
-  const hb = ageS(N + '/runner.heartbeat');
+  const g = gitInfo(), hb = ageS(N + '/runner.heartbeat');
   const titles = {}; (tail(S + "/shipq.log", 80).join(" ") + " " + lockOwner).replace(/cw-[A-Za-z0-9_-]+/g, k => { if (!titles[k]) { try { titles[k] = JSON.parse(rd(R + "/tools/handoff/drafts/draft-" + k + ".json").replace(/^﻿/, "")).title || ""; } catch {} } return k; });
-  const st = kv(R + '/tools/handoff/stable.txt');
-  // 10-20: his notes from the main PC (tools/fetch-notes.mjs, coord-01) and the spare PC (tools/spare/spare-import.mjs)
-  const notes = rd(R + '/tools/handoff/notes-fetch.txt').trim().slice(0, 240), spare = rd(R + '/tools/handoff/spare-status.txt').trim().slice(0, 300);
-  // 10-27: the version his main PC serves on 8802 (tools/handoff/onhispc.sh), the version on itch (the runner's itch step), the feature
-  // jobs parked until 11/1 (his 10-27 "no new features until Nov 1"), and whether this page's copy reaches his desktop (the bridge)
+  const st = kv(R + '/tools/handoff/stable.txt'), itch = rd(N + '/itch-ver.txt').trim(), v = ver();
+  // 10-27: the version his main PC serves on 8802 (tools/handoff/onhispc.sh) and the version on itch (the runner's itch step)
   const op = tail(C + '/onhispc.txt', 20).reverse().map(l => /^(\d\d-\d\d \d\d:\d\d) .*\(8802 serves ([\d.]+)\)/.exec(l)).find(Boolean);
-  const after = existsSync(C + '/after-nov1') ? readdirSync(C + '/after-nov1').filter(f => f.endsWith('.md') && f !== 'README.md').length : 0;
-  return { now: new Date().toLocaleTimeString(), ver: ver(), shipsToday, cpu, notes, spare, spareInfo: spareInfo(),
-    onPc: op ? { ver: op[2], at: op[1] } : null, itch: rd(N + '/itch-ver.txt').trim(), afterNov1: after, onMain: ON_MAIN, playing: kv(N + '/state.txt').gaming === '1', mainGame, memClick: (m => !!(mainGame.memrule && m && mainGame.memrule !== m[1]))(/'memrule=(\d+)'/.exec(rd(R + '/tools/migrate/host-night-memory.ps1'))),
+  const itchLine = tail(N + '/nightly.log', 80).reverse().find(l => /\bitch: /.test(l)) || '';
+  return { now: new Date().toLocaleTimeString(), ver: v, shipsToday: g.shipsToday, cpu, ramFree: +(os.freemem() / 2 ** 30).toFixed(1), ramTot: Math.round(os.totalmem() / 2 ** 30), cpus: os.cpus().length, bootAt: BOOT_AT,
+    onPc: op ? { ver: op[2], at: op[1] } : null, itch, itchBehind: itch ? g.vers.filter(x => verGt(x, itch)).length : null, itchFailed: /FAILED/.test(itchLine) ? (/^(\d\d-\d\d \d\d:\d\d)/.exec(itchLine) || [0, ''])[1] : '',
+    onMain: ON_MAIN, playing: kv(N + '/state.txt').gaming === '1', mainGame, memClick: (m => !!(mainGame.memrule && m && mainGame.memrule !== m[1]))(/'memrule=(\d+)'/.exec(rd(R + '/tools/migrate/host-night-memory.ps1'))),
     link: { ok: snapOkAt > snapFailAt, okAt: snapOkAt, failAt: snapFailAt },
-    stable: { version: st.version || '', at: st.at || '', address: st.address || '', frozen: existsSync(R + '/tools/handoff/stable.freeze') }, report: latestReport(), ramFree: +(os.freemem() / 2 ** 30).toFixed(1), ramTot: Math.round(os.totalmem() / 2 ** 30), cpus: os.cpus().length,
-    procs, runnerAgeS: hb, lockOwner, titles, lanes, stopFile: existsSync(C + '/STOP'),
-    spend: { real: !!real, today: +(real ? real.today_usd : spentToday0).toFixed(2), all: +(real ? real.month_usd : spentAll0).toFixed(2), total, share: +share.toFixed(2), daysLeft, end },
+    stable: { version: st.version || '', at: st.at || '', frozen: existsSync(R + '/tools/handoff/stable.freeze') }, report: latestReport(),
+    runnerAgeS: hb, lockOwner, titles, lanes, stopFile: existsSync(C + '/STOP'), vers: g.vers.slice(0, 40),
     done: existsSync(C + '/done') ? readdirSync(C + '/done').length : 0, failed: existsSync(C + '/failed') ? readdirSync(C + '/failed') : [],
     blocked: existsSync(C + '/blocked') ? readdirSync(C + '/blocked').filter(f => f.endsWith('.md')).map(f => ({ job: f.slice(0, -3), on: rd(C + '/blocked/' + f.slice(0, -3) + '.on').trim() })) : [],
-    questions: tail(C + '/for-you.md', 12), plan: plan(), runs: tail(C + '/runs.log', 10), shipq: tail(S + '/shipq.log', 80).filter(l => !/waiting for the spare pc|the spare pc is running|is with the spare pc|joining job|^\d\d:\d\d (shots|(cw-)?gate(pass|fail)):/i.test(l)).slice(-12),   /* 11-02: the check now runs on the spare PC; its progress lines and the 11-02 practice runs are not results */
-    // 10-27: only the runner's own time-stamped lines (butler's "Use the butler status" and raw bridge JSON leaked onto the page)
-    ai: ai(), nightly: tail(N + '/nightly.log', 60).filter(l => /^(\d\d-\d\d )?\d\d:\d\d /.test(l)).slice(-8), fuzz: tail(R + '/tools/handoff/fuzz/fuzz.log', 4), review: tail(C + '/review/review.log', 3), commits };
+    questions: tail(C + '/for-you.md', 12), plan: safe(plan, { wk: null }), ai: ai(), spareInfo: safe(spareInfo, {}),
+    shipq: tail(S + '/shipq.log', 80).filter(l => !/waiting for the spare pc|the spare pc is running|is with the spare pc|joining job|^\d\d:\d\d (shots|(cw-)?gate(pass|fail)):/i.test(l)).slice(-6),   /* 11-02: the check now runs on the spare PC; its progress lines are not results */
+    commits: g.commits, curated: safe(curated), fnp: safe(fnp) };
 }
+let dataC = { t: 0, v: null };
+function data() { if (dataC.v && Date.now() - dataC.t < 8000) return dataC.v; const v = data0(); dataC = { t: Date.now(), v }; return v; }
 const PAGE = () => rd("C:/claudecode/dark raiders/tools/devdash/index.html");   // read per request, so edits show at once
 const srv = http.createServer((q, s) => {
-  if (q.url.startsWith('/api')) { s.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' }); s.end(JSON.stringify(data())); return; }
+  if (q.url.startsWith('/api')) { let body; try { body = JSON.stringify(data()); } catch (e) { body = JSON.stringify({ error: String((e && e.message) || e).slice(0, 200) }); } s.writeHead(200, { 'content-type': 'application/json', 'cache-control': 'no-store' }); s.end(body); return; }
   // 10-18: /report is the newest morning/evening report; /reports/NAME.html is a named one (names checked, nothing else is served)
   if (q.url === '/report' || q.url.startsWith('/reports/')) {
     let raw = ''; try { raw = decodeURIComponent(q.url.slice(9)).split('?')[0]; } catch {}
@@ -221,7 +294,7 @@ const srv = http.createServer((q, s) => {
 // 10-19 night, his words: "i cant see what all the helpers ... are doing in real time unless i ask you, thats why i wanted the dashboard to
 // update in real time". This server is localhost-only inside the VM and the main PC cannot reach it, so every 30 s a self-contained copy (the
 // page above with its data inside, no server needed) goes to the main PC's bridge share folder as pillagers-dashboard.html, through the host
-// bridge's existing share-put job (tools/bridge/hostctl.mjs). The copy reloads itself every 30 s and says so when the VM stops sending.
+// bridge's existing share-put job (tools/bridge/hostctl.mjs). The copy reloads itself every 30 s and says so when the server stops sending.
 // Never a key in the page: data() reads only status files, logs and git.
 const SNAP_NAME = 'pillagers-dashboard.html', SNAP_TMP = os.tmpdir() + '/pillagers-dashboard-snap.html', SNAP_LOG = os.tmpdir() + '/pillagers-dashboard-push.log';
 const SNAP_TAIL = "tick();(function(){var age=Math.round((Date.now()-window.__SNAP.snapAt)/1000);" +
@@ -230,21 +303,20 @@ const SNAP_TAIL = "tick();(function(){var age=Math.round((Date.now()-window.__SN
   "setTimeout(function(){try{sessionStorage.setItem('dashY',String(scrollY));}catch(e){}location.reload();},30000);})();";
 let snapBusy = false, snapErrAt = 0, snapSig = '', snapSent = 0, snapOkAt = 0, snapFailAt = 0;
 function snapshot(d) {
-  d = d || data(); d.snapAt = Date.now();
+  d = { ...(d || data()), snapAt: Date.now() };
   return PAGE()
     .replace("d=await (await fetch('/api',{cache:'no-store'})).json();", 'd=window.__SNAP;')
-    .replace('tick(); setInterval(tick,5000);', SNAP_TAIL)
-    .replace("(every 5 seconds)", ON_MAIN ? "(every 30 seconds)" : "(sent from the VM every 30 seconds)")
+    .replace('tick(); setInterval(tick,10000);', SNAP_TAIL)
+    .replace("(every 10 seconds)", ON_MAIN ? "(every 30 seconds)" : "(sent from the VM every 30 seconds)")
     .replace('href="/report"', 'href="#"')
     .replace('<script>', '<script>window.__SNAP=' + JSON.stringify(d).replace(/</g, '\u003c') + ';</script><script>');
 }
 function pushSnap() { try { pushSnap0(); } catch (e) { snapBusy = false; } }   // 10-27: a bad status file must not end the server
 function pushSnap0() {
   if (snapBusy) return;
-  // 10-25: a copy goes only when something on the page changed, or 90 s after the last one (the page warns after 120 s of silence),
-  // not every 30 s regardless: while the helpers rest most copies were the same page with a new clock.
-  const d = data(), sig = JSON.stringify({ ...d, now: 0, cpu: 0, ramFree: 0, runnerAgeS: 0, procs: { ...d.procs, t: 0 }, link: d.link.ok, ai: { ...d.ai, local: { ...d.ai.local, loaded: 0 } },
-    plan: d.plan && { ...d.plan, ageS: 0, line: 0, perDay: 0, catchUp: 0 }, spareInfo: { ...d.spareInfo, seenEpoch: 0, mainPc: d.spareInfo.mainPc && { ...d.spareInfo.mainPc, seenEpoch: 0 } } });
+  // 10-25: a copy goes only when something on the page changed, or 90 s after the last one (the page warns after 120 s of silence)
+  const d = data(), sig = JSON.stringify({ ...d, now: 0, cpu: 0, ramFree: 0, runnerAgeS: 0, link: d.link.ok, plan: d.plan && { ...d.plan, ageS: 0, line: 0, perDay: 0, catchUp: 0 },
+    spareInfo: { ...d.spareInfo, seenEpoch: 0 }, fnp: d.fnp && { ...d.fnp, watch: d.fnp.watch && { ...d.fnp.watch, ageS: 0 }, hangs: d.fnp.hangs && { ...d.fnp.hangs, screensAt: 0 } } });
   if (sig === snapSig && Date.now() - snapSent < 90e3) return;
   snapBusy = true; snapSig = sig; snapSent = Date.now();
   try { writeFileSync(SNAP_TMP, snapshot(d)); } catch (e) { snapBusy = false; return; }
@@ -257,10 +329,8 @@ function pushSnap0() {
     }
   });
 }
-setTimeout(pushSnap, 3000); setInterval(pushSnap, 30000);
-// 10-24, his yes to "the VM gets the extra memory whenever you are away": the main PC's minute check (tools/migrate/host-night-memory.ps1,
-// MemFollow) takes memory back only as fast as the VM has it free, so every 30 s the VM tells it the time and its free memory (os.freemem is
-// the available physical memory, what Hyper-V can take back).
+setTimeout(pushSnap, 6000); setInterval(pushSnap, 30000);
+// 10-24: the main PC's minute check takes memory back only as fast as the VM has it free, so the VM tells it its free memory. 11-03: on the main PC (ON_MAIN) there is nothing to tell.
 const MEM_NAME = 'vm-memory.txt', MEM_TMP = os.tmpdir() + '/pillagers-vm-memory.txt';
 let memBusy = false;
 function pushMem() {
@@ -269,7 +339,7 @@ function pushMem() {
   try { writeFileSync(MEM_TMP, 'epoch=' + Math.floor(Date.now() / 1000) + '\nfreeMB=' + Math.floor(os.freemem() / 1048576) + '\n'); } catch (e) { memBusy = false; return; }
   execFile(process.execPath, [R + '/tools/bridge/hostctl.mjs', 'share-put', 'name=' + MEM_NAME, '--file', MEM_TMP], { timeout: 20000, windowsHide: true }, () => { memBusy = false; });
 }
-setTimeout(pushMem, 5000); setInterval(pushMem, 30000);
+if (!ON_MAIN) { setTimeout(pushMem, 5000); setInterval(pushMem, 30000); }
 // 10-27 (Dashboard Correspondent): a change to this file takes effect by itself. Every 30 s the server looks at its own file; when it
 // changed and the new copy passes node --check, it lets go of 8820, starts the new copy and exits (a broken copy is left alone, so the
 // page stays up on the old code). index.html needs none of this: it is read on every request.
