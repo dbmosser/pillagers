@@ -1,0 +1,7 @@
+v37.40: extraction pays the bonus and the gear, not your score
+
+an extraction banks its bonus, no longer your raid score as cash; money comes from selling gear
+
+Check 37.40. Fails on v37.39.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.40 - EXTRACTION PAYS THE BONUS AND THE GEAR, NOT YOUR SCORE
+
+Co-op hunt while he was away. His ruling of 11-01: an extraction should pay no cash beyond selling what you have and maybe a bonus, and most the money should come from selling gear. v37.25 ended the other raid cash, but every career extraction still banked twice the raid score as money on top of the bonus (job 265). The score now stays score, and the money card loses its credits rows. Watch: an extraction banks its bonus, no longer your raid score as cash; money comes from selling gear
+
+MEASURED. Check 37.40 passes, and fails on v37.39.
 ## v37.39 - RETIRE: THE BUTTON READS AS DANGER, THE PAD CONFIRM STARTS ON NOT YET
 
 Co-op hunt while he was away. the critic on the retire row and the confirm card, P1: retiring ends a pillager, yet the button looked like any other, and on a pad a double tap of A could end one Watch: the retire button has a red border and red text while it can be pressed; on a pad the confirm card starts on not yet

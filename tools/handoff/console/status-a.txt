@@ -1,1 +1,1 @@
-11-02 20:49 pacing your plan: week 22% used (the 80% line is at 21.3% now), 5-hour window 0%
+11-02 21:18 paused (STOP-claude: his 10-30 order, Codex only for 2 player fixes)

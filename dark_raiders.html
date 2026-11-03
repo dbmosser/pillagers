@@ -3985,8 +3985,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.39';
-var VER_AT='2026-11-01 23:29';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.40';
+var VER_AT='2026-11-02 21:21';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -37166,7 +37166,7 @@ function ocStatRow(lines,st){
   return out;
 }
 function ocLedger(how,lines,x){
-  var ex=(how==='extract'), c=G.cs, s=Math.max(0,c.s|0), fin=Math.round((ex?s*2:Math.floor(s/2))*((G.careerConditionMul===undefined)?1:G.careerConditionMul)), cash=(G.careerCash===undefined)?(ex?s*2:0):G.careerCash, b=c.b||{}, T=G.tel||{}, R=G.careerLb, rest=[], strip='', hv=0, ni=0, lostV=0, i, ln, m, sum=0, tot, h='', idx=0, prev='', kn=0, kk, tiles, ach=G.achNew||[], parts, p, v, tg;
+  var ex=(how==='extract'), c=G.cs, s=Math.max(0,c.s|0), fin=Math.round((ex?s*2:Math.floor(s/2))*((G.careerConditionMul===undefined)?1:G.careerConditionMul)), b=c.b||{}, T=G.tel||{}, R=G.careerLb, rest=[], strip='', hv=0, ni=0, lostV=0, i, ln, m, sum=0, tot, h='', idx=0, prev='', kn=0, kk, tiles, ach=G.achNew||[], parts, p, v, tg;
   function cnt(v,pre,m){ return '<b data-to="'+(v|0)+'" data-pre="'+(pre||'')+'" data-dl="'+(idx*90)+'"'+(m?' data-m="1"':'')+'>'+(pre||'')+(m?arcadeMoney(v):arcadeCr(v))+'</b>'; }
   function row(cls,inner){ var r='<div class="lgr '+cls+'" style="--i:'+idx+'">'+inner+'</div>'; idx++; return r; }
   for(i=0;i<lines.length;i++){
@@ -37206,15 +37206,15 @@ function ocLedger(how,lines,x){
   if(ex){
     mh+=row('ni','<span class="lgl">ITEMS SECURED</span><b>'+ni+'</b>');
     mh+=row('hv','<span class="lgl">HAUL VALUE</span><b id="haultot" data-pre="">'+arcadeMoney(hv)+'</b>');
-    mh+=row('cr','<span class="lgl">CREDITS BANKED</span>'+((cash>0)?cnt(cash,'+',1):'<b>+'+arcadeMoney(0)+'</b>'));
+    // v37.xx (cw-nospcash): no CREDITS BANKED row, nothing banks from the score any more
     // v28.xx (cw-cx-goalrewards): named rewards in their own money rows, included once in the total; SP rows never include goals.
     var gr=G.goalPaid;
     if(gr&&gr.cash) mh+=row('gr','<span class="lgl">run goals</span>'+cnt(gr.cash,'+',1));
     if(gr) for(i=0;i<gr.items.length;i++) mh+=row('gr gri','<span class="lgl">run goals <span class="gritem">'+escHtml(ITEMS[gr.items[i]].name.toLowerCase())+'</span></span>'+cnt(ival(gr.items[i]),'',1));   // v28.xx (cw-cx-goalrewardlayout): item names wrap below the reward label, separate from their appraised value.
-    tot=cash+hv+(gr?(gr.cash+gr.value):0);
+    tot=hv+(gr?(gr.cash+gr.value):0);
   } else {
     mh+=row('lost','<span class="lgl">HAUL VALUE</span><b><s>'+arcadeMoney(lostV||x.haul||0)+'</s> LOST</b>');
-    mh+=row('lost','<span class="lgl">CREDITS NOT BANKED</span><b><s>+'+arcadeMoney(Math.floor(s/2))+'</s> LOST</b>');
+    // v37.xx (cw-nospcash): no CREDITS NOT BANKED row, a score never banked anything to lose
     tot=0;
   }
   mh+=row('tot'+(ex?'':' lost'),'<span class="lgl">TOTAL</span>'+((tot>0)?cnt(tot,'',1):('<b>'+arcadeMoney(0)+'</b>')));
@@ -57955,7 +57955,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.39: the retire button has a red border and red text while it can be pressed; on a pad the confirm card starts on not yet Check 37.39 fails on v37.38',
+  now:'v37.40: an extraction banks its bonus, no longer your raid score as cash; money comes from selling gear Check 37.40 fails on v37.39',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -67701,10 +67701,9 @@ function careerSettle(how,lines){
   // v28.xx (cw-cx-condition-sp): conditions multiply the final SP once; cash uses the score before conditions.
   var s=Math.max(0,G.cs.s|0), fin=0, best=false, rk=0, R=null, cm=raidConditionMul();
   G.careerConditionMul=cm;
-  G.careerCash=(how==='extract')?s*2:0;
+  // v37.xx (cw-nospcash), HIS RULING OF 11-01: "it shouldn't pay cash beyond just selling what you have and maybe some sort of bonus, but most the money should come from selling gear." The raid score stays score: it no longer banks as $ on an extraction. v37.25 (cw-m1nocash) ended the other raid cash and left this line.
   if(how==='extract'){
     fin=Math.round(s*2*cm);
-    P.credits=(+P.credits||0)+G.careerCash;
   }
   if(how==='extract'||how==='dead'){   // v27.NN (cboard1): a death is a run on the board too; an abandon is not
     try{ R=careerBoardAdd(how,(how==='extract')?fin:Math.round(Math.floor(s/2)*cm)); }catch(_cb){ R=null; }
