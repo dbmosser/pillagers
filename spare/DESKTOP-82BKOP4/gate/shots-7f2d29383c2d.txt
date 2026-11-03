@@ -1,0 +1,48 @@
+id=shots-7f2d29383c2d
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=0f913cba22fb7dffe20a16b4dd4f1bacac37d01d
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1793690929
+ended=1793691010
+result=PASS
+infra=0
+reason=
+--- stages
+== 1080 : window 1956x1185, viewport 1920x1080
+  m3a-search-tip                         NOT STAGED   6.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: wornKeyOf is not defined
+    at <anonymous>:3:8
+    at async <anonymous>:1:21
+  m3a-row                                NOT STAGED   6.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: wornKeyOf is not defined
+    at <anonymous>:3:8
+    at async <anonymous>:1:21
+  m3a-bag-hover                          NOT STAGED   6.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: wornKeyOf is not defined
+    at <anonymous>:1:7754
+    at async <anonymous>:1:21
+  m3a-extract-card                       NOT STAGED   6.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: wornKeyOf is not defined
+    at <anonymous>:1:7720
+    at async <anonymous>:1:21
+== 4k : window 3876x2265, viewport 3840x2160
+  m3a-search-tip                         NOT STAGED   6.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: wornKeyOf is not defined
+    at <anonymous>:3:8
+    at async <anonymous>:1:21
+  m3a-row                                NOT STAGED   7.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: wornKeyOf is not defined
+    at <anonymous>:3:8
+    at async <anonymous>:1:21
+  m3a-bag-hover                          NOT STAGED   7.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: wornKeyOf is not defined
+    at <anonymous>:1:7754
+    at async <anonymous>:1:21
+  m3a-extract-card                       NOT STAGED   7.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION ReferenceError: wornKeyOf is not defined
+    at <anonymous>:1:7720
+    at async <anonymous>:1:21
+report: C:\PillagersSpare\gate\work\shots-7f2d29383c2d\shots\report.json
+--- end
+done=1
