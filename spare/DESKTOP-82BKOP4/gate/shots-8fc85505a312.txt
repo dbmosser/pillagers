@@ -1,0 +1,24 @@
+id=shots-8fc85505a312
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=c0560c0dc763c3ec0cd58dc941b7dd5dcd661fc5
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1793693606
+ended=1793693691
+result=PASS
+infra=0
+reason=
+--- stages
+== 1080 : window 1956x1185, viewport 1920x1080
+  p1-polluter                            staged      66.3s    | POLLUTE first probe null | v8.60 ok -> 36.13 ok, 29.61 ok | v8.91 ok -> 36.13 ok, 29.61 ok | v9.07 ok -> 36.13 ok, 29.61 ok | v9.16 ok -> 36.13 ok, 29.61 ok | v9.34 ok -> 36.13 ok, 29.61 ok | v11.53 ok -> 36.13 ok, 29.61 ok | v36.98 ok -> 36.13 ok, 29.61 ok | v36.80 ok -> 36.13 ok, 29.61 ok | v36.72
+report: C:\PillagersSpare\gate\work\shots-8fc85505a312\shots\report.json
+--- end
+done=1
