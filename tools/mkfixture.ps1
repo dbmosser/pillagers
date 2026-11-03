@@ -26472,29 +26472,6 @@ class Audio {
        return null;
      }finally{try{__endRaid('abandon');}catch(e){}__topClear();}
    }},
-  {v:'32.59',what:'the hostiles plate is as wide as the banner above it with a gap under the banner (critic 37)',
-   run:function(){
-     if(typeof extRowPlate!=='function') return 'no extRowPlate';
-     var s='1 HOSTILE CLOSING IN', r, f=ctx.font;
-     ctx.save(); ctx.font=hudFS(TYPE.label);
-     try{ r=extRowPlate(s,960,900,1,600); }finally{ ctx.restore(); ctx.font=f; }
-     if(!r||Math.round(r.w)<600) return 'the plate ignores the banner width: '+(r&&r.w);
-     var src=String(drawHUD);
-     if(src.indexOf('_exBelt-LH(62)')<0) return 'the banner did not move up for the gap';
-     if(src.indexOf('extRowPlate(_exH,W/2,_exRow,_exR,_exBW)')<0) return 'drawHUD does not pass the banner width';
-     return null;
-   }},
-  {v:'32.58',what:'the hostiles closing in line stands on a plate measured to its words (critic 37)',
-   run:function(){
-     if(typeof extRowPlate!=='function') return 'the hostiles line has no plate function (extRowPlate)';
-     var s='9 HOSTILES CLOSING IN', r, f=ctx.font;
-     ctx.save(); ctx.font=hudFS(TYPE.label);
-     try{ r=extRowPlate(s,960,900,1); }finally{ ctx.restore(); ctx.font=f; }
-     if(!r||!(r.w>0)) return 'extRowPlate gave no rectangle';
-     if(r.x>960-hudRawW(s)/2||r.x+r.w<960+hudRawW(s)/2) return 'the plate does not cover the words';
-     if(String(drawHUD).indexOf('extRowPlate(')<0) return 'drawHUD does not draw the plate';
-     return null;
-   }},
   {v:'32.57',what:'the pre-raid page sixth pass: map labels sit on a dark pill, the window title is 32 px and bigger than the sector name, the footer lists ascend once, and the no armour row is 16 px with a warn bar',
    run:function(){
      if(!(window.__hubEnter&&window.__P&&window.__applyLoaded)||typeof renderSector!=='function') return 'SKIP: no pre-raid page';
@@ -64889,8 +64866,7 @@ class Audio {
        g.beaconT=20; z.beaconT=20; g.shipHold=null; p.x=z.x; p.y=z.y;
        tr=__textTrace(function(){ drawHUD(); });
        hit=null;
-       for(i=0;i<tr.length;i++){ if(tr[i].t.indexOf(CV)>=0) bad.push('the ring band reads '+JSON.stringify(tr[i].t)); if(/^2 HOSTILES CLOSING IN$/.test(tr[i].t)) hit=tr[i].t; }
-       if(!hit) bad.push('two hostiles converging on the called ring were not drawn as 2 HOSTILES CLOSING IN');
+       for(i=0;i<tr.length;i++){ if(tr[i].t.indexOf(CV)>=0) bad.push('the ring band reads '+JSON.stringify(tr[i].t)); }   // 11-02 cw-nohostiles, his order: the hostile count line is gone, only the retired word is still checked here
        // FOUR: a teammate Waypoint
        NET.wps={1:{x:p.x+300,y:p.y+40}};
        tr=__textTrace(function(){ ctx.save(); try{ netWpDraw(); } finally { ctx.restore(); } });
