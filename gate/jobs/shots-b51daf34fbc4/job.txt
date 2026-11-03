@@ -1,0 +1,14 @@
+id=shots-b51daf34fbc4
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=6f480fab90e9125f20e54f67c06119792f45e82d
+screens=a-shipped,b-edited
+res=1080
+nolint=1
+lintopts=
+from=JUL26
+submitted=1793694177
+expires=1793700777
