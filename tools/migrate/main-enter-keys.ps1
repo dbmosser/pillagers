@@ -6,7 +6,9 @@ $Want = [ordered]@{ console = @('PILLAGERS_API_KEY', 'your Anthropic Console key
 Write-Host ''
 foreach ($s in $Want.Keys) {
   $name = $Want[$s][0]
-  if ([Environment]::GetEnvironmentVariable($name, 'User')) { Write-Host ($s + ' key: already on this PC.') -ForegroundColor Green; continue }
+  # 11-02: itch refused the saved key ("invalid key"), so the itch key can always be replaced here; Enter saves nothing and keeps the old one.
+  if ($s -ne 'itch' -and [Environment]::GetEnvironmentVariable($name, 'User')) { Write-Host ($s + ' key: already on this PC.') -ForegroundColor Green; continue }
+  if ([Environment]::GetEnvironmentVariable($name, 'User')) { Write-Host 'itch key: one is saved here, but itch may refuse it. Paste a new one to replace it, or just press Enter to keep it.' -ForegroundColor Yellow }
   Write-Host ('Next: ' + $Want[$s][1]) -ForegroundColor Cyan
   & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $Keys $s
 }
