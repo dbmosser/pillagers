@@ -13493,11 +13493,11 @@ class Audio {
        g.player.downed=false; g.player.hp=100; P.credits=10000; P.racks=0; P.arrays=0;
        __endRaid('extract');
        bank=P.credits-10000;
-       if(bank!==2000) bad.push('the guest bank gained $'+bank+', not $2000 with no condition cash');
+       var bon35=extractBonusFor(ival('core')); if(bank!==bon35&&bank!==2000+bon35) bad.push('the guest bank gained $'+bank+', not the extraction bonus $'+bon35+' with no condition cash');   // retargeted for cw-nospcash, his 11-01 ruling: the score no longer banks; the 2000 stands for the build before
        if(!g.careerLb||g.careerLb.score!==Math.round(2000*Math.pow(1.05,4))) bad.push('the guest score is '+(g.careerLb&&g.careerLb.score)+', not '+Math.round(2000*Math.pow(1.05,4)));
        h=(document.getElementById('oc_manifest')||{}).innerHTML||'';
        m=/credits banked<\/span><b[^>]*data-to="(\d+)"/i.exec(h);
-       if(!m||(+m[1])!==bank) bad.push('the end card credits banked reads '+(m?m[1]:'nothing')+' but the bank gained '+bank);
+       if(m&&(+m[1])!==bank-bon35) bad.push('the end card credits banked reads '+m[1]+' but the score banked '+(bank-bon35));   // retargeted for cw-nospcash: the row is gone from then on
        var crow=(h.match(/<span class="lgl">[^<]*<\/span><b>x1\.05<\/b>/g)||[]).filter(function(x){ return x.indexOf('>settings<')<0; });   // the settings row is the separate difficulty multiplier
        if(crow.length!==4) bad.push('the guest card shows '+crow.length+' condition rows, not 4: '+crow.join(' | '));
        return bad.length?bad.join('; '):null;
@@ -15171,12 +15171,12 @@ class Audio {
        if((pm.querySelector('.lgh')||{}).textContent!=='MONEY') bad.push('the money panel is not headed MONEY');
        if(!ps.querySelector('.lgr.sc [data-to]')) bad.push('the raid score total is not in the score panel');
        if(!pm.querySelector('.lgr.tot [data-to]')) bad.push('the money total is not in the money panel');
-       if(!pm.querySelector('.lgr.cr [data-to]')) bad.push('the credits banked are not in the money panel');
+       if(pm.querySelector('.lgr.cr')&&!pm.querySelector('.lgr.cr [data-to]')) bad.push('the credits banked are not in the money panel');   // retargeted for cw-nospcash, his 11-01 ruling: no such row from then on
        if(!pm.contains(document.getElementById('haultot'))) bad.push('the haul value is not in the money panel');
        if((lg.textContent||'').indexOf('RAID TOTAL')>=0) bad.push('a RAID TOTAL row is still on the card');
-       if(+pm.querySelector('.lgr.tot [data-to]').getAttribute('data-to')!==1500+(+document.querySelector('#oc_manifest .haulstrip').getAttribute('data-sec')||0)) bad.push('the money total is not credits 1500 plus the haul');
+       var sec45=(+document.querySelector('#oc_manifest .haulstrip').getAttribute('data-sec')||0), tot45=+pm.querySelector('.lgr.tot [data-to]').getAttribute('data-to'); if(tot45!==sec45&&tot45!==1500+sec45) bad.push('the money total is not the haul');   // retargeted for cw-nospcash: 1500 plus the haul on the build before
        units('extracted');
-       cs=getComputedStyle(ps.querySelector('.lgr.sc b')).color; ct=getComputedStyle(pm.querySelector('.lgr.tot b')).color; cc=getComputedStyle(pm.querySelector('.lgr.cr b')).color;
+       cs=getComputedStyle(ps.querySelector('.lgr.sc b')).color; ct=getComputedStyle(pm.querySelector('.lgr.tot b')).color; cc=pm.querySelector('.lgr.cr b')?getComputedStyle(pm.querySelector('.lgr.cr b')).color:ct;
        if(cs===ct) bad.push('the money total is drawn in the score colour '+cs);
        if(ct!==cc) bad.push('the money total ('+ct+') and the credits banked ('+cc+') are not one money colour');
        rc=man.querySelector('.ocrecap');
@@ -38672,7 +38672,7 @@ class Audio {
        /* v28.xx (cw-cx-preraid-names): v35.81 added the kill count to the label; the 600 SP value and its units stay required. Accept both labels. */
        for(i=0;i<rows.length;i++){ var l=rows[i].querySelector('.lgl'); if(l&&/^KILLS(?: \(\d+\))?$/.test(l.textContent)){ var b=rows[i].querySelector('b'); kills=b?b.textContent:''; } }
        if(kills!=='600 SP') bad.push('the KILLS row reads '+kills+', not 600 SP');
-       if(txt('.cr')!=='+$1,500') bad.push('CREDITS BANKED reads '+txt('.cr')+', not +$1,500 (credits stay dollars)');
+       if(lg.querySelector('.cr')&&txt('.cr')!=='+$1,500') bad.push('CREDITS BANKED reads '+txt('.cr')+', not +$1,500 (credits stay dollars)');   // retargeted for cw-nospcash, his 11-01 ruling: no such row from then on
        ht=document.getElementById('haultot');
        if(!ht||ht.textContent.charAt(0)!=='$') bad.push('HAUL VALUE reads '+(ht&&ht.textContent)+', not a dollar amount');
        if(txt('.tot').charAt(0)!=='$') bad.push('RAID TOTAL reads '+txt('.tot')+', not a dollar amount');
@@ -39642,7 +39642,7 @@ class Audio {
        if(wr) return 'after the takeover a free CONVOY CRATE dropped in player 2 window';
        if(gain) return 'after the takeover player 2 run score went up '+gain+' for a body that only went with the host';
        careerSettle('extract',L);
-       if((+__P().credits||0)!==cr0+Math.max(0,cs0)*2) return 'his save gained '+((+__P().credits||0)-cr0-Math.max(0,cs0)*2)+' credits from the takeover';
+       var crd=(+__P().credits||0)-cr0; if(crd!==0&&crd!==Math.max(0,cs0)*2) return 'his save gained '+crd+' credits from the takeover';   // retargeted for cw-nospcash, his 11-01 ruling: 0 from then on, twice the score on the build before
        return null;
      }catch(x){ return 'threw: '+(x&&x.message||x); }
      finally{
@@ -41636,11 +41636,11 @@ class Audio {
        __endRaid('extract');
        man=document.getElementById('oc_manifest'); lg=man.querySelector('.lg'); tx=man.textContent||'';
        if(!lg) return 'the CAREER extraction card has no ledger';
-       for(i=0,rows=['KILLS','MEDALS','BOUNTY','EXTRACTION','RAID SCORE','CREDITS','ITEMS SECURED','HAUL VALUE','MONEY','ACCURACY','CONTAINERS','HEALTH'];i<rows.length;i++) if(lg.textContent.indexOf(rows[i])<0) bad.push('the ledger has no '+rows[i]);
+       for(i=0,rows=['KILLS','MEDALS','BOUNTY','EXTRACTION','RAID SCORE','ITEMS SECURED','HAUL VALUE','MONEY','ACCURACY','CONTAINERS','HEALTH'];i<rows.length;i++) if(lg.textContent.indexOf(rows[i])<0) bad.push('the ledger has no '+rows[i]);
        if(!lg.querySelector('.lgps')||!lg.querySelector('.lgpm')) bad.push('the ledger is not a RAID SCORE panel and a MONEY panel');   // retargeted for cw-spmoney, HIS ORDER 2026-10-28: sp and money never intermingled, so the one list grouped COMBAT and OBJECTIVES with a RAID TOTAL row is now two panels
        if(/items? secured for|You extracted with|ACHIEVEMENT:|CAREER SCORE/.test(tx)) bad.push('a sentence the ledger replaces is still on the card');
        if(dto('.sc')!==1500) bad.push('RAID SCORE is '+dto('.sc')+', not 1500 (750 x2)');
-       if(dto('.cr')!==1500) bad.push('CREDITS is '+dto('.cr')+', not 1500 (one credit a point)');
+       if(dto('.cr')!==1500&&dto('.cr')!==-1) bad.push('CREDITS is '+dto('.cr')+', not 1500 (one credit a point)');   // retargeted for cw-nospcash, his 11-01 ruling: no such row from then on
        if(!(document.getElementById('haultot'))) bad.push('no HAUL VALUE figure');
        if(!ocLgTally()) bad.push('the tally is not running on a fresh card');
        haulRevealSkip();
@@ -41649,7 +41649,7 @@ class Audio {
        ds=document.querySelector('#oc_manifest .haulstrip'); hv=ds?+ds.getAttribute('data-sec'):0;
        if(!(hv>0)) bad.push('the strip carries no haul value');
        if((document.getElementById('haultot').textContent||'').replace(/[^0-9]/g,'')!==String(hv)) bad.push('HAUL VALUE reads '+document.getElementById('haultot').textContent+', not '+hv);
-       if(dto('.tot')!==1500+hv) bad.push('RAID TOTAL is '+dto('.tot')+', not credits 1500 plus haul '+hv);
+       if(dto('.tot')!==hv&&dto('.tot')!==1500+hv) bad.push('RAID TOTAL is '+dto('.tot')+', not the haul '+hv);
        tt=lg.querySelectorAll('.lgti'); if(tt.length!==4&&tt.length!==5) bad.push('there are '+tt.length+' stat tiles, not 4 or 5');
        if(g.achNew&&g.achNew.length&&lg.querySelectorAll('.lgeb').length!==g.achNew.length) bad.push('the achievements are not one emblem each');
        if(lg.querySelectorAll('.lgeb svg').length!==lg.querySelectorAll('.lgeb').length) bad.push('an emblem has no picture');
@@ -41662,7 +41662,7 @@ class Audio {
        if(!lg) bad.push('the KIA card has no ledger');
        else {
          if(dto('.sc')!==400&&dto('.sc')!==200) bad.push('the KIA RAID SCORE is '+dto('.sc')+', not 400 (200 once a death halves it)');
-         if(lg.querySelectorAll('.lgr.lost s').length<2) bad.push('the KIA credits and haul are not both struck through as LOST');
+         if(lg.querySelectorAll('.lgr.lost s').length<1) bad.push('the KIA haul is not struck through as LOST');
          if(lg.querySelector('.lgr.cr')) bad.push('a death card shows banked credits');
          if(lg.querySelector('.lgr.tot [data-to]')) bad.push('a death card has a RAID TOTAL above nothing');
          if(lg.textContent.indexOf('LOST')<0) bad.push('the KIA ledger never says LOST');
@@ -54583,7 +54583,7 @@ class Audio {
        g.cs.s=700; g.cs.k=5; cr0=+P.credits||0;
        __endRaid('extract');
        if(g.careerPaid!==1400) bad.push('a CAREER extraction with 700 paid '+g.careerPaid+', not 700 x2 = 1400');
-       if(!((+P.credits||0)-cr0>=1400)) bad.push('his credits rose '+((+P.credits||0)-cr0)+' on a 1400 payout');
+       if((+P.credits||0)-cr0<0) bad.push('his credits fell '+(cr0-(+P.credits||0))+' on an extraction');   // retargeted for cw-nospcash, his 11-01 ruling: the 1400 no longer banks
        m=(document.getElementById('oc_manifest')||{}).textContent||'';
        if(m.indexOf('CAREER'+' SCORE')<0&&m.indexOf('RAID'+' SCORE')<0) bad.push('the EXTRACTED card does not read CAREER SCORE or RAID SCORE');
        if(m.indexOf('CAREER'+' BEST')<0&&m.indexOf('PERSONAL'+' BEST')<0) bad.push('the first banked run does not read CAREER BEST or PERSONAL BEST');

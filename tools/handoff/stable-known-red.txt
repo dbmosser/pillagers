@@ -161,7 +161,6 @@ v13.01   # same as v12.98: the bar blurb check wants the live XP bonus total bes
 # his 11-01 order "it shouldn't pay cash beyond just selling what you have", v37.25 and v37.26 (cw-m1nocash, cw-m1bonusgap): no cash carried in a raid, an extraction pays a 10 percent bonus, the stall banks a sale at once, the survivor, raid goals and contracts pay salvage; retarget to the salvage and the bonus
 v36.33   # wants run goals' career cash carried as $1,000 until extraction; no cash is carried in a raid
 v35.88   # wants the contract reward to read "$4,321"; the board says "worth $4,321" and lists the items
-v35.79g  # wants a linked guest bank to gain exactly $2000; the 10 percent extraction bonus adds on top (2052)
 v20.70   # wants a contract for a gun he owns to pay the gun's value and receipt it; it comes as a spare to the stash since v37.25
 v12.63   # same as v20.70, the Scav Pistol case: a spare to the stash, no credits
 v20.46   # wants a contract card to draw one reward cell beside Credits; it pays salvage, so three cells
