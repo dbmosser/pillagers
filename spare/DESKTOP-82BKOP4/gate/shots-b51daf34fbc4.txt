@@ -1,0 +1,29 @@
+id=shots-b51daf34fbc4
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=6f480fab90e9125f20e54f67c06119792f45e82d
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1793694443
+ended=1793694459
+result=PASS
+infra=0
+reason=
+--- stages
+report: C:\PillagersSpare\gate\work\shots-b51daf34fbc4\shots\report.json
+Exception calling "Wait" with "1" argument(s): "One or more errors occurred."
+At C:\claudecode\dark raiders\tools\uishots.ps1:84 char:8
++     if(-not $task.Wait($left)){ throw "CDP TIMEOUT on $method" }
++        ~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : AggregateException
+
+--- end
+done=1
