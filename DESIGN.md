@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.47 - THE WHAT IS NEW STAMP KEEPS UP
+
+Co-op hunt while he was away. The card was stamped v37.31 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay. Watch: The what is new stamp keeps up with the build; the three notes are unchanged.
+
+MEASURED. Check 37.47 passes, and fails on v37.46.
 ## v37.46 - the top strip: clock, score, extract, alerts and down all across the top edge
 
 Co-op hunt while he was away. His order of 2026-11-02, with pictures of the clock, score, extract and locked on plate stacked in the top middle: all these different boxes take up so much of the screen, redesign them and the player alerts so they all hit across the top edge, leaving more room for play. He approved the mockup. Watch: One slim rail across the whole top edge. Score at the left, clock and sky in the middle, the way out and its arrow at the right. An alert stands on the rail against the clock and tints it red. Down takes the left of the rail with its timer and self-revive, the slider the right, and the bleed bar the bottom edge; no centre card any more, so the pillager stays in view. The corner column starts under the rail. Watch for: alerts with a long detail line on small windows, the go fullscreen button under the rail, and two players, whose shares step aside while an alert shows.

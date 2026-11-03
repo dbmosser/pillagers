@@ -65,7 +65,8 @@ lines still binds you. Only the TOOLS and the SHIPPING steps differ. Your task i
    shipped are skipped, so you can leave them in the file.
 4. END YOUR RUN. The lane then runs preflight for each key, then the real ship (shipq.sh), and sends you the result in your next
    message. A gate failure comes back to you with the reason: fix the mk script (same key) and end again.
-5. Fixture edits (tools/mkfixture.ps1) need the ship lock, which you do not have, so THE LANE APPLIES THEM FOR YOU, under the lock,
+5. OFF SINCE 11-03: do not write fixture-retarget.json. Tests stay on the spare pc and the lane cannot run it, so it refuses the file. If your change makes an older check wrong, say so in your last message. The rest of this step is kept for when it returns.
+   Fixture edits (tools/mkfixture.ps1) need the ship lock, which you do not have, so THE LANE APPLIES THEM FOR YOU, under the lock,
    before it ships your keys. If your change makes an older check wrong, write .codex-work/@JOB@/fixture-retarget.json (plain ASCII):
      {"why":"one short line","keys":["cw-cx-KEY"],"run":["31.83"],"edits":[{"anchor":"exact text","replacement":"new text"}]}
    - why: its first 80 characters become the commit message ("codex retarget for @JOB@: ...").

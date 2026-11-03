@@ -212,3 +212,4 @@
 11-03 00:54 v37.43 cw-m3doll on his pc after 19s (8802 serves 37.43) week 28%
 11-03 01:48 v37.44 cw-m3drops on his pc after 69s (8802 serves 37.44) week 28%
 11-03 03:12 v37.45 cw-m3doll2 on his pc after 69s (8802 serves 37.45) week 29%
+11-03 03:20 v37.46 cw-topstrip on his pc after 70s (8802 serves 37.46) week 29%

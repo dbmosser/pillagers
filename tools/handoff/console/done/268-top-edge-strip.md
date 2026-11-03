@@ -3,3 +3,4 @@ His words: "i don't like how all these different boxes take up so much of the sc
 Scope: clock, sky icon, score, extract pill and arrow, downed card, danger alert plate all move into one slim strip on the top edge.
 Status: being designed in the pillager-html change request chat. Not built.
 Added 11-02 ~22:00, his words: "too many boxes filling up the top mid of the screen, when they should fill across the entire top of the screen, leaving more room for gameplay". The strip spans the whole top edge.
+SHIPPED v37.46, on his PC 11-03 03:20: one rail across the whole top edge holds the score, the clock and the way out; alerts and the down card draw on it.

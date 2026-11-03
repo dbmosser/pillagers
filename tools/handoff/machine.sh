@@ -22,7 +22,7 @@ machine_floor(){ if [ "$ON_MAIN" = 1 ]; then echo 4; else echo "$1"; fi; }
 # the same names tools/spare/spare-runner.ps1 EpicGame looks for
 machine_epic_count(){ powershell -NoProfile -Command "@(Get-Process -ErrorAction SilentlyContinue | Where-Object { \$_.ProcessName -match '$1' }).Count" 2>/dev/null | tr -dc '0-9'; }
 # 11-02 night: the PC has 48 GB now, so the editor being open is no reason by itself to hold helpers back. Holding back when memory is short keeps its first call:
-# under 14 GB free is about 10 for the game on top of the editor (the FnP chat asks for that) plus 1 for the helper and a margin. Only console-lane.sh calls this.
+# under 14 GB free is about 10 for the game on top of the editor (the FnP chat asks for that) plus 1 for the helper and a margin. console-lane.sh and codex-lane.sh call this.
 machine_editor_open(){ [ "$(machine_epic_count '^UnrealEditor')" -gt 0 ] 2>/dev/null || return 1; local g; g=$(powershell -NoProfile -Command '$o=Get-CimInstance Win32_OperatingSystem; [int]([Math]::Min($o.FreePhysicalMemory,$o.FreeVirtualMemory)/1MB)' 2>/dev/null | tr -dc '0-9'); [ "${g:-0}" -lt 14 ]; }
 machine_fortnite_playing(){ [ "$(machine_epic_count '^FortniteClient')" -gt 0 ] 2>/dev/null; }
 

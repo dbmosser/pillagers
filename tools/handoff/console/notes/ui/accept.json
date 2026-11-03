@@ -5461,49 +5461,49 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "the token system and semantic colors are applied consistently, but the screen has no single focal point and the loadout list is a crowded wall of same-weight rows.",
+  "verdict": "the cta fill and bare-number fixes landed, but rarity color still floods the stash-row titles as a fill and the list clips its last row in every shot, so it reads as improved but still short of shippable craft.",
   "findings": [
-   "P1 right panel, all 3 shots: large green/red 'better'/'worse' word under the compare stat block: drop 'better'/'worse' to fs-body 20px regular weight in --ok/--danger color, no bold; keep only the screen title at fs-title 700 as the one bold element",
-   "P1 right panel, 'save outfit' button, all 3 shots: fill 'save outfit' with --acc #e6ff3d and --acc-ink text per the token block; keep the small 'x' remove buttons neutral so only this one button reads as the CTA",
-   "P1 center column, all 3 shots: add an 8px (--sp-1) section rule or 16px (--sp-2) gap between equipped-slot groups, and drop the row height so fewer, clearer groups show per screen without relying on the scrollbar for basic orientation",
-   "P2 center list header, 'gear 11' / 'gear 31' / 'gear 13': either drop the bare number or label it, e.g. 'gear power 31'",
-   "P2 center list, every row (relic pants, relic backpack, rare armor, sound amulet, scrap headgear): mute the row title to --tx-1 and move rarity color to a 3px left bar only (matching the slot-icon border treatment already used on the left gear grid)"
+   "P0 n/a: n/a",
+   "P1 center stash list, every row, all 3 shots (e.g. 'sound amulet' green, 'relic pants' purple, 'rare breacher plate' blue): set every row/tile title to --tx-1, move rarity to a 3px left bar (list rows) or keep the existing tile border only (equipped grid) — do not color both border and text",
+   "P1 center stash list, bottom row, all 3 shots ('rare gloves' in d2-half, 'rare breacher plate' in d3-full, 'sound boots' in d4-pad): clip the scroll region to whole-row increments (row height a multiple of the container height) or add a 24px bottom fade mask so no row is cut mid-glyph",
+   "P2 center stash list scrollbar, all 3 shots: style the scrollbar thumb with --ui-line-hi #4a5257 idle / --acc on hover, track transparent, matching the rest of the chrome",
+   "P2 right detail panel, 'better'/'worse' under the compare block, all 3 shots: confirm it is fs-body 20px / 400 weight exactly, same weight as 'against empty ring' below it, color-only emphasis via --ok/--danger"
   ],
-  "pic": "tools/handoff/console/notes/shots/00p-m3b-doll-after/d2-half-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/00p-m3b-doll-after2/d2-half-1080.jpg",
   "task": "manual",
-  "when": "2026-11-03T06:35"
+  "when": "2026-11-03T08:22"
  },
  "d3-full": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "the token system and semantic colors are applied consistently, but the screen has no single focal point and the loadout list is a crowded wall of same-weight rows.",
+  "verdict": "the cta fill and bare-number fixes landed, but rarity color still floods the stash-row titles as a fill and the list clips its last row in every shot, so it reads as improved but still short of shippable craft.",
   "findings": [
-   "P1 right panel, all 3 shots: large green/red 'better'/'worse' word under the compare stat block: drop 'better'/'worse' to fs-body 20px regular weight in --ok/--danger color, no bold; keep only the screen title at fs-title 700 as the one bold element",
-   "P1 right panel, 'save outfit' button, all 3 shots: fill 'save outfit' with --acc #e6ff3d and --acc-ink text per the token block; keep the small 'x' remove buttons neutral so only this one button reads as the CTA",
-   "P1 center column, all 3 shots: add an 8px (--sp-1) section rule or 16px (--sp-2) gap between equipped-slot groups, and drop the row height so fewer, clearer groups show per screen without relying on the scrollbar for basic orientation",
-   "P2 center list header, 'gear 11' / 'gear 31' / 'gear 13': either drop the bare number or label it, e.g. 'gear power 31'",
-   "P2 center list, every row (relic pants, relic backpack, rare armor, sound amulet, scrap headgear): mute the row title to --tx-1 and move rarity color to a 3px left bar only (matching the slot-icon border treatment already used on the left gear grid)"
+   "P0 n/a: n/a",
+   "P1 center stash list, every row, all 3 shots (e.g. 'sound amulet' green, 'relic pants' purple, 'rare breacher plate' blue): set every row/tile title to --tx-1, move rarity to a 3px left bar (list rows) or keep the existing tile border only (equipped grid) — do not color both border and text",
+   "P1 center stash list, bottom row, all 3 shots ('rare gloves' in d2-half, 'rare breacher plate' in d3-full, 'sound boots' in d4-pad): clip the scroll region to whole-row increments (row height a multiple of the container height) or add a 24px bottom fade mask so no row is cut mid-glyph",
+   "P2 center stash list scrollbar, all 3 shots: style the scrollbar thumb with --ui-line-hi #4a5257 idle / --acc on hover, track transparent, matching the rest of the chrome",
+   "P2 right detail panel, 'better'/'worse' under the compare block, all 3 shots: confirm it is fs-body 20px / 400 weight exactly, same weight as 'against empty ring' below it, color-only emphasis via --ok/--danger"
   ],
-  "pic": "tools/handoff/console/notes/shots/00p-m3b-doll-after/d3-full-4k.jpg",
+  "pic": "tools/handoff/console/notes/shots/00p-m3b-doll-after2/d3-full-4k.jpg",
   "task": "manual",
-  "when": "2026-11-03T06:35"
+  "when": "2026-11-03T08:22"
  },
  "d4-pad": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "the token system and semantic colors are applied consistently, but the screen has no single focal point and the loadout list is a crowded wall of same-weight rows.",
+  "verdict": "the cta fill and bare-number fixes landed, but rarity color still floods the stash-row titles as a fill and the list clips its last row in every shot, so it reads as improved but still short of shippable craft.",
   "findings": [
-   "P1 right panel, all 3 shots: large green/red 'better'/'worse' word under the compare stat block: drop 'better'/'worse' to fs-body 20px regular weight in --ok/--danger color, no bold; keep only the screen title at fs-title 700 as the one bold element",
-   "P1 right panel, 'save outfit' button, all 3 shots: fill 'save outfit' with --acc #e6ff3d and --acc-ink text per the token block; keep the small 'x' remove buttons neutral so only this one button reads as the CTA",
-   "P1 center column, all 3 shots: add an 8px (--sp-1) section rule or 16px (--sp-2) gap between equipped-slot groups, and drop the row height so fewer, clearer groups show per screen without relying on the scrollbar for basic orientation",
-   "P2 center list header, 'gear 11' / 'gear 31' / 'gear 13': either drop the bare number or label it, e.g. 'gear power 31'",
-   "P2 center list, every row (relic pants, relic backpack, rare armor, sound amulet, scrap headgear): mute the row title to --tx-1 and move rarity color to a 3px left bar only (matching the slot-icon border treatment already used on the left gear grid)"
+   "P0 n/a: n/a",
+   "P1 center stash list, every row, all 3 shots (e.g. 'sound amulet' green, 'relic pants' purple, 'rare breacher plate' blue): set every row/tile title to --tx-1, move rarity to a 3px left bar (list rows) or keep the existing tile border only (equipped grid) — do not color both border and text",
+   "P1 center stash list, bottom row, all 3 shots ('rare gloves' in d2-half, 'rare breacher plate' in d3-full, 'sound boots' in d4-pad): clip the scroll region to whole-row increments (row height a multiple of the container height) or add a 24px bottom fade mask so no row is cut mid-glyph",
+   "P2 center stash list scrollbar, all 3 shots: style the scrollbar thumb with --ui-line-hi #4a5257 idle / --acc on hover, track transparent, matching the rest of the chrome",
+   "P2 right detail panel, 'better'/'worse' under the compare block, all 3 shots: confirm it is fs-body 20px / 400 weight exactly, same weight as 'against empty ring' below it, color-only emphasis via --ok/--danger"
   ],
-  "pic": "tools/handoff/console/notes/shots/00p-m3b-doll-after/d4-pad-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/00p-m3b-doll-after2/d4-pad-1080.jpg",
   "task": "manual",
-  "when": "2026-11-03T06:35"
+  "when": "2026-11-03T08:22"
  },
  "m3a-search-tip": {
   "score": 2,

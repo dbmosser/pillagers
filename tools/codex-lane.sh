@@ -74,6 +74,27 @@ ramwait(){ local floor g i; floor=$(cap RAM_FLOOR_GB 6); floor=$(machine_floor "
   for i in 1 2 3 4 5 6 7 8 9 10; do g=$(freegb); g=${g:-0}; [ "$g" -ge "$floor" ] && return 0
     sweepchromes && { g=$(freegb); g=${g:-0}; [ "$g" -ge "$floor" ] && return 0; }
     say "waiting for RAM: $g GB free, need $floor (${name:-codex})"; sleep 60; done; return 1; }
+# 11-03 (Codex Correspondent, OVERLORD's order): FnP first on JUL26. No Codex run while a walk or game is on, while the editor is being reopened, or with the editor open and
+# memory short (machine_editor_open: 14 GB, our own estimate, the same hold as the Claude helpers). Process names only: never read the editor's command line. No answer means hold.
+EDITOR_HOLD_FILE=/c/claudecode/pillagers-fortnite/tools/fnp-scripts/editor-stay-closed.txt
+fnp_hold(){ HOLDWHY=""; [ "$ON_MAIN" = 1 ] || return 1; [ -n "$CX_FREEGB" ] && return 1
+  machine_fortnite_playing && { HOLDWHY="a Fortnite walk or game is on"; return 0; }
+  local age; age=$(powershell -NoProfile -Command "\$p=@(Get-Process -ErrorAction SilentlyContinue | Where-Object { \$_.ProcessName -match '^UnrealEditor' } | Sort-Object StartTime -Descending); if(\$p.Count){ [int]((Get-Date)-\$p[0].StartTime).TotalMinutes } else { 'closed' }" 2>/dev/null | tr -d '\r ')
+  case "$age" in
+    closed) [ -f "$EDITOR_HOLD_FILE" ] && return 1; HOLDWHY="the Fortnite editor is closed and due to be reopened"; return 0;;
+    ''|*[!0-9]*) HOLDWHY="could not read the Fortnite editor's state"; return 0;;
+  esac
+  [ "$age" -lt 10 ] && { HOLDWHY="the Fortnite editor was just reopened"; return 0; }
+  machine_editor_open && { HOLDWHY="memory is short with the Fortnite editor open"; return 0; }
+  return 1; }
+# 11-03: limits.txt is written only after a Codex run, so its last line goes stale. Past that line's week_resets the week is new and its percent no longer counts; without this the
+# reserve rests for good, because a rest blocks the very run that would write a new line.
+weeknow(){ local l w r; l=$(tail -1 "$X/limits.txt" 2>/dev/null); w=$(printf '%s' "$l" | grep -o 'week=[0-9.]*' | cut -d= -f2)
+  r=$(printf '%s' "$l" | sed -n 's/.*week_resets=\([0-9-]* [0-9:]*\) .*/\1/p'); [ -n "$r" ] && r=$(date -d "$r" +%s 2>/dev/null)
+  [ -n "$r" ] && [ "$r" -le "$(date +%s)" ] && return 0; echo "$w"; }
+# 11-03: his 11-02 order keeps HTML tests on the JTPC. preflight, shipq and uishots send their Chrome stages there when GATE_REMOTE=1; nothing in this lane starts a Chrome on JUL26.
+gate_remote(){ [ "$(bash "$R/tools/handoff/gate-remote.sh" on 2>/dev/null)" = 1 ]; }
+no_chrome_here(){ [ "$ON_MAIN" = 1 ] || gate_remote; }
 
 # ---------------------------------------------------------------- the codex program and a clean environment for it
 find_codex(){
@@ -92,6 +113,8 @@ login_state(){ local o; o=$( { cd "$W" 2>/dev/null || cd "$R"; } ; cxenv timeout
   LOGIN_TXT=$(printf '%s' "$o" | tr -d '\r' | head -2 | tr '\n' ' ' | sed -E 's/sk-[A-Za-z0-9_*.-]+/sk-***/g; s/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+/<email>/g' | cut -c1-80)
   if [ $LOGIN_RC -eq 0 ]; then printf '%s' "$LOGIN_TXT" | grep -qi 'api key' && return 2; return 0; fi; return 1; }
 NEEDS_SIGNIN="needs you: codex is not signed in (run codex once and choose Sign in with ChatGPT)"
+# 11-03: the sign-in is his hands, so the exact step goes where he reads it, once
+signin_note(){ grep -q 'Sign in with ChatGPT' "$C/for-you.md" 2>/dev/null && return 0; echo 'one step waiting on you: open a terminal, type codex and press Enter, choose "Sign in with ChatGPT" and finish in the browser. Codex stays off until you do.' >> "$C/for-you.md"; }
 
 # ---------------------------------------------------------------- the private worktree
 wt_setup(){
@@ -157,21 +180,23 @@ if [ "$MODE" = run ]; then
   # over that line, only his own o-00* orders run, the rest rest until the line catches up (at most 90 min, then it looks again). PACE_PER_H unset = off.
   # 10-29 (CEO): the reserve. At CX_PAUSE_AT percent of the week (92) nothing runs, his o-00* orders included, except a job file with a line "party-breaking: yes".
   # Looks again in 30 minutes. The Codex Correspondent tells the CEO chat when this starts.
-  pa=$(cap CX_PAUSE_AT ""); wk0=$(tail -1 "$X/limits.txt" 2>/dev/null | grep -o 'week=[0-9.]*' | cut -d= -f2)
+  pa=$(cap CX_PAUSE_AT ""); wk0=$(weeknow)
   if [ -n "$pa" ] && [ -n "$wk0" ] && awk -v w="$wk0" -v p="$pa" 'BEGIN{exit !(w>=p)}' ; then
     pbj=$(grep -aliE '^party-breaking: *yes' "$C/tasks/"o-*.md 2>/dev/null | head -1)
     if [ -n "$pbj" ]; then JOBARG=$(basename "$pbj" .md); else
-    echo $((now+1800)) > "$X/rest-until.txt"; echo "week use $wk0% reached the reserve line ($pa%) kept for party night" > "$X/rest-why.txt"; say "resting: week use $wk0% reached the reserve line ($pa%) kept for party night"; exit 0; fi
+    echo $((now+1800)) > "$X/rest-until.txt"; echo "week use $wk0% reached the reserve line ($pa%)" > "$X/rest-why.txt"; say "resting: week use $wk0% reached the reserve line ($pa%)"; exit 0; fi
   fi
   ph=$(cap PACE_PER_H ""); if [ -n "$ph" ] && [ -z "$JOBARG" ] && ! ls "$C/tasks/"o-00*.md >/dev/null 2>&1; then
-    pf=$(cap PACE_FROM_EPOCH ""); pp=$(cap PACE_FROM_PCT ""); wk=$(tail -1 "$X/limits.txt" 2>/dev/null | grep -o 'week=[0-9.]*' | cut -d= -f2)
+    pf=$(cap PACE_FROM_EPOCH ""); pp=$(cap PACE_FROM_PCT ""); wk=$(weeknow)
     if [ -n "$pf" ] && [ -n "$pp" ] && [ -n "$wk" ]; then
       lag=$(awk -v w="$wk" -v p="$pp" -v r="$ph" -v n="$now" -v f="$pf" 'BEGIN{l=p+r*(n-f)/3600; d=(w-l)/r; if(d>0){d=d*3600; if(d<600)d=600; if(d>5400)d=5400; printf "%d", d}}')
       if [ -n "$lag" ]; then echo $((now+lag)) > "$X/rest-until.txt"; echo "week use $wk% is ahead of the pace line to the party" > "$X/rest-why.txt"; say "resting: week use $wk% is ahead of the pace line to the party, back about $(date -d "@$((now+lag))" '+%a %H:%M')"; exit 0; fi
     fi
   fi
+  if [ "$ON_MAIN" = 1 ] && ! gate_remote; then say "waiting: the remote gate is off, and no tests run on this PC"; exit 0; fi
+  if fnp_hold; then say "waiting: $HOLDWHY"; exit 0; fi
   login_state; ls=$?
-  [ $ls = 1 ] && { say "$NEEDS_SIGNIN"; exit 0; }
+  [ $ls = 1 ] && { say "$NEEDS_SIGNIN"; signin_note; exit 0; }
   [ $ls = 2 ] && { say "needs you: codex is signed in with an API key, which bills per token (run codex logout, then codex and choose Sign in with ChatGPT)"; exit 0; }
   mkdir -p "$C/tasks" "$C/done" "$C/failed" "$C/log" "$C/notes"
   # one worker per lane (same lock folder convention as console-lane.sh; other lanes read lane-o.lock/task as the busy list)
@@ -354,6 +379,7 @@ ship_key(){
     # 2026-10-19 (o-04 burned 5 runs): the preflight Chrome ($PFPORT) not answering is the lane's problem, not Codex's. Restart it and
     # try again; if it still will not answer, put the job back without spending a Codex run.
     if printf '%s\n' "$pf" | grep -qiE 'Unable to connect to the remote server|actively refused|json/version'; then
+      no_chrome_here && { say "gate: the spare pc could not be reached ($name); the job waits, no run spent"; return 2; }
       if [ $i -lt 4 ]; then log "preflight browser $PFPORT not answering ($k), restarting it"; closepf; sleep 3
         powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/cdp.ps1" -Start -Port $PFPORT -Profile "$(cygpath -w "$TEMP")\pillagers-cdp$PFPORT" >/dev/null 2>&1; sleep 3; continue; fi
       say "gate: preflight browser $PFPORT will not answer ($name); the job waits, no run spent"; return 2; fi
@@ -365,7 +391,7 @@ $(printf '%s\n' "$pf" | tail -8)"; return 1
     say "gate: shipping $k ($name, codex)"
     # 2026-10-19: the gate browser (shipq.sh ships on Chrome 9346) can be down after a restart; Codex may not start it from its sandbox,
     # so the lane does, the same command the Claude lanes are allowed (console-lane.sh). Without this every run failed "Unable to connect".
-    curl -s -m 3 http://127.0.0.1:9346/json/version >/dev/null 2>&1 || { log "gate browser (9346) was down, starting it"; powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/cdp.ps1" -Start -Port 9346 >/dev/null 2>&1; }
+    no_chrome_here || curl -s -m 3 http://127.0.0.1:9346/json/version >/dev/null 2>&1 || { log "gate browser (9346) was down, starting it"; powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/cdp.ps1" -Start -Port 9346 >/dev/null 2>&1; }
     out=$(timeout 7500 bash "$S/shipq.sh" "$k" 2>&1 | tail -14 | cut -c1-700); echo "$out" > "$X/log/$name-$k.ship.txt"
     printf '%s\n' "$out" | grep -q '^SHIPPED' && { echo "$k" >> "$LS/shipped.txt"; SHIPPED_NOW+=("$k"); ONHIS_NOW+=("$(printf '%s\n' "$out" | grep -m1 -E '^(NOT )?ON HIS PC' | cut -c1-240)"); log "$name shipped $k: $(printf '%s\n' "$out" | grep '^SHIPPED' | head -1)"; return 0; }
     if printf '%s\n' "$out" | grep -qi 'uncommitted changes'; then sleep 90; continue; fi
@@ -402,6 +428,8 @@ apply_retarget(){
   local lst="$LS/retarget-run.txt" res="$LS/retarget-result.txt" trial="$R/tools/$RT_PAGE" pl st run why n h0 h1 bad miss v c pat tries=0
   RT_HOLD=""; RT_DONE=""
   [ -f "$js" ] || return 0
+  # 11-03: a retarget runs checks in a Chrome on this machine, and no tests run on JUL26. Codex is told, nothing is applied, its keys wait.
+  if no_chrome_here; then RT_HOLD="*"; appendfb "fixture-retarget.json was NOT applied: the lane cannot run it on this PC, because tests stay on the spare pc. Delete the file and finish without changing older checks. If the job cannot ship without that, say so in your last message."; return 1; fi
   touch "$ap"
   # the keys that wait if this fails (none listed: all of them wait)
   RT_HOLD=$(node "$X/retarget.mjs" keys "$js" 2>/dev/null | tr -d '\r')
@@ -523,6 +551,7 @@ prevkeys=$(keys_list)
 while [ "$it" -lt "$left" ]; do
   it=$((it+1))
   if [ -f "$C/STOP" ] || [ -f "$X/STOP" ]; then say "paused (STOP file); $name kept"; r="stopped"; break; fi
+  if fnp_hold; then say "waiting: $HOLDWHY; $name kept"; r="stopped"; break; fi
   wt_refresh || { say "needs you: the codex worktree cannot be refreshed (see $X/log/wt.err); $name kept"; r="stopped"; break; }
   mkdir -p "$WD"
   # 2026-10-19 night: a job that ended "waiting" (the gate or the retarget could not run, not Codex's fault) used to spend a fresh Codex
@@ -548,7 +577,7 @@ while [ "$it" -lt "$left" ]; do
       rest_until "$e" "codex usage limit"; say "resting: codex usage limit, back about $(date -d "@$e" '+%a %H:%M'); $name kept"
       echo "$(date '+%F %H:%M') $name ${dt}s usage-limit (not counted) back $(date -d "@$e" '+%F %H:%M')" >> "$X/runs.txt"; r="limit"; break;;
     login)
-      say "$NEEDS_SIGNIN; $name kept"; echo "$(date '+%F %H:%M') $name ${dt}s not-signed-in (not counted)" >> "$X/runs.txt"; r="login"; break;;
+      say "$NEEDS_SIGNIN; $name kept"; signin_note; echo "$(date '+%F %H:%M') $name ${dt}s not-signed-in (not counted)" >> "$X/runs.txt"; r="login"; break;;
     crash)
       f=$(( $(cat "$X/fails.txt" 2>/dev/null | tr -dc '0-9') + 1 )); echo "$f" > "$X/fails.txt"; m=$(( f * 10 )); [ $m -gt 60 ] && m=60
       rest_until $(( $(date +%s) + m * 60 )) "codex runs are failing ($f in a row, see $(basename "$JSONL"))"
