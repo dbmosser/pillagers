@@ -1,3 +1,5 @@
+STATUS 11-03 (CEO chat): the game is fine; the Undercroft checks sat behind the birth card with nobody living. Fixture d12a19e47 fixed them; 8.84, 8.95, 8.96, 9.32, 25.34 and 24.35 passed in replays of most of their slices on the spare PC (read by the CEO chat). STILL TO DO, so this stays here: read those six in the first full run whose fixture holds d12a19e47 (not corpus-1102-2152), and read 9.07 in the same run: it failed in every replay that reached it, alone too, cause not found, though it was not red in corpus-1102-0552. 8.66 stays red and is not this job.
+
 # 266-hub-key-checks-birth-card-leak : checks 8.84, 8.95, 8.96, 9.32, 24.35 and 25.34 find the Undercroft covered by a window (full runs corpus-1102-0048 and corpus-1102-0552, v37.39)
 Queue (known-red triage 11-02). One likely cause for six checks, NOT yet proved. A harness fault first, a game bug only if a player can reach it.
 effort: low to medium (read-only first: grep each id in tools/mkfixture.ps1, read about 60 lines around the hit)
