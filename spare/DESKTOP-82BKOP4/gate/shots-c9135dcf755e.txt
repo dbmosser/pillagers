@@ -1,0 +1,24 @@
+id=shots-c9135dcf755e
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=88f036e2f7e0578c3fe17c5002406770d86edd85
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1793695973
+ended=1793695996
+result=PASS
+infra=0
+reason=
+--- stages
+== 1080 : window 1956x1185, viewport 1920x1080
+  b-shipped                              staged       6.0s    | PROBE v35.30 ok
+report: C:\PillagersSpare\gate\work\shots-c9135dcf755e\shots\report.json
+--- end
+done=1
