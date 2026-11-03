@@ -80,7 +80,9 @@ xw=$(echo "$xl" | grep -o 'week=[0-9.]*' | head -1 | cut -d= -f2); xr=$(echo "$x
 say "codex: $nq o-* job(s) queued, week ${xw:-?}% used${xr:+ (resets $xr)}"
 xroom=1; [ -n "$xw" ] && awk -v w="$xw" 'BEGIN{exit !(w+0>=90)}' && xroom=0
 [ "${nq:-0}" -lt 5 ] && [ "$xroom" = 1 ] && flag "Codex has only $nq o-* job(s) queued (under 5)${xw:+ and its week is $xw% used}: rename more fix jobs that need no fixq or mkfixture retarget, no live measuring, soak or saved profile to o-NAME.md in tasks/, party ones first"
-# 11-02: the main PC has bad memory (the FnP chat measured it 21:35); a bad bit in a build shows as a one-bit change, see tools/handoff/flipscan.py
+# 11-02: the main PC had bad memory (the FnP chat measured it 21:35, 3 sticks since 23:17); a bad bit in a build shows as a one-bit change, see tools/handoff/flipscan.py
 fl=$(timeout 120 py -3 tools/handoff/flipscan.py 5 2>/dev/null | grep "^LOOK"); [ -n "$fl" ] && flag "possible bad-memory damage in a recent build: $(echo "$fl" | head -2 | cut -c1-220)"
+# 11-02: ramwatch.py lives in the CEO chat's background, so a reboot stops it; its log goes quiet (each round or sit-out writes a line, once an hour)
+rw="$LOCALAPPDATA/PillagersRamwatch/ramwatch.log"; [ -f "$rw" ] && [ $(( $(date +%s) - $(stat -c %Y "$rw") )) -gt 5400 ] && flag "the hourly memory check has stopped (no round in 90 min): restart tools/handoff/ramwatch.py from the CEO chat"
 say "newest build: $(grep -m1 "^var VER='" dark_raiders.html | sed "s/var VER='\([0-9.]*\)'.*/v\1/"), last commit $(git log -1 --format='%cr')"
 [ $look = 1 ] && echo "VERDICT: LOOK (lines above)" || echo "VERDICT: ALL CLEAR"
