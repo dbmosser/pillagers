@@ -1,0 +1,28 @@
+id=preflight-cw-topstrip-2f25848f7e03
+kind=preflight
+key=cw-topstrip
+tag=pfh
+v=37.45
+new=3745
+base=c0560c0dc763c3ec0cd58dc941b7dd5dcd661fc5
+host=DESKTOP-82BKOP4
+draft_sha=b57439f43546b5831450bd1768302dbb0e378ba1448db6bef2cc51ab5cbc8e53
+p_sha=8736a6a5f532a7d38315b91fe7a00c6f872c0c97cc0034b39079ed06d3038990
+f_sha=5acef0a3a89decfd0ea1b5befa78e1f7e15aa2793dcf8ff4b2dd1dfbdfc0519e
+game_sha=7f28dc5baaad4c75fb420a9c063fd14f564fe17ac932e9529d479e1b74a9b051
+fix_sha=bc69691934a07d737327e9d25f623babf4358c0dcba5ff48540beb7489ae6280
+started=1793693453
+ended=1793693602
+result=PASS
+infra=0
+reason=
+--- stages
+ppfh -> OK, 23 edits applied plus DEVNOW
+fpfh -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.45 parse check
+dry fxdrypfh check 37.45: PASS / PASS
+control fxctlpfh check 37.45: no top strip: the clock, score and extract still stack in the top middle / no top strip: the clock, score and extract still stack in the top middle
+recent: 0 new failures in the newest 80 checks
+--- end
+done=1
