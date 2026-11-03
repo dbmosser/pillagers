@@ -1,0 +1,25 @@
+diff --git a/tools/spare/spare-runner.ps1 b/tools/spare/spare-runner.ps1
+index affb21b..9ab4255 100644
+--- a/tools/spare/spare-runner.ps1
++++ b/tools/spare/spare-runner.ps1
+@@ -73,6 +73,20 @@ $Node=(Get-Command node -ErrorAction SilentlyContinue).Source; if(-not $Node){ $
+ function Stamp(){ (Get-Date).ToString('MM-dd HH:mm') }
+ function Epoch(){ [DateTimeOffset]::UtcNow.ToUnixTimeSeconds() }
+ function Say([string]$s){ [IO.File]::AppendAllText($Log,(Stamp)+' '+($s -replace '[^\x20-\x7e]','?')+"`r`n",$Enc) }
++# 11-03: one copy at a time. A copy that goes 10 minutes without a heartbeat on a busy PC is slow, not gone: the 15-minute task let a second copy in at 23:22
++# and the two ran for 6 hours, started one full run twice and ran gate jobs twice in one folder. Windows lets go of this when a copy ends, however it ends. If it cannot be
++# opened, things go on as before. An hour with no heartbeat means the copy is stuck, as a heartbeat from before this boot does not (that copy is still starting): it is ended.
++if(-not $Idle -and -not $Once){
++  $got=$true; try{ $script:oneCopy=New-Object Threading.Mutex($false,'Global\PillagersSpareRunner'); $got=$script:oneCopy.WaitOne(60000) }catch{}   # an abandoned one throws here: the last copy died holding it, so it is this copy's
++  if(-not $got){
++    $age=[double]0; try{ $age=[double](HbAgeSec) }catch{}
++    if($age -lt 3600 -or $age -ge 1e9){ Say ('another copy of this runner is alive, slow for '+[int]($age/60)+' minutes: no second copy'); exit 0 }
++    Say ('another copy of this runner has had no heartbeat for '+[int]($age/60)+' minutes: it is stuck, so it is ended')
++    Get-CimInstance Win32_Process -Filter "Name='powershell.exe'" -ErrorAction SilentlyContinue | Where-Object { $_.ProcessId -ne $PID -and $_.CommandLine -match 'spare-runner\.ps1' -and $_.CommandLine -notmatch '\s-Once\b' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }
++    $got=$true; try{ $got=$script:oneCopy.WaitOne(60000) }catch{}
++    if(-not $got){ exit 0 }
++  }
++}
+ function GetS([string]$k){
+   if(Test-Path -LiteralPath $StateF){ foreach($l in [IO.File]::ReadAllLines($StateF)){ if($l.StartsWith($k+'=')){ return $l.Substring($k.Length+1) } } }
+   return ''

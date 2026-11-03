@@ -2,6 +2,16 @@
 
 Measured 2026-11-03, 03:53 to 04:01, on DESKTOP-82BKOP4 (i5-7600K, 4 cores, 4 threads). Measured only; nothing on the PC was changed.
 
+## Correction, 11-03 05:30
+
+Two copies of the spare runner ran at once from 11-02 23:22 to 11-03 05:19. I stopped the extra one at 05:19:50, and `../onecopy/` has a guard for the CEO to land.
+
+- **The CPU readings below stand.** They are per process. The two runners were part of the PowerShell line.
+- **The robot and gate counts for the last two rows of the restart table were taken during that time.** "39 gate jobs" was a double count. To the end of the 01:35 run: 36 gate jobs taking 118 of 215 minutes, 10 robot starts, 13 aborts, 20 raids, 11 clean, 10 problems.
+- **The 11-02 00:48 row ran past that run's end.** Inside the run: 4 starts, 47 raids, 29 clean, 23 problems.
+- **`runner-quiet.diff` waits.** I'm recounting with one runner before asking for it to land.
+- **"The time is going inside the checks" is too simple.** The same checks ran 2 to 3 times faster in the 01:35 run than on 11-02. The second runner doesn't explain the doubling either, because 11-02 00:48 ran before it. Still open.
+
 ## Answer
 
 - **The "100% busy" figure was wrong.** It was a bug in my script: it printed 100 whatever the machine was doing. Real figures are below.
