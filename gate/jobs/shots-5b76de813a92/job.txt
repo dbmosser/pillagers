@@ -1,0 +1,14 @@
+id=shots-5b76de813a92
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=0f913cba22fb7dffe20a16b4dd4f1bacac37d01d
+screens=m3a-search-tip,m3a-row,m3a-bag-hover,m3a-extract-card
+res=1080,4k
+nolint=0
+lintopts=
+from=JUL26
+submitted=1793691073
+expires=1793697673
