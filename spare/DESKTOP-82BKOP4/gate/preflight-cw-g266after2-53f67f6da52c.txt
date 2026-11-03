@@ -1,0 +1,26 @@
+id=preflight-cw-g266after2-53f67f6da52c
+kind=preflight
+key=cw-g266after2
+tag=pfg
+v=37.43
+new=3743
+base=c6dc2720c44de4d5eb4da664820365a49934a4e6
+host=DESKTOP-82BKOP4
+draft_sha=c4d6a7ce336395ce9adbc533310ac5fd809534fe7a81b3da98eeab1c3be4b25c
+p_sha=790674f2c8a498071b44f4f8e1fcdae3eb1aeb01ee54d603b7d46a11a9cb1bc2
+f_sha=d322dfe1bf9671f71b07fe5da949e2bb100a14e59db8357a9a3cad8cb8b55ea4
+game_sha=4cca6fbb306c619092039e2025efaec411b41d1dc7133edbed7945b4f7fe77fc
+fix_sha=cab95da44045d215931b586cbc0682aefaf691381e51dbc42810f6f34bad00ff
+started=1793683337
+ended=1793683518
+result=FAIL
+infra=0
+reason=the new check does not pass twice on the drafted build
+--- stages
+ppfg -> OK, 2 edits applied plus DEVNOW
+fpfg -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.43 parse check
+dry fxdrypfg check 37.43: PROBE at1308,1407 W2 ran106 skip3 rest4 25.34=ok red:none W3 ran42 skip46 rest2 24.35=ok red:none W1 ran22 skip14 rest0 9.32=ok red:9.07 156s / -
+--- end
+done=1
