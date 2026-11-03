@@ -1,0 +1,57 @@
+diff --git a/tools/fuzz.ps1 b/tools/fuzz.ps1
+index 9066196..24ac2f3 100644
+--- a/tools/fuzz.ps1
++++ b/tools/fuzz.ps1
+@@ -43,7 +43,8 @@ param(
+   [switch]$Trace,
+   [string]$Fixture='fixture.html',
+   [int]$P2Share=75,
+-  [string]$Size='1920x1080'
++  [string]$Size='1920x1080',
++  [int]$FpsCap=0
+ )
+ $ErrorActionPreference='Stop'
+ $R=$(if($env:PILLAGERS_ROOT){ $env:PILLAGERS_ROOT -replace '/','\' }else{ 'C:\claudecode\dark raiders' }); $T=$R+'\tools'; $OutDir=$T+'\handoff\fuzz'   # 10-22: the main PC's idle runs set PILLAGERS_ROOT
+@@ -216,6 +217,9 @@ $script:Hook=[IO.File]::ReadAllText($T+'\fuzz-hook.js')
+ # 10-23: the block alone leaks: a report posted as the player 2 window closes (keepalive) leaves with the browser, past the page's block
+ # (one at 00:22). So each robot window also gets the dead report address a fixed test copy has (mkfixture.ps1), whatever copy it runs.
+ $DeadDrop="try{ LOCAL_DROP='http://127.0.0.1:9/telemetry'; }catch(e){}"
++# 11-03: -FpsCap N holds each robot window to the game's own frame cap, the Off/60/30 setting a player has. 0, the default, leaves it alone. Set with the dead address on every
++# window and again at every poll, because a new raid can rebuild CFG. gfx= then shows the cap and work= is the measure, as in the VM's hidden browser.
++if($FpsCap -gt 0){ $DeadDrop+=' try{ CFG.fpsCap='+$FpsCap+'; }catch(e){}' }
+ function Block-Collector(){ Cmd 'Network.enable'; Cmd 'Network.setBlockedURLs' '{"urls":["*:8799/*"]}' }
+ # 10-27: a robot page that loads afresh mid raid has lost the hook, and the next poll threw "reading 'poll'" (21 on the spare PC since 34.83).
+ # The run now writes down where the page is, how it got there and what the hook saw as it left (fz:bye), puts the hook back, and carries on.
+@@ -334,6 +338,7 @@ function Add-Problem([string]$kind,[string]$msg,[string]$where){
+ 
+ # ---------------------------------------------------------------- one raid
+ $POLLX='JSON.stringify(window.__fz.poll())'
++if($FpsCap -gt 0){ $POLLX='(window.__gx("CFG.fpsCap='+$FpsCap+'"),'+$POLLX+')' }
+ 
+ # ---------------------------------------------------------------- demo2p: the real 2-player party rig (10-18)
+ $script:p2Info=''; $script:p2Dead=$false; $script:p2StallAt=-99999.0; $script:scMis=0; $script:scRep=$false; $script:p2Re=0; $script:padSeed=0
+@@ -699,7 +704,7 @@ try{
+   $so=& powershell.exe -NoProfile -ExecutionPolicy Bypass -File ($T+'\cdp.ps1') -Start -Port $Port -Profile $prof
+   if(($so | Out-String) -notmatch 'browser up'){ throw ('chrome did not start on '+$Port+': '+($so | Out-String)) }
+   Open-Page
+-  LogLine ((Stamp)+' FUZZ START seed='+$Seed+' minutes='+$Minutes+' raidsec='+$RaidSec+' port='+$Port+' srv='+$script:srvPort+' build='+$script:ver+' maps='+($script:maps -join ',')+' size='+$Size+' gpu='+(Gpu-Name))
++  LogLine ((Stamp)+' FUZZ START seed='+$Seed+' minutes='+$Minutes+' raidsec='+$RaidSec+' port='+$Port+' srv='+$script:srvPort+' build='+$script:ver+' maps='+($script:maps -join ',')+' size='+$Size+$(if($FpsCap -gt 0){ ' fpscap='+$FpsCap })+' gpu='+(Gpu-Name))
+   $modes=@('demo1','career','demo2'); $master=New-Object System.Random($Seed)
+   $others=@('demo1','career'); $script:otherNo=0; $script:p2Off=$false; $script:p2Fails=0; $script:dirty=$false
+   while($true){
+diff --git a/tools/spare/spare-runner.ps1 b/tools/spare/spare-runner.ps1
+index affb21b..0ea34c0 100644
+--- a/tools/spare/spare-runner.ps1
++++ b/tools/spare/spare-runner.ps1
+@@ -1154,8 +1154,10 @@ function Start-Robot([int]$port,[string]$copy,[string]$size='',[switch]$Low){
+   Tidy-Profiles
+   if(-not (Test-Path -LiteralPath ($T+'\fxcorpus.html'))){ return }
+   $env:FUZZ_OUT_DIR=$FzOut; $env:FUZZ_COPY_NAME=$copy
++  # 11-03: the spare PC's 1080p robot plays at 30 frames a second, the game's own setting. Its screen runs at 100 Hz, and two windows took 79% of the PC uncapped against 42% capped,
++  # so with a full run's 26% on top they ran out of processor: 2-window raids with a problem during a full run, v37.26 to v37.48, 87 of 164; one window 0 of 41. Each one keeps a build out of stable.
+   $pr=Start-Process -FilePath powershell.exe -WindowStyle Hidden -PassThru -ArgumentList @('-NoProfile','-ExecutionPolicy','Bypass','-WindowStyle','Hidden',
+-    '-File',('"'+$T+'\fuzz.ps1"'),'-Minutes',[string]$FuzzMinutes,'-IgnoreFlag','-Port',[string]$port,'-MinFreeGB',$(if($Idle){ '3' }else{ '2' }),'-Fixture','fxcorpus.html',$(if($size){ '-Size' }else{ '-P2Share' }),$(if($size){ $size }else{ '75' }))
++    '-File',('"'+$T+'\fuzz.ps1"'),'-Minutes',[string]$FuzzMinutes,'-IgnoreFlag','-Port',[string]$port,'-MinFreeGB',$(if($Idle){ '3' }else{ '2' }),'-Fixture','fxcorpus.html',$(if($size){ '-Size' }else{ '-P2Share' }),$(if($size){ $size }else{ '75' }),'-FpsCap',$(if($Idle -or $size){ '0' }else{ '30' }))
+   # 10-28: below normal at once; the robot's Chrome and its other children take the class it has when they start
+   if($Low -and $pr){ try{ $pr.PriorityClass=[Diagnostics.ProcessPriorityClass]::BelowNormal }catch{} }
+   $script:lightRun=[bool]$Low   # Watch lets only a light robot go on while he is at the PC
