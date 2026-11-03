@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.43 - SEASON ZERO M3: THE STASH DOLL: NINE SLOTS, WEAR AND TAKE OFF, COMPARE TIPS, SAVED OUTFITS
+
+Co-op hunt while he was away. his rulings of 11-01, plan worn gear: nine slots with no cloak (answer 54), any pillager wears any piece (63), a compare tip better or worse (71), no limit on room for gear (69), saved outfits with one tap to dress (70), dress at the stash before you ascend Watch: a gear button on the stash row and a worn line on the pre-raid page open a full window: nine slots around the figure with the sum of what you wear, every piece in a scrolling list, click A or enter wears and a click on a filled slot takes off, a tip says better worse or even against what you wear, and up to five named outfits dress in one tap and show how many pieces are missing. A new ring with both full replaces the weaker ring, the one the tip compared it with. Never in a raid or the demo
+
+MEASURED. Check 37.43 passes, and fails on v37.42.
 ## v37.42 - SEASON ZERO M3: THE WORKBENCH WORKS ON GEAR
 
 Co-op hunt while he was away. his rulings of 11-01: reroll one trait for dollars at the workbench (67), salvage unwanted gear into materials (66), most the money should come from selling gear; plan worn gear and stations Watch: the trader has a gear tab beside craft: every stash piece with name in rarity colour, power, pips and traits; each trait has a reroll button with its price, a quarter of the sale value and up by half each time; hold to sell pays the sale price and counts in lifetime earnings; hold to salvage gives 2, 4, 8 or 14 materials worth about 80 percent of a sale; keys and pad get a confirm card; worn pieces are not offered; net worth counts gear in the stash and worn; never in the demo

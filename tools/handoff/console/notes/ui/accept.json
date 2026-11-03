@@ -5392,5 +5392,69 @@
   "pic": "tools/handoff/console/notes/shots/00p-m2e-after/e6-run-card-1080.jpg",
   "task": "manual",
   "when": "2026-11-02T04:24"
+ },
+ "g1-bench": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "the shop reads clean and on-brand at a glance, but a stray overlapping caption and a clipped list row give it away as unfinished the moment you look closer.",
+  "findings": [
+   "P0 bottom-center of the gear list, all 4 shots: anchor it as a footer flavor-line docked flush to the card's bottom edge (inside --sp-2 padding, not overlapping rows) or cut it; never let it render over scrollable content or on the empty state.",
+   "P0 bottom of the scrollable item list, images 1-3: add bottom padding (--sp-3, 24px) under the list or a scroll-fade mask so the final row never renders mid-cut.",
+   "P1 'you hold $24,000' under the tab row: delete the line; the header '$24,000' already owns that job. If a running-total context is needed, fold it into the header instead of duplicating.",
+   "P1 'hold to salvage' button, image 2 mid-hold: give hold-progress its own neutral/accent fill (e.g. --acc at reduced opacity) shared by both 'hold to sell' and 'hold to salvage' so the two buttons use one consistent hold-fill language, and keep --warn off large surfaces.",
+   "P2 'no gear' empty state, image 4: center the message (both axes) in a fixed-height area matching the populated layout's list column width, add a simple glyph, and keep the detail pane's frame (even empty/dimmed) so the two-pane structure doesn't visibly break."
+  ],
+  "pic": "tools/handoff/console/notes/shots/00p-m3e-after/g1-bench-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-03T05:29"
+ },
+ "g3-salvage-hold": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "the shop reads clean and on-brand at a glance, but a stray overlapping caption and a clipped list row give it away as unfinished the moment you look closer.",
+  "findings": [
+   "P0 bottom-center of the gear list, all 4 shots: anchor it as a footer flavor-line docked flush to the card's bottom edge (inside --sp-2 padding, not overlapping rows) or cut it; never let it render over scrollable content or on the empty state.",
+   "P0 bottom of the scrollable item list, images 1-3: add bottom padding (--sp-3, 24px) under the list or a scroll-fade mask so the final row never renders mid-cut.",
+   "P1 'you hold $24,000' under the tab row: delete the line; the header '$24,000' already owns that job. If a running-total context is needed, fold it into the header instead of duplicating.",
+   "P1 'hold to salvage' button, image 2 mid-hold: give hold-progress its own neutral/accent fill (e.g. --acc at reduced opacity) shared by both 'hold to sell' and 'hold to salvage' so the two buttons use one consistent hold-fill language, and keep --warn off large surfaces.",
+   "P2 'no gear' empty state, image 4: center the message (both axes) in a fixed-height area matching the populated layout's list column width, add a simple glyph, and keep the detail pane's frame (even empty/dimmed) so the two-pane structure doesn't visibly break."
+  ],
+  "pic": "tools/handoff/console/notes/shots/00p-m3e-after/g3-salvage-hold-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-03T05:29"
+ },
+ "g2-reroll": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "the shop reads clean and on-brand at a glance, but a stray overlapping caption and a clipped list row give it away as unfinished the moment you look closer.",
+  "findings": [
+   "P0 bottom-center of the gear list, all 4 shots: anchor it as a footer flavor-line docked flush to the card's bottom edge (inside --sp-2 padding, not overlapping rows) or cut it; never let it render over scrollable content or on the empty state.",
+   "P0 bottom of the scrollable item list, images 1-3: add bottom padding (--sp-3, 24px) under the list or a scroll-fade mask so the final row never renders mid-cut.",
+   "P1 'you hold $24,000' under the tab row: delete the line; the header '$24,000' already owns that job. If a running-total context is needed, fold it into the header instead of duplicating.",
+   "P1 'hold to salvage' button, image 2 mid-hold: give hold-progress its own neutral/accent fill (e.g. --acc at reduced opacity) shared by both 'hold to sell' and 'hold to salvage' so the two buttons use one consistent hold-fill language, and keep --warn off large surfaces.",
+   "P2 'no gear' empty state, image 4: center the message (both axes) in a fixed-height area matching the populated layout's list column width, add a simple glyph, and keep the detail pane's frame (even empty/dimmed) so the two-pane structure doesn't visibly break."
+  ],
+  "pic": "tools/handoff/console/notes/shots/00p-m3e-after/g2-reroll-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-03T05:29"
+ },
+ "g6-empty": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "the shop reads clean and on-brand at a glance, but a stray overlapping caption and a clipped list row give it away as unfinished the moment you look closer.",
+  "findings": [
+   "P0 bottom-center of the gear list, all 4 shots: anchor it as a footer flavor-line docked flush to the card's bottom edge (inside --sp-2 padding, not overlapping rows) or cut it; never let it render over scrollable content or on the empty state.",
+   "P0 bottom of the scrollable item list, images 1-3: add bottom padding (--sp-3, 24px) under the list or a scroll-fade mask so the final row never renders mid-cut.",
+   "P1 'you hold $24,000' under the tab row: delete the line; the header '$24,000' already owns that job. If a running-total context is needed, fold it into the header instead of duplicating.",
+   "P1 'hold to salvage' button, image 2 mid-hold: give hold-progress its own neutral/accent fill (e.g. --acc at reduced opacity) shared by both 'hold to sell' and 'hold to salvage' so the two buttons use one consistent hold-fill language, and keep --warn off large surfaces.",
+   "P2 'no gear' empty state, image 4: center the message (both axes) in a fixed-height area matching the populated layout's list column width, add a simple glyph, and keep the detail pane's frame (even empty/dimmed) so the two-pane structure doesn't visibly break."
+  ],
+  "pic": "tools/handoff/console/notes/shots/00p-m3e-after/g6-empty-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-03T05:29"
  }
 }

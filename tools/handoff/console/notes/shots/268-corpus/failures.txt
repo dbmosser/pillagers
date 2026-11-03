@@ -1,0 +1,55 @@
+v35.28: control: the open wheel does not say release to take out; the held item does not say drop on a key
+v35.03: without the score plate: the button is not at the top edge (top 70); with the score plate: the button is not at the top edge (top 70)
+v33.68: 2 sprites touched the edge of the scratch
+v32.12: threw: CLKCARD is not defined
+v31.30: the downed block has no plate behind it (no downPlateRect)
+v27.38: THREE: the row sits on the controls list
+v25.66: career alert 1920x1080: an element is not drawn (clock true, compass false, alert or feed true); career loc 1920x1080: an element is not drawn (clock true, compass false, alert or feed true); career final 1920x1080: an element is not drawn (clock true, compass false, alert or feed true); demo alert 1920x1080: an element is not drawn (clock true, compass false, alert or feed true); demo loc 1920x1080: an element is no
+v25.13: the clock spot does not read SCORE and 100 in a CAREER raid (100 SP)
+v23.54: the 1 player arcade HUD shows no SCORE label
+v8.66: a bandage dropped on a gun key stuck, the bar takes guns only
+v31.41: TWO: the header does not carry the sector name (cold storage); TWO: the muted words sector map are gone from the header; TWO: the surveyed figure is not in the footer; TWO: no contracts title with 1 of 5 done (); TWO: the kill contract is not listed as destroy crawlers 3/5 $4,321 (); TWO: a finished contract does not say done, or a rule contract does not say holding; TWO: a short name is missing (); SIX: with the 1.5
+v31.09: SEVEN: the keyboard prompt on the map does not read or click to start (); SEVEN: the keyboard prompt shows no E key; SEVEN: the pad prompt on the map does not read to start (); SEVEN: the pad prompt shows no A button; SEVEN: the mark hint is gone from the map the player opens himself; FIVE: no waiting for line on the map after the press ()
+v36.75: the danger headline stands at 4 percent of the height, not 27
+v33.12: investigate at 26: no bot name drawn; chase at 26: no bot name drawn; alarm at 26: no bot name drawn; idle at 26: no bot name drawn
+v32.06: the corner is not red (rgba 22,19,20,242)
+v13.39: the line saying the survivor paid him and what he handed over was written over in the same frame and never shown [shown: CACHE MARKED]
+v11.58: the Undercroft HUD is blank where the heading and the stash line are drawn (0 opaque pixels in the top strip), so the floor is painting its screen and erasing it in the same frame; control: nothing is drawn along the bottom of the HUD canvas, so the belt was lost
+v35.84: clock and score gap is under 16px
+v34.44: no downed wash drawn
+v31.05: THREE: a frozen frame drew only 0 strings, the screen is not kept for a click to find
+v29.11: MACHINE ALERT is drawn as nothing
+v27.99: the clock is not drawn with the score at 5:00; the clock is not drawn with the score at 0:30
+v27.50: the alert headline is 1.74 of the old head size, not the L step (about 1.33); no time bar is drawn along the foot of the plate
+v36.73: no top centre card was drawn around the clock and the extract line
+v36.41: score opacity did not reach 0.35 within 0.192 seconds
+v35.53: the danger slot is 40.9 px, not about 30
+v31.23: ONE: the keyboard prompt does not read click to start (); ONE: the keyboard prompt shows no E key; ONE: the pad prompt does not read start (); ONE: the pad prompt shows no A button; THREE: no waiting for line after the press ()
+v22.32: the Pillbox line is drawn in 800 40.8px "Barlow Condensed", "Bahnschrift SemiCondensed", "Arial Narrow", "Roboto Condensed", sans-serif, not the callout size 800 31.2px "Barlow Condensed","Bahnschrift SemiCondensed","Arial Narrow","Roboto Condensed",sans-serif; the Pillbox line is not on the danger plate
+v13.05: control: neither surface painted a single string, so this sweep would report nothing on a build that had lost every one of his edits
+v36.13: cache name/shared panel missing at 1920; cache name/shared panel missing at 3840
+v35.15: control: machine did not draw damage smoke; control: pixel machine did not draw damage smoke
+v34.89: career 1080: the folded chip 230,661 120x28 is over the feed 20,642 538x107; career 1080: the opened list 20,389 360x360 runs down over the belt plate; career 1080: the opened list 20,389 360x360 is over belt key 1; career 1080: no use bar plate drew with the ship called; demo 1080: the folded chip 230,698 117x28 is over the feed 20,657 538x107; demo 1080: the opened list 20,404 360x360 runs down over the belt plate;
+v34.39: the downed card is not drawn with the shared raid panel (hudPanel)
+v31.64: the page has no pillagers trust you less.
+v31.34: no downPlateRect
+v29.61: the run goals heading is undefined, not tx_1 #efe9dc or tx_2 #aaa498; the first goal row is null, not tx_1 #efe9dc
+v9.69: control: the low health wash barely moves, swing 7 calm and 7 hunted, so there is nothing here to time
+v9.56: at 1080p the clock overlaps the extract line by 48 pixels; at 4K the clock overlaps the extract line by 94 pixels
+v35.65: control: normal target name or health pip did not draw
+v35.50: the pill does not count the last minute (0:42) under the clock
+v31.50: career 1080p: no score and clock plate was drawn at the top centre; career 1080p: no score and clock plate was drawn at the top centre; career 1080p: no score and clock plate was drawn at the top centre; career 4k: no score and clock plate was drawn at the top centre; the demo 1080p: no score and clock plate was drawn at the top centre; the demo for 2 players 1080p: no score and clock plate was drawn at the top centr
+v31.33: FOUR: the bandage card drew no text; FOUR: the medkit card drew no text; FOUR: the stim card drew no text; FOUR: the frag card drew no text; FOUR: the plate card drew no text
+v30.66: a pad that is only plugged in already shows the pad prompts (kb padOn=false body.padon=true); the settings hint strip reads "lb rb tabs a change b back" with the pad only plugged in
+v29.48: after the wheel closed the cursor is pointer, not the reticle cursor
+v20.75: the NOTORIETY stamp was not drawn (40.9 px at 1080p, 0 px at 4K; alert NOTORIETY 2  ·  STAGED|T3)
+v10.06: a day run paid 0 against the 150 the rules add up to
+v9.08: the downed screen barely grows on a bigger monitor: bar 77px at 1080p and 17px at 4K
+v11.52: in the Undercroft: the readout does not show the XP 98,761 ("$4,471,337STASH $0 BAG $0"); in the Undercroft: the readout does not say which figure is which ("$4,471,337STASH $0 BAG $0"); in a raid: the readout does not show the XP 98,761 ("$4,471,337STASH $0 BAG $120"); in a raid: the readout does not say which figure is which ("$4,471,337STASH $0 BAG $120")
+v36.02: after 9.37, 35.53: the danger slot is 40.9 px, not about 30
+v35.64: score panel touches top edge; score panel touches top edge; score panel touches top edge; score panel touches top edge
+v35.30: ONE: a warn line said once draws in 0 places (), not one; TWO: an info line said does not draw in the left feed (); TWO: an info line said once draws in 0 places, not one; FIVE control: a money pickup line does not draw in the right stack () (then SKIP: the extract distance did not draw at the top here)
+v31.32: career 1080p: the column does not start at the top right corner; career 4k: the column does not start at the top right corner; the demo 1080p: the column does not start at the top right corner; the demo column is 250 wide and the career one 300: the party screen text size must not make the minimap bigger
+v30.96: no plate hangs from the top band behind the score (0 plates)
+v24.13: the demo clock was not drawn
+v22.13: the Crier line sat on the danger plate in 0 of 4 frames

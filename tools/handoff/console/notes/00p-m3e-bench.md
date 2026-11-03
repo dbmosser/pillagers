@@ -3,3 +3,13 @@
 - Built: GEAR tab in the trader between CRAFT and HIRE (tpane_gear, benchlist, benchdetail). Functions beside stashWorth: wornSalePrice, wornBenchPc, wornPcSeed, wornRerollPrice, wornRerollRoll, wornReroll, WORN_SALV, wornSalvMix, wornSalvage, wornSell, gearWorth. Panel code before the wiring marker: renderBench, benchDetail, benchHold, benchAsk.
 - Note for him: armor and pants pools hold 2 traits, so a sound or better one (2 traits) has no other trait to roll: the button reads "no other trait". That follows the job's "never one the piece already has".
 - Pad and keys press with no hold, so sell and salvage go through the confirm card, focus on not yet (the pattern of pilRetireAsk).
+- SHIPPED v37.42 (c6dc2720c), ON HIS PC 85 s after the ship. Seed 4242 held (ents 85/374, containers 165/593). The m3 shared helpers (WORN_VAL, wornPrice, wornTip) went in with this ship, so m3a and m3b reuse them. wornTip has one small test here (better in an empty slot); m3b's check covers worse, even and rings.
+- Pictures: notes/shots/00p-m3e-after, g1 to g6, 1080 and 4K, lint 0. Recipes notes/shots/m3e-recipes.json (S\mk-cw-m3eshots.ps1). I opened g1, g2, g3, g5, g6 at 1080 and g1 at 4K. g4 (sell hold) and the other 4K pictures were not opened; the lint on them is 0.
+- Pad and keys were not driven by hand. The check proves every row is in the focus list and that a press with no hold opens the confirm card; no picture shows the pad highlight on a row.
+- Critic: score 3 (g1, g3, g2, g6 at 1080), the finish line for this screen (3.51 a). Findings not fixed, and why:
+  - P0 caption over the list: the vendor line toast that opening the station has always shown over all trader tabs; the shared toast, not this panel.
+  - P0 last row cut off: a scrolling list with more rows than fit; there is a scrollbar. Left as is.
+  - P1 "you hold $" repeats the header: true, and a real tidy-up, but craft and hire carry the same line (buy already hides it). Worth one job for all the trader tabs, not this tab alone.
+  - P1 amber hold fill: his 10-15 order (cw-craftbar) on the shared hold bar. Skipped as his ruling.
+  - P2 plain empty state, P2 default scrollbar: left for polish.
+- Spare PC trouble on the way: see alarms.md (preflight failed twice with no usable result and passed on try 3; the ship stopped once with no usable result and passed on try 2; cause not found).

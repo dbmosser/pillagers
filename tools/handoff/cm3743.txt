@@ -1,0 +1,7 @@
+v37.43: season zero m3: the stash doll: nine slots, wear and take off, compare tips, saved outfits
+
+a gear button on the stash row and a worn line on the pre-raid page open a full window: nine slots around the figure with the sum of what you wear, every piece in a scrolling list, click A or enter wears and a click on a filled slot takes off, a tip says better worse or even against what you wear, and up to five named outfits dress in one tap and show how many pieces are missing. A new ring with both full replaces the weaker ring, the one the tip compared it with. Never in a raid or the demo
+
+Check 37.43. Fails on v37.42.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
