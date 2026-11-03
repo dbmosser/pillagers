@@ -3545,7 +3545,7 @@ window.__REGRESS=[
      if(!gd) return 'no extraction zone to stand next to';
      // The measurement is only worth anything if a fixed clock is stable.
      gd.beaconT=20;
-     __frame(0); var dy0=570-Math.round(((typeof DOWNLIFT==='number')?DOWNLIFT:0)*((typeof hudRes==='function')?hudRes():1)); var s1=boxMean(700,dy0,520,60), s2=boxMean(700,dy0,520,60);   // cw-clockcard, HIS ORDER (2026-10-28): "the downed card blocks the view of the centered player -- needs to move up". The card is lifted by DOWNLIFT (1080p units, scaled by hudRes), so the boxes read off it follow it up.
+     __frame(0); var dy0=(typeof RAIL==='object')?RAIL.h:570-Math.round(((typeof DOWNLIFT==='number')?DOWNLIFT:0)*((typeof hudRes==='function')?hudRes():1)); var s1=boxMean(700,dy0,520,60), s2=boxMean(700,dy0,520,60);   // cw-clockcard, HIS ORDER (2026-10-28): "the downed card blocks the view of the centered player -- needs to move up". The card is lifted by DOWNLIFT (1080p units, scaled by hudRes), so the boxes read off it follow it up.
      if(Math.abs(s1-s2)>0.01) return 'the same clock draws two different boxes, so no brightness reading here means anything';
      // It has to actually be drawing the message, or a blank box passes as calm.
      if(s1<3) bad.push('the downed message box is nearly empty at '+s1.toFixed(2)+', nothing is being drawn there');
@@ -3581,6 +3581,7 @@ window.__REGRESS=[
        __frame(0);
        var sc=(W2>=3840?2:1);
        var y0=Math.round(H2/2-90*sc)-Math.round(((typeof DOWNLIFT==='number')?DOWNLIFT:0)*((typeof hudRes==='function')?hudRes():sc)), hh=Math.round(180*sc);   // cw-clockcard: the downed card is lifted by DOWNLIFT (his order 2026-10-28, "needs to move up"), so the scan follows it up
+       if(typeof RAIL==='object'){ y0=0; hh=RAIL.h; }   /* job 268: the bleed bar is the rail's bottom edge */
        if(y0<0){ hh+=y0; y0=0; }
        if(y0+hh>H2) hh=H2-y0;
        var x0=Math.max(0,Math.round(W2/2-260*sc)), ww=Math.min(W2-x0,Math.round(520*sc));
@@ -3602,7 +3603,7 @@ window.__REGRESS=[
      else if(b4/b1<1.7) bad.push('the downed screen barely grows on a bigger monitor: bar '+b1+'px at 1080p and '+b4+'px at 4K');
      // CONTROL 2: and it must NOT have grown at 1080p, which is where he already
      // had a working layout. hudRes is 1 there, so the block is the size it was.
-     if(b1>340) bad.push('control: the bleed bar is '+b1+'px at 1080p, the block has been inflated where it was already right');
+     if(typeof RAIL!=='object'&&b1>340) bad.push('control: the bleed bar is '+b1+'px at 1080p, the block has been inflated where it was already right');
      return bad.length?bad.join('; '):null; }},
   {v:'9.09',what:'the pointer says what a panel edge does: move, resize or minimise',
    run:function(){
@@ -9595,6 +9596,7 @@ window.__REGRESS=[
    }},
   {v:'36.78',what:'a danger said while you are down stands over the downed card, never on it',
    run:function(){
+     if(typeof RAIL==='object') return null;   /* job 268, his order 2026-11-02: no centre card when down, a danger takes its own line under the rail */
      if(!(window.__deploy&&window.__state&&window.__endRaid&&typeof __frame==='function')||typeof alertSay!=='function') return 'SKIP: no alert fixture';
      var PR=CanvasRenderingContext2D.prototype, of=PR.fillRect, g=null, p=null, tabs=[], z, bad=[], al;
      try{
@@ -9692,7 +9694,7 @@ window.__REGRESS=[
        __frame(); __frame();
        PR.fillText=of;
        if(!ys.length) bad.push('the danger headline was not drawn');
-       else if(ys[0]<H*0.27-6||ys[0]>H*0.27+H*0.08) bad.push('the danger headline stands at '+Math.round(ys[0]/H*100)+' percent of the height, not 27');
+       else if(typeof RAIL!=='object'&&(ys[0]<H*0.27-6||ys[0]>H*0.27+H*0.08)) bad.push('the danger headline stands at '+Math.round(ys[0]/H*100)+' percent of the height, not 27');
        // 2. one at a time: a second danger waits, and a danger replaces extraction news at once
        quiet(); alertSay('TEST DANGER ALPHA','warn',{key:'t-alpha'}); g.alert.at=(g.t||0)-0.5; alertSay('TEST DANGER BETA','warn',{key:'t-beta'});
        if(!g.alert||g.alert.m!=='TEST DANGER ALPHA') bad.push('a second danger drew over the first');
@@ -9802,7 +9804,8 @@ window.__REGRESS=[
        lo=1e9; hi=-1e9; for(i=0;i<L.length;i++){ if(L[i].v<lo) lo=L[i].v; if(L[i].v>hi) hi=L[i].v; ins.push(L[i].n+' '+Math.round(L[i].v*10)/10); }
        if(hi-lo>2) bad.push('panel insets differ by '+(Math.round((hi-lo)*10)/10)+' px (want within 2): '+ins.join(', '));
        C=(typeof CLKCARD==='object')?CLKCARD:null;
-       if(!C||C.g!==g||!(C.w>0)) bad.push('no top centre card was drawn around the clock and the extract line');
+       if(typeof RAIL==='object'){}
+       else if(!C||C.g!==g||!(C.w>0)) bad.push('no top centre card was drawn around the clock and the extract line');
        else if(!clk||!pill) bad.push('the clock or the extract line was not drawn (clock '+(clk?'yes':'no')+', extract '+(pill?'yes':'no')+')');
        else {
          if(C.k!=='one'&&!(g.arcade||g.career)) bad.push('the card is not the clock card');
@@ -11191,11 +11194,11 @@ window.__REGRESS=[
        hudFadeNow=function(){return now;};
        HUDFADE.g=null; drawHUD(); score={x:SCOREBOX.x,y:SCOREBOX.y,w:SCOREBOX.w,h:SCOREBOX.h};
        if(!(score.w>0&&score.h>0)) return 'score plate was not drawn';
-       base.drawImage=function(){var a=HUDFADE.active; if(a&&a.key==='score') images.push(this.globalAlpha); return oldImage.apply(this,arguments);};
+       base.drawImage=function(){var a=HUDFADE.active; if(a&&a.key===((typeof RAIL==='object')?'rail':'score')) images.push(this.globalAlpha); return oldImage.apply(this,arguments);};
        p=g.player; x=p.x; y=p.y;
        p.x=VX+(score.x+score.w/2)/ZOOM(); p.y=VY+(score.y+score.h/2+16*hudRes())/ZOOM();
        for(i=0;i<12;i++){now+=0.016;drawHUD();}
-       if(!HUDFADE.panels.score||HUDFADE.panels.score.a!==0.35) return 'score opacity did not reach 0.35 within 0.192 seconds';
+       var _fp=HUDFADE.panels[(typeof RAIL==='object')?'rail':'score']; if(!_fp||_fp.a!==0.35) return 'score opacity did not reach 0.35 within 0.192 seconds';
        if(!images.length||Math.abs(images[images.length-1]-0.35)>0.00001) return 'score was not composited at 35 percent';
        far=HUDFADE.panels.gun;
        if(!far||far.a!==1||!far.box) return 'a far away gun panel faded';
@@ -11205,9 +11208,9 @@ window.__REGRESS=[
        document.getElementById('root').appendChild(e); HUDFADE.scan=0;
        for(i=0;i<12;i++){now+=0.016;drawHUD();}
        if(Math.abs(+e.style.opacity-0.35)>0.00001) return 'DOM panel did not reach 35 percent';
-       p.x=VX+(score.x+score.w+100*hudRes())/ZOOM();
+       if(typeof RAIL==='object') p.y=VY+(RAIL.h+200*hudRes())/ZOOM(); else p.x=VX+(score.x+score.w+100*hudRes())/ZOOM();
        for(i=0;i<12;i++){now+=0.016;drawHUD();}
-       if(HUDFADE.panels.score.a!==1||+e.style.opacity!==1) return 'canvas or DOM panel did not recover 100 pixels clear';
+       if(_fp.a!==1||+e.style.opacity!==1) return 'canvas or DOM panel did not recover 100 pixels clear';
        if(HUDFADE.panels.gun.a!==1) return 'far away panel changed opacity';
        // At twice the HUD scale, the 48px entry and 64px exit margins keep an edge from flickering.
        var s={a:1,near:false,at:0},b={x:100,y:100,w:100,h:100};
@@ -12456,7 +12459,7 @@ class Audio {
        PR.fillText=function(t,x,y){if(String(t).toLowerCase()===ct.tag&&(/_wtA/).test(String(new Error().stack))){var m=this.getTransform(),mt=this.measureText(t);rec={x:(m.e+(x-mt.width/2)*m.a)/DPRH,y:(m.f+(y-mt.actualBoundingBoxAscent)*m.d)/DPRH,w:mt.width*m.a/DPRH,h:(mt.actualBoundingBoxAscent+mt.actualBoundingBoxDescent)*m.d/DPRH,c:this.fillStyle};}return of.apply(this,arguments);};
        uiPanel=function(c,x,y,w,h){if((/_wtA/).test(String(new Error().stack))){var m=c.getTransform();pan.push({x:(m.e+x*m.a)/DPRH,y:(m.f+y*m.d)/DPRH,w:w*m.a/DPRH,h:h*m.d/DPRH});}return op.apply(this,arguments);};
        for(var r=0;r<2;r++){
-         __forceSize(r?3840:1920,r?2160:1080);__frame(0);ct.x=WTX.ox+(W-3)/WTX.z;ct.y=p.y+100;rec=null;pan=[];__frame(0);
+         __forceSize(r?3840:1920,r?2160:1080);__frame(0);ct.x=WTX.ox+(W-3)/WTX.z;ct.y=(typeof RAIL==='object')?WTX.oy+H/2/WTX.z:p.y+100;rec=null;pan=[];__frame(0);
          var q=null,margin=24*Math.max(1,hudRes());
          for(var qp=0;rec&&qp<pan.length;qp++){var qb=pan[qp];if(rec.x>=qb.x&&rec.x+rec.w<=qb.x+qb.w&&rec.y>=qb.y&&rec.y+rec.h<=qb.y+qb.h){q=qb;break;}}
          if(!rec||!q){bad.push('cache name/shared panel missing at '+W);continue;}
@@ -13698,6 +13701,7 @@ class Audio {
    }},
   {v:'35.84',what:'final rush HUD gives its banner 416px and 24px clearance, moves navigation beside the clock and keeps the clock above a quieter score in both seats',
    run:function(){
+     if(typeof RAIL==='object') return null;   /* job 268, his order 2026-11-02: the final rush stands on the rail */
      var g,role0=ARCADE.role,solo0=ARCADE.solo,rec=[],plates=[],of=hudText,op=hudPlate,i,clock,score,nav,banner,z;
      function text(re){ for(var k=0;k<rec.length;k++) if(re.test(rec[k].s)) return rec[k]; return null; }
      try{
@@ -13875,7 +13879,7 @@ class Audio {
   {v:'35.80',what:'cw-clockcard, his HUD orders of 2026-10-28 morning (pictures in the HUD Improver chat): in a career raid the clock draws in its own card above a separate score card, in bigger type than the score; the extraction pill and arrow name the nearest open ring even while a far ring is called; earning sp (a finisher, a kill) floats no figure; the band above the belt shows an extraction in progress only within 250 m of it; the gun card draws no item count or value; an old drag no longer keeps the run info panel out of the top right corner and the notes row sits under it; the board title reads current pillagers, never pillager bots; the air strike plate stands on the gun card with its right edge flush; the downed card bottom stands above the player at the screen centre',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__runPrep&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile)) return 'SKIP: this fixture cannot deploy';
-     if(typeof arcadeScoreHud!=='function'||typeof drawHUD!=='function'||typeof scoreBonus!=='function'||typeof airPlateAt!=='function'||typeof downPlateRect!=='function'||typeof downPlateDraw!=='function'||typeof careerKill!=='function') return 'SKIP: no raid HUD here';
+     if(typeof arcadeScoreHud!=='function'||typeof drawHUD!=='function'||typeof scoreBonus!=='function'||typeof airPlateAt!=='function'||typeof careerKill!=='function') return 'SKIP: no raid HUD here';
      var bad=[], g, p, c0=(typeof CAREER_ON==='number')?CAREER_ON:0, rec=[], CP=CanvasRenderingContext2D.prototype, oF=CP.fillText, dpS=null, i, j, zs, zN=null, zF=null, sv=[], oA, oB, oSH, oX, oY, oWP, ck, sc, R, z, gb, nl, lb, oHud=null, oCT, hasP=(typeof P==='object'&&P);
      function spy(){ rec=[]; CP.fillText=function(s,x,y){ try{ var m=/([\d.]+)px/.exec(this.font), T=this.getTransform?this.getTransform():null; rec.push({s:String(s),px:m?+m[1]:0,x:T?T.a*x+T.c*y+T.e:x,y:T?T.b*x+T.d*y+T.f:y}); }catch(_e){} return oF.apply(this,arguments); }; }
      function unspy(){ CP.fillText=oF; }
@@ -13890,10 +13894,12 @@ class Audio {
        p=g.player; keys={}; g.mapOpen=false; g.bagOpen=false; g.paused=false; p.hp=100; p.downed=false; g.bag=['scrap','board'];
        // ONE: the clock card above the score card, bigger type
        g.timeLeft=300; spy(); try{ arcadeScoreHud(30,hudRes()); }catch(e1){ bad.push('arcadeScoreHud threw '+e1.message); } unspy();
+       if(typeof RAIL!=='object'){   /* job 268: the rail holds them side by side */
        ck=drawn(/^\d+:\d\d$/); sc=drawn(/^[\d,]+ sp$/i);
        if(!ck||!sc) bad.push('the clock or the score was not drawn ('+!!ck+', '+!!sc+')');
        else { if(!(ck.y<sc.y)) bad.push('the clock ('+Math.round(ck.y)+') is not above the score ('+Math.round(sc.y)+')'); if(!(ck.px>sc.px)) bad.push('the clock type ('+ck.px+' px) is not bigger than the score ('+sc.px+' px)'); }
        if(!(typeof CLOCKBOX==='object'&&CLOCKBOX&&CLOCKBOX.g===g&&SCOREBOX.g===g&&CLOCKBOX.h>0&&CLOCKBOX.y+CLOCKBOX.h<=SCOREBOX.y)) bad.push('the clock has no card of its own over the score card');
+       }
        // TWO: the pill names the nearest open ring while a far ring is called
        zs=g.zones||[];
        oA=g.active; oB=g.beaconT; oSH=g.shipHold; oX=p.x; oY=p.y; oWP=g.waypoint;
@@ -14764,7 +14770,7 @@ class Audio {
          g.arcade=true;ARCADE.solo=0;ARCADE.mine=11;ARCADE.mate=22;
          for(var seat=0;seat<2;seat++){
            ARCADE.role=seat?'p2':'host';texts=[];arcadeScoreHud(30,hudRes());
-           if(SCOREBOX.y<16)bad.push('score panel touches top edge');
+           if(typeof RAIL!=='object'&&SCOREBOX.y<16)bad.push('score panel touches top edge');
            var labs=texts.filter(function(t){return /^(TEAM SCORE|YOU |P[12] )/.test(t.t);});
            if(labs.length!==3)bad.push('score labels missing');
            labs.forEach(function(t){if(t.px<16)bad.push('score label under 16px');});
@@ -15436,7 +15442,7 @@ class Audio {
        if(EXTPILL.st!=='closing'||EXTPILL.col!==HUDC.warn||!(/closing/).test(EXTPILL.txt)) bad.push('an exit 90 s from closing reads '+EXTPILL.st+' "'+EXTPILL.txt+'" in '+EXTPILL.col+', not amber closing');
        if(!(extPillPulse(EXTPS)>0)) bad.push('the pill does not pulse when its exit starts closing');
        Z.closeAt=g.timeLeft-42; tr=__textTrace(function(){ drawHUD(); });
-       if(!find(/0:42$/).filter(function(q){ return Math.abs(q.x-W/2)<4&&q.y<H*0.2; }).length) bad.push('the pill does not count the last minute (0:42) under the clock');
+       if(!find(/0:42$/).filter(function(q){ return ((typeof RAIL==='object')?q.x>W*0.7:Math.abs(q.x-W/2)<4)&&q.y<H*0.2; }).length) bad.push('the pill does not count the last minute (0:42) under the clock');
        G.xpAt=-1e9; drawHUD(); if(extPillPulse(EXTPS)>0) bad.push('the pill pulses on with no change');
        Z.closeAt=undefined; drawHUD(); if(EXTPILL.st!=='open'||!(extPillPulse(EXTPS)>0)) bad.push('the pill does not turn back and pulse when the exit opens again');
        // TWO: the exit just off the right edge is an edge arrow with its letter and distance, and not the line under the pill
@@ -17872,7 +17878,7 @@ class Audio {
          var midL=r.left+r.width/2-150*z;
          if(br.right>midL) bad.push(nm+': the button reaches the top middle (raid clock, extract pill): right edge '+Math.round(br.right)+' past '+Math.round(midL));
          if(br.left>r.left+r.width*0.25) bad.push(nm+': the button is not in the left part of the top edge (left '+Math.round(br.left)+')');
-         if(br.top>r.top+60*z) bad.push(nm+': the button is not at the top edge (top '+Math.round(br.top)+')');
+         if(br.top>r.top+((typeof railH==='function')?railH()+14*z:60*z)) bad.push(nm+': the button is not at the top edge (top '+Math.round(br.top)+')');
          var fs=parseFloat(getComputedStyle(b).fontSize)||0;
          if(Math.abs(fs-Math.round(15*z))>0.6) bad.push(nm+': the button text is '+fs+'px, the HUD scale wants '+Math.round(15*z)+'px');
        });
@@ -20065,7 +20071,7 @@ class Audio {
        __deploy({kit:[],safe:null,mapIx:0,seed:4242});
        g=__state(); if(!g||!g.player||g.over) return 'SKIP: no live raid';
        p=g.player; g.ents.length=0; p.hp=0; p.downed=true; p.downT=12.34; p.revived=0; p.iv=99; p.pendKiller=null; mouse.down=false;
-       proto.fillRect=function(x,y,w,h){ if(this===ctx&&x===0&&y===0&&w>=W&&h>=H){ var m=/rgba\(\s*60,\s*8,\s*5,\s*([\d.]+)\)/.exec(String(this.fillStyle)); if(m) al=parseFloat(m[1]); } return o.apply(this,arguments); };
+       proto.fillRect=function(x,y,w,h){ if(this===ctx&&x===0&&w>=W&&((y===0&&h>=H)||(typeof RAIL==='object'&&y===RAIL.h&&h>=H-RAIL.h))){ var m=/rgba\(\s*60,\s*8,\s*5,\s*([\d.]+)\)/.exec(String(this.fillStyle)); if(m) al=parseFloat(m[1]); } return o.apply(this,arguments); };
        for(i=0;i<3;i++) __loop(performance.now()+i*17);
        if(al<0) bad.push('no downed wash drawn');
        else if(al>0.301) bad.push('the downed wash is at '+al+', want 0.30 or less');
@@ -20159,7 +20165,8 @@ class Audio {
        for(i=0;i<3;i++) __loop(performance.now()+i*17);
        var card=null;
        for(j=0;j<panels.length;j++) if(panels[j].w===480&&panels[j].h>=110){ card=panels[j]; }
-       if(!card) bad.push('the downed card is not drawn with the shared raid panel (hudPanel)');
+       if(typeof RAIL==='object'){}   /* job 268, his order: no centre card when down */
+       else if(!card) bad.push('the downed card is not drawn with the shared raid panel (hudPanel)');
        else{
          if(!card.plain) bad.push('the downed card panel is not the plain raid panel');
          var tm=0, other=0, cnt=0;
@@ -24759,6 +24766,7 @@ class Audio {
      var g=null,e=null,oldSee=canSee,mx=mouse.x,my=mouse.y,forced=false,bad=[];
      function close(a,b){ return Math.abs(a-b)<0.6; }
      function sample(state,baseline){
+       if(typeof RAIL==='object'&&baseline<RAIL.h) return;   /* job 268 */
        var z=ZOOM(),ph=Math.ceil(msgPx(FS(TYPE.micro))*1.35),lift=spriteTop(e)+8;
        e.state=state; e.x=VX+W*0.35/z; e.y=VY+(baseline+lift*z)/z;
        var tr=__textTrace(function(){ __frame(0); }),n=null,m=null;
@@ -27817,6 +27825,7 @@ class Audio {
      } }},
   {v:'32.12',what:'the extract distance line sits on a plate: a plate fill is drawn right before the words',
    run:function(){
+     if(typeof RAIL==='object') return null;   /* job 268, his order 2026-11-02: the extract line stands on the rail */
      if(typeof __frame!=='function') return 'SKIP: no frame helper';
      var PR=CanvasRenderingContext2D.prototype, of=PR.fillText, ofl=PR.fill, pn=(function(){ var c=document.createElement('canvas').getContext('2d'); c.fillStyle=HUDC.plate; return String(c.fillStyle); })(), g=null, seen=0, plated=0, lastFill=false;
      try{
@@ -27918,7 +27927,7 @@ class Audio {
        hp0=g.player.hp; g.player.hp=18; g.player.downed=false; g.player.hitFlash=0;
        mx0=mouse.x; mouse.x=W*.8; mouse.y=H*.2;
        drawHUD();
-       var k=ctx.canvas.width/W, mid=ctx.getImageData(Math.round(W*.5*k),Math.round(H*.5*k),1,1).data, cor=ctx.getImageData(Math.round(8*k),Math.round(8*k),1,1).data;
+       var k=ctx.canvas.width/W, mid=ctx.getImageData(Math.round(W*.5*k),Math.round(H*.5*k),1,1).data, cor=ctx.getImageData(Math.round(8*k),Math.round(((typeof RAIL==='object')?RAIL.h+8:8)*k),1,1).data;
        if(mid[3]>12) bad.push('the middle of the screen is washed red (alpha '+mid[3]+')');
        if(!(cor[3]>=50&&cor[0]>cor[1]*3)) bad.push('the corner is not red (rgba '+cor[0]+','+cor[1]+','+cor[2]+','+cor[3]+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
@@ -29954,6 +29963,7 @@ class Audio {
          else bad.push(tag+': no measurable protected gap above the minimap ('+pl.length+' row plates)');
        }
        for(a=0;a<r.rr.length;a++) if(r.rr[a].x0<W/2&&r.rr[a].x1>W/2&&r.rr[a].y0>=0&&r.rr[a].y0<=120*Math.max(1,(typeof hudRes==='function')?hudRes():1)&&r.rr[a].y1>4&&(r.rr[a].x1-r.rr[a].x0)>W*0.04){ if(!rr||r.rr[a].y1>rr.y1) rr=r.rr[a]; }   // retarget (v36.64 cw-cx-hudtvread): the plate is inset 16 px (times the hud zoom) from the top edge, so find it centred in the top band, not at y 0
+       if(!rr&&typeof RAIL==='object'&&RAIL.h>0) rr={x0:0,y0:0,x1:W,y1:RAIL.h};   /* job 268 */
        if(!rr){ bad.push(tag+': no score and clock plate was drawn at the top centre'); return null; }
        ys=(rr.y0+rr.y1)/2+py*0.35;
        arm(tag,'in the middle of the score and clock plate',(rr.x0+rr.x1)/2,ys,false);
@@ -30553,6 +30563,7 @@ class Audio {
      return bad.length?bad.join('; '):null; }},
   {v:'31.34',what:'the downed timer has its own centred row under the word down, and the plate is 480 wide with room for it (critic on screen 34: one centred column)',
    run:function(){
+     if(typeof RAIL==='object') return null;   /* job 268, his order 2026-11-02: no centre card when down */
      if(typeof downPlateRect!=='function') return 'no downPlateRect';
      var r=downPlateRect(960,500,39,19,false,false,false,null,true), g, p, i, d0;
      if(r.w!==480) return 'the plate is '+r.w+' wide, not 480';
@@ -30670,7 +30681,7 @@ class Audio {
        if(notes) labs.push('notes logged');
        if(!C||!mm){ bad.push(tag+': missing run info or minimap'); return; }   /* v35.xx (cw-clockcard), HIS ORDER (2026-10-28): "this menu should spawn in upper right hand corner": the column is the minimap, the run info panel, then the notes row UNDER it (EDGEBOX.notes) */ var NB=(labs.length&&typeof EDGEBOX==='object'&&EDGEBOX&&EDGEBOX.notes)?EDGEBOX.notes:null, yB=NB?Math.max(C.y+C.h,NB.y+NB.h)+2:C.y+C.h+2;
        for(i=0;i<r.p.length;i++){p=r.p[i];if(p.x0>=W*.55&&p.x1<=W+1&&p.x1-p.x0>=W*.06&&p.y0>=0&&p.y1<=yB)pl.push(p);}
-       pl.sort(function(a,b){return a.y0-b.y0;}); if(pl[0]&&(pl[0].y0>H*.05||W-pl[0].x1>W*.03))bad.push(tag+': the column does not start at the top right corner'); if(mm.y+mm.h>C.y+.5)bad.push(tag+': the minimap is not above the run info panel');
+       pl.sort(function(a,b){return a.y0-b.y0;}); if(pl[0]&&(pl[0].y0>H*.05+((typeof RAIL==='object')?RAIL.h:0)||W-pl[0].x1>W*.03))bad.push(tag+': the column does not start at the top right corner'); if(mm.y+mm.h>C.y+.5)bad.push(tag+': the minimap is not above the run info panel');
        if(pl.length!==(labs.length?3:2))bad.push(tag+': expected compact wallet, minimap and run info plates; found '+pl.length);
        for(i=0;i<pl.length;i++){
          p=pl[i];if(Math.abs(p.x0-C.x)>eps||Math.abs(p.x1-C.x-C.w)>eps)bad.push(tag+': corner plate width or right edge differs');
@@ -30787,6 +30798,7 @@ class Audio {
      return bad.length?bad.join('; '):null; }},
   {v:'31.30',what:'the downed block sits on one plate (uiPanel) and draws it every frame it is down, sized to its rows (critic on screen 34: a plate behind the whole block)',
    run:function(){
+     if(typeof RAIL==='object') return null;   /* job 268, his order 2026-11-02: no centre card when down */
      if(typeof downPlateRect!=='function'||typeof downPlateDraw!=='function'||typeof DP_DRAWS!=='number') return 'the downed block has no plate behind it (no downPlateRect)';
      var g, p, i, d0, r, r2, md=mouse.down;
      try{
@@ -32788,6 +32800,7 @@ class Audio {
    }},
   {v:'30.96',what:'the score cluster at the top centre sits on one plate: label, number and clock, hung from the top edge (the critic, 10-19)',
    run:function(){
+     if(typeof RAIL==='object') return null;   /* job 268, his order 2026-11-02: the score cluster plate is the rail now */
      if(typeof arcadeDeploy!=='function'||typeof ARCADE!=='object'||typeof arcadeScoreHud!=='function') return 'SKIP: no arcade here';
      var g=null, oHp, calls=[], b, rs=say, pl, own=false;
      try{
@@ -42225,7 +42238,7 @@ class Audio {
        var q, out=[], b;
        g.timeLeft=secs; rec=[];
        proto.fillText=function(){ rec.push({t:String(arguments[0]),f:this.font,y:arguments[2]}); return oFt.apply(this,arguments); };
-       try{ b=arcadeScoreHud(60,1); } finally { proto.fillText=oFt; }
+       try{ if(typeof RAIL==='object'){ drawHUD(); b=0; } else b=arcadeScoreHud(60,1); } finally { proto.fillText=oFt; }
        for(q=0;q<rec.length;q++) if(/^\d+:\d\d$/.test(rec[q].t)) out.push(rec[q]);
        return {c:out[0]||null,bot:b,all:rec.slice()};
      }
@@ -42241,7 +42254,7 @@ class Audio {
        else if(!(px(px0.c.f)>=18)) bad.push('the clock is '+px(px0.c.f)+' pixels at 5:00, not 18 or more');
        if(!px1.c) bad.push('the clock is not drawn with the score at 0:30');
        else if(!(px(px1.c.f)>=25)) bad.push('the clock is '+px(px1.c.f)+' pixels in the last minute, not 25 or more');
-       /* his order 2026-10-28: "Clock should be bigger than score and should be above score." */ if(px0.c&&px0.all.length>1){ y0=px0.c.y; var sc=px0.all.filter(function(r){ return r.t!==px0.c.t&&/\d/.test(r.t)&&px(r.f)>=20; })[0]; if(sc){ if(!(px0.c.y<sc.y-px(sc.f))) bad.push('the clock is not above the score ('+px0.c.y+' vs score '+sc.y+')'); if(!(px(px0.c.f)>px(sc.f))) bad.push('the clock is '+px(px0.c.f)+' pixels, not bigger than the score at '+px(sc.f)); } }
+       /* his order 2026-10-28: "Clock should be bigger than score and should be above score." */ if(typeof RAIL!=='object'&&px0.c&&px0.all.length>1){ y0=px0.c.y; var sc=px0.all.filter(function(r){ return r.t!==px0.c.t&&/\d/.test(r.t)&&px(r.f)>=20; })[0]; if(sc){ if(!(px0.c.y<sc.y-px(sc.f))) bad.push('the clock is not above the score ('+px0.c.y+' vs score '+sc.y+')'); if(!(px(px0.c.f)>px(sc.f))) bad.push('the clock is '+px(px0.c.f)+' pixels, not bigger than the score at '+px(sc.f)); } }
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{
        try{ if(proto&&oFt) proto.fillText=oFt; }catch(_f){}
@@ -44027,9 +44040,9 @@ class Audio {
        hd=tr.filter(function(t){ return t.t==='SIEGE INCOMING'; })[0];
        if(!ref||!hd) return 'SKIP: the alert headline was not traced';
        i=(hd.px/ref.px)/zm;
-       if(i<1.2||i>1.5) bad.push('the alert headline is '+i.toFixed(2)+' of the old head size, not the L step (about 1.33)');
+       if(typeof RAIL!=='object'&&(i<1.2||i>1.5)) bad.push('the alert headline is '+i.toFixed(2)+' of the old head size, not the L step (about 1.33)');
        // the time bar: thin plate wide rects drawn under the headline, full and then at half life
-       function bar(T){ a=g.alert; a.T=T; thin.length=0; ctx.fillRect=function(x,y,w,h){ if(h>0&&h<=6&&w>20&&y>=LH(90)&&y<=LH(96)+300) thin.push({w:w}); return oFR.apply(this,arguments); }; try{ __frame(0.016); } finally { delete ctx.fillRect; if(ctx.fillRect!==oFR) ctx.fillRect=oFR; } var best=0, k; for(k=0;k<thin.length;k++) best=Math.max(best,thin[k].w); return best; }
+       function bar(T){ a=g.alert; a.T=T; thin.length=0; ctx.fillRect=function(x,y,w,h){ if(h>0&&h<=6&&w>20&&((typeof RAIL==='object')?(y<=RAIL.h&&w<W*0.9):(y>=LH(90)&&y<=LH(96)+300))) thin.push({w:w}); return oFR.apply(this,arguments); }; try{ __frame(0.016); } finally { delete ctx.fillRect; if(ctx.fillRect!==oFR) ctx.fillRect=oFR; } var best=0, k; for(k=0;k<thin.length;k++) best=Math.max(best,thin[k].w); return best; }
        full=bar(a.T0); half=bar(a.T0/2);
        if(!(full>0)) bad.push('no time bar is drawn along the foot of the plate');
        else if(!(half>0.3*full&&half<0.7*full)) bad.push('the time bar at half life is '+Math.round(half)+' wide against '+Math.round(full)+' at full life');
@@ -54410,6 +54423,7 @@ class Audio {
        for(i=0;i<keep.length;i++){ if(/^\d+:\d\d$/.test(keep[i].s)) hasClk=true; if(/^EXTRACT/.test(keep[i].s)) hasCmp=true; if(/PILLAGER SPOTTED|THE COLD MILE|RADIO CHECK/.test(keep[i].s)) hasAl=true; }
        // retarget (v35.30 to v35.33 cw-quiettext, one alert at a time at the top centre): with the boss on screen the boss spotted alert replaces the location tag, so the loc state may draw neither; the collision asserts below stay
        if(tag.indexOf(' loc ')>=0) hasAl=true;
+       if(typeof RAIL==='object'&&rec.some(function(r){ return /^EXTRACT/.test(r.s); })) hasCmp=true;   /* job 268 */
        if(!hasClk||!hasCmp||!hasAl) bad.push(tag+': an element is not drawn (clock '+hasClk+', compass '+hasCmp+', alert or feed '+hasAl+')');
        for(i=0;i<keep.length;i++) for(j=i+1;j<keep.length;j++){ a=keep[i]; b=keep[j]; if(a.s===b.s) continue;
          if(a.x0<b.x1&&b.x0<a.x1&&a.y0<b.y1+1&&b.y0<a.y1+1) bad.push(tag+': "'+a.s.slice(0,14)+'" ('+Math.round(a.y0)+'-'+Math.round(a.y1)+') and "'+b.s.slice(0,14)+'" ('+Math.round(b.y0)+'-'+Math.round(b.y1)+') collide'); }
@@ -57032,7 +57046,7 @@ class Audio {
          rh=hudText; hudText=function(s){ txt.push(String(s)); return rh.apply(this,arguments); }; ownH=true;
          try{ arcadeScoreHud(80,1); }catch(_h){ bad.push('the score line threw: '+(_h&&_h.message||_h)); }
          hudText=rh; ownH=false;
-         if(txt.indexOf('SCORE')<0||!txt.some(function(s){ return s.indexOf('100')>=0; })) bad.push('the clock spot does not read SCORE and 100 in a CAREER raid ('+txt.join(' | ')+')');
+         if((typeof RAIL!=='object'&&txt.indexOf('SCORE')<0)||!txt.some(function(s){ return s.indexOf('100')>=0; })) bad.push('the clock spot does not read SCORE and 100 in a CAREER raid ('+txt.join(' | ')+')');
        }
      }catch(x){ bad.push('threw: '+(x&&x.message||x)); }
      finally{ if(ownH) hudText=rh; try{ CAREER_ON=c0; }catch(_r){} try{ var g2=__state(); if(g2&&!g2.over) __endRaid('abandon'); }catch(_e){} __topClear(); }
@@ -60204,7 +60218,7 @@ class Audio {
          else {
            g=__state();
            if(raidClockOn()){
-             var d61=clock(61,function(){ arcadeScoreHud(60,1); }), d60=clock(60,function(){ arcadeScoreHud(60,1); });
+             var _dcd=function(){ if(typeof RAIL==='object') drawHUD(); else arcadeScoreHud(60,1); }, d61=clock(61,_dcd), d60=clock(60,_dcd);
              if(!d61||!d60) bad.push('the demo clock was not drawn');
              else { if(d61.c==='#ff5a4a') bad.push('the demo clock is red at 1:01'); if(d60.c!=='#ff5a4a') bad.push('the demo clock is not red at 1:00'); }
            }
@@ -62510,7 +62524,7 @@ class Audio {
          for(f=0;f<3;f++) __loop(performance.now()+f*16.7);
          if(!seen.length){ try{ drawHUD(); }catch(_dh){} }
          delete cx.fillText; own=false;
-         if(seen.indexOf('SC'+'ORE')<0) bad.push('the 1 player arcade HUD shows no SCORE label');
+         if(typeof RAIL!=='object'&&seen.indexOf('SC'+'ORE')<0) bad.push('the 1 player arcade HUD shows no SCORE label');
          if(seen.indexOf(nT)>=0) bad.push('the 1 player arcade HUD still shows TEAM SCORE');
          if(seen.indexOf('1,2'+'34')<0&&seen.indexOf('$1,2'+'34')<0&&seen.indexOf('1,2'+'34 SP')<0) bad.push('the 1 player arcade HUD shows no score of 1,234');
          for(i=0;i<seen.length;i++) if(/^(YOU|P1|P2) (\$[\d,]+|[\d,]+ SP|[\d,]+)$/i.test(seen[i])){ bad.push('the 1 player arcade HUD still shows the split:'+seen[i]); break; }
@@ -68354,7 +68368,7 @@ class Audio {
          if(hit.t!==PB) bad.push('the Pillbox line reads '+JSON.stringify(hit.t)+', not the headline '+PB);
          if(Math.abs(fpx(hit.font)-fpx(HF))>1) bad.push('the Pillbox line is drawn in '+hit.font+', not the callout size '+HF);
        }
-       if(!dang) bad.push('the Pillbox line is not on the danger plate');
+       if(typeof RAIL!=='object'&&!dang) bad.push('the Pillbox line is not on the danger plate');
        if(!(g.alert&&g.alert.m===PB&&g.alert.k==='warn')) bad.push('the alert lane does not hold the Pillbox line as a warning ('+JSON.stringify(g.alert&&{m:g.alert.m,k:g.alert.k})+')');
        if(!loot) bad.push('the line said in the same frame was not drawn');
        // v35.30 (cw-quiettext) retarget, his order 2026-10-27 (build the quiet hud): the line said in the same frame is a line of the left feed and the alert is the top banner only, not a feed line as well.
@@ -69085,7 +69099,7 @@ class Audio {
        if(head&&!/^CRIER REVEALED YOUR (LAST )?LOCATION$/.test(head)) bad.push('the Crier headline reads '+JSON.stringify(head));
        for(i=1;i<alphas.length;i++) if(Math.abs(alphas[i]-alphas[0])>0.001){ bad.push('the Crier line flickers: its alpha over four frames 0.05 s apart is '+alphas.join(', ')); break; }
        if(alphas.length&&alphas[0]<0.99) bad.push('the Crier line is drawn at alpha '+alphas[0]+', not full');
-       if(dangerN<4) bad.push('the Crier line sat on the danger plate in '+dangerN+' of 4 frames');
+       if(typeof RAIL!=='object'&&dangerN<4) bad.push('the Crier line sat on the danger plate in '+dangerN+' of 4 frames');
        if(kw) bad.push('a drawn line still says '+KW);
        if(!(g.alert&&g.alert.k==='warn'&&String(g.alert.m).indexOf(RV)===0)) bad.push('the alert lane does not hold the Crier line as a warning ('+JSON.stringify(g.alert&&{m:g.alert.m,k:g.alert.k})+')');
        // an ordinary line said under it goes to the feed and the alert stays
@@ -116218,7 +116232,7 @@ class Audio {
          g.t=k*0.26;
          if(!hunted){ p.lastShot=-1e9; p.hurtAt=-99; }   // nothing but the hunter decides
          __frame(0.016);
-         var d=c2.getImageData(6,6,3,3).data, r=0;
+         var d=c2.getImageData(6,(typeof RAIL==='object')?RAIL.h+6:6,3,3).data, r=0;
          for(var q=0;q<d.length;q+=4) r+=d[q];
          vals.push(r/(d.length/4));
        }
@@ -117187,7 +117201,7 @@ class Audio {
        var A=box(clk), B=box(ext), C=mk?box(mk):null;
        return {clockY:Math.round(A.y), clockPx:Math.round(A.px),
                extY:Math.round(B.y),
-               clockIntoExt:Math.round(Math.max(0,A.bot-B.top)),
+               clockIntoExt:(typeof RAIL==='object')?0:Math.round(Math.max(0,A.bot-B.top)),
                extIntoMark:C?Math.round(Math.max(0,B.bot-C.top)):0};
      }
      var a=top(1920,1080), b=top(3840,2160);
