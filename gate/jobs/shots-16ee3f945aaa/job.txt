@@ -1,0 +1,14 @@
+id=shots-16ee3f945aaa
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=9e37c70edfc8df7e55fe4038ea77eb8d11e815e7
+screens=a-fonts
+res=1080
+nolint=1
+lintopts=
+from=JUL26
+submitted=1793715575
+expires=1793722175
