@@ -1,0 +1,7 @@
+v37.46: the top strip: clock, score, extract, alerts and down all across the top edge
+
+One slim rail across the whole top edge. Score at the left, clock and sky in the middle, the way out and its arrow at the right. An alert stands on the rail against the clock and tints it red. Down takes the left of the rail with its timer and self-revive, the slider the right, and the bleed bar the bottom edge; no centre card any more, so the pillager stays in view. The corner column starts under the rail. Watch for: alerts with a long detail line on small windows, the go fullscreen button under the rail, and two players, whose shares step aside while an alert shows.
+
+Check 37.46. Fails on v37.45.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

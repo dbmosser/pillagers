@@ -1,0 +1,1 @@
+| the top strip: clock, score, extract, alerts and down all across the top edge | v37.46 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 37.46 passes, fails on v37.45 |

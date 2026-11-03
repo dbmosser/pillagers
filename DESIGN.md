@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.46 - the top strip: clock, score, extract, alerts and down all across the top edge
+
+Co-op hunt while he was away. His order of 2026-11-02, with pictures of the clock, score, extract and locked on plate stacked in the top middle: all these different boxes take up so much of the screen, redesign them and the player alerts so they all hit across the top edge, leaving more room for play. He approved the mockup. Watch: One slim rail across the whole top edge. Score at the left, clock and sky in the middle, the way out and its arrow at the right. An alert stands on the rail against the clock and tints it red. Down takes the left of the rail with its timer and self-revive, the slider the right, and the bleed bar the bottom edge; no centre card any more, so the pillager stays in view. The corner column starts under the rail. Watch for: alerts with a long detail line on small windows, the go fullscreen button under the rail, and two players, whose shares step aside while an alert shows.
+
+MEASURED. Check 37.46 passes, and fails on v37.45.
 ## v37.45 - THE STASH DOLL: IT FILLS ITS PANEL, THE KEY HINTS NO LONGER SIT ON THE PANELS, THE LIST STANDS IN GROUPS
 
 Co-op hunt while he was away. seen on the first pictures of v37.43 and from the critic (score 3): the key hints drew over the bottom of the panels because a footer holding only the X measures 0, a third of the doll panel stood empty, the list read as one wall, nothing was the one main action Watch: slots are taller and hold the icon over the name, the figure is larger, the hints have their own row under the panels, the list groups pieces by kind with a gap and its head reads stash n, save outfit is the one lime button, the verdict word is calmer, the tip panel reads pick a piece until something is picked
