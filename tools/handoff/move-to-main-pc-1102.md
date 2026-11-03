@@ -15,10 +15,10 @@ C. FnP. The "FnP main PC" chat works from docs/goals-saturday-1107.md now; it do
 3. Main PC Claude runs the setup: old folder kept under a new name, fresh clone, restore, tasks on with STOP in place.
 4. His one sitting at the main PC: bypass opt-in, helper sign-in (separate config folder), his keys, one new desktop chat in C:\claudecode\dark raiders with tools/handoff/main-pc-first-message.md.
 5. VM goes dark: STOP files, its runner off, stay-off startup rule. The new chat lifts STOP on the main PC and ships one build. ON HIS PC line.
-6. VM shuts down. Start button in his VM window brings it back; it shuts itself down again at start unless vm-wanted.txt is in the bridge share.
+6. CHANGED by his order 11-02 evening: the VM stays up, because his TbT work runs in it. vm-wanted.txt stays in the bridge share. Only Pillagers dev leaves the VM.
 
 ## Done when
-A build shipped from the main PC, checked on the JTPC, shows ON HIS PC; the VM is off; the main PC has 4 GB free or more with the editor open; helpers, check-ins, dashboard and itch run from the main PC.
+A build shipped from the main PC, checked on the JTPC, shows ON HIS PC; the VM has stopped developing and shipping Pillagers (it stays up for TbT); the main PC has 4 GB free or more with the editor open; helpers, check-ins, dashboard and itch run from the main PC.
 
 ## FnP clicks only he can do (from the FnP chat, 11-02)
 1. Allow the island chat's click request in the editor if it comes up again (he said "Allowed" about 07:35; no island on disk at 07:40).

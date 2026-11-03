@@ -1,5 +1,7 @@
 # START HERE
 
+## DEV MOVED TO THE MAIN PC (11-02, his order "move pillagers html development to the main PC permanently"). This folder on JUL26 is the only shipper. The VM stays up because his TbT work runs in it (his order 11-02 evening), but it no longer develops or ships Pillagers; vm-wanted.txt in the bridge share keeps it up, so leave that file and never write vm-off-now.txt. All html testing and the ship gate run on the spare PC (JTPC); nothing is tested here. 4 GB free stays the rule; the Fortnite editor has first call on memory, so one helper at a time while it is open. Helpers sign in separately (%USERPROFILE%\.claude-pillagers, tools/handoff/machine.sh); his work login on the terminal stays as it is. Older lines below that say VM mean this PC now. Kit and how it ran: console/notes/move/kit.md.
+
 ## PARTY FREEZE OVER (Sun 11/1 01:17, CEO): the party played v36.95. Lanes a, b and c are back on the standing 80% weekly line (caps.txt PLAN_LINE_*); every after-nov1 job is back in console/tasks/ (z- features last). Codex resumes Wed 11/4 at its own reset (pace off until then). console/party-window.txt ended Sun 06:00 by itself.
 
 ## CURRENT (rewritten 2026-10-27 night). One page on purpose: every new session reads it. The old 127 KB of handoff text (10-20 and the September alpha run) is in START-HERE-HISTORY.md; it is stale, do not copy rules from it.
@@ -18,7 +20,7 @@
 **How his orders become work:**
 - He talks to exactly two chats, both pinned and on his phone (his 10-27 night order: "Only give me the threads I need to interact with"): "CEO and Efficiency Czar" (runs the operation: chats, models, tools, check-ins, follow-up of every order) and "Gameplay Edit Intaker" (his game orders; it was "Game feature requests and edits"). Every other chat or agent is a helper: Remote Control off (the app default is now off), never pinned, archived when its job is ON HIS PC (the app also archives anything idle for 1 day). Never turn Remote Control on for a helper.
 - His order chat is "Gameplay Edit Intaker" (renamed by him 10-27 ~22:50; it was "Game feature requests and edits"). Each order goes into tools/handoff/console/open-orders.md the moment he gives it, then gets a job file in console/in-session/ and its own helper (a background agent from the CEO or orders chat, or a session with Remote Control off). Nothing lives only in a chat.
-- At most 3 sessions build at once (VM memory: each gate run opens Chrome; and the plan). More orders wait as job files.
+- At most 3 sessions build at once (the main PC's memory beside the Fortnite editor, and the plan). More orders wait as job files.
 - **Model ladder** (10-27 night, his "figure out an efficient escalation plan"; our runs.log plus reports/model-escalation-research.md). Start each job on its rung, set with start_session `model` / `effort` (the lanes do it by themselves in console-lane.sh):
   1. Free: the local reviewer (qwen) reads every new build's diff; Codex (lane o, Sol medium, high from run 3) takes small, exactly specified fixes with no old-check retarget.
   2. Sonnet 5.5 high: text, layout, colour, one number, a small rule. Never Sonnet xhigh or max (Opus high scores higher for less).
