@@ -1,0 +1,4 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  d1-alone                               staged       9.8s    | ALONE v36.13 null | v29.61 null
+  d2-cache                               staged       8.8s    | CACHE {"W":1920,"H":1080,"z":1,"ox":1140,"oy":1117,"ctx":3057,"cty":1657,"px":2100,"py":1700,"rail":{"g":{"sim":false,"seed":4242,"grid":{"cell":160,"cols":27,"rows":22,"cells":[[{"x1":0,"y1":0,"x2":4200,"y2":0},{"x1":4200,"y1":40,"x2":0,"y2":40},{"x1":0,"y1":40,"x2":0,"y2":0},{"x1":0,"y1":0,"x2":40
+  d3-goals                               staged       8.5s    | GOALS {"ex":null,"open":true,"goals":3,"cond":{"x":1601.4777777777776,"y":380.1,"w":299.72222222222223,"h":226.8,"tg":{"x":1868.65,"y":380.1,"w":32.550000000000004,"h":26.25}},"arc":false,"career":true,"cH":1,"n":22,"t":["EXTRACT 141m@1862,43","N@1751,87","goals 0/3@1625,382","6pm   Clear@1625,402",
