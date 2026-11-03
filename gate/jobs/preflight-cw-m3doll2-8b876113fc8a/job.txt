@@ -1,0 +1,15 @@
+id=preflight-cw-m3doll2-8b876113fc8a
+kind=preflight
+key=cw-m3doll2
+tag=pfc
+v=37.45
+new=3745
+base=c0560c0dc763c3ec0cd58dc941b7dd5dcd661fc5
+draft_sha=6f49e257ef725e7bb4f0b339f8ce2527818ee5e91e66373f3d70e6d8937feed3
+p_sha=f03bccbae75779f8390670bea6abe229a4e368d5f5f12eab2f53851faea30865
+f_sha=c5dec03d94b974489d91c76e5e9e1c215acc322c9069c1f5e7fc779a75c17b7f
+game_sha=bd4acca4ebe3496941b31b044fcd44b26f2783b96f9ea21cec2ecfcc49b80903
+fix_sha=eed927f04216df44f47324f36090b2d95f6457fbfc54e1877cba0f2724e797a0
+from=JUL26
+submitted=1793691552
+expires=1793698152
