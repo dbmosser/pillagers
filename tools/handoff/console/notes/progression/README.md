@@ -30,3 +30,9 @@ Sales (cw-m1sell, v37.18), at file scope after lifeEarnAdd:
 - Take pictures (tools/uishots.ps1) of every screen you change and look at them at 1080p and 4K.
 - Never two writers in one area: if your job says WAIT ON another job and that job is in tasks/, waiting/, blocked/ or a lane holds it, end your run with TASK WAITING: <that job name> and nothing else.
 - When done, add one line to tools/handoff/console/notes/progression/log.md: job, version, what he can see.
+
+## m3 shared helpers (three m3 jobs run side by side: whichever ships first adds these exactly as written, beside wornName; the others grep for them right before they draft and reuse them, never a second copy)
+- var WORN_VAL=[150,400,1000,2600]; the sale value of a piece at power 50 by rarity (tune here only, from real numbers).
+- wornPrice(pc): Math.round(WORN_VAL[pc.r]*wornPwMul(pc.pw)*(1+(pc.pip|0)*0.1)), before CFG.lootMult as an ITEMS val is. A sale pays Math.round(wornPrice(pc)*CFG.lootMult).
+- wornTip(pc, p): 'better', 'worse' or 'even'. Sum over WORN_STATS of (the stat in wornMods with pc in its slot, minus the stat in wornMods as worn now) divided by that stat's base; above 0.01 better, below -0.01 worse. A ring is compared in place of the weaker ring, or in an empty ring.
+- Gear jobs 00p-m3a..g: read the design section of 00p-m3a-drops for the wg_ key (done/ once shipped). A piece in a raid is a key that spells itself out; a piece at home is a record in P.gear or P.worn.

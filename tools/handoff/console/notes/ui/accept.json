@@ -5349,17 +5349,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "The three screens share one dark flat-panel look with a lime action, but each has real flaws: the hall is a flat wall of same-weight tiles with a weak retire button and a dead lower third, the retire confirm is a bare card with almost no content, and the run card has loose spacing and tiny text.",
+  "verdict": "The retire button is now a red-outlined action (about 56px high, as advised), but the record tiles still put the name ahead of the stat. The living row has no accent and the lower third of the card is empty.",
   "findings": [
-   "P1 The mainframe hall (image 1): 'retire brakka ii +$750' button, top right of the rename row: Make it a 48px-high button with a --danger 1px border and text, or move it to a 'retire' action inside the brakka ii row. Style '+$750' in --tx-2 or --ok at 16px. Keep the row as a single 48px-high line.",
-   "P1 The hall (image 1): the four record tiles and the table below: Make the stat the hero: set '12 raids', '$2,000', '60 kills' and 'level 4' at 32px f-cond 800 in --tx-1, and drop the name to 16px --tx-2. Add a 3px --acc left bar on the living row, which is brakka ii. Tighten the card to the content or fill it with a header row for the living pillager.",
-   "P1 The retire confirm (image 2): the whole card (560x190): Set the title in --tx-1 at 32px. Put '+$750' at 20px in --tx-1 with a 16px 'brakka ii · level 3 · 4 raids' line. Keep the lime fill on 'retire' only. Make both buttons 48px high with 16px text. Give 'not yet' the default focus so the destructive choice is never the default.",
-   "P1 The run card (image 3): the hierarchy from title down to the stats: Keep the title, the hero haul and the main button. Remove 'out clean · never spotted'. Cut the challenge sentences to a 16px tick row, e.g. '✓ no knockdowns', '✓ burst carbine'. Merge the extraction bonus into the haul line. Merge the tag row into the stat row or delete it.",
-   "P2 The run card (image 3): vertical rhythm and the 'how did that run feel +' button: Put every gap on the 8px grid: 24px between blocks and 16px inside blocks. Put the icons 16px below the hero number. Turn the feedback button into a plain 16px --tx-2 text link ('rate this run') or an icon on the right of the title row. Raise the checks to 16px --tx-1."
+   "P1 record tiles (longest life, richest haul, most kills, highest level): Make the stat the hero: 32px f-cond 800 in --tx-1. Put the name at 16px --tx-2 under it. Keep the 16px label at the top. Cut the tile height from about 138px to 104px.",
+   "P1 hall table, the 'brakka ii' living row: Add a 3px --acc left bar and a --ui-raised fill (#1e2225) to the living row. Keep 'living' in --ok at 16px. Dim the dead and retired rows' numbers to --tx-2.",
+   "P1 rename row: 'retire brakka ii +$750' button: Keep the label in --danger. Set '+$750' in --tx-2 at 16px, or move it to --ok. Add 24px of gap between the label and the amount. Shrink the rename field to about 480px and group the button directly beside it.",
+   "P2 bottom of the card (y 840-1020): Shrink the card to fit its content, or give the table 72px rows so it fills the card. Alternatively pin the retire action in a 72px footer row.",
+   "P2 header row: '$1,000 stash $6,415 bag $0': Label all three at 16px --tx-2 ('cash', 'stash', 'bag') and set the values at 20px --tx-1. Put 24px between the groups. Keep the 48px X on the right."
   ],
-  "pic": "tools/handoff/console/notes/shots/00p-m2e-after/e1-retire-row-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/00p-m2e-after2/e1-retire-row-1080.jpg",
   "task": "manual",
-  "when": "2026-11-02T04:24"
+  "when": "2026-11-02T04:31"
  },
  "e3-retire-ask": {
   "score": 3,

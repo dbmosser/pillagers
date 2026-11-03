@@ -1,6 +1,7 @@
 # Questions for him
 
 - birth card: a, b or c (built a). Picture page: tools/handoff/console/notes/progression/birth-pick-1101.html
+- retire (lane a, 11-01, v37.38): a pillager must live one raid before it can retire, otherwise birth (free), retire, birth pays $250 a press forever and climbs the ranks. Ok, or a different rule? Built with the one raid rule.
 - z-165 (lane b, 11-01): may I add a camera screen to ui-screens-js.json that stages a raid with fake teammate rows (rifle, down, fists), so the partner row can be photographed at 1080p and 4k? None of the 78 screens shows the raid teammate rows today. Shipped without pictures as v37.27.
 
 ## Cleared (coordinator, 10-18 evening)

@@ -1,5 +1,7 @@
 # m2 (the lineage) and m3 (worn gear)
 
+CEO order 11-01 night: m3 went to the lanes too as tasks/00p-m3a..g. m3a drops, m3b doll and m3e bench run side by side; m3c death and pips and m3d raid sources wait on m3a; m3f shop sources waits on m3a and m3b; m3g two-player waits on m3c and m3d. The job files are the source now. Letters differ from the list below: 00p-m3d here is raid sources, 00p-m3e the bench, 00p-m3f shop sources, 00p-m3g two-player. Written while his main PC was short on memory: no builds or tests were run for them.
+
 11-01 evening, CEO order: m2 went to the lanes as tools/handoff/console/tasks/00p-m2a..e (m2a death ends, m2b heirs, m2d hall run side by side; m2c birth waits on m2a and m2b; m2e retire waits on m2c and m2d). The job files are the source for m2 now; the m2 lines below are the design they came from. m3 is still the lead's, beside m2.
 
 His build order (answer 100): lineage, level and gear together. m2 and m3 land in the same week. Never two writers in one area: m2 owns endRaid's death and abandon branches, the birth screen, the hall and the Mainframe lineage tab; m3 owns loot generation, the stash doll, the workbench and the extract pip line. Where both touch endRaid (m2b death clears the pillager, m3d death takes worn gear), m3d goes after m2a and calls the same pilEnd path.
