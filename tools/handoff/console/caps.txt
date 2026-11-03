@@ -32,7 +32,8 @@ PLAN_TARGET=95
 # PLAN_TARGET stays the standing weekly goal: once these times fall outside the week, next week is the even line to it again.
 PLAN_LINE_START=2026-11-01T05:00:00Z
 PLAN_LINE_FROM=0
-PLAN_LINE_TARGET=95
+# 11-02 23:40 his order "FnP is the priority now, Pillagers-html takes a back seat": the helpers line for this week goes to 80, so FnP has room up to his Saturday test; the final burn spends what is left near the reset.
+PLAN_LINE_TARGET=80
 PLAN_LINE_END=2026-11-08T05:00:00Z
 PLAN_BURN_UNTIL=2026-10-25T05:00:00Z
 PLAN_WEEK_MAX=99

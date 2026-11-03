@@ -2,7 +2,7 @@
 # ramwatch.py : keeps checking the main PC's memory while it works. 11-02 night: a bad stick cost the island a day and could damage files without an
 # error, and the 3 sticks left in have only had a quick test on part of their 48 GB. Once an hour, 3 workers at low priority fill spare memory with known
 # values for 2 minutes and read them back (the FnP chat's ramcheck2.py method). Each round gets different physical memory, so coverage grows over a night.
-# The Fortnite island keeps first call: this leaves 14 GB free with the editor open, 8 GB otherwise, and sits out while Fortnite itself runs.
+# The Fortnite island keeps first call: with the editor open this is one worker on at most 6 GB and leaves 14 GB free; otherwise it leaves 8. It sits out while Fortnite itself runs.
 # A bad spot goes to console/alarms.md, which wakes the CEO chat. Log: %LOCALAPPDATA%\PillagersRamwatch\ramwatch.log
 import ctypes, mmap, multiprocessing as mp, os, subprocess, sys, time
 GB = 2**30; MB = 2**20
@@ -55,16 +55,18 @@ def round_once(total):
     use = free_gb() - keep
     if use < 3:
         log("sat out: %.1f GB free, keeping %d" % (free_gb(), keep)); return total
-    each = round(use / WORKERS, 2)
-    q = mp.Queue(); ps = [mp.Process(target=worker, args=(each, SECS, q)) for _ in range(WORKERS)]
+    workers = 1 if keep == 14 else WORKERS  # the editor is open: FnP comes first, so far less load on the memory bus
+    use = min(use, 6) if keep == 14 else use
+    each = round(use / workers, 2)
+    q = mp.Queue(); ps = [mp.Process(target=worker, args=(each, SECS, q)) for _ in range(workers)]
     [p.start() for p in ps]; res = [q.get() for _ in ps]; [p.join() for p in ps]
-    total += each * WORKERS
+    total += each * workers
     n = sum(r[1] for r in res)
-    log("%.1f GB for %d s, %d bad spots, %.0f GB tested since start" % (each * WORKERS, SECS, n, total))
+    log("%.1f GB for %d s, %d bad spots, %.0f GB tested since start" % (each * workers, SECS, n, total))
     if n:
         spots = [s for r in res for s in r[2]][:4]
         with open(ALARMS, "a", encoding="ascii", errors="replace") as f:
-            f.write("- %s MAIN PC MEMORY: ramwatch found %d bad spots in %.1f GB, first %s. Saving through this can damage files; tell him at once.\n" % (time.strftime("%m-%d %H:%M"), n, each * WORKERS, spots))
+            f.write("- %s MAIN PC MEMORY: ramwatch found %d bad spots in %.1f GB, first %s. Saving through this can damage files; tell him at once.\n" % (time.strftime("%m-%d %H:%M"), n, each * workers, spots))
     return total
 
 if __name__ == "__main__":
