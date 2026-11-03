@@ -1,0 +1,22 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  d1-empty                               staged       7.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gearmodal
+  d2-half                                staged       6.7s  total   3: clip 3 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gearmodal
+  d3-full                                staged       6.7s  total   1: clip 1 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gearmodal
+  d4-pad                                 staged       6.7s  total   1: clip 1 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gearmodal
+  d5-keys                                staged       6.7s  total   1: clip 1 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gearmodal
+  d6-lit                                 staged       6.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gearmodal
+  d7-200                                 staged       6.8s  total   1: clip 1 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gearmodal
+  04-stash-terminal                      staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  05-sector-page                         staged       6.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | sectormodal
+  67-career-stash-stocked                staged       5.7s  total   2: clip 0 off 0 small 1 contrast 1 font 0 overlap 0 focus 0
+== 4k : window 3876x2265, viewport 3840x2160
+  d1-empty                               staged       7.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gearmodal
+  d2-half                                staged       6.9s  total   3: clip 3 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gearmodal
+  d3-full                                staged       6.8s  total   1: clip 1 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gearmodal
+  d4-pad                                 staged       6.7s  total   1: clip 1 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gearmodal
+  d5-keys                                staged       6.7s  total   1: clip 1 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gearmodal
+  d6-lit                                 staged       6.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gearmodal
+  d7-200                                 staged       6.8s  total   1: clip 1 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | gearmodal
+  04-stash-terminal                      staged       7.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  05-sector-page                         staged       7.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | sectormodal
+  67-career-stash-stocked                staged       5.7s  total   2: clip 0 off 0 small 1 contrast 1 font 0 overlap 0 focus 0
