@@ -1,0 +1,30 @@
+id=ship-cw-cardstamp-044b34214b2e
+kind=ship
+key=cw-cardstamp
+tag=47
+v=37.47
+new=3747
+base=6f480fab90e9125f20e54f67c06119792f45e82d
+host=DESKTOP-82BKOP4
+draft_sha=8ffed319744cb6fe4ffe2ad5f86fead3af21635b362a4c87c4dbef0d35349d42
+p_sha=f620a04aa7bdfade6949a0c3fc01ed5d4611c316dff32ac4033ae08ebd7d5d0d
+f_sha=fa75dc9bcee44fa15cc6a145cc9d183b88fd4a7a2b2ede2e2f3dbb3fdb7a4173
+game_sha=dd25805eb2a59ad9293dfb330d44224e70eecc0c058ea7217a0e58efe369063a
+fix_sha=71241f90e89af595e92fbf1f8c2d402aca154fcd210b72a2e47144e9b2f724ba
+started=1793694664
+ended=1793694845
+result=PASS
+infra=0
+reason=
+--- stages
+p47 -> OK, 2 edits applied plus DEVNOW
+f47 -> OK, 1 edits applied
+parse: PASS v37.47 parse check
+dry fxdry47 check 37.47: PASS / PASS
+control fxctl47 check 37.47: the card is stamped v37.31, before v37.47 / the card is stamped v37.31, before v37.47
+recent: 0 new failures in the newest 80 checks
+stamp-verat: VER_AT 2026-11-03 03:33
+fixture.html check 37.47: PASS / PASS
+verifySafe: {"pass":true,"ents":{"0":85,"1":374},"containers":{"0":165,"1":593},"fail":[]}
+--- end
+done=1
