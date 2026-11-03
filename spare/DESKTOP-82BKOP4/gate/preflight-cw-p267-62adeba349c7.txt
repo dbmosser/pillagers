@@ -1,0 +1,26 @@
+id=preflight-cw-p267-62adeba349c7
+kind=preflight
+key=cw-p267
+tag=pfh
+v=37.42
+new=3742
+base=8a954a526ebbf581ca4fca3220de1729fe8eed3d
+host=DESKTOP-82BKOP4
+draft_sha=99738b793786620a1c539f1b06ed1099d4f0105adfab3cb0ecc6547c4df1f20c
+p_sha=5d883c62458ad5162569f93cf7b001417f8f60eb45f46f77c1af6c1c5796cb11
+f_sha=b48aaceb3db9361d25a6c5a1bf26ed18b7c80fb3e5db49e55c75280a3c34291b
+game_sha=560f70bef88d20cfb6870114356566f24f2117042762988beb9147f06ebe7f0c
+fix_sha=5dbb1f0b3c716823300519d64ebff65790f44582554e06eba9a5d7ad39a48495
+started=1793676998
+ended=1793677032
+result=FAIL
+infra=0
+reason=the new check does not pass twice on the drafted build
+--- stages
+ppfh -> OK, 2 edits applied plus DEVNOW
+fpfh -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.42 parse check
+dry fxdrypfh check 37.42: dealt(smg) V:m0d0/0 Z:m1d43/43 fists(mag0) V:m0d0/0 Z:m1d43/43 rifle V:m0d0/0 Z:m1d43/43 a25 fn=trued43 face=-1.57 stale d0 aimed d43 / helper KeyZ,z km{} 10.64:ok 11.27:ok 11.38:ok 25.67:ok 35.74:ok
+--- end
+done=1
