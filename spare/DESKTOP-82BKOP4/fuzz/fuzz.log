@@ -6499,3 +6499,4 @@
 2026-11-03 01:39:44 raid 1 demo2p raidSeed=1978525036 map=0 god=1 sec=176 end=reload problems=2 newUnique=2 totalUnique=2 totalProblems=2 events=6 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2=link_3s_join_60s_pad_own_DEAD gfx=none work=none build=37.40
 2026-11-03 01:39:46 FUZZ ABORT reason=gate job, not a game failure
 2026-11-03 01:40:23 FUZZ ABORT reason=gate job, not a game failure
+2026-11-03 01:43:12 FUZZ ABORT reason=gate job, not a game failure
