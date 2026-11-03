@@ -6,6 +6,8 @@ import http from 'http';
 import os from 'os';
 import { readFileSync, statSync, existsSync, readdirSync, writeFileSync, appendFileSync } from 'fs';
 import { execFileSync, execFile, spawn } from 'child_process';
+// 11-02: his order moves development to the main PC; this server then runs there, so what only makes sense in the VM goes by the computer name (tools/handoff/machine.sh)
+const ON_MAIN = /^JUL26$/i.test(process.env.COMPUTERNAME || os.hostname());
 const R = 'C:/claudecode/dark raiders', C = R + '/tools/handoff/console', N = R + '/tools/handoff/nightly';
 const S = 'C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad';
 const rd = (p, d = '') => { try { return readFileSync(p, 'utf8'); } catch { return d; } };
@@ -182,7 +184,7 @@ function data() {
   const commits = git(['log', '-14', '--format=%h|%ad|%s', '--date=format-local:%m-%d %H:%M']).split('\n').filter(Boolean).map(l => l.split('|'));
   const shipsToday = git(['log', '--since=midnight', '--format=%s']).split('\n').filter(s => /^v\d+\.\d+:/.test(s)).length;
   const hb = ageS(N + '/runner.heartbeat');
-  const titles = {}; (tail(S + "/shipq.log", 12).join(" ") + " " + lockOwner).replace(/cw-[A-Za-z0-9_-]+/g, k => { if (!titles[k]) { try { titles[k] = JSON.parse(rd(R + "/tools/handoff/drafts/draft-" + k + ".json").replace(/^﻿/, "")).title || ""; } catch {} } return k; });
+  const titles = {}; (tail(S + "/shipq.log", 80).join(" ") + " " + lockOwner).replace(/cw-[A-Za-z0-9_-]+/g, k => { if (!titles[k]) { try { titles[k] = JSON.parse(rd(R + "/tools/handoff/drafts/draft-" + k + ".json").replace(/^﻿/, "")).title || ""; } catch {} } return k; });
   const st = kv(R + '/tools/handoff/stable.txt');
   // 10-20: his notes from the main PC (tools/fetch-notes.mjs, coord-01) and the spare PC (tools/spare/spare-import.mjs)
   const notes = rd(R + '/tools/handoff/notes-fetch.txt').trim().slice(0, 240), spare = rd(R + '/tools/handoff/spare-status.txt').trim().slice(0, 300);
@@ -191,14 +193,14 @@ function data() {
   const op = tail(C + '/onhispc.txt', 20).reverse().map(l => /^(\d\d-\d\d \d\d:\d\d) .*\(8802 serves ([\d.]+)\)/.exec(l)).find(Boolean);
   const after = existsSync(C + '/after-nov1') ? readdirSync(C + '/after-nov1').filter(f => f.endsWith('.md') && f !== 'README.md').length : 0;
   return { now: new Date().toLocaleTimeString(), ver: ver(), shipsToday, cpu, notes, spare, spareInfo: spareInfo(),
-    onPc: op ? { ver: op[2], at: op[1] } : null, itch: rd(N + '/itch-ver.txt').trim(), afterNov1: after, playing: kv(N + '/state.txt').gaming === '1', mainGame, memClick: (m => !!(mainGame.memrule && m && mainGame.memrule !== m[1]))(/'memrule=(\d+)'/.exec(rd(R + '/tools/migrate/host-night-memory.ps1'))),
+    onPc: op ? { ver: op[2], at: op[1] } : null, itch: rd(N + '/itch-ver.txt').trim(), afterNov1: after, onMain: ON_MAIN, playing: kv(N + '/state.txt').gaming === '1', mainGame, memClick: (m => !!(mainGame.memrule && m && mainGame.memrule !== m[1]))(/'memrule=(\d+)'/.exec(rd(R + '/tools/migrate/host-night-memory.ps1'))),
     link: { ok: snapOkAt > snapFailAt, okAt: snapOkAt, failAt: snapFailAt },
     stable: { version: st.version || '', at: st.at || '', address: st.address || '', frozen: existsSync(R + '/tools/handoff/stable.freeze') }, report: latestReport(), ramFree: +(os.freemem() / 2 ** 30).toFixed(1), ramTot: Math.round(os.totalmem() / 2 ** 30), cpus: os.cpus().length,
     procs, runnerAgeS: hb, lockOwner, titles, lanes, stopFile: existsSync(C + '/STOP'),
     spend: { real: !!real, today: +(real ? real.today_usd : spentToday0).toFixed(2), all: +(real ? real.month_usd : spentAll0).toFixed(2), total, share: +share.toFixed(2), daysLeft, end },
     done: existsSync(C + '/done') ? readdirSync(C + '/done').length : 0, failed: existsSync(C + '/failed') ? readdirSync(C + '/failed') : [],
     blocked: existsSync(C + '/blocked') ? readdirSync(C + '/blocked').filter(f => f.endsWith('.md')).map(f => ({ job: f.slice(0, -3), on: rd(C + '/blocked/' + f.slice(0, -3) + '.on').trim() })) : [],
-    questions: tail(C + '/for-you.md', 12), plan: plan(), runs: tail(C + '/runs.log', 10), shipq: tail(S + '/shipq.log', 12),
+    questions: tail(C + '/for-you.md', 12), plan: plan(), runs: tail(C + '/runs.log', 10), shipq: tail(S + '/shipq.log', 80).filter(l => !/waiting for the spare pc|the spare pc is running|is with the spare pc|joining job|^\d\d:\d\d (shots|(cw-)?gate(pass|fail)):/i.test(l)).slice(-12),   /* 11-02: the check now runs on the spare PC; its progress lines and the 11-02 practice runs are not results */
     // 10-27: only the runner's own time-stamped lines (butler's "Use the butler status" and raw bridge JSON leaked onto the page)
     ai: ai(), nightly: tail(N + '/nightly.log', 60).filter(l => /^(\d\d-\d\d )?\d\d:\d\d /.test(l)).slice(-8), fuzz: tail(R + '/tools/handoff/fuzz/fuzz.log', 4), review: tail(C + '/review/review.log', 3), commits };
 }
@@ -223,7 +225,7 @@ const srv = http.createServer((q, s) => {
 // Never a key in the page: data() reads only status files, logs and git.
 const SNAP_NAME = 'pillagers-dashboard.html', SNAP_TMP = os.tmpdir() + '/pillagers-dashboard-snap.html', SNAP_LOG = os.tmpdir() + '/pillagers-dashboard-push.log';
 const SNAP_TAIL = "tick();(function(){var age=Math.round((Date.now()-window.__SNAP.snapAt)/1000);" +
-  "if(age>120)$('upd').innerHTML='<span class=\"warn\">No news from the VM for '+Math.round(age/60)+' min (it may be restarting); this page keeps trying</span>';" +
+  "if(age>120)$('upd').innerHTML='<span class=\"warn\">No news from " + (ON_MAIN ? 'the dashboard program' : 'the VM') + " for '+Math.round(age/60)+' min (it may be restarting); this page keeps trying</span>';" +
   "try{var y=sessionStorage.getItem('dashY');if(y)scrollTo(0,+y);}catch(e){}" +
   "setTimeout(function(){try{sessionStorage.setItem('dashY',String(scrollY));}catch(e){}location.reload();},30000);})();";
 let snapBusy = false, snapErrAt = 0, snapSig = '', snapSent = 0, snapOkAt = 0, snapFailAt = 0;
@@ -232,7 +234,7 @@ function snapshot(d) {
   return PAGE()
     .replace("d=await (await fetch('/api',{cache:'no-store'})).json();", 'd=window.__SNAP;')
     .replace('tick(); setInterval(tick,5000);', SNAP_TAIL)
-    .replace("(every 5 seconds)", "(sent from the VM every 30 seconds)")
+    .replace("(every 5 seconds)", ON_MAIN ? "(every 30 seconds)" : "(sent from the VM every 30 seconds)")
     .replace('href="/report"', 'href="#"')
     .replace('<script>', '<script>window.__SNAP=' + JSON.stringify(d).replace(/</g, '\u003c') + ';</script><script>');
 }
@@ -262,6 +264,7 @@ setTimeout(pushSnap, 3000); setInterval(pushSnap, 30000);
 const MEM_NAME = 'vm-memory.txt', MEM_TMP = os.tmpdir() + '/pillagers-vm-memory.txt';
 let memBusy = false;
 function pushMem() {
+  if (ON_MAIN) return;   // it tells the main PC the VM's free memory; with the VM off there is nothing to tell
   if (memBusy) return; memBusy = true;
   try { writeFileSync(MEM_TMP, 'epoch=' + Math.floor(Date.now() / 1000) + '\nfreeMB=' + Math.floor(os.freemem() / 1048576) + '\n'); } catch (e) { memBusy = false; return; }
   execFile(process.execPath, [R + '/tools/bridge/hostctl.mjs', 'share-put', 'name=' + MEM_NAME, '--file', MEM_TMP], { timeout: 20000, windowsHide: true }, () => { memBusy = false; });

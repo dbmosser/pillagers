@@ -51,15 +51,15 @@ main{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1
 <div id="money"></div></section>
 
 <section class="card"><h2>QUALITY CHECK LINE</h2>
-<div class="what">Every fix must pass the game's automatic tests before it goes into the game. Fixes wait here one at a time. A fix that fails is sent back to its helper to try again.</div>
+<div class="what">Every fix must pass the game's automatic tests before it goes into the game; the tests run on the spare PC (your order 11-02). Fixes wait here one at a time. A fix that fails is sent back to its helper to try again.</div>
 <div id="gate"></div></section>
 
 <section class="card"><h2>JUST ADDED TO THE GAME</h2>
 <div class="what">The latest changes saved into the game (and backed up to GitHub). "Test update" means a change to the automatic tests, not the game itself.</div>
 <div id="commits"></div></section>
 
-<section class="card"><h2>THE VM (WORK COMPUTER)</h2>
-<div class="what">How hard the work computer (the VM) is working on the game right now. Your main PC always keeps memory free for you, and while you sit at it the VM gets half its processors, while you play a game only 30%, and no new helper job starts while you play. All the game's testing is on the spare PC (your order 11-02).</div>
+<section class="card"><h2 id="pcTitle">THE VM (WORK COMPUTER)</h2>
+<div class="what" id="pcWhat">How hard the work computer (the VM) is working on the game right now. Your main PC always keeps memory free for you, and while you sit at it the VM gets half its processors, while you play a game only 30%, and no new helper job starts while you play. All the game's testing is on the spare PC (your order 11-02).</div>
 <div id="pc"></div></section>
 
 <section class="card"><h2>MAIN PC (JUL26)</h2>
@@ -71,7 +71,7 @@ main{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1
 <div id="runner"></div></section>
 
 <section class="card"><h2>SPARE PC (JTPC)</h2>
-<div class="what">Your spare PC does all the game's testing (your order 11-02): it re-runs all the tests on each new version, keeps crash-hunting robots playing, and plays an online 2 player test once a day. It never changes the game, and it uses no Claude.</div>
+<div class="what">Your spare PC does all the game's testing (your order 11-02): it checks every fix in the quality check line, re-runs all the tests on each new version, keeps crash-hunting robots playing, and plays an online 2 player test once a day. It never changes the game, and it uses no Claude.</div>
 <div id="spare"></div></section>
 
 <section class="card"><h2>QUESTIONS FOR YOU</h2>
@@ -119,7 +119,7 @@ function laneLine(s){
 const REASON=[[/uncommitted changes/,'another helper was in the middle of an edit'],[/parse check/,'the game would not load with this change'],
  [/does not pass twice/,'its own test did not pass reliably'],[/older check fails/,'it broke something that used to work'],[/fingerprint moved/,'it changed the map by accident'],
  [/patch did not apply|MK FAIL|anchor/,'the change no longer fits the latest game code'],[/control did not fail/,'its test could not tell the old game from the new one'],
- [/card/,'the What\'s New card needed a refresh first'],[/LOCK TIMEOUT/,'waited too long in line']];
+ [/card/,'the What\'s New card needed a refresh first'],[/LOCK TIMEOUT/,'waited too long in line'],[/spare pc/i,'the spare PC could not run the check, which is not the fix\'s fault']];
 function shipLine(l){
   const t=l.slice(0,5), k=(/^\d\d:\d\d (\S+?):/.exec(l)||[])[1]||'';
   if(/SHIPPED v([\d.]+)/.test(l)) return ['g',t,'Passed and added to the game as version '+RegExp.$1+' ('+job(k)+')'];
@@ -194,7 +194,7 @@ function spareHtml(x){
   let o=row(c,null,'<b>'+(c==='g'?'Working':c==='a'?'Paused':'<span class="warn">Quiet</span>')+'</b>: '+esc(t.replace(/^(working|paused), /,''))+'<div class="small">'+esc(x.host)+(x.ramFree?' &middot; '+esc(x.ramFree)+' GB memory free':'')+(v?' &middot; has game version '+esc(v):'')+'</div>');
   o+=row(tr?'g':'d',null,'<b>Full test re-run:</b> '+(tr?'running'+(tr[1]?' since '+tr[1]+':'+tr[2]:'')+(v?' on version '+esc(v):''):'waiting for the next new version'+(v?' (has version '+esc(v)+')':'')));
   o+=row(x.robots?'g':'d',null,'<b>Crash-hunting robots:</b> '+(x.robots?x.robots+' playing now':'none playing')+'<div class="small">Today: '+x.raidsToday+' raids, '+(x.problemsToday?'<span class="warn">'+x.problemsToday+' problem'+(x.problemsToday>1?'s':'')+'</span> (Claude checks whether each is the game or the test)':'no problems')+'</div>');
-  o+=row(x.pushOk==='1'?'g':'a',null,'<b>Results to the VM:</b> '+(x.pushOk==='1'?'arriving':'its last upload try failed; it tries again on its next round'));
+  o+=row(x.pushOk==='1'?'g':'a',null,'<b>Results back from it:</b> '+(x.pushOk==='1'?'arriving':'its last upload try failed; it tries again on its next round'));
   x.lastRaids.slice().reverse().forEach(l=>{ const m=/^\S+ (\d\d:\d\d)\S* raid \d+ (\S+) .*?end=(\S+) problems=(\d+)/.exec(l); if(m) o+=row(+m[4]?'a':'d',m[1],esc((m[2]==='demo2p'?'2-player demo':m[2]==='demo1'?'1-player demo':m[2])+' raid: '+(m[3]==='nostart'?'did not start':m[3]==='clock-end'||m[3]==='ended'?'played to the end':m[3])+(+m[4]?', '+m[4]+' problem'+(+m[4]>1?'s':''):''))); });
   o+=endLine(x.lastEnd);
   return o;
@@ -231,7 +231,8 @@ function crewHtml(d){
     o+=svcRow(w.length?'g':'d','Crash-hunting robots',w.length?'playing now: '+w.join(', '):'none running'); }
   { const [sc,stx]=spareState(d.spareInfo); o+=svcRow(sc,'Spare PC (JTPC)',esc(stx)); }
   o+=svcRow(alive?'g':'r','Background runner',alive?'running (backups, test results from the spare PC, starting the helpers)':'<span class="warn">not running</span>');
-  if(d.link&&(d.link.okAt||d.link.failAt)) o+=svcRow(d.link.ok?'g':'r','Link to your main PC',d.link.ok?'connected':'<span class="warn">not answering'+(d.link.okAt?' since '+hm(d.link.okAt):'')+'</span> (see MAIN PC)');
+  if(!d.onMain) o+=svcRow('b','Moving to your main PC','your order 11-02: getting ready. The VM keeps working until your main PC adds its first version to the game, then the VM shuts down');   // 11-02: tools/handoff/move-to-main-pc-1102.md
+  if(!d.onMain&&d.link&&(d.link.okAt||d.link.failAt)) o+=svcRow(d.link.ok?'g':'r','Link to your main PC',d.link.ok?'connected':'<span class="warn">not answering'+(d.link.okAt?' since '+hm(d.link.okAt):'')+'</span> (see MAIN PC)');
   { const qn=qList(d).length;
   const click=d.memClick?'one click: double-click "Pillagers memory setup" on your desktop, then Yes (your main PC then gets its memory back sooner while you are away)':'';   // 11-02: the main PC's memory rule waits for his own click; the shortcut goes away once it is in
   o+=svcRow(qn||click?'a':'d','Waiting on you',qn?qn+' question'+(qn>1?'s':'')+' (see QUESTIONS FOR YOU)'+(click?'; '+click:''):click||'nothing'); }
@@ -239,7 +240,7 @@ function crewHtml(d){
 }
 async function tick(){
   let d; try{ d=await (await fetch('/api',{cache:'no-store'})).json(); }catch(e){ $('upd').innerHTML='<span class="warn">Dashboard server not answering</span>'; return; }
-  TITLES=d.titles||{}; window.__LINK=d.link; $('ver').textContent=d.ver; $('ships').textContent=d.shipsToday;
+  TITLES=d.titles||{}; window.__LINK=d.onMain?null:d.link; $('ver').textContent=d.ver; $('ships').textContent=d.shipsToday;
   // 10-27: what he plays (his 8802 follows each new version in about a minute) and what itch has, next to the newest version
   const op=d.onPc; $('onpc').innerHTML=op?(op.ver===d.ver?'v'+esc(op.ver):'<span'+(op.ver<d.ver?' class="warn"':'')+'>v'+esc(op.ver)+'</span>'):'?';
   $('itch').innerHTML=d.itch?(d.itch===d.ver?'v'+esc(d.itch):'<span class="warn">v'+esc(d.itch)+'</span>'):'?';
@@ -253,7 +254,7 @@ async function tick(){
   const rp=d.report; $('rep').textContent=rp?('Latest report ('+rp.name.replace(/\.html$/,'').slice(5)+')'):'Latest report (none yet)'; $('upd').textContent='Updated '+d.now+' (every 5 seconds)';
   $('lanes').innerHTML=(d.stopFile?row('r',null,'<b>All helpers are paused</b> because the STOP file is in tools/handoff/console. Delete it to restart them.'):'')+
     d.lanes.filter(l=>l.lane!=='o'&&!l.old).map(l=>{const [c,t]=laneNow(l,d);return row(c,null,'<b>'+LANE[l.lane]+'</b>: '+esc(t)+'<div class="small">Next up: '+([...new Set(l.queue.map(job))].slice(0,3).map(esc).join(' / ')||'nothing')+(l.queue.length>3?' ... ('+l.queue.length+' jobs waiting)':'')+'</div>');}).join('')+
-    (()=>{const off=d.lanes.filter(l=>l.lane!=='o'&&l.old).map(l=>l.lane.toUpperCase()); return off.length?row('d',null,'<b>Helper'+(off.length>1?'s ':' ')+off.join(', ').replace(/, (\w)$/,' and $1')+':</b> switched off (the VM runs the others instead)'):'';})()+
+    (()=>{const off=d.lanes.filter(l=>l.lane!=='o'&&l.old).map(l=>l.lane.toUpperCase()); return off.length?row('d',null,'<b>Helper'+(off.length>1?'s ':' ')+off.join(', ').replace(/, (\w)$/,' and $1')+':</b> switched off (A, B and C do the work)'):'';})()+
     (d.afterNov1&&new Date()<new Date(2026,10,1,1)?row('d',null,'<b>New features wait until Sun 11/1</b> (your order): '+d.afterNov1+' feature jobs are parked until then; only fixes and polish run now'):'')+
     '<div class="small" style="margin-top:8px">Jobs finished: '+d.done+(d.failed.length?' &middot; <span class="warn">Gave up: '+d.failed.length+'</span>':'')+((d.blocked||[]).length?' &middot; Parked until another job finishes: '+d.blocked.map(b=>esc(job(b.job))).join(', '):'')+'</div>';
   const s=d.spend, pct=Math.min(100,Math.round(100*s.all/s.total)), tp=Math.min(100,Math.round(100*s.today/Math.max(.01,s.share)));
@@ -266,10 +267,11 @@ async function tick(){
   $('commits').innerHTML=d.commits.map(([h,t,s])=>{const v=/^v([\d.]+): (.*)/.exec(s);
     return v?row('g',t.slice(6),'<b>Version '+esc(v[1])+'</b>: '+esc(v[2])):row('d',t.slice(6),(/^fixture:/.test(s)?'Test update: '+esc(you(s).replace(/^fixture:\s*(fixture:\s*)?/,'')):esc(you(s))));}).join('');
   const p=d.procs;
+  if(d.onMain){ $('pcTitle').textContent='THE WORK COMPUTER (YOUR MAIN PC)'; $('pcWhat').textContent='All the helpers work on your main PC now (your order 11-02): one at a time while the Fortnite editor is open, and they keep 4 GB of memory free for you. The VM is off; the start button in its window brings it back, and it shuts itself down again.'; }
   $('pc').innerHTML='<span class="stat"><b>'+d.cpu+'%</b>processor busy</span><span class="stat"><b>'+d.ramFree+' GB</b>memory free of '+d.ramTot+'</span>'+(d.cpus?'<span class="stat"><b>'+d.cpus+'</b>processors</span>':'')+
     (p.fuzz.length?row('g',null,'<b>Crash-hunting robots:</b> '+p.fuzz.length+' running. They play the game with random button presses for hours, looking for crashes'):'')+
     row(p.workers?'g':'d',null,'<b>Claude helpers thinking:</b> '+p.workers+(p.workers?' right now':' (resting or waiting)'))+
-    row('b',null,'<b>Chrome processes:</b> '+p.chrome+' (your own browser plus the hidden test browsers: the quality check line and each helper\'s practice browser)')+
+    row('b',null,'<b>Chrome processes:</b> '+p.chrome+' (your own browser plus any practice browser a helper opens; the quality check line\'s browsers are on the spare PC)')+
     (p.review?row('g',null,'<b>Nightly code review</b> is running'):'')+(p.ollama?row('b',null,'<b>Local AI</b> (on your graphics card) is running'):'');
   const alive=d.runnerAgeS!==null&&d.runnerAgeS<900;
   $('runner').innerHTML=row(alive?'g':'r',null,alive?'Running (last check-in '+ago(d.runnerAgeS)+')':'<span class="warn">Not running (last check-in '+ago(d.runnerAgeS)+'). It restarts itself within 15 minutes.</span>')+
