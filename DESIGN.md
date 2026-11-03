@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.42 - SEASON ZERO M3: THE WORKBENCH WORKS ON GEAR
+
+Co-op hunt while he was away. his rulings of 11-01: reroll one trait for dollars at the workbench (67), salvage unwanted gear into materials (66), most the money should come from selling gear; plan worn gear and stations Watch: the trader has a gear tab beside craft: every stash piece with name in rarity colour, power, pips and traits; each trait has a reroll button with its price, a quarter of the sale value and up by half each time; hold to sell pays the sale price and counts in lifetime earnings; hold to salvage gives 2, 4, 8 or 14 materials worth about 80 percent of a sale; keys and pad get a confirm card; worn pieces are not offered; net worth counts gear in the stash and worn; never in the demo
+
+MEASURED. Check 37.42 passes, and fails on v37.41.
 ## v37.41 - NO MORE HOSTILES CLOSING IN LINE
 
 Co-op hunt while he was away. His order 11-02, with a picture of the red line "14 hostiles closing in": "this message about hostiles closing in is not helpful". The count line under the extract banner and its plate are removed; the banner stays (job 269). Watch: the hostiles closing in line under the extract banner is gone

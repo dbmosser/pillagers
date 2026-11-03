@@ -1,0 +1,7 @@
+v37.42: season zero m3: the workbench works on gear
+
+the trader has a gear tab beside craft: every stash piece with name in rarity colour, power, pips and traits; each trait has a reroll button with its price, a quarter of the sale value and up by half each time; hold to sell pays the sale price and counts in lifetime earnings; hold to salvage gives 2, 4, 8 or 14 materials worth about 80 percent of a sale; keys and pad get a confirm card; worn pieces are not offered; net worth counts gear in the stash and worn; never in the demo
+
+Check 37.42. Fails on v37.41.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

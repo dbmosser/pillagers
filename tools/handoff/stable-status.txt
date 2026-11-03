@@ -1,7 +1,7 @@
 Latest stable: v36.55 (2026-10-29 22:13)
-Checked: 2026-11-02 21:19
+Checked: 2026-11-02 23:23
 Play address: http://localhost:8802/stable.html
-Result: restored stable.html for v36.55
+Result: no change
 
 Newest test runs, newest first:
   corpus-1102-0552  v37.39  failing 72, new 9  robots 921 min/42 problems  -> 9 check(s) newly failing, e.g. v8.84 I in the Undercroft opens neither the terminal nor the | v8.95 I in the Undercroft opens the raid backpack itself, no

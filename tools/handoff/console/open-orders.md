@@ -99,6 +99,6 @@ SHIPPED 10-28 v35.66: 201 air strike needs 3000 damage (was 1500). On his PC 168
 
 - HIS ORDER 11-02 ~21:50 (verbatim, to the pillager-html change request chat, with a screenshot of the clock, score, extract and downed cards stacked top centre): "i don't like how all these different boxes take up so much of the screen, can we redesign this (and redesign player alerts) so that they all hit across the top edge of the screen somehow, leaving more screen space for play". Job in-session/268-top-edge-strip.md. Replaces the stacked layout of his 10-28 clock over score order; the clock stays the biggest figure.
 
-- HIS ORDER 11-02 ~21:55 (verbatim, to the pillager-html change request chat, with a screenshot of the red line "14 hostiles closing in"): "this message about 'hostiles closing in' is not helpful". Job in-session/269-hostiles-closing-in.md.
+- HIS ORDER 11-02 ~21:55 (verbatim, to the pillager-html change request chat, with a screenshot of the red line "14 hostiles closing in"): "this message about 'hostiles closing in' is not helpful". Job 269. SHIPPED v37.41, on his PC 22:13: the line and its plate are gone, the extract banner stays.
 
 - HIS ORDER 11-02 ~22:00 (verbatim, same chat, second screenshot: clock, score, extract and a "locked on" danger plate stacked top centre): "heres another example of too many boxes filling up the top mid of the screen, when they should fill across the entire top of the screen, leaving more room for gameplay". Same job, 268: the strip spans the whole top edge, not the middle.
