@@ -9,3 +9,17 @@
 - FIXTURE FIX COMMITTED d12a19e47 through fixq while holding the lock: __pilLive helper, __hubEnter and the between-check step of __regress and __regressBg call it, __topClear shuts #birthmodal. Next: preflight draft cw-g266after (never shipped) replays the six behind the checks before them.
 - AFTER PROBE 1 (preflight-cw-g266after-f1971bd3d7e2, on d12a19e47, 137 s): 8.64 leaves him dead, __hubEnter alone gives hub[none, living]; 8.84 8.95 8.96 9.32 24.35 25.34 ok. The 14 birth and hall checks: none red. W1 [0..9.32] ran 28 of 73 in the time, restored once, four targets ok, one other red 8.66 (not this job). W3 40 before 24.35 all ran, ok. W2 had no time left. Next: cw-g266after2 replays from the real slice starts.
 - AFTER PROBE 2 (preflight-cw-g266after2-333d701ec794, base eab496166, 151 s): from the real slice start 1200, ran 105 of 108, restored 4 times, 25.34 ok, no other red. From slice start 1320, ran 41 of 87, restored twice, 24.35 ok, no other red. 8.96+1 up to 9.32: ran 14 of 36, 9.32 ok, but 9.07 red there: look at it.
+- AFTER PROBE 3 (preflight-cw-g266after3, base c6dc2720, own tab, 145 s): slice zero 0 to 9.32, ran 67 of 73 (8.82 and 5 others left out for time), restored once, 8.84 8.95 8.96 9.32 ok. Other reds: 8.66 (old, not this job), 9.07 "two identical redraws differ". 9.07 is red the same way alone with a living start and with nobody living, so it is not from this fix or the pillager; it was green in corpus-1102-0552, so read it in the next full run.
+- I left duplicate probe jobs on gate-jobs when HEAD moved between my re-calls. Remove only my own.
+- Removed my own finished and duplicate probe jobs from gate-jobs. Flipscan: CLEAN: 6 commits, 19 changed line pairs, 2 digit-only changes passed.
+- No ship from this job: no game change. Left: see the six green in the first full run whose fixture has d12a19e47 (corpus-1102-2152 is on v37.40 without it). Also read 9.07 there: red in every gate-tab run on v37.41 to v37.43 bases, alone, living or nobody living, green in corpus-1102-0552.
+
+## FINAL REPORT (11-03, written here too because SubagentHandback was refused once: "Only the auto-mode classifier can allow SubagentHandback: the session is not in auto mode")
+Cause: the window was the birth card (#birthmodal), the only .modal.on open. A death or real quit leaves nobody living, the next showScreen('hub') opens the card, and a full run calls __runPrep once per slice, so nothing restored a pillager between checks. 25.34 fails even alone: it ends the pillager itself.
+Proof: preflight-cw-g266probe-ca2bff81eae7 (see PROBE 1 ANSWER above).
+Changed: tools/mkfixture.ps1 only, commit d12a19e47. No game change, no version shipped by this job. A player cannot get stuck: close, esc, enter and pad B all leave the card.
+The six: all passed in replays on the spare PC (8.84 8.95 8.96 9.32: 67 of 73 up to 9.32; 25.34: 105 of 108 from slice start 1200; 24.35: 41 of 87 from slice start 1320). None seen in a full run or a complete slice.
+Other reds: 9.07 "two identical redraws differ" in every replay that reached it, alone too, living or not, cause not found, not red in corpus-1102-0552. 8.66 as before, not this job.
+Side effects: duplicate probe jobs removed from gate-jobs; four probe drafts tools/handoff/drafts/draft-cw-g266*.json are in the repo through other ship commits, left there.
+Flipscan: CLEAN: 6 commits, 19 changed line pairs, 2 digit-only changes passed
+TASK PARTIAL: the six checks still have to be seen passing in the first full run whose fixture has d12a19e47, and 9.07 read in that run

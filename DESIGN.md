@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.44 - SEASON ZERO M3: WORN GEAR IN LOOT BOXES
+
+Co-op hunt while he was away. his rulings of 11-01 (answers 56 to 59, 62, 71, 73): gear is in loot boxes like everything else, a raid averages 4 or 5 pieces, see the traits before you take it. Numbers for the rate: his 19 real raids v35.38 to v36.66 (abandons left out) opened 259 containers, 13.6 a raid (7 extracts 20.6, 12 deaths 9.6); about 3 in 4 are map boxes (an estimate, the log does not split them), so 10.2 boxes a raid; boxes owe 3 to 4 of the 4 or 5 pieces, so 3.5 over 10.2 is 34 percent a box; 00p-m3d adds wrecks, pillagers and keycard rooms and may retune it. Rarity 60, 28, 10, 2 percent. Watch: a map box may hold a worn piece, rolled once on its own dice at the first search so seed 4242 and the raid streams never move; a tip beside the search bar and in the backpack shows its name, traits and better, worse or even; it comes out as a pickup row in its rarity colour with one trait line; on an extract it joins the gear stash, on a death it is gone; looting a box with no piece is exactly what it was
+
+MEASURED. Check 37.44 passes, and fails on v37.43.
 ## v37.43 - SEASON ZERO M3: THE STASH DOLL: NINE SLOTS, WEAR AND TAKE OFF, COMPARE TIPS, SAVED OUTFITS
 
 Co-op hunt while he was away. his rulings of 11-01, plan worn gear: nine slots with no cloak (answer 54), any pillager wears any piece (63), a compare tip better or worse (71), no limit on room for gear (69), saved outfits with one tap to dress (70), dress at the stash before you ascend Watch: a gear button on the stash row and a worn line on the pre-raid page open a full window: nine slots around the figure with the sum of what you wear, every piece in a scrolling list, click A or enter wears and a click on a filled slot takes off, a tip says better worse or even against what you wear, and up to five named outfits dress in one tap and show how many pieces are missing. A new ring with both full replaces the weaker ring, the one the tip compared it with. Never in a raid or the demo

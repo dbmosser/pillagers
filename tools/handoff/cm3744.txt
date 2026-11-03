@@ -1,0 +1,7 @@
+v37.44: season zero m3: worn gear in loot boxes
+
+a map box may hold a worn piece, rolled once on its own dice at the first search so seed 4242 and the raid streams never move; a tip beside the search bar and in the backpack shows its name, traits and better, worse or even; it comes out as a pickup row in its rarity colour with one trait line; on an extract it joins the gear stash, on a death it is gone; looting a box with no piece is exactly what it was
+
+Check 37.44. Fails on v37.43.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

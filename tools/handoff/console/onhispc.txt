@@ -209,3 +209,4 @@
 11-02 21:22 v37.40 cw-nospcash on his pc after 49s (8802 serves 37.40) week 22%
 11-02 22:13 v37.41 cw-nohostiles on his pc after 74s (8802 serves 37.41) week 24%
 11-03 00:07 v37.42 cw-m3bench on his pc after 85s (8802 serves 37.42) week 26%
+11-03 00:54 v37.43 cw-m3doll on his pc after 19s (8802 serves 37.43) week 28%
