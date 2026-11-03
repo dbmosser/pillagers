@@ -1,0 +1,14 @@
+id=shots-8fc85505a312
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=c0560c0dc763c3ec0cd58dc941b7dd5dcd661fc5
+screens=all
+res=1080
+nolint=1
+lintopts=
+from=JUL26
+submitted=1793693349
+expires=1793699949
