@@ -1,0 +1,15 @@
+id=preflight-cw-m3drops-0d58347f4a30
+kind=preflight
+key=cw-m3drops
+tag=pfa
+v=37.42
+new=3742
+base=eab496166a61e174c55770be283fedc15e2d9dc6
+draft_sha=c8ded0d232bcdb7ff0ef437828adc7892d47372629cd0458621ae60db625aec8
+p_sha=687dec8263f84ab12fe3d8fb00fd13fe72225bf683a3276a8c04ce25af81e86a
+f_sha=80d982ca6e3d779744e344c1140e29bc330aefaa61a82cd4a6ac04691dfd6d27
+game_sha=5f54dce99933f2473a689aa525ca50c9a6eb3db9729dd0afc961def5b09bd09b
+fix_sha=baae2dc7ab4b6c8848b8e70795b89a966f47f01d3c8f82c0d278d15a63a9334e
+from=JUL26
+submitted=1793680699
+expires=1793687299
