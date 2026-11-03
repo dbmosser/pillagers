@@ -1,0 +1,28 @@
+id=ship-cw-m3doll-3a0ab31f980d
+kind=ship
+key=cw-m3doll
+tag=43
+v=37.43
+new=3743
+base=de557a466a39ef6989ba01df3254d899a26394fc
+host=DESKTOP-82BKOP4
+draft_sha=bf0b913168832502c7623538b6af8c8e312bff3e7b6c3d261b53f0065573e8f7
+p_sha=3511d756c64cc7c7ccfc37858f4cbfa04ac0764078592f60c4b2cdab9c6c79d4
+f_sha=7867aacb7d9ef57b40ac79462a11deda567a39763cd4b85b49f6ffc353b8f29d
+game_sha=5ab80fef2d2c9b138650929a6bdc80fd00659df71a9176501891e9f34379d81e
+fix_sha=04b9b716448c957fcc2203bc2a42b2b47e9135a141295be2f90ea6f6547a80c4
+started=1793683957
+ended=1793684100
+result=FAIL
+infra=0
+reason=an older check fails on the drafted build
+--- stages
+p43 -> OK, 16 edits applied plus DEVNOW
+f43 -> OK, 1 edits applied
+parse: PASS v37.43 parse check
+dry fxdry43 check 37.43: PASS / PASS
+control fxctl43 check 37.43: no doll in this build / no doll in this build
+REGRESS 37.38: FOUR: the second brakka is brakka iii
+recent: 1 new failures in the newest 80 checks
+--- end
+done=1
