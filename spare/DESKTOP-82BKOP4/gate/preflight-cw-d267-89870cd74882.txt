@@ -1,0 +1,26 @@
+id=preflight-cw-d267-89870cd74882
+kind=preflight
+key=cw-d267
+tag=pfh
+v=37.41
+new=3741
+base=739a1dac7a117a3a5c1c36145b6dfbdba1a636af
+host=DESKTOP-82BKOP4
+draft_sha=b6dbb4c58b93b9c561015cd4366898221ac1b37162fe0839ebb55c157643008a
+p_sha=979ed551081b3e4b82ab30db2542f45b477691ad9d175e03bcac6b99eb1a59ff
+f_sha=410d7cb10d6e225cd2e2608b0273ac49ad6b710c7a9ba86a63554d69b8e739cb
+game_sha=3acaff834f2c5e08425591da1fee2d929defa8e2d49f3011c8e7d0e71bcb77b1
+fix_sha=a7819340a2db83bca2222d3501cab9d86f85e849aee5b9f628eed6e992ecac47
+started=1793675902
+ended=1793675941
+result=FAIL
+infra=0
+reason=the new check does not pass twice on the drafted build
+--- stages
+ppfh -> OK, 2 edits applied plus DEVNOW
+fpfh -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.41 parse check
+dry fxdrypfh check 37.41: km{} v3 V>KeyZ Z>KeyV of=KeyZ po0 mf0 gp0 se0 ro0 ck0 md[] bare(smg,30) V:m0d0 Z:m1d0 fn=trued0 rifle V:m0d0 Z:m1d0 a25 / NOW 10.64:with a rifle in hand, F  11.27:F did not swing: melee c 11.38:control: a melee swing n FOLLOWMAP 10.64:ok 11.27:ok 11.38:ok
+--- end
+done=1
