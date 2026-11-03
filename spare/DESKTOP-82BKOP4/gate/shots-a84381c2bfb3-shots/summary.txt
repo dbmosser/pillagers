@@ -1,0 +1,21 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  03-hub-floor                           staged       9.9s  
+  22-raid-map-open                       staged      12.0s  
+  23-raid-backpack-open                  staged      12.2s  
+  25-raid-pause-box                      staged      12.2s  
+  48-arcade-hud-move-to-start            staged      25.3s  
+  49-arcade-pause-box                    staged      16.4s  
+  51-arcade-alert-reinforcements         staged      26.6s    | 3 moved
+  70-career-calm                         staged      11.9s    | score 2730
+  71-career-alert-long                   staged      11.9s  
+  72-career-big-score                    staged      13.1s  
+  73-down-danger                         staged      12.8s    | downed true
+  74-down-revived-rows                   staged      12.8s    | downed true revived true
+  75-arcade-2p                           staged      21.7s  
+  76-arcade-2p-alert                     staged      21.6s  
+  77-arcade-final-rush                   staged      21.4s  
+  78-go-fullscreen-button                staged      12.2s    | false undefined
+  79-small-calm                          staged      12.2s    | 1920 1100x650
+  80-small-alert-long                    staged      12.3s    | 1100x650
+  81-small-down                          staged      12.7s    | 1100x650
+  82-tiny-alert                          staged      12.4s    | 800x500
