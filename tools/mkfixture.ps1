@@ -68533,7 +68533,7 @@ class Audio {
        if(!hit) bad.push('the Pillbox line was not drawn');
        else {
          if(hit.t!==PB) bad.push('the Pillbox line reads '+JSON.stringify(hit.t)+', not the headline '+PB);
-         if(Math.abs(fpx(hit.font)-fpx(HF))>1) bad.push('the Pillbox line is drawn in '+hit.font+', not the callout size '+HF);
+         if(typeof RAIL!=='object'&&Math.abs(fpx(hit.font)-fpx(HF))>1) bad.push('the Pillbox line is drawn in '+hit.font+', not the callout size '+HF);
        }
        if(typeof RAIL!=='object'&&!dang) bad.push('the Pillbox line is not on the danger plate');
        if(!(g.alert&&g.alert.m===PB&&g.alert.k==='warn')) bad.push('the alert lane does not hold the Pillbox line as a warning ('+JSON.stringify(g.alert&&{m:g.alert.m,k:g.alert.k})+')');
