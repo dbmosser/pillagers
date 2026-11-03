@@ -24,7 +24,7 @@ credit comes back on 11-01). His 10-19 rule: speed is fine, waste is not. Be thr
 - His answers of 10-18 to 78 questions are BINDING: memory file pillagers-answers-1-78-2026-10-18.md (read it when your task
   names a question number like Q57).
 - Read the CURRENT block at the top of tools/handoff/START-HERE.md first (where things stand), then your task file and any memory file
-  it names (folder C:\Users\User1\.claude\projects\C--Users-User1-Desktop-dark-raiders\memory). The memory folder is READ ONLY for you;
+  it names (folder C:\Users\User1\.claude\projects\C--claudecode-dark-raiders\memory; the C--Users-User1-Desktop one stopped at 10-19, do not read it). The memory folder is READ ONLY for you;
   never write there. Some older memory notes are stale (the sweep list is tools/handoff/q-round3/helper-fixes.md); his 10-18 answers win.
 
 ## Lanes (checked 10-18 against tools/nightly.sh, tools/console-lane.sh, tools/handoff/preflight.sh and console/caps.txt)

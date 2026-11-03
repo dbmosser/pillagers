@@ -22,7 +22,8 @@ CLI_BOOST=f
 # 10-24 09:10, his "Go ahead and blow the 4% of usage between now and 1am reset, then after reset pace back up to spend 80% over the
 # next week": until PLAN_BURN_UNTIL the helpers run whenever they can, up to PLAN_WEEK_MAX% of the week; after it an even line to
 # PLAN_TARGET% by the next reset (tools/console-lane.sh).
-PLAN_TARGET=80
+# 11-02 evening, his "make sure we are using ALL resources including claude usage": the even line goes to 95%, because a 0.3 point lead on the 80% line was holding the helpers with 12 jobs waiting. FnP and his own chats are never held by this line, only the helpers; the final burn still takes the week to PLAN_WEEK_MAX.
+PLAN_TARGET=95
 # 10-27 06:20, his "Keep shipping. Pace for 90% use by Friday afternoon": this week the line starts at the week's use when he said it
 # (PLAN_LINE_FROM% at PLAN_LINE_START) and climbs evenly to PLAN_LINE_TARGET% at PLAN_LINE_END (Fri 10/30 08:00 local), then holds.
 # 10-27 10:00, his "burn to 90% by Friday AM instead of PM": PLAN_LINE_END moved from Fri 16:00 local to Fri 08:00 local.
@@ -31,7 +32,7 @@ PLAN_TARGET=80
 # PLAN_TARGET stays the standing weekly goal: once these times fall outside the week, next week is the even line to it again.
 PLAN_LINE_START=2026-11-01T05:00:00Z
 PLAN_LINE_FROM=0
-PLAN_LINE_TARGET=80
+PLAN_LINE_TARGET=95
 PLAN_LINE_END=2026-11-08T05:00:00Z
 PLAN_BURN_UNTIL=2026-10-25T05:00:00Z
 PLAN_WEEK_MAX=99
