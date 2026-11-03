@@ -3638,7 +3638,7 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
     <div id="geardoll" class="gpan">
       <div id="gearslots">
         <div class="gcol" id="gearcl"></div>
-        <div id="gearmid"><canvas id="gearcv" width="176" height="304"></canvas><div id="gearpk"></div></div>
+        <div id="gearmid"><canvas id="gearcv" width="280" height="484"></canvas><div id="gearpk"></div></div>
         <div class="gcol" id="gearcr"></div>
       </div>
       <div class="glab">you wear</div>
@@ -4024,8 +4024,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.44';
-var VER_AT='2026-11-03 01:46';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.45';
+var VER_AT='2026-11-03 03:11';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -58219,7 +58219,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.44: a map box may hold a worn piece, rolled once on its own dice at the first search so seed 4242 and the raid streams never move; a tip beside the search bar and in the backpack shows its name, traits and better, worse or even; it comes out as a pickup row in its rarity colour with one trait line; on an extract it joins the gear stash, on a death it is gone; looting a box with no piece is exactly what it was Check 37.44 fails on v37.43',
+  now:'v37.45: slots are taller and hold the icon over the name, the figure is larger, the hints have their own row under the panels, the list groups pieces by kind with a gap and its head reads stash n, save outfit is the one lime button, the verdict word is calmer, the tip panel reads pick a piece until something is picked Check 37.45 fails on v37.44',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -75528,26 +75528,29 @@ document.getElementById('closesector').onclick=function(){
 // slot filters the list. Picture a of his pick page; his pick later swaps it (rule 53).
 careerStyle('gearcss',
   'body:has(#gearmodal.on) #topright{display:none !important}'+
+  'body:has(#gearmodal.on) #hubtoast{bottom:auto!important;top:12px}'+
+  '#root #gearmodal > .ui-foot{height:auto!important;min-height:42px!important;padding:12px 0 0!important;box-sizing:border-box}'+
   '#root #gearmodal{align-items:stretch}'+
   '#root #gearmodal h3{display:flex;align-items:baseline;gap:16px}'+
   '#root #gearmodal #gearwn{font:600 var(--fs-body)/1 var(--f-cond);color:var(--tx-2)}'+
   '#root #gearmodal #gearwrap{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,3fr) minmax(0,3fr) minmax(0,2fr);gap:16px;width:100%}'+
   '#root #gearmodal .gpan{display:flex;flex-direction:column;gap:8px;min-width:0;min-height:0;padding:16px;box-sizing:border-box;background:var(--ui-panel);border:1px solid var(--ui-line-hi);border-radius:var(--rad)}'+
-  '#root #gearmodal .glab{font:600 var(--fs-body)/1.2 var(--f-cond);color:var(--tx-2)}'+
-  '#root #gearmodal #gearslots{display:grid;grid-template-columns:minmax(0,1fr) 176px minmax(0,1fr);gap:8px}'+
-  '#root #gearmodal .gcol{display:grid;grid-auto-rows:96px;gap:8px;min-width:0}'+
-  '#root #gearmodal #gearmid{display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:8px;min-width:0}'+
-  '#root #gearmodal #gearpk{width:100%}'+
-  '#root #gearmodal #gearcv{width:176px;height:304px;flex:none}'+
-  '#root #gearmodal .gslot{display:flex;align-items:center;justify-content:flex-start;gap:8px;box-sizing:border-box;width:100%;height:96px;min-width:0;min-height:0;margin:0;padding:8px 12px;background:var(--ui-bg);border:1px solid var(--ui-line-hi);border-radius:var(--rad);color:var(--tx-2);text-align:left;text-transform:none;letter-spacing:0;font:600 var(--fs-body)/1.15 var(--f-cond)}'+
+  '#root #gearmodal .glab{font:600 var(--fs-body)/1.2 var(--f-cond);letter-spacing:.02em;color:var(--tx-2)}'+
+  // v37.xx (cw-m3doll2), seen on the first pictures: a third of the doll panel stood empty under the sum. Slots 96 to about 136px high in one grid of four rows, figure 176 to 192px wide, names 22 to 24px, stats 20 to 24px.
+  '#root #gearmodal #gearslots{flex:1 1 auto;min-height:408px;max-height:568px;display:grid;grid-template-columns:minmax(0,1fr) 192px minmax(0,1fr);grid-template-rows:repeat(4,minmax(0,1fr));gap:8px}'+
+  '#root #gearmodal .gcol,#root #gearmodal #gearmid,#root #gearmodal #gearpk{display:contents}'+
+  '#root #gearmodal #gearcl .gslot{grid-column:1}#root #gearmodal #gearcr .gslot{grid-column:3}#root #gearmodal #gearpk .gslot{grid-column:2;grid-row:4}'+
+  '#root #gearmodal .gcol .gslot:nth-child(1){grid-row:1}#root #gearmodal .gcol .gslot:nth-child(2){grid-row:2}#root #gearmodal .gcol .gslot:nth-child(3){grid-row:3}#root #gearmodal .gcol .gslot:nth-child(4){grid-row:4}'+
+  '#root #gearmodal #gearcv{grid-column:2;grid-row:1/4;width:100%;height:100%;min-height:0;object-fit:contain}'+
+  '#root #gearmodal .gslot{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;overflow:hidden;box-sizing:border-box;width:100%;height:auto;min-width:0;min-height:0;margin:0;padding:6px 12px;background:var(--ui-bg);border:1px solid var(--ui-line-hi);border-radius:var(--rad);color:var(--tx-2);text-align:left;text-transform:none;letter-spacing:0;font:600 var(--fs-body)/1.15 var(--f-cond)}'+
   '#root #gearmodal .gslot.full{box-shadow:inset 4px 0 0 var(--gc);background:var(--ui-raised)}'+
   '#root #gearmodal .gslot.lit{border:2px solid var(--acc)}'+
   '#root #gearmodal .gslot svg,#root #gearmodal #geartip svg{width:32px;height:32px;flex:none;fill:none;stroke:var(--gc);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}'+
   '#root #gearmodal .gslot span{display:flex;flex-direction:column;gap:2px;min-width:0}'+
-  '#root #gearmodal .gslot b{font:700 22px/1.1 var(--f-cond);color:var(--gc)}'+
-  '#root #gearmodal .gslot em{font:500 18px/1.1 var(--f-cond);font-style:normal;color:var(--tx-2);white-space:nowrap}'+
+  '#root #gearmodal .gslot b{font:700 24px/1.1 var(--f-cond);color:var(--gc);white-space:nowrap}'+
+  '#root #gearmodal .gslot em{font:500 var(--fs-body)/1.1 var(--f-cond);font-style:normal;color:var(--tx-2);white-space:nowrap}'+
   '#root #gearmodal .gpip{font-style:normal;color:var(--tx-1);letter-spacing:.08em}'+
-  '#root #gearmodal #gearsum{display:flex;flex-wrap:wrap;gap:4px 24px;min-height:0;overflow:hidden;font:600 var(--fs-body)/1.25 var(--f-cond);color:var(--tx-1)}'+
+  '#root #gearmodal #gearsum{flex:none;display:flex;flex-wrap:wrap;gap:4px 24px;font:600 24px/1.25 var(--f-cond);color:var(--tx-1)}'+
   '#root #gearmodal #gearsum em{margin-left:6px;font:600 var(--fs-label)/1 var(--f-cond);font-style:normal;color:var(--warn)}'+
   '#root #gearmodal #gearhd{display:flex;align-items:center;gap:16px;min-height:40px;font:600 var(--fs-body)/1 var(--f-cond);color:var(--tx-2)}'+
   '#root #gearmodal #gearhd b{font:700 28px/1 var(--f-cond);color:var(--tx-1)}'+
@@ -75557,6 +75560,7 @@ careerStyle('gearcss',
   '#root #gearmodal .grow{display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:2px;flex:none;box-sizing:border-box;width:100%;min-width:0;min-height:72px;margin:0;padding:8px 16px;background:var(--ui-bg);border:1px solid var(--ui-line);border-radius:var(--rad);color:var(--tx-2);text-align:left;text-transform:none;letter-spacing:0}'+
   '#root #gearmodal .grow:hover,#root #gearmodal .grow.padfocus{background:var(--ui-raised);box-shadow:inset 4px 0 0 var(--acc);border-color:var(--ui-line-hi)}'+
   '#root #gearmodal .grow.padfocus{outline-offset:-3px}'+
+  '#root #gearmodal .grow.gnew{margin-top:8px}'+
   '#root #gearmodal .grow > span{display:flex;align-items:baseline;justify-content:space-between;gap:16px;min-width:0}'+
   '#root #gearmodal .grow b{font:700 24px/1.15 var(--f-cond);color:var(--gc);white-space:nowrap}'+
   '#root #gearmodal .grow .gpw{font:500 var(--fs-body)/1.15 var(--f-cond);color:var(--tx-2);white-space:nowrap}'+
@@ -75569,19 +75573,20 @@ careerStyle('gearcss',
   '#root #gearmodal #geartip b{font:700 28px/1.1 var(--f-cond);color:var(--gc)}'+
   '#root #gearmodal #geartip span{font:500 var(--fs-body)/1.2 var(--f-cond);color:var(--tx-1)}'+
   '#root #gearmodal #geartip .gag{color:var(--tx-2)}'+
-  '#root #gearmodal #geartip .gv{margin-top:auto;font:700 var(--fs-title)/1 var(--f-cond)}'+
+  '#root #gearmodal #geartip .gv{margin-top:auto;font:600 24px/1 var(--f-cond)}'+
   '#root #gearmodal #gearout{flex:1}'+
   '#root #gearmodal #gearsave{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}'+
   '#root #gearmodal #gearname{box-sizing:border-box;width:100%;height:48px;padding:0 12px;background:var(--ui-bg);border:1px solid var(--ui-line-hi);border-radius:var(--rad);color:var(--tx-1);font:600 var(--fs-body)/1 var(--f-cond);text-transform:none}'+
-  '#root #gearmodal #gearsavebtn{min-height:48px;min-width:0;padding:0 12px;font:600 var(--fs-body)/1 var(--f-cond);white-space:nowrap;text-transform:none}'+
+  '#root #gearmodal #gearsavebtn{min-height:48px;min-width:0;padding:0 12px;font:700 var(--fs-body)/1 var(--f-cond);letter-spacing:0;white-space:nowrap;text-transform:none}'+
+  '#root #gearmodal #gearsavebtn:not(:disabled){background:var(--acc)!important;border-color:var(--acc)!important;color:var(--acc-ink)!important;transition:none!important}'+
   '#root #gearmodal #gearofs{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px;overflow-y:auto;padding:2px}'+
-  '#root #gearmodal .gof{display:grid;grid-template-columns:minmax(0,1fr) 48px;gap:8px;flex:none}'+
-  '#root #gearmodal .gofb{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:48px;min-width:0;margin:0;padding:0 12px;background:var(--ui-bg);border:1px solid var(--ui-line);border-radius:var(--rad);color:var(--tx-1);text-align:left;text-transform:none;letter-spacing:0}'+
+  '#root #gearmodal .gof{display:grid;grid-template-columns:minmax(0,1fr) 56px;gap:8px;flex:none}'+
+  '#root #gearmodal .gofb{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:56px;min-width:0;margin:0;padding:0 12px;background:var(--ui-bg);border:1px solid var(--ui-line);border-radius:var(--rad);color:var(--tx-1);text-align:left;text-transform:none;letter-spacing:0}'+
   '#root #gearmodal .gofb.on{box-shadow:inset 4px 0 0 var(--acc);background:var(--ui-raised)}'+
   '#root #gearmodal .gofb b{font:700 var(--fs-body)/1 var(--f-cond);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'+
   '#root #gearmodal .gofb span{flex:none;font:500 var(--fs-label)/1 var(--f-cond);color:var(--tx-2)}'+
   '#root #gearmodal .gofb i{flex:none;font:600 var(--fs-label)/1 var(--f-cond);font-style:normal;color:var(--danger)}'+
-  '#root #gearmodal .gofx{min-height:48px;min-width:48px;margin:0;padding:0;font:600 var(--fs-body)/1 var(--f-cond);text-transform:none}'+
+  '#root #gearmodal .gofx{min-height:56px;min-width:56px;margin:0;padding:0;font:600 var(--fs-body)/1 var(--f-cond);text-transform:none}'+
   '#root #gearmodal #gearhints{display:flex;align-items:center;gap:24px;font:500 var(--fs-body)/1 var(--f-cond);color:var(--tx-2)}'+
   '#root #gearmodal #gearhints span{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}'+
   '#root #gearmodal #gearhints i{display:inline-flex;align-items:center;justify-content:center;min-width:34px;height:30px;padding:0 10px;border:1px solid var(--ui-line-hi);border-radius:4px;font:600 16px var(--f-cond);font-style:normal;color:var(--tx-1)}'+
@@ -75667,11 +75672,11 @@ function gearSlotHtml(s){
   return '<button type="button" class="gslot'+(pc?' full':'')+(GEAR.lit===s?' lit':'')+'" data-gs="'+s+'" data-gk="s:'+s+'" style="--gc:'+c+'">'+
     (pc?gearIcon(pc.k)+'<span><b>'+wornName(pc)+'</b><em>'+gearPower(pc)+'</em></span>':gearSlotN(s))+'</button>';
 }
-function gearRowHtml(pc){
+function gearRowHtml(pc,nw){
   var t=wornTip(pc,P), i, tr=[];
   for(i=0;i<pc.tr.length;i++) tr.push(benchTr(pc,pc.tr[i]));
-  return '<button type="button" class="grow" data-gp="'+pc.id+'" data-gk="p:'+pc.id+'" style="--gc:'+WORN_RARS[pc.r].c+'"><span><b>'+wornName(pc)+'</b><span class="gpw">'+gearPower(pc)+'</span></span>'+
-    '<span><span class="gtr">'+tr.join('   ')+'</span><em class="g-'+t+'">'+t+'</em></span></button>';
+  return '<button type="button" class="grow'+(nw?' gnew':'')+'" data-gp="'+pc.id+'" data-gk="p:'+pc.id+'" style="--gc:'+WORN_RARS[pc.r].c+'"><span><b>'+wornName(pc)+'</b><span class="gpw">'+gearPower(pc)+'</span></span>'+
+    '<span><span class="gtr">'+tr.join('&nbsp;&nbsp;&nbsp;')+'</span><em class="g-'+t+'">'+t+'</em></span></button>';
 }
 function gearSumHtml(){
   var m=wornMods(P.worn), h='', s;
@@ -75684,7 +75689,7 @@ function gearTipDraw(){
   if(!el) return;
   if(k.charAt(0)==='s'){ s=k.slice(2); pc=P.worn[s]; if(pc) f={pc:pc,slot:s}; else if(gearKindOf(s)){ el.style.setProperty('--gc','var(--tx-2)'); el.innerHTML='<b>'+gearSlotN(s)+'</b><span class="gag">empty</span>'; return; } }
   else if(k.charAt(0)==='p') f=gearFind(k.slice(2));
-  if(!f){ el.innerHTML=''; return; }
+  if(!f){ el.style.setProperty('--gc','var(--tx-2)'); el.innerHTML='<span class="gag">pick a piece</span>'; return; }   // v37.xx (cw-m3doll2): the panel never stands blank
   pc=f.pc; el.style.setProperty('--gc',WORN_RARS[pc.r].c);
   h='<div class="gth">'+gearIcon(pc.k)+'<b>'+wornName(pc)+'</b></div><span class="gag">'+gearPower(pc)+'</span>';
   for(i=0;i<pc.tr.length;i++) h+='<span>'+benchTr(pc,pc.tr[i])+'</span>';
@@ -75709,9 +75714,10 @@ function gearDraw(){
   document.getElementById('gearsum').innerHTML=gearSumHtml();
   k=GEAR.lit?gearKindOf(GEAR.lit):null;
   L=P.gear.filter(function(pc){ return !k||pc.k===k; });
-  L.sort(function(a,b){ return (b.r-a.r)||(b.pw-a.pw)||(a.id<b.id?-1:1); });
-  document.getElementById('gearhd').innerHTML='<b>gear '+P.gear.length+'</b>'+(k?'<span>'+WORN_KINDS[k].n+' '+L.length+'</span><button type="button" id="gearall" data-gk="all">all</button>':'');
-  for(i=0;i<L.length;i++) h+=gearRowHtml(L[i]);
+  var _ko=Object.keys(WORN_KINDS);   // v37.xx (cw-m3doll2), critic P1: a list of every kind reads as one wall; the same kinds stand together, a gap between them
+  L.sort(function(a,b){ return (_ko.indexOf(a.k)-_ko.indexOf(b.k))||(b.r-a.r)||(b.pw-a.pw)||(a.id<b.id?-1:1); });
+  document.getElementById('gearhd').innerHTML='<b>stash '+P.gear.length+'</b>'+(k?'<span>'+WORN_KINDS[k].n+' '+L.length+'</span><button type="button" id="gearall" data-gk="all">all</button>':'');
+  for(i=0;i<L.length;i++) h+=gearRowHtml(L[i],i>0&&L[i].k!==L[i-1].k);
   lst.innerHTML=h||'<div class="gnone">'+(k?'no '+WORN_KINDS[k].n:'no gear')+'</div>';
   document.getElementById('gearoutn').textContent='outfits '+P.outfits.length+' of '+WORN_OUTFITS_MAX;
   h='';
@@ -75720,7 +75726,7 @@ function gearDraw(){
   document.getElementById('gearofs').innerHTML=h;
   gearSaveSync();
   document.getElementById('gearhints').innerHTML='<span class="bk"><i>arrows</i>pick</span><span class="bk"><i>enter</i>wear</span><span class="bk"><i>esc</i>close</span>'+
-    '<span class="bp"><i>'+escHtml(padB('A'))+'</i>wear</span><span class="bp"><i>'+escHtml(padB('B'))+'</i>close</span>';
+    '<span class="bp"><i>d-pad</i>pick</span><span class="bp"><i>'+escHtml(padB('A'))+'</i>wear</span><span class="bp"><i>'+escHtml(padB('B'))+'</i>close</span>';
   gearTipDraw();
   try{ drawAvatarCanvas(document.getElementById('gearcv')); }catch(_gd){}
   if(f&&!m.contains(f)){ nf=fk?m.querySelector('[data-gk="'+fk+'"]'):null; if(!nf&&fix>=0){ L=lst.querySelectorAll('.grow'); nf=L[Math.min(fix,L.length-1)]; } if(!nf) nf=m.querySelector('[data-gs]'); padSetFocus(nf); }

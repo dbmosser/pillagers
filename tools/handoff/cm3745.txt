@@ -1,0 +1,7 @@
+v37.45: the stash doll: it fills its panel, the key hints no longer sit on the panels, the list stands in groups
+
+slots are taller and hold the icon over the name, the figure is larger, the hints have their own row under the panels, the list groups pieces by kind with a gap and its head reads stash n, save outfit is the one lime button, the verdict word is calmer, the tip panel reads pick a piece until something is picked
+
+Check 37.45. Fails on v37.44.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

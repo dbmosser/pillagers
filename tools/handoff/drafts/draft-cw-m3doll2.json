@@ -33,7 +33,7 @@
                   },
                   {
                       "anchor":  "  \u0027#root #gearmodal #gearsavebtn{min-height:48px;min-width:0;padding:0 12px;font:600 var(--fs-body)/1 var(--f-cond);white-space:nowrap;text-transform:none}\u0027+",
-                      "replacement":  "  \u0027#root #gearmodal #gearsavebtn{min-height:48px;min-width:0;padding:0 12px;font:700 var(--fs-body)/1 var(--f-cond);letter-spacing:0;white-space:nowrap;text-transform:none}\u0027+\n  \u0027#root #gearmodal #gearsavebtn:not(:disabled){background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}\u0027+"
+                      "replacement":  "  \u0027#root #gearmodal #gearsavebtn{min-height:48px;min-width:0;padding:0 12px;font:700 var(--fs-body)/1 var(--f-cond);letter-spacing:0;white-space:nowrap;text-transform:none}\u0027+\n  \u0027#root #gearmodal #gearsavebtn:not(:disabled){background:var(--acc)!important;border-color:var(--acc)!important;color:var(--acc-ink)!important;transition:none!important}\u0027+"
                   },
                   {
                       "anchor":  "  \u0027#root #gearmodal .gof{display:grid;grid-template-columns:minmax(0,1fr) 48px;gap:8px;flex:none}\u0027+\n  \u0027#root #gearmodal .gofb{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:48px;",
