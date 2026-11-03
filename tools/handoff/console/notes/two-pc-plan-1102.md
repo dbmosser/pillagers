@@ -1,5 +1,8 @@
 # Who runs what, two PCs and two projects (his 11-02 order to use all resources across both PCs; rewritten 11-02 23:40 after the memory change)
 
+## His order, 11-02 23:40, on top of everything below
+"FnP is the priority now, Pillargers-html takes a back seat." "if I'm away and the editor is closed, the first thing you should do is try to reopen the editor." Tests stay off the main PC.
+
 ## The machines, measured 11-02 night
 | | Main PC (JUL26) | Spare PC (JTPC) |
 |---|---|---|
@@ -10,17 +13,17 @@
 | Fortnite | editor and game | Fortnite 43.00 installed, no editor |
 
 ## The assignment
-- FnP editor, island building: main PC only. First call on memory and the video card. With the editor open, a second helper starts only with 14 GB free (machine_editor_open): about 10 for the game on top of the editor (the FnP chat's measure), 1 for the helper and a margin. His 4 GB floor stays.
+- FnP editor, island building: main PC only. First call on memory and the video card. With the editor open, no helper starts under 14 GB free (machine_editor_open): about 10 for game launches (the FnP chat's ask), 1 for the helper and a margin. His 4 GB floor stays. Reopening: tools/fnp-scripts/editorwatch.py in the FnP folder watches and wakes the CEO chat; the FORTNITE chat reopens, and the CEO chat only if that fails. The graphics card is the FORTNITE chat's job alone.
 - HTML coding, helpers, shipping: main PC only. Only one machine ships.
 - HTML tests, gate and full runs: spare PC only (his 11-02 order). Nothing covers for a pause.
-- FnP second player: spare PC is the candidate, Fortnite is already there. The FnP chat decides if and when; it needs an Epic account signed in there.
-- Claude plan: pace line 95% of the week (caps.txt), final burn near the reset. 26% at 23:33 against a line of about 27. Lanes a, b, c on Opus can do about 2 points an hour and about 0.6 is needed, so more lanes would not help: helpers are limited by the plan, not by this PC.
-- CEO chat workers (lanes g, h): for jobs nothing else waits on, while room on the plan allows. Jobs with a WAIT ON guard stay in tasks/, because the guards do not look in in-session/.
-- Memory watch: tools/handoff/ramwatch.py on the main PC, once an hour for 2 minutes, in spare memory at low priority. It keeps 14 GB free with the editor open, 8 otherwise, sits out while Fortnite runs, and a bad spot raises an alarm. It stops with the CEO chat or a reboot; the check-in restarts it.
+- FnP second player: spare PC is the candidate, Fortnite is already there. The FnP chat will ask once a raid works end to end, not before; it needs an Epic account signed in there. HTML tests pause then.
+- Claude plan: FnP spends what it needs. Helpers pace to a line of 80% this week (caps.txt) and rest above it, and they rest about 7 hours from 23:48 since the week is at 26% against 22.7. The final burn spends what is left near the reset, after his Saturday morning test. PLAN_TARGET stays 95 for next week unless this order changes.
+- CEO chat workers (lanes g, h): 266 and 267 finish; none new on HTML while FnP comes first. Jobs with a WAIT ON guard stay in tasks/, because the guards do not look in in-session/.
+- Memory watch: tools/handoff/ramwatch.py on the main PC, once an hour for 2 minutes, in spare memory at low priority. With the editor open it is one worker on at most 6 GB and keeps 14 GB free; otherwise 3 workers and 8 free. It sits out while Fortnite runs, and a bad spot raises an alarm. It stops with the CEO chat or a reboot; the check-in restarts it.
 - Codex: week used up, resets 11-04 01:35. Local AI stays off (LOCAL_AI=0 since 10-28).
 
 ## What is holding it back, biggest first
-1. Main PC processor sits idle: 16 threads against the spare PC's 4, which take 3 hours a full run. His 11-02 order keeps tests off this PC. Asked him 11-02 night about tests here only while he is away and the editor is closed; NoTestsHere is the one switch.
+1. Graphics card hangs kill the editor (08:16, 16:12, 23:32 on 11-02, the last with plenty of memory free). The FORTNITE chat has it. Power Supply Idle Control in the BIOS is unconfirmed since the BIOS update, and that setting is his hands.
 2. Spare PC speed: a full run took 90 min on 10-30, 183 to 215 min now, for about the same checks. Slowdown is uneven by slice and repeats, which points at the tests or the build. Change window 10-30 16:15 to 11-01 19:00. Fixed already: slices poll every 20 s, about 20 min a run. Open: slice table and video card reading due from the spare PC chat, a run on v36.66 to compare, per-check timing.
 3. Spare PC pauses: 9.0 h paused of the last 48 h with the runner on, some false. The owner says the mouse moves by itself on a shaky table. The fix (5 mouse reports inside 10 s) comes to the main PC as a diff to land.
 4. Memory confidence: the 3 sticks have only passed a quick test on 21.9 of 48 GB. A full Windows Memory Diagnostic (his hands, overnight) is still wanted; XMP stays off until then. Uneven channels: about 32 GB at full dual-channel speed, the rest slower. Removed stick is out and labelled.
