@@ -1,3 +1,5 @@
+STATUS 11-03 00:06 (CEO chat): the game is fine, the tests pressed the old key. Fixture 8a954a526 fixed them; 10.64, 11.27, 11.38 passed on the spare PC (cw-s267, cw-t267, read by the CEO chat). STILL TO DO, so this stays here: read those three and 25.67 in the first full run whose test copy holds 8a954a526 (not corpus-1102-2152), then take v25.67 out of tools/handoff/stable-known-red.txt and move this to done/. Not looked into: a swing does 43 though a game comment says the crowbar does 18.
+
 # 267-melee-key-lands-nothing-10-64-11-27-11-38 : three checks say the melee swing does nothing in a staged raid (full runs corpus-1102-0048 and corpus-1102-0552, v37.39)
 Queue (known-red triage 11-02). Treat as a possible REAL BUG until proved otherwise: three separate checks agree. Cause not found.
 effort: medium (read-only first)
