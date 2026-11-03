@@ -1,0 +1,2 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  a-fonts                                staged       4.2s    | PROBE v11.09 ok | v11.09 ok
