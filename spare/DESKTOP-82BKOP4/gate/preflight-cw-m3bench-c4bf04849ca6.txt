@@ -1,0 +1,28 @@
+id=preflight-cw-m3bench-c4bf04849ca6
+kind=preflight
+key=cw-m3bench
+tag=pfb
+v=37.42
+new=3742
+base=fa330add3f6857b02380733812efce877b8516bb
+host=DESKTOP-82BKOP4
+draft_sha=2ad8823cfba513293e396c1c222a3c21cdd0abe9a4376c6bf3cf12eed5e562a0
+p_sha=4c2a80188603108ed539b5907a22f01cabef4689ab009c2d66967af89b848260
+f_sha=e9d6ff1dbb0934aecd39a337a24fb98dabbfd2d014b2af962982c3426a65f849
+game_sha=054afd561c344e0da0c424f30d6bc2f0022e500613bbf3afbe0797ab04e1ecf7
+fix_sha=7bdb272b5166a79ef4fcf4c106b5e554b4a92a307fe44787968ef2d511b86704
+started=1793680668
+ended=1793680813
+result=PASS
+infra=0
+reason=
+--- stages
+ppfb -> OK, 10 edits applied plus DEVNOW
+fpfb -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.42 parse check
+dry fxdrypfb check 37.42: PASS / PASS
+control fxctlpfb check 37.42: no gear section at the workbench in this build / no gear section at the workbench in this build
+recent: 0 new failures in the newest 80 checks
+--- end
+done=1
