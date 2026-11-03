@@ -224,9 +224,9 @@ if [ $ENGINE = cli ]; then
     [ "${g:-0}" -lt "$rf" ] && sweepchromes
     [ "${g:-0}" -lt "$rf" ] && { echo "$(date '+%m-%d %H:%M') waiting for RAM: ${g:-0} GB free, a helper starts at $rf; $name kept" > "$C/status-$L.txt"; exit 0; }
   done
-  # 11-02: on JUL26 the Fortnite editor has first call on memory: one helper at a time while it is open (start.lock above makes this check one lane at a time)
+  # 11-02: on JUL26 the Fortnite editor has first call on memory: with it open, a second helper starts only with 14 GB free, machine_editor_open (start.lock above makes this check one lane at a time)
   if [ "$ON_MAIN" = 1 ] && machine_editor_open && [ "$(machine_helpers_running)" -ge 1 ] 2>/dev/null; then rm -rf "$C/start.lock"
-    echo "$(date '+%m-%d %H:%M') waiting: one helper at a time while the Fortnite editor is open; $name kept" > "$C/status-$L.txt"; exit 0; fi
+    echo "$(date '+%m-%d %H:%M') waiting: memory is short with the Fortnite editor open; $name kept" > "$C/status-$L.txt"; exit 0; fi
   echo "$(date '+%m-%d %H:%M') running $name on Claude Code (your plan: week $wk% of the $line% line, 5-hour $ses%)" > "$C/status-$L.txt"
   st=$(date +%s)
   # 10-21 02:52: job 85a (11.7 KB) plus RULES.md (21 KB) on the command line passed Windows' 32 KB limit ("env: 'claude': Argument
