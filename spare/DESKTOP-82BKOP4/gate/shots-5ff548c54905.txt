@@ -1,0 +1,45 @@
+id=shots-5ff548c54905
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=4748ed9746555f9771dea5a50005683043559b07
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1793690262
+ended=1793690623
+result=PASS
+infra=0
+reason=
+--- stages
+== 1080 : window 1956x1185, viewport 1920x1080
+  03-hub-floor                           staged       9.9s
+  21-raid-hud-calm                       staged      17.7s
+  25-raid-pause-box                      staged      12.2s
+  33-raid-fight-alerts                   staged      12.6s    | 3 moved, hp 64
+  34-raid-downed-pickups                 staged      12.3s    | downed true hp 0
+  37-raid-extracting-countdown           staged      13.7s
+  48-arcade-hud-move-to-start            staged      25.5s
+  49-arcade-pause-box                    staged      16.4s
+  50-arcade-hud-live                     staged      25.4s
+  51-arcade-alert-reinforcements         staged      26.7s    | 3 moved
+  69-newcheck                            staged       8.9s    | NEWCHECK the rail is 63 px tall, not slim; the word down draws at y 969, off its line (0 to 63)
+  70-career-calm                         staged      11.9s    | score 2730
+  71-career-alert-long                   staged      11.9s
+  72-career-big-score                    staged      13.1s
+  73-down-danger                         staged      12.8s    | downed true
+  74-down-revived-rows                   staged      12.8s    | downed true revived true
+  75-arcade-2p                           staged      21.6s
+  76-arcade-2p-alert                     staged      21.6s
+  77-arcade-final-rush                   staged      21.4s
+  79-small-calm                          staged      12.2s    | 1920 1100x650
+  80-small-alert-long                    staged      12.4s    | 1100x650
+  81-small-down                          staged      12.7s    | 1100x650
+report: C:\PillagersSpare\gate\work\shots-5ff548c54905\shots\report.json
+--- end
+done=1

@@ -1,0 +1,28 @@
+id=shots-3dc3fd884e34
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=4748ed9746555f9771dea5a50005683043559b07
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1793690630
+ended=1793690714
+result=PASS
+infra=0
+reason=
+--- stages
+== 4k : window 3876x2265, viewport 3840x2160
+  21-raid-hud-calm                       staged      18.2s
+  33-raid-fight-alerts                   staged      12.7s    | 3 moved, hp 64
+  34-raid-downed-pickups                 staged      12.3s    | downed true hp 0
+  71-career-alert-long                   staged      12.0s
+  74-down-revived-rows                   staged      12.9s    | downed true revived true
+report: C:\PillagersSpare\gate\work\shots-3dc3fd884e34\shots\report.json
+--- end
+done=1

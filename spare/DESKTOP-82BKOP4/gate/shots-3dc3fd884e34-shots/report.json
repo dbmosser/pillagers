@@ -1,0 +1,7 @@
+{"generated":"2026-11-03T02:25:14","url":"http://localhost:8823/fixture.html","recipes":"C:\\PillagersSpare\\gate\\work\\shots-3dc3fd884e34\\recipes.json","seconds":80,"screens":[
+{"name":"21-raid-hud-calm","screen":"In-raid HUD calm, extraction-point banner, CONCEALED IN COVER","4k":{"staged":true,"note":"","viewport":"3840x2160","shot":"21-raid-hud-calm-4k.jpg","lint":""}},
+{"name":"33-raid-fight-alerts","screen":"In-raid fight: THE PILLBOX HAS SEEN YOU alert, LOCATION REVEALED, enemy name tags, HP 83","4k":{"staged":true,"note":"3 moved, hp 64","viewport":"3840x2160","shot":"33-raid-fight-alerts-4k.jpg","lint":""}},
+{"name":"34-raid-downed-pickups","screen":"DOWN state (self-revive timer, HP 0, damage number) plus the pickup stack and world loot labels","4k":{"staged":true,"note":"downed true hp 0","viewport":"3840x2160","shot":"34-raid-downed-pickups-4k.jpg","lint":""}},
+{"name":"71-career-alert-long","screen":"top strip hard case","4k":{"staged":true,"note":"","viewport":"3840x2160","shot":"71-career-alert-long-4k.jpg","lint":""}},
+{"name":"74-down-revived-rows","screen":"top strip hard case","4k":{"staged":true,"note":"downed true revived true","viewport":"3840x2160","shot":"74-down-revived-rows-4k.jpg","lint":""}}
+]}
