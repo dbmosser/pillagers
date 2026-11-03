@@ -1,0 +1,12 @@
+{
+    "title":  "JOB 267 SLICE PROBE",
+    "why":  "Runs the melee checks after the earlier checks of their slice on the spare PC. Never shipped.",
+    "now":  "Nothing a player can see.",
+    "edits":  [
+                  {
+                      "anchor":  "var WHATSNEW_VER=\u002737.31\u0027;",
+                      "replacement":  "var GATE_PROBE=267;   // v28.xx (cw-s267) job 267 slice probe, never shipped\nvar WHATSNEW_VER=\u002737.31\u0027;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027job 267 slice probe: the melee checks after the earlier checks of their slice, in one page; never shipped\u0027,\n   run:function(){\n     if(typeof GATE_PROBE===\u0027undefined\u0027) return \u0027no mark: this is the build before\u0027;\n     var call=window.__s267=(window.__s267|0)+1, L=__REGRESS, i, MELEE={\u002711.38\u0027:1,\u002711.27\u0027:1,\u002710.64\u0027:1}, seen={};\n     function ix(v){ for(var q=0;q\u003cL.length;q++) if(L[q].v===v) return q; return -1; }\n     function one(t){ var r; try{ __topClear(); __ctxHeal(); r=t.run(); }catch(e){ r=\u0027threw \u0027+e; } return r; }\n     var i38=ix(\u002711.38\u0027), i64=ix(\u002710.64\u0027), a=(call===1)?Math.floor(i38/120)*120:Math.max(0,i38-25), b=(call===1)?i38:i64+1, cap=(call===1)?55000:60000, t0=performance.now(), red=[], ran=0;\n     for(i=a;i\u003cb;i++){\n       if(performance.now()-t0\u003ecap) break;\n       var t=L[i]; if(String(t.what).indexOf(\u0027job 267\u0027)===0) continue;\n       var r=one(t); ran++;\n       if(MELEE[t.v]) seen[t.v]=r?String(r).slice(0,40):\u0027ok\u0027;\n       else if(r\u0026\u0026String(r).indexOf(\u0027SKIP: \u0027)!==0) red.push(t.v);\n     }\n     var stop=i;\n     [\u002711.38\u0027,\u002711.27\u0027,\u002710.64\u0027].forEach(function(v){ if(!seen[v]){ var r=one(L[ix(v)]); seen[v]=(r?String(r).slice(0,40):\u0027ok\u0027)+((call===1)?\u0027\u0027:\u0027*\u0027); } });\n     var md=[].map.call(document.querySelectorAll(\u0027.modal.on\u0027),function(x){ return x.id; }).join(\u0027,\u0027);\n     try{ __topClear(); }catch(_t){}\n     return (call===1?\u0027A\u0027:\u0027B\u0027)+\u0027 i38=\u0027+i38+\u0027 i64=\u0027+i64+\u0027 ran \u0027+a+\u0027-\u0027+stop+\u0027 n\u0027+ran+\u0027 \u0027+Math.round((performance.now()-t0)/1000)+\u0027s km\u0027+JSON.stringify(P.keymap||{})+\u0027 md[\u0027+md+\u0027] 11.38:\u0027+seen[\u002711.38\u0027]+\u0027 11.27:\u0027+seen[\u002711.27\u0027]+\u0027 10.64:\u0027+seen[\u002710.64\u0027]+\u0027 red \u0027+red.slice(0,12).join(\u0027,\u0027);\n   }},"
+}
