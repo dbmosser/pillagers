@@ -3985,8 +3985,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.40';
-var VER_AT='2026-11-02 21:21';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.41';
+var VER_AT='2026-11-02 22:12';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -14431,13 +14431,7 @@ function runInfoShort(t){ return String(t).replace(/^extract with a haul worth (
 function hudFloor16(f){ var m=/([\d.]+)px/.exec(f); if(!m) return f; var a=(typeof ctx==='object'&&ctx&&ctx.getTransform)?ctx.getTransform().a:1; if(!(a>0)) a=1; var need=Math.ceil(16/a*10)/10; return (parseFloat(m[1])<need)?f.replace(/([\d.]+)px/,need+'px'):f; }
 function hudFineFS(){ return FS(TYPE.micro).replace((/([\d.]+)px/),function(m0,n0){ return (parseFloat(n0)*0.8).toFixed(1)+'px'; }); }
 function extBanFont(t){ return hudFS((t>0)?TYPE.huge:TYPE.head); }
-// v32.xx (cw-hostplate), the critic on screen 37: the red "hostiles closing in" line under the countdown sat loose on the floor with no plate. It stands on the same flat HUD plate as the countdown, measured to its words.
-function extRowPlate(s,x,y,R,minW){
-  // v32.xx (cw-hostcol), the critic on screen 37: the plate was a narrower pill touching the banner. It takes the banner width (minW) and sits 8 px under it, one column.
-  var w=Math.max(hudRawW(s)+LH(24)*R,minW||0), h=LH(22)*R, px=Math.round(x-w/2), py=Math.round(y-LH(16)*R);
-  hudPanel(px,py,w,h,0.9,true);
-  return {x:px,y:py,w:w,h:h};
-}
+
 // v32.xx (cw-extscrim), the critic on screen 37: the big countdown sat on a busy floor with only a thin outline. It stands on one flat HUD plate measured to the words (same panel as every other HUD box).
 function extBanPlate(s,x,y,R){
   var w=hudRawW(s)+LH(32)*R, h=LH(50)*R, px=Math.round(x-w/2), py=Math.round(y-LH(38)*R);
@@ -47779,24 +47773,7 @@ ctx.restore();
     try{ var _exPre=TX(holding?'EXTRACT IN PROGRESS!  ':'EXTRACT  '), _exFp=parseFloat((/([\d.]+)px/.exec(ctx.font)||[0,24])[1]), _exCx=W/2-hudRawW(TX(_exS))/2+hudRawW(_exPre)+hudRawW(TX(_exL))/2;
       // v36.xx (cw-xcountplate2), the critic's eye on the picture (screen 37): the round badge touched the letters either side on the one-space inbound line. It is an oval that hugs the letter (its width plus 0.1 of the type size each side, a single space is 0.25).
       ctx.save(); ctx.lineWidth=Math.max(1.5,_exFp*0.07); ctx.strokeStyle=ctx.fillStyle; ctx.beginPath(); ctx.ellipse(_exCx,_exBan-_exFp*0.3,hudRawW(TX(_exL))/2+_exFp*0.1,_exFp*0.5,0,0,6.2832); ctx.stroke(); ctx.restore(); }catch(_exRg){}
-    {
-      // count what is actually converging, because a number climbing while you
-      // stand still is the tension the wait was missing
-      var inbound=0;
-      for(var qi=0;qi<G.ents.length;qi++){
-        var qe=G.ents[qi];
-        if(qe.state==='investigate'||qe.state==='chase'||qe.state==='alarm'){
-          if(dist(qe,G.active)<1500) inbound++;
-        }
-      }
-      if(inbound){
-        ctx.font=hudFS(TYPE.label);
-        ctx.fillStyle=inbound>4?'#ff5a4a':'#ffc04a';
-        var _exH=inbound+(inbound===1?' HOSTILE':' HOSTILES')+' CLOSING IN';
-        extRowPlate(_exH,W/2,_exRow,_exR,_exBW);   // v32.xx (cw-hostplate), cw-hostcol
-        hudText(_exH,W/2,_exRow);   // v22.xx (tr8fixa): a caps callout under EXTRACT A INBOUND (INBOUND stays his word for the craft)
-      }
-    }
+    // v37.xx (cw-nohostiles), HIS ORDER (2026-11-02), with a picture of "14 hostiles closing in": "this message about 'hostiles closing in' is not helpful". The count line and its plate are gone; the extract banner above stays.
     ctx.textAlign='left';
   } else if(!G.over&&dist(p,G.active)<G.active.r){
     ctx.font=hudFS(TYPE.head); ctx.textAlign='center';
@@ -57955,7 +57932,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.40: an extraction banks its bonus, no longer your raid score as cash; money comes from selling gear Check 37.40 fails on v37.39',
+  now:'v37.41: the hostiles closing in line under the extract banner is gone Check 37.41 fails on v37.40',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

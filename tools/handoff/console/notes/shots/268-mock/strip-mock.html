@@ -1,0 +1,81 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&display=block" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#0d0f12;width:1600px}
+body{font-family:'Barlow Condensed',sans-serif;color:#f1ece2}
+.tag{height:44px;line-height:44px;padding-left:16px;font-size:26px;font-weight:700;color:#9aa3ab;background:#0d0f12}
+.wrap{zoom:.83334;width:1920px}
+.frame{position:relative;width:1920px;overflow:hidden;background:url(frame.jpg) 0 0 no-repeat}
+.full{height:1080px}.crop{height:320px}
+.patch{position:absolute;background-image:url(frame.jpg);background-repeat:no-repeat}
+.wash{position:absolute;inset:0;background:rgba(60,8,5,.30)}
+.rail{position:absolute;left:0;top:0;width:1920px;height:52px;background:rgba(18,20,23,.88);border-bottom:1px solid rgba(255,255,255,.14);white-space:nowrap}
+.rail.danger{background:rgba(66,18,15,.94);border-bottom:3px solid #ee4a35}
+.rail.downed{background:rgba(52,14,12,.95);border-bottom:none}
+.score{position:absolute;left:24px;top:0;height:52px;display:flex;align-items:center;gap:12px}
+.score b{font-size:32px;font-weight:700}
+.score i{font-style:normal;font-size:26px;font-weight:700;color:#f0a62e}
+.clock{position:absolute;left:0;width:1920px;top:0;height:52px;text-align:center;font-size:44px;line-height:52px;font-weight:800;color:#dfe4e8}
+.sky{position:absolute;left:1032px;top:9px;width:34px;height:34px}
+.ext{position:absolute;right:24px;top:0;height:52px;display:flex;align-items:center;gap:12px;color:#4de3d0;font-size:32px;font-weight:700}
+.alert{position:absolute;right:1060px;top:0;height:52px;display:flex;align-items:center;gap:12px}
+.alert b{font-size:34px;font-weight:800;color:#ff6a55}
+.alert span{font-size:25px;font-weight:600;color:#f1ece2}
+.down{position:absolute;left:24px;top:0;height:52px;display:flex;align-items:center;gap:14px}
+.down b{font-size:32px;font-weight:800;color:#ff6a55}
+.down em{font-style:normal;font-size:44px;font-weight:800;color:#f1ece2;width:118px}
+.key{display:inline-block;background:#dcf23c;color:#14160f;font-size:25px;font-weight:800;border-radius:6px;padding:0 11px;line-height:32px;margin-left:16px}
+.down span{font-size:27px;font-weight:600}
+.slider{position:absolute;left:1120px;top:17px;width:400px;height:18px;background:rgba(70,58,56,.95);outline:3px solid rgba(6,9,13,.82)}
+.slider .z{position:absolute;left:160px;width:80px;top:0;height:18px;background:#ff968a}
+.slider .e{position:absolute;top:-5px;width:3px;height:28px;background:#fff}
+.bleed{position:absolute;left:0;top:47px;width:1920px;height:5px;background:rgba(0,0,0,.6)}
+.bleed div{position:absolute;left:346px;width:1228px;height:5px;background:#cfc8bb}
+</style></head><body>
+
+<div class="tag">calm</div>
+<div class="wrap"><div class="frame full" id="a">
+  <div class="patch" style="left:895px;top:50px;width:130px;height:45px;background-position:-1030px -50px"></div>
+  <div class="patch" style="left:1600px;top:52px;width:304px;height:8px;background-position:-1600px -2px"></div>
+  <div class="patch" style="left:1600px;top:58px;width:304px;height:218px;background-position:-1600px -16px"></div>
+  <div style="position:absolute;left:1600px;top:0;width:320px;height:52px;background:#121417"></div><div style="position:absolute;left:880px;top:0;width:160px;height:52px;background:#121417"></div><div class="rail">
+    <div class="score"><b>2,730 sp</b><i>x1.40</i></div>
+    <div class="clock">8:51</div>
+    <svg class="sky" viewBox="0 0 34 34"><circle cx="17" cy="17" r="16" fill="#1c1f26" stroke="#50535c"/><circle cx="14" cy="14" r="5" fill="#f0a62e"/><path d="M11 24h12a4 4 0 0 0 0-8 6 6 0 0 0-11-1 4.500 4.500 0 0 0-1 9z" fill="#c9cfd6"/></svg>
+    <div class="ext">extract 152m <svg width="24" height="24" viewBox="-12 -12 24 24"><path d="M0-10 7 8H-7z" fill="#4de3d0" transform="rotate(90)"/></svg></div>
+  </div>
+</div></div>
+
+<div class="tag">alert</div>
+<div class="wrap"><div class="frame crop" id="b">
+  <div class="patch" style="left:895px;top:50px;width:130px;height:45px;background-position:-1030px -50px"></div>
+  <div class="patch" style="left:1600px;top:52px;width:304px;height:8px;background-position:-1600px -2px"></div>
+  <div class="patch" style="left:1600px;top:58px;width:304px;height:218px;background-position:-1600px -16px"></div>
+  <div style="position:absolute;left:1600px;top:0;width:320px;height:52px;background:#121417"></div><div style="position:absolute;left:880px;top:0;width:160px;height:52px;background:#121417"></div><div class="rail danger">
+    <div class="score"><b>2,730 sp</b><i>x1.40</i></div>
+    <div class="alert"><svg width="34" height="32" viewBox="0 0 34 32"><path d="M17 1 33 31H1z" fill="#ee4a35"/><rect x="15.300" y="11" width="3.400" height="11" fill="#2a0d0b"/><rect x="15.300" y="24" width="3.400" height="3.400" fill="#2a0d0b"/></svg><b>locked on</b><span>crawler has you in sight</span></div>
+    <div class="clock">8:51</div>
+    <svg class="sky" viewBox="0 0 34 34"><circle cx="17" cy="17" r="16" fill="#1c1f26" stroke="#50535c"/><circle cx="14" cy="14" r="5" fill="#f0a62e"/><path d="M11 24h12a4 4 0 0 0 0-8 6 6 0 0 0-11-1 4.500 4.500 0 0 0-1 9z" fill="#c9cfd6"/></svg>
+    <div class="ext">extract 152m <svg width="24" height="24" viewBox="-12 -12 24 24"><path d="M0-10 7 8H-7z" fill="#4de3d0" transform="rotate(90)"/></svg></div>
+  </div>
+</div></div>
+
+<div class="tag">down</div>
+<div class="wrap"><div class="frame crop" id="c">
+  <div class="patch" style="left:895px;top:50px;width:130px;height:45px;background-position:-1030px -50px"></div>
+  <div class="patch" style="left:1600px;top:52px;width:304px;height:8px;background-position:-1600px -2px"></div>
+  <div class="patch" style="left:1600px;top:58px;width:304px;height:218px;background-position:-1600px -16px"></div>
+  <div class="wash"></div>
+  <div style="position:absolute;left:1600px;top:0;width:320px;height:52px;background:#121417"></div><div style="position:absolute;left:880px;top:0;width:160px;height:52px;background:#121417"></div><div class="rail downed">
+    <div class="down"><b>down</b><em>11.05s</em><i class="key" style="font-style:normal">f</i><span>self-revive, one per raid</span></div>
+    <div class="clock">8:51</div>
+    <svg class="sky" viewBox="0 0 34 34"><circle cx="17" cy="17" r="16" fill="#1c1f26" stroke="#50535c"/><circle cx="14" cy="14" r="5" fill="#f0a62e"/><path d="M11 24h12a4 4 0 0 0 0-8 6 6 0 0 0-11-1 4.500 4.500 0 0 0-1 9z" fill="#c9cfd6"/></svg>
+    <div class="slider"><div class="z"></div><div class="e" style="left:158px"></div><div class="e" style="left:238px"></div><div class="e" style="left:186px"></div></div>
+    <div class="ext">extract 164m <svg width="24" height="24" viewBox="-12 -12 24 24"><path d="M0-10 7 8H-7z" fill="#4de3d0" transform="rotate(90)"/></svg></div>
+    <div class="bleed"><div></div></div>
+  </div>
+</div></div>
+</body></html>
+

@@ -1,0 +1,5 @@
+## v37.41 - NO MORE HOSTILES CLOSING IN LINE
+
+Co-op hunt while he was away. His order 11-02, with a picture of the red line "14 hostiles closing in": "this message about hostiles closing in is not helpful". The count line under the extract banner and its plate are removed; the banner stays (job 269). Watch: the hostiles closing in line under the extract banner is gone
+
+MEASURED. Check 37.41 passes, and fails on v37.40.

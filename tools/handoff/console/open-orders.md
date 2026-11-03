@@ -96,3 +96,9 @@ SHIPPED 10-28 v35.66: 201 air strike needs 3000 damage (was 1500). On his PC 168
 
 - HIS REPORT 10-31: false "cooked grenade! throw grenade now x6" danger line. Job tasks/o-00y4-251-cooked-grenade-line.md (feed copy goes; shout only over your head while holding it); party relevant, CEO decides.
 - His order 10-31 ~05:40 (verbatim, to the CEO chat): "spend to 96% of usage between now and noon to polish the game for the party", then "between now and 3pm, rather". Claude lanes a, b and c on: 12 party polish jobs (tasks/0p01..0p12); line 93 -> 96 by 14:15; no new jobs after 14:15 (party-window.txt); non-polish jobs parked in after-nov1.
+
+- HIS ORDER 11-02 ~21:50 (verbatim, to the pillager-html change request chat, with a screenshot of the clock, score, extract and downed cards stacked top centre): "i don't like how all these different boxes take up so much of the screen, can we redesign this (and redesign player alerts) so that they all hit across the top edge of the screen somehow, leaving more screen space for play". Job in-session/268-top-edge-strip.md. Replaces the stacked layout of his 10-28 clock over score order; the clock stays the biggest figure.
+
+- HIS ORDER 11-02 ~21:55 (verbatim, to the pillager-html change request chat, with a screenshot of the red line "14 hostiles closing in"): "this message about 'hostiles closing in' is not helpful". Job in-session/269-hostiles-closing-in.md.
+
+- HIS ORDER 11-02 ~22:00 (verbatim, same chat, second screenshot: clock, score, extract and a "locked on" danger plate stacked top centre): "heres another example of too many boxes filling up the top mid of the screen, when they should fill across the entire top of the screen, leaving more room for gameplay". Same job, 268: the strip spans the whole top edge, not the middle.

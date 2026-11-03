@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.41 - NO MORE HOSTILES CLOSING IN LINE
+
+Co-op hunt while he was away. His order 11-02, with a picture of the red line "14 hostiles closing in": "this message about hostiles closing in is not helpful". The count line under the extract banner and its plate are removed; the banner stays (job 269). Watch: the hostiles closing in line under the extract banner is gone
+
+MEASURED. Check 37.41 passes, and fails on v37.40.
 ## v37.40 - EXTRACTION PAYS THE BONUS AND THE GEAR, NOT YOUR SCORE
 
 Co-op hunt while he was away. His ruling of 11-01: an extraction should pay no cash beyond selling what you have and maybe a bonus, and most the money should come from selling gear. v37.25 ended the other raid cash, but every career extraction still banked twice the raid score as money on top of the bonus (job 265). The score now stays score, and the money card loses its credits rows. Watch: an extraction banks its bonus, no longer your raid score as cash; money comes from selling gear

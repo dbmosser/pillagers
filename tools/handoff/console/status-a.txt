@@ -1,1 +1,1 @@
-11-02 21:18 paused (STOP-claude: his 10-30 order, Codex only for 2 player fixes)
+11-02 21:44 helpers off: Claude Code on this machine is not signed in to your Pillagers account (it is signed in to another one); 00p-m3a-drops kept

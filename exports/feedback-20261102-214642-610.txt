@@ -1,0 +1,8 @@
+﻿PILLAGERS FEEDBACK
+VERSION: v0.1370 (BUILD 37.40)
+TIME: Mon Nov 02 2026 21:46:42 GMT-0500 (Eastern Standard Time)
+WHERE: IN A RAID, 1:22 IN
+RUNS: 85
+
+snip, build 37.40, in a raid, map cold storage, box 704,809 288x41 px (page), page layer failed
+

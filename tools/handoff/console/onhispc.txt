@@ -206,3 +206,4 @@
 11-01 23:01 v37.37 cw-m2birth3 on his pc after 34s (8802 serves 37.37) week 8%
 11-01 23:21 v37.38 cw-m2retire on his pc after 19s (8802 serves 37.38) week 8%
 11-01 23:30 v37.39 cw-m2retire2 on his pc after 18s (8802 serves 37.39) week 8%
+11-02 21:22 v37.40 cw-nospcash on his pc after 49s (8802 serves 37.40) week 22%

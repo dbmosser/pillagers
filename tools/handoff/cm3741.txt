@@ -1,0 +1,7 @@
+v37.41: no more hostiles closing in line
+
+the hostiles closing in line under the extract banner is gone
+
+Check 37.41. Fails on v37.40.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
