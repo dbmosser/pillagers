@@ -202,6 +202,7 @@ window.__cleanProfile=function(){
   try{ if(typeof COSKEY==='object'&&COSKEY&&typeof COSDEF==='object'&&COSDEF){ for(var _ck in COSKEY) if(COSKEY.hasOwnProperty(_ck)&&COSDEF.hasOwnProperty(_ck)) P[COSKEY[_ck]]=COSDEF[_ck]; } }catch(_cz){}
   // 11-01 (cw-m2death): a death ends the pillager now, so every check starts with generation 1 alive and an empty hall, as a fresh save does
   try{ if(typeof acctEnsure==='function'){ P.hall=[]; P.pil=null; P.pilGen=0; P.pilNote=null; acctEnsure(P); } }catch(_pz){}
+  P.worn={}; P.gear=[];   // 11-02 (cw-m3drops): no gear left over from a check; a drop's power reads what you own
   try{ saveProfile(); }catch(e){}
   return was;
 };
@@ -117663,6 +117664,7 @@ window.__runPrep=function(){
   try{ if(window.__pinDPR) __pinDPR(1); }catch(e){}
   try{ var _bt=document.getElementById('title'); if(_bt) _bt.classList.remove('on'); }catch(e){}   // v12.06: the boot title is dismissed, as a player does before the floor
   try{ if(window.__cleanProfile) __cleanProfile(); }catch(e){}
+  try{ if(typeof WORN_DROPS_ON!=='undefined') WORN_DROPS_ON=false; }catch(e){}   // 11-02 (cw-m3drops): older checks count box contents; a check that wants drops turns them on and restores them
   try{ if(typeof INDEV==='object'&&INDEV) INDEV.legacy=true; }catch(e){}   // v30.xx (cw-glyphs): older checks set PAD.on by hand and mean "show the pad prompts"; the last-input rule has its own check, which turns this off
 };
 // 10-20 (job 58b): about 140 checks save ctx.fillText (the PROTOTYPE's function) and put it back with ctx.fillText=saved, which leaves an
