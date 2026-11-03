@@ -1,0 +1,23 @@
+id=ship-cw-m3bench-de8892cf9e0e
+kind=ship
+key=cw-m3bench
+tag=42
+v=37.42
+new=3742
+base=eab496166a61e174c55770be283fedc15e2d9dc6
+host=DESKTOP-82BKOP4
+draft_sha=2ad8823cfba513293e396c1c222a3c21cdd0abe9a4376c6bf3cf12eed5e562a0
+p_sha=4c2a80188603108ed539b5907a22f01cabef4689ab009c2d66967af89b848260
+f_sha=e9d6ff1dbb0934aecd39a337a24fb98dabbfd2d014b2af962982c3426a65f849
+game_sha=
+fix_sha=
+started=1793681911
+ended=1793681922
+result=FAIL
+infra=0
+reason=the check patch did not apply
+--- stages
+p42 -> OK, 10 edits applied plus DEVNOW
+f42 -> FAILED: Could not find file 'C:\Users\dbmos\AppData\Local\Temp\pillagers-dry\pf42\f42.ps1'.
+--- end
+done=1
