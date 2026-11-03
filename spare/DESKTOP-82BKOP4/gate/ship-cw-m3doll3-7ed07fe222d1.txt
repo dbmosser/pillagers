@@ -1,0 +1,23 @@
+id=ship-cw-m3doll3-7ed07fe222d1
+kind=ship
+key=cw-m3doll3
+tag=48
+v=37.48
+new=3748
+base=ca7bb749e6eca0ff995bc1b42cd1d95086953fed
+host=DESKTOP-82BKOP4
+draft_sha=113a044f05935f3d3d82db3c24f0d9568ec2c515c035d0edbbcf19ff96a352be
+p_sha=70aaf81891d2d62e1f7bbcfd502ce127ee1843e65efeaeeb913327e5a01db348
+f_sha=4312ecc1bb1cc0f9b23ec6016a0d84e9d240e35312c0e77c84143619ca53fbcd
+game_sha=
+fix_sha=
+started=1793696187
+ended=1793696200
+result=FAIL
+infra=0
+reason=the check patch did not apply
+--- stages
+p48 -> OK, 5 edits applied plus DEVNOW
+f48 -> FAILED: check 37.48 is in the fixture already
+--- end
+done=1
