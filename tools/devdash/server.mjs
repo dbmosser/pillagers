@@ -287,6 +287,7 @@ setInterval(() => {
 // 10-27: found dead at 19:27 with no trace, and his desktop copy stood still for over an hour. The runner (tools/nightly.sh step 10) starts
 // it again within 5 minutes; a crash now leaves its reason in pillagers-dashboard-crash.log (TEMP) first.
 process.on('uncaughtException', (e) => {
+  if (e && e.code === 'EADDRINUSE') process.exit(1);   // 11-02: another copy already answers on 8820 (two quick saves); not a crash, and the watcher should not wake for it
   try { appendFileSync(os.tmpdir() + '/pillagers-dashboard-crash.log', new Date().toISOString() + ' ' + String((e && e.stack) || e).slice(0, 2000) + '\n'); } catch {}
   process.exit(1);
 });
