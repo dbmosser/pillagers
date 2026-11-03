@@ -1,4 +1,5 @@
 # 264-belt-key-1-vacant-18-34 : check 18.34 fails, the first belt key is not painted in a fresh raid (full runs corpus-1101-1520 v37.17 and corpus-1102-0048)
+Codex: never change tools/mkfixture.ps1. If the answer turns out to be a check change, put the finding and the exact change in your notes and stop; the HTML CEO chat makes it.
 Queue (known-red triage 11-02). Treat as a possible REAL BUG until proved otherwise.
 effort: low to medium (grep "18.34" in tools/mkfixture.ps1, about line 78088; the belt tile draw is in dark_raiders.html at "v18.34, THE STYLING PASS IN THE RAID", about line 44765)
 

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.48 - THE STASH DOLL: LONG NAMES WRAP IN A SLOT, THE LIST FADES AT ITS EDGE
+
+Co-op hunt while he was away. seen on the pictures of v37.45: a rare breacher plate was cut off in its slot, outfit names lost the bottom of their letters, worse sat under the contrast floor on the tip panel, the critic found the last list row cut mid word and an amber scroll thumb Watch: a long piece name wraps to two lines in its slot, outfit names show whole, the tip panel is darker so worse reads, the list fades out at its bottom edge and its scroll thumb is the panel line colour
+
+MEASURED. Check 37.48 passes, and fails on v37.47.
 ## v37.47 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v37.31 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay. Watch: The what is new stamp keeps up with the build; the three notes are unchanged.

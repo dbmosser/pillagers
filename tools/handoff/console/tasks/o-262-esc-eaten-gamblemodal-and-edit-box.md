@@ -1,4 +1,5 @@
 # 262-esc-eaten-gamblemodal-and-edit-box : checks 10.10 and 12.99 fail, ESC is swallowed before the window or the edit box hears it (full runs corpus-1101-1057 v37.02, corpus-1101-1520 v37.17, corpus-1102-0048)
+Codex: never change tools/mkfixture.ps1. If the answer turns out to be a check change, put the finding and the exact change in your notes and stop; the HTML CEO chat makes it.
 Queue (known-red triage 11-02). Treat as a possible REAL BUG until proved otherwise: the failure repeats in three runs, so it is not a stalled slice. Find the cause; fix the game if it is a bug, retarget the check only if a deliberate build changed it.
 effort: medium (read-only first: grep the ids in tools/mkfixture.ps1, read about 150 lines around each hit)
 

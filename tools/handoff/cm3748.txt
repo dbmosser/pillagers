@@ -1,0 +1,7 @@
+v37.48: the stash doll: long names wrap in a slot, the list fades at its edge
+
+a long piece name wraps to two lines in its slot, outfit names show whole, the tip panel is darker so worse reads, the list fades out at its bottom edge and its scroll thumb is the panel line colour
+
+Check 37.48. Fails on v37.47.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

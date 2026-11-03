@@ -85,6 +85,8 @@ fnp_hold(){ HOLDWHY=""; [ "$ON_MAIN" = 1 ] || return 1; [ -n "$CX_FREEGB" ] && r
     ''|*[!0-9]*) HOLDWHY="could not read the Fortnite editor's state"; return 0;;
   esac
   [ "$age" -lt 10 ] && { HOLDWHY="the Fortnite editor was just reopened"; return 0; }
+  # CLAUDE.md: one helper at a time while the editor is open
+  local n; n=$(machine_helpers_running); [ "${n:-1}" -gt 0 ] && { HOLDWHY="a Claude helper is already running beside the Fortnite editor"; return 0; }
   machine_editor_open && { HOLDWHY="memory is short with the Fortnite editor open"; return 0; }
   return 1; }
 # 11-03: limits.txt is written only after a Codex run, so its last line goes stale. Past that line's week_resets the week is new and its percent no longer counts; without this the
@@ -122,7 +124,7 @@ wt_setup(){
     if git -C "$W" rev-parse --short HEAD >/dev/null 2>&1; then echo "worktree ok: $WW at $(git -C "$W" rev-parse --short HEAD)"; return 0; fi
     echo "$WW exists but is not a working git worktree"; return 1; fi
   if [ -e "$W" ] && [ -n "$(ls -A "$W" 2>/dev/null)" ]; then echo "$WW exists and is not empty: not touching it"; return 1; fi
-  git -C "$R" worktree add --detach "$WW" master 2>&1 | grep -v 'Updating files' | tail -3
+  git -c core.autocrlf=false -C "$R" worktree add --detach "$WW" master 2>&1 | grep -v 'Updating files' | tail -3
   git -C "$W" rev-parse --short HEAD >/dev/null 2>&1 || return 1
   echo "worktree created: $WW at $(git -C "$W" rev-parse --short HEAD)"; }
 wt_refresh(){ local head gd
@@ -130,7 +132,8 @@ wt_refresh(){ local head gd
   # SAFETY: checkout -f and clean below must only ever touch a LINKED worktree, never the shared tree
   case "$gd" in */worktrees/*) ;; *) log "refusing to refresh $WW: it is not a linked worktree ($gd)"; return 1;; esac
   [ "$(git -C "$W" rev-parse --show-toplevel 2>/dev/null)" != "$(git -C "$R" rev-parse --show-toplevel 2>/dev/null)" ] || { log "refusing: worktree is the main tree"; return 1; }
-  git -C "$W" checkout -q -f --detach master >> "$X/log/wt.err" 2>&1 || { log "worktree checkout failed"; return 1; }
+  # 11-03: the main folder is checked out with LF on purpose (CLAUDE.md); this copy must match it, or anchors tested here fail there
+  git -c core.autocrlf=false -C "$W" checkout -q -f --detach master >> "$X/log/wt.err" 2>&1 || { log "worktree checkout failed"; return 1; }
   git -C "$W" clean -fdq -e .codex-work >> "$X/log/wt.err" 2>&1
   head=$(git -C "$R" rev-parse master 2>/dev/null)
   [ "$(git -C "$W" rev-parse HEAD 2>/dev/null)" = "$head" ] || { log "worktree not at master"; return 1; }

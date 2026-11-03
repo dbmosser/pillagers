@@ -4024,8 +4024,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.47';
-var VER_AT='2026-11-03 03:34';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.48';
+var VER_AT='2026-11-03 04:02';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -58103,7 +58103,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.47: The what is new stamp keeps up with the build; the three notes are unchanged. Check 37.47 fails on v37.46',
+  now:'v37.48: a long piece name wraps to two lines in its slot, outfit names show whole, the tip panel is darker so worse reads, the list fades out at its bottom edge and its scroll thumb is the panel line colour Check 37.48 fails on v37.47',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -75410,7 +75410,7 @@ careerStyle('gearcss',
   '#root #gearmodal .gslot.lit{border:2px solid var(--acc)}'+
   '#root #gearmodal .gslot svg,#root #gearmodal #geartip svg{width:32px;height:32px;flex:none;fill:none;stroke:var(--gc);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}'+
   '#root #gearmodal .gslot span{display:flex;flex-direction:column;gap:2px;min-width:0}'+
-  '#root #gearmodal .gslot b{font:700 24px/1.1 var(--f-cond);color:var(--gc);white-space:nowrap}'+
+  '#root #gearmodal .gslot b{font:700 24px/1.1 var(--f-cond);color:var(--gc);white-space:normal}'+
   '#root #gearmodal .gslot em{font:500 var(--fs-body)/1.1 var(--f-cond);font-style:normal;color:var(--tx-2);white-space:nowrap}'+
   '#root #gearmodal .gpip{font-style:normal;color:var(--tx-1);letter-spacing:.08em}'+
   '#root #gearmodal #gearsum{flex:none;display:flex;flex-wrap:wrap;gap:4px 24px;font:600 24px/1.25 var(--f-cond);color:var(--tx-1)}'+
@@ -75418,7 +75418,8 @@ careerStyle('gearcss',
   '#root #gearmodal #gearhd{display:flex;align-items:center;gap:16px;min-height:40px;font:600 var(--fs-body)/1 var(--f-cond);color:var(--tx-2)}'+
   '#root #gearmodal #gearhd b{font:700 28px/1 var(--f-cond);color:var(--tx-1)}'+
   '#root #gearmodal #gearhd button{margin-left:auto;min-height:40px;min-width:80px;padding:0 16px;font:600 var(--fs-body)/1 var(--f-cond);text-transform:none}'+
-  '#root #gearmodal #gearlist{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px;overflow-y:auto;overflow-x:hidden;padding:2px}'+
+  // v37.xx (cw-m3doll3), critic P1: the last row was cut mid word by the list edge, so the list fades out over its last 24px; a row the highlight lands on stops clear of the fade. Critic P2: the thumb is the panel line colour, not amber.
+  '#root #gearmodal #gearlist{flex:1;min-height:0;display:flex;flex-direction:column;gap:8px;overflow-y:auto;overflow-x:hidden;padding:2px 2px 24px;scroll-padding-bottom:24px;scrollbar-color:var(--ui-line-hi) transparent;-webkit-mask-image:linear-gradient(to bottom,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(to bottom,#000 calc(100% - 24px),transparent)}'+
   '#root #gearmodal .gnone{padding:16px;font:600 var(--fs-body)/1.2 var(--f-cond);color:var(--tx-2)}'+
   '#root #gearmodal .grow{display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:2px;flex:none;box-sizing:border-box;width:100%;min-width:0;min-height:72px;margin:0;padding:8px 16px;background:var(--ui-bg);border:1px solid var(--ui-line);border-radius:var(--rad);color:var(--tx-2);text-align:left;text-transform:none;letter-spacing:0}'+
   '#root #gearmodal .grow:hover,#root #gearmodal .grow.padfocus{background:var(--ui-raised);box-shadow:inset 4px 0 0 var(--acc);border-color:var(--ui-line-hi)}'+
@@ -75431,7 +75432,7 @@ careerStyle('gearcss',
   '#root #gearmodal .grow em{flex:none;font:600 var(--fs-body)/1.2 var(--f-cond);font-style:normal}'+
   '#root #gearmodal .g-better{color:var(--ok)}#root #gearmodal .g-worse{color:var(--danger)}#root #gearmodal .g-even{color:var(--tx-2)}'+
   '#root #gearmodal #gearside{display:flex;flex-direction:column;gap:16px;min-width:0;min-height:0}'+
-  '#root #gearmodal #geartip{flex:none;height:248px;overflow:hidden;background:var(--ui-raised)}'+
+  '#root #gearmodal #geartip{flex:none;height:248px;overflow:hidden;background:var(--ui-bg)}'+
   '#root #gearmodal #geartip .gth{display:flex;align-items:center;gap:8px}'+
   '#root #gearmodal #geartip b{font:700 28px/1.1 var(--f-cond);color:var(--gc)}'+
   '#root #gearmodal #geartip span{font:500 var(--fs-body)/1.2 var(--f-cond);color:var(--tx-1)}'+
@@ -75446,7 +75447,7 @@ careerStyle('gearcss',
   '#root #gearmodal .gof{display:grid;grid-template-columns:minmax(0,1fr) 56px;gap:8px;flex:none}'+
   '#root #gearmodal .gofb{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:56px;min-width:0;margin:0;padding:0 12px;background:var(--ui-bg);border:1px solid var(--ui-line);border-radius:var(--rad);color:var(--tx-1);text-align:left;text-transform:none;letter-spacing:0}'+
   '#root #gearmodal .gofb.on{box-shadow:inset 4px 0 0 var(--acc);background:var(--ui-raised)}'+
-  '#root #gearmodal .gofb b{font:700 var(--fs-body)/1 var(--f-cond);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'+
+  '#root #gearmodal .gofb b{font:700 var(--fs-body)/1.25 var(--f-cond);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}'+
   '#root #gearmodal .gofb span{flex:none;font:500 var(--fs-label)/1 var(--f-cond);color:var(--tx-2)}'+
   '#root #gearmodal .gofb i{flex:none;font:600 var(--fs-label)/1 var(--f-cond);font-style:normal;color:var(--danger)}'+
   '#root #gearmodal .gofx{min-height:56px;min-width:56px;margin:0;padding:0;font:600 var(--fs-body)/1 var(--f-cond);text-transform:none}'+
