@@ -1,0 +1,14 @@
+id=shots-3dc3fd884e34
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=4748ed9746555f9771dea5a50005683043559b07
+screens=21,33,34,71,74
+res=4k
+nolint=1
+lintopts=
+from=JUL26
+submitted=1793687393
+expires=1793693993
