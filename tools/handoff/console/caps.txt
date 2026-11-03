@@ -34,7 +34,8 @@ PLAN_LINE_START=2026-11-01T05:00:00Z
 PLAN_LINE_FROM=0
 # 11-02 23:40 his order "FnP is the priority now, Pillagers-html takes a back seat": the helpers line for this week goes to 80, so FnP has room up to his Saturday test; the final burn spends what is left near the reset.
 PLAN_LINE_TARGET=80
-PLAN_LINE_END=2026-11-08T05:00:00Z
+# 11-03 00:30 (CEO): one minute before the reset, because the line code needs PLAN_LINE_END inside the week; at the reset itself PLAN_LINE_TARGET was ignored and the 95 line stayed on.
+PLAN_LINE_END=2026-11-08T04:59:00Z
 PLAN_BURN_UNTIL=2026-10-25T05:00:00Z
 PLAN_WEEK_MAX=99
 PLAN_SESSION_MAX=85
