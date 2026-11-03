@@ -1,0 +1,111 @@
+the unbroken runner passes: checks 560, wrong 0
+ 1 the threshold 5 to 3                                       caught by  20: S4b three strays 2 s apart, 1 report each: nob / S4b three strays 2 s apart, 1 report each: nob / S4b three strays 2 s apart, 1 report each: nob
+ 2 the threshold 5 to 6                                       caught by  15: S5 THE THRESHOLD, a fifth report at least a te / S5 THE THRESHOLD, a fifth report at least a te / S5 THE THRESHOLD, a fifth report at least a te
+ 3 the threshold 5 to 50                                      caught by  26: S5 THE THRESHOLD, a fifth report at least a te / S5 THE THRESHOLD, a fifth report at least a te / S5 THE THRESHOLD, a fifth report at least a te
+ 4 the 10 s to 2 s                                            caught by  11: S5 THE THRESHOLD, a fifth report at least a te / S5 THE THRESHOLD, a fifth report at least a te / S5 THE THRESHOLD, a fifth report at least a te
+ 5 the 10 s to 11 s                                           caught by   3: S6b five across 10.1 s: nobody (poll phase 0) / S6b five across 10.1 s: nobody (poll phase 37) / S6b five across 10.1 s: nobody (poll phase 99)
+ 6 exactly 10 s is outside                                    caught by   3: S6 five reports across exactly 10 s: a person  / S6 five reports across exactly 10 s: a person  / S6 five reports across exactly 10 s: a person 
+ 7 the count wraps                                            caught by   1: S14f a fifth report 26 days after the other fo
+ 8 the ring looks at the newest                               caught by  11: S3 THE EVENING REPLAYED at its real gaps and r / S3 THE EVENING REPLAYED at its real gaps and r / S3 THE EVENING REPLAYED at its real gaps and r
+ 9 five reports does not need five                            caught by  12: S6 five reports across exactly 10 s: a person  / S9d a report 1.2 s after a window move: a stra / S9g a window with no move 1.2 s before a repor
+10 the mouse never sets the person                            caught by  26: S5 THE THRESHOLD, a fifth report at least a te / S5 THE THRESHOLD, a fifth report at least a te / S5 THE THRESHOLD, a fifth report at least a te
+11 the mouse is not named                                     caught by  10: S5b for the mouse / S5h two 300 ms jolts 2 s apart: a person, the  / S5f a shake of 50 reports 10 ms apart, 500 ms 
+12 a key is not a person                                      caught by  20: S8 A KEY TAP inside one look, which the lone r / S8 A KEY TAP inside one look, which the lone r / S8 A KEY TAP inside one look, which the lone r
+13 a key is not named                                         caught by   8: S8 A KEY TAP inside one look, which the lone r / S8 A KEY TAP inside one look, which the lone r / S8 A KEY TAP inside one look, which the lone r
+14 a key is taken for the mouse                               caught by  22: S8 A KEY TAP inside one look, which the lone r / S8 A KEY TAP inside one look, which the lone r / S8 A KEY TAP inside one look, which the lone r
+15 the mouse is taken for a key                               caught by 125: S1 ONE STRAY REPORT: not a person, a stray, no / S1 ONE STRAY REPORT: not a person, a stray, no / S1 ONE STRAY REPORT: not a person, a stray, no
+16 another kind counts as the mouse                           caught by   1: S8g a report of any other kind means nothing
+17 a key does not stop the stray                              caught by  12: S8 A KEY TAP inside one look, which the lone r / S8 A KEY TAP inside one look, which the lone r / S8 A KEY TAP inside one look, which the lone r
+18 a key report near is timed from tick 0                     caught by   3: z1 the tick count wraps: a window move is stil / R8e a lone move at tick 500, with no window mo / S14 the tick count wraps: a stray is still one
+19 a mouse report at any distance explains a move             caught by  17: S10d a window 10.1 s after: nobody (poll phase / S10d a window 10.1 s after: nobody (poll phase / S10d a window 10.1 s after: nobody (poll phase
+20 a mouse report near is timed from tick 0                   caught by   2: z1 the tick count wraps: a window move is stil / R8e a lone move at tick 500, with no window mo
+21 the near window 500 ms to 100 ms                           caught by   2: S12b a report under half a second before the m / S12c a report under half a second after the mo
+22 only a report before the move explains it                  caught by   1: S12c a report under half a second after the mo
+23 no strays at all: the old rules                            caught by  89: S1 ONE STRAY REPORT: not a person, a stray, no / S1 ONE STRAY REPORT: not a person, a stray, no / S1 ONE STRAY REPORT: not a person, a stray, no
+24 a stray ignores the window                                 caught by   2: S9f a press, then its release with the window  / S9h A WINDOW ON THE LOOK THAT JUDGES A CLICK, 
+25 a stray ignores the release                                caught by   4: S9 a press with the mouse still that changes t / S9 a press with the mouse still that changes t / S9 a press with the mouse still that changes t
+26 a stray ignores a person just before                       caught by   8: S11b a move with no report, then a stray 4 s l / S11b a move with no report, then a stray 4 s l / S11b a move with no report, then a stray 4 s l
+27 strays pair with strays                                    caught by  24: S4 two strays 5 s apart, 2 reports each, 4 in  / S4 two strays 5 s apart, 2 reports each, 4 in  / S4 two strays 5 s apart, 2 reports each, 4 in 
+28 a key inside a stray still counts as a stray               caught by  10: S8 A KEY TAP inside one look, which the lone r / S8 A KEY TAP inside one look, which the lone r / S8 A KEY TAP inside one look, which the lone r
+29 sustained use reads as a stray too                         caught by  11: S5 THE THRESHOLD, a fifth report at least a te / S5 THE THRESHOLD, a fifth report at least a te / S5 THE THRESHOLD, a fifth report at least a te
+30 a stray is not counted                                     caught by  83: S1 ONE STRAY REPORT: not a person, a stray, no / S1 ONE STRAY REPORT: not a person, a stray, no / S1 ONE STRAY REPORT: not a person, a stray, no
+31 a stray does not mark itself                               caught by  24: S4 two strays 5 s apart, 2 reports each, 4 in  / S4 two strays 5 s apart, 2 reports each, 4 in  / S4 two strays 5 s apart, 2 reports each, 4 in 
+32 a stray moves the person                                   caught by  65: S1 ONE STRAY REPORT: not a person, a stray, no / S1 ONE STRAY REPORT: not a person, a stray, no / S1 ONE STRAY REPORT: not a person, a stray, no
+33 a stray starts the hold                                    caught by   5: S1b it starts neither the passive clock nor th / S3 THE EVENING REPLAYED at its real gaps and r / S3 THE EVENING REPLAYED at its real gaps and r
+34 a stray counts towards the burst                           caught by  20: S1b it starts neither the passive clock nor th / S3 THE EVENING REPLAYED at its real gaps and r / S3 THE EVENING REPLAYED at its real gaps and r
+35 a stray is not kept for a pair with a real move            caught by  13: S10 A CLICK THAT LAUNCHES SOMETHING, 2 reports / S10 A CLICK THAT LAUNCHES SOMETHING, 2 reports / S10 A CLICK THAT LAUNCHES SOMETHING, 2 reports
+36 any stray arms the window rule                             caught by   9: S10e A ONE-REPORT STRAY, a program's window 2  / S10e A ONE-REPORT STRAY, a program's window 2  / S10e A ONE-REPORT STRAY, a program's window 2 
+37 no stray arms the window rule                              caught by  10: S10 A CLICK THAT LAUNCHES SOMETHING, 2 reports / S10 A CLICK THAT LAUNCHES SOMETHING, 2 reports / S10 A CLICK THAT LAUNCHES SOMETHING, 2 reports
+38 a click may be 26 ms                                       caught by   3: S10f the 21:25 double, 26 ms apart, a program' / S10f the 21:25 double, 26 ms apart, a program' / S10f the 21:25 double, 26 ms apart, a program'
+39 a click must be 50 ms                                      caught by   3: S10g press and release 40 ms apart, its window / S10g press and release 40 ms apart, its window / S10g press and release 40 ms apart, its window
+40 a click may be any length                                  caught by   6: S10e A ONE-REPORT STRAY, a program's window 2  / S10e A ONE-REPORT STRAY, a program's window 2  / S10e A ONE-REPORT STRAY, a program's window 2 
+41 the last report is not kept for the click                  caught by  10: S10 A CLICK THAT LAUNCHES SOMETHING, 2 reports / S10 A CLICK THAT LAUNCHES SOMETHING, 2 reports / S10 A CLICK THAT LAUNCHES SOMETHING, 2 reports
+42 every report counts towards the five, so a jolt is a person caught by  12: S5c A JOLT, 30 reports 2 ms apart: one tenth o / S5c A JOLT, 30 reports 2 ms apart: one tenth o / S5c A JOLT, 30 reports 2 ms apart: one tenth o
+43 the gap to 50 ms                                           caught by   7: S5d three jolts 2 s apart, 30 reports each: no / S5d three jolts 2 s apart, 30 reports each: no / S5d three jolts 2 s apart, 30 reports each: no
+44 the gap to 200 ms                                          caught by  13: S5h two 300 ms jolts 2 s apart: a person, the  / S5f a shake of 50 reports 10 ms apart, 500 ms  / S7 A HAND ON THE MOUSE at 125 reports a second
+45 exactly the gap is too close                               caught by   2: S7h exactly a tenth of a second apart: all fiv / S14d the count of five reports across the wrap
+46 the gap test wraps                                         caught by   1: S14g five reports 26 days after the last: a pe
+47 the gap is from the oldest                                 caught by  16: S5 THE THRESHOLD, a fifth report at least a te / S5 THE THRESHOLD, a fifth report at least a te / S5b for the mouse
+48 in use only at the reports it keeps                        caught by   7: S5f a shake of 50 reports 10 ms apart, 500 ms  / S7b to the last report, no stray and no lone m / S11d a hand on the mouse, then a click 8 s lat
+49 in use never ends                                          caught by   1: S11g A STRAY A MINUTE AFTER REAL MOUSE USE: th
+50 the pair line counts a key                                 caught by   1: S8h a move with no report, then a key: a perso
+51 the pair line counts the mouse                             caught by   1: S11b2 and not called a pair
+52 a real move after a stray keeps the flag                   caught by   2: S11h a stray, a key, and a stray 8 s after the / S11i a stray, a move with no report 15 s later
+53 a counted move goes on to the old rules                    caught by   9: S8 A KEY TAP inside one look, which the lone r / S8 A KEY TAP inside one look, which the lone r / S8 A KEY TAP inside one look, which the lone r
+54 a click after a person is not a person                     caught by   2: S9c a report within 1 s after a window move: t / S9f a press, then its release with the window 
+55 a window with a key is a window move                       caught by   1: S8f a key with a window change: a person, and 
+56 a click that changes the window is a window move           caught by   4: S9 a press with the mouse still that changes t / S9 a press with the mouse still that changes t / S9 a press with the mouse still that changes t
+57 the reason ignores who is the person                       caught by   1: P7 the reason follows the person: a key, then 
+58 Strays gives the lone moves                                caught by  86: S1 ONE STRAY REPORT: not a person, a stray, no / S1 ONE STRAY REPORT: not a person, a stray, no / S1 ONE STRAY REPORT: not a person, a stray, no
+59 the reports never open                                     caught by   2: c6f opening them failing leaves the thread loo / l5 the real reports open on this PC, with no w
+60 the reports never pump                                     caught by   1: c6e reports are taken before the look, in thei
+61 a failed open pumps anyway                                 caught by   1: c6e reports are taken before the look, in thei
+62 a pump failure stops the look                              caught by   1: c6e reports are taken before the look, in thei
+63 the input command, which reads the key or position         caught by   1: c6b a report is read for its header only: the 
+64 the keyboard is not asked for                              caught by   1: c6c it asks for the mouse and the keyboard and
+65 the mouse is not asked for                                 caught by   1: c6c it asks for the mouse and the keyboard and
+66 only with a window in front: the keyboard                  caught by   1: c6c it asks for the mouse and the keyboard and
+67 only with a window in front: the mouse                     caught by   1: c6c it asks for the mouse and the keyboard and
+68 the queue is not dispatched                                caught by   1: c6d a report comes from the raw input message 
+69 it asks for the wrong message                              caught by   1: c6d a report comes from the raw input message 
+70 the time is the clock, not the report                      caught by   1: c6d a report comes from the raw input message 
+71 the reason line is not asked                               caught by   4: as3 the reason says a key press / as3b the reason says the mouse in use / e12 ALL WIRED, A REAL KEY: arrived, for a key 
+72 the reasons are swapped                                    caught by   4: as3 the reason says a key press / as3b the reason says the mouse in use / e12 ALL WIRED, A REAL KEY: arrived, for a key 
+73 the stale reason stays when the watch throws               caught by   1: as3e the watch throws after the reason is set:
+74 a stray line with no 60 s limit                            caught by   1: as1e a second inside 60 s: no line yet
+75 the reports line comes at every look                       caught by   2: as4 reports open: one line, once / as4b they did not open: one PROBLEM line, once
+76 a failed open says it is on                                caught by   1: as4b they did not open: one PROBLEM line, once
+77 the seed works with a person this copy saw                 caught by   2: P4 a key seen by this copy first: no effect / P5 a move this copy judged a person first: no 
+78 the seed takes an age below 0                              caught by   1: P6b an age below 0, or over the 10 days a copy
+79 the first look is not kept                                 caught by   8: P2 A NEW COPY with the old copy's time: that t / P6 a stray since the first look: the time stil / P6c the tick count just started: it wraps and 
+80 Load-Hold gives nothing back                               caught by   5: as5 a new copy gives the watch that age / as5a written 295 s ago: taken / e16 ALL WIRED, A RESTART AFTER A STRAY: the st
+81 Load-Hold gives the time, not the age                      caught by   4: as5 a new copy gives the watch that age / e16 ALL WIRED, A RESTART AFTER A STRAY: the st / e16b ALL WIRED, THE 21:36 CASE, the input time
+82 Load-Hold takes anything                                   caught by   3: as5d not numbers or too long: nothing given, n / as5d not numbers or too long: nothing given, n / as5d not numbers or too long: nothing given, n
+83 Load-Hold takes it at any age                              caught by   2: as5b written 300 s ago: left, the first look c / e18 ALL WIRED, a crash revived after 400 s: th
+84 Load-Hold takes it 10 minutes old                          caught by   2: as5b written 300 s ago: left, the first look c / e18 ALL WIRED, a crash revived after 400 s: th
+85 Load-Hold takes a time ahead of the clock                  caught by   1: as5c written ahead of this clock: left
+86 Load-Hold has no catch                                     caught by   1: as5c3 the watch throws: the catch holds, and t
+87 a code line hidden in the comment zone                     caught by   1: c2b what c2 cuts is only comment lines, so no 
+88 the seed does nothing                                      caught by   8: P2 A NEW COPY with the old copy's time: that t / P6 a stray since the first look: the time stil / P6c the tick count just started: it wraps and 
+89 the seed takes an age over the limit                       caught by   1: P6b an age below 0, or over the 10 days a copy
+90 the seed refuses the oldest                                caught by   1: P6e the oldest a copy can leave still goes in
+91 the first look does not restart the passive signs          caught by   2: P6f what the first look found still restarts t / e20 ALL WIRED, nobody for 3 hours, a move just
+92 the first look always restarts them                        caught by   1: P6g an old time newer than the first look: not
+93 the window is judged after the flag is dropped             caught by   2: S9f a press, then its release with the window  / S9h A WINDOW ON THE LOOK THAT JUDGES A CLICK, 
+94 any old window counts                                      caught by   1: S9g a window with no move 1.2 s before a repor
+95 a window on the judging look is missed                     caught by   1: S9h A WINDOW ON THE LOOK THAT JUDGES A CLICK, 
+96 a program counts as hardware                               caught by   1: c6d a report comes from the raw input message 
+97 a stray line at every look                                 caught by   1: as1f after 60 s, one line, counting only what 
+98 no stray line                                              caught by   5: as1b it says so / as1d not again at the next look / as1e a second inside 60 s: no line yet
+99 the new counts do not start at 0                           caught by   1: c7a the runner starts its lone and pair counts
+100 a restart leaves nothing                                   caught by   1: c6h all four restarts leave the person time fi
+101 Save-Watch runs in IDLE MODE                               caught by   1: sw4 IDLE MODE: nothing written and nothing ask
+102 Save-Watch runs with no watch                              caught by   2: sw2 the watch did not load: not written, so a  / sw2b the flag never set: not written
+103 Save-Watch does not look first                             caught by   5: sw1 a restart leaves when it looked and a fres / sw3b a stray does not, nor does a passive sign / e16 ALL WIRED, A RESTART AFTER A STRAY: the st
+104 Save-Watch writes the time for the age                     caught by   5: sw1 a restart leaves when it looked and a fres / sw3 a pad counts as the person time / e16 ALL WIRED, A RESTART AFTER A STRAY: the st
+105 Save-Watch does not write when                             caught by   4: sw1 a restart leaves when it looked and a fres / e16 ALL WIRED, A RESTART AFTER A STRAY: the st / e16b ALL WIRED, THE 21:36 CASE, the input time
+106 a look writes it too                                       caught by   1: sw0 a look writes nothing to the state
+107 Load-Hold asks with no watch                               caught by   2: as5e the watch did not load: not asked / as5f the flag never set: not asked
+108 Load-Hold takes it after a reboot                          caught by   2: as5c2 after a reboot or a long stop, even if w / e19 ALL WIRED, a reboot just after the write: 
+109 a call the type does not have, which the catch would hide  caught by  53: a1 a program takes the front, nobody here: no  / a2c a window move does not shorten what a real / g1 A GAME THAT CAME TO THE FRONT with no key: 
+breaks 109, ran 109, caught 109, missed 0
