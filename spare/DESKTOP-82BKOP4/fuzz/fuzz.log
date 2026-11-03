@@ -6477,3 +6477,6 @@
 2026-11-02 22:30:33 FUZZ ABORT reason=gate job, not a game failure
 2026-11-02 22:33:15 FUZZ START seed=1735221307 minutes=60 raidsec=300 port=9331 srv=8806 build=37.40 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
 2026-11-02 22:36:34 FUZZ ABORT reason=gate job, not a game failure
+2026-11-02 22:49:13 FUZZ START seed=1314916276 minutes=60 raidsec=300 port=9331 srv=8806 build=37.40 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-02 22:53:20 raid 1 demo2p raidSeed=747212162 map=0 god=1 sec=243 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.40
+2026-11-02 22:59:45 raid 2 demo2p raidSeed=1649084203 map=0 god=0 sec=253 end=reload problems=1 newUnique=1 totalUnique=2 totalProblems=2 events=12 score=0 ents=44 travelPx=0 fires=0 menuPct=0 heapMB=50 p2=link_2s_join_55s_pad_fwd gfx=12505/16.75/16.75/82/1 gfx2=4675/41.75/58.25/4641/1 work=11367/8.25/15.25/21.25 work2=4849/19.25/29.75/37.75 pics=188/66.3mb/wall:72,veg:13,shad:70,icon:9,g.pix:0,g.pixmachines:0,g.muz:2,g.gun:2,g.lightspr:14,g.gfxE:3,pix.actors:0,pix.scene:0,big:3 pics2=210/63.5mb/wall:74,veg:14,shad:72,icon:22,g.pix:0,g.pixmachines:0,g.muz:3,g.gun:2,g.lightspr:16,g.gfxE:3,pix.actors:0,pix.scene:0,big:4 build=37.40
