@@ -10132,7 +10132,7 @@ window.__REGRESS=[
   {v:'36.72',what:'big minimap, large HUD and open run info: the run info box stays clear of the belt keys and the air strike meter, and the feed lines stay clear of the belt, at 1080 and 4K in both windows',
    run:function(){
      if(typeof __frame!=='function'||typeof __forceSize!=='function'||typeof __corpusAirHandStage!=='function') return 'SKIP: no frame helpers';
-     var sizes=[[1920,1080],[3840,2160]], roles=['host','join'], bad=[], si, ri, g, a, c, cells, air, rows, i, tag;
+     var sizes=[[1920,1080],[3840,2160]], roles=['host','join'], bad=[], si, ri, g, a, c, cells, air, rows, i, tag, oldW=W, oldH=H, cfg0=[CFG.minimap,CFG.mmSz,CFG.hudTv], hud0=P.hud?JSON.stringify(P.hud):'';
      function hit(p,q){ return p&&q&&p.w>0&&p.h>0&&q.w>0&&q.h>0&&p.x<q.x+q.w&&p.x+p.w>q.x&&p.y<q.y+q.h&&p.y+p.h>q.y; }
      try{
        for(si=0;si<sizes.length;si++) for(ri=0;ri<roles.length;ri++){
@@ -10162,6 +10162,8 @@ window.__REGRESS=[
      } finally {
        try{ __endRaid('abandon'); }catch(_e){}
        __topClear();
+       /* 11-03 (job 268): the big minimap, large HUD, open run info and 4K window it stages are put back; v36.13 and v29.61 tripped on them after it */
+       CFG.minimap=cfg0[0]; CFG.mmSz=cfg0[1]; CFG.hudTv=cfg0[2]; if(hud0) P.hud=JSON.parse(hud0); else delete P.hud; __forceSize(oldW,oldH);
      } }},
   {v:'36.71',what:'the cooked grenade warning stays over your head and never becomes a feed line',
    run:function(){
