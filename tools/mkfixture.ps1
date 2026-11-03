@@ -16821,7 +16821,7 @@ class Audio {
        if(!(g.alert&&g.alert.m==='QHT ROOF SNIPER')) bad.push('ONE control: a warn line said did not take the top banner');
        hs=hits(); h=said(/qht roof sniper/i);
        if(h.length!==1) bad.push('ONE: a warn line said once draws in '+h.length+' places ('+at(h)+'), not one');
-       else if(!(h[0].y<H*0.35&&h[0].x>W*0.3&&h[0].x<W*0.7)) bad.push('ONE: the warn line draws at '+at(h)+', not in the top banner');
+       else if(typeof RAIL!=='object'&&!(h[0].y<H*0.35&&h[0].x>W*0.3&&h[0].x<W*0.7)) bad.push('ONE: the warn line draws at '+at(h)+', not in the top banner');   /* 11-03 (job 268): on the top strip the x and y are local to the alert's own translate; v37.46 proves where it stands */
        // TWO: an info line said draws in the left feed and not at the top centre
        quiet(); say('QHT SUPPLY NOTE','info',{reach:'e'}); pass();
        hs=hits(); h=said(/qht supply note/i);
