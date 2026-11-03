@@ -17,7 +17,10 @@ function Test-Account {
   if ($h -eq $want) { return 'right' } else { return 'wrong' }
 }
 Write-Host ''
-Write-Host 'A browser page opens. Choose your PERSONAL Claude account and approve.' -ForegroundColor Cyan
+# 11-02 night: his default browser, Edge, is signed in to his work account, so twice this landed on the wrong one without a choice. Chrome holds his personal profile, so the page opens there.
+$chrome = @((Join-Path $env:ProgramFiles 'Google/Chrome/Application/chrome.exe'), (Join-Path ${env:ProgramFiles(x86)} 'Google/Chrome/Application/chrome.exe'), (Join-Path $env:LOCALAPPDATA 'Google/Chrome/Application/chrome.exe')) | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+if ($chrome) { $env:BROWSER = $chrome; Write-Host 'The page opens in Chrome, where your personal account is.' -ForegroundColor Cyan }
+Write-Host 'Choose your PERSONAL Claude account (the Gmail one) and approve. If it shows your work account, switch accounts on the page first.' -ForegroundColor Cyan
 Write-Host 'Your work login on this PC is not touched.' -ForegroundColor Cyan
 Write-Host ''
 & claude auth login
