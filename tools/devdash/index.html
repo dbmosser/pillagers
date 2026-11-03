@@ -246,7 +246,7 @@ function ftestHtml(d){
   const t=T.latest; let o='';
   o+=row(t.state==='running'?'b':t.state==='done'?'g':'a',null,'<b>Test '+t.n+'</b> '+(t.state==='running'?'is running now, started '+tod(t.start):t.state==='done'?'finished at '+tod(t.end)+' (started '+tod(t.start)+')':'stopped early at '+tod(t.last)+' without a clean finish')+' &middot; '+kb(t.size)+' of log'+tag('s','SCRIPT'));
   o+=row(t.real>0?'a':'g',null,t.state==='running'?'<b>Nobody is playing.</b> A script is driving the game.':'<b>Nobody played it.</b> '+(t.real>0?'Someone touched the PC during this run ('+t.real+' real mouse or key inputs), so the script stopped for them.':'The script made every move: 0 real mouse or key presses.'));
-  if(t.kind) o+=row('d',null,'<b>What it was:</b> '+(KIND[t.kind]||esc(t.kind)));
+  if(t.kind) o+=row('d',null,'<b>What it was:</b> '+(KIND[t.kind]||'a '+esc(t.kind)+' test'));
   if(t.state==='done'&&t.pictures!=null) o+=row('d',null,'It took '+t.pictures+' pictures and left '+t.freeGB+' GB of memory free.');
   if(T.saveBack) o+=row('g',null,'<b>Saved progress read back in a new game:</b> yes, test '+T.saveBack.n+' at '+hm(T.saveBack.m)+tag('m','MEASURED')+'<div class="small">Inside one session only. Epic resets saves on a new session, so a real quit and come back is still unproven.</div>');
   if(T.recent.length) o+=sec('Earlier tests')+T.recent.map(r=>row('d',hm(r.m),'Test '+r.n+' &middot; '+kb(r.size)+' &middot; '+(r.state==='done'?'finished':'stopped early')+(r.real>0?' (someone came to the PC)':''))).join('');
