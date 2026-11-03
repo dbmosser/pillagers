@@ -329,7 +329,7 @@ function runHtml(d){
   return o;
 }
 function commitsHtml(d){
-  return d.commits.slice(0,6).map(([h,t,s])=>{const v=/^v([\d.]+): (.*)/.exec(s);
+  return d.commits.filter(c=>!/^devdash:/.test(c[2])).slice(0,6).map(([h,t,s])=>{const v=/^v([\d.]+): (.*)/.exec(s);
     return v?row('g',t.slice(6),'<b>Version '+esc(v[1])+'</b>: '+esc(v[2])):row('d',t.slice(6),(/^fixture:/.test(s)?'Test update: '+esc(you(s).replace(/^fixture:\s*(fixture:\s*)?/,'')):esc(you(s))));}).join('');
 }
 async function tick(){
