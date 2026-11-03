@@ -205,6 +205,15 @@ window.__cleanProfile=function(){
   try{ saveProfile(); }catch(e){}
   return was;
 };
+// 11-02 (job 266): since v37.33 (cw-m2birth) a death or a real quit leaves nobody living, and the next arrival at the Undercroft opens the birth card over the floor.
+// A full run calls __runPrep once a slice, so 8.64 and 24.36 left the card for the next checks that came down (8.84, 8.95, 8.96, 9.32, 24.35), and 25.34 ended him itself:
+// six checks read a floor with a window on it. Proved on the spare PC: birthmodal alone was open, and the five pass alone. Not a game fault: the card is his ruling and
+// close, esc, enter and pad B all leave it (37.33). A check that only wants the floor gets a living pillager, as __cleanProfile gives. The birth checks stage their own and go in
+// by showScreen('hub'), and 37.34 stages nobody living and calls __topClear, so this is not in __topClear.
+window.__pilLive=function(){
+  try{ if(typeof birthNeed==='function'&&birthNeed()){ P.hall=[]; P.pil=null; P.pilGen=0; P.pilNote=null; acctEnsure(P); try{ saveProfile(); }catch(_ps){} return 1; } }catch(_pe){}
+  return 0;
+};
 window.__pinDPR=function(v){
   v=(v===undefined?1:v);
   try{ Object.defineProperty(window,'devicePixelRatio',{configurable:true,get:function(){ return v; }}); }catch(e0){}
@@ -1170,7 +1179,7 @@ window.__guns={
 };
 // v8.83: STAND ON THE UNDERCROFT FLOOR. showScreen('hub') is the real entry the
 // game uses, so this is the play path and not a rebuilt copy of it.
-window.__hubEnter=function(){ showScreen('hub'); var _t=document.getElementById('title'); if(_t) _t.classList.remove('on'); return !!HB; };   // v12.06: the floor is past the title, and since v12.06 a title left up blocks every floor key
+window.__hubEnter=function(){ __pilLive(); showScreen('hub'); var _t=document.getElementById('title'); if(_t) _t.classList.remove('on'); return !!HB; };   // v12.06: the floor is past the title, and since v12.06 a title left up blocks every floor key
 window.__hubP=function(){ return HB?HB.player:null; };
 window.__hubStep=function(dt){
   if(!HB||!wc||!(W>0)) return false;
@@ -117639,6 +117648,7 @@ window.__topClear=function(){
   // profile, so the arcade is left first (its raid stopped, his profile and dials put back). Only arcade builds have it.
   try{ if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on&&typeof arcadeLeave==='function'){ arcadeLeave(); n++; } }catch(_ar){}
   if(oc&&oc.classList.contains('on')){ oc.classList.remove('on'); n++; }
+  try{ var _bm=document.getElementById('birthmodal'); if(_bm&&_bm.classList.contains('on')){ _bm.classList.remove('on'); n++; } }catch(_bz){}   // 11-02 (job 266): a birth card a check left open is not the next check's window
   // 2026-10-08: a save written by a check in the other gate tab (same origin: the control run of a restore check) marks this tab
   // stale through the storage event, and the stale card then eats ESC and Enter and stops every save, so the stash ESC check
   // failed on two drafted builds. A test tab is never a player tab another window wrote under, so the mark is cleared here.
@@ -117666,7 +117676,7 @@ window.__regress=function(){
   __runPrep();
   for(var i=0;i<__REGRESS.length;i++){
     var t=__REGRESS[i], r=null;
-    res.cleared+=__topClear(); __ctxHeal();
+    res.cleared+=__topClear(); __ctxHeal(); __pilLive();
     res.checked++;
     try{ r=t.run(); }catch(e){ r='threw: '+e; }
     // A check that cannot run says so instead of condemning the build. Before
@@ -117699,7 +117709,7 @@ window.__regressBg=function(a,b){
       __PROG.res=res; __PROG.finished=true; return;
     }
     var t=__REGRESS[i], r=null;
-    res.cleared+=__topClear(); __ctxHeal();
+    res.cleared+=__topClear(); __ctxHeal(); __pilLive();
     __PROG.cur='v'+t.v; res.checked++;
     try{ console.log('REGRESS start '+i+' v'+t.v); }catch(_lg){}   // r1340b: the last line names a check that never returns
     try{ r=t.run(); }catch(e){ r='threw: '+(e&&e.stack||e); }
