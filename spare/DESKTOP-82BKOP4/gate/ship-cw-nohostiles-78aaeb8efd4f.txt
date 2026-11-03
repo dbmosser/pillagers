@@ -1,0 +1,30 @@
+id=ship-cw-nohostiles-78aaeb8efd4f
+kind=ship
+key=cw-nohostiles
+tag=41
+v=37.41
+new=3741
+base=739a1dac7a117a3a5c1c36145b6dfbdba1a636af
+host=DESKTOP-82BKOP4
+draft_sha=2d5bdfee49c79b52531f552fbcfca4c887e2162c79a50ec1488c1c6f602a7938
+p_sha=5d3db6f13c43d8dffe2e276e6a194ee4fb88710706528351fcb0be59e371ec1a
+f_sha=127443371568542c6c3739c2ca32c2abd32ada2a296a2b99fb370dcae62c0055
+game_sha=1372eb6fe93b38626383e70038e3ca0ea30dee2174abe7dd0333962486e29439
+fix_sha=381d04f63f75a8338df43f4037d46ccf4ff8a40a2c56ecaca71ad86d59b1f5f0
+started=1793675141
+ended=1793675332
+result=PASS
+infra=0
+reason=
+--- stages
+p41 -> OK, 3 edits applied plus DEVNOW
+f41 -> OK, 1 edits applied
+parse: PASS v37.41 parse check
+dry fxdry41 check 37.41: PASS / PASS
+control fxctl41 check 37.41: the hud still draws "2 HOSTILES CLOSING IN" / the hud still draws "2 HOSTILES CLOSING IN"
+recent: 0 new failures in the newest 80 checks
+stamp-verat: VER_AT 2026-11-02 22:08
+fixture.html check 37.41: PASS / PASS
+verifySafe: {"pass":true,"ents":{"0":85,"1":374},"containers":{"0":165,"1":593},"fail":[]}
+--- end
+done=1
