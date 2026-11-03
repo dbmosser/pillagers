@@ -1,0 +1,24 @@
+id=shots-9f5fa096d936
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=98ae5964aa2e80f92925a9ecfe8d2b47e83010fe
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1793715498
+ended=1793715517
+result=PASS
+infra=0
+reason=
+--- stages
+== 1080 : window 1956x1185, viewport 1920x1080
+  a-fonts                                staged       4.2s    | PROBE v11.09 ok | v11.09 ok
+report: C:\PillagersSpare\gate\work\shots-9f5fa096d936\shots\report.json
+--- end
+done=1
