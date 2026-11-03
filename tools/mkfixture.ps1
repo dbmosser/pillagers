@@ -1536,8 +1536,8 @@ window.__keysRef=function(){ return keys; };
 window.__srchKey=function(){ return (typeof xCallKey==='function')?'KeyE':'KeyX'; };   // v25.67: the keyboard key that searches a box (E from the key swap, X before)
 window.__extKey=function(){ return (typeof xCallKey==='function')?'KeyX':'KeyE'; }; /*extkeys3*/   // v25.67: the keyboard key that calls and takes the extraction (X from the key swap, E before)
 window.__padSrchKey=function(){ return (typeof xCallKey==='function')?'PadSearch':'KeyX'; };   // v25.67: the key the pad Y ring search holds (PadSearch from the key swap, X before)
-window.__meleeKey=function(){ return (typeof wheelOpen==='function')?'KeyV':((typeof xCallKey==='function')?'KeyQ':'KeyF'); };   // v25.67: the melee strike (Q, the crowbar, from the key swap; F before); v28.82 (corpus-fix): V since v26.xx (wheel2) took Q for the item wheel
-window.__meleeKeyName=function(){ return (typeof wheelOpen==='function')?'v':((typeof xCallKey==='function')?'q':'f'); };
+window.__meleeKey=function(){ return (typeof wheelOpen==='function')?((typeof keysOf==='function')?keysOf('KeyV'):'KeyV'):((typeof xCallKey==='function')?'KeyQ':'KeyF'); };   // 11-02 (job 267): the key a player PRESSES to swing, read from his key map. The game reads melee as KeyV, but since v35.74 (cw-meleez, his 10-28 order) melee sits on the Z key and the V key is drop, so dispatching KeyV pressed drop. 10.64, 11.27 and 11.38 were red for that alone in every full run since (spare PC probe cw-d267: V 0 swings, Z 1 swing, no window or hold open); check 35.74 requires that V does not swing. The game is right, the helper was stale.   // v25.67: the melee strike (Q, the crowbar, from the key swap; F before); v28.82 (corpus-fix): V since v26.xx (wheel2) took Q for the item wheel
+window.__meleeKeyName=function(){ return (typeof wheelOpen==='function')?((typeof keysOf==='function'&&typeof keyName==='function')?keyName(keysOf('KeyV')).toLowerCase():'v'):((typeof xCallKey==='function')?'q':'f'); };   // 11-02 (job 267): the melee key as set, or 10.64 reads the V of the drop row as the melee key
 window.__legKey=function(){ return (typeof xCallKey==='function')?'F1':'KeyH'; };   // v25.67: the controls list (F1 from the key swap; H before)
 window.__healKey=function(){ return (typeof xCallKey==='function')?'KeyH':'KeyG'; };   // v25.67: the arcade quick heal (H from the key swap; G before)
 window.__holdTick=function(){ try{ if(typeof holdHTick==='function') holdHTick(0.016); }catch(e){} };   // v25.76 (holdhplate): H heals as the key comes up, on the next frame; this is that frame, a no-op on a build without the hold
@@ -53924,7 +53924,7 @@ class Audio {
        g.frags.length=0; clr();
        // Q swings the crowbar: a machine in reach is hurt, the crowbar is drawn
        p.x=g.zones[0].x; p.y=g.zones[0].y; p.face=0; S=mkSentry(p.x+40,p.y); S.hp=80; h0=S.hp; g.ents=[S]; g.searching=null; p.meleeAt=undefined; p.lastShot=undefined; p.cooking=0; g.barT=0; g.punchT=0; clr();
-       var mkM=(typeof wheelOpen==='function')?'KeyV':'KeyQ'; dn(mkM,'q'); upk(mkM,'q');   /* wheel2: melee moved from Q to V */
+       var mkM=__meleeKey(); dn(mkM,'q'); upk(mkM,'q');   /* wheel2: melee moved from Q to V; 11-02 (job 267): the key a player presses, Z by default since v35.74 (V is drop) */
        if(!(S.hp<h0)) bad.push('Q did not hurt a machine 40 away in front ('+h0+' to '+S.hp+')');
        if(!(g.barT>0)) bad.push('Q started no crowbar swing');
        try{ cols=drawCols(true); if(cols.indexOf('#a8372a')<0) bad.push('the swing drew no crowbar'); cols=drawCols(false); if(cols.indexOf('#a8372a')>=0) bad.push('the plain fist punch draws a crowbar'); }catch(_dr){ bad.push('drawing the swing threw: '+(_dr&&_dr.message||_dr)); }
