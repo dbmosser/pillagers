@@ -1,0 +1,43 @@
+diff --git a/tools/spare/spare-runner.ps1 b/tools/spare/spare-runner.ps1
+index affb21b..6ea27db 100644
+--- a/tools/spare/spare-runner.ps1
++++ b/tools/spare/spare-runner.ps1
+@@ -1242,9 +1242,9 @@ function Publish([string]$why){
+ # full run and no new runner while a job runs. Someone at the PC stops a job with the other test parts (Stop-Work): it waits, and runs again from the start
+ # when the PC is free, which costs it no try. A job that dies by itself gets 3 tries, one that runs over 45 minutes none; then its answer says infra=1,
+ # which the shipper never reads as a pass. Never in IDLE MODE: the main PC stays test-free (NoTestsHere), so nothing here runs there.
+-$GateHome=$W+'\gate'; $GateCopy=$GateHome+'\game'; $GateWork=$GateHome+'\work'; $GateDone=$GateHome+'\done'; $GateMaxSec=2700
++$GateHome=$W+'\gate'; $GateCopy=$GateHome+'\game'; $GateWork=$GateHome+'\work'; $GateDone=$GateHome+'\done'; $GateMaxSec=2700; $RobotQuietSec=300
+ $RxGateParts='gate-job\.ps1|(-Port\s+|remote-debugging-port=|pillagers-cdp)9347\b|pillagers-uishots-9348\b'
+-$script:gateT=[long]0; $script:gateTip=''; $script:gateRev=''; $script:gateJobs=@(); $script:gateYT=[long]0; $script:gateAgain=$false
++$script:gateT=[long]0; $script:gateEnd=[long]0; $script:gateTip=''; $script:gateRev=''; $script:gateJobs=@(); $script:gateYT=[long]0; $script:gateAgain=$false
+ function Gate-Note([string]$why){
+   $cs='idle'; if(GetS 'pause_why'){ $cs=GetS 'pause_why' } elseif((Running 'corpq\.sh|corpus-slices\.sh') -gt 0){ $cs='running '+(Split-Path (GetS 'corpus_file') -Leaf) }
+   Write-Status $cs (Running 'fuzz\.ps1'); Publish $why
+@@ -1274,7 +1274,7 @@ function Gate-Finish([string]$id){
+   [IO.File]::WriteAllText($GateDone+'\'+$id,[string](Epoch),$Enc)
+   $rs=''; try{ $rs=@([IO.File]::ReadAllLines($d+'\result.txt') | Where-Object { $_ -match '^(result|reason)=' }) -join ' ' }catch{}
+   Say ('gate job '+$id+' done: '+(Short $rs))
+-  PutS 'gate_id' ''; PutS 'gate_pid' ''; Gate-Yield $false; $script:gateT=Epoch; $script:gateAgain=$true
++  PutS 'gate_id' ''; PutS 'gate_pid' ''; Gate-Yield $false; $script:gateT=Epoch; $script:gateEnd=Epoch; $script:gateAgain=$true
+   Gate-Note ('gate '+$id)
+   Remove-Item -LiteralPath $d -Recurse -Force -ErrorAction SilentlyContinue
+ }
+@@ -1309,7 +1309,7 @@ function Gate-Tick([switch]$Paused){
+         if(((Epoch)-$script:gateYT) -ge 30){ $script:gateYT=Epoch; Gate-Yield $true }
+         return
+       }
+-      PutS 'gate_id' ''; PutS 'gate_pid' ''; Gate-Yield $false
++      PutS 'gate_id' ''; PutS 'gate_pid' ''; Gate-Yield $false; $script:gateEnd=Epoch
+       if($Paused){ Say ('gate job '+$id+' stopped because someone came to the PC: it runs again when the PC is free'); return }
+       $tr=$(if((GetS 'gate_try_id') -eq $id){ [int]('0'+(GetS 'gate_tries')) }else{ 0 })+1; PutS 'gate_try_id' $id; PutS 'gate_tries' ([string]$tr)
+       Say ('gate job '+$id+' ended with no answer (try '+$tr+')')
+@@ -1550,7 +1550,7 @@ while($true){
+       else { $atPc=((AwaySec) -lt 900); $script:gcAtStart=(GameChrome); Start-Robot 9332 'fixture-soak-spare2.html' $(if($atPc -or $script:gcAtStart -or $sf -lt 7 -or (GetS 'no4k') -eq (Get-Date).ToString('yyyy-MM-dd')){ '' }else{ '3840x2160' }) -Low:$atPc }
+     }
+   } else {
+-    if((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -eq 0 -and -not (GetS 'gate_id') -and -not (FocusHold)){ Start-Robot 9331 'fixture-soak-spare1.html' }   # 11-02: not while a gate job runs
++    if((Running 'fuzz\.ps1.*-Port 9331(\s|$)') -eq 0 -and -not (GetS 'gate_id') -and ((Epoch)-$script:gateEnd) -ge $RobotQuietSec -and -not (FocusHold)){ Start-Robot 9331 'fixture-soak-spare1.html' }   # 11-02: not while a gate job runs; 11-03: nor within 5 minutes of one ending. Jobs came 0-1 minute apart, so the robot started 13 times in 141 minutes and finished no clean raid
+     # 10-30, his "yes i want the auto test": the online 2 player test joins from here. tools\p2online\p2.mjs guest-daemon looks in the
+     # p2-mailbox branch every 20 s for an invite from the VM and plays player 2 in a headless Chrome on 9362 (it calls no AI).
+     if((Test-Path -LiteralPath ($T+'\p2online\p2.mjs')) -and (Running 'p2\.mjs.*guest-daemon') -eq 0){ Start-Process -FilePath $Node -ArgumentList @(('"'+$T+'\p2online\p2.mjs"'),'guest-daemon','--root',('"'+$R+'"')) -WindowStyle Hidden | Out-Null }
