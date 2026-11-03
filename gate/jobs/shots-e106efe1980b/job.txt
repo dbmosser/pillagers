@@ -1,0 +1,14 @@
+id=shots-e106efe1980b
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=eab496166a61e174c55770be283fedc15e2d9dc6
+screens=21,33,34,37,50
+res=1080
+nolint=1
+lintopts=
+from=JUL26
+submitted=1793680832
+expires=1793687432
