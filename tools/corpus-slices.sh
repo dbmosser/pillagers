@@ -26,14 +26,17 @@ while [ $A -lt $END ]; do
   fi
   CDP -Open "http://localhost:8806/${FX:-fixture.html}?$TAG=1" >/dev/null; sleep 25
   CDP -Match "$TAG=1" -TimeoutSec 30 -Expr "(function(){ __regressBg($A,$B); return 'ok'; })()" >/dev/null
-  last=0; still=0; busy=0; done_=0
+  # 11-02 night: a poll every 120 s made a slice that finished in 40 s wait out the two minutes, on average a minute lost per slice, about 20 min a run.
+  # Now every 20 s. The hang limits stay what they were, as time instead of poll counts: 8 polls of 120 s with no progress, 5 polls of up to 270 s with no number.
+  last=0; still=0; busy=0; done_=0; tStill=$(date +%s); tBusy=$tStill
   while true; do
-    sleep 120
+    sleep "${CS_POLL:-20}"
     p=$(CDP -Match "$TAG=1" -TimeoutSec 150 -Expr "(function(){ var P=window.__PROG; return P?(P.finished?'DONE':String(P.done)):'none'; })()")
     case "$p" in DONE) done_=1; break;; esac
-    if ! [[ "$p" =~ ^[0-9]+$ ]]; then busy=$((busy+1)); [ $busy -ge 5 ] && break; continue; fi; busy=0
-    if [ "$p" = "$last" ]; then still=$((still+1)); else still=0; last="$p"; fi
-    [ $still -ge 8 ] && break
+    now=$(date +%s)
+    if ! [[ "$p" =~ ^[0-9]+$ ]]; then busy=$((busy+1)); [ $((now-tBusy)) -ge 1350 ] && break; continue; fi; busy=0; tBusy=$now
+    if [ "$p" = "$last" ]; then still=$((still+1)); else still=0; last="$p"; tStill=$now; fi
+    [ $((now-tStill)) -ge 960 ] && break
   done
   if [ $done_ = 1 ]; then
     # 10-20 (coord-09, o-02's alarm): a long description no longer cuts off the reason: the id and the text after the last ' -> ' are
