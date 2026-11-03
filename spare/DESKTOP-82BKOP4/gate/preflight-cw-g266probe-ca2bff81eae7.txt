@@ -1,0 +1,26 @@
+id=preflight-cw-g266probe-ca2bff81eae7
+kind=preflight
+key=cw-g266probe
+tag=pfg
+v=37.41
+new=3741
+base=739a1dac7a117a3a5c1c36145b6dfbdba1a636af
+host=DESKTOP-82BKOP4
+draft_sha=eb066fd5976ab930560d95646b4bea9b076c50e320b17f8d76200a106594c4ae
+p_sha=0dd337064909b811ff0055b0affb4835e4c91de845d179a82345509571ca2f93
+f_sha=2ab91ad2d7bf93e3f0132d410272fcf32041e0b7473ab69c7f2ca8299ce594d5
+game_sha=7839f70a1c61611b81d41decb136e1c25ff483d100df4f84c620e227be3fc754
+fix_sha=29aa4e9f825b12726df871a20ba6e19074efd9f3cf059a0ee654aa50928a1427
+started=1793676265
+ended=1793676315
+result=FAIL
+infra=0
+reason=the new check does not pass twice on the drafted build
+--- stages
+ppfg -> OK, 2 edits applied plus DEVNOW
+fpfg -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.41 parse check
+dry fxdrypfg check 37.41: PROBE ONE L 8.64=okD hub[birth need1] 8.84=I opened D 8.95=I did notD 8.96=the UnderD 9.32=the UnderD TWO 24.36>D hub[birth need1] 24.35=control: D THREE 25.36>D hub[birth need1] 25.34=the UnderL alone 25.34=the UnderL FOUR 8.84=okL 8.95=okL 8.96=okL 9.32=okL 24.35=okL FIVE 8.64=okD 8.84=okL 8.95=ok / L 8.96=okL 9.32=okL 25.34=okL 24.35=okL 15s
+--- end
+done=1
