@@ -8,7 +8,7 @@
 #   stays signed in to his work account in %USERPROFILE%\.claude; helpers use their own sign-in here, and the account guard in console-lane.sh,
 #   critic.mjs and onhispc.sh all read this one. tools/migrate/main-helper-signin.ps1 is the sign-in.
 # - The memory floor is 4 GB (his 10-28 rule for this PC), whatever caps.txt says for the VM: a helper starts at 5 GB free.
-# - FnP comes first (his 11-02 23:40 order): with the Fortnite editor open, no helper starts under 14 GB free (console-lane.sh, machine_editor_open below).
+# - FnP comes first (his 11-02 23:40 order). The number is our own estimate, not his rule: with the Fortnite editor open, no helper starts under 14 GB free (console-lane.sh, machine_editor_open below).
 # ASCII only. No output, no process started, when sourced.
 case "$(printf '%s' "${COMPUTERNAME:-$(hostname 2>/dev/null)}" | tr 'a-z' 'A-Z')" in JUL26) ON_MAIN=1;; *) ON_MAIN=0;; esac
 if [ "$ON_MAIN" = 1 ]; then

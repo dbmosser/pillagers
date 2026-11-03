@@ -1,5 +1,7 @@
 # Who runs what, two PCs and two projects (his 11-02 order to use all resources across both PCs; rewritten 11-02 23:40 after the memory change)
 
+## 11-03: OVERLORD holds the both-PC check-ins and usage is a limit (C:\claudecode\overlord-orders.md). "FnP spends what it needs" below is overtaken.
+
 ## His order, 11-02 23:40, on top of everything below
 "FnP is the priority now, Pillargers-html takes a back seat." "if I'm away and the editor is closed, the first thing you should do is try to reopen the editor." Tests stay off the main PC.
 
@@ -13,7 +15,7 @@
 | Fortnite | editor and game | Fortnite 43.00 installed, no editor |
 
 ## The assignment
-- FnP editor, island building: main PC only. First call on memory and the video card. With the editor open, no helper starts under 14 GB free (machine_editor_open): about 10 for game launches (the FnP chat's ask), 1 for the helper and a margin. His 4 GB floor stays. Reopening: tools/fnp-scripts/editorwatch.py in the FnP folder watches and wakes the CEO chat; the FORTNITE chat reopens, and the CEO chat only if that fails. The graphics card is the FORTNITE chat's job alone.
+- FnP editor, island building: main PC only. First call on memory and the video card. With the editor open, no helper starts under 14 GB free (machine_editor_open; our own estimate, not his rule, HTML helpers only): about 10 for game launches (the FnP chat's ask), 1 for the helper and a margin. His 4 GB floor stays. Reopening: tools/fnp-scripts/editorwatch.py in the FnP folder watches and wakes the CEO chat; the FORTNITE chat reopens, and the CEO chat only if that fails. The graphics card is the FORTNITE chat's job alone.
 - HTML coding, helpers, shipping: main PC only. Only one machine ships.
 - HTML tests, gate and full runs: spare PC only (his 11-02 order). Nothing covers for a pause.
 - FnP second player: spare PC is the candidate, Fortnite is already there. The FnP chat will ask once a raid works end to end, not before; it needs an Epic account signed in there. HTML tests pause then.
