@@ -1,3 +1,5 @@
+**11-04 update: please hold this diff.** Later tests found the cap barely changes how long checks take and the robot evidence is thin, and the 05:10 run quoted below was not clean. See `../slow-checks/NOTE.md`.
+
 # Robot frame cap on the spare PC: 30 frames a second
 
 Apply `robot-cap.diff` on master. Result: `tools/fuzz.ps1` blob 24ac2f31, `tools/spare/spare-runner.ps1` blob 0ea34c02. Measured and tested on DESKTOP-82BKOP4, 11-03. Not yet proven in a full run.
