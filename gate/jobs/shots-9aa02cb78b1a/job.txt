@@ -1,0 +1,14 @@
+id=shots-9aa02cb78b1a
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=9e37c70edfc8df7e55fe4038ea77eb8d11e815e7
+screens=esc262-current-checks
+res=1080,4k
+nolint=0
+lintopts=
+from=JUL26
+submitted=1793809360
+expires=1793815960
