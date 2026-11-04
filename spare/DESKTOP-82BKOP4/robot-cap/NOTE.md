@@ -1,4 +1,34 @@
-**11-04 update: please hold this diff.** Later tests found the cap barely changes how long checks take and the robot evidence is thin, and the 05:10 run quoted below was not clean. See `../slow-checks/NOTE.md`.
+**11-04 update: please land this diff. My earlier request to hold it was wrong.** Master is still 9e37c70e and the diff's two base blobs still match. Full table and raid list: `trial-1104.txt`.
+
+## The 11-04 test: all 2,880 checks with and without the cap
+
+A private hidden browser ran every check on port 9345, with the live robot beside it and nothing else of mine. Then the same again with the robot held at 30 fps through the same setting this diff uses.
+
+| | Robot uncapped | Robot at 30 fps |
+|---|---|---|
+| All 2,880 checks | 114 min | 96 min |
+| Two-window raids of a minute or more, 10:35 to 17:51 | 47, 13 with a problem | 18, 0 with a problem |
+| First raid after a robot restart | 5, all 5 with a problem | 2, 0 with a problem |
+| Robot actions a second, two-window median | 21.4 | 30.5 |
+| Readings with the robot's graphics process over 0.9 core | 5 to 32% across three trials | 1.0% |
+| Readings with the run queue over 20 | 13 to 38% across three trials | 1.6% |
+| Same 10 s reading stretched past 15 s | 2 to 7% across three trials | 0% |
+
+- The capped column's 18 raids include 3 from a trial that alternated the cap a raid at a time on the same browser. If the cap did nothing, all 18 being clean would have about a 1% chance, as a rough figure: the raids aren't independent, and most weren't randomized.
+- Slice 1440 took 191 s uncapped and 167 s capped, against 2007 s in the 11-02 00:48 run, so that stall isn't in those checks.
+- Fails: 63 uncapped, 62 capped. Three checks differ, each in one run only: v9.07 and v11.09 uncapped, v10.10 capped. They look like flips.
+- Most of the gain is in the robot's results. The checks' time improved about 1.15 to 1.19 times, from one run each.
+
+**Not proven:**
+- This wasn't a real full run. I'll hold the live robot at 30 through the next one and report it.
+- Only 2 capped first raids after a restart.
+- What sets off the slowdown is still unknown: the robot's graphics process sits at 1.0 to 1.3 cores with real card use about 10%. The cap keeps it from happening; it doesn't explain it.
+
+**Ignore these robot records.** All 16 raid lines with a problem on v37.48 on 11-04 ended during my private tests: 00:08:21, 00:11:51, 00:32:50, 10:37:33, 10:54:29, 11:37:15, 12:41:56, 12:53:09, 13:04:50, 13:10:44, 13:34:52, 13:37:04, 14:44:06, 14:49:33, 15:10:04, 15:42:29. Before these tests there were none that day, and none since.
+
+**What this means for `tools/stable.mjs`:** if a real run matches this, the robot stops adding false problems during full runs, so a build's 0-problems step can pass.
+
+---
 
 # Robot frame cap on the spare PC: 30 frames a second
 

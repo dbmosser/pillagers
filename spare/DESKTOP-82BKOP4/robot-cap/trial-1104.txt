@@ -1,0 +1,58 @@
+All 2,880 checks in a private hidden browser on port 9345, v37.48 frozen copy, live robot beside it, 11-04. Seconds per slice, each private time includes its 25 s wait.
+uncap = robot uncapped, 10:35 to 12:56. cap30 = robot held at 30 fps, 15:58 to 17:50. The last four columns are real full runs, none of them clean of my jobs.
+
+slice  uncap  cap30  11-02 00:48  11-02 05:52  11-03 01:35  11-03 05:10
+0       1130    915         1241         1314         1830         1622
+120      206    187          411          307          288          368
+240      291    262          362          382          524          568
+360      189    152          408          281          375          394
+480      165    131          268          187          352          336
+600      113     96          155          151          148          626
+720      124    116          412          160          205          510
+840       71     78          151          221          130          109
+960      141    139          545         2063          285          175
+1080     131    142          573          323          234          222
+1200     313    187          488          323          200          249
+1320     194    132          165          338          151          243
+1440     191    167         2007          435          211          239
+1560     211    182                      3480          205          207
+1680      82     77                       183           95           82
+1800     134    116                       247          115          138
+1920     276    248                       353          265          337
+2040     116     97                       186           96          129
+2160     134    123                       219                       153
+2280     143     98                       190           94          129
+2400     342    324                       596          531          408
+2520     375    324                       641          384          477
+2640     730    688                      1030          348          777
+2760    1051    752                                                    
+11-02  undefined 0:48 all slices 186 min
+11-02  undefined 5:52 all slices 227 min
+11-03  undefined 1:35 all slices 196 min
+11-03  undefined 5:10 all slices 142 min
+
+Totals: uncapped 114 min, capped 96 min. Capped was quicker in 22 of 24 slices. Without slices 0 and 2760: 78 against 68 min.
+
+Raids during the capped run (time ended, raid, mode, seconds, end, problems, actions a second, robot graphics process in cores, pages in cores, run queue, machine %, frames/p50):
+16:02:30 raid 5   demo2p   305 clock-end  0  29.9 /s  gfxproc 0.19 pages 1.04 queue   1 cpu  63 gfx 8656/30.25
+16:07:43 raid 6   demo2p   305 clock-end  0  31.0 /s  gfxproc 0.17 pages 1.18 queue   2 cpu  67 gfx 9076/30.25
+16:12:54 raid 7   demo2p   303 clock-end  0  30.7 /s  gfxproc 0.15 pages 1.13 queue   0 cpu  64 gfx 9059/30.25
+16:23:09 raid 9   demo2p   303 clock-end  0  31.6 /s  gfxproc 0.18 pages 1.19 queue   3 cpu  70 gfx 9084/30.25
+16:28:20 raid 10  demo2p   303 clock-end  0  30.3 /s  gfxproc 0.16 pages 1.08 queue   3 cpu  70 gfx 9105/30.25
+16:31:56 ROBOT START
+16:42:44 ROBOT START
+16:47:55 raid 1   demo2p   306 clock-end  0  28.7 /s  gfxproc 0.37 pages 1.19 queue   1 cpu  67 gfx 9011/30.25
+16:53:13 raid 2   demo2p   305 clock-end  0  30.5 /s  gfxproc 0.32 pages 1.22 queue   4 cpu  81 gfx 8623/30.25
+16:58:25 raid 3   demo2p   303 clock-end  0  30.4 /s  gfxproc 0.34 pages 1.16 queue   3 cpu  73 gfx 8563/30.25
+17:06:52 raid 5   demo2p   302 clock-end  0  30.6 /s  gfxproc 0.44 pages 1.00 queue   5 cpu  82 gfx 8672/30.25
+17:12:07 raid 6   demo2p   306 clock-end  0  30.7 /s  gfxproc 0.31 pages 1.15 queue   5 cpu  73 gfx 8597/30.25
+17:17:21 raid 7   demo2p   305 clock-end  0  29.4 /s  gfxproc 0.46 pages 1.10 queue   5 cpu  75 gfx 9007/30.25
+17:25:30 raid 9   demo2p   303 clock-end  0  30.3 /s  gfxproc 0.28 pages 1.11 queue   3 cpu  72 gfx 9063/30.25
+17:30:40 raid 10  demo2p   303 clock-end  0  30.9 /s  gfxproc 0.46 pages 1.17 queue   4 cpu  76 gfx 8631/30.25
+17:33:10 raid 11  demo2p   142 ended      0  30.1 /s  gfxproc 0.33 pages 1.02 queue   4 cpu  65 gfx 4272/29.75
+17:41:05 raid 13  demo2p   305 clock-end  0  30.1 /s  gfxproc 0.30 pages 1.17 queue   5 cpu  74 gfx 9066/30.25
+17:41:43 raid 14  demo2p    23 clock-end  0  31.7 /s  gfxproc NaN pages NaN queue NaN cpu NaN gfx 641/30.25
+17:44:12 ROBOT START
+17:49:22 raid 1   demo2p   305 clock-end  0  31.0 /s  gfxproc 0.38 pages 1.14 queue   4 cpu  76 gfx 9119/30.25
+2-window: raids 16 problems 0 actions/s median 30.5 gfx proc 0.32 queue 4
+sampler stretched past 15 s: 0 of 709 ; gfx proc over 0.9: 11 ; queue over 20: 11
