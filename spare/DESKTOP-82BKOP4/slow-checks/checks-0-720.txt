@@ -1,0 +1,724 @@
+# one private pass, slices 0-720, v37.48, 11-03 21:29-21:59: seconds, share so far, list index, version, what
+# total in checks 1471 s of 722
+ 157.2  11% #74 v9.34 calling the ship names the siege, and the number it promises is the number that arrives
+ 106.7  18% #75 v9.35 the raid clock has an off position, and still kills you when it is on
+  84.5  24% #23 v8.82 neither sector starts you in the same place every raid, and never beside an extract
+  80.1  29% #355 v34.89 cw-hudcorner, his note of 2026-10-25 ("in raid, right hand lower corner menu and minizmize
+  49.5  32% #65 v9.25 a pillager who was not fighting you fights back the moment you shoot him
+  42.0  35% #5 v8.73 holding sprint through exhaustion does not stutter it on and off
+  38.1  38% #66 v9.26 a round that goes past a pillager counts as shooting at him
+  37.5  40% #214 v36.29 ADS preserves the aimed ground point while zooming toward it, keeps the local pillager vis
+  36.1  43% #69 v9.29 a called crew comes at you from different sides instead of in single file
+  35.4  45% #68 v9.28 a pillager who spots you calls his crew, and only his crew, and only in earshot
+  28.0  47% #78 v9.38 shooting a Listener does not switch it off
+  25.6  49% #27 v8.86 a house is a gamble: most hold a crawler, some hold three, and some are still empty
+  21.1  50% #448 v33.96 cw-cx-groundmode: ruins preserve floor density; scorch, brass, frag, belt and ruined-floor
+  20.0  52% #150 v36.93 the medal row stays as wide as the feed and clear of the folded f1 controls chip at 1600x9
+  17.8  53% #21 v8.80 a crawler waits between swings instead of hitting every frame
+  17.1  54% #394 v34.50 cw-bldsolid (86i ship 2): SOLID PIECES PER BUILDING KIND. Pieces appear (3 or more kinds),
+  16.8  55% #143 v37.00 only machines are golden: over 200 seeds (5 real raids, 40 seeds each, with hostile pillag
+  16.7  56% #322 v35.22 cw-restfreeze, his note of 2026-10-27 on build 35.19 with Superhot on ("it says i'm recove
+  16.2  58% #358 v34.86 cw-shdeath, his note of 2026-10-25 ("weird noise lingering", played with Superhot on): wit
+  15.9  59% #12 v8.60 a burst gun wears once per ROUND, not once per trigger pull
+  15.6  60% #9 v8.65h the heal and plate slots spend the right item
+  15.5  61% #46 v9.05 COLD STORAGE drops you in one of about ten places, not one of four
+  15.2  62% #81 v9.51 a pack of machines that loses you searches, it does not stare at one spot
+  13.8  63% #486 v33.58 cw-pixbody (86c): with the pixel look on a plain pillager is baked pixel layers: a standin
+  13.6  64% #45 v9.04 criers keep to the street and are not found standing inside houses
+  13.1  65% #57 v9.16 the world is drawn the same size on any monitor, and the pointer agrees with it
+  12.0  65% #522 v33.21 all 28 experimental choices hold for the raid, the guest follows the host including glow a
+  11.9  66% #76 v9.36 HEAVY PATROLS buys forty percent more crawlers, the same as it buys of everything else
+  11.8  67% #484 v33.60 cw-cx-pixground (86b): THE PIXEL GROUND. With the pixel look on, the same bake runs into a
+  11.7  68% #14 v8.59 a roll does not freeze the heal you are applying
+  11.0  69% #156 v36.87 the first demo pack comes early and near: a standing player meets the first machine about 
+  10.5  69% #84 v9.48 buildings do not all wear the identical floor
+  10.4  70% #11 v8.61 the boarding hold cannot be done in instalments
+   9.8  71% #643 v87.01 J3: pad-only hub crawl; focused A action, B exit, field routes, pinned debt and remove-one
+   9.4  71% #359 v34.85 cw-shsiren, his note of 2026-10-25 ("weird noise lingering", played with Superhot on): in 
+   8.7  72% #450 v33.94 cw-cx-pixfx: particles are whole art squares, blast/scorch and rings are stepped, half-siz
+   8.0  72% #32 v8.92 the wheel zooms three times closer than it used to, and both ends still hold
+   7.6  73% #2 v8.55h roads never cross an authored wall
+   7.5  73% #10 v8.64 a raid that takes your kit also lets go of the belt keys
+   6.8  74% #491 v33.53 cw-pixsmoke (86a): THE PIXEL SMOKE CHECK that every later pixel job extends. With the pixe
+   6.5  74% #31 v8.91 the three in-raid panels are twice the size, at every resolution, and never touch
+   6.3  75% #16 v8.58 closest-extract measures the nearest OPEN ring, not the targeted one
+   5.5  75% #356 v34.88 cw-mmfold, his note of 2026-10-25 ("make it where it is minimizable"): with the minimap on
+   5.5  75% #60 v9.19 the names on screen are his names, not the ones I reached for
+   5.4  76% #83 v9.49 the pillager board does not cover the health bar and the controls
+   5.4  76% #70 v9.30 the crawler count follows the houses, the surplus is outside, and no house holds four
+   5.3  77% #171 v36.72 big minimap, large HUD and open run info: the run info box stays clear of the belt keys an
+   5.2  77% #309 v35.35 cw-f1left, his order 2026-10-27 ("hitting f1 to get the controls should be over on the lef
+   5.1  77% #15 v8.59h melee cannot swing through a wall
+   4.9  78% #692 v31.50 cw-trcol2, the follow-up on his one column order (2026-10-18): the corner column is 300 px
+   4.7  78% #49 v9.08 the downed screen does not flash at you and grows with the monitor
+   4.5  78% #560 v32.83 all six pad layouts keep the counter outside the focus ring and d-right clear of every con
+   4.5  79% #454 v33.90 cw-cx-pixfight (86g): invulnerable and see-through pillagers use cached silhouettes; a war
+   4.4  79% #528 v33.15 cw-handclear, the o-02 alarm (10-20): with an item in hand the compact controls list and t
+   4.3  79% #211 v36.32 Lance full and active reloads in either window, and Lance, Longshot and rocket shots, fall
+   4.3  79% #34 v8.94 the backpack never sits on the belt, at any resolution, and is called the backpack
+   4.3  80% #38 v8.98 nothing in the extraction readout is drawn on top of the belt
+   4.1  80% #20 v8.78 an item is in the backpack OR on the belt, never in both
+   3.7  80% #265 v35.79 night, hard weather and each signed condition multiply SP by 1.05, with no condition cash 
+   3.6  80% #48 v9.07 a noise you cannot see leaves a ring on the ground, and one you can see does not
+   3.6  81% #22 v8.81 the HUD grows with the screen and the belt never sits on the health bar
+   3.5  81% #99 v37.44 cw-m3drops, his rulings of 11-01 (season zero m3): worn gear in loot boxes: over three see
+   3.5  81% #141 v37.02 the game keeps ONE running total of its off screen picture stores (count and estimated byt
+   3.3  81% #329 v35.15 fog of war hides airborne grenades, lingering smoke, both death falls, every body element,
+   3.1  82% #33 v8.93 a HUD panel can be resized by its corner grip, and the default dropped to 75 percent
+   2.9  82% #67 v9.27 standing behind a container roof draws you through it instead of swallowing you
+   2.9  82% #241 v36.02 closing the abandon question by Escape, direct close or the x cancels it and restores a dr
+   2.8  82% #114 v37.29 cw-m2death, his rulings of 11-01 (round 5, answers 28 and 31, plan m2 the lineage): an ext
+   2.6  82% #55 v9.14 the writing on the sector map follows the monitor, like the map itself does
+   2.5  83% #213 v36.30 forge and seal world labels keep their whole shared panel inside the viewport through ADS 
+   2.5  83% #110 v37.33 cw-m2birth, his rulings of 11-01 (plan m2 the lineage): a death leaves nobody living and t
+   2.3  83% #308 v35.36 cw-quiethud (his order of 10-27, build the quiet hud, changes 2 3 4): in a raid the corner
+   2.2  83% #713 v31.29 cw-nobagfull, his ruling (no bag limit, no weight, ever): with the old pack cap forced tin
+   2.2  83% #304 v35.40 NO WHITE BARS: the cream rank pips are gone from the raid belt, hand, wheel, backpack, dra
+   2.1  83% #54 v9.13 the backpack follows the monitor instead of staying its 1080p size
+   2.0  83% #64 v9.24 picking a downed pillager up is free and costs no medical
+   2.0  84% #715 v31.27 cw-endhalf, his Q60 (ending early halves the score, the same as dying): END RUN pressed tw
+   1.9  84% #53 v9.12 a HUD panel cannot be dragged off the screen and lost
+   1.9  84% #467 v33.77 cw-pixcover (86e) ship 3: cover wrecks (car, skip, barrier, pipes, pallets) are one cached
+   1.9  84% #51 v9.10 picking a downed pillager up pays you out of his own kit, once
+   1.9  84% #200 v36.43 his 10-28 order: old default settings load as 20 s, career/demo calls land after exactly 2
+   1.8  84% #56 v9.15 the sector map markers and frame scale with the monitor, like its writing does
+   1.8  84% #287 v35.57 pad container reload and search labels meet the 16px floor and sit above the head in both 
+   1.7  84% #174 v36.69 timelord shortcut needs a continuous 0.6 second hold, ignores demo keys, preserves Shift t
+   1.7  85% #307 v35.37 cw-xsink, his note 2026-10-27: after the boarding hold has sunk him he is never drawn whol
+   1.7  85% #710 v31.32 cw-trcol, his order (2026-10-18) everything in the right hand upper corner in a vertical 1
+   1.7  85% #508 v33.36 cw-mmoff, his order (2026-10-20): the minimap is off by default in a career raid and in th
+   1.7  85% #390 v34.54 career raid: the controls list starts folded; the folded line and the opened list stand mi
+   1.6  85% #349 v34.95 cw-joinburn, robot report noend: player 2 asking to join a two player run once the clock i
+   1.6  85% #118 v37.25 cw-m1nocash, his rulings of 11-01 (no cash in riads, keep it like a credit card; contracts
+   1.6  85% #126 v37.17 cw-p0stat, his progression plan of 11-01 (m0 foundation): one place every stat reads gear 
+   1.6  85% #318 v35.26 cw-ammoneed, his order 2026-10-27 (player should have higher chance of finding ammo boxes 
+   1.6  85% #649 v31.93 J7: three cold/late pad trials in both windows keep A on p2 and B on p1, pulse only the cl
+   1.5  86% #552 v32.91 reduced flashing: new profiles and demo start on, old implicit off survives, and blasts pl
+   1.5  86% #506 v33.38 cw-cornercompact, his order: the raid corner money block is one short plate (at most 40 pe
+   1.5  86% #231 v36.12 adjacent machine tags stack with crew and health space; the edge extraction chip clears th
+   1.5  86% #354 v34.90 cw-thirdsize, his note of 2026-10-25, played on build 33.17 where the figure was drawn at 
+   1.5  86% #185 v36.58 zero-spread shots meet the reticle within 3 screen px at 300 world px in both roles; local
+   1.5  86% #26 v8.85 a pillager footprint does not draw through a wall, and a visible one still does
+   1.5  86% #288 v35.56 pad box prompt matches X reload/search and a held X searches after a completed reload in b
+   1.4  86% #30 v8.89 a pillager wading out of sight draws no rings in the water
+   1.4  86% #175 v36.68 record every raid: a raid start begins recording with no key in player 1 only, an extract 
+   1.4  86% #196 v36.47 cw-hudstack, his 10-29 picture: three combat statuses stand in one column of about 40px ro
+   1.3  87% #366 v34.78 the opened career controls list: every row at the 16px label size, key caps drawn, one foo
+   1.3  87% #79 v9.39 the last-minute warnings name a way out that is actually open
+   1.3  87% #7 v8.66 dragging onto the belt assigns, refuses and moves correctly
+   1.2  87% #230 v36.13 named cache text stays inside a shared panel and 24px screen margins at 1080p and 4K
+   1.2  87% #286 v35.58 a partner-called ship survives the host extracting, reaches player 2 without an active pul
+   1.2  87% #50 v9.09 the pointer says what a panel edge does: move, resize or minimise
+   1.2  87% #453 v33.91 pixel sets share every pose and seat trim; four wardrobe racks write only kept ids, off re
+   1.1  87% #493 v33.51 cw-pixkit (86a): the pixel look row (local, on), pinned off in the fixture; pixBlit draws 
+   1.1  87% #8 v8.65 the two gun slots swap weapons and never fire one
+   1.1  87% #202 v36.41 fixed HUD panels fade to 35 percent over your pillager and recover clear of the hysteresis
+   1.1  87% #113 v37.30 cw-p2heirs, his rulings of 11-01 (season zero m2): three heirs for the next pillager, roll
+   1.1  87% #284 v35.60 blocked browser pad reads and a throwing pad handler cannot stop real smooth-look frames i
+   1.1  88% #145 v36.98 the seal opens in two thirds of the time, and the first frame of cutting it calls one wave
+   1.1  88% #346 v34.98 a frozen redraw (dt 0) does not feed the auto resolution window, so two redraws of a froze
+   1.1  88% #167 v36.76 the pillager board reads at the label size: its title and rows draw at 16 px or more on th
+   1.1  88% #157 v36.86 cw-bldsmooth: the smooth look (look off, the default) bakes the kind floor and the flat de
+   1.1  88% #229 v36.14 cache and extraction chip use the same 16px cream labels and 32px chip height at 1080p and
+   1.1  88% #39 v8.99 an unopened container shows neither its rarity nor a second bar while you search it
+   1.1  88% #170 v36.73 the raid HUD panels share one inset (within 2 px: pillager board, feed, vitals bars, ammo 
+   1.0  88% #455 v33.89 cw-cx-pixmachines: nine machine bodies cache at job 80 size, masks fit hits, gold has no f
+   1.0  88% #203 v36.40 beast mode replaces kill-count rewards: five base-score kills, no chain alerts, sounds, ba
+   1.0  88% #206 v36.37 cw-cx-hotbar9: ten drawn keys 1-9 and 0, digit 9 draws a gun and uses a wheel item dragged
+   1.0  88% #179 v36.64 golden enemies bolt on damage without attacking, recover after 3.5 s, and stay despite hau
+   1.0  88% #184 v36.59 F9 records beyond three minutes and saves on extract; every clip is kept; idle hub footage
+   1.0  88% #562 v32.81 backpack tiles share one idle border colour (rarity is a bar) and the panel keeps no more 
+   1.0  88% #630 v32.11 the stamina word is drawn inside its bar (left of the bar end), not past the right end
+   1.0  89% #379 v34.65 raid backpack tiles are at least the guide 88 px, empty cells fill two rows, and every cel
+   1.0  89% #378 v34.66 raid backpack title is at the screen title size and empty cells are drawn with a visible b
+   1.0  89% #169 v36.74 cw-xcountplate: the extraction countdown stands on a plate once the ship has landed (inbou
+   0.9  89% #97 v37.46 cw-topstrip, his order of 2026-11-02 (the clock, score, extract, player alerts and the dow
+   0.9  89% #565 v32.78 the raid backpack is a compact panel (not a wide slab) whose text is never under the 16 px
+   0.9  89% #368 v34.76 glow pools (I5): queued glow sources draw a halo and a light map pool, none with POST FX o
+   0.9  89% #563 v32.80 the raid backpack panel has no dead strip below its last line of text
+   0.9  89% #373 v34.71 the raid backpack card has a close button inside it and a click on it closes the backpack 
+   0.9  89% #364 v34.80 a flash lights the ground in its own colour in the light map (not plain white), and not un
+   0.9  89% #409 v34.35 Settings: a key or pad step keeps the focused row clear of the list edge and the bottom fa
+   0.9  89% #658 v31.84 six party pad presets, raid-only lefty sticks, live labelled controller and pad-only layou
+   0.9  89% #384 v34.60 cw-airchips: with all four power-up chips showing at 4K the air strike plate does not over
+   0.9  89% #709 v31.33 cw-gearrules: the key lists and tips name the keys as they are now: the Keys window has no
+   0.9  89% #92 v11.53 holding Shift with movement while crouched leaves the crouch and sprints, a roll leaves th
+   0.9  89% #13 v8.60h a machine playing dead can be killed while it does it
+   0.9  89% #314 v35.30 cw-quiettext, his order 2026-10-27 (build the quiet hud, all 5 changes), changes 1 and 5: 
+   0.9  90% #303 v35.41 solo mouse, N and pad pings draw in world, minimap and map, follow unnumbered enemies for 
+   0.9  90% #242 v36.01 the medal spot shares the feed left edge and width, stays between feed and vitals, and cle
+   0.9  90% #616 v32.25 the bottom left feed is not drawn over the open map: with a line in the feed and the map o
+   0.9  90% #429 v34.15 quality never softens a fixed cadence, proves fill benefit, waits without pumping, and car
+   0.9  90% #544 v32.99 the experimental menu: one Settings row opens a page with an on/off row per newer feature,
+   0.9  90% #148 v36.95 cw-urgclamp: an inbound ship whose countdown is longer than the extract wait still draws t
+   0.8  90% #103 v37.40 cw-nospcash, his ruling of 11-01 (most the money should come from selling gear): a career 
+   0.8  90% #245 v35.98 two player run over keeps crown and shows lowest health survived and actual total damage i
+   0.8  90% #296 v35.48 cloud-p2-easy-card: player 2 joining a 2 player demo run gets the easy or normal card in i
+   0.8  90% #395 v34.49 cw-bldkinds (86i ship 1): BUILDING KINDS. Every building of seed 4242 has a kind (3 or mor
+   0.8  90% #254 v35.89 his order 2026-10-28 (the pause box shows every modifier that changes sp): the score panel
+   0.8  90% #80 v9.40 the Peddler does not promise your money survives your death
+   0.8  90% #267 v35.77 hot-ground kills pay 1.05x after the streak, the kill line marked hot (no float: cw-clockc
+   0.8  90% #299 v35.45 his order 2026-10-28 (sp and money never intermingled): the CAREER extracted card shows a 
+   0.8  90% #531 v33.12 top-edge ? and ! boxes stay clear of the whole bot nameplate; middle-view and idle plates 
+   0.8  90% #24 v8.83 rolling in the Undercroft draws the ball, the same as it does upstairs
+   0.8  90% #387 v34.57 cw-runinfocol: in a career raid the run info panel is exactly as wide as the corner column
+   0.8  90% #543 v33.00 the experimental page switches five pillager and machine features: roles, suppression, mac
+   0.8  91% #327 v35.17 FOG OF WAR FIXES: turning in Superhot opens the live view and marks ground, ground in view
+   0.8  91% #154 v36.89 the frame loop makes less garbage: drsTick no longer sorts its window with array sorts (sa
+   0.8  91% #161 v36.82 the raid draws one thin outline in a fixed order of strength: the partner, then the golden
+   0.8  91% #326 v35.18 UNDERCROFT FIXES: the pack list keeps its scroll, the floor zoom and camera behave, a floo
+   0.8  91% #707 v31.35 the career gun card reads name, ammo, then one quiet row with the backpack hint on the lef
+   0.8  91% #212 v36.31 cw-cx-timelord: live settings, key lists, pause and toggle or host callouts call the exist
+   0.8  91% #525 v33.18 the daily raid: one date gives one seed, another date another, the row arms only the next 
+   0.8  91% #132 v37.11 the last minute reddens the world and drops ash: a drawn raid frame at 59 s left has BURN.
+   0.8  91% #100 v37.43 cw-m3doll: the doll opens from the stash row with nine named slots and the figure; a click
+   0.8  91% #123 v37.20 cw-m1mkt, his answer 38 of 11-01 (season zero m1, the market): one day gives one price and
+   0.8  91% #77 v9.37 you cannot abandon a run while you are bleeding out, and you still can on your feet
+   0.8  91% #248 v35.95 menus master pass 2026-10-28: on the KIA card HOW IT WENT and DAMAGE TAKEN sit side by sid
+   0.8  91% #198 v36.45 combat status panels share one measured width, rows of at least 40px (cw-hudstack, his 10-
+   0.8  91% #163 v36.80 the downed card shows the self-revive key on a keycap chip, not in square brackets
+   0.8  91% #168 v36.75 a danger stands at 27 percent of the height; a second danger does not draw over it; the sa
+   0.7  91% #627 v32.14 the f1 controls hint sits on a plate: a plate fill (the HUD plate, or the belt caption str
+   0.7  91% #719 v31.23 cw-mapfirst2, from the critic on the opening map: the prompt on the opening map is one pri
+   0.7  91% #535 v33.08 golden sentry and pillager bot death callouts draw once in both windows and keep search th
+   0.7  91% #199 v36.44 five simultaneous combat statuses keep shared 20px titles and 16px details, wrap without o
+   0.7  92% #415 v34.29 the raid HUD has one hero per state: while the extraction ship is inbound the ammo card st
+   0.7  92% #405 v34.39 cw-downedcard: no run info contract row wraps (it stays inside the panel), and the downed 
+   0.7  92% #279 v35.65 a solo or guest target ping draws one specific name plate, keeps the health pip, restores 
+   0.7  92% #428 v34.16 after controls fold, the f1 hint uses its screen anchor rather than the old compact-list t
+   0.7  92% #578 v32.65 players in action (his art picks a11 to a16): bouncy walk, white flash then red with a rec
+   0.7  92% #130 v37.13 a hurt machine shows no health pip under its name plate (smoke and sparks only, his g-83 p
+   0.7  92% #403 v34.41 cw-downedcard2: on the downed card the word down is the title size (26 px or more) and the
+   0.7  92% #178 v36.65 machine openings remove front soak, the fourth bulwark shot charges and hits harder, and h
+   0.7  92% #400 v34.44 cw-downedcard3: the downed wash over the whole screen is at most 30 percent
+   0.7  92% #291 v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is a clusterfuck, make it AAA), the rese
+   0.7  92% #330 v35.14 FOG OF WAR: unexplored ground is grey, and tracers and sparks out of sight stay hidden wit
+   0.7  92% #651 v31.91 cw-iceslide, his order (2026-10-19): the frost fog of a cryo barrel is ice (a pillager kee
+   0.7  92% #298 v35.46 cw-cx-walletframe: drawing the corner clips the page wallet in that same frame, even after
+   0.7  92% #93 v11.52 credits and XP are shown at all times in the upper right corner, in the Undercroft and in 
+   0.7  92% #558 v32.85 the use bar clears the extraction countdown plate: with extraction inbound and a bandage g
+   0.7  92% #529 v33.14 cw-raiddollar, his rule (Q59: $ for money): in a career raid the corner rows read $ on mon
+   0.7  92% #576 v32.67 pillager bots (his art picks a18 A, a19 D, a21 B, a22 A+B, a23 B): every hostile bot in th
+   0.7  92% #420 v34.24 the raid HUD has one panel fill: every hudPanel and hudPlate in a raid frame is the same g
+   0.7  92% #414 v34.30 the HUD canvas draws unhinted text (the small i keeps its dot, so run info does not read a
+   0.7  92% #541 v33.02 the experimental page switches warden armour, explosive barrels, waves grow, aim lanes and
+   0.7  92% #617 v32.24 the fire chip above the belt is not lime filled: the keycap behind the word fire is not th
+   0.7  92% #294 v35.50 cw-extpill, his ask 2026-10-27 (the hud messaging is a clusterfuck, make it AAA), the rese
+   0.7  93% #419 v34.25 the raid HUD uses few type sizes: the words drawn on the HUD canvas in one raid frame land
+   0.7  93% #319 v35.25 cw-beltwheel (his orders of 10-27): a belt item works like the wheel, its key or a click t
+   0.7  93% #678 v31.64 his orders 2026-10-18 (no raider on screen) and 2026-10-28 (pillagers, never pillager bots
+   0.7  93% #291 v35.53 cw-hudsize, his ask 2026-10-27 (the hud messaging is a clusterfuck, make it AAA), the rese
+   0.7  93% #146 v36.97 his order 10-31: a Forge upgrade raises no weapon card (G.gunCard stays null); the card st
+   0.7  93% #416 v34.28 the raid HUD is couch size: no text under 16 px on the screen in one raid frame, and a lon
+   0.7  93% #716 v31.26 cw-shkey2, his note (2026-10-18) "superhot mode needs a toggle key": the F1 list names the
+   0.6  93% #234 v36.09 overflowing feed details shorten before the name in both player windows; names shorten onl
+   0.6  93% #628 v32.13 the gun name on the gun card is smaller than the head size, so the ammo figure is the hero
+   0.6  93% #238 v36.05 pre-raid pack names stay whole beside buy slots and the career kills row keeps 600 SP; map
+   0.6  93% #292 v35.52 cw-answerline, his ask 2026-10-27 (the hud messaging is a clusterfuck, make it AAA), the r
+   0.6  93% #357 v34.87 cw-elemseen, found by the job 127 glow pictures: in a live raid frame, a burning, shocked 
+   0.6  93% #435 v34.09 linked teammate pad loss draws one style guide warning panel in the top band clear of extr
+   0.6  93% #258 v35.85 elite Longshots warn for half a second, ordinary rifles fire immediately, and both windows
+   0.6  93% #306 v35.38 combat voices: each player role hears at most 6 guns, 8 impacts, 3 explosions and 12 activ
+   0.6  93% #534 v33.09 all six pad selectors keep arrows, name and counter clear at 1080p and 4k, with one focus 
+   0.6  93% #418 v34.26 the raid HUD quiets its corners: the item count and backpack cue on the gun card are 16 px
+   0.6  93% #344 v35.00 a bush stands on turf: the smooth ground pixel under every bush centre is green, not slab 
+   0.6  93% #215 v36.28 switching to a rifle starts a 0.825 s draw, cannot fire before zero, and shows switching f
+   0.6  93% #317 v35.27 cw-reloadstack, his order 2026-10-27 (make the active reload stack but it gets harder each
+   0.6  93% #189 v36.54 cw-cx-mapnocaches: both seats keep caches off both maps with or without intel, retain obje
+   0.6  93% #3 v8.75 BACKSPACE rescues a latched key on the Undercroft floor as well as in a raid
+   0.6  93% #652 v31.90 J8 polling: null and disconnected slots pause in two polls, same slot says press a and phy
+   0.6  94% #704 v31.38 the armour and stamina bars are the same height (the critic, 10-19: three bars of the same
+   0.6  94% #517 v33.27 cw-pwrhalf, his order (2026-10-20) powerups need to be like 50 percent smaller: each of th
+   0.6  94% #456 v33.88 cw-cx-propsshape: pixel crate raised lids and locker/safe swung doors change the actual ca
+   0.6  94% #472 v33.72 cw-cx-pixpose: the pixel torso bobs by one art pixel at the existing phases, and the actua
+   0.6  94% #155 v36.88 cw-coopsmooth, his answer 2.27 b: on the other screen a partner and a machine walking at a
+   0.6  94% #124 v37.19 cw-m1xpoff, his order of 11-01 (lets get rid of the concept of xp altogether, everything y
+   0.6  94% #172 v36.71 the cooked grenade warning stays over your head and never becomes a feed line
+   0.6  94% #219 v36.24 extract sound starts only in the first/last 3 s in both seats, mute stays silent, and the 
+   0.6  94% #476 v33.68 cw-pixprops (86e) ship 1: the pixel adapter pixWrap and the containers, bodies, carcass an
+   0.6  94% #105 v37.38 cw-m2retire: a level 3 pillager wearing two pieces retired by the hold pays exactly $750, 
+   0.6  94% #180 v36.63 both recent machine contributors earn full SP within 2.5 seconds, score only, host and add
+   0.6  94% #458 v33.86 cw-cx-propsfinish: real landmark and wildlife painters cache at the required densities; 60
+   0.6  94% #152 v36.91 cw-mappolish: on the seed 4242 Cold Storage map at 1080p and 4K no two map labels touch, t
+   0.6  94% #601 v32.40 forge action and dollar price draw at full HUD font sizes; upgrade card labels the cost an
+   0.6  94% #462 v33.82 cw-pixlamps (86e) ship 4: lamps and lamp posts, the forge body and the seal slab are cache
+   0.6  94% #226 v36.17 active reload status shows each local chain and damage bonus, x2 after two hits, and disap
+   0.6  94% #217 v36.26 a name tag that lands a rounding hair over the one below no longer freezes the game, a sta
+   0.5  94% #207 v36.36 the undercroft has no key bars: station E prompts stay, keyboard and pad hints go, help ke
+   0.5  94% #363 v34.81 cw-smoothlook, his notes of 2026-10-25 ("I want the graphics smooth", "Pillager still too 
+   0.5  94% #220 v36.23 switching guns ends only the local active reload chain immediately, hides its status, and 
+   0.5  94% #473 v33.71 cw-pixbarrels (86e) ship 2: the red, shock, acid and cryo barrel bodies are one cached spr
+   0.5  94% #239 v36.04 pause sp keeps its exact gold through the score-gold root token, with no raw gold in ui-sh
+   0.5  94% #177 v36.66 fresh sprint mode holds on keys and toggles on the local pad, with saved choices preserved
+   0.5  94% #457 v33.87 cw-cx-propsread: opened pixel containers blit at 72 percent opacity, closed ones stay opaq
+   0.5  94% #221 v36.22 active reload damage and stim time share a real 16px detail floor and the style-guide mute
+   0.5  94% #164 v36.79 cw-xcountplate3: the inbound extraction line keeps two spaces either side of the ring lett
+   0.5  95% #233 v36.10 the 15 audited sentence callouts use short text without periods; revive limit and packed c
+   0.5  95% #201 v36.42 no rolling in water: Space and pad A refuse without stamina or text, and a roll stops at t
+   0.5  95% #461 v33.83 cw-pixhub (86e) ship 5: the extraction ring line, the Undercroft station posts, mainframe 
+   0.5  95% #232 v36.11 the rack refusal is a short answer; costs remain on the mainframe instead of being repeate
+   0.5  95% #6 v8.72 an item dragged off the Undercroft belt onto the stash stays home
+   0.5  95% #228 v36.15 the breach gate names the local search key: default e, rebound k and the active pad search
+   0.5  95% #190 v36.53 spot marks share a 24px filled glyph and seat colour in raid, minimap and map; a spot labe
+   0.5  95% #151 v36.92 cw-mapchips: on the seed 4242 Cold Storage sector map at 1080p and 4K every label sits on 
+   0.5  95% #471 v33.73 cw-cx-pixpreview: the FASHION turntable routes through the pixel body in both facings, at 
+   0.5  95% #608 v32.33 cw-cx-mapquiet-o03: individual loot tags use muted medium type with 16px text clearance an
+   0.5  95% #166 v36.77 cw-xcountplate2: the ring name badge on the extraction countdown hugs its letter (an oval 
+   0.5  95% #223 v36.20 active reload and stim share readable status type, about 20px titles and 16px values at 10
+   0.5  95% #463 v33.81 cw-pixgear (86g): with the pixel look on armour tiers 1 to 3 are pixel plates of growing w
+   0.5  95% #464 v33.80 cw-pixdown (86g): with the pixel look on a downed player kneels in the crouch legs inside 
+   0.5  95% #275 v35.69 cw-dmulshow, his order of 2026-10-28 that the settings score multiplier is indicated to th
+   0.5  95% #195 v36.48 the raid backpack is in his three groups (his order 10-29: "Show guns, then usables, then 
+   0.5  95% #209 v36.34 run goal cache item names wrap below their label with a 16px value gap, and the score and 
+   0.5  95% #191 v36.52 one mark per seat: middle mouse, map click, move, toggle, clear, persistence, target expir
+   0.5  95% #210 v36.33 changing run goals never pay SP: career cash and cache items settle only on extraction, ea
+   0.5  95% #216 v36.27 steady hand and beast mode: own credited kills add 1% to 15, real rounds multiply all thre
+   0.5  95% #188 v36.55 old saved key maps route real middle mouse events to one mark in all three views, solo and
+   0.5  95% #194 v36.49 heals and plates cancel reloads and block manual/empty reloads; every cancelled reload los
+   0.5  95% #227 v36.16 the breach label is inside the doorway, away from the outside players, for idle and progre
+   0.5  95% #235 v36.08 g-84 burst numbers clear the target nameplate, each other and the local body in both local
+   0.5  95% #205 v36.38 each gun has one rarity: every Auto Rifle roll is purple, all gun sources and Wirt odds ag
+   0.5  95% #466 v33.78 cw-pixhurt (86g): with the pixel look on a hit is drawn in pixels as a white then red wash
+   0.5  95% #614 v32.27 cw-cx-sectorhold-o03: codex, weather and page notices wait off the map without losing life
+   0.5  95% #204 v36.39 a missed extraction with time left has only its headline in the alert and delayed feed, fo
+   0.5  95% #236 v36.07 g-84 and g-85: real Auto Rifle hits grow one number per target and colour for half a secon
+   0.5  95% #451 v33.93 cw-cx-pixguard: a throwing bake draws the vector body, the third throw locks only its kind
+   0.5  96% #564 v32.79 J8 disabled reconnect has at least 7:1 text contrast and full opacity; only the loss overl
+   0.5  96% #181 v36.62 material wall hits use wood splinters, masonry dust and short metal sparks; fog, sim, redu
+   0.5  96% #550 v32.93 cw-demoreport, his answer 66: a finished demo run posts one run report to the local collec
+   0.5  96% #561 v32.82 an online invite code keeps its case through the host, the shown box, the copy, the paste 
+   0.5  96% #108 v37.35 cw-m2birth2: the birth card footer has its key and pad hints; the figure canvas holds the 
+   0.5  96% #659 v31.83 stash pays in career and demo: one E buys MK II without a panel, MK III chooses an element
+   0.5  96% #440 v34.04 hostile human pillagers have triangles and unnumbered allies have plus signs with pixel or
+   0.5  96% #671 v31.71 Settings focus row has the bar and no ring, the detail pane is wide, and the pause box put
+   0.5  96% #218 v36.25 active reload pays 5% per stack with three stacks at most: first 1.05, third and fourth 1.
+   0.5  96% #301 v35.43 solo and party ping labels are 16px bone on a padded plate clear of the target, with 18px 
+   0.5  96% #261 v35.82 cw-pillagersword, his HUD orders of 2026-10-28 (HUD Improver chat): "pillagers should alwa
+   0.5  96% #116 v37.27 the teammate row shows his gun and his rounds under the bars: a carbine with 18 in the mag
+   0.5  96% #656 v31.86 J2 radial sticks: angle sweep, circular deadzone, full diagonal aim and two-second walk, e
+   0.5  96% #489 v33.55 cw-cx-mapstart-plates: raid-start labels have real dark plates, readable contract hierarch
+   0.5  96% #518 v33.26 every machine is drawn 1.33x bigger around its foot (name plate rides up, weak points foll
+   0.5  96% #367 v34.77 a reload and a forged gun keep the pixel gun on a pixel body; the forge shine sheds on the
+   0.5  96% #478 v33.66 cw-pixwalls (86d): THE PIXEL WALL. With the pixel look on a plain wall sprite is ceil(w/2)
+   0.5  96% #640 v32.01 cw-cx-demoplain: a demo selected on the normal title starts its opening map automatically,
+   0.5  96% #263 v35.80 cw-clockcard, his HUD orders of 2026-10-28 morning (pictures in the HUD Improver chat): in
+   0.5  96% #193 v36.50 cw-fpswork, the FPS czar (2026-10-29): five raids of 10-28 ran at a steady 30 fps and the 
+   0.5  96% #295 v35.49 cw-hudstates, his ask 2026-10-27 (the hud messaging is a clusterfuck, make it AAA), the re
+   0.4  96% #316 v35.28 cw-wheeldrophint: while an item picked up off the wheel is held, the hint over the wheel s
+   0.4  96% #602 v32.39 calling an extraction folds the compact controls list so it cannot cover the countdown (cr
+   0.4  96% #300 v35.44 cw-msgroute, his complaint 2026-10-27 (too many messages reach the player), the research r
+   0.4  96% #270 v35.74 cw-meleez, his order 10-28 (can we move melee to z as default? and middle mouse should pin
+   0.4  96% #421 v34.23 the extracted card leads with the haul figure above the tiles, shows no season total or re
+   0.4  96% #311 v35.33 cw-quietkeep, his order 2026-10-27 (build the quiet hud, all 5 changes): with the grey row
+   0.4  96% #335 v35.09 cw-hotfix1 (items on the hotbar follow-up): the lift screen shows the belt plan and takes 
+   0.4  96% #611 v32.30 cw-cx-mapspace-o03: strongbox tags retain 12px label clearance and their own leaders while
+   0.4  96% #102 v37.41 cw-nohostiles, his order of 11-02 (the hostiles closing in message is not helpful): with h
+   0.4  96% #648 v31.94 the what is new card has an X that closes it and shows three short notes, and the haul str
+   0.4  96% #430 v34.14 real quality rungs reduce spawn counts and new decal life, fade decorative HUD/weather, an
+   0.4  97% #694 v31.48 cw-mapstyle2: on the sector map card the weather line has one separator, zone names are a 
+   0.4  97% #281 v35.63 cw-cx-hudtv: large for tv grows drawn vitals, ammo, minimap, belt and partner row in eithe
+   0.4  97% #333 v35.11 RAID HUD FIXES: loot leaves the left feed, recovering only while health climbs, status ico
+   0.4  97% #251 v35.92 cw-cx-duosearch: every search door is 1.5 times faster with a nearby live party member hol
+   0.4  97% #276 v35.68 cw-diffmul, his order of 2026-10-28: every Settings row set harder than its default pays 5
+   0.4  97% #280 v35.64 cw-cx-hudtvread: raid belt vacant keys have no full tile slabs, owned gold rings remain, k
+   0.4  97% #131 v37.12 machine smoke vents out to the sides as it rises (so it shows over open ground, not only o
+   0.4  97% #502 v33.42 cw-nocachelbl: raid start map keeps extract words without loot words; m map keeps its name
+   0.4  97% #243 v36.00 menus master pass 2026-10-28: the KIA card with a full hit history (8 rows, the most HOW I
+   0.4  97% #260 v35.83 two player demo final 90 seconds: 1.05x kill SP in both seats, faster machine waves and on
+   0.4  97% #342 v35.02 cw-fsgate, his order (2026-10-27): play fullscreen or hold 5 s to play windowed; a pause s
+   0.4  97% #283 v35.61 OS reduced motion supplies light shake and half intensity only for unset choices in both p
+   0.4  97% #370 v34.74 machines under half health trail smoke, under a fifth also spark and stutter their eye; no
+   0.4  97% #569 v32.74 polling a lost pad immediately clears its pause glyphs and held input; same-slot A still r
+   0.4  97% #598 v32.43 forge choices have a full-screen scrim, one close target, readable effects, neutral curren
+   0.4  97% #247 v35.96 cw-cx-bothsearch: both search inputs required at the same or adjacent box, immediate relea
+   0.4  97% #398 v34.46 the contract done line carries only the contract words, not the long turn in sentence (one
+   0.4  97% #579 v32.64 the human figures are drawn bigger (HIS art picks a01 D, a02 B, a04 C, a05 B, a09 B, a10 D
+   0.4  97% #538 v33.05 the experimental page switches the needed-item glow, the haul reveal and the shop re-roll,
+   0.4  97% #701 v31.41 cw-mapstyle: the sector map is one charcoal card (5 percent margin) with a header row (the
+   0.4  97% #427 v34.17 demo start question gets its full 12 seconds after the opening map in each window; initial
+   0.4  97% #653 v31.89 X uses R beside loot during combat, E when calm, preserves its held choice and prioritizes
+   0.4  97% #341 v35.03 cw-fsbtnspot, the raid screen go fullscreen button of his 2026-10-27 order sits in the top
+   0.4  97% #460 v33.84 cw-pixrole (86g): with the pixel look on the role gear is scaled by one figure constant so
+   0.4  97% #567 v32.76 J8 disconnect action says reconnect and cannot resume an absent pad; returning pad enables
+   0.4  97% #257 v35.86 a real gunshot ends sprint until a fresh sprint press, on both Shift keys and pad hold/tog
+   0.4  97% #300 v35.44 cw-msgroute, his complaint 2026-10-27 (too many messages reach the player), the research r
+   0.4  97% #133 v37.10 machine smoke reads: puffs start on the body (below its top, clear of the name plate) and 
+   0.4  97% #442 v34.02 map intel elites draw cream edged triangles rather than plain coloured dots
+   0.4  97% #490 v33.54 cw-cx-mapstart-clear: raid-start map keeps strongbox icons, no loot words, 16px labels and
+   0.4  97% #348 v34.96 cw-p2nan, robot report p2:nan: a machine copy in the player 2 window whose spot went broke
+   0.4  97% #468 v33.76 cw-pixdoors (86d): THE PIXEL DOOR, WINDOW, STRONGHOLD WALL AND UNDERCROFT WALL. With the p
+   0.4  97% #581 v32.62 View tap opens and closes the bag; View hold opens goals with raid status, releases cleanl
+   0.4  97% #142 v37.01 an answer line said on, off, on within 0.35 s ends on "on": a line from another press in b
+   0.4  98% #149 v36.94 ALARMS VOLUME (his 10-25 g-81): a row in AUDIO that scales the alarms, warnings and the ra
+   0.4  98% #285 v35.59 a partner bullet jolts along its travel direction in both seats, with unchanged damage, po
+   0.4  98% #336 v35.08 cw-hotitems (his order of 10-27): a medkit dragged onto the key of the gun in hand stays t
+   0.4  98% #521 v33.22 legacy vector figures retain their build scale; pixel figures use the approved standing he
+   0.4  98% #315 v35.29 cw-gunsfirst, his order 2026-10-27: on the extracted card the haul strip draws every gun f
+   0.4  98% #374 v34.70 the lost pad title tag takes its p1 or p2 colour from the shared table, not from raw colou
+   0.4  98% #684 v31.58 a haul tile not yet shown is a plain grey slot with no rarity bar, and the strip wraps bal
+   0.4  98% #338 v35.06 cw-fogwar (his order of 10-27): with fog of war on, ground not yet explored is black on th
+   0.4  98% #635 v32.06 under 32 health the red pulse is a screen-edge vignette: the middle stays clear and the co
+   0.4  98% #269 v35.75 his order 2026-10-28 (the pause box shows what the raid pays in sp): in a raid the pause b
+   0.4  98% #580 v32.63 Xbox button pictures are selected for every live pad id and in the real poll path
+   0.4  98% #115 v37.28 a kill feed line shows what made the kill: a gun picture for a round, fire for a burn, and
+   0.4  98% #290 v35.54 downed hits use standing demo, kid and easy damage factors in both player roles and sim; n
+   0.4  98% #293 v35.51 RT keeps pad spread without aim, scope or walk slowdown; RT input without a shot preserves
+   0.4  98% #540 v33.03 the experimental page switches the raid director and the air strike: each runs with its sw
+   0.4  98% #690 v31.52 the end cards have a 48px close X top right that leaves like the primary, copy report is o
+   0.4  98% #642 v31.99 J9: RT and LT hysteresis gives one press and release through 0.30,0.40,0.34,0.36,0.30,0.20
+   0.4  98% #687 v31.55 cw-mapstyle3: on the sector map card the marker tags sit at their own marks, every contrac
+   0.4  98% #277 v35.67 enemy rounds warn red in both windows; allied and forged player rounds keep gun colours, a
+   0.4  98% #117 v37.26 cw-m1bonusgap: the extraction bonus line on the extracted card is its own block with at le
+   0.4  98% #264 v35.79g job 211: a linked guest builds the raid from the host word (night, fog, the host Terms) an
+   0.4  98% #557 v32.86 the air-strike plate keeps its belt right edge and clears the actual held-item panel at 10
+   0.4  98% #426 v34.18 pixel wardrobe focus stays inside four equal set tiles; worn marks differ from focus and r
+   0.4  98% #439 v34.05 minimap colours have static shapes for sides, downed allies, pings, doors, extraction stat
+   0.4  98% #546 v32.97 a drop pings the teammate: on a linked raid the item dropped by either window puts one pil
+   0.4  98% #509 v33.35 his order 10-20: the extraction siren sounds only for the first 4 s after the call and the
+   0.4  98% #111 v37.32 a decoy pings a plain warden but not the Overseer (his answer g-13: the Overseer ignores d
+   0.4  98% #361 v34.83 cw-drscap, his answer of 2026-10-25 ("Yes picture quality should reduce to chase a higher 
+   0.4  98% #513 v33.31 his order 10-20: looting a gun raises no stat card (G.gunCard stays null, nothing drawn); 
+   0.4  98% #542 v33.01 the experimental page switches style medals, team combo, fuel fires and the five raid even
+   0.4  98% #253 v35.90 distant wall hits wake a patrol at the impact in both window roles; open range, nearby hit
+   0.4  98% #271 v35.73 his picture 2026-10-28 ("+2,386 xpthe seal on cold storage is broken..."): on the CAREER e
+   0.4  98% #266 v35.78 cw-skybolt: a landed lightning strike leaves a render only sky bolt: a jagged white line f
+   0.4  98% #313 v35.31 cw-quietpause, his order 2026-10-27 (build the quiet hud, all 5 changes): a line said unde
+   0.4  98% #503 v33.41 the air-strike plate stands 8 px (times the HUD zoom) over the belt at 1080p and 4k, and n
+   0.4  98% #86 v11.59 the extraction inbound pulse, touchdown and last call and the storm telegraph draw the hea
+   0.4  98% #268 v35.76 cw-fpshz: at a 144 cap on a browser that only ever gave 60 frames, the fps plate adds a li
+   0.4  99% #475 v33.69 cw-pixveg (86d): THE PIXEL TREE, BUSH AND SHADOW. With the pixel look on a canopy, a bush 
+   0.4  99% #582 v32.61 an exhausted held gun selects the next loaded belt gun and names it; reserve, items and em
+   0.4  99% #252 v35.91 frag, smoke and decoy bank once off cover; marker, two-leg flight, landing and host copies
+   0.4  99% #655 v31.87 RS crowbar uses the real melee cooldown, blocks panels, holds aim for 80 ms and leaves foc
+   0.4  99% #664 v31.78 an end card chip is a flat name with no box, the contract line has a tick, the armed aband
+   0.4  99% #583 v32.60 a better copy of the held gun upgrades immediately; worse copies cannot replace it; Magnum
+   0.4  99% #434 v34.10 teammate pad lost uses the 32px title on a 64px dark panel with a 24px gap from the messag
+   0.4  99% #638 v32.03 the controls list is not drawn over the item wheel, and is back when the wheel closes
+   0.4  99% #634 v32.07 saying yes to easy mode gives a free medkit; saying no gives nothing (his 3.16 b: 30 perce
+   0.4  99% #372 v34.72 a crowbar swing or punch keeps the pixel body on a plain look (no flip to the vector art)
+   0.4  99% #412 v34.32 the end cards: the xp line is short, the title is 32px, the feedback line is a bordered bu
+   0.4  99% #536 v33.07 golden kills name all six kinds, including sentry and pillager bot, with the same callout 
+   0.4  99% #249 v35.94 cw-bossbarfight, his order of 2026-10-28 (picture of the Overseer bar over the crawlers): 
+   0.4  99% #568 v32.75 the shadow store keeps its sprites when the sprite scale changes between world and figures
+   0.4  99% #572 v32.71 machines and effects (his art picks a27 a28 a30 a31 a34 a35): charging ring, machine death
+   0.4  99% #61 v9.20 the death screen table reports what the hit actually did, not what was thrown
+   0.4  99% #691 v31.51 a new codex gun is one feed line at the bottom left, not also a second callout top centre 
+   0.4  99% #432 v34.12 both teammate pad lost tags draw a visible 24px controller glyph in warn with a 2px stroke
+   0.4  99% #631 v32.10 the pause box report a problem field is on the 48px small tier
+   0.4  99% #514 v33.30 aiming breaks a sprint at once even with Shift still held, and the sprint comes back when 
+   0.4  99% #89 v11.56 no storm strike point lands inside a building (his note of 2026-09-05); the storm still st
+   0.4  99% #40 v9.00 a container grants exactly what it was built holding, with no windfall on top
+   0.4  99% #101 v37.42 cw-m3bench: the workbench gear tab lists every stash piece and no worn piece; a reroll thr
+   0.4  99% #262 v35.81 condition reward screens use readable typography, explicit selection and one SP result her
+   0.4  99% #62 v9.21 the run recorder counts the damage that actually reached him
+   0.4  99% #42 v9.02 a found gun is just the gun: no hidden condition roll changing its strength
+   0.3  99% #532 v33.11 all six layout selectors use matching idle button edges, neutral focused name text and a b
+   0.3  99% #63 v9.22 taking one thing out of a crate does not read out what is still inside
+   0.3  99% #109 v37.34 cw-m2hall, his rulings of 11-01 (season zero m2): the hall of the fallen. pilEpithet gives
+   0.3  99% #310 v35.34 cw-titleplain, his order 2026-10-27 (no graphics behind the title, no robots in the Underc
+   0.3  99% #533 v33.10 pad selector has boxed centred arrows on each side of the name and a readable counter afte
+   0.2  99% #331 v35.13 HOTBAR SWAP: the floor belt drags and swaps with the backpack shut, a gun moved to another
+   0.2  99% #641 v32.00 J10 menu navigation: raw 0.52 moves at large and huge deadzones, D-pad holds repeat after 
+   0.2  99% #553 v32.90 job 55: the close X sits the same distance under its frame top in Settings, the shop and t
+   0.2  99% #559 v32.84 the floor backpack on a pad: one item card (the focused cell), clear of the header row and
+   0.2  99% #444 v34.00 hub floor plates have cream station names and 16px side padding; title has a plate; toast 
+   0.2  99% #700 v31.42 cw-gunkeys19: the gun keys are named 1-8, 0 wherever they are named, never 1-9 (key 9 does
+   0.2  99% #595 v32.46 the pre-raid page is design A, map first (his pick 2026-10-19): an ice blue map at least 8
+   0.2  99% #438 v34.06 the hub backpack is a centred 90 percent card on a visible scrim with a visible focusable 
+   0.2  99% #554 v32.89 stash setup: all 17 gun key and wheel names fit below their pictures at menu zoom 1 and 1.
+   0.2  99% #72 v9.32 you can see the item in your hand while you drag it round the Undercroft backpack
+   0.2  99% #360 v34.84 cw-nogunline, his note of 2026-10-25 ("why does it say gun = compact smg?!? get rid of tha
+   0.2  99% #551 v32.92 daily save copies keep three dates per slot, leave the main bytes alone, exclude demo and 
+   0.2  99% #302 v35.42 THE STASH HOVER KEEPS EVERY BOX: mousing over six different items (a gun, an SMG, a medkit
+   0.1  99% #125 v37.18 cw-m1sell, his answers 37, 39, 44 and 47 of 11-01 (season zero m1): sell one from the stas
+   0.1  99% #397 v34.47 cw-cx-pixhub (86b): THE PIXEL UNDERCROFT FLOOR. With the pixel look on the hub floor is ha
+   0.1  99% #121 v37.22 cw-m1mkt2, the critic on v37.20 (P0): the wanted strip took height from the stash grid and
+   0.1  99% #332 v35.12 UNDERCROFT FIXES: the wheel zooms the floor, M opens the lift, the stash row is the hotbar
+   0.1 100% #87 v11.58 the Undercroft floor HUD survives the frame it is painted in: the heading and the station 
+   0.1 100% #159 v36.84 the undercroft hub reads cleanly: the welcome toast keeps 24px clear of the station prompt
+   0.1 100% #389 v34.55 cw-setrevert (job 113): the settings detail pane does not repeat the row value and runs th
+   0.1 100% #447 v33.97 gambler and bar use aligned header rows, readable primary actions, and stats fill a four-c
+   0.1 100% #586 v32.55 pad action legend uses real 20px text, 40px rows, preset counts and complete 48px rebind r
+   0.1 100% #120 v37.23 cw-m1rankui, critic on the Mainframe rank strip (P1 both screens: labels about 13px under 
+   0.1 100% #548 v32.95 daily restore has one primary action, a source stepper and clear undo, a correct saves nav
+   0.1 100% #36 v8.96 the Undercroft backpack has a belt and you can drag items onto it and off it
+   0.1 100% #119 v37.24 cw-m1mkt3, the critic on v37.22 (P1): the wanted strip in the stash header was 14px (12.9p
+   0.1 100% #424 v34.20 rewards rows carry a type cue and the next one reads first, claim all is lime under the li
+   0.1 100% #474 v33.70 news frame clears currency and pairs a large existing version with the notes; recorder kee
+   0.1 100% #446 v33.98 gambler has a readable hero and compact primary; empty stats fold undefined metrics, resto
+   0.1 100% #122 v37.21 cw-m1ranks, his rulings of 11-01 (season zero m1, answers 40 and 47 to 53): RANKS has 30 r
+   0.1 100% #391 v34.53 cw-playdata3 (job 113): the settings detail pane shows an on value in the accent colour an
+   0.1 100% #470 v33.74 cw-cx-pixheight: all 27 plain looks and both baked facings match the 79a standing measure 
+   0.1 100% #488 v33.56 public recorder has a bounded lowercase preview and primary copy action while preserving r
+   0.1 100% #549 v32.94 the Settings daily source, restore and undo are visible and separately clickable, with a c
+   0.1 100% #393 v34.51 cw-playdata (job 113): the SEND PLAY DATA page opens with the export text folded away, sho
+   0.1 100% #573 v32.70 large sixteen-letter pad name dialog, one Menu done action, named stash without floor HUD 
+   0.1 100% #516 v33.28 experimental settings use the existing layout without an empty rail, group all 28 switches
+   0.1 100% #647 v31.95 pad name letters, next/back/done, new-save boot and reload, stash name and safe text focus
+   0.1 100% #436 v34.08 hub backpack belt spans its grid with nine slots; held item is labelled and gun details sh
+   0.1 100% #443 v34.01 every item icon has one to five cream rarity pips in menus, backpack and belt, in every co
+   0.1 100% #500 v33.44 the pre-raid pack rows carry a buy control: a sold item shows the counter price, one press
+   0.1 100% #574 v32.69 named stash heading, neutral freebie action, no idle keyboard sentence or toast over the o
+   0.1 100% #162 v36.81 the row of number keys is the hotbar on every surface a player reads (his word in every 10
+   0.1 100% #407 v34.37 Settings: a focused tab has no halo ring, a clicked tab leaves no list row lit, the sectio
+   0.1 100% #250 v35.93 menus master polish 2026-10-28: Wirt: THE GAMBLE panel shows a mystery tile the size of th
+   0.1 100% #437 v34.07 hub pad-held items have a large lifted portrait and lime target ring; section labels are r
+   0.1 100% #477 v33.67 news has a structured newest row and clear header while the recorder column is centered wi
+   0.1 100% #644 v31.98 J5: hub pad View opens, all D-pad directions move, A picks up and places, Y drops a recove
+   0.1 100% #711 v31.31 the stash is a card with a 5 percent margin on every side (90 x 90 of the screen), and its
+   0.1 100% #147 v36.96 in the Undercroft whoever stands lower on screen is drawn in front (his note of 2026-10-31
+   0.1 100% #186 v36.57 condition bonuses stay on one line, Terms total shares the footer and belt cells are 48px
+   0.1 100% #592 v32.49 pad controls match their legend, 20px keycaps, complete list rows and lefty labels
+   0.1 100% #237 v36.06 the pre-raid pack reserves visible scrolling rows above the belt, with readable unaffordab
+   0.1 100% #334 v35.10 hotbar items fixes: key 0 reads 0, a belt key drags off on the lift, the pad reaches the l
+   0.1 100% #413 v34.31 pause box: the leave button is a danger ghost box, and every pause button shows the 3px li
+   0.1 100% #452 v33.92 pixel fashion shows all four racks, worn set and pad focus, full-size pixel tiles and read
+   0.1 100% #35 v8.95 I in the Undercroft opens the raid backpack itself, not a second one
+   0.1 100% #680 v31.62 the terms, party, gamble and bar windows draw the same 90 percent card frame as the shop (
+   0.1 100% #408 v34.36 the gambler panels are as tall as their content (not the whole card) and their section lab
+   0.1 100% #352 v34.92 without an OS reduced motion request: itch players start on the new player set (forgiving 
+   0.1 100% #496 v33.48 the pre-raid pack names are shown whole beside the buy slot (the kit column is 480 px wide
+   0.1 100% #392 v34.52 cw-playdata2 (job 113): the play data summary is the page headline (32px), the restore hel
+   0.1 100% #423 v34.21 the racks intro sentence stays hidden after the two column layout
+   0.1 100% #95 v37.48 cw-m3doll3: the longest piece name stays inside its slot; an outfit name shows whole; the 
+   0.1 100% #672 v31.70 the stash gun key and item wheel names are at the 16px label size and the build stamp is g
+   0.1 100% #324 v35.20 cw-newinver, his order 2026-10-27 after he read v0.1137 off the card while playing v0.1149
+   0.1 100% #104 v37.39 cw-m2retire2: on a pad the retire confirm card starts on not yet, and the retire button ha
+   0.1 100% #187 v36.56 cw-cx-onlinecopy: blocked iframe clipboard leaves the exact mixed-case code focused and se
+   0.1 100% #545 v32.98 server co-op and its coming later tag are hidden on the host title; arrows and pad skip th
+   0.1 100% #59 v9.18 the title screen never makes you scroll to reach your saves
+   0.1 100% #667 v31.75 Settings and keys lists fade out at the bottom and the settings detail pane runs the full 
+   0.1 100% #52 v9.11 Wirt keeps one good thing on the counter at a flat 10,000 that changes every hour
+   0.1 100% #107 v37.36 cw-m2hallb, critic on the hall (3 of 5): the sign of the hall wall sits right under its ri
+   0.1 100% #222 v36.21 HIS PICK 2026-10-28 (stash option a, "Ok I guess go with A"): the stash loadout column has
+   0.1 100% #589 v32.52 the pre-raid page second pass: the map canvas is drawn at 960 so its names are sharp, the 
+   0.1 100% #673 v31.69 the stash help row, sell note and freebie bar lost their explaining sentences (Q8): no rec
+   0.1 100% #590 v32.51 the pre-raid page fixes from the critic: pack rows are 46 px with 36 px steppers, no gun c
+   0.1 100% #445 v33.99 Undercroft text follows the guide: 32px cream title, 20px stations, one 56px raid hero, 16
+   0.1 100% #469 v33.75 cw-cx-pixhubframe: real Undercroft frames reset the sprite budget once, allowing a cold FA
+   0.1 100% #622 v32.19 the racks column is centred in the card, not left of centre
+   0.1 100% #717 v31.25 the career corner readout is one row: credits, XP, stash and bag sit on the same line, the
+   0.1 100% #18 v8.58i no message promises something the game does not do
+   0.1 100% #158 v36.85 the racks page reads at a glance: a disabled button and an empty slot differ from an enabl
+   0.1 100% #584 v32.57 the pre-raid page sixth pass: map labels sit on a dark pill, the window title is 32 px and
+   0.1 100% #593 v32.48 the pre-raid going-up chips are not cut off: the no armour chip and the kit tile sublines 
+   0.1 100% #693 v31.49 Settings: the key hint ends at the X edge; the pause report box wears the button type; aba
+   0.0 100% #681 v31.61 Rebind callout is the raised fill, idle key caps have a quiet border, the detail strip is 
+   0.0 100% #351 v34.93 without an OS reduced motion request: the Settings side panel for the difficulty row says 
+   0.0 100% #675 v31.67 Keys table spans the card and settings steppers box only the row in focus
+   0.0 100% #129 v37.14 cw-p0acct, his progression plan of 11-01 (m0 foundation; old saves paid out, his ok sure):
+   0.0 100% #511 v33.33 the four experimental group names show with a real height on the experimental page
+   0.0 100% #665 v31.77 the run over card: the score word is a 16px label over the 56px figure, a zero score is di
+   0.0 100% #679 v31.63 Settings section tabs are a left rail beside the rows, not a strip over them
+   0.0 100% #683 v31.59 Keys callout is as wide as the table, scrollbars are 8px, Settings rows share one height
+   0.0 100% #688 v31.54 Pad buttons table is wide, the pointed Settings row has an accent line, lists fade over 48
+   0.0 100% #94 v11.69 dropping a tactical belt item on the stash says it went to the stash, and it did: it left 
+   0.0 100% #98 v37.45 cw-m3doll2: the key hints stand under the panels, not on them; the slots and figure fill t
+   0.0 100% #182 v36.61 captured-footage title has 24px breathing room and a 96px underline, and its wake prompt c
+   0.0 100% #274 v35.70 cw-dmulfix, from the pictures of v35.69: the demo run over card shows its settings x line 
+   0.0 100% #431 v34.13 quality reads two seconds of gaps and own work, ignores empty passes and only resizes canv
+   0.0 100% #676 v31.66 the stash labels and hint lines are at the 16px floor (17.4px before the 0.92 scale) and t
+   0.0 100% #106 v37.37 cw-m2birth3: on the birth card a kit he cannot pay for is disabled at full opacity with it
+   0.0 100% #497 v33.47 the pre-raid pack rows keep one buy slot each, so a row the counter does not sell still li
+   0.0 100% #282 v35.62 OS motion defaults render as defaults, while saved departures from them remain marked as c
+   0.0 100% #575 v32.68 career letter picker readable hints, boxed letter and arrows, single footer and isolated t
+   0.0 100% #410 v34.34 the gambler window: two panels side by side, the inner heading is a 16px label not a 64px 
+   0.0 100% #677 v31.65 Settings detail pane sits at the right of the rows and the block fills the card
+   0.0 100% #507 v33.37 cw-expchip: on the experimental page an on chip is lime and an off chip is dim (different 
+   0.0 100% #646 v31.96 the what is new card note lines say more than the bare headline (no line is just "polish p
+   0.0 100% #714 v31.28 cw-p2prompt, his order 2026-10-18 (live key and pad prompts): the player 2 attract prompt 
+   0.0 100% #639 v32.02 the codex tiles fill the card: 150px tall tiles, 24px names, 96px art
+   0.0 100% #82 v9.50 the title screen says what the game wants to run in, and still fits
+   0.0 100% #197 v36.46 the stash item key row names the tenth hotbar key 0, as the hotbar does (v36.37 gave the h
+   0.0 100% #312 v35.32 cw-shoff (his order of 10-27, superhot mode should be off by default): every sitting start
+   0.0 100% #183 v36.60 recorded-footage titles have opaque backplates, the wake prompt stays above the lower foot
+   0.0 100% #272 v35.72 cw-newpdefs, his order of 10-28 (these should be the default settings for a new player, an
+   0.0 100% #29 v8.88 the title screen obeys the text size setting and follows the monitor
+   0.0 100% #173 v36.70 text size starts at 100 percent for a new profile and for both demo windows; a save that c
+   0.0 100% #58 v9.17 the title screen uses the width it is given, on an ultrawide and on an ordinary widescreen
+   0.0 100% #328 v35.16 cw-cx-fpsscreen: the fps counter says screen 60 at a 144 cap on a settled 16.7 ms screen; 
+   0.0 100% #340 v35.04 cw-fsgatezoom, the fullscreen gate of his 2026-10-27 order takes the menu screen factor li
+   0.0 100% #699 v31.43 the party cards (how to play, board, run over) are 97 percent panel and the run over title
+   0.0 100% #422 v34.22 welcome pack and party card (critic 02 and 07 = 2): the welcome pack has no intro line or 
+   0.0 100% #347 v34.97 cw-exportguard: the flight recorder export does not throw on a run record with no outcome 
+   0.0 100% #350 v34.94 the difficulty button in Settings has the same two arrows as every other switch in the lis
+   0.0 100% #662 v31.80 the armed abandon confirm X sits inside the card and the money left behind is danger colou
+   0.0 100% #504 v33.40 J3: B cancels the save-delete confirmation, retains the title and never erases a save, wit
+   0.0 100% #411 v34.33 the page toast hides while the abandon question is up (the critic: a running slowly toast 
+   0.0 100% #537 v33.06 the experimental page switches the party seed: on, a party record locks the seed, the sect
+   0.0 100% #566 v32.77 the trophy case is two full rows of four with no orphan card, every card can take focus an
+   0.0 100% #657 v31.85 the boot camera defaults to 1.3, preserves saved zoom, and keeps 1080p/4K projection and p
+   0.0 100% #246 v35.97 menus master pass 2026-10-28: on Wirt the limited time offer column fits a short panel (hi
+   0.0 100% #425 v34.19 fashion tiles show rank by top bar thickness, not only colour (2.79 a)
+   0.0 100% #660 v31.82 the operator card: the X is 40px, the focused lime New party row has no second ring, and t
+   0.0 100% #703 v31.39 the Keys list shows lower case words: no first-letter capital, and key caps have no bevel
+   0.0 100% #17 v8.58h the sector board reads in metres, not a tenfold hectare
+   0.0 100% #225 v36.18 HIS ORDER 2026-10-28 (menus master chat): "I am confused by keyboard keys vs in game keys,
+   0.0 100% #244 v35.99 run over moments have readable labels, aligned four-stat rows, quiet scrim and equal death
+   0.0 100% #25 v8.84 I in the Undercroft opens neither the terminal nor the retired full screen panel
+   0.0 100% #596 v32.45 rewards intro hidden and bar 28px, bar flavour and wallet lines hidden, ingest ghost when 
+   0.0 100% #669 v31.73 the party card prompt is 24px (not 20px) so the eye lands on it (critic on 46 55 56 64: pr
+   0.0 100% #674 v31.68 the party cards never draw a label under 16px: the how to play table heads and the board s
+   0.0 100% #696 v31.46 the any-key prompt is body size (20px) so the title leads, and the corner X shares the pro
+   0.0 100% #547 v32.96 the same fault repeating for 6 s asks for exactly one reload and sets the title note; 3 s 
+   0.0 100% #380 v34.64 the party window content shares one left edge and starts in the top half of the card: the 
+   0.0 100% #570 v32.73 a press has a low body under the click, and a score count-up plays a hit a step and one la
+   0.0 100% #135 v37.08 the gun jam branches are out of the fire code and the jam cleared line is gone (cw-dead5):
+   0.0 100% #492 v33.52 cw-pixlook (86a): all 145 racks resolve to a kept pixel pick, ten fixed looks resolve per 
+   0.0 100% #73 v9.33 proficiency is his five things mixed, and each one of them moves it
+   0.0 100% #127 v37.16 cw-p0gear, his progression plan of 11-01 (m0 foundation): worn gear is a saved piece of it
+   0.0 100% #479 v33.65 cw-pixcrowd (86c): THE PIXEL UNDERCROFT CROWD. With the pixel look on, a plain pillager dr
+   0.0 100% #501 v33.43 public report text has no private contact name and successful report copy says report copi
+   0.0 100% #577 v32.66 pause box end run has no extra top margin and the divider uses the bright line
+   0.0 100% #613 v32.28 the pause report box is 56px like the other pause buttons
+   0.0 100% #685 v31.57 racks page is one centred 672px column, codex grid is four centred columns, the stash swap
+   0.0 100% #140 v37.03 the profile keeps a second copy in IndexedDB: a save is mirrored, a cleared or unreadable 
+   0.0 100% #255 v35.88 menus master polish 2026-10-28: a Mainframe contract pays in dollars ($4,321, never 4,321 
+   0.0 100% #381 v34.63 the party window is the 90 percent card (his Q43, style guide Window 90 x 90), not a fitte
+   0.0 100% #597 v32.44 auto resolution uses the scale ladder but never steps the picture below 75 percent (his 2.
+   0.0 100% #386 v34.58 cw-setrevert3 (job 113): the play data export text rules in the shared block have no raw h
+   0.0 100% #441 v34.03 backpack rarity pips are at least eight solid pixels tall on a 52px item icon
+   0.0 100% #383 v34.61 cw-setrevert4 (job 113): the what is new subtitle rules in the shared block have no raw px
+   0.0 100% #495 v33.49 both what is new views show three short lowercase real notes without alpha or polish fille
+   0.0 100% #609 v32.32 a hard cap on loud sound: everything ends in a master limiter, the rain is a third quieter
+   0.0 100% #633 v32.08 pause box small buttons and the abandon link are at least 48px high
+   0.0 100% #615 v32.26 every pause box button is one 56px height with the 20px label
+   0.0 100% #650 v31.92 the Sentry is drawn as a humanoid combat robot, not a tread and a box: two separate flat f
+   0.0 100% #371 v34.73 the pixel gun and shoulders kick back on a shot (heavy guns more), and not at rest or with
+   0.0 100% #520 v33.23 a fresh profile boots at the 1.05 default camera (his picture), in career and in the demo,
+   0.0 100% #594 v32.47 rewards list fills the card, bar rows scaled up (1400 wide, 120px rows, 56px buttons)
+   0.0 100% #382 v34.62 cw-setrevert5 (job 113): the restore helper line rules in the shared block have no raw px 
+   0.0 100% #599 v32.42 terms intro hidden, bonus figure 32px, sign nothing 200x48
+   0.0 100% #4 v8.74 the settings menu actually applies what it says
+   0.0 100% #339 v35.05 cw-fsgatewarn, the may cause glitches line on the fullscreen gate of his 2026-10-27 order 
+   0.0 100% #404 v34.40 a zero score on the run over card is the hero in tx-1, not dimmed to tx-2 (critic on 52)
+   0.0 100% #510 v33.34 the Howler walks on its own short pneumatic step (the only walking machine that was on the
+   0.0 100% #591 v32.50 corner readout shows $ money, not the word credits
+   0.0 100% #666 v31.76 detail pane stat rows are 16px with a dark --ui-line rule, not 15px with a cream rule
+   0.0 100% #153 v36.90 the 2 player demo brings a dead player 2 window back: reopened when closed, reloaded when 
+   0.0 100% #297 v35.47 cloud-ach-born-scan: a new save that plays two runs and then opens its stats page keeps it
+   0.0 100% #485 v33.59 inside itch frame the pair talks over window.opener, not a BroadcastChannel: the host post
+   0.0 100% #600 v32.41 terms intro is one short line, rows 76px, names 20px, sign buttons 104x48
+   0.0 100% #625 v32.16 the stash first-raid strip never shows
+   0.0 100% #47 v9.06 a contract names a place he is told about, never a colour scheme
+   0.0 100% #320 v35.24 cw-verat, his order 2026-10-27 (put the date and time of the update, in us eastern time): 
+   0.0 100% #402 v34.42 the press any key pulse never dips below .85 (critic on 52 and 55: the prompt reads dim)
+   0.0 100% #483 v33.61 inside itch frame the player 2 marks and the shared settings cross the bridge: a beat with
+   0.0 100% #605 v32.36 the extract inbound countdown stands on a plate measured to its words (critic 37)
+   0.0 100% #28 v8.87 no gun is named after a rarity it is not drawn as
+   0.0 100% #41 v9.01 a gun never wears out and never jams, however many rounds go through it
+   0.0 100% #325 v35.19 cw-figone, his note of 2026-10-27 ("Character is too small now. Increase size to get him b
+   0.0 100% #362 v34.82 cw-fpscap, his order of 2026-10-25 ("I want higher frame rates to be an option, eg 75, 90,
+   0.0 100% #459 v33.85 cw-pixwild (86e) ship 6: live and dead deer and birds go through pixWrap as hard alpha sce
+   0.0 100% #487 v33.57 a same machine pair that nobody joins says so: 15 s after the pick with no one in, the sta
+   0.0 100% #526 v33.17 cw-headbody, job 68 (his a01 D head 1.2 and a05 B pauldrons 1.12): only the head, hair, ha
+   0.0 100% #527 v33.16 cw-partycallouts, job 66 (RULES: never an explaining sentence on screen; his answer 27): e
+   0.0 100% #556 v32.87 the ui-shared block holds no raw pixel sizes or colours: the title tagline margin uses the
+   0.0 100% #610 v32.31 an easy run is cut 30 percent on the board and tagged easy (his 2.47 c)
+   0.0 100% #618 v32.23 career offers the easy card after three deaths in a row, once, and yes cuts damage 30 perc
+   0.0 100% #619 v32.22 party intro is one short line, sector hint lines hidden, party text 18px
+   0.0 100% #632 v32.09 the pad picture names or marks all physical controls and keeps lime off the key names
+   0.0 100% #636 v32.05 the slow-frame system toasts (resolution stepped down, running slowly) are headlines only,
+   0.0 100% #697 v31.45 cw-inihead: the initials card is drawn with its heading: a 2 player card says whose turn i
+   0.0 100% #0 v8.37 holding E must not throw (var cap deleted at v8.34)
+   0.0 100% #1 v8.55 the two armoured heavies walk heavy
+   0.0 100% #19 v8.56 the game counts in English at n=1
+   0.0 100% #37 v8.97 the STANDING chip keeps real clearance above the bars at every text size
+   0.0 100% #43 v9.03 spending the last of a belted item leaves the slot dark and empty, never a different item
+   0.0 100% #44 v9.03h an emptied belt slot is actually drawn darker, not just marked empty
+   0.0 100% #71 v9.31 an item can be taken back off the belt during a raid, and a click on its own slot is not t
+   0.0 100% #85 v11.60 a Frag Charge put on a tactical belt key is a live throwable cell: it shows the pouch coun
+   0.0 100% #88 v11.57 the storm warning ring says LIGHTNING INCOMING with the seconds left, and the world draw p
+   0.0 100% #90 v11.55 a cooked frag shouts COOKED GRENADE! THROW GRENADE NOW for its last second in hand, nothin
+   0.0 100% #91 v11.54 an extraction point badge names one of his four states in his words (sound the alarm to be
+   0.0 100% #96 v37.47 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #112 v37.31 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #128 v37.15 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #134 v37.09 dead functions with no caller are gone, batch 6 (cw-dead6)
+   0.0 100% #136 v37.07 the dead title fight code is gone, tskOn stays (cw-dead4)
+   0.0 100% #137 v37.06 dead functions with no caller are gone, batch 3 (cw-dead3)
+   0.0 100% #138 v37.05 dead functions with no caller are gone, batch 2 (cw-dead2)
+   0.0 100% #139 v37.04 dead functions with no caller are gone (cw-dead1)
+   0.0 100% #144 v36.99 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #160 v36.83 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #165 v36.78 a danger said while you are down stands over the downed card, never on it
+   0.0 100% #176 v36.67 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #192 v36.51 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #208 v36.35 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #224 v36.19 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #240 v36.03 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #256 v35.87 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #259 v35.84 final rush HUD gives its banner 416px and 24px clearance, moves navigation beside the cloc
+   0.0 100% #273 v35.71 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #278 v35.66 cw-airstrike3000: the damage needed to unlock an air strike is 3000, not 1500 (his order)
+   0.0 100% #289 v35.55 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #305 v35.39 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #321 v35.23 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #323 v35.21 cw-fszoom, his report 2026-10-27 (the main PC build had no fullscreen gate, the VM did): a
+   0.0 100% #337 v35.07 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #343 v35.01 cw-walletonce, his note (text collisions on the menu thing): the page text in the top righ
+   0.0 100% #345 v34.99 the bulwark wreck is drawn as big as the live bulwark (his note: bulwark too small)
+   0.0 100% #353 v34.91 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #365 v34.79 probe: the light pass carries the fingerprint probe note
+   0.0 100% #369 v34.75 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #375 v34.69 the corner panels share one fill, one line and one radius (hudPlate and hudPanel read HUDP
+   0.0 100% #376 v34.68 the lost pad title colours only its p1 or p2 tag, the words stay the title colour
+   0.0 100% #377 v34.67 the two in-raid demo cards are solid dialogs clear of the controls legend, and the press a
+   0.0 100% #385 v34.59 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #388 v34.56 cw-setrevert2 (job 113): the experimental page footer hint size comes from the label token
+   0.0 100% #396 v34.48 cw-pixdecal (86b): FOOTPRINTS AND DECALS SIT ON THE GROUND GRID. In the pixel look their d
+   0.0 100% #399 v34.45 the initials card draws the active letter in the lime accent and the heading in tx-2, not 
+   0.0 100% #401 v34.43 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #406 v34.38 the Settings pane hint keeps its first clause whole and marks a cut with an ellipsis, neve
+   0.0 100% #417 v34.27 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #433 v34.11 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #449 v33.95 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #465 v33.79 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #480 v33.64 the player 2 address made inside itch frame drops netslot (a window with netslot is never 
+   0.0 100% #481 v33.63 the what is new card is stamped with this build or later and still shows the three short l
+   0.0 100% #482 v33.62 the what is new card stamp is within 0.15 of the build and the card still shows its three 
+   0.0 100% #494 v33.50 the default camera is exactly 1.0 (pixel exact at 1080p, scale 2 at 4K) and a saved zoom s
+   0.0 100% #498 v33.46 the what is new card is stamped within 0.15 of the build and leads with the new news shown
+   0.0 100% #499 v33.45 the what is new card is stamped within 0.15 of the build and leads with the new news shown
+   0.0 100% #505 v33.39 cw-cornercompact2: the first corner cell is labelled cash and the two columns are 20 apart
+   0.0 100% #512 v33.32 one gunfire tail only: the v23.77 place tails (slaps indoors, a roll outside, soft in the 
+   0.0 100% #515 v33.29 the what is new card is stamped within 0.15 of the build and leads with the new news shown
+   0.0 100% #519 v33.25 space-aware gunfire: a shot indoors gets a short room tail, a shot outside a later, longer
+   0.0 100% #523 v33.20 low health filter: below 30 health the world mix low-passes softly (12 kHz down to 2.2 kHz
+   0.0 100% #524 v33.19 late night audio: a setting in AUDIO, off by default, that squeezes the world mix harder a
+   0.0 100% #530 v33.13 the what is new card is stamped within 0.15 of the build and leads with the new news shown
+   0.0 100% #539 v33.04 the what is new card is stamped within 0.15 of the build and leads with the new news shown
+   0.0 100% #555 v32.88 the what is new card is stamped within 0.15 of the build and leads with the new news shown
+   0.0 100% #571 v32.72 the what is new card is stamped within 0.15 of the build and leads with the new news shown
+   0.0 100% #585 v32.56 the what is new card is stamped within 0.15 of the build and leads with the new news shown
+   0.0 100% #587 v32.54 the what is new card is stamped within 0.15 of the build and leads with the new news shown
+   0.0 100% #588 v32.53 the pre-raid map draws its zone names at 20 px, shrinking to no less than 14, and its exit
+   0.0 100% #603 v32.38 the what is new card is stamped within 0.15 of the build and leads with the new news shown
+   0.0 100% #604 v32.37 the what is new card is stamped within 0.15 of the build and leads with the new news shown
+   0.0 100% #606 v32.35 the extract inbound countdown line is drawn in the big-number size, not the callout size (
+   0.0 100% #607 v32.34 the idle loop cycles through three variations of the piece in turn (his 2.70 c)
+   0.0 100% #612 v32.29 the picked item-wheel wedge is a raised neutral grey, not the warm olive fill (critic 61)
+   0.0 100% #620 v32.21 the what is new card is stamped within 0.15 of the build and leads with the new news shown
+   0.0 100% #621 v32.20 the what is new card is stamped within 0.15 of the build and leads with the new news shown
+   0.0 100% #623 v32.18 the racks tab hides the array and data core explainer lines
+   0.0 100% #624 v32.17 the stash header has no dash subtitle and a 32px title
+   0.0 100% #626 v32.15 a new demo run puts the easy or normal card up for that player, and starts on normal (his 
+   0.0 100% #629 v32.12 the extract distance line sits on a plate: a plate fill is drawn right before the words
+   0.0 100% #637 v32.04 the what is new card is stamped within 0.15 of the build and leads with the new news shown
+   0.0 100% #645 v31.97 the what is new card shows each of its three notes whole (the same text wnShort gives), ne
+   0.0 100% #654 v31.88 the what is new card is stamped within 0.15 of the build and leads with the new news shown
+   0.0 100% #661 v31.81 two paired windows: the one the keyboard plays wears a keyboard marker (his 3.5 c)
+   0.0 100% #663 v31.79 a downed partner sounds a clear alert and his edge arrow pulses (his 2.72 a)
+   0.0 100% #668 v31.74 the corner readout labels and the stash and bag figures share one quiet style: 16px, weigh
+   0.0 100% #670 v31.72 the what is new card is stamped within 0.15 of the build and leads with the new news shown
+   0.0 100% #682 v31.60 the welcome pack intro is one short line, not a four sentence paragraph
+   0.0 100% #686 v31.56 the what is new card is stamped within 0.15 of the build and leads with the new news shown
+   0.0 100% #689 v31.53 the caption over the belt (item name, fire, use) is prompt size (label, 15.6 px), not the 
+   0.0 100% #695 v31.47 under a quarter health the red outline on the health bar is thick (3px) and the stamina ba
+   0.0 100% #698 v31.44 under a quarter health the health bar gets a pulsing red outline (the critic: low health i
+   0.0 100% #702 v31.40 the what is new card is stamped within 0.15 of the build and leads with the new news shown
+   0.0 100% #705 v31.37 cw-partykeys, the coordinator: at the party (?party=1, and the 2 player arcade demo played
+   0.0 100% #706 v31.36 the pause report box is a 56px row, and the two long pad labels are short
+   0.0 100% #708 v31.34 the downed timer has its own centred row under the word down, and the plate is 480 wide wi
+   0.0 100% #712 v31.30 the downed block sits on one plate (uiPanel) and draws it every frame it is down, sized to
+   0.0 100% #718 v31.24 the what is new card is stamped within 0.15 of the build and leads with the new news shown
