@@ -1,6 +1,6 @@
 host=JUL26
-seen=2026-11-04 08:15
-epoch=1793798126
+seen=2026-11-04 08:25
+epoch=1793798749
 game=9e37c70e v37.48
 test_run=paused: fortnite is running: UnrealEditorFortnite-Win64-Shipping
 robots=0
@@ -13,7 +13,7 @@ cpu_threads=16
 cpu_pct=11
 cpu=AMD Ryzen 7 5800X3D 8-Core Processor
 soak=soak v36.95: 0 of 6 passed
-spare_pc=no reply on the home network (192.168.1.246), its own last report 2026-11-04 07:56, 08:15
+spare_pc=no reply on the home network (192.168.1.246), its own last report 2026-11-04 08:07, 08:25
 party=37.48 9e37c70e
 play8802=C:\claudecode\pillagers-party v37.48
 receiver8799=up, last report 11-02 22:01, last note 10-28 07:56
