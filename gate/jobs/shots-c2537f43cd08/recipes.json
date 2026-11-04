@@ -1,0 +1,14 @@
+{
+    "about":  "Original unchanged check 9.27 at camera and gate sizes; no render or drawOp wrappers",
+    "prelude":  "window.__uis={prep:async function(){try{__pinDPR(1);}catch(e){}}};",
+    "screens":  [
+                    {
+                        "name":  "263-container-roof-original-check",
+                        "screen":  "Raid: player through the long container roof, check 9.27 stage",
+                        "before":  "Run original check 9.27 with unmodified renderer at native and gate canvas sizes, then photograph the real roof ghost.",
+                        "query":  "",
+                        "expect":  "!!window.__roofOriginal",
+                        "js":  "return __gx(\"(function(){\\nvar check=window.__REGRESS.filter(function(t){return t.v===\\u00279.27\\u0027;})[0];\\nif(!check) throw new Error(\\u0027original check 9.27 absent\\u0027);\\nvar rows=[];\\nfunction test(size){\\n__runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();\\nif(size) __forceSize(size[0],size[1]);\\nvar result=check.run();\\nrows.push({size:size||\\u0027camera native\\u0027,result:result,world:[__canvases().world.width,__canvases().world.height]});\\n__endRaid();\\n}\\ntry{test(null);test([1888,977]);test([1888,1080]);}\\nfinally{__runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();}\\n__startRaid({mapIx:0,seed:4242});\\nvar g=__state(),p=g.player,w=g.map.walls.filter(function(w){return !w.furn\\u0026\\u0026!w.wreck\\u0026\\u0026!w.ledge\\u0026\\u0026!w.win\\u0026\\u0026w.w\\u003e=900\\u0026\\u0026w.h\\u003c=50\\u0026\\u0026w.x\\u003e2500;})[0];\\nif(!w) throw new Error(\\u0027long container absent\\u0027);\\ng.ents.length=0;p.iv=99;p.x=w.x+w.w*.5;p.y=Math.round(w.y-(w.lift||26)*.5);\\nvar keys=__keysRef();for(var k in keys)delete keys[k];\\nfor(var f=0;f\\u003c4;f++)__loop(performance.now()+f*16.7);\\n__cfg({seeThrough:1});__frame(0);\\nwindow.__roofOriginal={version:VER,checks:rows,player:{x:p.x,y:p.y},renderUnmodified:true};\\nreturn JSON.stringify(window.__roofOriginal);\\n})()\");"
+                    }
+                ]
+}
