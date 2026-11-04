@@ -1,3 +1,5 @@
+**11-04 update:** a later test of all 2,880 checks changed my view of the frame cap. It took 96 min with the robot at 30 fps against 114 uncapped, and the robot had no problems. See `../robot-cap/NOTE.md`.
+
 # Full runs on the spare PC: where the time goes (measured 11-03 night, v37.48)
 
 All of this ran in a private hidden browser, opened with `tools/cdp.ps1` as a full run opens one, with a fresh browser per slice, on port 9345. The live robot kept running. No game file changed, and nothing ran during a gate job or a pause.
