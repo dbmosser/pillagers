@@ -1,0 +1,26 @@
+id=shots-582336c84b2d
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=9e37c70edfc8df7e55fe4038ea77eb8d11e815e7
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1793813701
+ended=1793813738
+result=PASS
+infra=0
+reason=
+--- stages
+== 1080 : window 1956x1185, viewport 1920x1080
+  263-container-roof-diagnostic          staged       6.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"version":"37.48","rows":[{"where":"front","pct":0,"moved":0,"calls":[],"errors":[],"sim":false,"wallInGrid":true,"player":{"x":3570,"y":2962,"hp":100},"wall":{"x":3120,"y":2900,"w":900,"h":44,"lift":26},"drawErr":null},{"where":"clear","pct":0,"moved":0,"calls":[],"errors":[],"sim":false,"wallInGr
+== 4k : window 3876x2265, viewport 3840x2160
+  263-container-roof-diagnostic          staged       6.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"version":"37.48","rows":[{"where":"front","pct":0,"moved":0,"calls":[],"errors":[],"sim":false,"wallInGrid":true,"player":{"x":3570,"y":2962,"hp":100},"wall":{"x":3120,"y":2900,"w":900,"h":44,"lift":26},"drawErr":null},{"where":"clear","pct":0,"moved":0,"calls":[],"errors":[],"sim":false,"wallInGr
+report: C:\PillagersSpare\gate\work\shots-582336c84b2d\shots\report.json
+--- end
+done=1
