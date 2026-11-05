@@ -1,0 +1,36 @@
+slice  uncap  cap30  no-proc
+0       1130    915     407
+120      206    187     122
+240      291    262     116
+360      189    152     106
+480      165    131      96
+600      113     96      71
+720      124    116      76
+840       71     78      71
+960      141    139      91
+1080     131    142      91
+1200     313    187     131
+1320     194    132      96
+1440     191    167      96
+1560     211    182      96
+1680      82     77      71
+1800     134    116     101
+1920     276    248      96
+2040     116     97      71
+2160     134    123      71
+2280     143     98      81
+2400     342    324     152
+2520     375    324     116
+2640     730    688     343
+2760    1051    752     401
+total  114     96     53 min; waits of 25 s are 10 min of each
+fails: uncapped 63 capped 62 without processor 63
+only with processor, both runs | slice 0 | v9.27 standing behind a container roof draws you through it instead of swallowing you -> standing 13 units inside the co
+only without processor | slice 240 | v34.90 cw-thirdsize, his note of 2026-10-25, played on build 33.17 where the figure was drawn at 1.25 ("player character is still wayyy too ... -> staging: a hostile pillager (lean) aiming 0 pi: 7254 gun pixels, 2304 mark pixels, 
+only without processor | slice 480 | v33.51 cw-pixkit (86a): the pixel look row (local, on), pinned off in the fixture; pixBlit draws on whole device pixels and only edge pixels... -> the frozen raid frame is not steady, so it cannot be compared; with the pixel look 
+only without processor | slice 1080 | v27.00 career3, his yes to the needed-item glow (31): what an unfinished contract still needs is worked out (the lift kit does not count, a ... -> FIVE: an opened box glowed (1 pixels)
+only with processor, both runs | slice 1920 | v18.34 the belt keys are rounded tiles in the raid: with the HUD drawn, the outer corner pixel of the first belt key is 
+only without processor | slice 2760 | v10.54 the OUTFIT rack exists, each suit repaints the whole figure and hides the coat colour, an unowned suit changes nothing, and the Depot... -> an unowned suit repainted 1 pixels
+only in the capped run | slice 2760 | v10.10 every window has a CLOSE and ESC closes the window in front -> ESC did not close: gamblemodal
+robot, held at 30, two-window raids 7 with a problem 0
+19:07:55 r4 demo1 306s clock-end p=0 30.8/s; 19:13:05 r5 demo2p 305s clock-end p=0 29.1/s; 19:18:15 r6 demo2p 303s clock-end p=0 30.3/s; 19:23:25 r7 demo2p 303s clock-end p=0 31.3/s; 19:28:30 r8 career 302s clock-end p=0 31.3/s; 19:33:37 r9 demo2p 302s clock-end p=0 30.4/s; 19:38:51 r10 demo2p 306s clock-end p=0 30.8/s; 19:44:04 r11 demo2p 306s clock-end p=0 30.5/s; 19:44:31 r12 demo1 24s clock-end p=0 32.7/s; 19:54:45 r1 demo2p 303s clock-end p=0 30.3/s
