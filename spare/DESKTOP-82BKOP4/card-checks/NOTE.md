@@ -72,3 +72,11 @@ Not proven:
 - It ran from a private copy of the script on port 9345. That copy differs from the diff's result only in the port and the comment.
 - A page that hangs on opening could use up to about 4.5 minutes before going on, against 25 s now.
 - Not timed together with check pages on the card, and not measured on JUL26.
+
+## Per-check times
+
+These five slices (0, 2400, 2520, 2640, 2760) take about half of a run on the processor copy. [`per-check.txt`](per-check.txt) times their checks in one private run, and no single check dominates. The five slowest named checks took 491 s of the 2,856 s covered, about 17%. The slowest are v9.63 (120 s) and v11.16 and v11.17 (106 s each). Only 44% of the time could be pinned to one check; the rest is listed in groups.
+
+These are upper bounds, and the run doesn't show whether a check's time is drawing or computing. The same slices took about half the time on the card, so much of it looks like drawing.
+
+v12.99 failed in this run and not in my other full passes. It also failed in 2 of 53 earlier real runs (both 10-30), so it flips and this is not from the shorter wait.
