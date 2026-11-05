@@ -49,6 +49,26 @@ I can build this and test it as a diff if you want it. I haven't started, becaus
 - The 53 minutes is private, with no gate job in it and the robot at 30 fps.
 - JUL26 draws on another card and should gain too, but I haven't measured it.
 
-## Also seen: the 25 s wait
+## The 25 s wait: tested, diff ready
 
-`tools/corpus-slices.sh` waits 25 s after opening each slice's page. That's 10 minutes of every run. On this PC the page had its checks and read `complete` in 1 to 2 s, in 3 tries with the robot running. I'm testing a full pass with a wait that ends when the page is ready, and I'll send a diff only if the results hold.
+`tools/corpus-slices.sh` waits 25 s after opening each slice's page, which is 10 minutes of a run. [`ready-wait.diff`](ready-wait.diff) ends the wait when the page has its checks and reads `complete`, then waits 2 s more. It gives up after 25 tries and goes on as before. Nothing else changes but one comment line. It applies on master 9e37c70e: base blob d52edcc6, result blob 649cbe0b.
+
+All 2,880 checks on the current processor copy, robot at 30 in both runs (per slice in [`ready-wait.txt`](ready-wait.txt)):
+
+| | Fixed 25 s | Ready wait |
+|---|---|---|
+| Time | 96 min | 90 min |
+| Failing checks | 62 | 62, the same checks |
+| Could not run | 103 | 104 |
+| Robot two-window raids of a minute or more, with a problem | 16, 0 | 13, 0 |
+
+- **Time:** 21 of 24 slices were quicker, most by 20 to 27 s. Slices 2400 and 2520 were slower by 73 s and 50 s, which I read as the usual swing between runs, so expect about 8 minutes a run.
+- **Fail messages:** 5 differ, only in values that change from run to run, such as a price of 19 against 21 or the character's name.
+- **Could not run:** the one extra is in slice 960 (110 ran against 111). The two other private runs also had 110, so the fixed-wait run is the odd one.
+
+Not proven:
+
+- One run each way, on this PC, with no gate job in it.
+- It ran from a private copy of the script on port 9345. That copy differs from the diff's result only in the port and the comment.
+- A page that hangs on opening could use up to about 4.5 minutes before going on, against 25 s now.
+- Not timed together with check pages on the card, and not measured on JUL26.
