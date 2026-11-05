@@ -1,3 +1,5 @@
+**Land `../p2-card/p2-card.diff` first: it fixes the bigger fault.** All the numbers below were measured without it.
+
 **11-04 update: please land this diff. My earlier request to hold it was wrong.** Master is still 9e37c70e and the diff's two base blobs still match. Full table and raid list: `trial-1104.txt`.
 
 ## The 11-04 test: all 2,880 checks with and without the cap

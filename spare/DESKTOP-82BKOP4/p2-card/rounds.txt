@@ -1,0 +1,17 @@
+== round1-A player 2 on the processor (as now)
+  18:37:34 raid 1 demo2p  106 clock-end p=0   3.3/s p1  54 p2  17 work 6.75 work2 13.25 gfxproc 1.22 pages 1.54 cpu 100 card 15
+  18:39:28 raid 2 demo2p  103 clock-end p=0  20.8/s p1  91 p2  34 work 5.75 work2 10.75 gfxproc 1.08 pages 1.69 cpu 95.8 card 16
+  18:41:14 raid 3 demo2p   99 clock-end p=0  30.7/s p1  82 p2  26 work 5.75 work2 10.75 gfxproc 1.02 pages 1.77 cpu 91.1 card 15
+== round2-B player 2 on the card (fix)
+  18:43:30 raid 1 demo2p  103 clock-end p=0  30.2/s p1  65 p2  64 work 7.75 work2 7.25 gfxproc 1.24 pages 1.29 cpu 87.8 card 13
+  18:45:20 raid 2 demo2p  103 clock-end p=0  30.0/s p1  76 p2  74 work 7.75 work2 7.25 gfxproc 1.23 pages 1.43 cpu 73.8 card 9
+  18:47:19 raid 3 demo2p  112 clock-end p=0  16.6/s p1  62 p2  62 work 6.25 work2 4.75 gfxproc 1.21 pages 1.00 cpu 100 card 14
+== round3-A player 2 on the processor (as now)
+  18:50:08 raid 1 demo2p  123 hang      p=1   0.1/s p1 NaN p2  13 work 7.75 work2 15.25 gfxproc NaN pages NaN cpu NaN card NaN
+  18:53:30 raid 2 demo2p  106 clock-end p=0   4.3/s p1   2 p2   1 work 12.25 work2 16.75 gfxproc 0.37 pages 1.75 cpu 100 card 19
+== round4-B player 2 on the card (fix)
+  18:55:50 raid 1 demo2p  103 clock-end p=0  18.0/s p1  47 p2  46 work 8.25 work2 6.25 gfxproc 1.19 pages 0.86 cpu 100 card 15
+  18:57:47 raid 2 demo2p  103 clock-end p=0   8.0/s p1  70 p2  69 work 6.25 work2 5.75 gfxproc 1.20 pages 1.15 cpu 100 card 14
+  18:59:41 raid 3 demo2p  103 clock-end p=0  17.4/s p1  67 p2  67 work 6.25 work2 5.25 gfxproc 1.25 pages 1.12 cpu 100 card 14
+AS NOW raids 5 problems 1 actions/s 4.3 p1 fps 82 p2 fps 17 work 6.75 work2 13.25 gfx proc 1.08 pages 1.77 machine 100 card 16
+FIXED  raids 6 problems 0 actions/s 18.0 p1 fps 67 p2 fps 67 work 7.75 work2 6.25 gfx proc 1.23 pages 1.15 machine 100 card 14
