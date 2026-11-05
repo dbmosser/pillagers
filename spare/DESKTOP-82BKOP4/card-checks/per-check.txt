@@ -1,0 +1,53 @@
+Per-check times, slices 0, 2400, 2520, 2640, 2760, on the processor copy, private run 11-04 21:40 to 22:29, robot at 30.
+Seconds are upper bounds: the page answers a read only between checks, with a 5 s pause between reads, and a read covering several checks is listed as a group.
+
+samples 155 seconds covered 2856 to one check 1251
+slice 0 covered 873 s, gaps 38 , to one check 265
+slice 2400 covered 327 s, gaps 21 , to one check 151
+slice 2520 covered 293 s, gaps 21 , to one check 41
+slice 2640 covered 638 s, gaps 31 , to one check 515
+slice 2760 covered 723 s, gaps 39 , to one check 278
+
+top 40, seconds, running share of all covered
+  159    6% 0     4 checks from v9.30 to v9.34                 
+  120   10% 2760  v9.63                                        a pillager you cannot see, shooting, leaves a red mark you can
+  106   13% 2640  v11.17                                       the doorways inside buildings are recorded and kept clear of furniture
+  106   17% 2640  v11.16                                       a route through a doorway keeps clear of the walls behind it, not only
+   97   21% 0     v9.34                                        calling the ship names the siege, and the number it promises is the nu
+   88   24% 0     2 checks from v8.80 to v8.82                 
+   62   26% 2640  v11.18                                       no interior wall ends inside a doorway, so every front door opens onto
+   61   28% 2760  4 checks from v9.57 to v9.52                 
+   53   30% 2640  v11.23                                       the pillagers own raid can be read to the clock: the parked, unkillabl
+   53   32% 2520  2 checks from v13.15 to v13.13               
+   52   34% 2400  v13.41                                       the raised decks are gone from both sectors: no deck, ramp or deck edg
+   49   35% 0     5 checks from v9.19 to v9.25                 
+   47   37% 2760  10 checks from v10.15 to v10.04              
+   44   38% 2400  5 checks from v13.97 to v13.92               
+   43   40% 2760  3 checks from v10.18 to v10.15               
+   42   41% 2640  v11.22                                       no building on THE COLD MILE holds ANY pocket of floor nothing can rea
+   40   43% 2400  2 checks from v13.35 to v13.33               
+   40   44% 2760  v9.72                                        a blocked doorway costs one wall now, not the whole authored floor pla
+   40   46% 2520  3 checks from v12.74 to v12.71               
+   39   47% 2640  v11.15                                       the route grid is padded for the body that walks it, so a crawler with
+   38   48% 0     v9.28                                        a pillager who spots you calls his crew, and only his crew, and only i
+   37   50% 0     2 checks from v9.26 to v9.28                 
+   37   51% 2760  8 checks from v10.68 to v10.60               
+   36   52% 0     3 checks from v8.55h to v8.73                
+   35   53% 2760  4 checks from v10.44 to v10.40               
+   34   55% 0     v9.25                                        a pillager who was not fighting you fights back the moment you shoot h
+   32   56% 2640  v10.85                                       nothing goes on sounding after the raid that started it: the ambient b
+   32   57% 2400  v13.40                                       a box searched on the hot ground says so: after a held X search throug
+   30   58% 0     4 checks from v8.82 to v8.86                 
+   29   59% 2400  v13.39                                       helping the survivor while carrying notoriety shows the line about the
+   29   60% 0     2 checks from v9.36 to v9.38                 
+   29   61% 2760  2 checks from v10.72 to v10.68               
+   27   62% 2760  5 checks from v9.47 to v9.42                 
+   24   63% 2400  v13.33                                       a line that must not be lost waits its turn: with a message showing, t
+   23   63% 2520  2 checks from v12.47 to v12.45               
+   22   64% 2520  v12.34                                       the Peddler stall is not a pause: with the trade window open the inbou
+   22   65% 2760  3 checks from v9.60 to v9.57                 
+   22   66% 0     5 checks from v8.58 to v8.80                 
+   20   66% 2760  v9.42                                        breaking line of sight sends a chase to the last place it SAW you
+   20   67% 2760  2 checks from v9.86 to v9.84                 
+
+checks of 60 s or more: 5 sum 491
