@@ -1,0 +1,28 @@
+id=preflight-cw-cx-healrisk-408e7a77c165
+kind=preflight
+key=cw-cx-healrisk
+tag=pfo
+v=37.49
+new=3749
+base=000a7e14397ea9cf129e16872244092c545512fd
+host=DESKTOP-82BKOP4
+draft_sha=845c3a5a8d98b122e0d90cf3b93e61171f7cdc10fe171f92e8a81967cf5faddd
+p_sha=d273ab412b6c871b4e7dc8a4f32e0d744430959908e7b9a686c8feeb297f4e37
+f_sha=7505b8ebd71f9b498295f06f4bb99f09bb3de05d58ffa16cb1b371b34ca92034
+game_sha=c5a0ff069ef1cf3c52755835f11a545fb6e1a516dc31922a07c962321119615f
+fix_sha=9beec31b271a8156b6d7e2be731687adc85ba94d2982be6afe487bfb271e9669
+started=1794073720
+ended=1794073871
+result=PASS
+infra=0
+reason=
+--- stages
+ppfo -> OK, 9 edits applied plus DEVNOW
+fpfo -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.49 parse check
+dry fxdrypfo check 37.49: PASS / PASS
+control fxctlpfo check 37.49: host sprint 0: healing distance ratio 1.619999999999987; host sprint 0: sprint remained on; host sprint 1: healing distance ratio 1.619999999999987; host sprint 1: sprint remained on; host sprint 2: healing distance ratio 1.619999999999987; host sprint 2: sprint remained on; host: medkit speed; host / host sprint 0: healing distance ratio 1.619999999999987; host sprint 0: sprint remained on; host sprint 1: healing distance ratio 1.619999999999987; host sprint 1: sprint remained on; host sprint 2: healing distance ratio 1.619999999999987; host sprint 2: sprint remained on; host: medkit speed; host
+recent: 0 new failures in the newest 80 checks
+--- end
+done=1
