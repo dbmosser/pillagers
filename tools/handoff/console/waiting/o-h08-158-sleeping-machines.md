@@ -11,3 +11,10 @@ Rules: the seed 4242 fingerprint (ents 85/374, containers 165/593) must hold unl
 TASK DONE when it shipped; TASK PARTIAL with what is left.
 
 HIS PRIORITY 10-27 (priorities page): LOW
+
+Lane note 2026-11-07 15:50: shipped cw-cx-sleepmachines and parked: only lane-side steps are left. Codex's last words:
+Shipped v37.53 and confirmed ON HIS PC. Runtime checks passed; seed counts remain unchanged.
+
+LINKED REVIEW NEEDED: synced. Coordinator handoff prepared for real two-window wake testing and machine-art review. Both camera rounds are complete; visual acceptance remains unresolved.
+
+TASK PARTIAL: coordinator linked-window verification and machine-art acceptance remain

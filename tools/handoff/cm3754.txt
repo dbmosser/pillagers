@@ -1,0 +1,7 @@
+v37.54: out first watches and pings
+
+Extracted demo players follow the partner with a small waiting line. N, middle mouse and the pad ping still mark targets, including double-tap danger, without rejoining or using the map. The retained career host can also watch and ping until the party finishes.
+
+Check 37.54. Fails on v37.53.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

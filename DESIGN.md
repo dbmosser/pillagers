@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.54 - OUT FIRST WATCHES AND PINGS
+
+Co-op hunt while he was away. His 2.25 b and g-54: the player out first watches their partner live and can still ping. Watch: the watching window must keep its frame rate while it runs the simulation; a watcher ping must name its sender; waiting must never look like the run ended.
+
+MEASURED. Check 37.54 passes, and fails on v37.53.
 ## v37.53 - SLEEPING MACHINES
 
 Co-op hunt while he was away. His g-25: Yes, a few more sleepers. A deterministic fifth of eligible sentries and bulwarks begin asleep away from ascend spots. Watch: a sleeper waking next to loot can feel like the removed mimics; watch for wakes he calls cheap, and that sleepers read as asleep from a distance.

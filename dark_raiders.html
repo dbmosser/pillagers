@@ -4024,8 +4024,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.53';
-var VER_AT='2026-11-07 15:17';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.54';
+var VER_AT='2026-11-07 16:35';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -19618,7 +19618,8 @@ function syncPause(){ if(G) G.paused=pauseOpen||tuneOpen||devFreeze(); }   // v3
 window.addEventListener('keydown',function(e){
   var tn=(e.target&&e.target.tagName)||'';
   if(tn==='TEXTAREA'||tn==='INPUT') return;
-  e=keyRemapEvent(e);   // v17.75: the key pressed becomes the key the game reads
+  e=keyRemapEvent(e);
+  if(netWatchOn()){ raidKey(e.code,e.repeat,e); return; } // v28.xx (cw-cx-outwatch): watch keys never open a menu or change a world dial.   // v17.75: the key pressed becomes the key the game reads
   ac(); // a keypress is a user gesture, so it is a chance to wake suspended audio
   if(e.code==='Backquote'){ e.preventDefault();
     // v28.xx (cw-cx-timelordhold): Shift keeps its tuning chord; a tap never reaches the saved dial.
@@ -19802,6 +19803,8 @@ function pauseKeyNav(code){
   return true;
 }
 function raidKey(code,repeat,ev){
+  // v28.xx (cw-cx-outwatch): the career spectator also has only ping input, with no latched movement or search keys.
+  if(netWatchOn()){ keys[code]=false; if(ev) ev.preventDefault(); if(!repeat&&(code==='KeyN'||code==='Mouse1')) netPingMake(); return; }
   if(ev&&(code==='AltLeft'||keys['AltLeft'])) ev.preventDefault();   // v25.xx (altstatus): Alt is the browser menu key; while it is the status key its press, and every key pressed with it, stay in the game
   keys[code]=true;
   // v12.22: NOTHING IN THE RAID ANSWERS A KEY WHILE THE PAUSE BOX IS UP, except
@@ -20161,6 +20164,7 @@ cv.addEventListener('mousemove',function(e){
   }
 });
 cv.addEventListener('mousedown',function(e){
+  if(netWatchOn()){ mouse.down=false; return; } // v28.xx (cw-cx-outwatch): clicks cannot fire or search while watching.
   // v30.xx (cw-p2keys), HIS ORDER (2026-10-18): "keys control whatever screen is to the top" and the mouse acts in the window it points at. A click in the player 2 window
   // is a deliberate use of the mouse there, so it takes the crosshair from that window pad at once and aims where it landed, in front yet or not (the first click on a window behind
   // it focuses it, and its mousemove cannot take the crosshair before that).
@@ -21457,6 +21461,8 @@ function pollPad(){
     if(down){ keys[code]=true; PAD.held[code]=1; }
     else if(PAD.held[code]){ keys[code]=false; PAD.held[code]=0; }
   }
+  if(netWatchOn()){ netWatchPad(gp); return; } // v28.xx (cw-cx-outwatch): stick aim and ping only, before movement, auto-fire and menu actions.
+  PAD.watchPing=false; PAD.watchAim=0;
   indevPadTick(gp);   // v30.xx (cw-glyphs): this window's pad, own or handed over, is read for use before anything else
   PAD.on=true; padBodyCls();   // v19.70: the page knows the pad is on (body.padon)
   if(typeof attPad==='function'&&attPad(gp)){ padRelease(); return; } // v28.xx (cw-cx-wholerun): this pad wakes footage without acting beneath it.
@@ -22084,7 +22090,7 @@ function keysMouse(e,down){
   inv=KEYS.inv||keysInv();
   if(down&&KEYS.waiting){ var m=document.getElementById('keysmodal'); if(m&&m.classList.contains('on')){ e.preventDefault(); e.stopPropagation(); keysBind(KEYS.waiting,pc); KEYS.waiting=null; keysRender(); try{ renderSettings(); }catch(_rs){} return true; } }
   if(e.button===1){   // v25.xx (mmbping): the middle button is the key Mouse1 (ping / signal). In a live raid its press is claimed here and goes through the key map; anywhere else it is the browser's, as before.
-    if(down){ if(!(typeof G!=='undefined'&&G&&!G.over&&state==='raid')) return false; KEYS.mmb=1; e.stopPropagation(); }
+    if(down){ if(!(typeof G!=='undefined'&&G&&(!G.over||netWatchOn())&&state==='raid')) return false; KEYS.mmb=1; e.stopPropagation(); }
     else { if(!KEYS.mmb) return false; KEYS.mmb=0; }
   } else if(!inv[pc]) return false;
   e.preventDefault();
@@ -37344,7 +37350,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
   try{ var _fbw=document.querySelector('#outcome .ocwin'); if(_fbw){ _fbw.classList.remove('fbopen'); _fbw.classList.toggle('condition-ui',!!(G&&G.career&&!G.sim&&G.cs)); } }catch(_fbo){}
   document.getElementById('oc_note').value='';
   if(NET.on&&!G.sim){ try{ netSumSend(how,(how==='extract')?haul:0); }catch(_ns){} }   // v16.40: the party summary
-  document.getElementById('outcome').classList.add('on');
+  if(!netWatchOn()) document.getElementById('outcome').classList.add('on'); // v28.xx (cw-cx-outwatch): reveal the settled card after the partner is out.
   try{ ocLgStart(); }catch(_lgs){}   // v27.NN (cboard2): the ledger tallies row by row, then the haul reveals
   try{ ocLbStart(how); }catch(_lbs){}   // v27.NN (cboard3): a CAREER card ends on the LEADERBOARD step
   if(how==='extract'&&!G.sim){ try{ haulRevealStart(); }catch(_hrv){} }   // v26.xx (career7): the haul reveals one by one
@@ -38243,7 +38249,7 @@ function fowAt(wx,wy){
 // under the fog. Off, everything draws as before.
 function fowLive(x,y,r){
   if(CFG.fogWar!==1||!G||!G.player||G.sim) return true;
-  var p=G.player, dx, dy, d, k, i, e, R=VF(), A=Math.max(70,AMBR()), r0=(r>0)?+r:0;
+  var p=netWatchBody()||G.player, dx, dy, d, k, i, e, R=VF(), A=Math.max(70,AMBR()), r0=(r>0)?+r:0; // v28.xx (cw-cx-outwatch): live effects use the watched sight cone.
   // cw-fowfix (review 10-27): Superhot holds G.t still while he turns, so the shapes are also rebuilt when he moves or turns, and
   // render2D drops them once a frame at the air pass (a mate moves while G.t stands still)
   if(G._fwlT!==G.t||G._fwlX!==p.x||G._fwlY!==p.y||G._fwlF!==p.face||!G._fwlE){
@@ -42529,6 +42535,9 @@ function wlPx(){ var f=wc.font, m; if(f!==_wlF){ _wlF=f; m=/([\d.]+)px/.exec(f);
 // v28.xx (cw-cx-aimfocus): ease a WORLD focal point, half way along the aim (0.6 for long guns). Calibrate its screen slot on entry so zoom preserves the aimed ground point.
 // v28.xx (cw-cx-aimfocus): a literal halfway zoom pivot moves the aimed target; the entry bias reconciles halfway look-ahead with zoom-to-cursor. Never feed screen-pixel lean back into world focus.
 function adsCameraFrame(dt){
+  // v28.xx (cw-cx-outwatch): render and aim share this camera; the extracted body stays untouched in the simulation.
+  var watch=netWatchBody();
+  if(watch){ G.adsZ=1; var wz=ZOOM(); return {x:camClamp(watch.x-W/(2*wz),W/wz,WORLD_W),y:camClamp(watch.y-H/(2*wz),H/wz,WORLD_H),z:wz,pad:false}; }
   var p=G.player, oldZ=ZOOM(), baseZ=ZC*hudRes(), kx=W/2, ky=H*.54;
   var d=Math.max(0,Math.min(.1,+dt||0)), ke=Math.min(1,Math.max(0,+dt||0)*9);
   var m=opticMag(), amount=(CFG.adsZoom===undefined)?.35:CFG.adsZoom;
@@ -42610,7 +42619,7 @@ function burnFx(c,dt,w,h){
 }
 function render2D(dt){
   gfxqEase(dt); // v28.xx (cw-cx-laddereffects): ease decorative HUD and weather changes over one second.
-  var p=G.player,i,j;
+  var p=G.player, eye=netWatchBody()||p,i,j; // v28.xx (cw-cx-outwatch): only the render eye follows the partner.
   gfxpBegin();   // v23.xx (gfx1): one frame in 15 times its passes
   // Zoom. Z is a scale on the world, so the amount of WORLD visible is W/Z by
   // H/Z, and every cull test, the camera centring and the two offscreen light
@@ -42661,8 +42670,8 @@ function render2D(dt){
       // at which your eye picks him out. He is always visible up close.
       if(raiderCrouched(ev)) evc=Math.min(evc,0.35);
     }
-    ev.seen=(evc>=1)?canSee(p.x,p.y,p.face,ev.x,ev.y,G.vseg)
-                    :canSee(p.x,p.y,p.face,ev.x,ev.y,G.vseg,VF()*evc,undefined,AMBR()*evc);
+    ev.seen=(evc>=1)?canSee(eye.x,eye.y,eye.face,ev.x,ev.y,G.vseg)
+                    :canSee(eye.x,eye.y,eye.face,ev.x,ev.y,G.vseg,VF()*evc,undefined,AMBR()*evc);
     if(!ev.seen&&CFG.sharedSight!==0&&NET.on&&typeof netMateSees==='function'){ try{ ev.seen=netMateSees(ev,evc); }catch(_ms){} }   // v18.07: his order, shared sight: what a teammate sees, you see
     if(ev.seen) VIS.push(ev);
   }
@@ -42726,7 +42735,7 @@ if(G.map.story){
     // His own are not painted any more; the list is untouched, so the trackers
     // that smell it are untouched. The marks a pillager leaves still draw, which is v8.85.
     if(_fp.mine) continue;
-    if(!canSee(p.x,p.y,p.face,_fp.x,_fp.y,G.vseg)) continue;
+    if(!canSee(eye.x,eye.y,eye.face,_fp.x,_fp.y,G.vseg)) continue;
     if(inWater(_fp.x,_fp.y)){
       // v7.59: no boot marks ON water - a brief ring, then nothing. Draw-side
       // only: the list itself still exists for the AI that smells it.
@@ -42756,7 +42765,7 @@ if(G.map.story){
     // own entry that ripples were a different branch and had not been checked.
     // They leaked exactly the same way: 1,323 pixels drawn through a wall the
     // pillager himself could not be seen through.
-    if((dc.print||dc.ripple)&&!dc.mine&&!canSee(p.x,p.y,p.face,dc.x,dc.y,G.vseg)) continue;
+    if((dc.print||dc.ripple)&&!dc.mine&&!canSee(eye.x,eye.y,eye.face,dc.x,dc.y,G.vseg)) continue;
     wc.save(); wc.translate(pixMarkSnap(dc.x),pixMarkSnap(dc.y)); wc.rotate(dc.rot);   // v34.xx (cw-pixdecal): on the ground grid in the pixel look
     wc.globalAlpha=dc.a; wc.fillStyle=dc.c;
     if(dc.print){
@@ -42884,7 +42893,7 @@ if(!sc.seen) continue;
     var pn=G.pings[i],dp=dist(p,pn);
     // IF YOU CAN SEE IT, YOU DO NOT NEED A RING FOR IT, v5.32. Asked every
     // frame, so a thing that ducks behind cover gets its ring back.
-    if(canSee(p.x,p.y,p.face,pn.x,pn.y,G.vseg)) continue;
+    if(canSee(eye.x,eye.y,eye.face,pn.x,pn.y,G.vseg)) continue;
     // Distance encoding: a faint small mark is far off, a large bright one is
     // immediate. Occlusion multiplies straight into both.
     var near=clamp(1-dp/(pn.s*1.5),0,1);
@@ -43125,13 +43134,13 @@ var SHD=G.shells[i];
   if(G.wild) for(i=0;i<G.wild.length;i++){
     var CW=G.wild[i];
     if(CW.x<ox-60||CW.x>ox+VW+60||CW.y<oy-90||CW.y>oy+VH+90) continue;
-    if(!canSee(p.x,p.y,p.face,CW.x,CW.y,G.vseg)) continue;
+    if(!canSee(eye.x,eye.y,eye.face,CW.x,CW.y,G.vseg)) continue;
     DR.push({k:CW.y,cr:CW});
   }
-  if(!ascOut(p)) DR.push({k:p.y-drawLift((G&&G.map&&G.map.liftAt)?G.map.liftAt(p.x,p.y):0),pl:1});   // v35.xx (cw-xsink): an extraction that took him leaves no body on the ring
+  if(!ascOut(p)&&!netWatchOn()) DR.push({k:p.y-drawLift((G&&G.map&&G.map.liftAt)?G.map.liftAt(p.x,p.y):0),pl:1});   // v35.xx (cw-xsink): an extraction that took him leaves no body on the ring
   if(NET.on) netUpDraw(DR);   // v15.79: the others in the party, sorted into the same list at the depth of where they stand
   DR.sort(function(a,b){return a.k-b.k;});
-  try{ if(!G.sim) aimMarks(p); }catch(_am){}   // v32.xx (cw-playerstates), HIS PICK a16 B: the dotted aim line and the rare gun laser, under the bodies
+  try{ if(!G.sim&&!netWatchOn()) aimMarks(p); }catch(_am){}   // v32.xx (cw-playerstates), HIS PICK a16 B: the dotted aim line and the rare gun laser, under the bodies
   var crouchP=crouchHeld();
   try{ gfxShadowPass(dt); }catch(_gsh){}   // v23.xx (gfx2): shadow hook, under the y-sorted bodies
   // His run #3, v1.01: "character not rendering". He was moving and shooting
@@ -44475,8 +44484,8 @@ var b=_BLS[i],bm=Math.sqrt(b.vx*b.vx+b.vy*b.vy)||1; if(!fowLive(b.x,b.y)) contin
   fx2.setTransform(Z*SOFTR,0,0,Z*SOFTR,-ox*Z*SOFTR,-oy*Z*SOFTR);   // v18.03: world units on the small sheet
   if(CFG.fogWar===1){ try{ var _fm=fowMask(); if(_fm){ fx2.save(); fx2.imageSmoothingEnabled=true; fx2.globalAlpha=1; fx2.globalCompositeOperation='source-over'; fx2.drawImage(_fm,0,0,G.seen.w*FOG_CELL,G.seen.h*FOG_CELL); fx2.restore(); } }catch(_fw){} }   // v35.xx (cw-fogwar)
   fx2.globalCompositeOperation='destination-out';
-  var pol2=buildVisPoly(p.x,p.y,p.face,G.vseg);
-  var psx=p.x,psy=p.y;
+  var pol2=buildVisPoly(eye.x,eye.y,eye.face,G.vseg);
+  var psx=eye.x,psy=eye.y;
   var vg2=fx2.createRadialGradient(psx,psy,VF()*.15,psx,psy,VF());
   vg2.addColorStop(0,'rgba(0,0,0,.97)'); vg2.addColorStop(1,'rgba(0,0,0,0)');
   fx2.fillStyle=vg2;
@@ -44523,7 +44532,7 @@ wc.drawImage(fogC,0,0,W,H);   // v18.03: stretched back over the frame
       var pn=G.pings[i],dp=dist(p,pn);
       // IF YOU CAN SEE IT, YOU DO NOT NEED A RING FOR IT, v5.32. Asked every
       // frame, so a thing that ducks behind cover gets its ring back.
-      if(canSee(p.x,p.y,p.face,pn.x,pn.y,G.vseg)) continue;
+      if(canSee(eye.x,eye.y,eye.face,pn.x,pn.y,G.vseg)) continue;
       var near=clamp(1-dp/(pn.s*1.5),0,1);
       var isFire=pn.typ==='fire';
       // v9.63, HIS REQUEST: a pillager shooting at him is the one noise he cannot
@@ -46543,6 +46552,7 @@ function drawHUD(){
   if(ctx.textRendering!=='geometricPrecision') ctx.textRendering='geometricPrecision';   // v28.xx (cw-h103fix), the critic on screens 21 and 61 ('run Info', 'In cover': a capital letter): the small i of the condensed face lost its dot to hinting at 1080p and read as a capital I; unhinted text keeps the dot
   gfxqVignette(); // v28.xx (cw-cx-laddereffects): only decorative corner shade; low-health, hit and scope edges below stay intact.
   if(GFXWT) gfxWorldText();   // v23.xx (gfx5): the nameplates, tags, damage numbers and labels of this raid frame, sharp on the HUD canvas
+  if(netWatchOn()){ netWatchHud(); return; } // v28.xx (cw-cx-outwatch): a waiting view has no own-body HUD or run-over card.
   var _pcs=msPlayerScreen(); padClaimDraw(_pcs.x,_pcs.y); // v28.xx (cw-cx-padowner): this window only.
   // v18.21, FOUND BY THE TRADE AUDIT (2026-10-03): THE BOSS BAR AND THE OFFER LINE WERE DRAWN AND THEN WIPED. Both were painted at
   // the top of this function, before the clearRect that starts every HUD frame, so THE OVERSEER's health bar (v17.45) and the
@@ -58213,7 +58223,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.53: Sleeping machines stay still and dark until noise, a hit or a close step wakes them, with a 0.6 second charge beat before firing. Check 37.53 fails on v37.52',
+  now:'v37.54: Extracted demo players follow the partner with a small waiting line. N, middle mouse and the pad ping still mark targets, including double-tap danger, without rejoining or using the map. The retained career host can also watch and ping until the party finishes. Check 37.54 fails on v37.53',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -65583,11 +65593,46 @@ function netAutoFire(p){
 var NET_PING_T=10, NET_PING_SNAP=70;   // v16.46: 10 s, the length Fortnite gives a ping
 // v17.57: what a ping calls the body under it: a pillager or THE OVERSEER by name (a linked window knows the boss by its name
 // only), any other body by its kind. The ping said WARDEN on the boss.
-function netPingName(hit){ return ((hit.kind==='raider'||hit.boss||hit.name===BOSS_NAME)&&hit.name)?netClean(hit.name,24):kindWord(hit.kind); }   /* v22.xx (R49): CRIER, PILLBOX, SURVIVOR, THE PEDDLER, never the internal kind */ function netPingMake(){
+function netPingName(hit){ return ((hit.kind==='raider'||hit.boss||hit.name===BOSS_NAME)&&hit.name)?netClean(hit.name,24):kindWord(hit.kind); }   /* v22.xx (R49): CRIER, PILLBOX, SURVIVOR, THE PEDDLER, never the internal kind */ // v28.xx (cw-cx-outwatch), his 2.25 b: "Their partner's view, live, with a small line saying they are waiting"; g-54: "Yes, pings only".
+function netWatchOn(){
+  return !!(typeof NET==='object'&&NET&&NET.on&&typeof G!=='undefined'&&G&&!G.sim&&!G.hubFloor&&G.player&&
+    ((NET.role==='host'&&NET.specG===G)||(G.arcade&&!G.over&&G.player.specOut&&(G.arcX||(typeof ARCADE==='object'&&ARCADE&&ARCADE.xOut==='h')))));
+}
+function netWatchBody(){
+  if(!netWatchOn()) return null;
+  var i, u;
+  for(i=0;i<NET.up.length;i++){
+    u=NET.up[i];
+    if(!netUpShown(u)||netUpGone(u)||netUpHid(u)) continue;
+    if(!isFinite(u.tx)||!isFinite(u.ty)) continue;
+    return {x:isFinite(u.x)?u.x:u.tx,y:isFinite(u.y)?u.y:u.ty,face:isFinite(u.f)?u.f:(u.tf||0)};
+  }
+  return null;
+}
+function netWatchHud(){
+  ctx.save();
+  try{
+    netPingDraw();
+    var y=H-LH(38), label='waiting', w;
+    ctx.font=hudFS(TYPE.label); ctx.textAlign='center'; ctx.textBaseline='middle';
+    w=ctx.measureText(label).width+LH(32);
+    ctx.fillStyle='rgba(11,12,13,.88)'; ctx.fillRect((W-w)/2,y-LH(18),w,LH(36));
+    ctx.fillStyle=HUDC.ally; ctx.fillText(label,W/2,y);
+  }finally{ ctx.restore(); }
+}
+function netWatchPad(gp){
+  var b=gp.buttons||[], a=padRaidAxes(gp.axes||[]), rs=padStick(a[2]||0,a[3]||0), map=padMapArr(), pb=b[map[12]], down=!!(pb&&(pb.pressed||pb.value>0.5));
+  padRelease(); mouse.down=false; PAD.mx=0; PAD.my=0; PAD.firing=false; PAD.afire=0; PAD.adsing=false; PAD.aiming=false;
+  if(rs.x||rs.y){ PAD.aimA=Math.atan2(rs.y,rs.x); var z=ZOOM(), reach=200; padCursorPut(W/2,H/2,Math.cos(PAD.aimA)*reach*z,Math.sin(PAD.aimA)*reach*z); }
+  if(down&&!PAD.watchPing) netPingMake();
+  PAD.watchPing=down;
+  PAD.prev=b.map(function(q){ return !!(q&&(q.pressed||q.value>0.5)); });
+}
+function netPingMake(){
   var w, i, e, bd=NET_PING_SNAP, d, hit=null, m, own;
   // v28.xx (cw-cx-onemark): spot marks last until moved or cleared; entity pings keep their timer and double-tap danger.
-  if(typeof G==='undefined'||!G||G.over||!G.player||G.hubFloor||G.sim||G.paused||G.bagOpen||G.trade||G.forgeUI||G.player.downed||G.player.dying||(NET.on&&!NET.upSeed)) return null;
-  if(G.mapOpen) return netWpFromMap();
+  if(typeof G==='undefined'||!G||(G.over&&!netWatchOn())||!G.player||G.hubFloor||G.sim||G.paused||G.bagOpen||G.trade||G.forgeUI||(!netWatchOn()&&(G.player.downed||G.player.dying))||(NET.on&&!NET.upSeed)) return null;
+  if(G.mapOpen&&!netWatchOn()) return netWpFromMap(); // v28.xx (cw-cx-outwatch): watch aim always projects through the world camera.
   w=mouseWorld(); netPingUpdate();
   for(i=0;i<G.ents.length;i++){e=G.ents[i];if((NET.on&&!e.nid)||e.hp<=0||e.merc)continue;d=dist(e,w);if(d<bd){bd=d;hit=e;}}
   own=G.waypoint;
@@ -66323,6 +66368,7 @@ function netSpecEnd(){
   var keep=G, S=NET.specG, how=NET.specHow||'extract';
   NET.specG=null; NET.specHow=''; NET.specTick=false;
   G=S; try{ netUpEnd(how); }catch(e){} finally{ G=keep; }
+  if(keep===S&&state==='raid'&&S&&S.over) document.getElementById('outcome').classList.add('on'); // v28.xx (cw-cx-outwatch): settlement was already done once.
   NET.status='party back \u00b7 raid over';
   netRefresh();
   return 0;
@@ -68404,7 +68450,7 @@ function arcadeExtractEnd(){
     p.specOut=1; p.vx=0; p.vy=0; keys={};
     try{ say('Extracted','ally',{sub:'Player 2 is still out',key:'arcxout'}); }catch(_xs){}
     try{ arcadeScSend(); }catch(_xc){}
-    try{ arcadeAttShow(); }catch(_xa){}
+    try{ attStop(); }catch(_xa){} // v28.xx (cw-cx-outwatch): host watches player 2 until both are out.
     return true;
   }
   ARCADE.ext=(ARCADE.ext|0)+1;
@@ -72010,6 +72056,7 @@ function arcadeAttUndress(){
 // The arcade attract: the attract overlay with the clip when there is one, PRESS ANY BUTTON (host) or PLAYER 2: PRESS A, up
 // whenever this window has no arcade raid.
 function arcadeAttShow(){
+  if(netWatchOn()){ if(ATT.on||ATT.pending||ATT.loading) attStop(); return false; } // v28.xx (cw-cx-outwatch): never cover a live watch with the attract loop.
   if(attBlocked()){ if(ATT.on||ATT.pending||ATT.loading) attStop(); return false; } // v28.xx (cw-cx-wholerun): text entry and fullscreen gate stay clear.
   var d=attEl(), v=d.querySelector('video'), ap=d.querySelector('.attpress'), w=(ARCADE.role==='p2')?/* v31.28 (cw-p2prompt), HIS ORDER (2026-10-18): player 2 names the device it used last, like player 1: a key press reads press any key, the pad reads its A */('PLAYER 2: PRESS '+(padOn()?padB('A'):'ANY KEY')):((arcadeBenched()?'PLAYER 1: ':'')+'PRESS ANY '+(padOn()?'BUTTON':'KEY')), pr;   // v30.xx (cw-glyphs2), HIS ORDER (2026-10-18): "player should get key prompts if that is the last input they used -- xbox controller prompts should only pop up if player is actively using the controller -- e.g. real time glyph switching". The host attract names the device last used; player 2 is the pad window and keeps PRESS A
   if(ap&&ap.textContent!==w) ap.textContent=w;
@@ -72030,7 +72077,7 @@ function arcadeAttTick(){
   if(ARCADE.role==='p2'){ var _an=Date.now(), _ao=arcadeOwnAt(); if(_ao>(+ARCADE.actSent||0)&&_an-(+ARCADE.actAt||0)>=ARCADE_IDLE.actMs){ ARCADE.actAt=_an; ARCADE.actSent=_ao; netSamePost({t:'arcact',pair:NET.pair}); } }   // v23.39 (arcade16)
   // v23.26 (arcfixa): a player 2 that answered busy is offered the arcade again every 3 s, so it comes in once its raid is over.
   if(ARCADE.role==='host'&&ARCADE.p2Busy&&Date.now()-(+ARCADE.offerAt||0)>=3000){ ARCADE.offerAt=Date.now(); netSamePost({t:'arcon',pair:NET.pair}); }
-  if(G&&G.arcade&&!arcadeBenched()){ if(ATT.on) attStop(); return; }   // v23.25 (arcade6): a benched player 1 keeps the attract
+  if(G&&G.arcade&&(!arcadeBenched()||netWatchOn())){ if(ATT.on) attStop(); return; }   // v23.25 (arcade6): a benched player 1 keeps the attract
   // v23.25 (arcade6): player 2 asked to join and is not in yet: ask again (arcjoin every 3 s, or the raid in progress every 1.5 s after arcgo fresh 0)
   if(ARCADE.role==='p2'&&ARCADE.wantIn&&!(G&&G.arcade)){
     var nw=Date.now();
@@ -72217,6 +72264,13 @@ function arcadeKeyAtt(e){
   if(!ARCADE.on||!e) return false;
   if(arcadeOpChord(e)) return true;   // v23.44 (arcade21): Ctrl+Shift+F10, the only way out
   if(ARCOP) return arcadeOpKey(e);   // v26.xx (party5): the operator menu takes the keys and clicks
+  // v28.xx (cw-cx-outwatch): consume every play action except ping; an out player can never unbench through input.
+  if(netWatchOn()){
+    var wc=keyRemap(String(e.code||'')), wt=String(e.type||'');
+    if((wt==='keydown'||wt==='keyup')&&(wc==='KeyN'||wc==='Mouse1')) return false;
+    if((wt==='mousedown'||wt==='mouseup')&&e.button===1) return false;
+    try{ e.preventDefault(); e.stopImmediatePropagation(); }catch(_we){} return true;
+  }
   if(easyKey(e)) return true;   // v28.xx (cw-easymode): Y or N answers the easy mode question
   if(arcadeIniRaid()) return arcadeIniKey(e);   // v23.45 (arcade22): the initials card at an extraction takes the keys (ESC still pauses)
   if(G&&G.arcade&&!arcadeBenched()) return false;            // a raid is on here: the key plays (v23.25, arcade6: unless player 1 is benched)

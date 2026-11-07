@@ -1,0 +1,5 @@
+## v37.54 - OUT FIRST WATCHES AND PINGS
+
+Co-op hunt while he was away. His 2.25 b and g-54: the player out first watches their partner live and can still ping. Watch: the watching window must keep its frame rate while it runs the simulation; a watcher ping must name its sender; waiting must never look like the run ended.
+
+MEASURED. Check 37.54 passes, and fails on v37.53.

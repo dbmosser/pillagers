@@ -697,3 +697,11 @@
 2026-11-07 14:38 o-h07-156-overseer-chases-top-damage 205s ok PARTIAL in=588866 out=7730 run=1
 2026-11-07 14:52 o-h07-156-overseer-chases-top-damage 20s ok DONE in=767133 out=8265 run=2
 2026-11-07 15:00 o-h08-158-sleeping-machines 429s ok PARTIAL in=1754529 out=16211 run=1
+2026-11-07 15:40 o-h08-158-sleeping-machines 123s ok PARTIAL in=538668 out=3832 run=2
+2026-11-07 15:50 o-h08-158-sleeping-machines 83s ok PARTIAL in=230779 out=3005 run=3
+2026-11-07 15:52 o-h09-162-loot-in-sight-at-every-spawn 100s ok PARTIAL in=348711 out=3094 run=1
+2026-11-07 15:58 o-h09-162-loot-in-sight-at-every-spawn 120s ok PARTIAL in=779887 out=7769 run=2
+2026-11-07 16:02 o-h09-162-loot-in-sight-at-every-spawn 82s ok PARTIAL in=1089761 out=10850 run=3
+2026-11-07 16:11 o-h09-162-loot-in-sight-at-every-spawn 71s ok PARTIAL in=1304965 out=13200 run=4
+2026-11-07 16:12 o-h09-162-loot-in-sight-at-every-spawn 51s ok PARTIAL in=1533446 out=14541 run=5
+2026-11-07 16:24 o-h10-169-out-player-watches-and-pings 702s ok PARTIAL in=3663668 out=27292 run=1

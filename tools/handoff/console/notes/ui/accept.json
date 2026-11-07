@@ -5744,5 +5744,164 @@
   "pic": "tools/handoff/console/notes/shots/o-h06-153-blasts-shove-big-hits-nudge-aim-recipes-1/153-join-shove-1080.jpg",
   "task": "o-h06-153-blasts-shove-big-hits-nudge-aim",
   "when": "2026-11-07T19:32"
+ },
+ "sleep-day-host": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "color-coding and lower-case discipline are solid but the HUD runs three hero-scale readouts at once and tacks on an explaining sentence and a stray unlabeled number strip, so it reads as assembled rather than designed.",
+  "findings": [
+   "P0 top bar: clock '15:00' center, 'extract 155m' top-right, ammo '12/24' bottom-right: keep only the ammo count or the extract countdown at 56px hero size when it's the live priority; drop the other two to --fs-title (32px) so the eye has one place to land first",
+   "P0 bottom edge, full width: hotbar slots 1-3 filled, 4-6 empty, then an isolated '7 8 9 0' cluster far right with tick marks: remove it if it's not player-facing, or merge it into the hotbar's own 8px-grid spacing with a clear label so it doesn't look like a stray element",
+   "P1 left mid-screen banner: 'contract item nearby · gold glow marks the box': cut to 'contract item nearby' only and let the gold glow itself carry the meaning, per the guide's straight-copy rule",
+   "P1 top-left 'current pillagers / value at risk' panel: give every row one consistent right-side status slot (icon or color tag, not mixed $/text), and drop the redundant summary line",
+   "P2 'run info' dropdown, top-right under 'extract 155m': add --sp-2 (16px) clearance from the element above"
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h08-158-sleeping-machines-recipes-1/sleep-day-host-1080.jpg",
+  "task": "o-h08-158-sleeping-machines",
+  "when": "2026-11-07T20:23"
+ },
+ "sleep-day-join": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "a functional, data-dense extraction HUD that reads fine moment-to-moment but splits attention across three equally bold corners instead of giving the eye one clear place to land.",
+  "findings": [
+   "P0 top bar, all three zones at once: demote two of the three: keep only the extract countdown at --fs-hero 56px bold teal (it is the thing players act on), drop the clock to --fs-body 20px quiet white, and drop the scoreboard header weight to --fs-label 16px --tx-2.",
+   "P1 top strip vs. left scoreboard panel vs. 'contract item nearby' bar: rebuild all three on --ui-panel (#16191b) with a single --ui-line-hi border and --rad 4px; vary only the accent edge colour, not the whole panel style.",
+   "P1 'contract item nearby · gold glow marks the box': cut to 'contract item nearby' and let the actual in-world gold glow do the teaching; if a hint is required put it in --fs-fine 14px, not as a full clause at body size.",
+   "P2 'f1 controls' pill, bottom-centre: move the f1 controls chip to the left third of the bottom bar, clear of the weapon hotbar numbers 1–0.",
+   "P2 top-right corner, 'extract 155m' stacked over 'run info': separate by a full --sp-3 (24px) gap or move 'run info' to a different corner; keep teal exclusively on the extract readout with no neighbouring control touching it."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h08-158-sleeping-machines-recipes-1/sleep-day-join-1080.jpg",
+  "task": "o-h08-158-sleeping-machines",
+  "when": "2026-11-07T20:24"
+ },
+ "sleep-night-host": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "the hud is a scatter of unrelated boxes pulling the eye in five directions with at least one token rule already broken on the hotbar.",
+  "findings": [
+   "P0 bottom hotbar, slot 1 (selected pistol): recolor the selected-slot border to --acc #e6ff3d at 2px, remove amber from any slot state.",
+   "P0 top-left squad panel, \"ratioedinchat\" row: recolor player name text to --tx-1 (or --acc if it must flag \"you\"); drop the magenta entirely.",
+   "P1 whole screen: drop hp bar and ammo count to --tx-1/--tx-2 weight (no full saturation), keep only the extract timer at full --acc/--extract brightness as the one hero read.",
+   "P1 hotbar, slots 4 through 0: either hide empty slots entirely or render them at identical --ui-panel fill/size as filled slots; keep the row inside the 5% screen margin so it can't clip behind the ammo card.",
+   "P1 top-right \"run info\" dropdown: give it a --ui-panel fill, --line-hi border, --rad 4px, and anchor it with --sp-2 (16px) under the extract banner so the pair reads as one cluster."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h08-158-sleeping-machines-recipes-1/sleep-night-host-1080.jpg",
+  "task": "o-h08-158-sleeping-machines",
+  "when": "2026-11-07T20:25"
+ },
+ "sleep-night-join": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "the raid hud has four competing bold numbers and a duplicated extraction readout, so the eye has no single target and the panel styling is a grab-bag of three different box treatments.",
+  "findings": [
+   "P0 top-center clock (15:00), bottom-left hp (100), bottom-right ammo (12/24), top-right extract (155m): demote three of the four to --fs-body (20px) or --fs-label (16px) weight/size and keep only one true hero at 56px per screen state",
+   "P0 top-right \"extract 155m\" vs. floating \"c 155m\" tag mid-right near the crosshair: delete the floating world-space \"c 155m\" marker and keep the single top-right extract readout as the only distance indicator",
+   "P1 player name \"ratioedinchat\" in the current-pillagers panel, and the thin bar under weapon slot 3: recolor to --tx-1 (or cyan if it denotes player 2) and recolor the weapon-slot bar to --acc or --tx-2, remove the magenta entirely",
+   "P1 current-pillagers/value-at-risk panel (top-left): rebuild all three to the same --ui-panel fill, --ui-line-hi 1px border, 4px --rad radius so the HUD reads as one system",
+   "P1 \"run info\" dropdown, top-right under the extract readout: convert to --ui-panel fill with --tx-1 text and an --acc caret, matching the rest of the HUD chrome"
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h08-158-sleeping-machines-recipes-1/sleep-night-join-1080.jpg",
+  "task": "o-h08-158-sleeping-machines",
+  "when": "2026-11-07T20:26"
+ },
+ "sleep-art-day-host": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "the only hud on this screen is a flat row of equal-weight dollar figures over bare world art and an unlabeled bar bleeding off the left edge — nothing close to a shippable hud.",
+  "findings": [
+   "P0 far left edge, full screen height: either delete it or rebuild it as a labeled stat (e.g. stamina/noise meter) using --ui-panel fill, --line-hi border, --acc fill-amount, with a --fs-label icon/number next to it; never let a hud element touch the frame edge unexplained.",
+   "P1 top-right, '$1,000  stash $0  bag $3,200': promote the carried-cash figure ($1,000, what the player can lose) to --fs-title/hero weight in --acc or --tx-1, drop stash/bag to --fs-label in --tx-2, and add an 8px --sp-1 gap plus a thin --ui-line divider between the three groups so they don't read as one run-on string.",
+   "P1 top-right currency cluster: add a low-opacity --scrim or a slim --ui-panel strip (height ~40px) behind the currency row so contrast stays fixed regardless of what's under it, matching how the guide treats every other overlay.",
+   "P2 whole frame: confirm this capture is the intended state; if a recipe/interact prompt is meant to show here, it's missing entirely and should be added before this can be scored as a real screen."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h08-158-sleeping-machines-recipes-2/sleep-art-day-host-1080.jpg",
+  "task": "o-h08-158-sleeping-machines",
+  "when": "2026-11-07T20:43"
+ },
+ "sleep-art-day-join": {
+  "score": 1,
+  "pass": false,
+  "need": 3,
+  "verdict": "this reads as an unlabeled gameplay capture with no join prompt, title, or any ui layer to review as a screen.",
+  "findings": [
+   "P0 whole screen: add the single live-prompt line per the walk-up spec (e.g. 'press a to join'), sized at --fs-title 32px f-cond 700, centered in the lower third over a --scrim backing, nothing else competing for bold weight",
+   "P0 far left, x:0-120px, full height: delete this strip entirely if it carries no content, or if it's a sidebar give it a 32px padded header and real rows; never ship an empty full-height panel",
+   "P1 top-right HUD, '$1,000 stash $0 bag $3,200': per the style guide, pick one hero value (likely bag, the raid total) at --fs-hero or at least --acc color, drop the other two to --tx-2 at --fs-label, and add a --ui-panel backing strip with --scrim behind the whole row",
+   "P1 whole screen: for a join/attract screen, add a thin --acc bottom-or-top bar and the game's title lockup so it reads as a designed screen, not a cropped play session",
+   "P2 HUD text over the rooftop art top-right: add the --scrim rgba(6,7,8,.80) panel behind the HUD row per the style guide's NEW scrim rule so text contrast is guaranteed regardless of background art"
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h08-158-sleeping-machines-recipes-2/sleep-art-day-join-1080.jpg",
+  "task": "o-h08-158-sleeping-machines",
+  "when": "2026-11-07T20:44"
+ },
+ "sleep-art-night-host": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "the currency row is unstyled debug text and the left edge carries a large blank chrome panel that explains nothing, so the one piece of actual ui reads like a placeholder bolted onto a finished scene.",
+  "findings": [
+   "P0 left edge, full height, ~0-120px x 0-1080px: either populate it with real content (minimap, objective, or raid-controls per the style guide) or remove it entirely; an empty --ui-panel-colored strip this size fails hierarchy rule 1 on its own.",
+   "P1 top-right currency row, ~1620-1900px x 20-45px: wrap the row in a --ui-panel chip (rad 4px), give money an icon or the --acc accent as the hero value at fs-title (32px), drop the others to fs-label (16px) tx-2, and make label order consistent (icon+value for all three, no bare leading number).",
+   "P1 top-right currency row: per the token guide, reserve --acc for the one primary readout (e.g. bag value, since it's the at-risk haul) and keep wallet/stash in tx-2.",
+   "P2 player and robot cluster, left third of the lit room, ~330-720px x 520-620px: add a small interact prompt (key glyph + short lower-case verb) near the machine when in range, using fs-label and --acc for the glyph only.",
+   "P2 overall frame: confirm with the owner whether this is a deliberate stealth/ambient HUD state; if not, bring back the standard combat HUD elements per the career HUD spec so the screen is consistent with other raid shots."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h08-158-sleeping-machines-recipes-2/sleep-art-night-host-1080.jpg",
+  "task": "o-h08-158-sleeping-machines",
+  "when": "2026-11-07T20:45"
+ },
+ "sleep-art-night-join": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "this reads as a bare gameplay shot with a stray stat row jammed in the corner, not a join screen with any visible way to continue.",
+  "findings": [
+   "P0 whole screen: add the live continue prompt (device-specific key/button label) at fs-title 32px, centered or lower-third, on a scrim per section 0, so it reads as the primary action.",
+   "P1 top-right, $1,000 / stash $0 / bag $3,200 row: back the row in a --ui-panel strip or per-token scrim with --sp-2 (16px) padding, inset from the edge by --sp-3 (24px), clear of world geometry.",
+   "P1 same stat row: set fixed --sp-3 (24px) gaps between the three label groups and left-align each label+value pair on a shared baseline.",
+   "P2 whole screen: make the missing continue prompt the one fs-hero/fs-title element on screen; keep the money row at fs-label (16px) so it stays secondary.",
+   "P2 top-right corner: apply the 5% screen margin rule from the space tokens so the rightmost value clears the edge."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h08-158-sleeping-machines-recipes-2/sleep-art-night-join-1080.jpg",
+  "task": "o-h08-158-sleeping-machines",
+  "when": "2026-11-07T20:45"
+ },
+ "62-baseline-spawn-loot": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "two oversized data panels and a stray off-palette name fight the player's eye for attention while the actual survival info gets crammed into unboxed corners.",
+  "findings": [
+   "P0 top-left leaderboard panel vs top-right goals/minimap stack: demote the leaderboard to a collapsed one-line summary (like the raid controls fold) and keep only the goals list expanded; bold only the single nearest/active goal in --acc, set the rest to --tx-2",
+   "P0 leaderboard row, 'fbi_surveillance_van': force all player name text to --tx-1 (#efe9dc); reserve color only for the local player's own row, tinted --acc",
+   "P1 bottom hotkey row, slots 1-10 spanning full screen width: give the whole hotbar a single --ui-panel strip (--scrim backing, 4px --rad) at fixed height so every slot sits on uniform background regardless of what's behind it",
+   "P1 bottom-left corner: posture icons, 'concealed'/'in cover' pills, hp bar, weapon slots all stacked within ~150px: group status chips + hp bar into one --ui-panel card with --sp-2 internal padding, separated from the hotbar strip by a full --sp-3 gap",
+   "P1 goals panel, right side: cap visible goals to the 1-2 active ones at --fs-body, collapse the rest behind the same caret already drawn top-right of the panel"
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h09-162-loot-in-sight-at-every-spawn-recipes-1/162-baseline-spawn-loot-1080.jpg",
+  "task": "o-h09-162-loot-in-sight-at-every-spawn",
+  "when": "2026-11-07T20:56"
+ },
+ "62-placement-diagnosis": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "functional raid hud but the eye lands on a bloated leaderboard and a wall of goal text instead of the crosshair, and off-palette colors plus an explaining tooltip break the style guide's discipline.",
+  "findings": [
+   "P0 top-left 'current pillagers' panel: cap visible rows to 5 with a '+n more' footer already present but shrink panel width ~30% and reduce row height so it reads as a sidebar stat, not a dominant block",
+   "P1 leaderboard rows 'afk_in_the_bushes' and 'lootgoblin_prime': replace magenta with --tx-1 (or --acc only for the player's own row); no new hues outside the documented 11",
+   "P1 bottom-left banner 'contract item nearby · gold glow marks the box': cut to 'contract item nearby' only, drop the explanatory clause",
+   "P1 'goals 0/3' panel, right side: show only the 3 active contract goals by default, fold 'run goals' (down a warden / open a vault / open 6 crates) under its own collapsed header with a chevron, add --sp-1 gap between the two groups",
+   "P2 weapon slot row, bottom center (slots 5-0): give every slot (empty or filled) the same --ui-panel tile at --rad 4px so the row reads as one consistent control, not two different treatments"
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h09-162-loot-in-sight-at-every-spawn-recipes-2/162-placement-diagnosis-1080.jpg",
+  "task": "o-h09-162-loot-in-sight-at-every-spawn",
+  "when": "2026-11-07T21:09"
  }
 }
