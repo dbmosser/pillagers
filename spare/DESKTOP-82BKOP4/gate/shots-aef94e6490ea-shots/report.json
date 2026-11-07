@@ -1,5 +1,0 @@
-{"generated":"2026-11-03T03:44:35","url":"http://localhost:8823/fixture.html","recipes":"C:\\PillagersSpare\\gate\\work\\shots-aef94e6490ea\\recipes.json","seconds":30,"screens":[
-{"name":"a-alone","screen":"debug","1080":{"staged":true,"note":"PROBE v30.66 ok","viewport":"1920x1080","shot":"a-alone-1080.jpg","lint":""}},
-{"name":"b-shipped","screen":"debug","1080":{"staged":true,"note":"PROBE v35.30 ONE: the warn line draws at -197,13, not in the top banner","viewport":"1920x1080","shot":"b-shipped-1080.jpg","lint":""}},
-{"name":"c-edited","screen":"debug","1080":{"staged":true,"note":"PROBE v35.30 ONE: a warn line said once draws in 0 places (), not one; TWO: an info line said does not draw in the left feed (); TWO: an info line said once draws in 0 places, not one; FIVE control: a money pickup line does not draw in the right stack () (then SKIP: the extract distance did not draw at the top h","viewport":"1920x1080","shot":"c-edited-1080.jpg","lint":""}}
-]}
