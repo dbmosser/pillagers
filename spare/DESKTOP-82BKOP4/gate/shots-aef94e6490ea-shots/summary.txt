@@ -1,4 +1,0 @@
-== 1080 : window 1956x1185, viewport 1920x1080
-  a-alone                                staged       5.6s    | PROBE v30.66 ok
-  b-shipped                              staged       5.1s    | PROBE v35.30 ONE: the warn line draws at -197,13, not in the top banner
-  c-edited                               staged       8.4s    | PROBE v35.30 ONE: a warn line said once draws in 0 places (), not one; TWO: an info line said does not draw in the left feed (); TWO: an info line said once draws in 0 places, not one; FIVE control: a money pickup line does not draw in the right stack () (then SKIP: the extract distance did not draw
