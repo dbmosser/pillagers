@@ -1,0 +1,30 @@
+id=shots-16523e4baa57
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=221aef2cb9a7f1290318c7f65038476cb2f9604e
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1794087620
+ended=1794087685
+result=PASS
+infra=0
+reason=
+--- stages
+== 1080 : window 1956x1185, viewport 1920x1080
+  169-host-watching                      staged       6.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  169-p2-watching                        staged       6.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  169-partner-watcher-ping               staged       6.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 4k : window 3876x2265, viewport 3840x2160
+  169-host-watching                      staged       5.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  169-p2-watching                        staged       5.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  169-partner-watcher-ping               staged       5.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+report: C:\PillagersSpare\gate\work\shots-16523e4baa57\shots\report.json
+--- end
+done=1
