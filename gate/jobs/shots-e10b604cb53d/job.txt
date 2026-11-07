@@ -1,0 +1,14 @@
+id=shots-e10b604cb53d
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=977691859eae1291c78f2e42d63bcf7ad2f62cc6
+screens=heal-windup-host,heal-windup-join
+res=1080,4k
+nolint=0
+lintopts=
+from=JUL26
+submitted=1794074368
+expires=1794080968
