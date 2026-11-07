@@ -1,0 +1,15 @@
+id=preflight-cw-cx-revive-save-09e03552d1c4
+kind=preflight
+key=cw-cx-revive-save
+tag=pfo
+v=37.51
+new=3751
+base=d9dffdc59483d9bcad62ca0ba30b3289832c56c7
+draft_sha=a02cbc1944ba5ad56ee6721e8c82664c44ddc0249e60b9c880e1a191b35f991f
+p_sha=7b6d75df19991b9ae779b865204bf54579bf602831a2d9cf48ddaff95adde805
+f_sha=d96f0ea6f32b917b832238c45f4b638e50dbfda40080b028114486a2b2ec9dd5
+game_sha=afcde934e0ab9bb9c73591b9a7faba8bea24d2588be7813da78f500909b9f53a
+fix_sha=eb51733bb32dbd5d234385fee1797e5d35ab3a2003be690f302aca99df59604a
+from=JUL26
+submitted=1794076939
+expires=1794083539
