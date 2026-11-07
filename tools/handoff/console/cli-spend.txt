@@ -2292,3 +2292,9 @@
 2026-11-07 0.0000 o-h01-177-hardcore-save
 2026-11-07 0.0000 o-h01-177-hardcore-save
 2026-11-07 0.0000 o-h02-147-heal-slows-big-hit-stops-it
+2026-11-07 0.0000 o-h02-147-heal-slows-big-hit-stops-it
+2026-11-07 0.1536 critic-o-h02-147-heal-slows-big-hit-stops-it
+2026-11-07 0.1336 critic-o-h02-147-heal-slows-big-hit-stops-it
+2026-11-07 0.0000 o-h02-147-heal-slows-big-hit-stops-it
+2026-11-07 0.0000 o-h03-148-bots-charge-or-flee-grenades
+2026-11-07 0.0000 o-h03-148-bots-charge-or-flee-grenades

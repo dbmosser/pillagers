@@ -1,0 +1,7 @@
+v37.50: hurt pillagers charge or flee and evade grenades
+
+About forty percent of hurt hostile pillagers charge for four seconds rather than smoke and flee. All standing pillagers run from live grenades after a short reaction, including hires, simulated raids and party copies. Golden pillagers keep their exemption. LINKED REVIEW NEEDED: synced; host movement reaches the peer through netEntRow positions and state.
+
+Check 37.50. Fails on v37.49.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

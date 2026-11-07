@@ -5648,5 +5648,37 @@
   "pic": "tools/handoff/console/notes/shots/o-263-ghost-through-roof-9-27-recipes-2/263-container-roof-original-check-1080.jpg",
   "task": "o-263-ghost-through-roof-9-27",
   "when": "2026-11-04T21:32"
+ },
+ "heal-windup-host": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "the raid hud is drowning in simultaneous panels and duplicated readouts, reading like a debug build rather than a shipped ARC Raiders-style HUD.",
+  "findings": [
+   "P0 bottom-left, full key legend panel over 'move/gear/fight/raid': cut to a single collapsed hint line ('fl full list') by default, expand only on held key; keybind reference belongs in a pause/help screen, not raid hud.",
+   "P0 top-right 'extract 152m' banner vs bottom-right 'c 152m ▶' tag: keep only the top-right teal 'extract 152m' hero readout; delete the bottom-right 'c 152m' duplicate entirely.",
+   "P1 banner above hp bar, 'contract item nearby · gold glow marks the box': replace with a short label plus icon, e.g. 'contract item' + a small gold-glow swatch icon, no explanatory clause.",
+   "P1 top-left 'current pillagers / value at risk' panel: default this panel to its collapsed caret state (one-line summary like '3 dead · $7,030 at risk') and only expand on input; stop auto-expanding during live raid.",
+   "P1 top-right, 'run info ▾' box directly under the extract banner: merge into a single top-right panel: extract timer as the hero line, 'run info' as a slim tab/footer row inside the same card, shared background and --rad 4px corners."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h02-147-heal-slows-big-hit-stops-it-recipes-2/heal-windup-host-1080.jpg",
+  "task": "o-h02-147-heal-slows-big-hit-stops-it",
+  "when": "2026-11-07T18:02"
+ },
+ "heal-windup-join": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "the control list ignores the settled fold-to-one-line order and the extract timer duplicates itself, so the hud reads cluttered and inconsistent rather than quiet.",
+  "findings": [
+   "P0 bottom-left keybind panel: collapse to a single ~32px row reading 'f1 controls' mid-bottom-left; only expand the full 2-column list on f1 hold/press.",
+   "P0 top-right 'extract 152m' banner vs floating 'c 152m' marker near the long dock cache: drop the floating 'c 152m' world chip; keep the extract countdown only in the top-right hero banner.",
+   "P1 top-right corner stack: 'extract 152m', 'run info' dropdown, 'the long dock cache' tooltip, purple item marker: demote 'run info' and the cache tooltip to --fs-label (16px) tx-2, reserve --fs-hero/acc color for the extract timer only.",
+   "P1 top-left 'keyboard' input-device label: recolor the device label to tx-2 (muted) or --acc only if it is meant to be focus-highlighted; never teal.",
+   "P2 hp bar, bottom-left: use --ui-line/--ui-raised for the empty track; reserve red fill only as a pulse/flash when hp drops under a threshold, not a static base state."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h02-147-heal-slows-big-hit-stops-it-recipes-2/heal-windup-join-1080.jpg",
+  "task": "o-h02-147-heal-slows-big-hit-stops-it",
+  "when": "2026-11-07T18:04"
  }
 }

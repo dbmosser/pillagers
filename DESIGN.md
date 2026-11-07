@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.50 - HURT PILLAGERS CHARGE OR FLEE AND EVADE GRENADES
+
+Co-op hunt while he was away. His g-23 answer: Some back off, some charge. His g-28 answer: They run from it. Watch: a nearly dead pillager that charges is more dangerous; watch deaths to low-health pillagers and whether the charge reads as a choice. Watch frag kill rate because fleeing may make grenades harder to kill with; cooking is the counter.
+
+MEASURED. Check 37.50 passes, and fails on v37.49.
 ## v37.49 - HEALING SLOWS AND BIG HITS INTERRUPT
 
 Co-op hunt while he was away. His g-2 answer: Half speed. His g-5 answer: Only a big hit stops it. Watch: healing in the open gets riskier; check whether the 1.5 s half-speed wind-up feels sticky, whether the slow should continue through healing (4.2 s bandage, 9.6 s medkit), and whether losing the item to a big hit feels too harsh.

@@ -4024,8 +4024,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.49';
-var VER_AT='2026-11-07 12:55';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.50';
+var VER_AT='2026-11-07 13:28';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -33378,6 +33378,8 @@ if(_se.kind==='raider'&&_se.sprintPool>0&&_se.moving&&!_se.downed){
         if(_se.printCd<=0) _se.printCd=0.6;
       }
     }
+    // v28.xx (cw-cx-chargefrag): four real seconds, even while dodging or outside chase.
+    if(_se.rushT>0) _se.rushT=Math.max(0,_se.rushT-dt);
     if(_se.shotT>0){ _se.shotT-=dt; if(_se.shotT<0) _se.shotT=0; }
     if(_se.mendFx>0) _se.mendFx-=dt;   // v26.xx (ai25)
     if(_se.affix==='mend'&&_se.hp>0&&!_se.downed&&!_se.finished){ _se.mendT=(_se.mendT||0)-dt; if(_se.mendT<=0){ _se.mendT=0.5; affixMend(_se); } }
@@ -34372,6 +34374,13 @@ if(eb===e||eb.kind==='snitch'||eb.neutral||eb.kind==='peddler'||eb.kind==='stray
     // just a message bug: he was flip-flopping between fleeing and charging on
     // every hit, which is also why the movement looked wrong.
 if(e.kind==='raider'&&!e.golden&&e.state!=='extract'&&!e.cornered&&e.hp<e.maxhp*0.3){   // v23.xx: a man who turned on the one shooting him (runnerTurns) does not bolt again
+      // v28.xx (cw-cx-chargefrag): his g-23 answer, "Some back off, some charge". No seeded draw.
+      if(e.hostile&&!e.merc&&!e.friendlyPC){
+        if(e.brave===undefined) e.brave=((Math.imul((e.nid|0)||Math.round(e.x*7+e.y),2654435761)>>>0)%10<4)?1:0;
+      }
+      if(e.hostile&&!e.merc&&!e.friendlyPC&&e.brave&&runnerTurns(e,p.x,p.y)){
+        e.rushT=4;
+      } else {
       e.state='extract';
       if(!e.fled){
         e.fled=1;
@@ -34382,6 +34391,7 @@ if(e.kind==='raider'&&!e.golden&&e.state!=='extract'&&!e.cornered&&e.hp<e.maxhp*
           if(!G.sim) sfx('clank',e.x,e.y);
         }
         if(!G.sim&&canSee(p.x,p.y,p.face,e.x,e.y,G.vseg)) label(e.x,e.y-18,e.name+' IS RUNNING','#ffc04a',0,true);
+      }
       }
     }
     // v3.72: a merc whose client is DOWN skips the entire seen-you section.
@@ -34410,6 +34420,20 @@ var _rdS=G.shells[_rdi];
         e.moving=true; _rdHit=true; break;
       }
       if(_rdHit){ collide(e,G.map.walls); continue; }
+    }
+    // v28.xx (cw-cx-chargefrag): his g-28 answer, "They run from it". Hires and party fx copies too; no dice or sim fence.
+    if(e.kind==='raider'&&!e.downed&&G.frags&&G.frags.length){
+      var _fgR=(CFG.fragR===undefined?190:CFG.fragR),_fgHit=false;
+      for(var _fgi=0;_fgi<G.frags.length;_fgi++){
+        var _fg=G.frags[_fgi];
+        if(_fg.by===e||_fg.t<0.15||_fg.t>=_fg.fuse) continue;
+        var _fgD=Math.hypot(e.x-_fg.x,e.y-_fg.y);
+        if(_fgD>=_fgR+16||(_fgD>120&&!losClear(e.x,e.y,_fg.x,_fg.y,G.vseg))) continue;
+        var _fgA=_fgD>0.5?Math.atan2(e.y-_fg.y,e.x-_fg.x):e.face;
+        moveToward(e,_fg.x+Math.cos(_fgA)*(_fgR+30),_fg.y+Math.sin(_fgA)*(_fgR+30),e.spd*1.35,dt);
+        e.moving=true; _fgHit=true; break;
+      }
+      if(_fgHit){ collide(e,G.map.walls); continue; }
     }
     if(sees&&!(e.merc&&!e.downed&&(
         // v8.45, audit: ALL THREE ORDERS. This named follow and hold and left
@@ -34625,7 +34649,9 @@ var _rpx=e.x,_rpy=e.y;                       // v3.95: where he was before he mo
         // sighting, a blind raider walked 218 units at cosine 0.996 straight at a
         // man he had never seen there. The `else if(!sees)` line below is his
         // correct behaviour and it was unreachable at any range this branch took.
-        if(e.pinT>0){
+        // v28.xx (cw-cx-chargefrag): a brave hurt pillager commits to the charge before cover or retreat.
+        if(e.rushT>0) navSeek(e,sees?p.x:e.tx,sees?p.y:e.ty,e.spd*1.25,dt);
+        else if(e.pinT>0){
           // v26.xx (ai22): PINNED. He holds where he is (ducked), or slips to cover that is no nearer you.
           var _pcv=raiderCoverSpot(e,p,d);
           if(_pcv&&dist(_pcv,p)>=d-20&&dist(e,_pcv)>8) moveToward(e,_pcv.x,_pcv.y,e.spd*.85,dt);
@@ -58113,7 +58139,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.49: Medical wind-ups move at half speed without sprint. A landed incoming hit of 30 or more cancels the wind-up and spends the item. Plates and flowing heals keep their rules. Check 37.49 fails on v37.48',
+  now:'v37.50: About forty percent of hurt hostile pillagers charge for four seconds rather than smoke and flee. All standing pillagers run from live grenades after a short reaction, including hires, simulated raids and party copies. Golden pillagers keep their exemption. LINKED REVIEW NEEDED: synced; host movement reaches the peer through netEntRow positions and state. Check 37.50 fails on v37.49',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

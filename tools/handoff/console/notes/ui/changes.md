@@ -724,3 +724,5 @@
 2026-11-07 | o-h01-177-hardcore-save | title/saves, KIA, graveyard | added a shared hardcore creation switch, save tag, fallen line and stash-ranked graveyard; title name row wraps to keep controls reachable | before: existing v37.48 screens 01 and 35; new states have no old pictures | after: tools/handoff/console/notes/shots/o-h01-177-hardcore-save-recipes-1/hc-*-1080.jpg and hc-*-4k.jpg (lane pending)
 2026-11-07 | o-h02-147-heal-slows-big-hit-stops-it | raid, both local seats | added lowercase heal interrupted callout when a landed incoming hit of 30 or more stops medical wind-up | camera recipes heal-windup-host and heal-windup-join; lane supplies picture paths.
 
+2026-11-07 | o-h02-147-heal-slows-big-hit-stops-it | raid, both local seats | healing mechanics shipped v37.49; medical wind-up pictures verified, existing HUD critic findings handed to coordinator | no valid before picture; after tools/handoff/console/notes/shots/o-h02-147-heal-slows-big-hit-stops-it-recipes-2/heal-windup-host-1080.jpg and heal-windup-join-1080.jpg.
+

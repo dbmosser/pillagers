@@ -1,0 +1,5 @@
+## v37.50 - HURT PILLAGERS CHARGE OR FLEE AND EVADE GRENADES
+
+Co-op hunt while he was away. His g-23 answer: Some back off, some charge. His g-28 answer: They run from it. Watch: a nearly dead pillager that charges is more dangerous; watch deaths to low-health pillagers and whether the charge reads as a choice. Watch frag kill rate because fleeing may make grenades harder to kill with; cooking is the counter.
+
+MEASURED. Check 37.50 passes, and fails on v37.49.
