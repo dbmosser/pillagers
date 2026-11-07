@@ -5903,5 +5903,53 @@
   "pic": "tools/handoff/console/notes/shots/o-h09-162-loot-in-sight-at-every-spawn-recipes-2/162-placement-diagnosis-1080.jpg",
   "task": "o-h09-162-loot-in-sight-at-every-spawn",
   "when": "2026-11-07T21:09"
+ },
+ "69-host-watching": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "this reads as a bare top-down debug view with stock text-on-black labels dropped on it, not an extraction-shooter hud.",
+  "findings": [
+   "P0 bottom-center 'waiting' label: make 'waiting' the dominant element on this screen: fs-title (32px) minimum, centered with clear air above the bottom bar, not touching it",
+   "P1 full map, purple/orange soft-edged rectangle patches over buildings and street: clip interior tint strictly to room polygons, use one light-cone falloff per light source, and drop any patch not tied to an actual light or room boundary",
+   "P1 'waiting' box vs. bottom hud/supply bar: reserve an 8px-grid gap (--sp-2 min) between the waiting label and the bottom bar, or move the label up into open map space",
+   "P1 'player 2', 'crawler h-38', 'chill row cache', 'waiting' labels: one nameplate component: --ui-panel fill, --rad 4px corners, --fs-label (16px) text, fixed padding from --sp-1, used for every floating tag — player, enemy, poi, status alike",
+   "P2 whole screen: even in spectate/walk-up mode, keep the quiet-hud left feed and top-centre banner slots visible (per job 186a) so the frame still reads as Pillagers, not an empty map"
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h10-169-out-player-watches-and-pings-recipes-1/169-host-watching-1080.jpg",
+  "task": "o-h10-169-out-player-watches-and-pings",
+  "when": "2026-11-07T21:42"
+ },
+ "69-p2-watching": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "this is a party walk-up spectator screen with no visible continue prompt and nameplate chrome that ignores the style guide entirely.",
+  "findings": [
+   "P0 bottom-center 'waiting' pill: replace the pill text with the literal bound input, e.g. 'press a / press space to continue', sized at --fs-body 20px minimum, placed with clear foreground contrast against the scrim.",
+   "P1 'player 1' / 'crawler h-38' / 'chill row cache' nameplates: standardize all three to one nameplate component: --ui-panel fill, --rad 4px corners, --sp-1 padding, --fs-label 16px text; give the player-controlled nameplate the --acc lime underline/border since it's the one 'selected' element on screen, leave npc/poi tags neutral tx-1.",
+   "P1 'waiting' pill, bottom edge: anchor it on the --sp-5 (48px) margin from the bottom edge, center it horizontally, and give it a visibly different treatment (scrim背景 + lime text) than the in-world nameplates so it reads as UI, not world chrome.",
+   "P2 overall frame: reserve --acc for exactly one element per the guide (likely the continue prompt here) and keep everything else quiet per section 1's rule.",
+   "P2 'chill row cache' and 'crawler h-38' tags: use one tag component with fixed padding (--sp-1 all sides) and --rad 4px for every in-world label."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h10-169-out-player-watches-and-pings-recipes-1/169-p2-watching-1080.jpg",
+  "task": "o-h10-169-out-player-watches-and-pings",
+  "when": "2026-11-07T21:43"
+ },
+ "69-partner-watcher-ping": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "a cluttered, kit-bashed hud where a full keybind cheat-sheet sits wide open on the left and five different elements fight to be the one bold hero number, so nothing reads as primary.",
+  "findings": [
+   "P0 left side, 'move/gear/fight/raid' panel: collapse this panel to a single row reading 'f1 controls' mid-bottom-left per the spec; only expand to the full list on f1 press.",
+   "P0 whole hud: center clock, top-right extract timer, top-left team score, bottom-left hp 100, bottom-right ammo count: demote team score and hp readout to fs-body (20px) quiet weight; keep only the extract countdown or the clock at fs-hero (56px), not five things at once.",
+   "P1 top-left mini player-1 panel vs. bottom-edge 'hp 100' bar: pick one hp readout location (the name-tag bar is enough while spectating); delete the bottom-edge bar or repurpose/label it clearly if it reads a different stat.",
+   "P1 bottom-left 'hp 100' bar: inset the bar by --sp-4 (32px) from the left edge and cap its width like the keybind and ammo panels, or convert it into a card consistent with --ui-panel fill and --rad 4px corners.",
+   "P1 bottom-center weapon slot 2: render slot 2's icon in the same shaded/outlined style and palette as the other two weapon icons."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h10-169-out-player-watches-and-pings-recipes-1/169-partner-watcher-ping-1080.jpg",
+  "task": "o-h10-169-out-player-watches-and-pings",
+  "when": "2026-11-07T21:44"
  }
 }

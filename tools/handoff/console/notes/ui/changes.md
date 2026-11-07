@@ -736,3 +736,5 @@
 
 2026-11-07 | o-h10-169-out-player-watches-and-pings | raid, extracted host/player 2 and retained career host | partner camera and sight cone, one small waiting line, existing sender-coloured pings; outcome card waits for partner | before: none (custom scenes) | after: camera-recipes.json scenes 169-host-watching, 169-p2-watching, 169-partner-watcher-ping; lane picture paths pending.
 
+2026-11-07 | o-h10-169-out-player-watches-and-pings | spectator waiting HUD | waiting type at least 32px at 1080p, panel at least 208x64px, bottom gap 64px, cyan top rule | before: tools/handoff/console/notes/shots/o-h10-169-out-player-watches-and-pings-recipes-1/169-host-watching-1080.jpg and 169-p2-watching-1080.jpg | after: recipe round 2 pending.
+

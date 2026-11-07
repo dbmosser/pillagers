@@ -4024,8 +4024,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.54';
-var VER_AT='2026-11-07 16:35';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.55';
+var VER_AT='2026-11-07 17:01';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -58223,7 +58223,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.54: Extracted demo players follow the partner with a small waiting line. N, middle mouse and the pad ping still mark targets, including double-tap danger, without rejoining or using the map. The retained career host can also watch and ping until the party finishes. Check 37.54 fails on v37.53',
+  now:'v37.55: The waiting status uses at least 32px text at 1080p in a 64px-high panel, with 64px clear of the bottom edge. Normal raid HUD and controls stay as ordered. Check 37.55 fails on v37.54',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -65613,11 +65613,14 @@ function netWatchHud(){
   ctx.save();
   try{
     netPingDraw();
-    var y=H-LH(38), label='waiting', w;
-    ctx.font=hudFS(TYPE.label); ctx.textAlign='center'; ctx.textBaseline='middle';
-    w=ctx.measureText(label).width+LH(32);
-    ctx.fillStyle='rgba(11,12,13,.88)'; ctx.fillRect((W-w)/2,y-LH(18),w,LH(36));
-    ctx.fillStyle=HUDC.ally; ctx.fillText(label,W/2,y);
+    // v28.xx (cw-cx-outwatchread): critic round 1 could not distinguish the small waiting line from a world tag. Keep his waiting-only status, 32px minimum, 64px clear of the bottom edge.
+    var s=Math.max(1,hudRes()), y=H-96*s, label='waiting', w;
+    ctx.font=hudFS(TYPE.title).replace(/([\d.]+)px/,function(m,n){ return Math.max(32*s,+n)+'px'; });
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    w=Math.max(208*s,ctx.measureText(label).width+48*s);
+    ctx.fillStyle='rgba(17,19,21,.94)'; ctx.fillRect((W-w)/2,y-32*s,w,64*s);
+    ctx.fillStyle=HUDC.ally; ctx.fillRect((W-w)/2,y-32*s,w,3*s);
+    ctx.fillStyle=HUDC.text||'#e8e4dc'; ctx.fillText(label,W/2,y);
   }finally{ ctx.restore(); }
 }
 function netWatchPad(gp){

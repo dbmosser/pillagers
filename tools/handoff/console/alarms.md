@@ -827,3 +827,5 @@ o-h09-162 coordinator blocker: strict spawn-loot check fails map 1 spawn 3 (8650
 
 2026-11-07 - o-h10-169-out-player-watches-and-pings: LINKED REVIEW NEEDED: synced. cw-cx-outwatch uses existing st body positions and png packets. Lane camera recipes provide three staged per-role views, not proof of live transport. After shipping, coordinator must run the live pair in both extraction orders and capture both windows: waiting view follows partner, watcher crawler ping reaches partner with watcher identity, pad and mouse ping work, no shots/search/rejoin, both-out ending unchanged. Also watch host frame rate. No fixture edit requested.
 
+11-07 16:35 v37.53 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-07 16:46 v37.54 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log

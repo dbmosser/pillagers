@@ -14,3 +14,15 @@ camera-recipes.json has three smooth-look scenes: extracted host watching; extra
 
 LINKED REVIEW NEEDED: synced. Uses existing st body packets and png ping packets; no new packet fields. A live linked pair must still confirm host extraction keeps simulation moving, host camera follows moving player 2, watcher N/middle mouse/pad pings arrive under player 1 identity, player 2 out can watch/ping in the reverse case, no action or rejoin is possible, and the run ends when the remaining player leaves. Require pictures from both real windows and the ON HIS PC ship result before closing.
 
+
+--- codex run 2026-11-07 16:47 ---
+2026-11-07 - continuation on v37.54. cw-cx-outwatch shipped and ON HIS PC v37.54 was confirmed, 19 seconds after shipping. The three recipe views staged at 1080p and 4k with zero camera lint issues. I inspected the attached host, player 2 and receiving-partner pictures. They show the expected seat colours, partner view without attract, waiting line, and a crawler ping attributed to player 1 in the active player 2 view. These remain staged role scenes, not proof of live transport.
+
+Critic round 1 scored all three scenes 2. The waiting label is too small and close to the edge. Prepared cw-cx-outwatchread: at least 32px text at 1080p, 208x64px minimum panel, 64px bottom gap, cyan top rule and neutral readable text. Still only waiting; no continue prompt, own health, menu or rejoin action. The new gate check records the actual draw font and panel margin and fails on v37.54. Sandbox: unique anchor, non-overlap, JS/check syntax, changed-function lint and existing functional smoke checks pass; an additional draw smoke confirms the current 15.6px label fails and the replacement gives 32px and a 64px bottom gap.
+
+Critic exceptions are recorded once in questions-new.md. The requests for a continue action, lime watched-player identity, collapsed demo controls, merged own/partner health, and a global raid HUD/nameplate/lighting redesign conflict with owner rulings or the explicit task requirement to leave the main raid path untouched. The third picture is the active partner receiving the watcher ping, not another spectator screen. Its two health bars refer to different people. No unrelated HUD or world-art changes are included.
+
+Corrected the partner camera staging only: player 2 now has its own 1800 sp and player 1 has 2400 sp, and the artificial local extracted message made while simulating the sender is cleared before switching to the recipient role. The actual ping still goes through KeyN and netOnMsg. Camera recipes changed and need the next round on the shipped readability follow-up.
+
+Round-1 paths: tools/handoff/console/notes/shots/o-h10-169-out-player-watches-and-pings-recipes-1/169-host-watching-1080.jpg; 169-p2-watching-1080.jpg; 169-partner-watcher-ping-1080.jpg. Critic score 2 each. Await follow-up shipping, ON HIS PC and next pictures/critic. The live linked review remains the coordinator handoff from the first run.
+

@@ -6190,6 +6190,30 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'37.55',what:'waiting status reads at least 32px at 1080p with a 64px bottom gap, without an action or rejoin prompt',run:function(){
+    var g=null, text0=ctx.fillText, rect0=ctx.fillRect, draws=[], boxes=[], keep={}, k, staged=false;
+    try{
+      __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+      __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state(); if(!g) return 'no raid';
+      for(k in NET)keep[k]=NET[k]; staged=true;
+      NET.on=true; NET.role='host'; NET.specG=g; NET.pings=[]; NET.wps={}; g.player.specOut=1; g.waypoint=null; g.over='extract';
+      ctx.fillText=function(t,x,y){draws.push({t:String(t).toLowerCase(),x:x,y:y,font:this.font});return text0.apply(this,arguments);};
+      ctx.fillRect=function(x,y,w,h){boxes.push({x:x,y:y,w:w,h:h});return rect0.apply(this,arguments);};
+      netWatchHud();
+      var d=draws.filter(function(x){return x.t==='waiting';})[0], s=Math.max(1,hudRes());
+      if(!d) return 'no waiting status';
+      var f=/([\d.]+)px/.exec(d.font); if(!f||+f[1]<32*s-.1)return 'waiting type is below 32px at 1080p: '+d.font;
+      var b=boxes.filter(function(x){return x.w>=200*s&&x.h>=60*s&&Math.abs(x.x+x.w/2-W/2)<1;})[0];
+      if(!b||H-b.y-b.h<64*s-.1) return 'waiting panel lacks its 64px bottom gap';
+      if(Math.abs(d.x-W/2)>1||d.y<b.y||d.y>b.y+b.h)return 'waiting is not centered in its panel';
+      if(draws.some(function(x){return /press|continue|join/.test(x.t);}))return 'waiting promises an action that is not allowed';
+      return null;
+    }finally{
+      ctx.fillText=text0;ctx.fillRect=rect0;
+      if(staged){for(k in NET)if(!(k in keep))delete NET[k];for(k in keep)NET[k]=keep[k];}
+      if(g)g.over=false;try{__endRaid('abandon');}catch(_e){}__topClear();
+    }
+  }},
   {v:'37.54',what:'extracted host watches the partner live and can ping without acting or rejoining; retained career host and extracted player 2 also ping',
    run:function(){
      var g, nk={}, ak={}, staged=false, k, sent=[], send0=netSend, fast0=netSendFast, mate, e, packet, cam, p, px, py, mag, peer={state:'in',seat:1,name:'partner'};

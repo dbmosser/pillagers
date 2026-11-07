@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.55 - WAITING STATUS READS CLEARLY
+
+Co-op hunt while he was away. Critic round 1 could not read the waiting state as screen UI. Keep the ordered small waiting-only line, with larger type and a clear bottom margin. Watch: waiting must remain a live view, never a continue or rejoin prompt.
+
+MEASURED. Check 37.55 passes, and fails on v37.54.
 ## v37.54 - OUT FIRST WATCHES AND PINGS
 
 Co-op hunt while he was away. His 2.25 b and g-54: the player out first watches their partner live and can still ping. Watch: the watching window must keep its frame rate while it runs the simulation; a watcher ping must name its sender; waiting must never look like the run ended.

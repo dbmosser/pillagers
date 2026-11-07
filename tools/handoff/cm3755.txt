@@ -1,0 +1,7 @@
+v37.55: waiting status reads clearly
+
+The waiting status uses at least 32px text at 1080p in a 64px-high panel, with 64px clear of the bottom edge. Normal raid HUD and controls stay as ordered.
+
+Check 37.55. Fails on v37.54.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -705,3 +705,4 @@
 2026-11-07 16:11 o-h09-162-loot-in-sight-at-every-spawn 71s ok PARTIAL in=1304965 out=13200 run=4
 2026-11-07 16:12 o-h09-162-loot-in-sight-at-every-spawn 51s ok PARTIAL in=1533446 out=14541 run=5
 2026-11-07 16:24 o-h10-169-out-player-watches-and-pings 702s ok PARTIAL in=3663668 out=27292 run=1
+2026-11-07 16:47 o-h10-169-out-player-watches-and-pings 162s ok PARTIAL in=5106550 out=33524 run=2
