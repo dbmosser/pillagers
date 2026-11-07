@@ -1,0 +1,30 @@
+id=ship-cw-cx-outwatch-8f17a6697e0f
+kind=ship
+key=cw-cx-outwatch
+tag=54
+v=37.54
+new=3754
+base=628ce42db693dd73992f5517590092b1498527be
+host=DESKTOP-82BKOP4
+draft_sha=14c09cf99298c7247864acdd5d6e8264ae2a69e87a0486256b04a5aa698d1913
+p_sha=c6dd0b6c95cb98ffc27f632d1809aa1893e70e3965ad8f5f4e272ccedfb86e6c
+f_sha=07f5fbccd81564902137b420b4fcd57c5a82588246ca17bfac439019e4f1ea30
+game_sha=fcf6bfc7ed7920470b7b1756ec8ee72c99bf3bbd5e92b834b5f37e429f482471
+fix_sha=63ca4be9a723bbd454b615bd37ed902f4a5436b527465888a6b428273e485571
+started=1794087087
+ended=1794087297
+result=PASS
+infra=0
+reason=
+--- stages
+p54 -> OK, 30 edits applied plus DEVNOW
+f54 -> OK, 1 edits applied
+parse: PASS v37.54 parse check
+dry fxdry54 check 37.54: PASS / PASS
+control fxctl54 check 37.54: extracted host is covered by attract / extracted host is covered by attract
+recent: 0 new failures in the newest 80 checks
+stamp-verat: VER_AT 2026-11-07 16:34
+fixture.html check 37.54: PASS / PASS
+verifySafe: {"pass":true,"ents":{"0":85,"1":374},"containers":{"0":165,"1":593},"fail":[]}
+--- end
+done=1
