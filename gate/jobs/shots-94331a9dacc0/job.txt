@@ -1,0 +1,14 @@
+id=shots-94331a9dacc0
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=628ce42db693dd73992f5517590092b1498527be
+screens=162-baseline-spawn-loot
+res=1080,4k
+nolint=0
+lintopts=
+from=JUL26
+submitted=1794084749
+expires=1794091349
