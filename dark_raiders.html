@@ -4024,8 +4024,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.55';
-var VER_AT='2026-11-07 17:01';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.56';
+var VER_AT='2026-11-07 17:31';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -16817,7 +16817,9 @@ function blessElite(e){
     _gk=rvGun(_gk,_gf);   // v26.30 (rarvar2): and where the gun roll fell in its row decides the twin, no new draw
     // The three fields mkRaider derives from the weapon move together, or an elite with
     // a Longshot would keep an SMG's engagement range and read as broken.
-    e.wep=WEAPONS[_gk]; e.dmg=WEAPONS[_gk].dmg;
+    // v28.xx (cw-cx-eliteelements): his g-36, "Yes, a rare element gun". Reuse the elite roll; forgeApply draws nothing.
+    var _ef=roll/rate;
+    e.wep=(_ef<0.25)?forgeApply(WEAPONS[_gk],2,ELEM_ORDER[Math.floor(_ef/0.25*4)]):WEAPONS[_gk]; e.dmg=e.wep.dmg;
     e.noGunDrop=null;   // v26.35 (nostarters): the gun an elite is blessed with is a find, and it drops as before
     e.rng=Math.min(WEAPONS[_gk].rng*.72,580);   // never opens fire from outside your sight
   }
@@ -28693,7 +28695,9 @@ function grantLoot(ct,keys,delay0){
     // v26.26 (rarvar1): a gun out of a box is rolled HERE, before its popup, so the popup, the pickup row and the backpack all see the
     // rarity it came out as. The roll is the one the gun branch below always made (one draw per gun found, the same place in the loop);
     // a pile he dropped is not rolled (it keeps the rarity it was dropped with), and the twin's key replaces the box key in the list.
-    if(itm&&itm.use==='gun'&&itm.gk&&!ct.dropped){ _rvF=rollFieldGun(itm.gk); if(_rvF.id!==itm.gk&&ITEMS['gun_'+_rvF.id]){ key='gun_'+_rvF.id; keys[l]=key; itm=ITEMS[key]; } }
+    // v28.xx (cw-cx-eliteelements): keep the exact held model on a forged body gun, consuming the usual field roll.
+    var _bodyForge=!!(!ct.dropped&&ct.fw&&!ct.fw.used&&ct.fw.gk===key&&ct.fw.fk===2&&ELEM[ct.fw.el]);
+    if(itm&&itm.use==='gun'&&itm.gk&&!ct.dropped){ _rvF=rollFieldGun(itm.gk); if(_bodyForge){ _rvF=Object.assign({},WEAPONS[itm.gk],{q:'field',qRank:1}); } else if(_rvF.id!==itm.gk&&ITEMS['gun_'+_rvF.id]){ key='gun_'+_rvF.id; keys[l]=key; itm=ITEMS[key]; } }
     T.items++; T.rar[itm.r]++;
     if(ct.issuedB&&key==='bandage'){ ct.issuedB=0; G.issuedBandages=(G.issuedBandages||0)+1; }   // v13.90: an issued Bandage picked back up is still issued
     // v21.95 (K5): an armoury gun of his taken back out of a pile (his own drop) is carried again, so a closed window brings it home
@@ -28730,7 +28734,8 @@ function grantLoot(ct,keys,delay0){
       // Audit: dropping a bagged gun and re-searching it rerolled quality until
       // Pristine. Your own discards come back at plain field grade.
       var found=ct.dropped?(function(){var g2={};for(var k2 in WEAPONS[itm.gk])g2[k2]=WEAPONS[itm.gk][k2];g2.q='field';g2.qRank=1;return g2;})():_rvF;
-      if(ct.dropped&&ct.fw&&(ct.fw.fk===1||ct.fw.fk===2)) found=forgeApply(found,ct.fw.fk,ct.fw.el);   // v23.xx (forge11): a forged gun comes out of the pile forged
+      // v28.xx (cw-cx-eliteelements): a body upgrades its matching gun once; existing dropped piles keep their forge.
+      if(ct.fw&&!ct.fw.used&&(ct.dropped||ct.fw.gk===key)&&(ct.fw.fk===1||ct.fw.fk===2)){ found=forgeApply(found,ct.fw.fk,ct.fw.el); ct.fw.used=1; }
       var _gcVs=p.wep;   // v23.xx (feat2b): the gun in hand before this find is routed, for the stat card
       // HIS NOTE, 2026-08-24: "'better guns autoequip' -- no. you should be able
       // to carry all the guns you want but you only have 2 equipped, then we need
@@ -33686,6 +33691,8 @@ if(e.state==='possum'){
           _drop.push('gun_'+e.wep.id);
         _drop=_drop.concat(bodyBonus(e));   // v21.67, his note: what a pillager drops is better
         var c=setLoot(mkContainer(e.x,e.y,'body'),_drop); G.containers.push(c);
+        // v28.xx (cw-cx-eliteelements): only the held, unpaid gun carries its forge onto the body.
+        if(heldGunDrops(e)&&!e.paidRevive&&e.wep.fk===2&&ELEM[e.wep.el]) c.fw={gk:'gun_'+e.wep.id,fk:2,el:e.wep.el};
         // WHOSE BODY THIS IS, v2.71. A dead raider became an anonymous 'body'
         // container, so a feud aftermath, two corpses in a doorway, read as
         // furniture. The fallen man's name and crew ride on the container; the
@@ -58223,7 +58230,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.55: The waiting status uses at least 32px text at 1080p in a 64px-high panel, with 64px clear of the bottom edge. Normal raid HUD and controls stay as ordered. Check 37.55 fails on v37.54',
+  now:'v37.56: The held gun, body loot and party container words preserve the element. Enemy rounds stay plain and warning red. Check 37.56 fails on v37.55',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -66514,7 +66521,7 @@ function netEntGunWord(e){ var m=netEntNewWord(e); delete m.idn; delete m.lx; de
 function netEntNewWord(e){
   // v28.61 (cloud-raid-p2reach), CLOUD HUNT 2026-10-15: sr, its sight reach, so the copy draws the scan cone and the laser as far as the host does
   var m={t:'ent',op:'new',id:e.nid,k:e.kind,x:Math.round(e.x),y:Math.round(e.y),n:netClean(e.name,24),r:e.r,mh:e.maxhp,hp:Math.ceil(clamp(e.hp/(e.maxhp||1),0,1)*20),el:e.elite?1:0,ho:e.hostile?1:0,af:e.affix?String(e.affix):'',sr:Math.round(+e.rng||0)};
-  if(e.kind==='raider'){ m.c=netClean(e.coat,12); m.cr=e.crew|0; m.idn=netClean(e.ident,24); m.w=(e.wep&&e.wep.id)?String(e.wep.id):''; m.rg=netClean(e.rig,8); m.mc=e.merc?1:0; if(typeof e.lx==='number'){ m.lx=e.lx; m.ly=e.ly; } }   // v20.13: his birthplace, which his look is hashed from
+  if(e.kind==='raider'){ m.fk=(e.wep&&e.wep.fk===2)?2:0; m.fe=(m.fk&&ELEM[e.wep.el])?e.wep.el:''; m.c=netClean(e.coat,12); m.cr=e.crew|0; m.idn=netClean(e.ident,24); m.w=(e.wep&&e.wep.id)?String(e.wep.id):''; m.rg=netClean(e.rig,8); m.mc=e.merc?1:0; if(typeof e.lx==='number'){ m.lx=e.lx; m.ly=e.ly; } }   // v20.13: his birthplace, which his look is hashed from
   return m;
 }
 // A body left the list: dead or out. A dead body one of the party killed is his kill, told to his seat.
@@ -66568,7 +66575,8 @@ function netEntFill(e,m){
   if(e.kind==='raider'){
     if(typeof m.c==='string'&&(/^#[0-9a-fA-F]{3,8}$/).test(m.c)) e.coat=m.c;
     if(typeof m.cr==='number') e.crew=m.cr|0;
-    if(typeof m.w==='string'&&Object.prototype.hasOwnProperty.call(WEAPONS,m.w)&&WEAPONS[m.w]&&WEAPONS[m.w].id) e.wep=WEAPONS[m.w];
+    // v28.xx (cw-cx-eliteelements): the held gun tint agrees in both windows; enemy rounds still use warning red and no element.
+    if(typeof m.w==='string'&&Object.prototype.hasOwnProperty.call(WEAPONS,m.w)&&WEAPONS[m.w]&&WEAPONS[m.w].id){ e.wep=(m.fk===2&&ELEM[m.fe])?forgeApply(WEAPONS[m.w],2,m.fe):WEAPONS[m.w]; e.dmg=e.wep.dmg; }
     if(typeof m.rg==='string'){ A=armorById(m.rg); if(A&&A.id===m.rg){ e.rig=m.rg; e.bulk=A.bulk||0; } }
     e.merc=m.mc?1:0;
     if(typeof m.idn==='string'&&m.idn){
@@ -67434,9 +67442,9 @@ function netSrchTick(dt){
       netContOpenHost(ct,+s);
       netGunsGone(ct,items);   // v17.06, co-op hunt 2026-09-28: a host armoury gun handed over is his no more
       netGunTold(ct,items,+s);   // v21.21 (R1)
-      netSend(q,{t:'loot',cid:r.cid,items:items,done:1,hot:hot.length?1:0});
+      netSend(q,{t:'loot',cid:r.cid,items:items,done:1,hot:hot.length?1:0,fw:netForgeLoot(ct,items)});
       delete NET.holds[s];
-    } else if(items.length){ netGunsGone(ct,items); netGunTold(ct,items,+s); netSend(q,{t:'loot',cid:r.cid,items:items}); }
+    } else if(items.length){ netGunsGone(ct,items); netGunTold(ct,items,+s); netSend(q,{t:'loot',cid:r.cid,items:items,fw:netForgeLoot(ct,items)}); }
     n++;
   }
   return n;
@@ -67478,10 +67486,25 @@ function netContNumber(){
   }
   return n;
 }
+// v28.xx (cw-cx-eliteelements): validate forge metadata for containers and a staged loot grant. No draws.
+function netContForge(ct){
+  var f=ct&&ct.fw, k;
+  if(!f||(f.fk!==1&&f.fk!==2)) return null;
+  k=(typeof f.gk==='string'&&/^gun_/.test(f.gk)&&Object.prototype.hasOwnProperty.call(ITEMS,f.gk)&&ITEMS[f.gk].use==='gun')?f.gk:'';
+  if(f.gk&&!k) return null;
+  if(f.fk===2&&!ELEM[f.el]) return null;
+  return {gk:k,fk:f.fk,el:f.fk===2?f.el:'',used:f.used?1:0};
+}
+// v28.xx (cw-cx-eliteelements): reserve the one forged copy on the host before another seat can search it.
+function netForgeLoot(ct,items){
+  var f=netContForge(ct);
+  if(f&&!f.used&&f.gk&&items.indexOf(f.gk)>=0) ct.fw.used=1;
+  return f;
+}
 function netContNewWord(ct){
   return {t:'cont',st:'new',cid:ct.cid,x:Math.round(ct.x),y:Math.round(ct.y),ty:netClean(ct.type,12),tag:netClean(ct.tag,24),ca:ct.cache?1:0,sg:ct.strong?1:0,cp:ct.camp?1:0,
           tm:+(+(ct.time||1)).toFixed(2),d:(typeof ct.d==='number')?ct.d:-1,dr:ct.dropped?1:0,op:ct.opened?1:0,n:ct.loot?ct.loot.length:0,
-          ib:ct.issuedB?1:0,lk:netLootList(ct.loot),pl:ct.pulled|0};   // v17.07, co-op hunt 2026-09-28: a pile holding an issued Bandage says so, so it stays a loaner on the window that takes it
+          ib:ct.issuedB?1:0,lk:netLootList(ct.loot),pl:ct.pulled|0,fw:netContForge(ct)};   // v17.07, co-op hunt 2026-09-28: a pile holding an issued Bandage says so, so it stays a loaner on the window that takes it
 }
 // THE HOST, about ten times a second: every box that arrived, opened or shut since the last tick. Returns how many words.
 function netContTick(){
@@ -67527,6 +67550,8 @@ function netLootTake(peer,m){
   if(m.items&&typeof m.items.length==='number') for(i=0;i<m.items.length&&i<40;i++){ k=netClean(m.items[i],32); if(k) wornItemEnsure(k); if(k&&Object.prototype.hasOwnProperty.call(ITEMS,k)&&ITEMS[k]) items.push(k); }
   if(!items.length&&!m.done) return 'bad';
   at=ct||{x:G.player.x,y:G.player.y};
+  // v28.xx (cw-cx-eliteelements): the host says whether this pull owns the forged copy, including an already used body gun.
+  if(Object.prototype.hasOwnProperty.call(m,'fw')){ var _lforge=netContForge({fw:m.fw}); if(_lforge) at.fw=_lforge; else delete at.fw; }
   if(items.length){
     where=openContainer(at,items);
     // v21.96 (K6): a gun he piled and now takes back out of a pile is his again, so its record goes and a later rejoin cannot strip it
@@ -67583,7 +67608,7 @@ function netContWord(peer,m){
   }
   if(st==='held'){ ct.netBy=by; if(by!==NET.seat&&G.searching===ct){ G.searching=null; G.searchT=0; netSrchStop(); } return 'cont:held'; }
   if(st==='free'){ if(by<0||ct.netBy===by) ct.netBy=-1; return 'cont:free'; }
-  if(st==='left'){ ct.netLk=netLootKeys(m.lk); ct.netPl=((m.pl|0)>0)?(m.pl|0):0; if(!ct.opened) ct.netLeft=ct.netLk.length; return 'cont:left'; }   // v20.30 (H21)
+  if(st==='left'){ if(Object.prototype.hasOwnProperty.call(m,'fw')){ var _leftForge=netContForge({fw:m.fw}); if(_leftForge) ct.fw=_leftForge; else delete ct.fw; } ct.netLk=netLootKeys(m.lk); ct.netPl=((m.pl|0)>0)?(m.pl|0):0; if(!ct.opened) ct.netLeft=ct.netLk.length; return 'cont:left'; }   // v20.30 (H21)
   if(st==='open'){ netContOpen(ct,by); return 'cont:open'; }
   if(st==='shut'){
     ct.opened=false; ct.openedAt=null; ct.prog=0; ct.pulled=0; ct.loot=[]; ct.best='common'; ct.netBy=-1; ct.netCounted=0; ct.netLit=0;
@@ -67608,7 +67633,7 @@ function netContOpen(ct,by){
 // every box takes that list, its pulled count, and the bar where it was.
 function netLootList(a){ var o=[], i; if(a&&typeof a.length==='number') for(i=0;i<a.length&&i<40;i++) if(typeof a[i]==='string') o.push(a[i]); return o; }
 function netLootKeys(a){ var o=[], i, k; if(a&&typeof a.length==='number') for(i=0;i<a.length&&i<40;i++){ k=netClean(a[i],32); if(k&&Object.prototype.hasOwnProperty.call(ITEMS,k)&&ITEMS[k]) o.push(k); } return o; }
-function netContLeftWord(ct){ return {t:'cont',cid:ct.cid,st:'left',lk:netLootList(ct.loot),pl:ct.pulled|0}; }
+function netContLeftWord(ct){ return {t:'cont',cid:ct.cid,st:'left',lk:netLootList(ct.loot),pl:ct.pulled|0,fw:netContForge(ct)}; }
 function netLkTake(ct,items){
   var i, j;
   if(!Array.isArray(ct.netLk)){ ct.netLk=(ct.loot||[]).slice(); ct.netPl=ct.pulled|0; }
@@ -67633,6 +67658,8 @@ function netContMake(cid,m){
   ct={cid:cid,net:1,x:clamp(x,-9000,NET_UP_MAX),y:clamp(y,-9000,NET_UP_MAX),r:15,type:ty,d:(typeof m.d==='number'&&m.d>=0)?(m.d|0):-1,loot:[],opened:!!m.op,
       time:(isFinite(tm)&&tm>0)?clamp(tm,0.2,20):1,best:'common',rot:0,pulled:0,prog:0,netBy:-1};
   if(m.ca) ct.cache=1; if(m.sg) ct.strong=1; if(m.cp) ct.camp=1; if(m.dr) ct.dropped=1;
+  // v28.xx (cw-cx-eliteelements): the body and dropped pile retain their forge on the other window.
+  var _cforge=netContForge({fw:m.fw}); if(_cforge) ct.fw=_cforge;
   if(m.ib) ct.issuedB=1;   // v17.07, co-op hunt 2026-09-28: grantLoot puts it back on this window issued count, as a pile of his own would
   if(m.lk&&typeof m.lk.length==='number'){ ct.netLk=netLootKeys(m.lk); ct.netPl=((m.pl|0)>0)?(m.pl|0):0; }   // v20.30 (H22): what it holds, never granted from here while the host runs the raid
   if(typeof m.n==='number'&&m.n>=0) ct.netLeft=m.n|0;   // v16.32, his note: player 2 search bar shows how many items are left, as player 1 does

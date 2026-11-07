@@ -221,3 +221,4 @@
 11-07 14:52 v37.52 cw-cx-overseertarget on his pc after 67s (8802 serves 37.52) week 98%
 11-07 15:18 v37.53 cw-cx-sleepmachines on his pc after 51s (8802 serves 37.53) week 98%
 11-07 16:36 v37.54 cw-cx-outwatch on his pc after 19s (8802 serves 37.54) week 98%
+11-07 17:02 v37.55 cw-cx-outwatchread on his pc after 34s (8802 serves 37.55) week 98%

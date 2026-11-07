@@ -2341,3 +2341,8 @@
 2026-11-07 0.0942 critic-o-h10-169-out-player-watches-and-pings
 2026-11-07 0.1319 critic-o-h10-169-out-player-watches-and-pings
 2026-11-07 0.0000 o-h10-169-out-player-watches-and-pings
+2026-11-07 0.1463 critic-o-h10-169-out-player-watches-and-pings
+2026-11-07 0.1312 critic-o-h10-169-out-player-watches-and-pings
+2026-11-07 0.1257 critic-o-h10-169-out-player-watches-and-pings
+2026-11-07 0.0000 o-h10-169-out-player-watches-and-pings
+2026-11-07 0.0000 o-h11-174-elite-element-guns

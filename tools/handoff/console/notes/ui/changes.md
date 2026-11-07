@@ -738,3 +738,6 @@
 
 2026-11-07 | o-h10-169-out-player-watches-and-pings | spectator waiting HUD | waiting type at least 32px at 1080p, panel at least 208x64px, bottom gap 64px, cyan top rule | before: tools/handoff/console/notes/shots/o-h10-169-out-player-watches-and-pings-recipes-1/169-host-watching-1080.jpg and 169-p2-watching-1080.jpg | after: recipe round 2 pending.
 
+2026-11-07 | o-h10-169-out-player-watches-and-pings | waiting HUD follow-up shipped v37.55, ON HIS PC | 32px minimum waiting text, 208x64px minimum panel and 64px bottom clearance verified in returned pictures | before: tools/handoff/console/notes/shots/o-h10-169-out-player-watches-and-pings-recipes-1/169-host-watching-1080.jpg and 169-p2-watching-1080.jpg | after: tools/handoff/console/notes/shots/o-h10-169-out-player-watches-and-pings-recipes-2/169-host-watching-1080.jpg and 169-p2-watching-1080.jpg | critic remains 2, task/ruling exceptions documented.
+
+2026-11-07 | o-h11-174-elite-element-guns | raid elite / body gun backpack card | rare elite guns now have an MK III element finish; that gun retains the finish and element card after body search, including the party copy | custom recipes 174-element-elite-fight and 174-body-gun-card; lane after-picture paths pending (new behavior, no recipe before shots).

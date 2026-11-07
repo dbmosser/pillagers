@@ -829,3 +829,5 @@ o-h09-162 coordinator blocker: strict spawn-loot check fails map 1 spawn 3 (8650
 
 11-07 16:35 v37.53 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
 11-07 16:46 v37.54 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-07 17:12 v37.55 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+2026-11-07 o-h11-174-elite-element-guns: LINKED REVIEW NEEDED: synced. cw-cx-eliteelements adds forge metadata to cont.fw and loot.fw, and held-gun ent.fk/fe. After ship, verify an element elite and body loot in both real linked windows, one forged copy across partial searches and host takeover, with a picture from each. The supplied custom camera recipes are solo staging only.

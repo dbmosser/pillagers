@@ -1,0 +1,7 @@
+v37.56: rare element guns on elite pillagers
+
+The held gun, body loot and party container words preserve the element. Enemy rounds stay plain and warning red.
+
+Check 37.56. Fails on v37.55.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

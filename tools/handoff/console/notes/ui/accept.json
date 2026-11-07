@@ -5908,48 +5908,47 @@
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "this reads as a bare top-down debug view with stock text-on-black labels dropped on it, not an extraction-shooter hud.",
+  "verdict": "the waiting prompt finally reads as the dominant element and nameplates now share one pill style, but the screen is still a cluttered, unclipped map with no quiet-hud framing.",
   "findings": [
-   "P0 bottom-center 'waiting' label: make 'waiting' the dominant element on this screen: fs-title (32px) minimum, centered with clear air above the bottom bar, not touching it",
-   "P1 full map, purple/orange soft-edged rectangle patches over buildings and street: clip interior tint strictly to room polygons, use one light-cone falloff per light source, and drop any patch not tied to an actual light or room boundary",
-   "P1 'waiting' box vs. bottom hud/supply bar: reserve an 8px-grid gap (--sp-2 min) between the waiting label and the bottom bar, or move the label up into open map space",
-   "P1 'player 2', 'crawler h-38', 'chill row cache', 'waiting' labels: one nameplate component: --ui-panel fill, --rad 4px corners, --fs-label (16px) text, fixed padding from --sp-1, used for every floating tag — player, enemy, poi, status alike",
-   "P2 whole screen: even in spectate/walk-up mode, keep the quiet-hud left feed and top-centre banner slots visible (per job 186a) so the frame still reads as Pillagers, not an empty map"
+   "P1 full map, purple room fills and the orange glow strip running the width of the road: clip --ui-panel-toned room fill strictly to each room's floor polygon; replace the wide street glow with one radial falloff per light prop, radius under ~160px at 1080p",
+   "P1 bottom-center 'waiting' card vs. the orange counter/building prop directly beneath it: nudge the card up by --sp-2 (16px) or move it over open ground so --sp-1 (8px) of clear air separates it from any world prop, both above and below",
+   "P2 whole frame: keep the left feed strip and top-centre banner slot visible (even empty/idle state) on every raid-adjacent screen including this walk-up spectate view",
+   "P2 top third: red exclamation icon, chest icon, orange lamp glow, and the cyan ring around player 2: dim non-essential icon glows (exclamation, chest) to --tx-2 opacity when no player is near them, so only the active player ring and the bottom prompt read as 'hot'",
+   "P2 'chill row cache' tag, purple loot icon inside the tagged room: give lootable props a 1px --ui-line-hi outline or drop a --ui-void-toned backing chip behind the icon so it separates from same-hue room fills"
   ],
-  "pic": "tools/handoff/console/notes/shots/o-h10-169-out-player-watches-and-pings-recipes-1/169-host-watching-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-h10-169-out-player-watches-and-pings-recipes-2/169-host-watching-1080.jpg",
   "task": "o-h10-169-out-player-watches-and-pings",
-  "when": "2026-11-07T21:42"
+  "when": "2026-11-07T22:07"
  },
  "69-p2-watching": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "this is a party walk-up spectator screen with no visible continue prompt and nameplate chrome that ignores the style guide entirely.",
+  "verdict": "the core P0 from last review – the continue pill still says a static ‘waiting’ instead of the bound key – was not fixed, even though the nameplate/tag styling is now consistent.",
   "findings": [
-   "P0 bottom-center 'waiting' pill: replace the pill text with the literal bound input, e.g. 'press a / press space to continue', sized at --fs-body 20px minimum, placed with clear foreground contrast against the scrim.",
-   "P1 'player 1' / 'crawler h-38' / 'chill row cache' nameplates: standardize all three to one nameplate component: --ui-panel fill, --rad 4px corners, --sp-1 padding, --fs-label 16px text; give the player-controlled nameplate the --acc lime underline/border since it's the one 'selected' element on screen, leave npc/poi tags neutral tx-1.",
-   "P1 'waiting' pill, bottom edge: anchor it on the --sp-5 (48px) margin from the bottom edge, center it horizontally, and give it a visibly different treatment (scrim背景 + lime text) than the in-world nameplates so it reads as UI, not world chrome.",
-   "P2 overall frame: reserve --acc for exactly one element per the guide (likely the continue prompt here) and keep everything else quiet per section 1's rule.",
-   "P2 'chill row cache' and 'crawler h-38' tags: use one tag component with fixed padding (--sp-1 all sides) and --rad 4px for every in-world label."
+   "P0 bottom-center continue pill: swap the string for the live key/button prompt text, e.g. 'press a to continue', at --fs-body 20px minimum, so walk-up guests on pad or keyboard know what advances the screen.",
+   "P1 'waiting' pill vs 'player 1' / 'crawler h-38' / 'chill row cache' tags: give the continue pill --acc lime text or border per the guide's 'one accent per screen, on the primary action' rule so it visibly outranks the neutral nameplates.",
+   "P2 'player 1' nameplate: none needed; keep this pattern as the template for other screens.",
+   "P2 'crawler h-38' and 'chill row cache' tags: none needed."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-h10-169-out-player-watches-and-pings-recipes-1/169-p2-watching-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-h10-169-out-player-watches-and-pings-recipes-2/169-p2-watching-1080.jpg",
   "task": "o-h10-169-out-player-watches-and-pings",
-  "when": "2026-11-07T21:43"
+  "when": "2026-11-07T22:08"
  },
  "69-partner-watcher-ping": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "a cluttered, kit-bashed hud where a full keybind cheat-sheet sits wide open on the left and five different elements fight to be the one bold hero number, so nothing reads as primary.",
+  "verdict": "the mandated fold-to-one-line raid control panel was never built, and four different hero-scale readouts (clock, extract timer, ammo count, hp) still fight for the eye at once.",
   "findings": [
-   "P0 left side, 'move/gear/fight/raid' panel: collapse this panel to a single row reading 'f1 controls' mid-bottom-left per the spec; only expand to the full list on f1 press.",
-   "P0 whole hud: center clock, top-right extract timer, top-left team score, bottom-left hp 100, bottom-right ammo count: demote team score and hp readout to fs-body (20px) quiet weight; keep only the extract countdown or the clock at fs-hero (56px), not five things at once.",
-   "P1 top-left mini player-1 panel vs. bottom-edge 'hp 100' bar: pick one hp readout location (the name-tag bar is enough while spectating); delete the bottom-edge bar or repurpose/label it clearly if it reads a different stat.",
-   "P1 bottom-left 'hp 100' bar: inset the bar by --sp-4 (32px) from the left edge and cap its width like the keybind and ammo panels, or convert it into a card consistent with --ui-panel fill and --rad 4px corners.",
-   "P1 bottom-center weapon slot 2: render slot 2's icon in the same shaded/outlined style and palette as the other two weapon icons."
+   "P0 mid-bottom-left, move/gear/fight/raid panel (18,470)-(330,805): replace the panel with a single --ui-panel row, fs-label text 'f1 controls', at the same mid-bottom-left anchor; expand to the full list only while f1 is held/toggled.",
+   "P0 whole hud: clock 15:00 (top-center), extract 151m (top-right), hp 100 (bottom-left), scav pistol 12/24 (bottom-right): keep only the extract countdown at fs-hero teal; drop the clock, hp number and ammo count to fs-body (20px) quiet weight (tx-1, no bold fill).",
+   "P1 bottom-left hp bar (18,1030)-(430,1070) vs. top-left 'player 1' card (18,325)-(175,365): add an explicit owner label to the bottom bar ('you' or similar) or remove it and fold local hp into a consistent nameplate card matching the top-left player-1 treatment; both should share the same --ui-panel/--rad-4 frame.",
+   "P1 bottom weapon tray, slot 2 (660,985)-(740,1060): render slot 2 in the same shaded icon style and rarity-border treatment as slots 1 and 3; drop the ad hoc 'f' tag since no other slot carries a hotkey label.",
+   "P2 purple interior room, right side (1480-1600,310-335) and centered diamond marker (1050-1110,555-590): unify world callouts to one tooltip style (--ui-panel fill, fs-label text, single pointer-line to target) regardless of whether it labels loot or a player ping."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-h10-169-out-player-watches-and-pings-recipes-1/169-partner-watcher-ping-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-h10-169-out-player-watches-and-pings-recipes-2/169-partner-watcher-ping-1080.jpg",
   "task": "o-h10-169-out-player-watches-and-pings",
-  "when": "2026-11-07T21:44"
+  "when": "2026-11-07T22:09"
  }
 }
