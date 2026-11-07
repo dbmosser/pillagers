@@ -1,0 +1,7 @@
+v37.51: blast shove and big hit aim nudge
+
+Blasts push surviving players away using wall collision. Incoming non-blast hits of 30 or more nudge the gun for a quarter second, with no random draw, stacking, reticle movement or new text. Both seats apply their own landed-hit rules.
+
+Check 37.51. Fails on v37.50.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

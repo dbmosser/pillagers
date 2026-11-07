@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.51 - BLAST SHOVE AND BIG HIT AIM NUDGE
+
+Co-op hunt while he was away. His g-3: A shove only. His g-6: A small nudge on big hits. Watch: being shoved by your own frag or rocket up close must feel fair, and a shove next to deep water or a doorway must read; the aim nudge is felt most in long duels and must never read as input lag or a bad mouse.
+
+MEASURED. Check 37.51 passes, and fails on v37.50.
 ## v37.50 - HURT PILLAGERS CHARGE OR FLEE AND EVADE GRENADES
 
 Co-op hunt while he was away. His g-23 answer: Some back off, some charge. His g-28 answer: They run from it. Watch: a nearly dead pillager that charges is more dangerous; watch deaths to low-health pillagers and whether the charge reads as a choice. Watch frag kill rate because fleeing may make grenades harder to kill with; cooking is the counter.

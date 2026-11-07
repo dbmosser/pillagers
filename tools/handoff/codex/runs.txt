@@ -680,3 +680,16 @@
 2026-11-07 13:05 o-h02-147-heal-slows-big-hit-stops-it 51s ok DONE in=1228066 out=12695 run=3
 2026-11-07 13:09 o-h03-148-bots-charge-or-flee-grenades 249s ok PARTIAL in=741761 out=8862 run=1
 2026-11-07 13:14 o-h03-148-bots-charge-or-flee-grenades 81s ok PARTIAL in=1273112 out=11268 run=2
+2026-11-07 13:29 o-h03-148-bots-charge-or-flee-grenades 21s ok DONE in=1437157 out=11705 run=3
+2026-11-07 13:31 o-h04-149-trigger-repeat-shells-fire-cancels-reload 75s ok PARTIAL in=210235 out=2376 run=1
+2026-11-07 13:32 o-h04-149-trigger-repeat-shells-fire-cancels-reload 23s ok PARTIAL in=348582 out=2976 run=2
+2026-11-07 13:32 o-h04-149-trigger-repeat-shells-fire-cancels-reload 37s ok PARTIAL in=134390 out=1086 run=3
+2026-11-07 13:33 o-h04-149-trigger-repeat-shells-fire-cancels-reload 29s ok PARTIAL in=224780 out=2029 run=4
+2026-11-07 13:34 o-h04-149-trigger-repeat-shells-fire-cancels-reload 39s ok PARTIAL in=138083 out=1328 run=5
+2026-11-07 13:42 o-h05-150-revive-bandage-pause-alert-medal 397s ok PARTIAL in=1148073 out=14294 run=1
+2026-11-07 13:47 o-h05-150-revive-bandage-pause-alert-medal 51s ok PARTIAL in=1382797 out=16190 run=2
+2026-11-07 13:51 o-h05-150-revive-bandage-pause-alert-medal 70s ok PARTIAL in=1783328 out=18698 run=3
+2026-11-07 13:56 o-h05-150-revive-bandage-pause-alert-medal 43s ok PARTIAL in=2144956 out=20036 run=4
+2026-11-07 13:56 o-h05-150-revive-bandage-pause-alert-medal 19s ok PARTIAL in=2389567 out=20479 run=5
+2026-11-07 14:03 o-h06-153-blasts-shove-big-hits-nudge-aim 366s ok PARTIAL in=1069362 out=14987 run=1
+2026-11-07 14:08 o-h06-153-blasts-shove-big-hits-nudge-aim 72s ok PARTIAL in=1604469 out=17499 run=2

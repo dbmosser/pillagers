@@ -726,3 +726,6 @@
 
 2026-11-07 | o-h02-147-heal-slows-big-hit-stops-it | raid, both local seats | healing mechanics shipped v37.49; medical wind-up pictures verified, existing HUD critic findings handed to coordinator | no valid before picture; after tools/handoff/console/notes/shots/o-h02-147-heal-slows-big-hit-stops-it-recipes-2/heal-windup-host-1080.jpg and heal-windup-join-1080.jpg.
 
+2026-11-07 | o-h05-150-revive-bandage-pause-alert-medal | raid revive HUD and save medal, both roles | bandage halves the base bar/charge duration; risky confirmed pick-up adds existing tier-2 emblem with save and 150 sp; bleed seconds hold during fresh nearby pick-up | before: no existing recipe; after: lane camera-recipes.json screens revive-bandage-p1/p2, revive-free-p1/p2, revive-save-p1/p2 (picture paths pending lane capture).
+2026-11-07 | o-h06-153-blasts-shove-big-hits-nudge-aim | smooth raid, both seats | pending cw-cx-blastnudge: blasts move surviving players with wall collision; big non-blast hits deflect gun/dotted aim line 0.06-0.09 radians for 0.25 s, mouse reticle fixed | before: unavailable for custom snapshots; after: lane camera-recipes.json outputs pending (153-host-shove, 153-host-nudge, 153-join-shove, 153-join-nudge)
+

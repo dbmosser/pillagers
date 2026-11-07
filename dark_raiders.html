@@ -4024,8 +4024,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.50';
-var VER_AT='2026-11-07 13:28';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.51';
+var VER_AT='2026-11-07 14:23';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -23373,7 +23373,7 @@ function brlBlast(B){
   brlFireAdd(x,y,s);   // v28.xx (cw-barrelfire): HIS ORDER, after the first explosion the barrel also leaves fire that deals damage over time
   // the player of this window: always for a barrel no player lit, and his own; never one a teammate lit (no team damage)
   if(!p.specOut&&!p.dying&&(s<0||s===me)&&sd<R&&losClear(x,y,p.x,p.y,G.map.segs))
-    damagePlayer(70*(1-sd/R)+20,'barrel','EXPLOSIVE BARREL',x,y);
+    { var _blastPrev=BLAST_AT; BLAST_AT={x:x,y:y,R:R}; try{ damagePlayer(70*(1-sd/R)+20,'barrel','EXPLOSIVE BARREL',x,y); }finally{ BLAST_AT=_blastPrev; } } /* v28.xx (cw-cx-blastnudge): blast context ends with this hit. */
   brlNear(x,y,R,s);
   if(CFG.destruct!==0){
     W=G.map.walls.slice();
@@ -23457,7 +23457,7 @@ function brlBlastK(B){
   ping(x,y,K.ping,false,false,'env','fire');
   if(K.pool) brlFireAdd(x,y,s,B.k);
   if(!p.specOut&&!p.dying&&(s<0||s===me)&&sd<R&&losClear(x,y,p.x,p.y,G.map.segs))
-    if(K.pd+K.pb>0) damagePlayer(K.pd*(1-sd/R)+K.pb,'barrel',K.nm,x,y);   // v31.91 (cw-iceslide), HIS ORDER (2026-10-19): "Ice should not hurt player": the cryo blast has no player damage (pd and pb are 0), the bodies keep theirs
+    if(K.pd+K.pb>0) { var _blastPrev=BLAST_AT; BLAST_AT={x:x,y:y,R:R}; try{ damagePlayer(K.pd*(1-sd/R)+K.pb,'barrel',K.nm,x,y); }finally{ BLAST_AT=_blastPrev; } } /* v28.xx (cw-cx-blastnudge): blast context ends with this hit. */   // v31.91 (cw-iceslide), HIS ORDER (2026-10-19): "Ice should not hurt player": the cryo blast has no player damage (pd and pb are 0), the bodies keep theirs
   brlNear(x,y,R,s);
   if(peer){ brlPeerShatter(x,y,R); return; }
   BRL_ZAPN++; BRL_Z.length=0;
@@ -23835,8 +23835,8 @@ function explodeFrag(f){
   // his own frag charge became three deaths to nothing in particular.
   var _fSrc=_fMine?'yourself':(f.by.kind||'raider');
   if(dp<R&&losClear(f.x,f.y,p.x,p.y,G.map.segs))
-    damagePlayer(80*(1-dp/R)+18,_fSrc,_fName,f.x,f.y);   // v11.77: was 60 and 12; 98 at the centre, so a full man just lives
-  if(!_fMine&&NET.on) netAreaHitPeers(f.x,f.y,R,function(dq){ return 80*(1-dq/R)+18; },_fSrc,_fName,{down:true});   // v15.80: a pillager charge reaches the party up top by the same rules; your own charge never touches them (no team damage)
+    { var _blastPrev=BLAST_AT; BLAST_AT={x:f.x,y:f.y,R:R}; try{ damagePlayer(80*(1-dp/R)+18,_fSrc,_fName,f.x,f.y); }finally{ BLAST_AT=_blastPrev; } } /* v28.xx (cw-cx-blastnudge): blast context ends with this hit. */   // v11.77: was 60 and 12; 98 at the centre, so a full man just lives
+  if(!_fMine&&NET.on) netAreaHitPeers(f.x,f.y,R,function(dq){ return 80*(1-dq/R)+18; },_fSrc,_fName,{down:true,bl:R});   // v15.80: a pillager charge reaches the party up top by the same rules; your own charge never touches them (no team damage)
   // The blast takes walls with it. 200 at the centre falling to 40 at the edge:
   // one charge breaks glass, furniture, wrecks and trees outright and leaves a
   // building wall over half gone, so two charges open a building, which is what
@@ -23957,8 +23957,8 @@ function howlerImpact(SH){
   // own job, which is a shell landing ON a building sparing the room below.
   if(dp<R&&!p.downed&&!(_onRoof&&underSameRoof(_roof,p.x,p.y))&&
      losClear(SH.tx,SH.ty,p.x,p.y,G.map.segs))
-    damagePlayer(SH.dmg*(1-dp/R)+6,'howler','HOWLER',SH.tx,SH.ty);
-  if(NET.on) netAreaHitPeers(SH.tx,SH.ty,R,function(dq){ return SH.dmg*(1-dq/R)+6; },'howler','HOWLER',{roof:_onRoof?_roof:null});   // v15.80: and the party up top, by the same rules, each through his own window
+    { var _blastPrev=BLAST_AT; BLAST_AT={x:SH.tx,y:SH.ty,R:R}; try{ damagePlayer(SH.dmg*(1-dp/R)+6,'howler','HOWLER',SH.tx,SH.ty); }finally{ BLAST_AT=_blastPrev; } } /* v28.xx (cw-cx-blastnudge): blast context ends with this hit. */
+  if(NET.on) netAreaHitPeers(SH.tx,SH.ty,R,function(dq){ return SH.dmg*(1-dq/R)+6; },'howler','HOWLER',{roof:_onRoof?_roof:null,bl:R});   // v15.80: and the party up top, by the same rules, each through his own window
   // v10.63: the roof covers everyone under it, not only him, or a shell on a
   // roof would still clear the room of pillagers sheltering in it.
   for(var i=G.ents.length-1;i>=0;i--){
@@ -25740,6 +25740,9 @@ function armorHitFoley(broke){
   foley('strapRip',null,null,{off:0.1,dur:0.12,g:0.5,rate:1.5,at:0.04,local:1});
 }
 // v28.xx (cw-cx-healrisk): shared incoming-hit threshold, before difficulty, kid mode and armour.
+// v28.xx (cw-cx-blastnudge): his g-3, "A shove only"; g-6, "A small nudge on big hits".
+const BLAST_SHOVE_V=300, BLAST_SHOVE_T=0.14;
+var BLAST_AT=null;
 const BIG_HIT=30;
 function bigHit(a){ return a>=BIG_HIT; }
 function damagePlayer(amt,src,srcName,sx,sy){
@@ -25882,6 +25885,22 @@ function damagePlayer(amt,src,srcName,sx,sy){
   var _sev=clamp(amt/26,0.35,1.9);
   p.hitFlash=Math.max(p.hitFlash||0,.20+.30*_sev);
   p.hitAge=0; p.hitDX=(typeof sx==='number'&&isFinite(sx))?((p.x>=sx)?1:-1):0;   // v32.xx (cw-playerstates), a12 B: the white flash is timed from the hit and the recoil goes away from the shot
+  // v28.xx (cw-cx-blastnudge): only a landed, survived hit; no random draw or simulation change.
+  if(p.hp>0&&!G.sim){
+    if(BLAST_AT){
+      var _bsx=p.x-BLAST_AT.x, _bsy=p.y-BLAST_AT.y, _bsd=Math.hypot(_bsx,_bsy);
+      if(_bsd<BLAST_AT.R){
+        var _bsv=BLAST_SHOVE_V*(1-_bsd/BLAST_AT.R);
+        if(_bsd>=1){ p.kickVx=_bsx/_bsd*_bsv; p.kickVy=_bsy/_bsd*_bsv; p.kickT=BLAST_SHOVE_T; }
+        else if(p.hitDX){ p.kickVx=p.hitDX*_bsv; p.kickVy=0; p.kickT=BLAST_SHOVE_T; }
+      }
+    } else if(bigHit(amt0)){
+      var _ans=1;
+      if(typeof sx==='number'&&isFinite(sx)&&typeof sy==='number'&&isFinite(sy))
+        _ans=angDiff(Math.atan2(sy-p.y,sx-p.x),p.face)>0?-1:1;
+      p.aimNudge=_ans*(0.06+0.03*clamp((amt0-30)/60,0,1)); p.aimNudgeT=0.25;
+    }
+  }
   // v28.xx (cw-cx-healrisk): a landed big hit spends the medical wind-up; plates and flowing heals continue.
   if(p.hp>0&&p.prep&&bigHit(amt0)){ p.prep=null; if(!G.sim) say('heal interrupted','warn'); }
   // v23.xx, HIS ANSWERS (2026-10-12), answer 38: screen shake "light to strong depending on damage taken and frequency of incoming
@@ -28119,7 +28138,7 @@ function affixBoom(e){
   for(i=0;i<pls.length;i++){
     pl=pls[i]; if(!pl||pl.dying||pl.specOut) continue;
     d=dist(pl,e);
-    if(d<R&&losClear(e.x,e.y,pl.x,pl.y,G.map.segs)) netHitPlayer(pl,45*(1-d/R)+10,e.kind,e.name,e.x,e.y);
+    if(d<R&&losClear(e.x,e.y,pl.x,pl.y,G.map.segs)) netHitPlayer(pl,45*(1-d/R)+10,e.kind,e.name,e.x,e.y,0,R);
   }
   for(i=G.ents.length-1;i>=0;i--){
     o=G.ents[i]; if(o===e||o.finished||o.boss||!(o.hp>0)) continue;
@@ -31031,6 +31050,8 @@ function updatePlayer(dt){
   wheelTick(dt);   // v26.xx (wheel2): the item wheel, read every step
   var _aw=mouseWorld();
   p.face=(G.wheel&&G.wheel.face!==undefined)?G.wheel.face:Math.atan2(_aw.y-p.y,_aw.x-p.x);   // v26.xx (wheel2): and the aim stands still while it is open
+  // v28.xx (cw-cx-blastnudge): mouse stays put; the gun and dotted aim line recover over a quarter second.
+  if(p.aimNudgeT>0&&!G.wheel){ p.aimNudgeT=Math.max(0,p.aimNudgeT-dt); p.face+=p.aimNudge*(p.aimNudgeT/0.25); }
   if(G.wheel&&G.wheel.face===undefined) G.wheel.face=p.face;
   if(p.hitFlash>0){ p.hitFlash-=dt; p.hitAge=(p.hitAge||0)+dt; }
   if(G.rollSayT>0) G.rollSayT-=dt;   // v13.19: the refused-roll line, once every 1.5s at most
@@ -58139,7 +58160,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.50: About forty percent of hurt hostile pillagers charge for four seconds rather than smoke and flee. All standing pillagers run from live grenades after a short reaction, including hires, simulated raids and party copies. Golden pillagers keep their exemption. LINKED REVIEW NEEDED: synced; host movement reaches the peer through netEntRow positions and state. Check 37.50 fails on v37.49',
+  now:'v37.51: Blasts push surviving players away using wall collision. Incoming non-blast hits of 30 or more nudge the gun for a quarter second, with no random draw, stacking, reticle movement or new text. Both seats apply their own landed-hit rules. Check 37.51 fails on v37.50',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -66297,13 +66318,19 @@ function netPeerOfSeat(s){ var i; for(i=0;i<NET.peers.length;i++) if(NET.peers[i
 function netPlayersList(){ var out=[], i, g; if(G&&G.player&&!G.player.specOut) out.push(G.player); for(i=0;i<NET.up.length;i++){ g=NET.up[i]; if(netUpShown(g)) out.push(netUpBody(g)); } return out; }
 // A blow on a player. The host player takes it through damagePlayer as always. One of the party is told on the reliable
 // channel and takes it through his own damagePlayer, on his own window: his armour, his downed rules, his death.
-function netHitPlayer(p,amt,src,srcName,sx,sy,rd){  // v28.35 (cloud-coop-p2-close-call), CLOUD HUNT 2026-10-15: rd marks an enemy round, so player 2 can earn CLOSE CALL
+function netHitPlayer(p,amt,src,srcName,sx,sy,rd,bl){  // v28.35 (cloud-coop-p2-close-call), CLOUD HUNT 2026-10-15: rd marks an enemy round, so player 2 can earn CLOSE CALL
   var q, m;
-  if(!p||!p.net){ damagePlayer(amt,src,srcName,sx,sy); return 'own'; }
+  // v28.xx (cw-cx-blastnudge): bl is a blast radius, never inferred from a damage source name.
+  if(!p||!p.net){
+    var _blastPrev=BLAST_AT; BLAST_AT=(typeof bl==='number'&&isFinite(bl)&&bl>0)?{x:sx,y:sy,R:bl}:null;
+    try{ damagePlayer(amt,src,srcName,sx,sy); }finally{ BLAST_AT=_blastPrev; }
+    return 'own';
+  }
   if(!NET.on||NET.role!=='host') return 'off';
   q=netPeerOfSeat(p.seat);
   if(!q) return 'noseat';
   m={t:'hit',seat:p.seat,dmg:+(+amt).toFixed(2),kind:netClean(src,16),name:netClean(srcName,24)}; if(LATCH_BITE) m.pi=1;   // crawlerlatch
+  if(typeof bl==='number'&&isFinite(bl)&&bl>0) m.bl=bl; // v28.xx (cw-cx-blastnudge): radius travels with the existing centre.
   if(rd) m.rd=1;  // v28.35 (cloud-coop-p2-close-call), CLOUD HUNT 2026-10-15: a round, not a blast or a bite
   if(typeof sx==='number'&&isFinite(sx)){ m.x=+sx.toFixed(1); m.y=+(+sy).toFixed(1); }
   netSend(q,m);
@@ -66323,7 +66350,7 @@ function netAreaHitPeers(x,y,R,dmgFn,src,name,opt){
     if(opt.roof&&underSameRoof(opt.roof,b.x,b.y)) continue;
     if(opt.noRoof&&roofAt(b.x,b.y)) continue;
     if(!losClear(x,y,b.x,b.y,G.map.segs)) continue;
-    if(netHitPlayer(b,dmgFn(d),src,name,x,y)==='sent') n++;
+    if(netHitPlayer(b,dmgFn(d),src,name,x,y,0,opt.bl)==='sent') n++;
   }
   return n;
 }
@@ -66612,7 +66639,10 @@ function netHitTake(peer,m){
   d=+m.dmg; if(!isFinite(d)||d<=0||d>500) return 'bad';
   if(m.rd) try{ closeCall(null); }catch(_cc){}  // v28.35 (cloud-coop-p2-close-call), CLOUD HUNT 2026-10-15: a round reaching player 2 in his roll i-frames pays CLOSE CALL as it does the host
   LATCH_BITE=m.pi?1:0;   // crawlerlatch: a crawler hanging on him bites through his roll too
-  try{ damagePlayer(d,netClean(m.kind,16)||'other',netClean(m.name,24)||'',(typeof m.x==='number'&&isFinite(m.x))?m.x:undefined,(typeof m.y==='number'&&isFinite(m.y))?m.y:undefined); } finally{ LATCH_BITE=0; }
+  // v28.xx (cw-cx-blastnudge): player 2 applies his own shove and aim nudge after his own hit guards.
+  var _blastPrev=BLAST_AT;
+  BLAST_AT=(typeof m.bl==='number'&&isFinite(m.bl)&&m.bl>0&&typeof m.x==='number'&&isFinite(m.x)&&typeof m.y==='number'&&isFinite(m.y))?{x:m.x,y:m.y,R:m.bl}:null;
+  try{ damagePlayer(d,netClean(m.kind,16)||'other',netClean(m.name,24)||'',(typeof m.x==='number'&&isFinite(m.x))?m.x:undefined,(typeof m.y==='number'&&isFinite(m.y))?m.y:undefined); } finally{ LATCH_BITE=0; BLAST_AT=_blastPrev; }
   return 'hit';
 }
 // A LINKED WINDOW: its round, blade or charge landed on a body the host runs. The damage worked out here goes to the host,
@@ -69153,7 +69183,7 @@ function debrisImpact(ev,pt){
   try{ gfxBlastScar(pt.x,pt.y,1.3,false); }catch(_ds){}
   G.shake=Math.max(G.shake||0,Math.max(3,9-dist(p,pt)/120));
   d=Math.hypot(p.x-pt.x,p.y-pt.y);
-  if(d<R+(p.r||11)&&!p.downed&&!p.dying&&!p.specOut) damagePlayer(Math.round(150*(1-d/(R+(p.r||11)))+30),'debris','ORBITAL DEBRIS',pt.x,pt.y);
+  if(d<R+(p.r||11)&&!p.downed&&!p.dying&&!p.specOut) { var _blastPrev=BLAST_AT; BLAST_AT={x:pt.x,y:pt.y,R:R}; try{ damagePlayer(Math.round(150*(1-d/(R+(p.r||11)))+30),'debris','ORBITAL DEBRIS',pt.x,pt.y); }finally{ BLAST_AT=_blastPrev; } } /* v28.xx (cw-cx-blastnudge): debris is a blast in either window. */
   for(j=G.ents.length-1;j>=0;j--){
     e=G.ents[j];
     if(!e||!(e.hp>0)||e.kind==='snitch') continue;
@@ -70239,7 +70269,7 @@ function debrisImpactPeer(pt){
   try{ gfxBlastScar(pt.x,pt.y,1.3,false); }catch(_ds){}
   G.shake=Math.max(G.shake||0,Math.max(3,9-dist(p,pt)/120));
   d=Math.hypot(p.x-pt.x,p.y-pt.y);
-  if(d<R+(p.r||11)&&!p.downed&&!p.dying&&!p.specOut) damagePlayer(Math.round(150*(1-d/(R+(p.r||11)))+30),'debris','ORBITAL DEBRIS',pt.x,pt.y);
+  if(d<R+(p.r||11)&&!p.downed&&!p.dying&&!p.specOut) { var _blastPrev=BLAST_AT; BLAST_AT={x:pt.x,y:pt.y,R:R}; try{ damagePlayer(Math.round(150*(1-d/(R+(p.r||11)))+30),'debris','ORBITAL DEBRIS',pt.x,pt.y); }finally{ BLAST_AT=_blastPrev; } } /* v28.xx (cw-cx-blastnudge): debris is a blast in either window. */
 }
 function evPeerTick(dt){
   var E=evS(), L=E.live, i, j, ev, pt, c, t=G.t||0, p=G.player;

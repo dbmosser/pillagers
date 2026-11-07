@@ -2298,3 +2298,16 @@
 2026-11-07 0.0000 o-h02-147-heal-slows-big-hit-stops-it
 2026-11-07 0.0000 o-h03-148-bots-charge-or-flee-grenades
 2026-11-07 0.0000 o-h03-148-bots-charge-or-flee-grenades
+2026-11-07 0.0000 o-h03-148-bots-charge-or-flee-grenades
+2026-11-07 0.0000 o-h04-149-trigger-repeat-shells-fire-cancels-reload
+2026-11-07 0.0000 o-h04-149-trigger-repeat-shells-fire-cancels-reload
+2026-11-07 0.0000 o-h04-149-trigger-repeat-shells-fire-cancels-reload
+2026-11-07 0.0000 o-h04-149-trigger-repeat-shells-fire-cancels-reload
+2026-11-07 0.0000 o-h04-149-trigger-repeat-shells-fire-cancels-reload
+2026-11-07 0.0000 o-h05-150-revive-bandage-pause-alert-medal
+2026-11-07 0.0000 o-h05-150-revive-bandage-pause-alert-medal
+2026-11-07 0.0000 o-h05-150-revive-bandage-pause-alert-medal
+2026-11-07 0.0000 o-h05-150-revive-bandage-pause-alert-medal
+2026-11-07 0.0000 o-h05-150-revive-bandage-pause-alert-medal
+2026-11-07 0.0000 o-h06-153-blasts-shove-big-hits-nudge-aim
+2026-11-07 0.0000 o-h06-153-blasts-shove-big-hits-nudge-aim

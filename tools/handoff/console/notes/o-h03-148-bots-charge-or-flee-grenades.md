@@ -23,3 +23,8 @@ Replacement:
        birthState().name='vosk'; birthFinish(false);
        // THREE: refused in the demo
 This chooses a legal explicit birth name for both successors through the existing birth-state input. The hall then contains brakka and vosk before FOUR, so brakka ii tests a second brakka deterministically. It preserves the real birth/retirement and rename paths. Run 37.38 on current and drafted build after coordinator applies this correction. Pending: coordinator fixture staging correction, lane preflight and ship, ON HIS PC, linked smooth-look review in both windows.
+
+--- codex run 2026-11-07 13:29 ---
+2026-11-07 completion: Lane reports SHIPPED cw-cx-chargefrag, game v37.50. ON HIS PC v37.50: his 8802 serves 37.50, confirmed 34 seconds after shipping. This satisfies the job requirement to finish when shipped. No further code changes or fixture edits are needed for this task.
+LINKED REVIEW NEEDED: synced. The existing coordinator handoff remains: verify the host-owned charge and grenade avoidance in both smooth-look windows, with a picture from each, including player 2 grenade copies on the host. Sandbox did not perform that linked playtest; it is not claimed as completed. Host positions and states use the existing netEntRow snapshots.
+Watch: deaths to nearly dead charging pillagers, whether the charge reads as a choice, and frag kill rate as pillagers evade (cooking is the counter). The shipped draft includes these watch points in why for DESIGN.md.
