@@ -11,3 +11,8 @@ Rules: the seed 4242 fingerprint (ents 85/374, containers 165/593) must hold unl
 TASK DONE when it shipped; TASK PARTIAL with what is left.
 
 HIS PRIORITY 10-27 (priorities page): MEDIUM
+
+Lane note 2026-11-07 14:34: shipped cw-cx-blastnudge and parked: only lane-side steps are left. Codex's last words:
+Shipped v37.51 and confirmed ON HIS PC. Gameplay checks passed. All camera views staged, but critic scores remain 2; findings and the frozen hit-flash artifact are documented.
+
+TASK PARTIAL: coordinator must complete connected two-window review and resolve the HUD critic blockers.

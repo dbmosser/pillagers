@@ -31,3 +31,20 @@ The replacement failures were caused by the check dealing 90 then 30 damage to a
 Regenerated the draft: written. All 17 anchors again applied once without overlap in memory; the patched inline game script and fixture check parse. Browser execution and all ship gates still belong to the lane. Please retry cw-cx-blastnudge with the corrected check, then capture the existing four smooth role recipes.
 
 LINKED REVIEW NEEDED: synced (m.bl added to hit packets). Pending preflight, ship, ON HIS PC, camera/critic results and connected two-window review.
+
+--- codex run 2026-11-07 14:34 ---
+2026-11-07, run 3: cw-cx-blastnudge SHIPPED as v37.51 (28816f723). ON HIS PC v37.51: his 8802 serves 37.51, 25 seconds after ship. The corrected new check passed the lane gates. No further gameplay edits are needed from the reported results.
+
+Reviewed the four attached smooth-look 1080p pictures. The camera also staged all four at 4K. Every picture had zero camera lint findings. Host and join views both show a standing survivor, the fixed reticle and the dotted gun direction. These are fixture role snapshots; they do not prove connected transport or recovery timing on their own. Those behaviours are covered by the shipped check; the connected review remains a coordinator handoff.
+
+All four critic scores were 2. No passing visual grade is claimed. Main P0/P1 findings: expanded career controls, extraction distance repeated in the top banner and world-edge direction marker, full-screen red hit tint, empty hotbar slot numbers, and existing HUD hierarchy/alignment. The critic called the metre values countdowns; they are distances. The duplication finding can still be assessed by the HUD owner. None of those draw/layout paths was changed by this key.
+
+The camera recipe froze updatePlayer at dt=0 after the hit. That also froze the existing hitFlash, making a transient full-screen hit tint persist across the camera delay. The review therefore overstates its persistence in normal play. The production hitFlash still decays with dt; it was not changed. Do not alter the shove, nudge, hit guard, or damage timing to address this diagnostic-picture artifact. The red tint rendering itself remains available for a separate presentation review.
+
+No unrelated HUD follow-up was shipped. This task explicitly concerns hit feel, and the rules prohibit mixing UI/art changes with feel changes. The style guide also directs screen tasks to leave the top-right corner to its own job. A coordinator handoff records the unresolved critic findings rather than quietly broadening the implementation.
+
+Pictures: C:/claudecode/dark raiders/tools/handoff/console/notes/shots/o-h06-153-blasts-shove-big-hits-nudge-aim-recipes-1/153-host-shove-1080.jpg, 153-host-nudge-1080.jpg, 153-join-shove-1080.jpg, 153-join-nudge-1080.jpg (4K counterparts in the same folder).
+
+LINKED REVIEW NEEDED: synced. Please verify the existing hit word carrying m.bl with m.x/m.y in real connected windows, including an enemy blast reaching the peer and the peer firing during a non-blast nudge. No agents, browsers, network, or external workflows were started from this sandbox.
+
+Remaining work belongs to the coordinator: connected review and disposition of the unrelated HUD/critic blockers. The task is not being marked visually complete at score 2. No new key or camera round is requested merely to repeat the same picture review.

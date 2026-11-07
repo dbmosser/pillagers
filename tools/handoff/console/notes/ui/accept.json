@@ -5680,5 +5680,69 @@
   "pic": "tools/handoff/console/notes/shots/o-h02-147-heal-slows-big-hit-stops-it-recipes-2/heal-windup-join-1080.jpg",
   "task": "o-h02-147-heal-slows-big-hit-stops-it",
   "when": "2026-11-07T18:04"
+ },
+ "53-host-nudge": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "a legible HUD buried under a full-screen red wash, a bloated always-open keybind sheet, and the same extract timer printed twice.",
+  "findings": [
+   "P0 bottom-left, 20,525 to 316,814: collapse to a single row like 'f1 controls' at that same left anchor; drop the 15-row panel until f1 is pressed.",
+   "P0 top-right 'extract 152m' banner at (1690,10) AND bottom-right 'c 152m ▶' pill at (1810,485): delete the bottom-right 'c 152m' pill; keep only the top-right extract readout.",
+   "P1 entire play area, full-bleed red/orange tint: cap the hit-overlay to a radial vignette at the screen edges (alpha ~0 at center, ~.35 at the rim) so midscreen gameplay and HUD icons keep normal contrast.",
+   "P1 bottom-center weapon row, slots 4–9 and 0 at y≈978: give every slot the same --ui-panel tile/--rad 4px treatment even when empty, or hide unused slot numbers entirely.",
+   "P2 status chips at (18,965) and (145,965): make both chips the same dark --ui-panel fill with --tx-2 text, reserving amber for a small icon inside the chip rather than the whole background."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h06-153-blasts-shove-big-hits-nudge-aim-recipes-1/153-host-nudge-1080.jpg",
+  "task": "o-h06-153-blasts-shove-big-hits-nudge-aim",
+  "when": "2026-11-07T19:29"
+ },
+ "53-host-shove": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "this reads as a raw debug HUD under fire, not a shippable combat screen — the controls sheet ignores the shipped spec and the extraction readout is drawn twice.",
+  "findings": [
+   "P0 bottom-left, full move/gear/fight/raid key panel: collapse to a single line reading something like \"f1 controls\" at mid-bottom-left (per rs-1), remove the full grid from default view",
+   "P0 top-right \"extract 153m\" and the teal \"c 153m ▶\" pill at roughly (1841,484): delete one of the two readouts; keep the top-right extract timer as the single source and replace the mid-right pill with a non-numeric compass arrow only",
+   "P1 whole-screen composition: 15:00 clock, extract 153m, scav pistol 12/24, hp 27: demote clock to --fs-label (16px) weight, keep only ammo or hp at --fs-hero depending on which matters in a damage moment, not both",
+   "P1 full-screen red hit-flash overlay: cap the flash overlay opacity so hazard icon contrast stays above the 4.5:1 floor, or inset a clear ring around hazard icons so they survive the tint",
+   "P1 weapon slot row, bottom-center, slots 4 through 0: only render slots that hold an item (3 here), or fold empty slots into a single dimmed \"+7\" marker"
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h06-153-blasts-shove-big-hits-nudge-aim-recipes-1/153-host-shove-1080.jpg",
+  "task": "o-h06-153-blasts-shove-big-hits-nudge-aim",
+  "when": "2026-11-07T19:30"
+ },
+ "53-join-nudge": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "a full-screen red wash flattens contrast and buries world icons while the extract timer and raid-control list duplicate and violate the spec's single-source and folded-by-default rules.",
+  "findings": [
+   "P0 whole screen: remove the full-frame color wash; keep damage feedback as a short edge vignette (<400ms) that clears, not a persistent full-screen tint",
+   "P0 top-right stack: 'run info' dropdown, 'the long dock cache' label, 'c 152m ▶' pill: delete the second 'c 152m' pill, keep the single extract readout in the top bar only, and rebuild 'run info' and the cache label as one --ui-panel card, not three different shapes",
+   "P0 bottom-left controls list (move/gear/fight/raid): collapse to a single row reading 'f1 controls' at mid-bottom-left, expand only on F1 press",
+   "P1 weapon slot row, bottom center: either draw matching --ui-panel tiles at --rad 4px for all 10 slots or hide empty slots past the last filled one",
+   "P1 'current pillagers' panel, top-left: right-align 'dead'/'out' status to a fixed column 80px from panel edge; add --sp-1 (8px) padding around the collapse icon"
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h06-153-blasts-shove-big-hits-nudge-aim-recipes-1/153-join-nudge-1080.jpg",
+  "task": "o-h06-153-blasts-shove-big-hits-nudge-aim",
+  "when": "2026-11-07T19:31"
+ },
+ "53-join-shove": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "a screen-wide red wash tanks readability while the controls panel and extract timer break the owner's own rules.",
+  "findings": [
+   "P0 bottom-left controls panel (move/gear/fight/raid): collapse to a single row reading something like 'f1 controls' at mid-bottom-left; only expand on f1 press",
+   "P0 extract timer, top-right '​extract 153m' vs mid-right 'c 153m' marker: delete the second 'c 153m' teal marker; keep only the top-right extract readout as the single source",
+   "P0 entire play area: drop overlay opacity to a true vignette (edges only, clear centre) or cap at --scrim .80 equivalent only on a damage-flash pulse of <300ms, not a static full-screen tint",
+   "P1 bottom-centre weapon hotbar, slots 4-9 and 0: give every slot the same --ui-panel box at --rad 4px, dimmed to tx-2 opacity when empty, same size as filled slots",
+   "P1 top-right quadrant: stack poi callouts and run info under one anchored column top-right with --sp-2 gaps; remove the duplicate marker per the P0 above"
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h06-153-blasts-shove-big-hits-nudge-aim-recipes-1/153-join-shove-1080.jpg",
+  "task": "o-h06-153-blasts-shove-big-hits-nudge-aim",
+  "when": "2026-11-07T19:32"
  }
 }

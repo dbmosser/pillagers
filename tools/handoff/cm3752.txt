@@ -1,0 +1,7 @@
+v37.52: overseer chases top damage
+
+In a party raid the Overseer pursues the standing player who dealt the most damage. Ties use the nearest player. Both windows use the host target.
+
+Check 37.52. Fails on v37.51.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

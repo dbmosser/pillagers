@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.52 - OVERSEER CHASES TOP DAMAGE
+
+Co-op hunt while he was away. His g-24 answer: Whoever hurt it most. The host tracks damage and shares the chosen seat. Watch: the higher-damage partner holds the Overseer all fight; watch that the other player does not feel left out and that the target does not flip back and forth.
+
+MEASURED. Check 37.52 passes, and fails on v37.51.
 ## v37.51 - BLAST SHOVE AND BIG HIT AIM NUDGE
 
 Co-op hunt while he was away. His g-3: A shove only. His g-6: A small nudge on big hits. Watch: being shoved by your own frag or rocket up close must feel fair, and a shove next to deep water or a doorway must read; the aim nudge is felt most in long duels and must never read as input lag or a bad mouse.

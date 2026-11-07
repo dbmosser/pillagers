@@ -693,3 +693,5 @@
 2026-11-07 13:56 o-h05-150-revive-bandage-pause-alert-medal 19s ok PARTIAL in=2389567 out=20479 run=5
 2026-11-07 14:03 o-h06-153-blasts-shove-big-hits-nudge-aim 366s ok PARTIAL in=1069362 out=14987 run=1
 2026-11-07 14:08 o-h06-153-blasts-shove-big-hits-nudge-aim 72s ok PARTIAL in=1604469 out=17499 run=2
+2026-11-07 14:34 o-h06-153-blasts-shove-big-hits-nudge-aim 115s ok PARTIAL in=2180859 out=21157 run=3
+2026-11-07 14:38 o-h07-156-overseer-chases-top-damage 205s ok PARTIAL in=588866 out=7730 run=1
