@@ -1,0 +1,14 @@
+id=shots-48c8cc6e6784
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=28816f723a0145068f05f783d61fc26aefc44885
+screens=153-host-shove,153-host-nudge,153-join-shove,153-join-nudge
+res=1080,4k
+nolint=0
+lintopts=
+from=JUL26
+submitted=1794079479
+expires=1794086079
