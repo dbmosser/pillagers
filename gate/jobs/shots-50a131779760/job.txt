@@ -1,0 +1,14 @@
+id=shots-50a131779760
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=24c974d58e360806b350e960edf138efe7a15eae
+screens=174-element-elite-fight,174-body-gun-card
+res=1080,4k
+nolint=0
+lintopts=
+from=JUL26
+submitted=1794090762
+expires=1794097362
