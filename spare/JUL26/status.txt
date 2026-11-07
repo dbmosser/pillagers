@@ -1,6 +1,6 @@
 host=JUL26
-seen=2026-11-07 05:35
-epoch=1794047720
+seen=2026-11-07 05:37
+epoch=1794047868
 game=000a7e14 v37.48
 test_run=paused: no tests on this pc, all testing is on the spare pc
 robots=0
@@ -15,5 +15,5 @@ cpu=AMD Ryzen 7 5800X3D 8-Core Processor
 soak=soak v36.95: 0 of 6 passed
 spare_pc=no reply on the home network (192.168.1.246), its own last report 2026-11-07 05:16, 05:35
 party=37.48 000a7e14
-play8802=nothing
-receiver8799=down, last report 11-02 22:01, last note 10-28 07:56
+play8802=C:\claudecode\pillagers-party v37.48
+receiver8799=up, last report 11-02 22:01, last note 10-28 07:56
