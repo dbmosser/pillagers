@@ -77,7 +77,9 @@ ramwait(){ local floor g i; floor=$(cap RAM_FLOOR_GB 6); floor=$(machine_floor "
 # 11-03 (Codex Correspondent, OVERLORD's order): FnP first on JUL26. No Codex run while a walk or game is on, while the editor is being reopened, or with the editor open and
 # memory short (machine_editor_open: 14 GB, our own estimate, the same hold as the Claude helpers). Process names only: never read the editor's command line. No answer means hold.
 EDITOR_HOLD_FILE=/c/claudecode/pillagers-fortnite/tools/fnp-scripts/editor-stay-closed.txt
-fnp_hold(){ HOLDWHY=""; [ "$ON_MAIN" = 1 ] || return 1; [ -n "$CX_FREEGB" ] && return 1
+# 11-07 (OVERLORD order): fnp_hold [code|gate]. "code" (default) is the Codex step: codex exec is light, so with the editor open it needs only CX_CODE_MIN_GB (3) free, not 14.
+# "gate" is the test step (preflight/ship): the 14 GB editor rule stays for tests on this PC; with GATE_REMOTE on, the Chrome stages run on the JTPC, so only the walk/editor/helper holds apply.
+fnp_hold(){ local mode="${1:-code}"; HOLDWHY=""; [ "$ON_MAIN" = 1 ] || return 1; [ -n "$CX_FREEGB" ] && return 1
   machine_fortnite_playing && { HOLDWHY="a Fortnite walk or game is on"; return 0; }
   local age; age=$(powershell -NoProfile -Command "\$p=@(Get-Process -ErrorAction SilentlyContinue | Where-Object { \$_.ProcessName -match '^UnrealEditor' } | Sort-Object StartTime -Descending); if(\$p.Count){ [int]((Get-Date)-\$p[0].StartTime).TotalMinutes } else { 'closed' }" 2>/dev/null | tr -d '\r ')
   case "$age" in
@@ -87,7 +89,14 @@ fnp_hold(){ HOLDWHY=""; [ "$ON_MAIN" = 1 ] || return 1; [ -n "$CX_FREEGB" ] && r
   [ "$age" -lt 10 ] && { HOLDWHY="the Fortnite editor was just reopened"; return 0; }
   # CLAUDE.md: one helper at a time while the editor is open
   local n; n=$(machine_helpers_running); [ "${n:-1}" -gt 0 ] && { HOLDWHY="a Claude helper is already running beside the Fortnite editor"; return 0; }
-  machine_editor_open && { HOLDWHY="memory is short with the Fortnite editor open"; return 0; }
+  if [ "$mode" = gate ]; then
+    gate_remote || { machine_editor_open && { HOLDWHY="tests would run on this PC and memory is short with the Fortnite editor open (14 GB rule)"; return 0; }; }
+  else
+    if [ "$(machine_epic_count '^UnrealEditor')" -gt 0 ] 2>/dev/null; then
+      local g need; need="${CX_CODE_MIN_GB:-$(cap CX_CODE_MIN_GB 3)}"; g=$(freegb); g=${g:-0}
+      [ "$g" -lt "$need" ] && { HOLDWHY="only $g GB free with the Fortnite editor open, the Codex step needs $need"; return 0; }
+    fi
+  fi
   return 1; }
 # 11-03: limits.txt is written only after a Codex run, so its last line goes stale. Past that line's week_resets the week is new and its percent no longer counts; without this the
 # reserve rests for good, because a rest blocks the very run that would write a new line.
@@ -224,6 +233,8 @@ busy=$(for d in "$C"/lane-*.lock; do [ "$d" = "$LK" ] && continue; cat "$d/task"
 t=""
 if [ -n "$JOBARG" ]; then [ -f "$C/tasks/$JOBARG.md" ] && t="$C/tasks/$JOBARG.md"
 else
+  # 11-07 standing refill (owner: keep growing, never an empty lane while the backlog has jobs): with no o-* job in tasks/, the next o-*.md in console/backlog/ (sorted: m4a, m4b, ... m9b) moves to tasks/.
+  if ! ls "$C/tasks/$L-"*.md >/dev/null 2>&1 && [ "$MODE" = run ]; then nb=$(ls "$C/backlog/$L-"*.md 2>/dev/null | sort | head -1); [ -n "$nb" ] && mv "$nb" "$C/tasks/" 2>/dev/null && log "refill: $(basename "$nb") from backlog to tasks"; fi
   t=$(ls "$C/tasks/$L-"*.md 2>/dev/null | sort | free)
   # 2026-10-19: only o-* jobs for now. Taking any free job let Codex grab Claude lanes' UI jobs (12, 14) and burn their runs, and jobs that
   # rewrite mkfixture checks need a Claude lane (Codex cannot edit the shared tree). Set CX_ANY=1 (env or caps-codex.txt) to allow any free job again.
@@ -368,6 +379,7 @@ ship_key(){
 & "%s" -Key %s
 ' "$(cygpath -w "$R/tools/handoff/codex/watchfix.ps1")" "$k" >> "$dst"
   grep -qxF "$k" "$LS/installed.txt" || echo "$k" >> "$LS/installed.txt"
+  if fnp_hold gate; then say "gate waits: $HOLDWHY ($name)"; return 2; fi
   ramwait || { say "waiting for RAM before the gate ($name)"; return 2; }
   say "gate: preflight $k ($name, codex)"
   for i in 1 2 3 4; do

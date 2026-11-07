@@ -2,6 +2,7 @@
 
 - birth card: a, b or c (built a). Picture page: tools/handoff/console/notes/progression/birth-pick-1101.html
 - stash gear: a, b or c (built a). Picture page: tools/handoff/console/notes/progression/doll-pick-1101.html
+- stash gear colours (lane c, 11-03): the critic wants piece names plain with rarity only as a bar, and no pips. I kept names in rarity colour and pips as dots, because the plan asks for both and they match your loot rows. Say if you want it plainer.
 - retire (lane a, 11-01, v37.38): a pillager must live one raid before it can retire, otherwise birth (free), retire, birth pays $250 a press forever and climbs the ranks. Ok, or a different rule? Built with the one raid rule.
 - z-165 (lane b, 11-01): may I add a camera screen to ui-screens-js.json that stages a raid with fake teammate rows (rifle, down, fists), so the partner row can be photographed at 1080p and 4k? None of the 78 screens shows the raid teammate rows today. Shipped without pictures as v37.27.
 
@@ -146,3 +147,4 @@ Only machines can be golden now (your 10-31 rule: pillagers stand in for live pl
 
 ## 11-01 a death ends the pillager (season zero m2, v37.29)
 1. May the picture list get a "floor after a death" screen (die, log run and return, the floor line "nilo is gone  pillager 2")? Screen 39 returns after an extraction, so today the line is proven by the check only. It uses the same floor toast as the rank up line.
+2026-11-07 o-h01-177-hardcore-save: Per the job, hardcore creation is hidden in the player 2 window; an existing hardcore save still has its tag and death rule there. Current HEAD uses numbered saves for player 2 (since v17.93), rather than the old single p2 save described in the job. Existing numbered-save selection is preserved. No answer is needed to ship this scope.

@@ -1,0 +1,38 @@
+# Curated lines for the FNP side of the dashboard (tools/devdash/server.mjs reads this file; the page shows the asof time so a stale list is never trusted).
+# Edit by hand, one line each, plain game words, no dashes. Formats:
+#   asof=YYYY-MM-DD HH:MM
+#   by=who wrote it and from what
+#   hands|TAG|FLAGS|text     TAG is FNP, HTML or PC. FLAGS: reboot hides the line once the PC has restarted after asof; leave empty otherwise.
+#   script|text              proven by a script in the game; nobody has played it
+#   not|text                 not proven yet
+asof=2026-11-03 06:55
+by=OVERLORD, from the FNP lead dev notes (inbox 04:13 to 06:50) and test logs sess16 to sess25
+hands|FNP|reboot|Restart the PC in the morning, as you decided. Nothing restarts it before then.
+hands|FNP||The BIOS setting Power Supply Idle Control. FNP CEO has the exact steps for your board, and it fits the same restart.
+hands|FNP||Play the island for 30 minutes. New features wait for this until 20:11 tonight.
+hands|FNP||A real gun killing a robot. Only a person can pull the trigger, so every kill so far is the script's damage.
+hands|FNP||Holding a gun at the Forge, climbing, wading, and how the dusk looks.
+hands|FNP||A real quit and come back: quit Fortnite, return later and see that your stash is still there. Epic resets saves between test sessions, so a script cannot prove it.
+hands|PC||Run the full Windows Memory Diagnostic (a long check of the PC's memory).
+script|The Forge chooser upgrades a gun and takes the cash from your stash.
+script|Going down, then a self revive back up to 40 health. A second time down has no revive.
+script|Dying costs your level and what you carried. Your stash and cash are kept.
+script|Extracting empties your hands into the stash with the 10% bonus, and doubles your SP.
+script|Selling, taking from the stash, buying, and starting a second raid. The stash has 3 columns with names.
+script|Robots carry real guns: grunt SMG 12 a hit, so 9 hits kill you. Heavy machine gun 20 a hit. Robot sight 40 m.
+script|Robots vary by raid and squad size. Wave robots land about 100 m away and walk up to you.
+script|All 3 robot kinds die and credit 100, 200 and 400. The damage came from the script, not from gunfire.
+script|Pickaxe bonus: 38 a swing up close. Gun hits from afar stay stock.
+script|The exit call steps, the exit alarm, the clock at zero, bag and body pickup, and the minimap.
+script|12 searchable dead machines are in, and crate prompts show.
+script|Walls break in a blast: Turbine Hall lost a whole section.
+script|Raid from the lid. The raid started and ended 6 times in a row, about 30 seconds each, with no fight.
+script|Island memory reads 61 of Epic's 300 MiB. No card hang since 03:29, across 24 test sessions.
+not|Nobody has played the island yet. Everything above was a script driving the game.
+not|A full raid with a real fight from start to finish.
+not|A real gun killing a robot.
+not|Holding a real gun at the Forge. The scripts only ran its chooser.
+not|A true quit and come back with the stash intact (Epic resets saves on a new session).
+not|Two players in one raid as a squad. A solo death clearing the bag also needs a two player check.
+not|The cold blue dusk look: set up 11-02 night, not yet judged by a person.
+not|Robot type 4 fired no shots in the gun test at 3:54 (the other 7 did). The 04:13 gun fix doesn't name it, so the cause is still not known to this page.

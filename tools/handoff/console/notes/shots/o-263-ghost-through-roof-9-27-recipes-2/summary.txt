@@ -1,0 +1,4 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  263-container-roof-original-check      staged      10.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"version":"37.48","checks":[{"size":"camera native","result":null,"world":[1918,1078]},{"size":[1888,977],"result":null,"world":[1888,977]},{"size":[1888,1080],"result":null,"world":[1888,1080]}],"player":{"x":3570,"y":2887},"renderUnmodified":true}
+== 4k : window 3876x2265, viewport 3840x2160
+  263-container-roof-original-check      staged      10.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"version":"37.48","checks":[{"size":"camera native","result":null,"world":[3838,2158]},{"size":[1888,977],"result":null,"world":[1888,977]},{"size":[1888,1080],"result":null,"world":[1888,1080]}],"player":{"x":3570,"y":2887},"renderUnmodified":true}

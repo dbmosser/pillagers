@@ -1,0 +1,7 @@
+v37.49: healing slows and big hits interrupt
+
+Medical wind-ups move at half speed without sprint. A landed incoming hit of 30 or more cancels the wind-up and spends the item. Plates and flowing heals keep their rules.
+
+Check 37.49. Fails on v37.48.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

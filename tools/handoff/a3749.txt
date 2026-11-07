@@ -1,0 +1,1 @@
+| HEALING SLOWS AND BIG HITS INTERRUPT | v37.49 | CO-OP HUNT (found, drafted and reviewed by agents 2026-09-28). MEASURED: 37.49 passes, fails on v37.48 |

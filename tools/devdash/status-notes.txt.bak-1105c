@@ -1,0 +1,13 @@
+# Curated lines for the dashboard's "Needs you" card (tools/devdash/server.mjs reads this file). Everything else on the page is read live.
+# Edit by hand, one line each, plain words, no dashes. Only things nobody but the owner can do, and take a line off as soon as it is done.
+#   asof=YYYY-MM-DD HH:MM    the page warns in red when this is over 24 hours old
+#   by=who wrote it and from what
+#   open|text                one plain line for the "What is open on FnP" card
+#   hands|TAG|FLAGS|text     TAG is FNP, HTML or PC. FLAGS: reboot hides the line once the PC has restarted after asof; leave empty otherwise.
+asof=2026-11-05 12:55
+by=OVERLORD, checked against the inbox, owner notes and handoff on 11-05
+hands|PC|reboot|Restart the PC when you can. The bigger page file is saved and starts working after that.
+hands|FNP||Leave the keyboard and mouse alone for 3 minutes when you can, so the walk test can run.
+open|After the bay: settings menu, title screen, crafting, dev tools, turret health and respawn.
+open|JTPC becoming the walk test machine, so walks stop waiting for you to leave the PC.
+hands|PC||Click Allow on the FNP startup wake chat. Until then, a PC restart wakes nobody.

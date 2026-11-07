@@ -1,0 +1,4 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  esc262-current-checks                  staged       5.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"kind":"diagnostic only","results":[{"version":"12.99","result":null},{"version":"10.10","result":null}],"trace":[{"check":"12.99","action":"check entry","state":{"stale":false,"staleCard":false,"fullscreen":0,"quantity":false,"padName":false,"keys":false,"snip":0,"attract":{"on":false,"pending":fa
+== 4k : window 3876x2265, viewport 3840x2160
+  esc262-current-checks                  staged       5.3s  total   2: clip 0 off 0 small 2 contrast 0 font 0 overlap 0 focus 0  | {"kind":"diagnostic only","results":[{"version":"12.99","result":null},{"version":"10.10","result":null}],"trace":[{"check":"12.99","action":"check entry","state":{"stale":false,"staleCard":false,"fullscreen":0,"quantity":false,"padName":false,"keys":false,"snip":0,"attract":{"on":false,"pending":fa

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pillagers Dev</title>
+<style>
+:root{--bg:#0e1013;--card:#171a1f;--line:#262b33;--ink:#e9e6df;--dim:#9aa1ab;--amber:#f0a83a;--green:#5fd47a;--red:#ff6b5e;--teal:#4fd1c5}
+*{box-sizing:border-box}html,body{overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Segoe UI",system-ui,sans-serif}
+header{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;padding:14px 20px;border-bottom:1px solid var(--line)}
+h1{margin:0;font-size:20px;letter-spacing:.06em;color:var(--amber)}
+.sub{color:var(--dim);font-size:13px}
+main{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:14px;padding:16px 20px;max-width:1280px}
+section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+h2{margin:0 0 8px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.big{font-size:20px;font-weight:600;line-height:1.3}
+.g{color:var(--green)}.a{color:var(--amber)}.r{color:var(--red)}.d{color:var(--dim)}
+ul{list-style:none;margin:8px 0 0;padding:0}
+li{padding:6px 0;border-top:1px solid var(--line);overflow-wrap:anywhere}li:first-child{border-top:0}
+.t{color:var(--dim);font-size:13px;margin-right:8px;font-variant-numeric:tabular-nums}
+.tag{font-size:11px;font-weight:600;color:var(--teal);border:1px solid var(--teal);border-radius:4px;padding:0 5px;margin-right:6px}
+.nums{display:flex;gap:22px;flex-wrap:wrap}.nums b{display:block;font-size:24px;line-height:1.15;font-variant-numeric:tabular-nums}.nums span{font-size:13px;color:var(--dim)}
+.bar{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--line);margin:10px 0 2px}.bar i{display:block;height:100%}
+.note{font-size:13px;color:var(--dim);margin-top:8px}
+.wide{grid-column:1/-1}
+</style></head><body>
+<header><h1>PILLAGERS DEV</h1><span class="sub" id="upd">Loading...</span></header>
+<main>
+<section class="wide" id="now"></section>
+<section id="you"></section>
+<section id="bay"></section>
+<section id="work"></section>
+<section id="sys"></section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ago=t=>{const m=Math.round((Date.now()-t)/60000);return m<1?'just now':m<60?m+' min ago':m<2880?Math.round(m/60)+' h ago':Math.round(m/1440)+' days ago';};
+const hm=t=>new Date(t).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+const dayhm=t=>new Date(t).toDateString()===new Date().toDateString()?hm(t):new Date(t).toLocaleDateString([],{weekday:'short'})+' '+hm(t);
+/* the first sentence of a lead dev line, without script names */
+function plain(s){
+  s=String(s).replace(/,?\s*\b(?:bay_\w+|keytest|sess\d+)(?:\.py|\.sh)?\b(?:,\s*bay_\w+(?:\.py)?)*(?: printed done)?/g,'').replace(/^(?:\d\d:\d\d )?\s*/,'');
+  if(/^walk \w+ did not start/i.test(s)) return 'Walk test did not start: it needs 3 quiet minutes';
+  s=s.replace(/\bwalk b\w+\b/gi,'walk test').replace(/,?\s*(?:to |at )?X -?[\d.]+(?: to -?[\d.]+)?(?:, Y -?[\d.]+(?: to -?[\d.]+)?)?/g,'').replace(/,?\s*(?:(?:to|at) )?Y -?[\d.]+(?: to -?[\d.]+)?(?:, -?[\d.]+)*/g,'');
+  s=s.replace(/,?\s*read back from a fresh dump.*$/i,'.').replace(/\s*\([^)]*\)/g,'');
+  const m=/^(.{20,}?[.;])(?:\s|$)/.exec(s); s=m?m[1]:s;
+  s=s.replace(/[.;,\s]+$/,'');
+  s=s.length>120?s.slice(0,117).replace(/\s+\S*$/,'')+'...':s;
+  return s.charAt(0).toUpperCase()+s.slice(1);
+}
+function nowHtml(d){
+  const n=d.fnpNow||{}, mins=n.lastWork?(Date.now()-n.lastWork)/60000:1e9, w=n.walkOut, parts=[];
+  const cls=mins<20?'g':mins<45?'a':'r', head=mins<20?'FnP is being worked on':mins<45?'FnP: quiet for '+Math.round(mins)+' min':'FnP: no work saved for '+(mins<2880?Math.round(mins)+' min':Math.round(mins/1440)+' days');
+  parts.push('Last work saved '+(n.lastWork?ago(n.lastWork):'unknown')+'.');
+  parts.push(n.editorOpen?'Editor open.':'Editor closed.');
+  if(n.queued&&w&&w.name===n.queued.walk&&(w.waiting||w.held)) parts.push('Walk test waits for 3 quiet minutes and 8.5 GB free. Building carries on without it.');
+  return '<div class="big '+cls+'">'+esc(head)+'</div><div class="note">'+esc(parts.join(' '))+'</div>';
+}
+function youHtml(d){
+  const c=d.curated, items=[], old=c&&c.asof&&Date.now()-c.asof>24*3600e3, booted=c&&d.bootAt>c.asof;
+  if(c) c.hands.forEach(h=>{ if(/reboot/.test(h.flags)&&booted) return; items.push([h.tag,h.text]); });
+  (d.questions||[]).forEach(q=>{const t=q.replace(/^one step waiting on you:\s*/i,'');items.push(['HTML',t.charAt(0).toUpperCase()+t.slice(1)]);});
+  if(d.memClick) items.push(['PC','Optional: double-click "Pillagers memory setup" on your desktop, then Yes.']);
+  let o='<h2>Needs you</h2>';
+  o+=items.length?'<ul>'+items.map(i=>'<li><span class="tag">'+esc(i[0])+'</span>'+esc(i[1])+'</li>').join('')+'</ul>':'<div class="g">Nothing right now.</div>';
+  o+=c&&c.asof?'<div class="note'+(old?' r':'')+'">'+(old?'This list may be out of date: last checked '+esc(dayhm(c.asof)):'Checked '+esc(dayhm(c.asof)))+'.</div>':'';
+  return o;
+}
+function bayHtml(d){
+  const n=d.fnpNow||{}, m=n.match; let o='<h2>Bay layout match</h2>';
+  if(m){ const tot=m.same+m.wrong+m.missing, p=v=>(100*v/tot).toFixed(1)+'%';
+    o+='<div class="nums"><div><b class="g">'+m.same+'</b><span>match</span></div><div><b class="a">'+m.wrong+'</b><span>wrong</span></div><div><b class="r">'+m.missing+'</b><span>missing</span></div></div>';
+    o+='<div class="bar"><i style="width:'+p(m.same)+';background:var(--green)"></i><i style="width:'+p(m.wrong)+';background:var(--amber)"></i><i style="width:'+p(m.missing)+';background:var(--red)"></i></div>';
+    o+='<div class="note">Places on the list, counted at the last passed walk test. Newer work counts once a walk passes.</div>';
+  } else o+='<div class="d">Count not found in the lead dev notes.</div>';
+  o+='<ul>';
+  if(n.passed) o+='<li>Last walk test passed at '+esc(n.passed.at)+'.</li>';
+  if(n.queued) o+='<li>Next walk test: '+n.queued.routes+' routes, not run yet.</li>';
+  if(n.ready) o+='<li>Last fully tested build: '+esc(n.ready.tag)+', '+esc(dayhm(n.ready.at))+'. Map work after that is in the editor, not walk tested yet.</li>';
+  return o+'</ul>';
+}
+function workHtml(d){
+  const l=(d.fnpNow||{}).lead||[];
+  return '<h2>Latest work</h2>'+(l.length?'<ul>'+l.map(x=>'<li><span class="t">'+esc(dayhm(x.at))+'</span>'+esc(plain(x.text))+'</li>').join('')+'</ul>':'<div class="d">No lead dev lines found.</div>');
+}
+function sysHtml(d){
+  const n=d.fnpNow||{}, p=d.plan||{}, s=d.spareInfo||{}, seen=s.seenEpoch?s.seenEpoch*1000:0, sOld=!seen||Date.now()-seen>30*60e3, cf=n.commitFree;
+  const wk=p.wk==null?'<span class="d">unknown</span>':p.wk+'% used'+(p.line!=null?' <span class="d">(line '+Math.round(p.line)+'%, reading '+ago(p.at)+')</span>':'');
+  const o=['<h2>Machines and usage</h2><ul>'];
+  o.push('<li><b>Claude week:</b> '+wk+'</li>');
+  o.push('<li><b>Main PC:</b> <span class="'+(cf==null?'d':cf<4?'r':cf<8.5?'a':'g')+'">'+(cf==null?'memory unknown':cf+' GB free to commit')+'</span> <span class="d">(floor 4, walk tests 8.5)</span></li>');
+  o.push('<li><b>JTPC:</b> '+(sOld?'<span class="a">no report '+(seen?ago(seen):'yet')+'</span>':esc(s.testRun==='idle'?'idle':'testing')+' <span class="d">('+esc(s.ramFree)+' GB free, reported '+ago(seen)+')</span>')+'</li>');
+  o.push('<li><b>HTML game:</b> v'+esc(d.ver)+' <span class="d">(back seat, itch on v'+esc(d.itch)+')</span></li>');
+  return o.join('')+'</ul>';
+}
+async function tick(){
+  let d; try{ d=await (await fetch('/api',{cache:'no-store'})).json(); }catch(e){ $('upd').innerHTML='<span class="r">Dashboard server not answering</span>'; return; }
+  if(!d||d.error){ $('upd').innerHTML='<span class="r">Dashboard could not read its files</span>'; return; }
+  const R=(id,fn)=>{ try{ $(id).innerHTML=fn(d); }catch(e){ $(id).innerHTML='<div class="r">This card could not be drawn.</div>'; } };
+  R('now',nowHtml); R('you',youHtml); R('bay',bayHtml); R('work',workHtml); R('sys',sysHtml);
+  $('upd').textContent='Updated '+d.now+' (every 10 seconds)';
+}
+tick(); setInterval(tick,10000);
+</script></body></html>

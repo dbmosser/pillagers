@@ -79,13 +79,28 @@ let procs = { chrome: 0, fuzz: [], workers: 0, review: 0, ollama: 0, codex: 0, a
 const PS_PROCS = ["$ProgressPreference='SilentlyContinue'", "$o=@()",
   "foreach($n in 'UnrealEditorFortnite-Win64-Shipping','FortniteClient-Win64-Shipping'){Get-Process -Name $n -ErrorAction SilentlyContinue|ForEach-Object{$o+='P|'+$n+'|'+$_.StartTime.ToUniversalTime().ToString('o')}}",
   "foreach($n in 'chrome','ollama','agy'){$o+='C|'+$n+'|'+@(Get-Process -Name $n -ErrorAction SilentlyContinue).Count}",
-  "Get-CimInstance Win32_Process -Filter \"Name='node.exe' OR Name='powershell.exe' OR Name='pwsh.exe'\"|ForEach-Object{$o+='L|'+$_.Name+'|'+(($_.CommandLine -replace '[\\r\\n]+',' '))}",
+  "Get-Process -Name 'UnrealEditorFortnite-Win64-Shipping','FortniteClient-Win64-Shipping','claude','chrome','csrss','dwm','vmconnect','slack' -ErrorAction SilentlyContinue|ForEach-Object{$o+='M|'+$_.Name+'|'+$_.Id+'|'+$_.PrivateMemorySize64}",
+  "Get-CimInstance Win32_Process -Filter \"Name='node.exe' OR Name='powershell.exe' OR Name='pwsh.exe' OR Name='python.exe' OR Name='bash.exe'\"|ForEach-Object{$o+='L|'+$_.Name+'|'+(($_.CommandLine -replace '[\\r\\n]+',' '))}",
   "$o"].join(';');
+// 11-05: memory by group (private bytes, by process name only) and plain job names from the command lines of node, python, bash and the shells; raw command lines are never kept or sent
+let memG = { editor: 0, client: 0, claude: 0, claudeN: 0, chrome: 0, csrss: 0, dwm: 0, vmconnect: 0, slack: 0, pids: {}, t: 0 }, scriptsInfo = { jobs: [], watchers: {}, t: 0 };
+const MEMKEY = { 'UnrealEditorFortnite-Win64-Shipping': 'editor', 'FortniteClient-Win64-Shipping': 'client', claude: 'claude', chrome: 'chrome', csrss: 'csrss', dwm: 'dwm', vmconnect: 'vmconnect', slack: 'slack' };
+function procMem(M, L) {
+  const g = { editor: 0, client: 0, claude: 0, claudeN: 0, chrome: 0, csrss: 0, dwm: 0, vmconnect: 0, slack: 0, pids: {}, t: Date.now() };
+  for (const x of M) { const [n, id, b] = x.split('|'), k = MEMKEY[n], by = +b; if (!k || !(by >= 0)) continue; g[k] += by; if (k === 'claude') { g.claudeN++; g.pids[id] = Math.round(by / 1048576); } }
+  memG = g;
+  const JOBS = [[/keytest/, 'Walk test queued or running'], [/ownergate/, 'Waiting for quiet at the PC'], [/bay_\w+\.py/, 'Placing bay pieces'], [/\bsfm\.py/, 'Bay scan'], [/gen_probe/, 'Building test device']];
+  const WATCH = { editorwatch: /editorwatch/, ramwatch: /ramwatch/, 'overlord-watch': /overlord-watch/, 'overlord-clip-watch': /overlord-clip-watch/ };
+  const jobs = new Set(), w = {}; for (const k in WATCH) w[k] = false;
+  for (const l of L) { if (/-EncodedCommand/i.test(l)) continue; for (const [re, name] of JOBS) if (re.test(l)) jobs.add(name); for (const k in WATCH) if (WATCH[k].test(l)) w[k] = true; }
+  scriptsInfo = { jobs: [...jobs], watchers: w, t: Date.now() };
+}
 function pollProcs() {
   execFile('powershell', ['-NoProfile', '-NonInteractive', '-EncodedCommand', b64(PS_PROCS)], { maxBuffer: 8e6, windowsHide: true, timeout: 30e3 }, (err, out) => {
-    if (err) return; const P = {}, Cn = {}, L = [];
-    String(out).split(/\r?\n/).forEach(l => { const m = /^([PCL])\|([^|]*)\|(.*)$/.exec(l); if (!m) return;
-      if (m[1] === 'P') { const t = Date.parse(m[3]); if (t && (!P[m[2]] || t < P[m[2]])) P[m[2]] = t; } else if (m[1] === 'C') Cn[m[2]] = +m[3]; else L.push(m[2] + '|' + m[3]); });
+    if (err) return; const P = {}, Cn = {}, L = [], Mm = [];
+    String(out).split(/\r?\n/).forEach(l => { const m = /^([PCLM])\|([^|]*)\|(.*)$/.exec(l); if (!m) return;
+      if (m[1] === 'P') { const t = Date.parse(m[3]); if (t && (!P[m[2]] || t < P[m[2]])) P[m[2]] = t; } else if (m[1] === 'C') Cn[m[2]] = +m[3]; else if (m[1] === 'M') Mm.push(m[2] + '|' + m[3]); else L.push(m[2] + '|' + m[3]); });
+    safe(() => procMem(Mm, L));
     procs = { chrome: Cn.chrome || 0,
       fuzz: L.filter(l => /fuzz\.ps1/.test(l) && /^powershell/i.test(l)).map(l => (/-Port (\d+)/.exec(l) || [0, '9331'])[1]),
       workers: L.filter(l => /run-api\.mjs/.test(l) && /^node/i.test(l)).length,
@@ -222,14 +237,85 @@ let curCache = { m: 0, v: null };
 function curated() {
   const f = R + '/tools/devdash/status-notes.txt'; let m = 0; try { m = statSync(f).mtimeMs; } catch { return null; }
   if (m === curCache.m && curCache.v) return curCache.v;
-  const v = { asof: 0, by: '', hands: [], script: [], not: [] };
+  const v = { asof: 0, by: '', hands: [], script: [], not: [], open: [] };
   for (const l of rd(f).replace(/\r/g, '').split('\n')) {
     let x; if ((x = /^asof=(\d{4})-(\d\d)-(\d\d) (\d\d):(\d\d)/.exec(l))) { v.asof = new Date(+x[1], +x[2] - 1, +x[3], +x[4], +x[5]).getTime(); continue; }
     if ((x = /^by=(.*)$/.exec(l))) { v.by = x[1].trim(); continue; }
     const p = l.split('|'); if (p[0] === 'hands' && p.length >= 4) v.hands.push({ tag: p[1], flags: p[2], text: p.slice(3).join('|') });
+    else if (p[0] === 'open' && p.length >= 2) v.open.push(p.slice(1).join('|').trim());
     else if ((p[0] === 'script' || p[0] === 'not') && p.length >= 2) v[p[0]].push(p.slice(1).join('|'));
   }
   curCache = { m, v }; return v;
+}
+// 11-05, owner: simplified page. Everything here is read live from the lead dev's own files; nothing is typed by hand.
+const FP = 'C:/claudecode/pillagers-fortnite', INBOX = 'C:/claudecode/overlord-inbox.md';
+let commit = { freeGB: null, totalGB: null, physFreeGB: null, t: 0 }, vmInfo = { on: null, memGB: null, cpuPct: null, since: null, windowOpen: false, windowFocused: false, t: 0 }, rawIdle = { s: null, t: 0 };
+const REALIN = LAD + '/PillagersEditorWatch/real-input.txt';
+// 11-05: one look every 30 s at the commit figures, the VM (Hyper-V counters work without admin; Get-VM does not) and whether the foreground window is the VM window (a yes or no only, never a name)
+const PS_VM = String.raw`$ProgressPreference='SilentlyContinue'
+$needIdle=__N__
+try{$os=Get-CimInstance Win32_OperatingSystem;'OS|'+$os.FreeVirtualMemory+'|'+$os.TotalVirtualMemorySize+'|'+$os.FreePhysicalMemory}catch{}
+try{$c=(Get-Counter '\Hyper-V Dynamic Memory VM(*)\Physical Memory' -ErrorAction Stop).CounterSamples;'DMOK';foreach($s in $c){'DM|'+$s.InstanceName+'|'+$s.CookedValue}}catch{if([System.Diagnostics.PerformanceCounterCategory]::Exists('Hyper-V Dynamic Memory VM')){'DMOK'}else{'DMERR'}}
+try{$c=@((Get-Counter '\Hyper-V Hypervisor Virtual Processor(tbt_vm:*)\% Total Run Time' -ErrorAction Stop).CounterSamples);if($c.Count){$a=($c|Measure-Object CookedValue -Average).Average;'VP|'+$c.Count+'|'+$a}}catch{}
+$w=@(Get-CimInstance Win32_Process -Filter "Name='vmwp.exe' OR Name='vmconnect.exe' OR Name='mstsc.exe'" -ErrorAction SilentlyContinue|Where-Object{$_.Name -ne 'mstsc.exe' -or $_.CommandLine -match 'TbT_VM'})
+foreach($p in $w){'W|'+$p.Name+'|'+$p.CreationDate.ToUniversalTime().ToString('o')}
+$vw=@($w|Where-Object{$_.Name -ne 'vmwp.exe'});$hasWin=$vw.Count -gt 0
+if($needIdle -or $hasWin){
+Add-Type -Namespace W -Name U -MemberDefinition '[DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow(); [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr h,out uint p); [StructLayout(LayoutKind.Sequential)] public struct LII{public uint cb;public uint t;} [DllImport("user32.dll")] public static extern bool GetLastInputInfo(ref LII i); [DllImport("kernel32.dll")] public static extern uint GetTickCount();'
+if($hasWin){$fp=[uint32]0;[void][W.U]::GetWindowThreadProcessId([W.U]::GetForegroundWindow(),[ref]$fp);$f=0;if(@($vw|Where-Object{$_.ProcessId -eq $fp}).Count){$f=1};'FG|'+$f}
+if($needIdle){$i=New-Object 'W.U+LII';$i.cb=8;[void][W.U]::GetLastInputInfo([ref]$i);'IDLE|'+([math]::Max(0,[double][W.U]::GetTickCount()-[double]$i.t)/1000)}
+}`;
+let vmBusy = false;
+function pollCommit() {
+  if (vmBusy) return; vmBusy = true;
+  const need = (() => { try { return Date.now() - statSync(REALIN).mtimeMs >= 8000; } catch { return true; } })();
+  execFile('powershell', ['-NoProfile', '-NonInteractive', '-EncodedCommand', b64(PS_VM.replace('__N__', need ? '1' : '0'))], { windowsHide: true, timeout: 40e3, maxBuffer: 1e6 }, (e, o) => {
+    vmBusy = false; if (e) return;
+    try {
+      const Lz = String(o).split(/\r?\n/); let dmOk = false, dm = null, vp = null, win = false, fg = false, since = null;
+      for (const l of Lz) { const p = l.trim().split('|');
+        if (p[0] === 'OS') { const f = +p[1], t = +p[2], ph = +p[3]; if (f > 0) commit = { freeGB: +(f / 1048576).toFixed(1), totalGB: t > 0 ? +(t / 1048576).toFixed(1) : null, physFreeGB: ph > 0 ? +(ph / 1048576).toFixed(1) : null, t: Date.now() }; }
+        else if (p[0] === 'DMOK') dmOk = true;
+        else if (p[0] === 'DM' && /^tbt_vm$/i.test(p[1])) dm = +p[2];
+        else if (p[0] === 'VP') vp = +p[2];
+        else if (p[0] === 'W') { if (p[1] === 'vmconnect.exe' || p[1] === 'mstsc.exe') win = true; else if (p[1] === 'vmwp.exe') { const t = Date.parse(p[2]); if (t && (!since || t < since)) since = t; } }
+        else if (p[0] === 'FG') fg = p[1] === '1';
+        else if (p[0] === 'IDLE') rawIdle = { s: +p[1], t: Date.now() }; }
+      const on = dmOk ? (dm != null && dm > 0) : null;
+      vmInfo = { on, memGB: on ? +(dm / 1024).toFixed(1) : 0, cpuPct: on && vp != null && isFinite(vp) ? +vp.toFixed(1) : (on ? null : 0), since: on ? since : null, windowOpen: win, windowFocused: win && fg, t: Date.now() };
+    } catch {}
+  });
+}
+setTimeout(pollCommit, 1500); setInterval(pollCommit, 30e3);
+const mt = f => { try { return statSync(f).mtimeMs; } catch { return 0; } };
+let inboxC = { m: 0, v: [] };
+function inboxLines() { const m = mt(INBOX); if (m !== inboxC.m) inboxC = { m, v: rd(INBOX).replace(/\r/g, '').split('\n') }; return inboxC.v; }
+function fnpNow() {
+  const yr = new Date().getFullYear(); let day = null; const lead = []; let ready = null, played = null;
+  let restarts = 0; const today = new Date();
+  for (const l of inboxLines().slice(-400)) {
+    const x = /^(?:(\d\d)-(\d\d) )?(\d\d):(\d\d) (.*)$/.exec(l); if (!x) continue;
+    if (x[1]) day = [+x[1], +x[2]]; if (!day) continue;
+    const at = new Date(yr, day[0] - 1, day[1], +x[3], +x[4]).getTime(), body = x[5];
+    const r = /PLAY READY:? ([\w-]*fin[\w-]*)/.exec(body); if (r && /LEAD DEV/.test(body)) ready = { tag: r[1], at };
+    const p = /owner played ([\w-]*fin[\w-]*)/i.exec(body); if (p) played = { tag: p[1], at };
+    const m = /FNP LEAD DEV (\d+): (.*)$/.exec(body); if (m && /^needs restart/i.test(m[2]) && day[0] === today.getMonth() + 1 && day[1] === today.getDate()) restarts++;
+    if (!m || /needs restart|^progress\.md|^started|^correction/i.test(m[2])) continue;
+    lead.push({ at, n: +m[1], text: m[2] });
+  }
+  const prog = rd(FP + '/docs/progress.md').slice(0, 6000), M = re => re.exec(prog);
+  const cnt = M(/same (\d+), wrong (\d+), missing (\d+)/) || /same (\d+), wrong (\d+), missing (\d+)/.exec(rd(FP + '/docs/bay-places.md').slice(0, 3000)), pass = M(/Walk (\w+) PASSED (\d\d:\d\d)/), q = M(/\*\*Walk (\w+), (\d+) routes/), flo = M(/Open floor (\d+)/);
+  const shots = FP + '/shots', outs = existsSync(shots) ? readdirSync(shots).filter(f => f.endsWith('.out')).map(f => ({ f, m: mt(shots + '/' + f) })).sort((a, b) => b.m - a.m) : [];
+  const out = outs[0] ? tail(shots + '/' + outs[0].f, 3).join(' ') : '';
+  const held = /test not run|not starting/.test(out), waiting = /waiting for \d+ s of quiet/.test(out) && !held;
+  const lastWork = Math.max(lead.length ? lead[lead.length - 1].at : 0, mt(FP + '/docs/progress.md'), mt(FP + '/docs/bay-places.md'));
+  let passedAt = null, unwalked = null;
+  const pass2 = pass ? pass[2] : (/since \w+ (\d\d:\d\d) \(passed\)/.exec(prog) || [])[1];
+  if (pass2) { const hh = +pass2.slice(0, 2), mi = +pass2.slice(3); passedAt = new Date(yr, today.getMonth(), today.getDate(), hh, mi).getTime(); if (passedAt > Date.now()) passedAt -= 864e5; unwalked = lead.filter(x => x.at > passedAt).length; }
+  const nr = /\*\*Next rows[^*\n]*:\*\*\s*([^\n]*)/.exec(prog), nextRows = nr ? nr[1].replace(/[`*]/g, '').trim().slice(0, 300) : '';
+  return { passedAt, unwalked, restartsToday: restarts, nextRows, minsSincePass: passedAt ? Math.round((Date.now() - passedAt) / 60000) : null,
+    lead: lead.slice(-5).reverse(), lastWork, ready, played, match: cnt ? { same: +cnt[1], wrong: +cnt[2], missing: +cnt[3] } : null, passed: pass ? { walk: pass[1], at: pass[2] } : null,
+    queued: q ? { walk: q[1], routes: +q[2] } : null, floor: flo ? +flo[1] : null, walkOut: outs[0] ? { name: outs[0].f.replace('.out', ''), at: outs[0].m, held, waiting } : null, commitFree: commit.freeGB, editorOpen: !!procs.editorStart };
 }
 function fnp() {
   const e = procs.editorStart, w = watchInfo();
@@ -249,6 +335,230 @@ function gitInfo() {
   const vers = raw.map(c => /^v(\d+\.\d+):/.exec(c[2])).filter(Boolean).map(m => m[1]);
   gitC = { t: Date.now(), v: { commits: raw.slice(0, 8), shipsToday, vers } }; return gitC.v;
 }
+// ---------------------------------------------------------------------------------------------------------------------------------
+// 11-05 (owner: "show what is being done right now"). Nothing here calls an AI. Chat files are read for four fields only: the newest tool name or its short
+// description or a file name, its time, the size of the context, and the usage numbers. Message text, thinking and command text are never read out of the function.
+const HOMEDIR = process.env.USERPROFILE || 'C:/Users/User1', CLD = HOMEDIR + '/.claude', PROJ = CLD + '/projects';
+const stripNum = n => String(n || '').replace(/\s+\d+$/, '').trim();
+const SECRETRE = /key|token|password|secret/i;
+const cutS = (v, n) => typeof v === 'string' ? v.replace(/[\r\n\t]+/g, ' ').slice(0, n) : '';
+const tms = v => typeof v === 'number' && isFinite(v) ? (v < 1e12 ? v * 1000 : v) : typeof v === 'string' && Date.parse(v) ? Date.parse(v) : null;
+const numOr = v => typeof v === 'number' && isFinite(v) ? v : null;
+const pidAlive = pid => { try { process.kill(pid, 0); return true; } catch (e) { return !!(e && e.code === 'EPERM'); } };
+function readTailBytes(p, n) {
+  const fd = openSync(p, 'r'); try { const sz = statSync(p).size, off = Math.max(0, sz - n), b = Buffer.alloc(sz - off), got = readSync(fd, b, 0, b.length, off); return { text: b.toString('utf8', 0, got), whole: off === 0 }; } finally { closeSync(fd); }
+}
+const jsonlPath = new Map();
+function findJsonl(sid) {
+  const c = jsonlPath.get(sid); if (c && existsSync(c)) return c;
+  for (const d of readdirSync(PROJ)) { const p = PROJ + '/' + d + '/' + sid + '.jsonl'; if (existsSync(p)) { jsonlPath.set(sid, p); return p; } }
+  return null;
+}
+function actionOf(tu) {
+  const i = tu.input || {}, nm = String(tu.name || ''); let a = '';
+  if (typeof i.description === 'string' && i.description.trim()) a = i.description.trim();
+  else if (typeof i.file_path === 'string' && i.file_path) { const verb = { Edit: 'Editing', MultiEdit: 'Editing', Write: 'Writing', Read: 'Reading', NotebookEdit: 'Editing' }[nm] || nm; a = verb + ' ' + i.file_path.split(/[\\/]/).pop(); }
+  else a = nm.indexOf('mcp__') === 0 ? nm.split('__').pop().replace(/_/g, ' ') : nm;
+  a = cutS(a, 140); return SECRETRE.test(a) ? '' : a;
+}
+const tailCache = new Map();   // sessionId -> { path, m, size, action, actionAt, contextK }
+function chatTail(sid) {
+  const p = findJsonl(sid); if (!p) return {};
+  const st = statSync(p); let c = tailCache.get(sid);
+  if (c && c.m === st.mtimeMs && c.size === st.size) return c;
+  const { text, whole } = readTailBytes(p, 256 * 1024), lines = text.split('\n'); if (!whole) lines.shift();
+  c = { path: p, m: st.mtimeMs, size: st.size, action: '', actionAt: null, contextK: null }; let gotUse = false, gotAct = false;
+  for (let k = lines.length - 1; k >= 0 && !(gotUse && gotAct); k--) {
+    const l = lines[k]; if (l.indexOf('"type":"assistant"') < 0) continue;
+    let j; try { j = JSON.parse(l); } catch { continue; } if (j.type !== 'assistant' || !j.message) continue;
+    const u = j.message.usage;
+    if (!gotUse && u) { c.contextK = Math.round(((u.input_tokens || 0) + (u.cache_read_input_tokens || 0) + (u.cache_creation_input_tokens || 0)) / 100) / 10; gotUse = true; }
+    if (!gotAct && Array.isArray(j.message.content)) { let tu = null; for (const it of j.message.content) if (it && it.type === 'tool_use') tu = it;
+      if (tu) { c.action = actionOf(tu); c.actionAt = Date.parse(j.timestamp) || null; gotAct = true; } }
+  }
+  tailCache.set(sid, c); return c;
+}
+let chatsC = { list: [], t: 0 }, sessNames = new Map();
+function chatsPoll() {
+  const dir = CLD + '/sessions', out = [];
+  for (const f of readdirSync(dir)) {
+    if (!/^\d+\.json$/.test(f)) continue;
+    let j; try { j = JSON.parse(rd(dir + '/' + f)); } catch { continue; }
+    if (!j || !j.pid || !j.sessionId) continue;
+    const known = memG.t > 0 && Object.keys(memG.pids).length > 0;
+    if (!pidAlive(j.pid) || (known && !memG.pids[j.pid] && Date.now() - (j.startedAt || 0) > 180e3)) continue;   // skip files whose process is gone
+    sessNames.set(j.sessionId, j.name || '');
+    let t = {}; try { t = chatTail(j.sessionId); } catch {}
+    const wf = cutS(j.waitingFor, 80);
+    out.push({ pid: j.pid, raw: j.name || '', name: stripNum(j.name) || 'Unnamed chat', status: /^(busy|idle|waiting)$/.test(j.status) ? j.status : 'idle', waitingFor: SECRETRE.test(wf) ? '' : wf,
+      updatedAt: numOr(j.updatedAt), statusUpdatedAt: numOr(j.statusUpdatedAt), startedAt: numOr(j.startedAt), action: t.action || '', actionAt: t.actionAt || null, contextK: t.contextK == null ? null : t.contextK, memMB: memG.pids[j.pid] || null });
+  }
+  const rank = { busy: 0, waiting: 1, idle: 2 };
+  out.sort((a, b) => rank[a.status] - rank[b.status] || (b.updatedAt || 0) - (a.updatedAt || 0));
+  chatsC = { list: out, t: Date.now() };
+  if (tailCache.size > 60) for (const k of [...tailCache.keys()].slice(0, 20)) tailCache.delete(k);
+}
+const chatsSafe = () => { try { chatsPoll(); } catch {} };
+setTimeout(chatsSafe, 3000); setInterval(chatsSafe, 20e3);
+function chatsOut() { return chatsC.list.map(({ raw, ...x }) => x); }
+
+// H: who used the Claude week (last 6 h), by chat title. Usage numbers and times only; the same formula as overlord-burn.js. Incremental, light.
+const WHO_H = 6, whoFiles = new Map(), whoW = new Map(), whoTitle = new Map(), whoGroup = new Map();
+let whoOut = null, whoBusy = false;
+function whoLine(l, st, sid, dirName, parent, cut) {
+  if (!parent && l.indexOf('"customTitle"') >= 0 && l.indexOf('"custom-title"') >= 0) { try { const t = JSON.parse(l).customTitle; if (t) whoTitle.set(sid, t); } catch {} return; }
+  if (l.indexOf('"usage"') < 0) return;
+  let j; try { j = JSON.parse(l); } catch { return; }
+  const m = j && j.message, u = m && m.usage; if (!u) return;
+  if (m.id) { if (st.ids.has(m.id)) return; st.ids.add(m.id); }
+  const t = Date.parse(j.timestamp); if (!(t >= cut)) return;
+  const w = (u.input_tokens || 0) + 5 * (u.output_tokens || 0) + 1.25 * (u.cache_creation_input_tokens || 0) + 0.1 * (u.cache_read_input_tokens || 0);
+  let a = whoW.get(sid); if (!a) whoW.set(sid, a = []); a.push([t, w]);
+  if (/TbT/i.test(dirName)) whoGroup.set(sid, 'TbT work');
+}
+async function whoFile(p, dirName, sid, parent, cut, budget) {
+  const st0 = statSync(p); let st = whoFiles.get(p);
+  if (!st) { st = { pos: Math.max(0, st0.size - 16e6), first: true, ids: new Set(), carry: Buffer.alloc(0) }; st.skip = st.pos > 0; whoFiles.set(p, st); }
+  if (st.pos >= st0.size) return 0;
+  const fd = openSync(p, 'r'); let used = 0; const buf = Buffer.alloc(4 * 1024 * 1024);
+  try {
+    while (st.pos < st0.size && used < budget) {
+      const got = readSync(fd, buf, 0, Math.min(buf.length, st0.size - st.pos), st.pos); if (got <= 0) break;
+      st.pos += got; used += got;
+      let b = st.carry.length ? Buffer.concat([st.carry, buf.subarray(0, got)]) : Buffer.from(buf.subarray(0, got));
+      const nl = b.lastIndexOf(10); if (nl < 0) { st.carry = b; continue; }
+      st.carry = Buffer.from(b.subarray(nl + 1)); let body = b.subarray(0, nl);
+      if (st.skip) { const f = body.indexOf(10); st.skip = false; if (f < 0) { continue; } body = body.subarray(f + 1); }   // line-aligned start
+      for (const l of body.toString('utf8').split('\n')) if (l) whoLine(l, st, sid, dirName, parent, cut);
+      await new Promise(r => setImmediate(r));
+    }
+  } finally { closeSync(fd); }
+  if (st.ids.size > 20000) st.ids.clear();
+  return used;
+}
+async function whoScan() {
+  if (whoBusy) return; whoBusy = true;
+  try {
+    const now = Date.now(), cut = now - WHO_H * 3600e3; let budget = 200e6, partial = false;
+    for (const d of readdirSync(PROJ)) {
+      let ents; try { ents = readdirSync(PROJ + '/' + d, { withFileTypes: true }); } catch { continue; }
+      for (const e of ents) {
+        const jobs = [];
+        if (e.isFile() && e.name.endsWith('.jsonl')) jobs.push([PROJ + '/' + d + '/' + e.name, e.name.slice(0, -6), false]);
+        else if (e.isDirectory()) { const sp = PROJ + '/' + d + '/' + e.name + '/subagents'; let sub = []; try { sub = readdirSync(sp); } catch {} for (const f of sub) if (f.endsWith('.jsonl')) jobs.push([sp + '/' + f, e.name, true]); }
+        for (const [p, sid, parent] of jobs) {
+          let m = 0; try { m = statSync(p).mtimeMs; } catch { continue; } if (m < cut) { whoFiles.delete(p); continue; }
+          if (budget <= 0) { partial = true; continue; }
+          try { budget -= await whoFile(p, d, sid, parent, cut, budget); } catch {}
+        }
+      }
+    }
+    const tot = new Map(); let all = 0;
+    for (const [sid, a] of whoW) {
+      while (a.length && a[0][0] < cut) a.shift(); const f = a.filter(x => x[0] >= cut); if (!f.length) { whoW.delete(sid); continue; }
+      const s = f.reduce((q, x) => q + x[1], 0), name = whoGroup.get(sid) || stripNum(whoTitle.get(sid) || sessNames.get(sid) || '') || 'Other chats';
+      tot.set(name, (tot.get(name) || 0) + s); all += s;
+    }
+    const top = [...tot].sort((a, b) => b[1] - a[1]).slice(0, 6).map(([name, v]) => ({ name, pct: all ? Math.round(1000 * v / all) / 10 : 0 }));
+    whoOut = { hours: WHO_H, top, total: Math.round(all / 1000), at: now, partial };
+  } catch {} finally { whoBusy = false; }
+}
+setTimeout(whoScan, 8000); setInterval(whoScan, 120e3);
+
+// E: the JTPC's own report (the JTPC writes status.json and serves it on 8917); a get every 60 s, last good copy kept
+const JT_HOST = '192.168.1.246', JT_PORT = 8917;
+let jt = { status: null, fetchedAt: 0, okAt: 0, err: 'not fetched yet', transfers: [] };
+function jget(path, cb) {
+  let done = false; const fin = (e, b) => { if (done) return; done = true; cb(e, b); };
+  try {
+    const r = http.get({ host: JT_HOST, port: JT_PORT, path, timeout: 4000 }, res => {
+      if (res.statusCode !== 200) { res.resume(); return fin('http ' + res.statusCode); }
+      let n = 0; const ch = []; res.on('data', c => { n += c.length; if (n > 1e6) { res.destroy(); fin('too big'); } else ch.push(c); });
+      res.on('end', () => fin(null, Buffer.concat(ch).toString())); res.on('error', () => fin('error'));
+    });
+    r.on('timeout', () => { r.destroy(); fin('timeout'); }); r.on('error', e => fin((e && e.code) || 'error'));
+  } catch { fin('error'); }
+}
+function cleanStatus(j) {
+  if (!j || typeof j !== 'object') return null;
+  const ap = j.apps && typeof j.apps === 'object' ? j.apps : {}, apps = {};
+  for (const k of ['fortnite', 'uefn', 'colmap', 'ffmpeg', 'python', 'node', 'runner']) if (typeof ap[k] === 'boolean' || typeof ap[k] === 'number') apps[k] = ap[k];
+  const act = v => { const a = cutS(v, 140); return SECRETRE.test(a) ? '' : a; };
+  return { at: tms(j.at), host: cutS(j.host, 40), ramFreeGB: numOr(j.ramFreeGB), cpuPct: numOr(j.cpuPct), idleS: numOr(j.idleS), apps,
+    chats: (Array.isArray(j.chats) ? j.chats : []).slice(0, 12).map(c => ({ name: stripNum(cutS(c && c.name, 60)), status: cutS(c && c.status, 12), waitingFor: act(c && c.waitingFor), updatedAt: tms(c && c.updatedAt), action: act(c && c.action), actionAt: tms(c && c.actionAt) })),
+    job: act(j.job).slice(0, 140), jobAt: tms(j.jobAt) };
+}
+function jtPoll() {
+  jt.fetchedAt = Date.now();
+  jget('/get/status.json', (e, b) => {
+    if (e) { jt.err = e; return; }
+    try { const s = cleanStatus(JSON.parse(b)); if (s) { jt.status = s; jt.okAt = Date.now(); jt.err = ''; } else jt.err = 'bad file'; } catch { jt.err = 'bad file'; }
+  });
+  jget('/list/incoming', (e, b) => {
+    if (e) return;
+    try { const a = JSON.parse(b); if (Array.isArray(a)) jt.transfers = a.filter(x => x && typeof x.path === 'string' && /\.part$/i.test(x.path)).slice(0, 5).map(x => ({ name: cutS(x.path.split(/[\\/]/).pop().replace(/\.part$/i, ''), 60), bytes: numOr(x.bytes) })); } catch {}
+  });
+}
+setTimeout(jtPoll, 4000); setInterval(jtPoll, 60e3);
+const jtpcOut = () => ({ ...jt });
+
+// F: Codex. Reads the lane line, the review lines in the inbox, the run list and the plan figures the Codex program itself writes in its newest session file (never auth.json)
+let planC = { key: '', v: null };
+function codexPlan() {
+  const base = HOMEDIR + '/.codex/sessions'; let file = null, mtime = 0;
+  const desc = d => { try { return readdirSync(d).filter(n => /^\d+$/.test(n)).sort().reverse(); } catch { return []; } };
+  outer: for (const y of desc(base).slice(0, 2)) for (const mo of desc(base + '/' + y).slice(0, 2)) for (const dd of desc(base + '/' + y + '/' + mo).slice(0, 3)) {
+    const dir = base + '/' + y + '/' + mo + '/' + dd;
+    for (const n of readdirSync(dir)) if (/^rollout-.*\.jsonl$/.test(n)) { const m = statSync(dir + '/' + n).mtimeMs; if (m > mtime) { mtime = m; file = dir + '/' + n; } }
+    if (file) break outer;
+  }
+  if (!file) return null;
+  const st = statSync(file), key = file + st.mtimeMs + st.size; if (planC.key === key) return planC.v;
+  const { text } = readTailBytes(file, 256 * 1024), i = text.lastIndexOf('"rate_limits":{'); let v = null;
+  if (i >= 0) { const seg = text.slice(i, i + 900), pr = /"primary":\{"used_percent":([\d.]+),"window_minutes":(\d+),"resets_at":(\d+)/.exec(seg), pt = /"plan_type":"(\w+)"/.exec(seg);
+    if (pr) v = { usedPct: +pr[1], windowMin: +pr[2], resetsAt: +pr[3] * 1000, plan: pt ? pt[1] : '', at: st.mtimeMs }; }
+  planC = { key, v }; return v;
+}
+const textMs = s => { const a = textAgeS(s); return a == null ? null : Date.now() - a * 1000; };
+function sev(t) { return /\bHigh\b/.test(t) && !/\b(?:no|nothing new|none)\s+High\b/i.test(t) ? 'high' : /\bMedium\b/.test(t) ? 'medium' : /\bLow\b/.test(t) ? 'low' : 'clean'; }
+function codexOut() {
+  const now = Date.now(), h6 = now - 6 * 3600e3, h24 = now - 24 * 3600e3;
+  const status = rd(C + '/status-o.txt').trim().split(/\r?\n/)[0] || '', lane = status.replace(/^(?:\d\d-\d\d\s+)?(?:\d\d:\d\d\s+)?/, '').trim().slice(0, 140);
+  const reviews = [];
+  for (const l of inboxLines()) { const x = /^(\d\d-\d\d \d\d:\d\d) CODEX CORRESPONDENT: (.*)/.exec(l); if (!x) continue; const t = textMs(x[1]); if (!t) continue;
+    const first = (/^(.+?[.!?])(?:\s|$)/.exec(x[2].replace(/\S*\.md\b/g, '').replace(/\s+/g, ' ').trim()) || [0, x[2]])[1];
+    reviews.push({ at: x[1] + (t > now + 120e3 ? ' (wrong time)' : ''), atMs: t, text: first.slice(0, 200), severity: sev(x[2]), rev: /\breview/i.test(x[2]) }); }
+  // 11-07 audit: only lines that name a review count as FnP reviews (research and draft lines were counted as clean reviews); a time ahead of now is the writer's mistake and is marked
+  const cnt = from => { const r = reviews.filter(x => x.rev && x.atMs >= from), o = { n: r.length, high: 0, medium: 0, low: 0, clean: 0 }; r.forEach(x => o[x.severity]++); return o; };
+  const runs = []; for (const l of tail(CX + '/runs.txt', 600)) { const x = /^(\d{4})-(\d\d)-(\d\d) (\d\d):(\d\d) (\S+) (\d+)s (\S+) (\w+)/.exec(l); if (x) runs.push({ atMs: new Date(+x[1], +x[2] - 1, +x[3], +x[4], +x[5]).getTime(), name: x[6], result: x[9].toUpperCase() }); }
+  const rc = from => { const r = runs.filter(x => x.atMs >= from); return { n: r.length, done: r.filter(x => x.result === 'DONE').length, partial: r.filter(x => x.result === 'PARTIAL').length }; };
+  const lastRun = runs[runs.length - 1], newest = reviews[reviews.length - 1], c = chatsC.list.find(x => /^CODEX CORRESPONDENT/i.test(x.raw));
+  return { running: procs.codex || 0, lane, correspondent: c ? { status: c.status, updatedAt: c.updatedAt } : null, plan: safe(codexPlan),
+    reviews: reviews.slice(-3).reverse().map(({ atMs, ...x }) => ({ ...x, atMs })), counts: { h6: cnt(h6), h24: cnt(h24) }, htmlRuns: { h6: rc(h6), h24: rc(h24), last: lastRun ? { job: lastRun.name.replace(/^o-\d+-/, '').replace(/[-_]+/g, ' ').replace(/(\s\d+)+$/, '').trim(), at: lastRun.atMs, result: lastRun.result } : null },
+    sinceReviewMin: newest ? Math.round((now - newest.atMs) / 60000) : null, lastReviewAt: newest ? newest.atMs : null };
+}
+
+// B/C/D output pieces
+function idleOut() {
+  try { if (Date.now() - statSync(REALIN).mtimeMs < 8000) { const a = rd(REALIN).trim().split(/\s+/); const t = parseFloat(a[0]); if (t > 0) return { s: Math.max(0, Math.round((Date.now() / 1000 - t) * 10) / 10), src: 'real' }; } } catch {}
+  return rawIdle.s != null ? { s: Math.round((rawIdle.s + (Date.now() - rawIdle.t) / 1000) * 10) / 10, src: 'windows' } : { s: null, src: 'unknown' };
+}
+function vmOut() { const v = { ...vmInfo }; if (!v.t || Date.now() - v.t > 150e3) { v.on = null; v.windowFocused = false; } v.idleS = idleOut().s; v.idleSrc = idleOut().src; return v; }
+const gb = b => +(b / 1073741824).toFixed(1);
+function memOut() {
+  const g = memG, vmGB = vmInfo.on ? vmInfo.memGB : 0;
+  const listed = g.editor + g.client + g.claude + g.chrome + g.csrss + g.dwm + g.vmconnect + g.slack + vmGB * 1073741824;
+  const used = commit.totalGB != null && commit.freeGB != null ? commit.totalGB - commit.freeGB : null;
+  return { editor: gb(g.editor), client: gb(g.client), claude: gb(g.claude), claudeN: g.claudeN, chrome: gb(g.chrome), csrss: gb(g.csrss), dwm: gb(g.dwm), vmconnect: gb(g.vmconnect), slack: gb(g.slack), vm: vmGB,
+    committedGB: used, listedGB: gb(listed), otherGB: used != null ? Math.max(0, +(used - listed / 1073741824).toFixed(1)) : null, freeCommitGB: commit.freeGB, ageS: g.t ? Math.round((Date.now() - g.t) / 1000) : null };
+}
+function openOut(n) {
+  const idle = idleOut().s, cf = commit.freeGB, q = (n && n.queued) || (scriptsInfo.jobs.includes('Walk test queued or running') && scriptsInfo.jobs.includes('Waiting for quiet at the PC') ? { walk: '', routes: null } : null), w = n && n.walkOut, stuck = !!(q && w && (!q.walk || w.name === q.walk) && (w.waiting || w.held));
+  const gate = { idleS: idle, needIdle: 180, commitFree: cf, needFree: 8.5, idleOk: idle == null ? null : idle >= 180, freeOk: cf == null ? null : cf >= 8.5 };
+  return { walkRunning: !q && scriptsInfo.jobs.includes('Walk test queued or running'), walkQueued: !!q, routes: q ? q.routes : null, walkHeld: stuck || (!!q && scriptsInfo.jobs.includes('Waiting for quiet at the PC')), holds: q ? [gate.idleOk === false ? 'quiet' : null, gate.freeOk === false ? 'memory' : null].filter(Boolean) : [], gate,
+    unwalked: n ? n.unwalked : null, restartsToday: n ? n.restartsToday : null, minsSincePass: n ? n.minsSincePass : null, nextRows: n ? n.nextRows : '',
+    scripts: scriptsInfo.jobs, curated: ((curated() || {}).open) || [] };
+}
 function data0() {
   const cp = caps();
   const tasks = existsSync(C + '/tasks') ? readdirSync(C + '/tasks').filter(f => f.endsWith('.md')).sort() : [];
@@ -258,6 +568,7 @@ function data0() {
     queue: tasks.filter(f => lane(f) === l).map(f => f.replace(/\.md$/, '')) })).map(x => ({ ...x, old: !x.busy && !x.queue.length && (textAgeS(x.status) ?? ageS(C + '/status-' + x.lane + '.txt') ?? 1e9) > 2 * 86400 }));   // 11-03: the status line's own date first (D, E and F files get touched, their news is from 10-18 and 10-19)
   const lockOwner = existsSync(S + '/shipq.lock') ? rd(S + '/shipq.owner').trim() : '';
   const g = gitInfo(), hb = ageS(N + '/runner.heartbeat');
+  const fn = safe(fnpNow);
   const titles = {}; (tail(S + "/shipq.log", 80).join(" ") + " " + lockOwner).replace(/cw-[A-Za-z0-9_-]+/g, k => { if (!titles[k]) { try { titles[k] = JSON.parse(rd(R + "/tools/handoff/drafts/draft-" + k + ".json").replace(/^﻿/, "")).title || ""; } catch {} } return k; });
   const st = kv(R + '/tools/handoff/stable.txt'), itch = rd(N + '/itch-ver.txt').trim(), v = ver();
   // 10-27: the version his main PC serves on 8802 (tools/handoff/onhispc.sh) and the version on itch (the runner's itch step)
@@ -273,7 +584,8 @@ function data0() {
     blocked: existsSync(C + '/blocked') ? readdirSync(C + '/blocked').filter(f => f.endsWith('.md')).map(f => ({ job: f.slice(0, -3), on: rd(C + '/blocked/' + f.slice(0, -3) + '.on').trim() })) : [],
     questions: tail(C + '/for-you.md', 12), plan: safe(plan, { wk: null }), ai: ai(), spareInfo: safe(spareInfo, {}),
     shipq: tail(S + '/shipq.log', 80).filter(l => !/waiting for the spare pc|the spare pc is running|is with the spare pc|joining job|^\d\d:\d\d (shots|(cw-)?gate(pass|fail)):/i.test(l)).slice(-6),   /* 11-02: the check now runs on the spare PC; its progress lines are not results */
-    commits: g.commits, curated: safe(curated), fnp: safe(fnp) };
+    commits: g.commits, curated: safe(curated), fnp: safe(fnp), fnpNow: fn,
+    chats: safe(chatsOut, []), vm: safe(vmOut), mem: safe(memOut), scripts: safe(() => ({ jobs: scriptsInfo.jobs, watchers: scriptsInfo.watchers, t: scriptsInfo.t })), jtpc: safe(jtpcOut), codex: safe(codexOut), open: safe(() => openOut(fn)), who: safe(() => whoOut), cpuNow: cpu };
 }
 let dataC = { t: 0, v: null };
 function data() { if (dataC.v && Date.now() - dataC.t < 8000) return dataC.v; const v = data0(); dataC = { t: Date.now(), v }; return v; }
@@ -315,7 +627,7 @@ function pushSnap() { try { pushSnap0(); } catch (e) { snapBusy = false; } }   /
 function pushSnap0() {
   if (snapBusy) return;
   // 10-25: a copy goes only when something on the page changed, or 90 s after the last one (the page warns after 120 s of silence)
-  const d = data(), sig = JSON.stringify({ ...d, now: 0, cpu: 0, ramFree: 0, runnerAgeS: 0, link: d.link.ok, plan: d.plan && { ...d.plan, ageS: 0, line: 0, perDay: 0, catchUp: 0 },
+  const d = data(), sig = JSON.stringify({ ...d, now: 0, cpu: 0, cpuNow: 0, chats: 0, vm: 0, mem: 0, jtpc: 0, codex: 0, open: 0, who: 0, scripts: 0, ramFree: 0, runnerAgeS: 0, link: d.link.ok, plan: d.plan && { ...d.plan, ageS: 0, line: 0, perDay: 0, catchUp: 0 },
     spareInfo: { ...d.spareInfo, seenEpoch: 0 }, fnp: d.fnp && { ...d.fnp, watch: d.fnp.watch && { ...d.fnp.watch, ageS: 0 }, hangs: d.fnp.hangs && { ...d.fnp.hangs, screensAt: 0 } } });
   if (sig === snapSig && Date.now() - snapSent < 90e3) return;
   snapBusy = true; snapSig = sig; snapSent = Date.now();

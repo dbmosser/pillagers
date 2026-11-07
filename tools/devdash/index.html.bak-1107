@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pillagers Dev</title>
+<style>
+:root{--bg:#0e1013;--card:#171a1f;--line:#262b33;--ink:#e9e6df;--dim:#9aa1ab;--amber:#f0a83a;--green:#5fd47a;--red:#ff6b5e;--teal:#4fd1c5}
+*{box-sizing:border-box}html,body{overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Segoe UI",system-ui,sans-serif}
+header{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;padding:14px 20px;border-bottom:1px solid var(--line)}
+h1{margin:0;font-size:20px;letter-spacing:.06em;color:var(--amber)}
+.sub{color:var(--dim);font-size:13px}
+main{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:14px;padding:16px 20px;max-width:1280px}
+section{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+h2{margin:0 0 8px;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.big{font-size:20px;font-weight:600;line-height:1.3}
+.g{color:var(--green)}.a{color:var(--amber)}.r{color:var(--red)}.d{color:var(--dim)}
+ul{list-style:none;margin:8px 0 0;padding:0}
+li{padding:6px 0;border-top:1px solid var(--line);overflow-wrap:anywhere}li:first-child{border-top:0}
+.t{color:var(--dim);font-size:13px;margin-right:8px;font-variant-numeric:tabular-nums}
+.tag{font-size:11px;font-weight:600;color:var(--teal);border:1px solid var(--teal);border-radius:4px;padding:0 5px;margin-right:6px}
+.nums{display:flex;gap:22px;flex-wrap:wrap}.nums b{display:block;font-size:24px;line-height:1.15;font-variant-numeric:tabular-nums}.nums span{font-size:13px;color:var(--dim)}
+.bar{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--line);margin:10px 0 2px}.bar i{display:block;height:100%}
+.note{font-size:13px;color:var(--dim);margin-top:8px}
+.wide{grid-column:1/-1}
+.row{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}.row .nm{font-weight:600}.row .st{font-size:11px;font-weight:600;border:1px solid currentColor;border-radius:4px;padding:0 5px}
+.sm{font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.mbar{display:flex;height:14px;border-radius:4px;overflow:hidden;background:var(--line);margin:8px 0}.mbar i{display:block;height:100%}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px}
+.fb{position:relative;height:10px;background:var(--line);border-radius:4px;margin:14px 0 26px}.fb i{display:block;height:100%;border-radius:4px}.fb u{position:absolute;top:-4px;height:18px;border-left:2px solid var(--ink);text-decoration:none}.fb s{position:absolute;top:20px;left:0;font-size:11px;color:var(--dim);text-decoration:none;white-space:nowrap;transform:translateX(-50%)}
+</style></head><body>
+<header><h1>PILLAGERS DEV</h1><span class="sub" id="upd">Loading...</span></header>
+<main>
+<section class="wide" id="now"></section>
+<section class="wide" id="chats"></section>
+<section id="open"></section>
+<section id="you"></section>
+<section id="bay"></section>
+<section id="work"></section>
+<section id="jtpc"></section>
+<section id="vm"></section>
+<section id="codex"></section>
+<section id="mem"></section>
+<section id="sys"></section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const ago=t=>{const m=Math.round((Date.now()-t)/60000);return m<1?'just now':m<60?m+' min ago':m<2880?Math.round(m/60)+' h ago':Math.round(m/1440)+' days ago';};
+const dur=ms=>{const m=Math.round(ms/60000);return m<1?'under a minute':m<60?m+' min':m<2880?Math.floor(m/60)+' h '+(m%60)+' min':Math.round(m/1440)+' days';};
+const gbs=v=>v==null?'?':(Math.round(v*10)/10).toFixed(1);
+const cut=(s,n)=>{s=String(s||'');return s.length>n?s.slice(0,n-3).replace(/\s+\S*$/,'')+'...':s;};
+const hm=t=>new Date(t).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+const dayhm=t=>new Date(t).toDateString()===new Date().toDateString()?hm(t):new Date(t).toLocaleDateString([],{weekday:'short'})+' '+hm(t);
+/* the first sentence of a lead dev line, without script names */
+function plain(s){
+  s=String(s).replace(/,?\s*\b(?:bay_\w+|keytest|sess\d+)(?:\.py|\.sh)?\b(?:,\s*bay_\w+(?:\.py)?)*(?: printed done)?/g,'').replace(/^(?:\d\d:\d\d )?\s*/,'');
+  if(/^walk \w+ did not start/i.test(s)) return 'Walk test did not start: it needs 3 quiet minutes';
+  s=s.replace(/\bwalk b\w+\b/gi,'walk test').replace(/,?\s*(?:to |at )?X -?[\d.]+(?: to -?[\d.]+)?(?:, Y -?[\d.]+(?: to -?[\d.]+)?)?/g,'').replace(/,?\s*(?:(?:to|at) )?Y -?[\d.]+(?: to -?[\d.]+)?(?:, -?[\d.]+)*/g,'');
+  s=s.replace(/,?\s*read back from a fresh dump.*$/i,'.').replace(/\s*\([^)]*\)/g,'');
+  const m=/^(.{20,}?[.;])(?:\s|$)/.exec(s); s=m?m[1]:s;
+  s=s.replace(/[.;,\s]+$/,'');
+  s=s.length>120?s.slice(0,117).replace(/\s+\S*$/,'')+'...':s;
+  return s.charAt(0).toUpperCase()+s.slice(1);
+}
+function nowHtml(d){
+  const n=d.fnpNow||{}, mins=n.lastWork?(Date.now()-n.lastWork)/60000:1e9, w=n.walkOut, parts=[];
+  const cls=mins<20?'g':mins<45?'a':'r', head=mins<20?'FnP is being worked on':mins<45?'FnP: quiet for '+Math.round(mins)+' min':'FnP: no work saved for '+(mins<2880?Math.round(mins)+' min':Math.round(mins/1440)+' days');
+  parts.push('Last work saved '+(n.lastWork?ago(n.lastWork):'unknown')+'.');
+  parts.push(n.editorOpen?'Editor open.':'Editor closed.');
+  if(n.queued&&w&&w.name===n.queued.walk&&(w.waiting||w.held)) parts.push('Walk test waits for 3 quiet minutes and 8.5 GB free. Building carries on without it.');
+  const ch=(d.chats||[]), nb=ch.filter(c=>c.status==='busy').length, nw=ch.filter(c=>c.status==='waiting').length;
+  const cl=(nb?nb+' Claude chat'+(nb>1?'s':'')+' working':'No Claude chats working')+(nw?', '+nw+' waiting':'');
+  return '<div class="big '+cls+'">'+esc(head)+'</div><div class="note">'+esc(parts.join(' '))+'</div><div class="note">'+esc(cl)+'.</div>';
+}
+function chatsHtml(d){
+  const ch=d.chats||[], act=ch.filter(c=>c.status!=='idle'), idle=ch.filter(c=>c.status==='idle');
+  let o='<h2>Claude Code on the main PC</h2>';
+  if(!d.chats) return o+'<div class="d">Chat list not available.</div>';
+  if(act.length) o+='<ul>'+act.map(c=>{
+    const w=c.status==='waiting', since=c.statusUpdatedAt||c.updatedAt, long=w&&since&&Date.now()-since>30*60e3, k=c.contextK!=null?' <span class="t">'+Math.round(c.contextK)+'k</span>':'';
+    if(w) return '<li><div class="row"><span class="st '+(long?'a':'d')+'">Waiting</span><span class="nm">'+esc(c.name)+'</span>'+k+'</div><div class="'+(long?'a':'d')+'">'+esc(c.waitingFor?'Waiting for: '+c.waitingFor:'Waiting for you')+(since?', for '+esc(dur(Date.now()-since)):'')+'</div></li>';
+    const at=c.actionAt||c.updatedAt;
+    return '<li><div class="row"><span class="st g">Working</span><span class="nm">'+esc(c.name)+'</span>'+k+'</div><div>'+esc(({SendMessage:'Messaging another chat','get usage':'Checking its own size',ListAgents:'Checking other chats',Read:'Reading a file',Grep:'Searching files'})[c.action]||c.action||'Thinking')+(at?' <span class="d">'+esc(ago(at))+'</span>':'')+'</div></li>';
+  }).join('')+'</ul>'; else o+='<div class="d">No chat is working or waiting.</div>';
+  if(idle.length){ const mb=idle.reduce((a,c)=>a+(c.memMB||0),0); o+='<div class="note">'+idle.length+' other chat'+(idle.length>1?'s':'')+' open and idle'+(mb?', holding '+gbs(mb/1024)+' GB':'')+'.</div>'; }
+  return o;
+}
+function openHtml(d){
+  const op=d.open||{}, n=d.fnpNow||{}, g=op.gate||{}, o=['<h2>What is open on FnP</h2><ul>'];
+  if(op.walkQueued){
+    const q=op.routes!=null?{routes:op.routes}:n.queued, rd=(ok,txt)=>'<span class="'+(ok===false?'a':ok?'g':'d')+'">'+esc(txt)+'</span>';
+    o.push('<li><b>Walk test'+(q?' ('+q.routes+' routes)':'')+' is waiting to run.</b><br>'+rd(g.idleOk,'Quiet at the PC: '+(g.idleS==null?'unknown':Math.round(g.idleS)+' s')+' of '+g.needIdle+' s')+'<br>'+rd(g.freeOk,'Free memory: '+gbs(g.commitFree)+' of '+g.needFree+' GB')+
+      (op.holds&&op.holds.length?'<br><span class="a">Held by '+(op.holds.length>1?'both':op.holds[0]==='quiet'?'too much activity at the PC':'low memory')+'.</span>':'<br><span class="g">Nothing holds it now.</span>')+'</li>');
+  } else o.push('<li>'+(op.walkRunning?'Walk test is running now.':'No walk test is queued.')+'</li>');
+  if(op.minsSincePass!=null) o.push('<li>Last walk test passed '+esc(dur(op.minsSincePass*60000))+' ago.</li>');
+  if(op.unwalked!=null) o.push('<li>'+(op.unwalked?'Work placed and not walked yet: '+op.unwalked+' updates from the lead chat.':'Nothing placed since that walk.')+(op.restartsToday?' <span class="d">The lead chat restarted '+op.restartsToday+' times today.</span>':'')+'</li>');
+  o.push('<li><b>Running now:</b> '+((op.scripts||[]).length?esc(op.scripts.join(', ')):'<span class="d">nothing</span>')+'</li>');
+  if(op.nextRows) o.push('<li><div class="sm">Next rows, from the lead notes</div>'+esc(cut(op.nextRows,300))+'</li>');
+  (op.curated||[]).forEach(t=>o.push('<li>'+esc(t)+'</li>'));
+  return o.join('')+'</ul>';
+}
+function jtpcHtml(d){
+  const j=d.jtpc||{}, s=j.status, sp=d.spareInfo||{}, seen=sp.seenEpoch?sp.seenEpoch*1000:0, sOld=!seen||Date.now()-seen>30*60e3;
+  let o='<h2>JTPC</h2>';
+  const fb=()=>'<div class="note">Older report: '+(sOld?'<span class="a">none '+(seen?ago(seen):'yet')+'</span>':esc(sp.testRun==='idle'?'idle':'testing')+(sp.ramFree?', '+esc(sp.ramFree)+' GB free':'')+', '+ago(seen))+'</div>';
+  if(!s) return o+'<div class="big a">No live report yet</div>'+fb();
+  const at=s.at||j.okAt, age=Date.now()-at, stale=age>3*60e3;
+  o+='<div class="big">'+esc(s.job||'No job reported')+'</div>'+(s.jobAt?'<div class="note">Since '+esc(ago(s.jobAt))+'</div>':'');
+  if(stale) o+='<div class="a">Report is '+esc(dur(age))+' old.</div>'+fb();
+  o+='<ul>';
+  (s.chats||[]).forEach(c=>{o+='<li><div class="row"><span class="st '+(c.status==='busy'?'g':c.status==='waiting'?'a':'d')+'">'+esc(c.status==='busy'?'Working':c.status==='waiting'?'Waiting':'Idle')+'</span><span class="nm">'+esc(c.name)+'</span></div><div class="d">'+esc(c.status==='waiting'&&c.waitingFor?'Waiting for: '+c.waitingFor:c.action||'')+((c.actionAt||c.updatedAt)?' '+esc(ago(c.actionAt||c.updatedAt)):'')+'</div></li>';});
+  const ap=s.apps||{}, nm={fortnite:'Fortnite',uefn:'Fortnite editor',colmap:'Photo scan',ffmpeg:'Video encoder',runner:'Test runner'}, open=Object.keys(nm).filter(k=>ap[k]).map(k=>nm[k]);
+  o+='<li><b>Open:</b> '+(open.length?esc(open.join(', ')):'<span class="d">nothing</span>')+'</li>';
+  o+='<li><b>Memory and processor:</b> '+(s.ramFreeGB!=null?gbs(s.ramFreeGB)+' GB free':'memory unknown')+(s.cpuPct!=null?', processor '+Math.round(s.cpuPct)+'%':'')+'</li>';
+  if(s.idleS!=null) o+='<li>'+(s.idleS<60?'<span class="a">Someone is using it.</span>':'<span class="d">Nobody at it for '+esc(dur(s.idleS*1000))+'.</span>')+'</li>';
+  (j.transfers||[]).forEach(t=>{o+='<li>Receiving '+esc(t.name)+(t.bytes!=null?': '+Math.round(t.bytes/1048576)+' MB so far':'')+'</li>';});
+  return o+'</ul>';
+}
+function vmHtml(d){
+  const v=d.vm||{}, n=d.fnpNow||{}, cf=n.commitFree, mem=v.memGB||0;
+  let o='<h2>VM</h2>';
+  if(v.on===null||v.on===undefined) return o+'<div class="big d">VM state unknown</div><div class="note">The counters did not answer.</div>';
+  if(!v.on) return o+'<div class="big g">VM is off</div><ul><li>Its memory is free for FnP work.</li></ul>';
+  const col=cf==null?'d':cf<4?'r':cf<8.5?'a':'g';
+  o+='<div class="big '+col+'">VM is on'+(v.since?', since '+esc(hm(v.since)):'')+'</div><ul>';
+  const z=cf==null?null:cf+mem;
+  let line='Holding '+gbs(mem)+' GB of memory.'+(cf!=null?' Free memory is '+gbs(cf)+' GB now, about '+gbs(z)+' GB with it closed (estimate).':'');
+  if(cf!=null&&cf<8.5&&z>=8.5) line+=' That alone would clear the 8.5 GB the walk test needs.'; else if(cf!=null&&cf<4&&z>=4) line+=' That alone would lift it above the 4 GB floor.';
+  o+='<li class="'+col+'">'+esc(line)+'</li>';
+  if(v.cpuPct!=null) o+='<li>Using '+(Math.round(v.cpuPct*10)/10)+'% of the PC\'s processor, out of '+(d.cpuNow!=null?d.cpuNow:d.cpu)+'% in total.</li>';
+  if(v.windowFocused) o+='<li class="a">You are in the VM window now. Your typing there counts as being at the PC, so the walk test keeps waiting.</li>';
+  else if(v.windowOpen) o+='<li>Its window is open.</li>';
+  o+='<li class="d">Does not use your Claude week: its Claude Code is on the work account.</li>';
+  return o+'</ul>';
+}
+function codexHtml(d){
+  const c=d.codex||{}, n=d.fnpNow||{}, r6=(c.counts||{}).h6||{}, r24=(c.counts||{}).h24||{}, h6=(c.htmlRuns||{}).h6||{}, h24=(c.htmlRuns||{}).h24||{};
+  let o='<h2>Codex</h2>', lane=String(c.lane||''), w=/^waiting:?\s*(.*)$/i.exec(lane);
+  o+='<div class="big">'+esc(c.running>0?'Running a job now':w?'Waiting: '+(w[1]||'for a start'):'Idle')+'</div>';
+  const ln=(lbl,r,h)=>lbl+': '+r.n+' FnP reviews, '+r.high+' high, '+r.medium+' medium; '+h.n+' HTML jobs, '+h.done+' finished, '+h.partial+' partial.';
+  o+='<ul><li>'+esc(ln('Last 6 hours',r6,h6))+'</li><li>'+esc(ln('Last 24 hours',r24,h24))+'</li></ul>';
+  let v, vc;
+  if(!r6.n&&!h6.done){ v='Not useful in the last 6 hours: it had no finished work.'; vc='a'; if(!n.ready||!c.lastReviewAt||n.ready.at<=c.lastReviewAt) v+=' Reviews only run after a new build.'; }
+  else if(r6.high+r6.medium>0){ v='Useful: found '+(r6.high+r6.medium)+' real bug'+(r6.high+r6.medium>1?'s':'')+' in the last 6 hours.'; vc='g'; }
+  else if(r6.n&&r6.clean===r6.n){ v='Checked '+r6.n+' build'+(r6.n>1?'s':'')+', found nothing.'; vc='d'; }
+  else if(r6.n){ v='Checked '+r6.n+' build'+(r6.n>1?'s':'')+', found only small things.'; vc='d'; }
+  else { v='Finished '+h6.done+' HTML job'+(h6.done>1?'s':'')+', no FnP reviews.'; vc='d'; }
+  o+='<div class="'+vc+'"><b>'+esc(v)+'</b></div>';
+  const p=c.plan; if(p) o+='<div class="note">'+Math.round(p.usedPct)+'% of its week used, resets '+esc(new Date(p.resetsAt).toLocaleDateString([],{weekday:'short'}))+'.</div>';
+  if((c.reviews||[]).length) o+='<ul>'+c.reviews.map(x=>'<li><span class="t">'+esc(x.at)+'</span><span class="'+(x.severity==='high'?'r':x.severity==='medium'?'a':'')+'">'+esc(x.text.replace(/^.*?review done[^.]*\.\s*/i,'').slice(0,130))+'</span></li>').join('')+'</ul>';
+  return o;
+}
+function memHtml(d){
+  const m=d.mem||{}, cf=m.freeCommitGB;
+  const G=[['Fortnite editor',m.editor,'#4fd1c5'],['Test game',m.client,'#2f9e92'],['VM',m.vm,'#b48ead'],['Claude Code',m.claude,'#f0a83a'],['Chrome',m.chrome,'#5b8def'],['Windows system',m.csrss,'#8a6d3b'],['Desktop display',m.dwm,'#7a8aa0'],['VM window',m.vmconnect,'#9b7fc7'],['Slack',m.slack,'#c77f9a'],['Everything else',m.otherGB,'#3a414c']].filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);
+  const tot=G.reduce((a,x)=>a+x[1],0)||1;
+  let o='<h2>Memory</h2><div class="mbar">'+G.map(x=>'<i style="width:'+(100*x[1]/tot)+'%;background:'+x[2]+'"></i>').join('')+'</div><ul>'+G.map(x=>'<li><span class="sw" style="background:'+x[2]+'"></span>'+esc(x[0]+(x[0]==='Claude Code'&&m.claudeN?' ('+m.claudeN+' programs)':''))+': '+gbs(x[1])+' GB</li>').join('')+'</ul>';
+  if(cf!=null){ const mx=16, pc=v=>Math.min(100,100*v/mx), c=cf<4?'var(--red)':cf<8.5?'var(--amber)':'var(--green)';
+    o+='<div class="note">Free to commit: <b class="'+(cf<4?'r':cf<8.5?'a':'g')+'">'+gbs(cf)+' GB</b></div><div class="fb"><i style="width:'+pc(cf)+'%;background:'+c+'"></i><u style="left:'+pc(4)+'%"><s>4 floor</s></u><u style="left:'+pc(8.5)+'%"><s>8.5 walk test</s></u></div>'; }
+  return o+'<div class="note">Sizes are what each program has reserved, not what it uses this second. "Everything else" is the rest of the PC\'s total, an estimate.</div>';
+}
+function youHtml(d){
+  const c=d.curated, items=[], old=c&&c.asof&&Date.now()-c.asof>24*3600e3, booted=c&&d.bootAt>c.asof;
+  if(c) c.hands.forEach(h=>{ if(/reboot/.test(h.flags)&&booted) return; items.push([h.tag,h.text]); });
+  (d.questions||[]).forEach(q=>{const t=q.replace(/^one step waiting on you:\s*/i,'');items.push(['HTML',t.charAt(0).toUpperCase()+t.slice(1)]);});
+  if(d.memClick) items.push(['PC','Optional: double-click "Pillagers memory setup" on your desktop, then Yes.']);
+  let o='<h2>Needs you</h2>';
+  o+=items.length?'<ul>'+items.map(i=>'<li><span class="tag">'+esc(i[0])+'</span>'+esc(i[1])+'</li>').join('')+'</ul>':'<div class="g">Nothing right now.</div>';
+  o+=c&&c.asof?'<div class="note'+(old?' r':'')+'">'+(old?'This list may be out of date: last checked '+esc(dayhm(c.asof)):'Checked '+esc(dayhm(c.asof)))+'.</div>':'';
+  return o;
+}
+function bayHtml(d){
+  const n=d.fnpNow||{}, m=n.match; let o='<h2>Bay layout match</h2>';
+  if(m){ const tot=m.same+m.wrong+m.missing, p=v=>(100*v/tot).toFixed(1)+'%';
+    o+='<div class="nums"><div><b class="g">'+m.same+'</b><span>match</span></div><div><b class="a">'+m.wrong+'</b><span>wrong</span></div><div><b class="r">'+m.missing+'</b><span>missing</span></div></div>';
+    o+='<div class="bar"><i style="width:'+p(m.same)+';background:var(--green)"></i><i style="width:'+p(m.wrong)+';background:var(--amber)"></i><i style="width:'+p(m.missing)+';background:var(--red)"></i></div>';
+    o+='<div class="note">Places on the list, counted at the last passed walk test. Newer work counts once a walk passes.</div>';
+  } else o+='<div class="d">Count not found in the lead dev notes.</div>';
+  o+='<ul>';
+  if(n.passed) o+='<li>Last walk test passed at '+esc(n.passed.at)+'.</li>';
+  if(n.queued) o+='<li>Next walk test: '+n.queued.routes+' routes, not run yet.</li>';
+  if(n.ready) o+='<li>Last fully tested build: '+esc(n.ready.tag)+', '+esc(dayhm(n.ready.at))+'. Map work after that is in the editor, not walk tested yet.</li>';
+  return o+'</ul>';
+}
+function workHtml(d){
+  const l=(d.fnpNow||{}).lead||[];
+  return '<h2>Latest work</h2>'+(l.length?'<ul>'+l.map(x=>'<li><span class="t">'+esc(dayhm(x.at))+'</span>'+esc(plain(x.text))+'</li>').join('')+'</ul>':'<div class="d">No lead dev lines found.</div>');
+}
+function sysHtml(d){
+  const n=d.fnpNow||{}, p=d.plan||{}, s=d.spareInfo||{}, seen=s.seenEpoch?s.seenEpoch*1000:0, sOld=!seen||Date.now()-seen>30*60e3, cf=n.commitFree;
+  const wk=p.wk==null?'<span class="d">unknown</span>':p.wk+'% used'+(p.line!=null?' <span class="d">(line '+Math.round(p.line)+'%, reading '+ago(p.at)+')</span>':'');
+  const o=['<h2>Claude week and watchers</h2><ul>'];
+  o.push('<li><b>Claude week:</b> '+wk+'</li>');
+  if(p.wk!=null&&p.at){
+    const old=Date.now()-p.at>90*60e3, H=p.hist||[], t1=p.at, cutT=t1-3*3600e3; let base=null; for(const h of H) if(h[0]<=cutT) base=h; if(!base) base=H[0];
+    const span=base?(t1-base[0])/3600e3:0, burn=span>=1?Math.max(0,(p.wk-base[1])/span):null, hrs=Math.max(0.1,((p.reset||0)-Date.now())/3600e3), bud=(100-p.wk)/hrs;
+    o.push('<li class="'+(old?'a':'d')+'">Reading is '+esc(dur(Date.now()-p.at))+' old'+(old?', it may be out of date':'')+'.</li>');
+    if(burn!=null){ const ok=burn<=bud; o.push('<li class="'+(ok?'g':'a')+'">Last 3 hours: '+(Math.round(burn*100)/100)+'% an hour. Budget to the reset: '+(Math.round(bud*100)/100)+'% an hour. '+(ok?'At this pace the week lasts.':'At this pace the week runs out in about '+Math.round((100-p.wk)/burn)+' h, before the reset.')+'</li>'); }
+  }
+  o.push('<li><b>HTML game:</b> v'+esc(d.ver)+' <span class="d">(back seat, itch on v'+esc(d.itch)+')</span></li>');
+  const w=d.who;
+  if(w&&w.top&&w.top.length) o.push('<li><b>Who used it, last 6 h:</b> '+w.top.map(x=>esc(x.name)+' '+Math.round(x.pct)+'%').join(', ')+(w.partial?' <span class="d">(still counting)</span>':'')+'</li>');
+  const WN={editorwatch:'Editor watcher',ramwatch:'Memory watcher','overlord-watch':'Overseer watch','overlord-clip-watch':'Overseer clip watch'}, wt=(d.scripts||{}).watchers||{}, down=Object.keys(WN).filter(k=>wt[k]===false);
+  if(d.scripts) o.push('<li>'+(down.length?'<span class="r">Not watching: '+esc(down.map(k=>WN[k]).join(', '))+'</span>':'<span class="g">All watching</span>')+'</li>');
+  return o.join('')+'</ul>';
+}
+async function tick(){
+  let d; try{ d=await (await fetch('/api',{cache:'no-store'})).json(); }catch(e){ $('upd').innerHTML='<span class="r">Dashboard server not answering</span>'; return; }
+  if(!d||d.error){ $('upd').innerHTML='<span class="r">Dashboard could not read its files</span>'; return; }
+  const R=(id,fn)=>{ try{ $(id).innerHTML=fn(d); }catch(e){ $(id).innerHTML='<div class="r">This card could not be drawn.</div>'; } };
+  R('now',nowHtml); R('chats',chatsHtml); R('open',openHtml); R('you',youHtml); R('bay',bayHtml); R('work',workHtml); R('jtpc',jtpcHtml); R('vm',vmHtml); R('codex',codexHtml); R('mem',memHtml); R('sys',sysHtml);
+  $('upd').textContent='Updated '+d.now+' (every 10 seconds)';
+}
+tick(); setInterval(tick,10000);
+</script></body></html>

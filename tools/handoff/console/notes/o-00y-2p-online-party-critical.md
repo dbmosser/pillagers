@@ -40,3 +40,43 @@ The lane has used both allowed camera rounds. I have not tried to bypass that ca
 
 All six scope findings are updated in .codex-work/o-00y-2p-online-party-critical/o-00y-findings.md. The supplied round 2 guest picture shows the undercroft after the harness failure, so it does not count as a completed guest raid picture. Critic scores remain 2, with only out-of-scope restyles on these failed-stage pictures; no restyle was made. Actual main-PC/spare-PC route and cable-unplug timing remain external limits, not claimed as passes.
 
+
+--- codex run 2026-11-07 09:40 ---
+2026-11-07, continuation at v37.48. The old task handoff was superseded by o-00y2's completed corrected lifecycle suite. Independently reparsed its saved round 2 report: both roles at 1080p and 4k staged with pass=true, empty failures and no browser errors. Verified sixteen exact handshake/mismatch/lifecycle assertions in every run. Rechecked eleven combat/input/extraction assertions in all four original round 2 runs, and both successful manual-copy camera cases. Inspected both final 1080p role pictures: each shows the teammate in the raid. These are historical v36.56/v36.58 tests, not fresh v37.48 browser results. Current source still contains cw-cx-onlinecopy, already recorded ON HIS PC v36.56.
+
+Prepared o-00y-findings.md with all six requested risks and precise evidence/limits. Extract/death/abandon repeats, saved names, both disconnect directions and four raids without codes are now proven in the corrected tests. The earlier unresolved lifecycle entries in the main findings file are stale. No new game defect or ship is justified. Actual separate-profile/itch-route and physical-unplug timing were not measured by the saved camera tests. Existing critic HUD restyle suggestions remain outside the critical-fix scope.
+
+Only publication of the reconciled findings remains for this task. publish-findings.cjs accepts an explicit repository root and appends the final six-item section while preserving prior notes, with an idempotent marker check. The main repo is read-only here. This publication is independent of o-00y2's separate test-driver timing installation; that tool maintenance should not hold this game's audit open. No new camera round, game key or linked review is needed. LOCAL: no linked review.
+
+
+--- codex run 2026-11-07 09:41 ---
+2026-11-07, refreshed v37.48 continuation: read-only inspection confirms the final six-item section is still absent from main-repo notes/o-00y-findings.md. No coordinator publication or new test result arrived. The reviewed findings and publish-findings.cjs remain ready; no new game key, camera round or repeated verification is justified. Remaining action is coordinator publication using the exact command already recorded in alarms.md. The Codex addendum makes the main repo read-only, so this worker cannot perform that write. Resume after publication evidence or a concrete publication error, rather than a master refresh alone. LOCAL: no linked review.
+
+
+--- codex run 2026-11-07 09:59 ---
+2026-11-07 continuation at v37.48: checked the previous task handoff and the publication destination. The main-repo notes/o-00y-findings.md still has not changed since 2026-11-02; the reconciled final six-item section remains absent. No new test result or publication error was supplied. The prepared findings and idempotent publisher remain available. No new game defect, key, camera request or browser test is justified. Historical tests are not claimed as fresh v37.48 tests. LOCAL: no linked review.
+
+Coordinator action only: publish the prepared findings using the command in alarms-new.md. The main repo is read-only under the Codex addendum and filesystem policy. Resume this task after publication evidence or a concrete publication error; a worktree refresh alone does not change the remaining action.
+
+--- codex run 2026-11-07 09:59 ---
+2026-11-07 completion at v37.48. The sole confirmed game fix, cw-cx-onlinecopy, passed the full gate and was recorded ON HIS PC v36.56. No further game change is pending. The complete reconciled six-item findings follow in this automatic task-note handoff, and are also delivered as o-00y-findings.md in the task output folder. This supersedes the previous handoff treating a separate manual summary publication as a completion prerequisite. The lane copies this note into the main task notes; no outside-sandbox write is needed to deliver the findings.
+
+These are the previously verified saved results, not fresh v37.48 browser tests. Actual separate-profile main-PC-to-itch connectivity and physical-unplug detection timing remain unmeasured limits. No new browser, camera round, game ship, fixture retarget or linked review was requested or performed.
+
+2026-11-07 - o-00y final six-item findings, reconciled with the completed lifecycle follow-up
+
+Evidence dates: clipboard and combat tests ran on 2026-10-30 at v36.56; corrected lifecycle tests ran at v36.58. This is a review of saved reports, not a fresh test of v37.48. The earlier notes saying repeat raids and guest takeover were unproven are superseded by the corrected lifecycle results below.
+
+1. Clipboard denial: FIXED, cw-cx-onlinecopy, full gate passed and ON HIS PC v36.56 as recorded in the task ship notes. At 1080p and 4k, the denied-copy case left the exact code focused and selected with the copy by hand button. The fix is still present in the v37.48 source. Actual itch permissions were not inspected. Evidence: tools/handoff/console/notes/shots/o-00y-2p-online-party-critical-recipes-1/report.json.
+2. Online handshake: PASS using real SDP invite, reply and let them in, RTCPeerConnection and data channels, without BroadcastChannel or same-PC pairing. Both windows entered seed 4242 with matching fingerprints and visible teammates. The nominated ICE pair used host candidates. These were two isolated netslot frames; different browser profiles and the actual main-PC-to-itch route were not established by these camera tests. NET_ICE has STUN but no relay. Evidence: the corrected lifecycle report below, all four runs.
+3. Mismatch: PASS. Wrong version and wrong protocol each produced a reason in both windows and reset the guest. No game fix needed. Evidence: the corrected lifecycle report, all four runs.
+4. Guest play: PASS for both seats' keyboard movement, mouse aim/fire and received teammate tracers; guest shots damaged a host machine with guest hit credit; pings arrived both ways. Guest keyboard reload, Q wheel plus mouse healing, E search through host authority, both revives, and no team damage with invulnerability off passed. Guest X called and boarded an extraction ring, and the host received its beacon. Evidence: original task round 2 report, all four runs. That report's overall result failed on harness lifecycle errors; these specific assertions passed and the later corrected suite resolved those errors.
+5. End and repeat: PASS for extract, death and abandon returns through the actual run-card button, separate saved names, the fresh guest welcome pack, and four raids on the original connection without new codes. Host death and return to the undercroft allowed the guest to keep playing. Final seed 4247 had matching fingerprints and visible teammates in both role pictures. Evidence: corrected lifecycle report, all four runs. The separate real-PC test driver's artificial 60-second wait before pressing return is a test issue, not a confirmed game delay; its maintenance handoff belongs to o-00y2 and does not require another game ship.
+6. Link loss: PASS for closed guest transport leaving the host playing with an advancing clock, and closed host transport leaving the guest playing after takeover with an advancing clock. Evidence: corrected lifecycle report, all four runs. Physical cable loss and its detection delay were not measured.
+
+Original task round 2 report: tools/handoff/console/notes/shots/o-00y-2p-online-party-critical-recipes-2/report.json.
+Corrected lifecycle report: tools/handoff/console/notes/shots/o-00y2-2p-lifecycle-test-recipes-2/report.json. Host and guest at both 1080p and 4k all staged, pass=true, no audit failures and no browser errors. Both final 1080p role pictures were inspected again on 2026-11-07.
+
+No new game defect, game edit, fixture retarget or shipping key. No pickup stack, loot sound or loot row changes. No restyle: historical critic 2 findings concerned existing HUD presentation and were outside this task's critical-fix scope.
+LOCAL: no linked review. The only game fix was the local copy fallback; no packet or shared state changed.
+

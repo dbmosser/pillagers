@@ -1,0 +1,16 @@
+# Curated lines for the dashboard's "Needs you" card (tools/devdash/server.mjs reads this file). Everything else on the page is read live.
+# Edit by hand, one line each, plain words, no dashes. Only things nobody but the owner can do, and take a line off as soon as it is done.
+#   asof=YYYY-MM-DD HH:MM    the page warns in red when this is over 24 hours old
+#   by=who wrote it and from what
+#   open|text                one plain line for the "What is open on FnP" card
+#   hands|TAG|FLAGS|text     TAG is FNP, HTML or PC. FLAGS: reboot hides the line once the PC has restarted after asof; leave empty otherwise.
+asof=2026-11-07 08:54
+by=OVERLORD, checked against the inbox and orders Version 68 on 11-07
+open|Tonight: afternoon sun in the bay, lit spawn rooms, robot turrets a normal gun kills in about 11 s, flashlight and grappling hook you buy or find.
+open|Morning test build due by 06:30 with a what to try list; anything not working in the real game by 05:30 is left out.
+open|JTPC is armed by 06:30 for your son as MobBossMario, in case he plays.
+hands|FNP||If your son plays: sign in to Epic once in Chrome on the main PC and say so; then he gets added to the island team and joins you.
+hands|PC||Scheduled tasks, FNP startup wake, Run now, then Always allow when it asks to send a message. Until then, a PC restart wakes nobody.
+hands|PC||JTPC page file: set custom 40000 MB start and max on C:, then restart after a walk. Walks run without it.
+hands|PC||Optional, 1 minute: in Startup and Recovery set the crash dump to Automatic memory dump, so the next crash keeps its details.
+hands|PC||Optional: Google AI Pro, about $20 a month, lets Gemini watch your playtest videos with sound. Tell OVERLORD if you buy it.

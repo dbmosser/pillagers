@@ -4024,8 +4024,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.48';
-var VER_AT='2026-11-03 04:02';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.49';
+var VER_AT='2026-11-07 12:55';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17077,6 +17077,8 @@ var WARDEN_SPD=36;
 // The slowest the player can ever be. 1.28x the warden, so walking away is always
 // possible however encumbered, wet or crouched you are.
 var SPEED_FLOOR=46;
+// v28.xx (cw-cx-healrisk): his g-2 "Half speed" and g-5 "Only a big hit stops it" (10-25).
+const HEAL_MOVE=0.5;
 // EMPLACED. hp is between a Warden and nothing else in the game, damage is
 // lower than a Warden's because it fires far more often, and rng 520 is
 // deliberately eighty short of a Marksman Rifle so there is a stand-off band
@@ -25737,7 +25739,11 @@ function armorHitFoley(broke){
   foley('plateClack',null,null,{rate:0.72,g:1.15});
   foley('strapRip',null,null,{off:0.1,dur:0.12,g:0.5,rate:1.5,at:0.04,local:1});
 }
+// v28.xx (cw-cx-healrisk): shared incoming-hit threshold, before difficulty, kid mode and armour.
+const BIG_HIT=30;
+function bigHit(a){ return a>=BIG_HIT; }
 function damagePlayer(amt,src,srcName,sx,sy){
+  var amt0=amt; // v28.xx (cw-cx-healrisk): retain the incoming blow before every damage cut.
   // v28.xx (cw-cx-downcuts): retain the same kid and demo factors for seconds lost on the floor; a taken-over join keeps kid mode.
   var _hitMul=1;
   if(typeof NET==='object'&&NET&&((NET.on&&NET.role==='join')||(typeof G!=='undefined'&&G&&G.netWasJoin))) _hitMul*=netKidMul();
@@ -25876,6 +25882,8 @@ function damagePlayer(amt,src,srcName,sx,sy){
   var _sev=clamp(amt/26,0.35,1.9);
   p.hitFlash=Math.max(p.hitFlash||0,.20+.30*_sev);
   p.hitAge=0; p.hitDX=(typeof sx==='number'&&isFinite(sx))?((p.x>=sx)?1:-1):0;   // v32.xx (cw-playerstates), a12 B: the white flash is timed from the hit and the recoil goes away from the shot
+  // v28.xx (cw-cx-healrisk): a landed big hit spends the medical wind-up; plates and flowing heals continue.
+  if(p.hp>0&&p.prep&&bigHit(amt0)){ p.prep=null; if(!G.sim) say('heal interrupted','warn'); }
   // v23.xx, HIS ANSWERS (2026-10-12), answer 38: screen shake "light to strong depending on damage taken and frequency of incoming
   // damage". The size of the hit already set it; how often hits come in did not, so the fifth round of a burst shook the screen no
   // more than one stray round. hurtHeat is the damage still coming in: every hit adds its amount, and it fades by e every 0.9 s
@@ -31224,14 +31232,14 @@ if(mouse.down&&p.wep&&p.wep.auto) p.fireHold=(p.fireHold||0)+dt;
     if(_padSh&&!G.shWasPad&&!p.downed) G.sprintOn=!G.sprintOn;
     G.shWasPad=_padSh;
     G.shWas=_shHeld;
-    if(G.sprintOn&&(mg===0||p.downed||p.ads||p.stam<=2||p.stamLock||p.stamRelease||p.shotSprintRelease)) G.sprintOn=false;
+    if(G.sprintOn&&(mg===0||p.downed||p.ads||p.prep||p.stam<=2||p.stamLock||p.stamRelease||p.shotSprintRelease)) G.sprintOn=false;
     _shHeld=(_shHeld&&!_padSh)||!!G.sprintOn;
   } else {
     G.shWasPad=_padSh;
     if(CFG.sprintTgl===1){
       if(_shHeld&&!G.shWas&&!p.downed) G.sprintOn=!G.sprintOn;
       G.shWas=_shHeld;
-      if(G.sprintOn&&(mg===0||p.downed||p.ads||p.stam<=2||p.stamLock||p.stamRelease)) G.sprintOn=false;
+      if(G.sprintOn&&(mg===0||p.downed||p.ads||p.prep||p.stam<=2||p.stamLock||p.stamRelease)) G.sprintOn=false;
       _shHeld=!!G.sprintOn;
     } else { G.sprintOn=false; G.shWas=_shHeld; }
   }
@@ -31256,8 +31264,9 @@ if(mouse.down&&p.wep&&p.wep.auto) p.fireHold=(p.fireHold||0)+dt;
   // pad hit it at once, with focus aim on LT and a toggle on the right stick click). Sprint now wins: focus aim drops, and a pad
   // toggle and the settle after a shot are let go, so a held LT is the only thing that brings it back once the sprint ends.
   // v28.xx (cw-adsbreaks), HIS ORDER 2026-10-20: "ADS should immediately break sprint, even if shift is still held down". The v16.81 drop of aim under a held sprint is gone: aim wins, the sprint is cut by the p.ads test below, and it comes back by itself when aim lets go with Shift still down.
-  if(_shHeld&&mg>0&&G.crouchTog&&!p.downed&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!p.ads&&!inWaterDeep(p.x,p.y,(CFG.wadeInset===undefined?11:CFG.wadeInset))){ G.crouchTog=false; crouch=false; }
+  if(_shHeld&&mg>0&&G.crouchTog&&!p.downed&&!p.prep&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!p.ads&&!inWaterDeep(p.x,p.y,(CFG.wadeInset===undefined?11:CFG.wadeInset))){ G.crouchTog=false; crouch=false; }
 var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
+  if(p.prep) sprint=false; // v28.xx (cw-cx-healrisk): medical wind-ups, including teammate aid, never sprint.
   // v12.71, 2026-09-07 audit: THE SCENT GOES DOWN BELOW THE CANCELS NOW. It was
   // laid here, above both of them, so Shift held while aiming or while wading
   // put a sprint trail behind a man who was not sprinting: aiming speed, no
@@ -31295,6 +31304,7 @@ var sprint=_shHeld&&p.stam>2&&!p.stamLock&&!p.stamRelease&&!crouch&&mg>0;
   // feel is his to set without going back into the movement code.
   if(wading) spd*=(CFG.wadeSpd===undefined?0.34:CFG.wadeSpd);
   if(p.ads) spd*=.62;
+  if(p.prep) spd*=HEAL_MOVE; // v28.xx (cw-cx-healrisk): only the medical wind-up, before the existing speed floor.
   // AND THE FLOOR, v1.99, because these multipliers STACK and I broke the Warden's
   // promise without noticing. Load, water, crouch and ADS all multiply, so a heavy
   // player wading moves at 33.3 against a Warden at 36, crouched 17.3, and aiming
@@ -58103,7 +58113,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.48: a long piece name wraps to two lines in its slot, outfit names show whole, the tip panel is darker so worse reads, the list fades out at its bottom edge and its scroll thumb is the panel line colour Check 37.48 fails on v37.47',
+  now:'v37.49: Medical wind-ups move at half speed without sprint. A landed incoming hit of 30 or more cancels the wind-up and spends the item. Plates and flowing heals keep their rules. Check 37.49 fails on v37.48',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

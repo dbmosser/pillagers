@@ -5461,49 +5461,49 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "the cta fill and bare-number fixes landed, but rarity color still floods the stash-row titles as a fill and the list clips its last row in every shot, so it reads as improved but still short of shippable craft.",
+  "verdict": "the two P1s from last review are untouched and a new small capital-letter slip crept in, so this reads as feedback that was not acted on rather than a polished pass.",
   "findings": [
-   "P0 n/a: n/a",
-   "P1 center stash list, every row, all 3 shots (e.g. 'sound amulet' green, 'relic pants' purple, 'rare breacher plate' blue): set every row/tile title to --tx-1, move rarity to a 3px left bar (list rows) or keep the existing tile border only (equipped grid) — do not color both border and text",
-   "P1 center stash list, bottom row, all 3 shots ('rare gloves' in d2-half, 'rare breacher plate' in d3-full, 'sound boots' in d4-pad): clip the scroll region to whole-row increments (row height a multiple of the container height) or add a 24px bottom fade mask so no row is cut mid-glyph",
-   "P2 center stash list scrollbar, all 3 shots: style the scrollbar thumb with --ui-line-hi #4a5257 idle / --acc on hover, track transparent, matching the rest of the chrome",
-   "P2 right detail panel, 'better'/'worse' under the compare block, all 3 shots: confirm it is fs-body 20px / 400 weight exactly, same weight as 'against empty ring' below it, color-only emphasis via --ok/--danger"
+   "P1 equipped grid tiles and center stash list, all 3 shots (e.g. 'rare breacher plate' blue border+blue text+•• dots, 'relic pants' purple border+purple text+••• dots): pick one cue only: keep the tile border / 3px left bar for rarity, set every title to --tx-1 #efe9dc, delete the dot pips",
+   "P1 center stash list, last visible row, all 3 shots ('rare gloves' d2-half, 'rare breacher plate' d3-full, 'sound boots' d4-pad): make container height a whole multiple of row height, or add a 24px bottom fade mask over the scroll area",
+   "P2 right-side outfits list, 'x' delete buttons next to 'quiet run'/'smash'/'looter', all 3 shots: lowercase to 'x' to match the all-lowercase rule, or replace with a small glyph icon distinct from the corner close X",
+   "P2 center stash list vertical scrollbar, right edge of the list, all 3 shots: style ::-webkit-scrollbar-thumb to #4a5257 idle, --acc #e6ff3d on hover, transparent track",
+   "P2 right detail panel, 'better'/'worse' line over its 'against ___' caption, all 3 shots: cap it at fs-body 20px/400 like the caption, use --ok/--danger color only for emphasis, no size or weight jump"
   ],
-  "pic": "tools/handoff/console/notes/shots/00p-m3b-doll-after2/d2-half-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/00p-m3b-doll-final/d2-half-1080.jpg",
   "task": "manual",
-  "when": "2026-11-03T08:22"
+  "when": "2026-11-03T09:09"
  },
  "d3-full": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "the cta fill and bare-number fixes landed, but rarity color still floods the stash-row titles as a fill and the list clips its last row in every shot, so it reads as improved but still short of shippable craft.",
+  "verdict": "the two P1s from last review are untouched and a new small capital-letter slip crept in, so this reads as feedback that was not acted on rather than a polished pass.",
   "findings": [
-   "P0 n/a: n/a",
-   "P1 center stash list, every row, all 3 shots (e.g. 'sound amulet' green, 'relic pants' purple, 'rare breacher plate' blue): set every row/tile title to --tx-1, move rarity to a 3px left bar (list rows) or keep the existing tile border only (equipped grid) — do not color both border and text",
-   "P1 center stash list, bottom row, all 3 shots ('rare gloves' in d2-half, 'rare breacher plate' in d3-full, 'sound boots' in d4-pad): clip the scroll region to whole-row increments (row height a multiple of the container height) or add a 24px bottom fade mask so no row is cut mid-glyph",
-   "P2 center stash list scrollbar, all 3 shots: style the scrollbar thumb with --ui-line-hi #4a5257 idle / --acc on hover, track transparent, matching the rest of the chrome",
-   "P2 right detail panel, 'better'/'worse' under the compare block, all 3 shots: confirm it is fs-body 20px / 400 weight exactly, same weight as 'against empty ring' below it, color-only emphasis via --ok/--danger"
+   "P1 equipped grid tiles and center stash list, all 3 shots (e.g. 'rare breacher plate' blue border+blue text+•• dots, 'relic pants' purple border+purple text+••• dots): pick one cue only: keep the tile border / 3px left bar for rarity, set every title to --tx-1 #efe9dc, delete the dot pips",
+   "P1 center stash list, last visible row, all 3 shots ('rare gloves' d2-half, 'rare breacher plate' d3-full, 'sound boots' d4-pad): make container height a whole multiple of row height, or add a 24px bottom fade mask over the scroll area",
+   "P2 right-side outfits list, 'x' delete buttons next to 'quiet run'/'smash'/'looter', all 3 shots: lowercase to 'x' to match the all-lowercase rule, or replace with a small glyph icon distinct from the corner close X",
+   "P2 center stash list vertical scrollbar, right edge of the list, all 3 shots: style ::-webkit-scrollbar-thumb to #4a5257 idle, --acc #e6ff3d on hover, transparent track",
+   "P2 right detail panel, 'better'/'worse' line over its 'against ___' caption, all 3 shots: cap it at fs-body 20px/400 like the caption, use --ok/--danger color only for emphasis, no size or weight jump"
   ],
-  "pic": "tools/handoff/console/notes/shots/00p-m3b-doll-after2/d3-full-4k.jpg",
+  "pic": "tools/handoff/console/notes/shots/00p-m3b-doll-final/d3-full-4k.jpg",
   "task": "manual",
-  "when": "2026-11-03T08:22"
+  "when": "2026-11-03T09:09"
  },
  "d4-pad": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "the cta fill and bare-number fixes landed, but rarity color still floods the stash-row titles as a fill and the list clips its last row in every shot, so it reads as improved but still short of shippable craft.",
+  "verdict": "the two P1s from last review are untouched and a new small capital-letter slip crept in, so this reads as feedback that was not acted on rather than a polished pass.",
   "findings": [
-   "P0 n/a: n/a",
-   "P1 center stash list, every row, all 3 shots (e.g. 'sound amulet' green, 'relic pants' purple, 'rare breacher plate' blue): set every row/tile title to --tx-1, move rarity to a 3px left bar (list rows) or keep the existing tile border only (equipped grid) — do not color both border and text",
-   "P1 center stash list, bottom row, all 3 shots ('rare gloves' in d2-half, 'rare breacher plate' in d3-full, 'sound boots' in d4-pad): clip the scroll region to whole-row increments (row height a multiple of the container height) or add a 24px bottom fade mask so no row is cut mid-glyph",
-   "P2 center stash list scrollbar, all 3 shots: style the scrollbar thumb with --ui-line-hi #4a5257 idle / --acc on hover, track transparent, matching the rest of the chrome",
-   "P2 right detail panel, 'better'/'worse' under the compare block, all 3 shots: confirm it is fs-body 20px / 400 weight exactly, same weight as 'against empty ring' below it, color-only emphasis via --ok/--danger"
+   "P1 equipped grid tiles and center stash list, all 3 shots (e.g. 'rare breacher plate' blue border+blue text+•• dots, 'relic pants' purple border+purple text+••• dots): pick one cue only: keep the tile border / 3px left bar for rarity, set every title to --tx-1 #efe9dc, delete the dot pips",
+   "P1 center stash list, last visible row, all 3 shots ('rare gloves' d2-half, 'rare breacher plate' d3-full, 'sound boots' d4-pad): make container height a whole multiple of row height, or add a 24px bottom fade mask over the scroll area",
+   "P2 right-side outfits list, 'x' delete buttons next to 'quiet run'/'smash'/'looter', all 3 shots: lowercase to 'x' to match the all-lowercase rule, or replace with a small glyph icon distinct from the corner close X",
+   "P2 center stash list vertical scrollbar, right edge of the list, all 3 shots: style ::-webkit-scrollbar-thumb to #4a5257 idle, --acc #e6ff3d on hover, transparent track",
+   "P2 right detail panel, 'better'/'worse' line over its 'against ___' caption, all 3 shots: cap it at fs-body 20px/400 like the caption, use --ok/--danger color only for emphasis, no size or weight jump"
   ],
-  "pic": "tools/handoff/console/notes/shots/00p-m3b-doll-after2/d4-pad-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/00p-m3b-doll-final/d4-pad-1080.jpg",
   "task": "manual",
-  "when": "2026-11-03T08:22"
+  "when": "2026-11-03T09:09"
  },
  "m3a-search-tip": {
   "score": 2,
@@ -5568,5 +5568,85 @@
   "pic": "tools/handoff/console/notes/shots/00p-m3a-after/m3a-extract-card-1080.jpg",
   "task": "manual",
   "when": "2026-11-03T07:42"
+ },
+ "c262-current-checks": {
+  "score": 1,
+  "pass": false,
+  "need": 3,
+  "verdict": "the escape screen is swallowed by a raw unstyled json debug dump instead of any game menu.",
+  "findings": [
+   "P0 full screen: gate this diagnostic dump behind a dev-only flag; the esc key must open the real pause/escape menu card, never this trace view.",
+   "P0 body text, whole screen: this content should not render as player-facing UI at all; if ever shown, it must use --f-body at --fs-label (16px), not an undifferentiated code block.",
+   "P0 background colors/panel: remove this view from the player-reachable esc flow; if it must exist as a debug overlay, wrap it in a --ui-panel card with --rad 4px and a scrim behind it so it doesn't read as the game itself breaking.",
+   "P1 top edge, behind the dump: this overlap confirms the diagnostic view is painting over live HUD elements rather than replacing the scene cleanly — fix the z-order/ownership of the esc key handler so it can't stack a debug view on top of the HUD.",
+   "P1 bottom edge: if this were a real window it should follow the settled card pattern (90% centred, x-close, 56/72px header/footer); currently it's neither a card nor a full takeover, just an overflow."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-262-esc-eaten-gamblemodal-and-edit-box-recipes-1/esc262-current-checks-1080.jpg",
+  "task": "o-262-esc-eaten-gamblemodal-and-edit-box",
+  "when": "2026-11-04T16:25"
+ },
+ "c262-corpus-prefix-10-10": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "clean grid and clear primary action, but the gradient mobile-game logotype, two competing accent shades, and a near-invisible disabled option keep this off the style guide and off the game's identity.",
+  "findings": [
+   "P0 title wordmark 'pillagers', upper third: flatten the wordmark to a single flat fill (tx-1 or a static --acc lime, no gradient/bevel), and keep all remaining saturation budget on the 1 player button.",
+   "P1 1 player button fill vs. 'pillager new' save-row border: sample both elements and set them to the literal --acc:#e6ff3d hex so there is exactly one accent color on screen.",
+   "P1 '2 player arcade demo' button, mid screen: raise the disabled label to at least 4.5:1 (e.g. a flat --tx-2 #aaa498 at full opacity) and signal 'locked' with a small label/icon instead of near-zero contrast.",
+   "P2 whole screen, background: drop in a subdued desaturated background plate (ruins/map/concrete) behind the vignette and swap the rounded gradient wordmark for a flat condensed stencil treatment consistent with --f-cond.",
+   "P2 'ascend. pillage. extract.' subtitle under the title: drop its size to --fs-fine or move it beside the version stamp so the title is the only thing read first."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-262-esc-eaten-gamblemodal-and-edit-box-recipes-2/esc262-corpus-prefix-10-10-1080.jpg",
+  "task": "o-262-esc-eaten-gamblemodal-and-edit-box",
+  "when": "2026-11-04T16:35"
+ },
+ "c262-corpus-prefix-12-99": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "a stray overlapping toast and an off-palette gradient title undercut an otherwise clean lime-button stack.",
+  "findings": [
+   "P0 bottom-center, over the wasd/mouse/lmb/e/f1 key-hint bar: remove or reposition this toast above the footer with at least 16px clearance from the key-hint row, and rewrite the string as a plain status line (e.g. 'player 2 disconnected') or cut it if it's not meant to be user-facing",
+   "P1 title 'pillagers' wordmark: undefined",
+   "P1 '2 player arcade demo' button: raise the label to --tx-2 (#aaa498) at full opacity against --ui-panel, or add a small 'soon' label at --fs-label so the disabled state reads as intentional, not broken",
+   "P2 '1 player' primary button and save row: add a distinct 2px --acc focus outline with the standard --m-fast transition that is visually separate from the persistent lime 'selected save' border",
+   "P2 footer row: align both to the same baseline at --sp-2 from the bottom edge and the same 5% side margins used elsewhere on the screen"
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-262-esc-eaten-gamblemodal-and-edit-box-recipes-2/esc262-corpus-prefix-12-99-1080.jpg",
+  "task": "o-262-esc-eaten-gamblemodal-and-edit-box",
+  "when": "2026-11-04T16:36"
+ },
+ "63-container-roof-diagnostic": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "the uncollapsed keybind wall ignores his own written rule to fold raid controls into one line, and it drowns out the rest of an otherwise on-palette HUD.",
+  "findings": [
+   "P0 bottom-left controls panel: collapse to one row reading 'move · gear · fight · raid — f1 for full list', expand only while f1 is held/toggled, matching job 112r.",
+   "P1 current pillagers panel, row 'fbi_surveillance_van': recolor to --tx-1 like the other names, or if it flags something specific (e.g. your killer) use --danger (#e5482f) or --acc per the existing token table, not an ad-hoc hex.",
+   "P1 current pillagers panel: right-align all row values (status and $ amounts) to one fixed edge, e.g. panel-width minus --sp-2.",
+   "P2 whole HUD: after collapsing controls per the P0 fix, confirm ammo (bottom-right) and hp (bottom-left) are the heaviest elements after the top bar, nothing else.",
+   "P2 controls panel contents: if this build supports a pad, swap the binding labels to the live input device like the walk-up screens already do."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-263-ghost-through-roof-9-27-recipes-1/263-container-roof-diagnostic-1080.jpg",
+  "task": "o-263-ghost-through-roof-9-27",
+  "when": "2026-11-04T17:37"
+ },
+ "63-container-roof-original-check": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "functional combat hud but it breaks its own palette and hero-scale rules while a giant kill-feed panel sits open over the firefight.",
+  "findings": [
+   "P0 top-left panel, row 'fbi_surveillance_van': recolor to --tx-2 (#aaa498) like every other dead row; if a special state is intended, reuse --danger, not a new hue.",
+   "P0 top band: clock '9:00', 'extract 122m', and bottom-right ammo '30/60': drop clock and extract-distance to --fs-title (32px) regular weight, keep only ammo count at --fs-hero (56px) since it's the stat you check mid-fight; or vice-versa, pick one and demote the rest.",
+   "P1 top-left 'current pillagers / value at risk' panel: collapse to a 1-line summary ('7 dead · $120 at risk') by default, same fold behavior as the raid-controls list, expand only on hover/key.",
+   "P1 top-right minimap block: cut the icon row to the 2 that matter (objective flag, extract arrow) at --sp-1 (8px) spacing, move the rest into the 'run info' drawer below it.",
+   "P2 minimap radar fill: add a single --acc dot for player position and rotate/orient the grid to facing direction, per the Halo/Destiny radar convention the guide cites."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-263-ghost-through-roof-9-27-recipes-2/263-container-roof-original-check-1080.jpg",
+  "task": "o-263-ghost-through-roof-9-27",
+  "when": "2026-11-04T21:32"
  }
 }

@@ -2,7 +2,7 @@
 
 Written by the helper lanes, read by the coordinator. NOT for the owner. Pipeline alarms, fixture retargets, Chrome or gate failures, camera staging requests and other lane-to-coordinator handoffs go here, never in questions.md.
 
-- 00p-m3b-doll (lane c, 11-03): check 37.38 (cw-m2retire) can fail by chance, about 1 run in 40: FOUR expects brakka ii, but heir names are seeded with the birth time (pilSeed), so an heir named brakka in the hall makes it brakka iii. It stopped ship cw-m3doll once with nothing wrong in the game. Retarget: use a name no heir can draw (not in PIL_NAMES) in that check.
+- 00p-m3b-doll (lane c, 11-03): check 37.38 (cw-m2retire) can fail by chance, about 1 run in 40: FOUR expects brakka ii, but heir names are seeded with the birth time (pilSeed), so an heir named brakka in the hall makes it brakka iii. It stopped ship cw-m3doll once with nothing wrong in the game. Retarget: use a name no heir can draw (not in PIL_NAMES) in that check. Same job, spare PC under load: check 36.69 failed once and passed on the next run with the draft unchanged, a preflight dry run gave "__REGRESS is not defined" then an empty result and then passed, and one ship was refused with an empty game_sha and went through on the next try. None of these was the draft.
 
 - 11-01 lane a, job 00p-m2e-retire: for the m3 lead: P.gear and P.worn are not in the restore code and restoreApply leaves them alone, so a restore keeps the gear of the save it replaces. Harmless until m3 hands out gear. Also: the retire and rename change on the net link (pn on the position word) has not been seen in two real windows, only with the send and receive functions in one window; the camera recipes are in notes/shots/m2e-recipes.json (e1 to e7) if the hall screens get added to the shared list.
 - 11-01 lane b, job 03-title-and-backdrop: camera screen 57 (title, 2 player co-op picked) shows an error banner from the test Chrome blocking the second window popup, so the critic scores the banner instead of the title. Coordinator: stage 57 with popups allowed (or the banner cleared) in tools/handoff/shots/ui-screens-js.json. Screen 44 also shoots with a trophy toast over the key legend (the shared toast placement, not the title).
@@ -627,3 +627,154 @@ This page is also what job 134's 3 hour two-window soak needs to get past the li
 11-03 02:28 v37.44 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
 11-03 03:29 v37.46 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
 11-03 03:45 v37.47 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 04:23 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 05:18 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 06:15 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 07:11 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 07:59 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 09:25 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 10:25 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 11:19 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 12:33 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 13:23 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 14:14 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+- 11-03 14:16 MAIN PC MEMORY: ramwatch found 1 bad spots in 11.7 GB, first [(4105150528, '10000000', 3)]. Saving through this can damage files; tell him at once.
+11-03 15:29 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 16:25 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 17:23 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 18:09 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 19:07 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 20:03 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 21:00 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 21:57 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 22:54 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-03 23:51 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 00:50 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 01:48 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 02:47 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 03:48 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 04:49 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 05:46 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 06:46 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 07:46 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 08:45 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 09:41 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 10:14 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 11:10 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+2026-11-04 o-262: Coordinator diagnostic run needed; no ship proposed. __topClear already clears SAVE_STALE/#stalesave, so requested reset is already present. Prepared .codex-work/o-262-esc-eaten-gamblemodal-and-edit-box/escape-probe.js (node syntax check passes); evaluate in fixture, run __esc262run(), collect __esc262trace on current and v36.95 main/spare, then install after reload and repeat normal full corpus to catch preceding-check contamination. Trace identifies consuming listener by actual stop call stack and snapshots all suspected overlay state. Sandbox/lane artifact protocol cannot run these checks. See task notes for exact steps. No edits to tools/mkfixture.ps1.
+
+o-262 diagnostic handoff: preserve camera report.json note containing Escape listener stacks from camera-recipes.json. Still need escape-probe.js installed before a CURRENT full corpus and a v36.95 targeted comparison on main/spare. The Codex sandbox cannot run either corpus. Do not retarget checks or change the stale-save guard without the trace. No fixture edits proposed.
+
+o-262: round 1 passes both current checks at 1080/4k. New recipe round runs real 120-slice prefixes through each target; preserve report.json note with state transitions and Escape listener stacks. These are diagnostics, no player UI ships and no critic acceptance applies. Full current corpus and v36.95 comparison still pending coordinator after diagnosis.
+
+11-04 12:07 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+2026-11-04 o-262: Both Escape checks now explicitly PASS in real corpus slice prefixes on v37.48 at 1080/4k (recipes-2 report). The successful consumer is the intended document capture handler, fixture 73060 TXBOX / 73066 modal close. Existing full run corpus-1103-0510 (98ae5964a, v37.48, ALL DONE) lists neither target as failing, while older corpus-1102-2152/1103-0135 still list gamblemodal. Historical consuming listener is still unknown; no game/test change is justified. Sandbox and two camera rounds are exhausted for this investigation. Coordinator must evaluate .codex-work/o-262-esc-eaten-gamblemodal-and-edit-box/escape-probe.js in the main/spare fixture BEFORE its normal full corpus and retain __esc262trace, plus run the requested targeted v36.95 comparison on main/spare. Probe changes in-memory diagnostics only; reload afterward. This is the remaining work, not a UI critic issue. No tools/mkfixture.ps1 edit requested. LOCAL: no linked review.
+2026-11-04 o-262 continuation: no new diagnostic trace supplied; current slice checks remain green. This task requires coordinator execution of the existing escape-probe.js in a full current corpus and the requested v36.95 main/spare comparison; the sandbox cannot execute these and its two camera rounds have been used. Additional blocker observed during read-only history search: Git reports failed delta-base reads in pack-7111719ce648d54cda18f9eff2ada846586cec3c.pack and fatal unable to read 39258801e6346f8455b97cfa666da7237a1dc3bd. No repair attempted. Please supply the execution evidence or a decision to close on current passes instead of re-running this sandbox without new evidence. No game/fixture edits warranted yet. LOCAL: no linked review.
+2026-11-04 o-263: The requested historical 9.27 runs (v37.02, v37.10, v37.14, v37.17) need the coordinator/main or spare PC; the Codex sandbox has no browser/test access and the handoff schema cannot request historical runs. Current-build diagnostic camera recipe is ready; please preserve its report note containing __roofDiag. Final task also requires 9.27 green in a full run after the eventual fix.
+
+11-04 13:03 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 14:00 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 14:58 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 15:56 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+2026-11-04 o-263-ghost-through-roof-9-27: Coordinator action needed for completion: obtain a current full-corpus result for 9.27, including the preceding slice/check order if red. The v37.48 camera diagnostic passes its exact pixel thresholds (roof 76 percent at 1080p, 93 at 4K, both controls 0), calls the real ghost drawOp, and records NO swallowed exception. Picture confirms the figure. No game fix justified yet. Updated camera recipe independently runs the unchanged original check at native and gate sizes without render wrappers. Sandbox cannot run the requested historical standalone checks or the full corpus. If the full corpus still fails, please run 9.27 immediately after its preceding slice with the empty catch instrumented and record CFG.seeThrough, G.sim, world canvas size, projected sample box, ghost draw calls and exceptions; a standalone clean pass would indicate a fixture state leak. Keep 9.27 unchanged. Original historical standalone comparison (v37.02/v37.10/v37.14/v37.17) remains unrun.
+11-04 16:54 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 17:53 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 18:52 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 19:50 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 20:52 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 21:52 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 22:50 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-04 23:50 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 00:49 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 01:49 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 02:49 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+2026-11-05 o-263 coordinator execution needed: latest saved full corpus-1103-0510 (98ae5964aa2e80f92925a9ecfe8d2b47e83010fe, v37.48, ALL DONE 07:48) still explicitly fails 9.27 at 0 percent in [0,120). Camera recipes-3 timed out at v9.26 in both sizes and provide no 9.27 result. Clean original-check passes and visible roof figure from recipes-2 remain valid but do not resolve the full-run failure. Please evaluate .codex-work/o-263-ghost-through-roof-9-27/full-run-probe.js in main/spare fixture before normal full corpus, call __roof263install(false), retain JSON.stringify(__roof263trace); then fresh reload and install with true before original [0,120) slice to capture the swallowed catch. Full instructions are in probe-handoff.md beside it. This read-only diagnostic preserves the original check result, restores temporary hooks and changes no simulation. No ship or fixture retarget is proposed. Historical v37.02/v37.10/v37.14/v37.17 standalone comparisons still need coordinator. Return execution traces before another sandbox run; the sandbox cannot execute the required corpus, and repeating the unchanged long camera prefix will time out. LOCAL: no linked review.
+
+11-05 03:51 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 04:51 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 05:51 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 06:50 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 07:53 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 08:48 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 09:48 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 10:44 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 11:43 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 12:41 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+2026-11-05 o-264-belt-key-1-vacant-18-34: check 18.34 leaves the primary gun and gun-class key table inherited. Source triage and exact isolated staging correction are in this task output notes-new.md and check-18.34-change.txt. HTML CEO must perform the historic/live slot diagnostics, apply any fixture correction via fixq, and verify 18.34 in a current full run. No game edits or fixture edits made. LOCAL: no linked review.
+11-05 13:39 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+2026-11-05 o-264 continuation: offline production-function probe now confirms SMG+rifle leaves key 1 vacant and selects key 2 identically in v37.02, v37.17 and v37.48. One gun plus fists does not leave key 1 vacant. Results and exact proposed check staging correction are in the task output folder. HTML CEO still needs live historic diagnostics, fixq check correction, and current full-run 18.34 verification; Codex cannot edit the fixture or access the browser/spare PC.
+2026-11-05 o-264-belt-key-1-vacant-18-34: coordinator/HTML CEO handoff. Check 18.34 remains unchanged on v37.48; lane o is prohibited from editing tools/mkfixture.ps1. Exact check-only correction: C:/claudecode/pillagers-codex/.codex-work/o-264-belt-key-1-vacant-18-34/check-18.34-change.txt. Stage the selected owned pistol with default gun class keys, retain the rounded-corner pixel assertions, apply via fixq, and validate alone plus current full corpus. Existing source-belt-probe-results.json demonstrates that inherited SMG/rifle leaves key 1 vacant on v37.02, v37.17 and current HEAD; it is not a deploy/canvas test. No game fix proposed. Please return full-run evidence or a new failing diagnostic before restarting this lane.
+2026-11-05 o-264-belt-key-1-vacant-18-34: complete check-only replacement now available at C:/claudecode/pillagers-codex/.codex-work/o-264-belt-key-1-vacant-18-34/check-18.34-replacement.txt (object only; preserve the fixture array trailing comma). JavaScript syntax checked successfully. HTML CEO must apply via fixq and run 18.34 alone and in the current full corpus. Fixture remains unchanged; no runtime pass. This lane cannot complete that work under its explicit fixture-edit and browser restrictions. Please route the check correction to the fixture owner rather than restart this unchanged sandbox task.
+2026-11-05 o-264-belt-key-1-vacant-18-34: coordinator/HTML CEO action required. Current fixture still has the empty-kit check. Exact complete replacement is C:/claudecode/pillagers-codex/.codex-work/o-264-belt-key-1-vacant-18-34/check-18.34-replacement.txt (add its trailing comma in __REGRESS). Apply only check 18.34 via fixq, then run alone and in the current full corpus. Existing source probes show inherited SMG/rifle can leave key 1 vacant on v37.02, v37.17 and current; they do not replace requested browser/deploy diagnostics. Codex cannot edit the fixture or run the browser, and no fixture-retarget.json is permitted. Please park this job for the fixture owner until a correction/result arrives; repeated Codex runs cannot complete that external step. LOCAL: no linked review.
+
+2026-11-05 o-00y2-2p-lifecycle-test: the prior handoff files were missing from this refreshed worktree. Rebuilt and reverified them; the existing coordinator handoff command now has concrete files again:
+node C:/claudecode/pillagers-codex/.codex-work/o-00y2-2p-lifecycle-test/install-handoff.cjs "C:/claudecode/dark raiders"
+Run outside the sandbox, then commit/sync tools/p2online/p2.mjs through normal maintenance and return ON HIS PC confirmation. This installs equal 3 s return pauses and duration reporting and publishes all nine already-passed lifecycle cases in notes/o-00y-findings.md. No game draft, shipq, browser or extra camera round is needed. PRIVATE-root verification passed. The sandbox cannot install to the main repo or confirm it is on his PC. LOCAL: no linked review.
+
+2026-11-05 o-262-esc-eaten-gamblemodal-and-edit-box: external verification still needed; no new results since Nov 4. Existing .codex-work/o-262-esc-eaten-gamblemodal-and-edit-box/escape-probe.js is ready. Evaluate it in the current fixture before a normal full corpus, retain explicit results for 10.10/12.99 and JSON.stringify(__esc262trace), then reload the diagnostic page. Repeat targeted checks on v36.95 on main/spare as the task requests. Current v37.48 corpus-prefix camera runs explicitly pass both and show the intended document capture listener consuming Escape; the historical culprit is unproved. No game/fixture change is justified yet. Please return results before resuming this job. LOCAL: no linked review.
+2026-11-05 o-262-esc-eaten-gamblemodal-and-edit-box: COORDINATOR DIAGNOSTIC REQUIRED. The sandbox has completed its available investigation; do not restart this job on unchanged master without results. Both camera rounds are used. Existing current v37.48 targeted and corpus-prefix checks PASS, but the historical consuming listener is unknown. No game/test change is justified.
+On main/spare, evaluate this task output folder escape-probe.js in a fresh CURRENT fixture page before launching the normal full corpus. The probe wraps only 10.10/12.99 and logs each Escape, blocker state and propagation-stop stack. After completion save JSON.stringify(window.__esc262trace) alongside the corpus result, and confirm both check result entries are present (null means PASS). Reload afterward to uninstall instrumentation. Separately evaluate the same probe in a v36.95 fixture on main/spare, call window.__esc262run(), and save its returned results plus window.__esc262trace. Do not load the old build in the low-memory VM. Return these artifacts to this task. No fixture source edits, new camera round, ship key, or linked review is needed.
+2026-11-05 o-263-ghost-through-roof-9-27: Coordinator execution required; repeated sandbox continuations have no new evidence to act on. Run .codex-work/o-263-ghost-through-roof-9-27/full-run-probe.js per probe-handoff.md on main/spare during the failing corpus slice and return JSON.stringify(__roof263trace). Latest saved full corpus still fails 9.27; clean standalone and roof picture pass. Keep job parked until that trace is available. No game fix claimed; preserve check 9.27.
+2026-11-05 o-264-belt-key-1-vacant-18-34: coordinator/HTML CEO handoff. This task has repeatedly resumed without a fixture change or browser result. The permitted investigation and exact check-only correction are prepared in .codex-work/o-264-belt-key-1-vacant-18-34/check-18.34-replacement.txt (complete object; add the array comma) and check-18.34-change.txt. Please apply through fixq and run 18.34 alone and in the current full corpus; return the results before resuming Codex. Do not mark the check passing from the source probe. Codex cannot edit this fixture or run the required browser tests.
+
+2026-11-05 o-264-belt-key-1-vacant-18-34: coordinator action required; please route this check-only handoff to the HTML CEO rather than rerunning the Codex investigation. Current tools/mkfixture.ps1:78931 still has the empty-kit 18.34 setup. Apply the complete check-18.34-replacement.txt from this task output folder through fixq, then run 18.34 alone and in a current full run. The replacement stages an owned selected pistol and default class keys while preserving both pixel assertions. Codex is explicitly forbidden to edit the fixture or submit fixture-retarget.json, and cannot access the browser runner. No game change is justified by the source evidence. Historical live diagnostics remain uncollected. LOCAL: no linked review.
+
+11-05 14:35 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 15:32 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 16:30 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 17:28 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 18:26 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 19:21 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 20:23 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 21:21 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 22:21 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-05 23:21 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 00:20 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 01:21 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 02:19 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 03:21 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 04:17 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 05:15 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 06:15 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 07:11 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 08:09 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 09:04 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 10:00 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 10:56 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 11:53 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 12:50 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 13:48 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 14:46 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 15:45 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 16:45 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 17:41 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 18:36 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 19:34 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 20:32 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 21:32 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 22:32 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-06 23:32 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-07 00:33 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-07 01:34 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-07 02:33 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+- 11-07 03:21 MAIN PC MEMORY: ramwatch found 1 bad spots in 6.0 GB, first [(2533085248, '10000000', 4)]. Saving through this can damage files; tell him at once.
+11-07 03:32 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-07 04:33 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-07 05:27 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-07 05:59 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-07 06:56 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-07 07:53 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-07 08:50 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+2026-11-07 o-00y-2p-online-party-critical: the missing repeat-raid and both-disconnect tests already passed in all four corrected o-00y2 round 2 runs. Final six-item findings are reconciled in C:/claudecode/pillagers-codex/.codex-work/o-00y-2p-online-party-critical/o-00y-findings.md. Coordinator publication only: node C:/claudecode/pillagers-codex/.codex-work/o-00y-2p-online-party-critical/publish-findings.cjs "C:/claudecode/dark raiders". It appends the reviewed section to notes/o-00y-findings.md without altering old notes, the game or any tool. Confirm publication to close this task; the only game fix is already ON HIS PC v36.56. Do not require o-00y2's separate driver maintenance or another camera run for this publication. Saved results are v36.56/v36.58, not a fresh v37.48 audit.
+
+11-07 09:47 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+2026-11-07 o-00y-2p-online-party-critical: final findings publication is still outstanding; this is a reminder of the existing handoff, not a new game defect. Execute outside the sandbox:
+node C:/claudecode/pillagers-codex/.codex-work/o-00y-2p-online-party-critical/publish-findings.cjs "C:/claudecode/dark raiders"
+The command appends the prepared six-item findings, preserves old notes and skips an identical prior publication. It changes no game or test driver. Return its result to close this task. Do not requeue solely for a worktree refresh.
+11-07 10:44 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+2026-11-07 o-h01-177-hardcore-save: Remote preflight job preflight-cw-cx-hardcore-b1ce1b579131 returned only no-report notices at 281, 290 and 300 minutes. No lint, browser, regression or fingerprint result was supplied. Please check the spare-PC gate worker and retry cw-cx-hardcore; local draft anchors and syntax still pass on refreshed v37.48. No permission, fixture retarget or game change is needed to address this missing worker report.
+2026-11-07 o-h01-177-hardcore-save: Current input has no preflight/ship/camera result. Prior notes report preflight-cw-cx-hardcore-b1ce1b579131 waiting 281-300 minutes without a report. The revised key is ready; if the remote worker still returns no report, coordinator needs to restore the spare-PC gate before this task can ship. No game or fixture failure diagnostic is available.
+11-07 11:43 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+2026-11-07 o-h01-177-hardcore-save: coordinator/test-worker handoff. Earlier notes report preflight-cw-cx-hardcore-b1ce1b579131 ran 281-300 minutes without a report. Subsequent task continuations still contain no completed preflight result, ship result or pictures. Draft anchors, syntax and isolated helper checks pass locally. Please obtain an actual lane test result before further implementation retries; no game defect has been reported. cw-cx-hardcore and the six-scene recipe are ready in the task output folder.
+2026-11-07 o-h01-177-hardcore-save: returned preflight job preflight-cw-cx-hardcore-97e454bd55f9 contains only someone is using it / no report for 37 minutes. It contains no game or check diagnostic. Previous retries also lacked a completed report. Coordinator action needed on the spare-PC test worker or job queue; sandbox cannot access it. Existing cw-cx-hardcore draft passes local anchor, syntax and isolated helper checks and remains queued. Please return an actual completed gate report before requesting a code fix.
+11-07 12:41 v37.48 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log

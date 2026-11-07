@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.49 - HEALING SLOWS AND BIG HITS INTERRUPT
+
+Co-op hunt while he was away. His g-2 answer: Half speed. His g-5 answer: Only a big hit stops it. Watch: healing in the open gets riskier; check whether the 1.5 s half-speed wind-up feels sticky, whether the slow should continue through healing (4.2 s bandage, 9.6 s medkit), and whether losing the item to a big hit feels too harsh.
+
+MEASURED. Check 37.49 passes, and fails on v37.48.
 ## v37.48 - THE STASH DOLL: LONG NAMES WRAP IN A SLOT, THE LIST FADES AT ITS EDGE
 
 Co-op hunt while he was away. seen on the pictures of v37.45: a rare breacher plate was cut off in its slot, outfit names lost the bottom of their letters, worse sat under the contrast floor on the tip panel, the critic found the last list row cut mid word and an amber scroll thumb Watch: a long piece name wraps to two lines in its slot, outfit names show whole, the tip panel is darker so worse reads, the list fades out at its bottom edge and its scroll thumb is the panel line colour
