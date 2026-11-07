@@ -1,0 +1,64 @@
+{
+    "title":  "RARE ELEMENT GUNS ON ELITE PILLAGERS",
+    "why":  "His g-36 answer: Yes, a rare element gun. A quarter of elite pillagers now carry a takeable MK III element gun, selected without a new random draw. Watch: element guns from pillagers may make the forge MK III feel less special, and a MK III elite hits harder; watch how often you find one.",
+    "now":  "The held gun, body loot and party container words preserve the element. Enemy rounds stay plain and warning red.",
+    "edits":  [
+                  {
+                      "anchor":  "    e.wep=WEAPONS[_gk]; e.dmg=WEAPONS[_gk].dmg;",
+                      "replacement":  "    // v28.xx (cw-cx-eliteelements): his g-36, \"Yes, a rare element gun\". Reuse the elite roll; forgeApply draws nothing.\n    var _ef=roll/rate;\n    e.wep=(_ef\u003c0.25)?forgeApply(WEAPONS[_gk],2,ELEM_ORDER[Math.floor(_ef/0.25*4)]):WEAPONS[_gk]; e.dmg=e.wep.dmg;"
+                  },
+                  {
+                      "anchor":  "        var c=setLoot(mkContainer(e.x,e.y,\u0027body\u0027),_drop); G.containers.push(c);",
+                      "replacement":  "        var c=setLoot(mkContainer(e.x,e.y,\u0027body\u0027),_drop); G.containers.push(c);\n        // v28.xx (cw-cx-eliteelements): only the held, unpaid gun carries its forge onto the body.\n        if(heldGunDrops(e)\u0026\u0026!e.paidRevive\u0026\u0026e.wep.fk===2\u0026\u0026ELEM[e.wep.el]) c.fw={gk:\u0027gun_\u0027+e.wep.id,fk:2,el:e.wep.el};"
+                  },
+                  {
+                      "anchor":  "    if(itm\u0026\u0026itm.use===\u0027gun\u0027\u0026\u0026itm.gk\u0026\u0026!ct.dropped){ _rvF=rollFieldGun(itm.gk); if(_rvF.id!==itm.gk\u0026\u0026ITEMS[\u0027gun_\u0027+_rvF.id]){ key=\u0027gun_\u0027+_rvF.id; keys[l]=key; itm=ITEMS[key]; } }",
+                      "replacement":  "    // v28.xx (cw-cx-eliteelements): keep the exact held model on a forged body gun, consuming the usual field roll.\n    var _bodyForge=!!(!ct.dropped\u0026\u0026ct.fw\u0026\u0026!ct.fw.used\u0026\u0026ct.fw.gk===key\u0026\u0026ct.fw.fk===2\u0026\u0026ELEM[ct.fw.el]);\n    if(itm\u0026\u0026itm.use===\u0027gun\u0027\u0026\u0026itm.gk\u0026\u0026!ct.dropped){ _rvF=rollFieldGun(itm.gk); if(_bodyForge){ _rvF=Object.assign({},WEAPONS[itm.gk],{q:\u0027field\u0027,qRank:1}); } else if(_rvF.id!==itm.gk\u0026\u0026ITEMS[\u0027gun_\u0027+_rvF.id]){ key=\u0027gun_\u0027+_rvF.id; keys[l]=key; itm=ITEMS[key]; } }"
+                  },
+                  {
+                      "anchor":  "      if(ct.dropped\u0026\u0026ct.fw\u0026\u0026(ct.fw.fk===1||ct.fw.fk===2)) found=forgeApply(found,ct.fw.fk,ct.fw.el);   // v23.xx (forge11): a forged gun comes out of the pile forged",
+                      "replacement":  "      // v28.xx (cw-cx-eliteelements): a body upgrades its matching gun once; existing dropped piles keep their forge.\n      if(ct.fw\u0026\u0026!ct.fw.used\u0026\u0026(ct.dropped||ct.fw.gk===key)\u0026\u0026(ct.fw.fk===1||ct.fw.fk===2)){ found=forgeApply(found,ct.fw.fk,ct.fw.el); ct.fw.used=1; }"
+                  },
+                  {
+                      "anchor":  "function netContNewWord(ct){",
+                      "replacement":  "// v28.xx (cw-cx-eliteelements): validate forge metadata for containers and a staged loot grant. No draws.\nfunction netContForge(ct){\n  var f=ct\u0026\u0026ct.fw, k;\n  if(!f||(f.fk!==1\u0026\u0026f.fk!==2)) return null;\n  k=(typeof f.gk===\u0027string\u0027\u0026\u0026/^gun_/.test(f.gk)\u0026\u0026Object.prototype.hasOwnProperty.call(ITEMS,f.gk)\u0026\u0026ITEMS[f.gk].use===\u0027gun\u0027)?f.gk:\u0027\u0027;\n  if(f.gk\u0026\u0026!k) return null;\n  if(f.fk===2\u0026\u0026!ELEM[f.el]) return null;\n  return {gk:k,fk:f.fk,el:f.fk===2?f.el:\u0027\u0027,used:f.used?1:0};\n}\n// v28.xx (cw-cx-eliteelements): reserve the one forged copy on the host before another seat can search it.\nfunction netForgeLoot(ct,items){\n  var f=netContForge(ct);\n  if(f\u0026\u0026!f.used\u0026\u0026f.gk\u0026\u0026items.indexOf(f.gk)\u003e=0) ct.fw.used=1;\n  return f;\n}\nfunction netContNewWord(ct){"
+                  },
+                  {
+                      "anchor":  "ib:ct.issuedB?1:0,lk:netLootList(ct.loot),pl:ct.pulled|0};",
+                      "replacement":  "ib:ct.issuedB?1:0,lk:netLootList(ct.loot),pl:ct.pulled|0,fw:netContForge(ct)};"
+                  },
+                  {
+                      "anchor":  "  if(m.ib) ct.issuedB=1;",
+                      "replacement":  "  // v28.xx (cw-cx-eliteelements): the body and dropped pile retain their forge on the other window.\n  var _cforge=netContForge({fw:m.fw}); if(_cforge) ct.fw=_cforge;\n  if(m.ib) ct.issuedB=1;"
+                  },
+                  {
+                      "anchor":  "netSend(q,{t:\u0027loot\u0027,cid:r.cid,items:items,done:1,hot:hot.length?1:0});",
+                      "replacement":  "netSend(q,{t:\u0027loot\u0027,cid:r.cid,items:items,done:1,hot:hot.length?1:0,fw:netForgeLoot(ct,items)});"
+                  },
+                  {
+                      "anchor":  "netSend(q,{t:\u0027loot\u0027,cid:r.cid,items:items});",
+                      "replacement":  "netSend(q,{t:\u0027loot\u0027,cid:r.cid,items:items,fw:netForgeLoot(ct,items)});"
+                  },
+                  {
+                      "anchor":  "  at=ct||{x:G.player.x,y:G.player.y};",
+                      "replacement":  "  at=ct||{x:G.player.x,y:G.player.y};\n  // v28.xx (cw-cx-eliteelements): the host says whether this pull owns the forged copy, including an already used body gun.\n  if(Object.prototype.hasOwnProperty.call(m,\u0027fw\u0027)){ var _lforge=netContForge({fw:m.fw}); if(_lforge) at.fw=_lforge; else delete at.fw; }"
+                  },
+                  {
+                      "anchor":  "function netContLeftWord(ct){ return {t:\u0027cont\u0027,cid:ct.cid,st:\u0027left\u0027,lk:netLootList(ct.loot),pl:ct.pulled|0}; }",
+                      "replacement":  "function netContLeftWord(ct){ return {t:\u0027cont\u0027,cid:ct.cid,st:\u0027left\u0027,lk:netLootList(ct.loot),pl:ct.pulled|0,fw:netContForge(ct)}; }"
+                  },
+                  {
+                      "anchor":  "  if(st===\u0027left\u0027){ ct.netLk=netLootKeys(m.lk);",
+                      "replacement":  "  if(st===\u0027left\u0027){ if(Object.prototype.hasOwnProperty.call(m,\u0027fw\u0027)){ var _leftForge=netContForge({fw:m.fw}); if(_leftForge) ct.fw=_leftForge; else delete ct.fw; } ct.netLk=netLootKeys(m.lk);"
+                  },
+                  {
+                      "anchor":  "  if(e.kind===\u0027raider\u0027){ m.c=netClean(e.coat,12);",
+                      "replacement":  "  if(e.kind===\u0027raider\u0027){ m.fk=(e.wep\u0026\u0026e.wep.fk===2)?2:0; m.fe=(m.fk\u0026\u0026ELEM[e.wep.el])?e.wep.el:\u0027\u0027; m.c=netClean(e.coat,12);"
+                  },
+                  {
+                      "anchor":  "    if(typeof m.w===\u0027string\u0027\u0026\u0026Object.prototype.hasOwnProperty.call(WEAPONS,m.w)\u0026\u0026WEAPONS[m.w]\u0026\u0026WEAPONS[m.w].id) e.wep=WEAPONS[m.w];",
+                      "replacement":  "    // v28.xx (cw-cx-eliteelements): the held gun tint agrees in both windows; enemy rounds still use warning red and no element.\n    if(typeof m.w===\u0027string\u0027\u0026\u0026Object.prototype.hasOwnProperty.call(WEAPONS,m.w)\u0026\u0026WEAPONS[m.w]\u0026\u0026WEAPONS[m.w].id){ e.wep=(m.fk===2\u0026\u0026ELEM[m.fe])?forgeApply(WEAPONS[m.w],2,m.fe):WEAPONS[m.w]; e.dmg=e.wep.dmg; }"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027a quarter of elite pillagers hold a takeable MK III element gun, without extra random draws; body and held gun forge cross the party words\u0027,\n   run:function(){\n     var oldR=RNGS, oldCfg={rate:CFG.eliteRate,guns:CFG.eliteGuns}, total=0, forged=0, sample=null, i,j,e,before,expect,g,p,c,copy,k,el,other,w,all,ct,role,nb;\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[\u0027gun_rifle\u0027,\u0027gun_shotgun\u0027],safe:null,mapIx:0,seed:4242});\n       g=__state(); p=g.player; CFG.eliteRate=.08; CFG.eliteGuns=1;\n       for(i=1;i\u003c=200;i++){\n         srand(i);\n         for(j=0;j\u003c64;j++){\n           before=RNGS; rr(); rr(); expect=RNGS; RNGS=before;\n           e=blessElite({kind:\u0027raider\u0027,hp:100,maxhp:100,r:16,wep:WEAPONS.rifle});\n           if(RNGS!==expect) return \u0027elite blessing changed the random stream\u0027;\n           if(!e.elite) continue;\n           total++;\n           if(e.wep.fk===2\u0026\u0026ELEM[e.wep.el]){ forged++; if(e.dmg!==e.wep.dmg||e.wep.tint!==ELEM[e.wep.el].c) return \u0027elite damage or tint differs from its forged gun\u0027; if(!sample) sample=e.wep; }\n         }\n       }\n       if(!sample||forged/total\u003c.15||forged/total\u003e.35) return \u0027forged elite share \u0027+forged+\u0027/\u0027+total+\u0027 is outside 15 to 35 percent\u0027;\n       e=mkRaider(p.x+80,p.y); e.elite=1; e.wep=sample; e.dmg=sample.dmg; e.noGunDrop=null; e.paidRevive=0; e.bag=[];\n       k=\u0027gun_\u0027+sample.id; el=sample.el; g.ents=[e];\n       nb=g.bullets.length; fireWeapon(e,e.wep,p.x,p.y,false);\n       if(g.bullets.length\u003c=nb) return \u0027forged elite fired no round\u0027;\n       for(i=nb;i\u003cg.bullets.length;i++) if(g.bullets[i].el||g.bullets[i].tint!==ENEMY_TRACER) return \u0027enemy round gained an element or lost warning red\u0027;\n       e.hp=0; e.finished=1; e.downed=0; e.byPlayer=true;\n       updateEnts(0);\n       c=g.containers.filter(function(x){return x.type===\u0027body\u0027\u0026\u0026x.fallen===e.name;}).pop();\n       if(!c||!c.fw||c.fw.gk!==k||c.fw.fk!==2||c.fw.el!==el||c.loot.indexOf(k)\u003c0) return \u0027death did not preserve the held forged gun\u0027;\n       c.cid=999;\n       copy=netContMake(999,JSON.parse(JSON.stringify(netContNewWord(c))));\n       if(!copy||!copy.fw||copy.fw.gk!==k||copy.fw.el!==el||copy.fw.fk!==2) return \u0027party body word lost the forge\u0027;\n       w={kind:\u0027raider\u0027}; netEntFill(w,JSON.parse(JSON.stringify(netEntNewWord(e))));\n       if(!w.wep||w.wep.fk!==2||w.wep.el!==el||w.wep.tint!==sample.tint) return \u0027party held gun lost the element tint\u0027;\n       other=k===\u0027gun_shotgun\u0027?\u0027gun_rifle\u0027:\u0027gun_shotgun\u0027;\n       for(role=0;role\u003c2;role++){\n         ct=role?copy:c;\n         p.wep=WEAPONS.rifle; p.sec=WEAPONS.shotgun; g.bag=[]; g.stowQ={};\n         openContainer(ct,[other,k,k]);\n         all=[p.wep,p.sec]; Object.keys(g.stowQ||{}).forEach(function(id){all=all.concat(g.stowQ[id]);});\n         w=all.filter(function(x){return x\u0026\u0026x.fk===2;});\n         if(w.length!==1||w[0].id!==sample.id||w[0].el!==el||!ct.fw.used) return \u0027body loot must grant exactly the matching forged gun once, role \u0027+role;\n       }\n       ct={fw:{gk:k,fk:2,el:el}};\n       w=netForgeLoot(ct,[other]); if(ct.fw.used) return \u0027another gun spent the body forge\u0027;\n       w=netForgeLoot(ct,[k]); if(!w||w.used||!ct.fw.used) return \u0027host did not reserve the first forged pull\u0027;\n       if(!netForgeLoot(ct,[k]).used) return \u0027host offered a second forged copy\u0027;\n       return null;\n     } finally {\n       CFG.eliteRate=oldCfg.rate; CFG.eliteGuns=oldCfg.guns; RNGS=oldR;\n       try{ __endRaid(\u0027abandon\u0027); }catch(_e){} __topClear();\n     }\n   }},"
+}
