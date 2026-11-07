@@ -1,0 +1,7 @@
+v37.53: sleeping machines
+
+Sleeping machines stay still and dark until noise, a hit or a close step wakes them, with a 0.6 second charge beat before firing.
+
+Check 37.53. Fails on v37.52.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

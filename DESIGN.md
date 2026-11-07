@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.53 - SLEEPING MACHINES
+
+Co-op hunt while he was away. His g-25: Yes, a few more sleepers. A deterministic fifth of eligible sentries and bulwarks begin asleep away from ascend spots. Watch: a sleeper waking next to loot can feel like the removed mimics; watch for wakes he calls cheap, and that sleepers read as asleep from a distance.
+
+MEASURED. Check 37.53 passes, and fails on v37.52.
 ## v37.52 - OVERSEER CHASES TOP DAMAGE
 
 Co-op hunt while he was away. His g-24 answer: Whoever hurt it most. The host tracks damage and shares the chosen seat. Watch: the higher-damage partner holds the Overseer all fight; watch that the other player does not feel left out and that the target does not flip back and forth.

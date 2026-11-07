@@ -2317,3 +2317,5 @@
 2026-11-07 0.1066 critic-o-h06-153-blasts-shove-big-hits-nudge-aim
 2026-11-07 0.0000 o-h06-153-blasts-shove-big-hits-nudge-aim
 2026-11-07 0.0000 o-h07-156-overseer-chases-top-damage
+2026-11-07 0.0000 o-h07-156-overseer-chases-top-damage
+2026-11-07 0.0000 o-h08-158-sleeping-machines

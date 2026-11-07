@@ -4024,8 +4024,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.52';
-var VER_AT='2026-11-07 14:51';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.53';
+var VER_AT='2026-11-07 15:17';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17003,12 +17003,31 @@ function listenersHear(x,y,s,fromPlayer){
   LISTEN_BUSY=true;
   try{ listenersHearInner(x,y,s,fromPlayer); } finally { LISTEN_BUSY=false; }
 }
+// v28.xx (cw-cx-sleepmachines): his g-25, "Yes, a few more sleepers". Machines in the open, never containers; no seeded draw.
+function machineSleepCandidate(e,spawns){
+  if(!e||(e.kind!=='sentry'&&e.kind!=='bulwark')||e.elite||e.camp||e.wave||e.waveN) return false;
+  for(var i=0;i<spawns.length;i++) if(dist(e,spawns[i])<900) return false;
+  return true;
+}
+function machineAsleep(e){ return !!(e&&(e.kind==='sentry'||e.kind==='bulwark')&&e.state==='dormant'); }
+function machineWake(e,state,x,y){
+  if(!e||!e.sleep||e.hp<=0) return false;
+  e.sleep=0; e.state=state; e.tx=x; e.ty=y; e.heardX=x; e.heardY=y;
+  e.alert=2.4; e.wakeT=0.6; e.windup=null; e.muzzle=0; e.moving=false;
+  if(!G.sim) sfx('charge',e.x,e.y);
+  return true;
+}
+function machineSleepDraw(e,draw){
+  if(!machineAsleep(e)){ draw(e); return; }
+  wc.save(); wc.filter='brightness(58%)';
+  try{ draw(e); }finally{ wc.restore(); }
+}
 function listenersHearInner(x,y,s,fromPlayer){
   for(var i=0;i<G.ents.length;i++){
     var e=G.ents[i];
-if(e.kind!=='listener'&&e.kind!=='howler') continue;
+if(e.kind!=='listener'&&e.kind!=='howler'&&!(e.sleep&&e.state==='dormant')) continue;
     var d=dist(e,{x:x,y:y});
-    var reach=LISTEN_R*(hasTerm('silence')?1.5:1);
+    var reach=LISTEN_R*(e.sleep?0.6:1)*(hasTerm('silence')?1.5:1);
     // WHAT THE LISTENER CAN ACTUALLY HEAR, measured at v2.05. Its reach is
     // LISTEN_R=760, but that is a CAP, not a range: a sound is only heard at
     // s*1.35, so reaching 760 needs a sound of strength 563 or more. Enumerating
@@ -17040,6 +17059,7 @@ if(e.kind!=='listener'&&e.kind!=='howler') continue;
     // 3.6 the cap finally binds on normal movement.
     var LG=(CFG.listenGain===undefined?1.35:CFG.listenGain);
     if(d>Math.min(s*LG*(hasTerm('silence')?1.5:1),reach)) continue;
+if(e.sleep&&e.state==='dormant'){ machineWake(e,'investigate',x,y); continue; }
 e.heardX=x; e.heardY=y;
     // The Howler does not wake, hunt or walk to a noise. It writes the bearing
     // down and keeps its gun warm, which is what a gun crew does.
@@ -18962,6 +18982,13 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
   // v8.36: termClock is computed once, up with the closure schedule that also
   // needs it. Declaring it twice would let the raid clock and the ring clock
   // drift apart, which is the exact failure this build is fixing.
+  // v28.xx (cw-cx-sleepmachines): mark only the final positions, after camps; the placement stream and counts stay intact.
+  for(var _sl=0;_sl<ents.length;_sl++){
+    var _sm=ents[_sl];
+    if(machineSleepCandidate(_sm,map.spawns||[])&&((Math.imul(Math.round(_sm.x),73856093)^Math.imul(Math.round(_sm.y),19349663)^seed)>>>0)%5===0){
+      _sm.sleep=1; _sm.sleepHp=_sm.hp; _sm.state='dormant';
+    }
+  }
   if(CFG.decks!==1){ map.plats=[]; map.ramps=[]; }   // v13.41: emptied before the ground bake below, which draws nothing from them
   var g={sim:!!sim,seed:seed,grid:buildSegGrid(map.segs,WORLD_W,WORLD_H),wingrid:buildSegGrid(map.wsegs||[],WORLD_W,WORLD_H),wgrid:buildWallGrid(map.walls,WORLD_W,WORLD_H),seal:(sim?null:{x:G_SEAL_SPOT.x,y:G_SEAL_SPOT.y,gained:0}), forge:(sim?null:forgeSpot(map,FIXED_MAPS[mapIx],containers)),
     nMach:N_SENTRY+N_CRAWLER,map:map,vegPal:mkVegPal(map),ground:sim?null:bakeGround(map,undefined,start),lights:lights,t:0,timeLeft:Math.round(CFG.raidSec*termClock),raidLen:Math.round(CFG.raidSec*termClock),paused:false,
@@ -33465,6 +33492,11 @@ if(_se.kind==='raider'&&_se.sprintPool>0&&_se.moving&&!_se.downed){
     var e=G.ents[i];
     if(NET.on) p=netTargetFor(e);   // v15.80: this body picks the NEAREST player, the host player or one of the party up top; with the party off it is the host player as always
     e.moving=false;
+    // v28.xx (cw-cx-sleepmachines): damage or either nearby live player wakes once. Other alerts cannot quietly turn a sleeper on.
+    if(e.sleep&&e.hp>0){
+      if(e.hitT>0||e.hp<(e.sleepHp===undefined?e.maxhp:e.sleepHp)||(!p.downed&&!p.specOut&&dist(e,p)<70)) machineWake(e,'chase',p.x,p.y);
+      else e.state='dormant';
+    }
     if(e.hitT>0) e.hitT-=dt;
     if(e.pHitT>0) e.pHitT-=dt;   // v11.37: a hit the PLAYER landed, its own timer
     // v28.xx (cw-cx-longshotglint): tick once even when cover, a stun or a different state skips the firing block. An expired tell is spent this frame.
@@ -33474,6 +33506,12 @@ if(_se.kind==='raider'&&_se.sprintPool>0&&_se.moving&&!_se.downed){
       else { e.glint=Math.max(0,e.glint-dt); if(e.glint<1e-7){ e.glint=0; _glintDone=true; } }
     }
     if(e.muzzle>0) e.muzzle-=dt;
+// v28.xx (cw-cx-sleepmachines): no turning, scanning, windup, movement or firing while asleep or during the wake beat.
+    if(e.hp>0&&(machineAsleep(e)||((e.kind==='sentry'||e.kind==='bulwark')&&e.wakeT>0))){
+      if(e.wakeT>0) e.wakeT=Math.max(0,e.wakeT-dt);
+      e.windup=null; e.muzzle=0; e.moving=false;
+      collide(e,G.map.walls); continue;
+    }
 if(e.state==='possum'){
       if(!p.downed&&dist(e,p)<95){
         e.state='chase'; e.alert=4; e.tx=p.x; e.ty=p.y;
@@ -40494,6 +40532,8 @@ var MBPAL={ink:'#120e0c',gm:['#2a2f35','#3e454c','#59626b','#7c868f'],ox:['#4e24
 var MBPAL_OV={ink:'#0b0a09',gm:['#121417','#1f2328','#32383f','#4d565f'],ox:['#3a2c12','#6e5524','#9c7a34'],och:'#c9a24a',
   brass:['#8a6a2a','#e0bc62'],rub:'#141619',tooth:'#2a2f35',steel:'#c9a24a',grime:'rgba(30,22,10,.4)'};
 function mbEye(e,T){
+  // v28.xx (cw-cx-sleepmachines): unpowered eye and shield lamp, in both windows.
+  if(machineAsleep(e)) return ['#14171a',0,0];
   if((e.overheat||0)>0) return ['#ff8a3c',.55+.35*Math.sin(T*14),1];
   if(e.seenYou||e.state==='chase'||e.state==='hunt') return ['#ff3b30',.75+.25*Math.sin(T*9),2];
   if(e.state==='investigate') return ['#ffc04a',.8,1];
@@ -40845,6 +40885,7 @@ function sprMP(ox,oy,fl,S,p){ wc.beginPath(); wc.moveTo(ox+fl*p[0]*S,oy+p[1]*S);
 // pulsing (its halo at most 1.6 times the lens), venting an orange flicker, dead black. c colour, a alpha, h halo factor.
 function sprEyeOf(e){
   var t=pixMachTime(); // v28.xx (cw-cx-pixmachines): stable sensor state while baking
+  if(machineAsleep(e)) return {c:'#14171a',a:0,h:0};
   if(!e||e.hp<=0) return {c:'#000000',a:1,h:0};
   if((e.overheat||0)>0) return {c:'#ff8a3c',a:0.65+0.35*Math.sin(t*22),h:1.3};
   if(e.state==='chase'||e.state==='alarm'||e.seenYou) return {c:'#ff3b30',a:0.85+0.15*Math.sin(t*9),h:1.6};
@@ -40949,7 +40990,7 @@ function drawSentryS(e){
   wc.moveTo(x-fl*2.5*S,yb-47.6*S); wc.lineTo(x-fl*(3.5+lean*0.6)*S,yb-53.2*S);
   if(brass){ wc.moveTo(x-fl*0.5*S,yb-47.6*S); wc.lineTo(x-fl*(1+lean*0.6)*S,yb-51.8*S); }
   wc.stroke();
-  wc.fillStyle=(EY.h>0)?EY.c:'#8a949c'; wc.fillRect(x-fl*(3.5+lean*0.6)*S-0.7*S,yb-54*S,1.4*S,1.4*S);
+  wc.fillStyle=machineAsleep(e)?'#14171a':((EY.h>0)?EY.c:'#8a949c'); wc.fillRect(x-fl*(3.5+lean*0.6)*S-0.7*S,yb-54*S,1.4*S,1.4*S);
   sprMP(x,yb,fl,S,[-5.4,-47.6,5.6,-47.6,9.4,-45.2,9.4,-40.2,-5.4,-40.2]); wc.strokeStyle=INK; wc.lineWidth=2.4*S; wc.stroke();
   wc.fillStyle='#59626b'; wc.fill();
   wc.fillStyle='#7c868f'; sprMR(x,yb,fl,S,-5.4,-47.6,11,1.6);
@@ -40966,7 +41007,7 @@ function drawSentryS(e){
   if(EY.h>0){ wc.globalAlpha=0.30*EY.a; wc.beginPath(); wc.arc(lx,ly,2.6*EY.h*S*(EY.c==='#ff3b30'?(1+Math.sin(t*9)*0.12):1),0,6.2832); wc.fill(); }
   wc.globalAlpha=EY.a; wc.beginPath(); wc.arc(lx,ly,1.7*S,0,6.2832); wc.fill();
   wc.globalAlpha=1; wc.globalCompositeOperation='source-over'; } else { wc.fillStyle=EY.c; wc.globalAlpha=EY.a; wc.beginPath(); wc.arc(lx,ly,1.7*S,0,6.2832); wc.fill(); wc.globalAlpha=1; }
-  wc.fillStyle='rgba(255,255,255,.85)'; wc.fillRect(lx-1.3*S,ly-1.4*S,0.9*S,0.9*S);
+  if(!machineAsleep(e)){ wc.fillStyle='rgba(255,255,255,.85)'; wc.fillRect(lx-1.3*S,ly-1.4*S,0.9*S,0.9*S); }
   drawWindupGlow(e,lx,ly);
   // THE GUN ARM turns to the aim from its shoulder ball: a bracket, a perforated cooling shroud, twin barrels with a lit top line, a muzzle brake
   wc.lineCap='butt'; wc.lineJoin='miter';
@@ -42771,7 +42812,7 @@ var sl=G.shells[i];
     // sentry behind a building painted its cone across ground you had no
     // business knowing about: free intelligence on every machine on the map.
 if(!sc.seen) continue;
-    if(sc.state==='possum') continue;
+    if(sc.state==='possum'||machineAsleep(sc)) continue;
     // Draw the reach the simulation actually uses. A sentry that has heard
     // anything gets 35 percent more range, and the cone used to keep showing the
     // patrol figure, so it detected you from ground it had never marked.
@@ -43731,12 +43772,12 @@ var SHD=G.shells[i];
       _gb=goldBodyBegin(e2);   // v32.xx (cw-botlook) a21 B: the golden enemy is drawn inside the gold filter with a shine sweeping across it
       if(e2.kind==='choir') drawChoirS(e2);
       else if(e2.kind==='warden') drawWardenAt(e2);   // v17.49: the boss is drawn to its size
-      else if(e2.kind==='sentry') drawSentryS(e2);
+      else if(e2.kind==='sentry') machineSleepDraw(e2,drawSentryS);
       else if(e2.kind==='crawler') drawCrawlerS(e2);
       else if(e2.kind==='snitch') drawSnitchS(e2);
       else if(e2.kind==='listener') drawListenerS(e2);
       else if(e2.kind==='howler') drawHowlerS(e2);
-      else if(e2.kind==='bulwark') drawBulwarkS(e2);
+      else if(e2.kind==='bulwark') machineSleepDraw(e2,drawBulwarkS);
       else if(e2.kind==='peddler') drawPeddlerS(e2);
       else if(e2.kind==='stray'){
         // Crouched and drab. He is not posed like anything else on the map,
@@ -43963,7 +44004,7 @@ var SHD=G.shells[i];
     var hostile=ne.kind==='raider';
     // a raider bolting for the beacon is worth calling out: it is a race now
 if(ne.kind==='listener'&&ne.state==='dormant') continue;
-    if(ne.state==='possum') continue;
+    if(ne.state==='possum'||machineAsleep(ne)) continue;
     if(ne.kind==='stray') ne._plateTag=ne.helped?' [SAFE]':('  NEEDS '+ITEMS[ne.want].name.toUpperCase());
     else if(ne.kind==='raider'&&ne.friendlyPC) ne._plateTag=' [FRIENDLY]';
     else if(ne.kind==='raider'&&ne.parley>0&&ne.hostile) ne._plateTag=' [LISTENING]';
@@ -55605,6 +55646,7 @@ gfxStore('pixmachines',function(){PIXM.halo=null;PIXM.last=null;});
 function pixMachTime(){ return PIXM.baking?PIXM.time:((typeof G!=='undefined'&&G&&G.t)||0); }
 function pixMachKind(e){ return e.kind==='warden'&&(e.boss||e.name===BOSS_NAME)?'overseer':e.kind; }
 function pixMachEye(e){
+  if(machineAsleep(e)) return -1;
   if(e.kind==='listener') return e.state==='dormant'?0:2;
   if(e.overheat>0) return 3;
   if(e.state==='chase'||e.state==='alarm'||e.seenYou) return 2;
@@ -55637,7 +55679,7 @@ function pixMachNearest(p){
   var best=null, bd=1e9;
   PIXSTORE.m.actors.forEach(function(s){
     var q=s.mp, da, df, d;
-    if(!q||q.k!==p.k||q.m!==p.m||q.size!==p.size||q.day!==p.day||!!q.q.elite!==!!p.q.elite||!!q.q.golden!==!!p.q.golden||(q.q.affix||'')!==(p.q.affix||'')) return;
+    if(!q||machineAsleep(q.q)!==machineAsleep(p.q)||q.k!==p.k||q.m!==p.m||q.size!==p.size||q.day!==p.day||!!q.q.elite!==!!p.q.elite||!!q.q.golden!==!!p.q.golden||(q.q.affix||'')!==(p.q.affix||'')) return;
     da=Math.abs(q.a-p.a); df=Math.abs(q.f-p.f); d=Math.min(da,16-da)*4+Math.min(df,4-df)+(q.eye!==p.eye?80:0)+(q.mir!==p.mir?160:0)+(!!q.q.moving!==!!p.q.moving?12:0)+(q.q.state!==p.q.state?8:0);
     if(d<bd){bd=d;best=s;}
   });
@@ -55696,6 +55738,7 @@ function pixMachAlarm(e){
 }
 // v28.xx (cw-cx-pixmachines): all light is live after the cached body. Coordinates use the pose actually blitted on a budget miss.
 function pixMachLive(e,p,dy){
+  if(machineAsleep(e)) return;
   var q=p.q,k=e.kind,S=p.size,fl=p.mir?-1:1,t=pixMachTime(),E=sprEyeOf(e),phase=p.f*Math.PI/2,ey,ex,bob=k==='sentry'&&q.moving?-Math.abs(Math.cos(phase))*1.2:0;
   wc.save(); wc.translate(e.x,e.y+dy); wc.scale(p.m,p.m);
   function eye(x,y,r){
@@ -58170,7 +58213,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.52: In a party raid the Overseer pursues the standing player who dealt the most damage. Ties use the nearest player. Both windows use the host target. Check 37.52 fails on v37.51',
+  now:'v37.53: Sleeping machines stay still and dark until noise, a hit or a close step wakes them, with a 0.6 second charge beat before firing. Check 37.53 fails on v37.52',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

@@ -218,3 +218,4 @@
 11-07 12:56 v37.49 cw-cx-healrisk on his pc after 51s (8802 serves 37.49) week 98%
 11-07 13:29 v37.50 cw-cx-chargefrag on his pc after 34s (8802 serves 37.50) week 98%
 11-07 14:24 v37.51 cw-cx-blastnudge on his pc after 25s (8802 serves 37.51) week 98%
+11-07 14:52 v37.52 cw-cx-overseertarget on his pc after 67s (8802 serves 37.52) week 98%

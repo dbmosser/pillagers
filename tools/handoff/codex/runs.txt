@@ -695,3 +695,5 @@
 2026-11-07 14:08 o-h06-153-blasts-shove-big-hits-nudge-aim 72s ok PARTIAL in=1604469 out=17499 run=2
 2026-11-07 14:34 o-h06-153-blasts-shove-big-hits-nudge-aim 115s ok PARTIAL in=2180859 out=21157 run=3
 2026-11-07 14:38 o-h07-156-overseer-chases-top-damage 205s ok PARTIAL in=588866 out=7730 run=1
+2026-11-07 14:52 o-h07-156-overseer-chases-top-damage 20s ok DONE in=767133 out=8265 run=2
+2026-11-07 15:00 o-h08-158-sleeping-machines 429s ok PARTIAL in=1754529 out=16211 run=1
