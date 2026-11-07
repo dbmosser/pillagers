@@ -1,0 +1,26 @@
+id=preflight-cw-cx-spawnloot-8a985942a9d3
+kind=preflight
+key=cw-cx-spawnloot
+tag=pfo
+v=37.54
+new=3754
+base=628ce42db693dd73992f5517590092b1498527be
+host=DESKTOP-82BKOP4
+draft_sha=bfa03884d58cae4010e597c2b0985f0ccaf41fe16efbeeb9e6f0ab6be322ba09
+p_sha=cf5caace8210e5f4feab2bfd6cc301debb38d70286282d54858f29239734b529
+f_sha=0b3671ecc8e169e146b19dcfd9f96b593b16e21396aae86a68964ea1555d4096
+game_sha=02038e452ea9df20308f637ab0f353c84cd5c713441abf51f0eaba3c4bc10522
+fix_sha=12c981366ce8f3402710219216988f579eebbb7a0a50263aba8b7a0946ee09e9
+started=1794085180
+ended=1794085259
+result=FAIL
+infra=0
+reason=the new check does not pass twice on the drafted build
+--- stages
+ppfo -> OK, 4 edits applied plus DEVNOW
+fpfo -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.54 parse check
+dry fxdrypfo check 37.54: map 1 seed 39041 spawn 3 has no visible ordinary box; map 1 seed 61261 spawn 3 has no visible ordinary box / map 1 seed 39041 spawn 3 has no visible ordinary box; map 1 seed 61261 spawn 3 has no visible ordinary box
+--- end
+done=1
