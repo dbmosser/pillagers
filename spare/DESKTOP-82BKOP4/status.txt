@@ -1,6 +1,6 @@
 host=DESKTOP-82BKOP4
-seen=2026-11-07 12:51
-epoch=1794073876
+seen=2026-11-07 12:52
+epoch=1794073943
 game=000a7e14 v37.48
 test_run=idle
 robots=0
@@ -10,6 +10,7 @@ runner=5CEF5A5A
 mode=full
 ram_total_gb=32
 cpu_threads=4
-cpu_pct=11
+cpu_pct=23
 cpu=Intel(R) Core(TM) i5-7600K CPU @ 3.80GHz
 gate_cap=1
+gate=running ship-cw-cx-healrisk-02bc1a5f1946
