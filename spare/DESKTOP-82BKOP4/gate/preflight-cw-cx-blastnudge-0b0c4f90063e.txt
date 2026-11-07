@@ -1,0 +1,26 @@
+id=preflight-cw-cx-blastnudge-0b0c4f90063e
+kind=preflight
+key=cw-cx-blastnudge
+tag=pfo
+v=37.51
+new=3751
+base=d9dffdc59483d9bcad62ca0ba30b3289832c56c7
+host=DESKTOP-82BKOP4
+draft_sha=b21ee5c95ff47d97f68e043205ad7831faf873954ddb6e224804adcc13e47b15
+p_sha=3fd2fd6f1465a65a5ccc82d2f4e1f5c1cd299778ebe8078b9afff0e486d895b5
+f_sha=cc9942e53e80b4f35dcd7965a3f1201f23f546e8c43b26f39e1e969a14c6c856
+game_sha=7fe0553f75ae159cb19348eff0e4391fcfcd85bd67779cb1be6efc445db81eeb
+fix_sha=be9e998088c92abb4867ee5078cea201f67758a15d9d127f8f9cbf740a97b54a
+started=1794078370
+ended=1794078401
+result=FAIL
+infra=0
+reason=the new check does not pass twice on the drafted build
+--- stages
+ppfo -> OK, 18 edits applied plus DEVNOW
+fpfo -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.51 parse check
+dry fxdrypfo check 37.51: host: no round fired during nudge; host: new hit stacked instead of replacing; join: no round fired during nudge; join: new hit stacked instead of replacing / host: no round fired during nudge; host: new hit stacked instead of replacing; join: no round fired during nudge; join: new hit stacked instead of replacing
+--- end
+done=1
