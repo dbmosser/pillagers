@@ -1,0 +1,14 @@
+id=shots-16523e4baa57
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=221aef2cb9a7f1290318c7f65038476cb2f9604e
+screens=169-host-watching,169-p2-watching,169-partner-watcher-ping
+res=1080,4k
+nolint=0
+lintopts=
+from=JUL26
+submitted=1794087387
+expires=1794093987
