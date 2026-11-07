@@ -1,2 +1,0 @@
-== 1080 : window 1956x1185, viewport 1920x1080
-  p1-polluter                            staged      66.3s    | POLLUTE first probe null | v8.60 ok -> 36.13 ok, 29.61 ok | v8.91 ok -> 36.13 ok, 29.61 ok | v9.07 ok -> 36.13 ok, 29.61 ok | v9.16 ok -> 36.13 ok, 29.61 ok | v9.34 ok -> 36.13 ok, 29.61 ok | v11.53 ok -> 36.13 ok, 29.61 ok | v36.98 ok -> 36.13 ok, 29.61 ok | v36.80 ok -> 36.13 ok, 29.61 ok | v36.72

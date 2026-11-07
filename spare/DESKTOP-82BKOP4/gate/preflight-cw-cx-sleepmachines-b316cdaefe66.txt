@@ -1,0 +1,28 @@
+id=preflight-cw-cx-sleepmachines-b316cdaefe66
+kind=preflight
+key=cw-cx-sleepmachines
+tag=pfo
+v=37.53
+new=3753
+base=454bc791652edb92ff6f424d09a9720457c21d44
+host=DESKTOP-82BKOP4
+draft_sha=76416901fb222f3ef797bafcdfb086154b6d623b9cb948f39fe3caa2a2e2482c
+p_sha=13dad0a3ebac3ec87d6e31fbbafef829ab601cc38bfb26d6dc56787bd143fdb9
+f_sha=0aa87e43488a99731a448d088a68834848862f355cf0d00735292c70dd48ca06
+game_sha=0587ed48648257810c2791295244fbcdda127c0915576ad251bb9c4ee53e4a72
+fix_sha=e69fafb544543f39e65bfa87e467918be4e2ef1a5dfcc96b36591703f4225a8d
+started=1794082013
+ended=1794082215
+result=PASS
+infra=0
+reason=
+--- stages
+ppfo -> OK, 19 edits applied plus DEVNOW
+fpfo -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.53 parse check
+dry fxdrypfo check 37.53: PASS / PASS
+control fxctlpfo check 37.53: threw: machineSleepCandidate is not defined / threw: machineSleepCandidate is not defined
+recent: 0 new failures in the newest 80 checks
+--- end
+done=1
