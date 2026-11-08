@@ -1,0 +1,40 @@
+id=shots-71e97ab0bbb1
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=614e3bd5f99e5c0f8a8e991b997a9a596748b83a
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1794179537
+ended=1794179580
+result=PASS
+infra=0
+reason=
+--- stages
+== 1080 : window 1956x1185, viewport 1920x1080
+  floorbits-host                         NOT STAGED   4.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:153
+    at <anonymous>:1:1189
+    at <anonymous>:1:1265
+  floorbits-join                         NOT STAGED   4.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:153
+    at <anonymous>:1:1187
+    at <anonymous>:1:1263
+== 4k : window 3876x2265, viewport 3840x2160
+  floorbits-host                         NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:153
+    at <anonymous>:1:1189
+    at <anonymous>:1:1265
+  floorbits-join                         NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:153
+    at <anonymous>:1:1187
+    at <anonymous>:1:1263
+report: C:\PillagersSpare\gate\work\shots-71e97ab0bbb1\shots\report.json
+--- end
+done=1
