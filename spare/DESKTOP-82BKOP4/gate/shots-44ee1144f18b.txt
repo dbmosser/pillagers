@@ -1,0 +1,28 @@
+id=shots-44ee1144f18b
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=c08b7ab163922f78089a9e604c3035916c18bc8c
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1794139732
+ended=1794139795
+result=PASS
+infra=0
+reason=
+--- stages
+== 1080 : window 1956x1185, viewport 1920x1080
+  m3c-kia-card                           staged       9.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  m3c-extract-card                       staged       9.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 4k : window 3876x2265, viewport 3840x2160
+  m3c-kia-card                           staged       9.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  m3c-extract-card                       staged       9.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+report: C:\PillagersSpare\gate\work\shots-44ee1144f18b\shots\report.json
+--- end
+done=1
