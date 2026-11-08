@@ -80,7 +80,15 @@ ramwait(){ local floor g i; floor=$(cap RAM_FLOOR_GB 6); floor=$(machine_floor "
 # 11-07 (OVERLORD order): fnp_hold [code|gate]. "code" (default) is the Codex step: codex exec is light, so with the editor open it needs only CX_CODE_MIN_GB (3) free, not 14.
 # "gate" is the test step (preflight/ship): the 14 GB editor rule stays for tests on this PC; with GATE_REMOTE on, the Chrome stages run on the JTPC, so only the walk/editor/helper holds apply.
 fnp_hold(){ local mode="${1:-code}"; HOLDWHY=""; [ "$ON_MAIN" = 1 ] || return 1; [ -n "$CX_FREEGB" ] && return 1
-  machine_fortnite_playing && { HOLDWHY="a Fortnite walk or game is on"; return 0; }
+  # 11-08 12:05 (FNP NEW CEO's evidence; RULES 1.1 protects human use): the Fortnite client here is usually the lead's own test client, not
+  # him playing. With Fortnite running, hold only while he used this PC under 3 minutes ago (the shared input watch, FnP tools/input-watch.json
+  # last_real, read only) or while FnP status/lead-dev.json says a two-player check is running (a codex exec must not make the shared client hitch).
+  if machine_fortnite_playing; then
+    local lr; lr=$(python -I -c "import json,time;print(int(time.time()-json.load(open(r'C:/claudecode/FNP new 11082026/tools/input-watch.json',encoding='utf-8-sig'))['last_real']))" 2>/dev/null | tr -dc '0-9')
+    case "$lr" in ''|*[!0-9]*) HOLDWHY="a Fortnite walk or game is on (the input watch could not be read)"; return 0;; esac
+    [ "$lr" -lt 180 ] && { HOLDWHY="he used this PC under 3 minutes ago with Fortnite running"; return 0; }
+    grep -qiE 'two-player checks? (is |are )?running|M1 (checks? )?running' "/c/claudecode/FNP new 11082026/status/lead-dev.json" 2>/dev/null && { HOLDWHY="a two-player check is running on the shared Fortnite client"; return 0; }
+  fi
   local age; age=$(powershell -NoProfile -Command "\$p=@(Get-Process -ErrorAction SilentlyContinue | Where-Object { \$_.ProcessName -match '^UnrealEditor' } | Sort-Object StartTime -Descending); if(\$p.Count){ [int]((Get-Date)-\$p[0].StartTime).TotalMinutes } else { 'closed' }" 2>/dev/null | tr -d '\r ')
   case "$age" in
     closed) return 1;;   # 11-08 (PILLAGERS-HTML NEW CEO): editor closed means no hold. The old "due to be reopened" hold read pillagers-fortnite (retired FnP root, D12)
