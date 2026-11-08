@@ -1,0 +1,26 @@
+id=preflight-cw-m3dsrc-3846eaf7d8ab
+kind=preflight
+key=cw-m3dsrc
+tag=pfb
+v=37.60
+new=3760
+base=4cfc10259458c72ffa31fa1aa45f8113e427a1d7
+host=DESKTOP-82BKOP4
+draft_sha=04617fb7fc12e0dbc63b38148683d4c46b5696602ae67f1639d66543d0375dfd
+p_sha=05acae9a89a03c0a4ee2adc340c39bc0d90de42d5fb0b590c8fc067ae5a276e1
+f_sha=45397db5fac5117d7460dd53c657b237bf119e4e7e90398494bea8437f2b9179
+game_sha=e44b47744ecb76b2b46f3df50ffb140c99374cb0336c8b1f164afab830b58cb2
+fix_sha=218b93a09c27ac38b92541c2b613d99bca811a9c8f635b96b7a06886aba71b53
+started=1794138510
+ended=1794138539
+result=FAIL
+infra=0
+reason=the new check does not pass twice on the drafted build
+--- stages
+ppfb -> OK, 9 edits applied plus DEVNOW
+fpfb -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.60 parse check
+dry fxdrypfb check 37.60: THREE: no mkCrawler; THREE: no mkSnitch; THREE: no mkSentry; THREE: no mkListener; THREE: no mkBulwark; THREE: no mkHowler; THREE: no mkChoir; THREE: no mkWarden; FOUR: drops on moved his body, streams or stats: [["wire","decoy","smoke","board","optic","servo","titan","titan","gun_rifle"]] / [["wire / THREE: no mkCrawler; THREE: no mkSnitch; THREE: no mkSentry; THREE: no mkListener; THREE: no mkBulwark; THREE: no mkHowler; THREE: no mkChoir; THREE: no mkWarden; FOUR: drops on moved his body, streams or stats: [["wire","decoy","smoke","board","optic","servo","titan","titan","gun_rifle"]] / [["wire
+--- end
+done=1
