@@ -1,0 +1,30 @@
+id=ship-cw-m3death-0e9164d19486
+kind=ship
+key=cw-m3death
+tag=61
+v=37.61
+new=3761
+base=e3891c4ebb436ec8ff698e4e026e457d172c136f
+host=DESKTOP-82BKOP4
+draft_sha=f8654a795561de37d6a58f2b7e9e6278d3501a6ca484ed1b72dac8779f28ea37
+p_sha=dec6a4608b918879e285719208de128b6febae244308c2effc8f3fa51a56e70b
+f_sha=1f766f5dad6b47642f5a9b5bfc117570c618f8cefa61e025936fa51e96fb7960
+game_sha=517f2b4ddbc8ddc9cc1f2ca12ef8df2f4ebb5d405e099b267acd11d40ce788d6
+fix_sha=9f962a12924911867a991befc402e42cfbc5adcd7cd0b41e0bc7435d5f70690e
+started=1794139207
+ended=1794139446
+result=PASS
+infra=0
+reason=
+--- stages
+p61 -> OK, 10 edits applied plus DEVNOW
+f61 -> OK, 1 edits applied
+parse: PASS v37.61 parse check
+dry fxdry61 check 37.61: PASS / PASS
+control fxctl61 check 37.61: ONE: still worn after a death: [{"s":"head","k":"head","r":1,"pw":10,"pip":0,"n":"sound headgear"},{"s":"boots","k":"boots","r":2,"pw":10,"pip":1,"n":"rare boots"},{"s":"gloves","k":"gloves","r":0,"pw":10,"pip":3,"n":"scrap gloves"}]; ONE: the KIA card does not list sound headgear as lost; ONE: the  / ONE: still worn after a death: [{"s":"head","k":"head","r":1,"pw":10,"pip":0,"n":"sound headgear"},{"s":"boots","k":"boots","r":2,"pw":10,"pip":1,"n":"rare boots"},{"s":"gloves","k":"gloves","r":0,"pw":10,"pip":3,"n":"scrap gloves"}]; ONE: the KIA card does not list sound headgear as lost; ONE: the
+recent: 0 new failures in the newest 80 checks
+stamp-verat: VER_AT 2026-11-08 07:03
+fixture.html check 37.61: PASS / PASS
+verifySafe: {"pass":true,"ents":{"0":85,"1":374},"containers":{"0":165,"1":593},"fail":[]}
+--- end
+done=1

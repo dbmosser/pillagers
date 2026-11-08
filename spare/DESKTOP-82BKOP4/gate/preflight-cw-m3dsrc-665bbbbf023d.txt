@@ -1,0 +1,26 @@
+id=preflight-cw-m3dsrc-665bbbbf023d
+kind=preflight
+key=cw-m3dsrc
+tag=pfb
+v=37.60
+new=3760
+base=4cfc10259458c72ffa31fa1aa45f8113e427a1d7
+host=DESKTOP-82BKOP4
+draft_sha=fe681d737ae0df5955f3b110d2c387647c8a09864eda1d0040a7727a7a29956c
+p_sha=05acae9a89a03c0a4ee2adc340c39bc0d90de42d5fb0b590c8fc067ae5a276e1
+f_sha=a256bf284a8cfd853bb53ad012a18e3145ff3cb81a9cbc5449e66a1989dbe91d
+game_sha=e44b47744ecb76b2b46f3df50ffb140c99374cb0336c8b1f164afab830b58cb2
+fix_sha=c00497e2b308b65726808b896cdd5f9d435bd3e385ccd7382dffaaf1aa235425
+started=1794139128
+ended=1794139157
+result=FAIL
+infra=0
+reason=the new check does not pass twice on the drafted build
+--- stages
+ppfb -> OK, 9 edits applied plus DEVNOW
+fpfb -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.60 parse check
+dry fxdrypfb check 37.60: THREE crawler: the normal loot differs: [["scrap"]] / [["cell","wg_pack_0_19_4169670864"]]; THREE crawler: the kill moved a stream with drops on: 1767624627,4231026110,358106323,358106323 / THREE crawler: the normal loot differs: [["scrap"]] / [["cell","wg_pack_0_19_4169670864"]]; THREE crawler: the kill moved a stream with drops on: 1767624627,4231026110,358106323,358106323
+--- end
+done=1
