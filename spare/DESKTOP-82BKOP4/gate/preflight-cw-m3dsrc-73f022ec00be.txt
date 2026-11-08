@@ -1,0 +1,25 @@
+id=preflight-cw-m3dsrc-73f022ec00be
+kind=preflight
+key=cw-m3dsrc
+tag=pfb
+v=37.60
+new=3760
+base=222ab03481ed96f10a6b02e3528175005a4c21f9
+host=DESKTOP-82BKOP4
+draft_sha=19874c6bc9a2caf1fe0066f5b347cb3986646d947554c7fcee1b44283979b00f
+p_sha=a39bf27c9ab3afe5ae083e46b665517868277904edf03465341974c4840ea54f
+f_sha=45397db5fac5117d7460dd53c657b237bf119e4e7e90398494bea8437f2b9179
+game_sha=d550d0542f5ba2f04100f462f231877d15c601811c72410288103eec4325ef65
+fix_sha=346828669ab70542bc786415478bdaea8ee6405b5fbc92ecf97dd498b4482ebb
+started=1794137997
+ended=1794138009
+result=FAIL
+infra=0
+reason=code checker
+--- stages
+ppfb -> OK, 9 edits applied plus DEVNOW
+fpfb -> OK, 1 edits applied
+lint: FAIL 1
+  58358: parse: Parsing error: Unexpected token s | now:'v37.60: a machine wreck may hold a worn piece, more often and rarer on a bigger machine; a dead pillager's body holds what he wore (0 t
+--- end
+done=1
