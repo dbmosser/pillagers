@@ -8383,8 +8383,9 @@ window.__REGRESS=[
        need(Array.isArray(e.end.items)&&e.end.items.length<=7&&['core','titan','scrap'].every(function(q){ return e.end.items.indexOf(q)>=0; }),'TWO: end.items '+J(e.end.items)+' does not hold the lost bag');
        sorted=Array.isArray(e.end.items)?e.end.items.slice().sort(function(a,b){ return ival(b)-ival(a); }):[];
        need(Array.isArray(e.end.items)&&sorted.every(function(q,z){ return ival(q)===ival(e.end.items[z]); }),'TWO: end.items is not most valuable first');
-       need(Array.isArray(e.end.items)&&e.end.lost===worth(e.end.items)&&e.end.lost>=worth(['core','titan','scrap']),'TWO: end.lost $'+e.end.lost+', not the $'+worth(e.end.items||[])+' its items are worth');
-       need(J(e.end.worn)===J(P.worn)&&e.end.worn!==P.worn,'TWO: end.worn '+J(e.end.worn)+' is not a copy of '+J(P.worn));
+       // 11-08 (cw-m3death): the hall value lost now counts the worn pieces too, and a death empties P.worn after the hall copy, so the copy is read against the head piece put on above
+       need(Array.isArray(e.end.items)&&(e.end.lost===worth(e.end.items)||e.end.lost===worth(e.end.items)+((typeof wornPrice==='function'&&e.end.worn&&e.end.worn.head)?Math.round(wornPrice(e.end.worn.head)*CFG.lootMult):0))&&e.end.lost>=worth(['core','titan','scrap']),'TWO: end.lost $'+e.end.lost+', not the $'+worth(e.end.items||[])+' its items are worth');
+       need(e.end.worn&&e.end.worn.head&&e.end.worn.head.k==='head'&&e.end.worn.head.r===1&&e.end.worn.head.pw===10&&e.end.worn!==P.worn,'TWO: end.worn '+J(e.end.worn)+' is not a copy of the head piece worn');
        need(J(e.end.look)===J({hat:P.cosHat,cut:P.cosCut,skin:P.cosSkin,scheme:P.cosScheme,fit:P.cosFit,outfit:P.cosOutfit}),'TWO: end.look '+J(e.end.look));
        if(!P.pil) pilBirth(P);   // cw-m2birth: from that build the birth card births; this check only reads the next generation
        need(P.pil&&P.pil!==r0&&P.pil.gen===q0.gen+1&&P.pilGen===q0.gen+1&&P.pil.raids===0,'TWO: the living pillager is '+J(P.pil&&{gen:P.pil.gen,raids:P.pil.raids})+', not a new gen '+(q0.gen+1));
