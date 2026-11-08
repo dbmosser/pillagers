@@ -30,8 +30,8 @@ PLAN_TARGET=95
 # 10-28 16:55, his "focus for the remaining 17% of weekly usage should be to polish the game as much as possible before Saturday night
 # party": the line now climbs evenly from 83% (now) to 99% at Sat 10/31 22:00 local, all of it polish.
 # PLAN_TARGET stays the standing weekly goal: once these times fall outside the week, next week is the even line to it again.
-PLAN_LINE_START=2026-11-08T13:15:00Z
-PLAN_LINE_FROM=17
+PLAN_LINE_START=2026-11-08T13:23:00Z
+PLAN_LINE_FROM=18
 # 11-02 23:40 his order "FnP is the priority now, Pillagers-html takes a back seat": the helpers line for this week goes to 80, so FnP has room up to his Saturday test; the final burn spends what is left near the reset.
 PLAN_LINE_TARGET=89
 # 11-03 00:30 (CEO): one minute before the reset, because the line code needs PLAN_LINE_END inside the week; at the reset itself PLAN_LINE_TARGET was ignored and the 95 line stayed on.
@@ -56,14 +56,15 @@ CLI_COMPACT=400000
 # 10-31 05:45 his order: "spend to 96% of usage between now and noon to polish the game for the party" then "between now and 3pm, rather": line 93 -> 96 by 14:15 local; party-window.txt stops new lane jobs at 14:15.
 # 11-01 (CEO, week reset): the standing 80% even line for the week (pillagers-pace-80).
 # 11-01 (CEO), his "blow any spare capacity starting at 11pm on saturday night ... always be ending near 100%": final burn before each reset (console-lane.sh)
-FINAL_BURN_MIN_H=2
-FINAL_BURN_RATE=2
+FINAL_BURN_MIN_H=0
+FINAL_BURN_RATE=1000
 GATE_REMOTE=1
 # 11-08 owner rule 4.9: an even daily share replaces the PLAN_TARGET line (console-lane.sh, day-share.txt)
 DAY_SHARE=0
 # 11-08 owner 08:08 item 6: Codex lane o beside the Fortnite editor starts at this many GB free (4 floor + 3 margin), replacing one-helper-at-a-time
 CX_BESIDE_MIN_GB=7
 # 11-08 08:13 owner: the pace includes all chats and his further direction; support chats and helpers stop DAY_RESERVE points under the day's share
-DAY_RESERVE=2
+DAY_RESERVE=0
 # 11-08 08:16 owner, RULES 4.9(e): "Pace to use no more than 90% by Saturday afternoon, pacing hourly, slowing down as may be needed to stay on pace." All chats.
 # The PLAN_LINE above is FNP NEW CEO's line (18% Sun 08:15 to 90% Sat 15:00, status\claude-usage.json pace) minus his 1 point reserve; helpers rest at or above it. It replaces DAY_SHARE (now 0); PLAN_WEEK_MAX 90 is the ceiling.
+# 11-08 08:22 owner replaced RULES 4.9 (C:\claudecode\FNP new 11082026\RULES.md): one shared Claude budget for every chat and helper, a fixed hourly ceiling to 90% at Sat 11-14 15:00 ET from 19% at 08:23 (0.471 points/h), no midnight reset, no spending burst. PLAN_LINE above = that ceiling minus 1 point of headroom; FINAL_BURN off (rate 1000, min 0 h); PLAN_WEEK_MAX 90 holds after Saturday until the reset. DAY_SHARE and DAY_RESERVE (fb4003e17, 11e351fed) are retired.
