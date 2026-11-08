@@ -228,6 +228,7 @@ window.__movers={seekPoint:seekPoint,navSeek:navSeek,mkSentry:mkSentry,mkRaider:
 window.__newRaid=function(){ G=buildRaid(true); return G; };
 window.__hub=function(){ return HB; };
 window.__P=function(){ return P; };
+window.__netKitShots=function(){ netSend=function(){ return true; }; netSendFast=function(){ return true; }; netBroadcast=function(){ return 1; }; return {NET:NET,onState:netOnState,gift:netGiftTake}; };   // v37.65 (cw-m3coop): CAMERA ONLY (notes/shots/m3coop-recipes.json): NET and the two word doors, the senders stubbed for the rest of the page; no check calls it
 window.__buzzFx=function(){ drawBuzzFx(); };
 window.__buzzT=function(dt){ tickBuzz(dt===undefined?0.033:dt); };
 // v6.19: fire a station's REAL act, the same function its key press calls.
