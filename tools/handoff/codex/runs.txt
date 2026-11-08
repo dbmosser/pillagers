@@ -716,3 +716,4 @@
 2026-11-07 18:59 o-h12-175-break-down-guns 87s ok PARTIAL in=246091 out=2328 run=3
 2026-11-07 19:51 o-h12-175-break-down-guns 84s ok PARTIAL in=343817 out=2364 run=4
 2026-11-08 02:18 o-h12-175-break-down-guns 47s ok PARTIAL in=161013 out=1495 run=5
+2026-11-08 02:38 o-h13-178-patrol-routes 350s ok PARTIAL in=1015557 out=13661 run=1

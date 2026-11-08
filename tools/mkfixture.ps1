@@ -6190,6 +6190,45 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'37.58',what:'three outdoor machines follow four fixed reachable stops in order, pause, and resume after an interruption',
+   run:function(){
+     var oldCareer=CAREER_ON, oldBoss=bossTick, g, a, seen=[], i, j;
+     function expect(ok,msg){ if(!ok) throw Error(msg); }
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       CAREER_ON=1; __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();
+       a=g.ents.filter(function(e){ return !!e.route; });
+       expect(a.length===3,'expected three patrollers, got '+a.length);
+       for(i=0;i<a.length;i++){
+         var e=a[i]; expect(e.route.length===4&&e.ri===0,'four stops and initial index');
+         expect(!e.camp&&!e.elite&&!e.boss&&!e.sleep&&!buildingAtPt(g.map,e.x,e.y),'ineligible patroller');
+         for(j=0;j<4;j++){
+           var p=e.route[j], d=dist(p,e.route[(j+1)%4]);
+           expect(d>=400&&d<=1200,'leg outside 400 to 1200');
+           expect(!buildingAtPt(g.map,p.x,p.y)&&navReachable(g.map,p.x,p.y),'blocked stop');
+         }
+         seen.push(0);
+       }
+       // v28.xx (cw-cx-patrolroutes): real map and spawn positions; remove combat and noise sources only.
+       g.ents=a; g.prints=[]; g.pings=[]; g.sim=true; g.reinfT=1e9; bossTick=function(){};
+       g.player.x=-10000; g.player.y=-10000; g.player.iv=999;
+       for(var f=0;f<2400;f++){
+         g.t+=.05; __ents(.05);
+         for(i=0;i<a.length;i++) if(seen[i]<4&&dist(a[i],a[i].route[seen[i]])<40) seen[i]++;
+       }
+       for(i=0;i<a.length;i++) expect(seen[i]===4,'patroller '+i+' visited '+seen[i]+' of four stops in 120 seconds');
+       var e=a[0], p=e.route[2]; e.x=p.x; e.y=p.y; e.state='investigate';
+       __ents(0); e.state='patrol'; e.heardT=0; e.alert=0; e.cd=5;
+       __ents(0); expect(e.ri===2&&e.routeHold===2,'nearest stop did not resume with two second hold');
+       var x=e.x,y=e.y;
+       for(i=0;i<39;i++) __ents(.05);
+       expect(e.ri===2&&dist(e,{x:x,y:y})<1,'patroller moved during hold');
+       for(i=0;i<2;i++) __ents(.05);
+       expect(e.ri===3,'patroller did not advance after hold');
+       return null;
+     }catch(err){ return String(err.message||err); }
+     finally{ bossTick=oldBoss; CAREER_ON=oldCareer; try{__endRaid('abandon');}catch(_e){} __topClear(); }
+   }},
   {v:'37.57',what:'stash gun break down yields rarity parts only, respects locks and clears orphaned forge records',
    run:function(){
      var hub=document.getElementById('hub'), saved=P, was=hub&&hub.classList.contains('on'), oldSave=saveProfile, oldStore=storeSet, oldRefresh=refreshInv, saves=0, refreshes=0, smgR=ITEMS.gun_smg.r, rifleR=ITEMS.gun_rifle.r;

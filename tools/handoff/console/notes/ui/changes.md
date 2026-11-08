@@ -745,3 +745,5 @@
 2026-11-07 | o-h11-174-elite-element-guns | elite fight and recovered body gun | v37.56 shows the living shock elite and its warning-red shot; recovered magnum mk iii retains shock | tools/handoff/console/notes/shots/o-h11-174-elite-element-guns-recipes-3/174-element-elite-fight-1080.jpg and tools/handoff/console/notes/shots/o-h11-174-elite-element-guns-recipes-3/174-body-gun-card-1080.jpg (both critic 2; shared-HUD conflict handed to coordinator).
 2026-11-07 | o-h12-175-break-down-guns | stash item menu | added break down with lower case part quantities beside existing sell actions; keyboard and pad share the row | before: unavailable for custom recipes | after: lane camera breakguns-p1-kb, breakguns-p1-pad, breakguns-p2-kb, breakguns-p2-pad (paths pending)
 
+2026-11-08 | o-h13-178-patrol-routes | raid world, smooth look | three machines follow four fixed stops, pause two seconds and resume after interruption; no marker or text | camera: patrol-routes-smooth, lane picture paths pending.
+

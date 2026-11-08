@@ -1,0 +1,7 @@
+v37.58: three landmark patrols
+
+Three ordinary outdoor machines walk four fixed stops, wait two seconds, and resume at the nearest stop after combat.
+
+Check 37.58. Fails on v37.57.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

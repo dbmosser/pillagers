@@ -223,3 +223,4 @@
 11-07 16:36 v37.54 cw-cx-outwatch on his pc after 19s (8802 serves 37.54) week 98%
 11-07 17:02 v37.55 cw-cx-outwatchread on his pc after 34s (8802 serves 37.55) week 98%
 11-07 17:32 v37.56 cw-cx-eliteelements on his pc after 51s (8802 serves 37.56) week 98%
+11-08 02:28 v37.57 cw-cx-breakguns on his pc after 50s (8802 serves 37.57) week 98%

@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.58 - THREE LANDMARK PATROLS
+
+Co-op hunt while he was away. His g-46 answer: Yes, a few patrols. Watch: patrols must read as a pattern you can learn and time; watch for a patroller hugging a wall on one leg.
+
+MEASURED. Check 37.58 passes, and fails on v37.57.
 ## v37.57 - BREAK DOWN STASH GUNS
 
 Co-op hunt while he was away. His g-40 answer: Yes, break it down. Spare stash guns can become parts without money or XP. Watch: cheap parts could make bench guns and armour easy to craft; watch his stash for servo and board hoards.

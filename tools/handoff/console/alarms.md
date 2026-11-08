@@ -858,3 +858,6 @@ o-h09-162 coordinator blocker: strict spawn-loot check fails map 1 spawn 3 (8650
 11-08 02:06 v37.56 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
 2026-11-08 o-h12-175-break-down-guns: Remote preflight stalled. tools/handoff/codex/log/o-h12-175-break-down-guns-cw-cx-breakguns.preflight.txt (11-07 20:16) joins preflight-cw-cx-breakguns-578af2104cfa and ends with no report from the spare pc for 132 minutes. No gate failure to fix in the mk script. Coordinator: restore spare gate reporting and resume the existing job, then ship cw-cx-breakguns and photograph the four supplied role/input recipes. Do not count REMOTE or waiting lines as a pass.
 
+11-08 02:37 v37.57 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+2026-11-08 o-h13-178-patrol-routes: LINKED REVIEW NEEDED: synced. Existing netEntRow position/state packets carry host patrol motion. Please observe all three patrollers in both windows after shipment; no new packet fields.
+
