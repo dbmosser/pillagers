@@ -5982,5 +5982,101 @@
   "pic": "tools/handoff/console/notes/shots/o-h11-174-elite-element-guns-recipes-3/174-element-elite-fight-1080.jpg",
   "task": "o-h11-174-elite-element-guns",
   "when": "2026-11-07T22:50"
+ },
+ "s1-seller": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "consistent dark chrome, lower-case and dollar-sign rules are followed, but toast placement bugs, clutter sentences, and mismatched button/accent treatments keep it below shippable AAA polish.",
+  "findings": [
+   "P0 s3-contract (mainframe) bottom edge: pin this toast to one fixed position across every screen (e.g. top-center, 24px below the title bar), above content z-index, and never let it clip a card edge.",
+   "P1 s3-contract header, left list: delete 'stuff for you to do.'; replace the parenthetical math with a short stat line like 'progress 0/3 hard · 0/1 elite' and move the explanation into a tooltip or codex entry.",
+   "P1 s2-wirt, right panel vs left panel: make both buttons filled --acc, or if one is meant to read as secondary, apply that outline treatment consistently to secondary purchases elsewhere too.",
+   "P2 s1-seller, right detail panel: add a short lower-case flavor/description line under the stats, or move the price/buy block up with a fixed --sp-5 gap so the panel height matches its content.",
+   "P2 s1-seller, 12-tile buy grid: add a 3px rarity-colour edge bar per tile (per the --r-* tokens) so tiles differentiate by gear tier, not just by a grey sold-out state."
+  ],
+  "pic": "tools/handoff/console/notes/shots/00p-m3f-after/s1-seller-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-08T12:10"
+ },
+ "s2-wirt": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "consistent dark chrome, lower-case and dollar-sign rules are followed, but toast placement bugs, clutter sentences, and mismatched button/accent treatments keep it below shippable AAA polish.",
+  "findings": [
+   "P0 s3-contract (mainframe) bottom edge: pin this toast to one fixed position across every screen (e.g. top-center, 24px below the title bar), above content z-index, and never let it clip a card edge.",
+   "P1 s3-contract header, left list: delete 'stuff for you to do.'; replace the parenthetical math with a short stat line like 'progress 0/3 hard · 0/1 elite' and move the explanation into a tooltip or codex entry.",
+   "P1 s2-wirt, right panel vs left panel: make both buttons filled --acc, or if one is meant to read as secondary, apply that outline treatment consistently to secondary purchases elsewhere too.",
+   "P2 s1-seller, right detail panel: add a short lower-case flavor/description line under the stats, or move the price/buy block up with a fixed --sp-5 gap so the panel height matches its content.",
+   "P2 s1-seller, 12-tile buy grid: add a 3px rarity-colour edge bar per tile (per the --r-* tokens) so tiles differentiate by gear tier, not just by a grey sold-out state."
+  ],
+  "pic": "tools/handoff/console/notes/shots/00p-m3f-after/s2-wirt-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-08T12:10"
+ },
+ "s3-contract": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "consistent dark chrome, lower-case and dollar-sign rules are followed, but toast placement bugs, clutter sentences, and mismatched button/accent treatments keep it below shippable AAA polish.",
+  "findings": [
+   "P0 s3-contract (mainframe) bottom edge: pin this toast to one fixed position across every screen (e.g. top-center, 24px below the title bar), above content z-index, and never let it clip a card edge.",
+   "P1 s3-contract header, left list: delete 'stuff for you to do.'; replace the parenthetical math with a short stat line like 'progress 0/3 hard · 0/1 elite' and move the explanation into a tooltip or codex entry.",
+   "P1 s2-wirt, right panel vs left panel: make both buttons filled --acc, or if one is meant to read as secondary, apply that outline treatment consistently to secondary purchases elsewhere too.",
+   "P2 s1-seller, right detail panel: add a short lower-case flavor/description line under the stats, or move the price/buy block up with a fixed --sp-5 gap so the panel height matches its content.",
+   "P2 s1-seller, 12-tile buy grid: add a 3px rarity-colour edge bar per tile (per the --r-* tokens) so tiles differentiate by gear tier, not just by a grey sold-out state."
+  ],
+  "pic": "tools/handoff/console/notes/shots/00p-m3f-after/s3-contract-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-08T12:10"
+ },
+ "s5-kit": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "consistent dark chrome, lower-case and dollar-sign rules are followed, but toast placement bugs, clutter sentences, and mismatched button/accent treatments keep it below shippable AAA polish.",
+  "findings": [
+   "P0 s3-contract (mainframe) bottom edge: pin this toast to one fixed position across every screen (e.g. top-center, 24px below the title bar), above content z-index, and never let it clip a card edge.",
+   "P1 s3-contract header, left list: delete 'stuff for you to do.'; replace the parenthetical math with a short stat line like 'progress 0/3 hard · 0/1 elite' and move the explanation into a tooltip or codex entry.",
+   "P1 s2-wirt, right panel vs left panel: make both buttons filled --acc, or if one is meant to read as secondary, apply that outline treatment consistently to secondary purchases elsewhere too.",
+   "P2 s1-seller, right detail panel: add a short lower-case flavor/description line under the stats, or move the price/buy block up with a fixed --sp-5 gap so the panel height matches its content.",
+   "P2 s1-seller, 12-tile buy grid: add a 3px rarity-colour edge bar per tile (per the --r-* tokens) so tiles differentiate by gear tier, not just by a grey sold-out state."
+  ],
+  "pic": "tools/handoff/console/notes/shots/00p-m3f-after/s5-kit-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-08T12:10"
+ },
+ "m3c-kia-card": {
+  "score": 3,
+  "pass": false,
+  "need": 4,
+  "verdict": "tokens and lowercase/$ rules are followed cleanly, but the card ignores the guide's own full-screen window rule and splits attention between the status word and the hero number.",
+  "findings": [
+   "P0 both cards, overall window frame: scale the card to ~90% of the viewport (e.g. ~1728x972 at 1920x1080) to match the shop/codex/trophies card treatment, or codify a documented smaller-card exception for run-result screens.",
+   "P1 image1 'killed in action' + '$6,702'; image2 'extracted' + '$797': keep the status word as the one bold/colored element at fs-title and drop the hero number's visual weight one notch, or vice versa — not both at max size/contrast.",
+   "P1 image1 '$6,702' vs image2 'haul $797': add a small tx-2 label above the KIA number (e.g. 'value lost') to match the 'haul' label pattern already used on the extract card.",
+   "P2 image1, item icon grid: fit all 8 tiles on one row or force a balanced 4+4 two-row layout.",
+   "P2 image1 and image2, item icon art: use icon silhouettes that unambiguously match the item name/slot, drawn in one consistent weight/style."
+  ],
+  "pic": "tools/handoff/console/notes/shots/00p-m3c-after/m3c-kia-card-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-08T12:12"
+ },
+ "m3c-extract-card": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "tokens and lowercase/$ rules are followed cleanly, but the card ignores the guide's own full-screen window rule and splits attention between the status word and the hero number.",
+  "findings": [
+   "P0 both cards, overall window frame: scale the card to ~90% of the viewport (e.g. ~1728x972 at 1920x1080) to match the shop/codex/trophies card treatment, or codify a documented smaller-card exception for run-result screens.",
+   "P1 image1 'killed in action' + '$6,702'; image2 'extracted' + '$797': keep the status word as the one bold/colored element at fs-title and drop the hero number's visual weight one notch, or vice versa — not both at max size/contrast.",
+   "P1 image1 '$6,702' vs image2 'haul $797': add a small tx-2 label above the KIA number (e.g. 'value lost') to match the 'haul' label pattern already used on the extract card.",
+   "P2 image1, item icon grid: fit all 8 tiles on one row or force a balanced 4+4 two-row layout.",
+   "P2 image1 and image2, item icon art: use icon silhouettes that unambiguously match the item name/slot, drawn in one consistent weight/style."
+  ],
+  "pic": "tools/handoff/console/notes/shots/00p-m3c-after/m3c-extract-card-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-08T12:12"
  }
 }

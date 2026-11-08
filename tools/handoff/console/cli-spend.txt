@@ -2363,3 +2363,7 @@
 2026-11-08 0.0000 o-h13-178-patrol-routes
 2026-11-08 0.0000 o-h14-182-juggernaut-boss
 2026-11-08 0.0000 o-h14-182-juggernaut-boss
+2026-11-08 0.2600 critic-manual
+2026-11-08 6.9634188 00p-m3f-shop-sources
+2026-11-08 0.1398988 00p-m3g-coop-wait
+2026-11-08 0.2052 critic-manual

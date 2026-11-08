@@ -873,3 +873,4 @@ LINKED REVIEW NEEDED: synced. Confirm host patrol motion received through existi
 11-08 05:55 v37.58 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
 11-08 06:16 v37.59 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
 11-08 06:50 v37.59 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-08 07:16 v37.61 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log

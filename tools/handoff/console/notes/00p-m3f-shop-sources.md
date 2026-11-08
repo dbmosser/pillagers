@@ -9,4 +9,5 @@ Design:
 - Kit: priv items ['medkit'], wg {k:'armor',r:1}; birthBorn gives it when the kit is paid (c>0), seed from the generation; worn on armor if empty else P.gear.
 SHIPPED v37.60 cw-m3shop (e3891c4eb), ON HIS PC 58 s after. First preflight failed lint: a // comment in the middle of the one-line rankRwTxt hid its closing brace; /* */ fixed it. Fixture retarget commit 4cfc10259.
 Pictures: notes/shots/00p-m3f-after via notes/00p-m3f-shop-recipes.json (made by S\mk-cw-m3shopshots.ps1).
+Critic 3 on s1, s2, s3, s5 (finish line 3 for these screens). Its P0 and P1 were outside this job: the welcome pack toast from staging, the Mainframe's explaining lines, Wirt's two button styles. The P2 (empty space on the shop panel) is shared by every shop item. Lint: 2 low contrast on the seller and 2 on the kit at 4K, 1 small at 4K on the contract board, all existing text.
 Fixture retargets (done): v37.21 m1ranks ONE (every reward cash or kit) accepts gear; shop FOUR (cells === SHOP.length) counts .vcell:not(.wg).

@@ -1,0 +1,7 @@
+v37.62: season zero m3: gear from wrecks, pillagers and keycard rooms
+
+a machine wreck may hold a worn piece, more often and rarer on a bigger machine; a dead pillager body holds what he wore (0 to 2 pieces, more on a tough or elite one; he looks and fights the same); every box in a keycard room holds a piece of sound or better; all on their own dice from the raid seed and the spawn, so seed 4242 and the raid streams never move and no new wreck or body appears; one table, WORN_SRC, holds every rate
+
+Check 37.62. Fails on v37.61.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

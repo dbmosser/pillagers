@@ -227,3 +227,4 @@
 11-08 02:50 v37.58 cw-cx-patrolroutes on his pc after 36s (8802 serves 37.58) week 98%
 11-08 06:05 v37.59 cw-cx-juggernaut on his pc after 51s (8802 serves 37.59) week 13%
 11-08 06:55 v37.60 cw-m3shop on his pc after 58s (8802 serves 37.60) week 13%
+11-08 07:06 v37.61 cw-m3death on his pc after 58s (8802 serves 37.61) week 16%

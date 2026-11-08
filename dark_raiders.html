@@ -4024,8 +4024,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.61';
-var VER_AT='2026-11-08 07:04';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.62';
+var VER_AT='2026-11-08 07:23';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5070,21 +5070,70 @@ function wornBoxSeed(ct){
 // THE SIDE ROLL, once per box, the moment it is first searched: a map box only (a wreck and a pillager's pile are 00p-m3d's; a pile he dropped, a man's bag and a restocked crate roll
 // nothing), on its own dice from the raid seed and the box's fixed place, so it never reads or moves RNGS or FXS and seed 4242 builds the same raid. It slots into the box in value
 // order and leaves the normal items, their order, the search time and the box's look exactly as they were. The host rolls for the whole party, a linked window never.
+// v37.xx (cw-m3dsrc), HIS RULINGS OF 11-01 (season zero m3): machines drop gear, "bigger machines better odds" (answer 68); a hostile pillager drops what he wears, so killing a
+// geared one pays (answer 46); keycard rooms hold gear; a raid averages 4 or 5 pieces in all (answer 57). THE ONE TABLE, tune here only: n is the chance of each piece in turn (a
+// second only after a first), o the rarity odds in percent (scrap, sound, rare, relic). A pillager's row: tough is a medium or heavy rig, elite an elite; what he wears is never
+// drawn on him and never read by the fight. boss is the overseer and the juggernaut. locked is a keycard room box: always one, one rarity step up.
+// THE NUMBERS, his 26 real raids v35.38 to v37.56 (abandons left out): 13.4 containers opened a raid; killed a raid 13.5 crawlers, 4.2 sentries, 0.6 snitches, 0.15 bulwarks,
+// 0.15 howlers, 0.7 pillagers. A kill leaves 12.2 wrecks and 0.7 bodies; with 3 in 4 opened containers map boxes (00p-m3a), bodies all opened (they carry his gun), about 1 wreck
+// in 5 gets searched. So boxes 10.1 x 0.34 = 3.4, wrecks about 0.45, pillagers 0.7 x 0.65 = 0.45, keycard rooms about 0.1 more: about 4.4 a raid.
+var WORN_SRC={
+  crawler:{n:[0.12],o:[70,24,5,1]}, snitch:{n:[0.12],o:[70,24,5,1]}, sentry:{n:[0.25],o:[60,28,10,2]}, listener:{n:[0.4],o:[50,32,14,4]},
+  bulwark:{n:[0.55],o:[40,36,18,6]}, howler:{n:[0.55],o:[40,36,18,6]}, choir:{n:[0.65],o:[35,36,21,8]}, warden:{n:[0.85,0.3],o:[25,35,28,12]},
+  boss:{n:[1,0.6],o:[15,35,32,18]},
+  pillager:{n:[0.5,0.15],o:[60,28,10,2]}, tough:{n:[0.7,0.3],o:[50,32,14,4]}, elite:{n:[0.9,0.45],o:[35,36,21,8]},
+  locked:{n:[1],o:[0,60,28,12]}
+};
+// One piece on the caller's dice: its kind, its rarity on the odds O, its own seed, then its power, the order 00p-m3a rolled in, so a map box gives the piece it gave before.
+function wornPieceKey(R,O){
+  var kinds=Object.keys(WORN_KINDS), k=kinds[Math.floor(R()*kinds.length)], n=R()*100, r, s, key;
+  for(r=0;r<3&&n>=O[r];r++) n-=O[r];
+  s=(R()*4294967296)>>>0;   // the piece's own seed
+  key=wornKeyOf(k,r,wornDropPw(k,R),s);
+  return wornItemEnsure(key)?key:null;
+}
+// Into a container in value order; the normal items, their order, the look and the search time stay as they were.
+function wornSlot(ct,key){ var i; for(i=0;i<ct.loot.length&&ival(ct.loot[i])<=ival(key);i++); ct.loot.splice(i,0,key); }
+function wornKillRow(e){
+  if(e.boss||e.boss2) return 'boss';
+  if(e.kind==='raider') return e.elite?'elite':((e.rig==='medium'||e.rig==='heavy')?'tough':'pillager');
+  return Object.prototype.hasOwnProperty.call(WORN_SRC,e.kind)?e.kind:null;
+}
+// The fixed thing about the dead: its place in the raid's build (wsi, stamped at buildRaid). One spawned later takes the next number past the build's when it dies.
+function wornKillSeed(e){
+  var h=(((G&&G.seed)>>>0)^Math.imul(0x4B11,0x9E3779B1))>>>0, s=String(e.kind), c=0, i;
+  if(!(e.wsi>0)){ G.wornKillN=(G.wornKillN|0)+1; e.wsi=100000+G.wornKillN; }
+  for(i=0;i<s.length;i++) c=(Math.imul(c,31)+s.charCodeAt(i))>>>0;
+  h=(h^Math.imul(e.wsi|0,374761393))>>>0;
+  h=(h^Math.imul(c|0,668265263))>>>0;
+  h=Math.imul(h^(h>>>15),2246822519)>>>0;
+  h=Math.imul(h^(h>>>13),3266489917)>>>0;
+  return (h^(h>>>16))>>>0;
+}
+// THE KILL ROLL, once per death, into the wreck or body that death already leaves (never a new one, so a kill that left nothing still leaves nothing): a machine's row by its kind,
+// a pillager's by how tough he is, on its own dice, so RNGS and FXS never move and seed 4242 builds the same raid. The host rolls for the party, a linked window never; G.sim,
+// the arcade, the demo, a hire and a partner roll nothing.
+function wornKillRoll(ct,e){
+  var out=[], row, R, i, key;
+  if(!WORN_DROPS_ON||!ct||!e||ct.gearDone||!G||G.sim||G.arcade||G.hubFloor||(typeof ARCADE==='object'&&ARCADE&&ARCADE.on)) return out;
+  if(typeof NET==='object'&&NET&&NET.on&&NET.role==='join') return out;
+  if(e.merc||e.friendlyPC||e.net||!Array.isArray(ct.loot)) return out;
+  row=WORN_SRC[wornKillRow(e)]; if(!row) return out;
+  ct.gearDone=1;
+  R=wornRand(wornKillSeed(e));
+  for(i=0;i<row.n.length&&R()<row.n[i];i++){ key=wornPieceKey(R,row.o); if(key){ wornSlot(ct,key); out.push(key); } }
+  return out;
+}
 function wornBoxRoll(ct){
-  var R, kinds, i, n, r, k, key;
+  var R, key;
   if(!WORN_DROPS_ON||!ct||ct.gearDone||!G||G.sim||G.arcade||G.hubFloor||(typeof ARCADE==='object'&&ARCADE&&ARCADE.on)) return null;
   if(typeof NET==='object'&&NET&&NET.on&&NET.role==='join') return null;
   if(ct.opened||ct.dropped||ct.mercSrc||ct.net||!(ct.d>=0)||ct.type==='botwreck'||!Array.isArray(ct.loot)) return null;
   ct.gearDone=1;
   R=wornRand(wornBoxSeed(ct));
-  if(R()>=WORN_BOX_CH) return null;
-  kinds=Object.keys(WORN_KINDS); k=kinds[Math.floor(R()*kinds.length)];
-  n=R()*100; for(r=0;r<3&&n>=WORN_RAR_ODDS[r];r++) n-=WORN_RAR_ODDS[r];
-  i=(R()*4294967296)>>>0;   // the piece's own seed
-  key=wornKeyOf(k,r,wornDropPw(k,R),i);
-  if(!wornItemEnsure(key)) return null;
-  for(i=0;i<ct.loot.length&&ival(ct.loot[i])<=ival(key);i++);
-  ct.loot.splice(i,0,key);
+  if(R()>=WORN_BOX_CH&&!ct.inLocked) return null;   // v37.xx (cw-m3dsrc): a keycard room box always holds one
+  key=wornPieceKey(R,ct.inLocked?WORN_SRC.locked.o:WORN_RAR_ODDS);
+  if(key) wornSlot(ct,key);
   return key;
 }
 function wornNextKey(ct){ var i, L=ct&&ct.loot; for(i=0;L&&i<L.length;i++) if(wornKeyIs(L[i])) return L[i]; return null; }
@@ -19169,6 +19218,7 @@ for(i=0;i<N_HOWLER;i++){ var s4b=far(freeSpot(map,30),980);
   // v28.xx (cw-cx-sleepmachines): mark only the final positions, after camps; the placement stream and counts stay intact.
   for(var _sl=0;_sl<ents.length;_sl++){
     var _sm=ents[_sl];
+    _sm.wsi=_sl+1;   // v37.xx (cw-m3dsrc): its place in the build, the fixed thing its kill roll seeds from
     if(machineSleepCandidate(_sm,map.spawns||[])&&((Math.imul(Math.round(_sm.x),73856093)^Math.imul(Math.round(_sm.y),19349663)^seed)>>>0)%5===0){
       _sm.sleep=1; _sm.sleepHp=_sm.hp; _sm.state='dormant';
     }
@@ -33851,7 +33901,7 @@ if(e.state==='possum'){
       }
       if(e.kind==='warden'){
         var cw=setLoot(mkContainer(e.x,e.y,'cache'),['wcore',pick(['reactor','codex','bloom']),pick(['titan','core','coil'])]);
-        cw.cache=1; cw.time=2.0; cw.tag='WARDEN WRECK'; G.containers.push(cw); cw.bot='warden'; cw.ov=(e.boss||e.name===BOSS_NAME)?1:0;   // v28.xx (cw-wreckwarden), HIS NOTE (2026-10-18): "Warden wreck drops a box. it would be cool if it showed wreckage instead". The cache is tagged a Warden wreck and drawn by drawWreckWarden, not the purple box
+        cw.cache=1; cw.time=2.0; cw.tag='WARDEN WRECK'; G.containers.push(cw); wornKillRoll(cw,e);   /* v37.xx (cw-m3dsrc) */ cw.bot='warden'; cw.ov=(e.boss||e.name===BOSS_NAME)?1:0;   // v28.xx (cw-wreckwarden), HIS NOTE (2026-10-18): "Warden wreck drops a box. it would be cool if it showed wreckage instead". The cache is tagged a Warden wreck and drawn by drawWreckWarden, not the purple box
         if(e.boss){ var cb=setLoot(mkContainer(e.x+40,e.y+10,'cache'),['reactor','codex','bloom','titan','coil',vaultGunPick()]); cb.cache=1; cb.time=3.0; cb.tag='OVERSEER HOARD'; G.containers.push(cb); say(String(e.name).toUpperCase()+' DESTROYED','obj',{sub:'Its hoard is open.'}); }   // v17.45: his pick 21   // v22.xx (R53): an objective row in caps
         if(!e.boss) say(String(e.name).toUpperCase()+' DESTROYED','obj',{sub:'It dropped a cache.'});   // v22.xx (R53): not said again for the boss
         decal(e.x,e.y,'#3a2a10',rnd(30,44));
@@ -33862,7 +33912,7 @@ if(e.state==='possum'){
         var cq=setLoot(mkContainer(e.x,e.y,'cache'),
           [pick(['relay','codex','bloom']),pick(['titan','core','coil']),
            pick(['gun_sniper','gun_lance','gun_rocket']),'servo']);
-        cq.cache=1; cq.time=2.4; cq.tag='PILLBOX WRECK'; G.containers.push(cq); cq.bot='choir';   // v28.xx (cw-wreckpillbox), HIS NOTE (2026-10-18): "it would be cool if it showed wreckage instead. same for other enemy deaths". The Pillbox wreck is drawn by drawWreckChoir, not the purple box
+        cq.cache=1; cq.time=2.4; cq.tag='PILLBOX WRECK'; G.containers.push(cq); wornKillRoll(cq,e);   /* v37.xx (cw-m3dsrc) */ cq.bot='choir';   // v28.xx (cw-wreckpillbox), HIS NOTE (2026-10-18): "it would be cool if it showed wreckage instead. same for other enemy deaths". The Pillbox wreck is drawn by drawWreckChoir, not the purple box
         say(String(e.name).toUpperCase()+' DESTROYED','obj',{sub:'Search the wreck.'});   // v22.xx (R53): an objective row in caps
         decal(e.x,e.y,'#2a1a3a',rnd(28,40));
       } else if(e.kind==='raider'&&(e.bag.length||heldGunDrops(e))){
@@ -33879,7 +33929,7 @@ if(e.state==='possum'){
         if(heldGunDrops(e)&&!e.paidRevive&&_drop.indexOf('gun_'+e.wep.id)<0)
           _drop.push('gun_'+e.wep.id);
         _drop=_drop.concat(bodyBonus(e));   // v21.67, his note: what a pillager drops is better
-        var c=setLoot(mkContainer(e.x,e.y,'body'),_drop); G.containers.push(c);
+        var c=setLoot(mkContainer(e.x,e.y,'body'),_drop); G.containers.push(c); wornKillRoll(c,e);   /* v37.xx (cw-m3dsrc): what he wore, his answer 46 */
         // v28.xx (cw-cx-eliteelements): only the held, unpaid gun carries its forge onto the body.
         if(heldGunDrops(e)&&!e.paidRevive&&e.wep.fk===2&&ELEM[e.wep.el]) c.fw={gk:'gun_'+e.wep.id,fk:2,el:e.wep.el};
         // WHOSE BODY THIS IS, v2.71. A dead raider became an anonymous 'body'
@@ -33894,7 +33944,7 @@ if(e.state==='possum'){
       } else if(e.kind==='listener'){
         var cl2=setLoot(mkContainer(e.x,e.y,'cache'),
           [pick(['core','titan','coil']),pick(['optic','servo','board']),'cell']);
-        cl2.time=1.3; G.containers.push(cl2); cl2.bot='listener';   // v28.xx (cw-wrecklistener), HIS NOTE (2026-10-18): "it would be cool if it showed wreckage instead. same for other enemy deaths". The Listener cache is drawn by drawWreckListener, not the purple box
+        cl2.time=1.3; G.containers.push(cl2); wornKillRoll(cl2,e);   /* v37.xx (cw-m3dsrc) */ cl2.bot='listener';   // v28.xx (cw-wrecklistener), HIS NOTE (2026-10-18): "it would be cool if it showed wreckage instead. same for other enemy deaths". The Listener cache is drawn by drawWreckListener, not the purple box
         if(!G.sim) say(String(e.name).toUpperCase()+' DESTROYED','obj',{sub:'It dropped a cache.'});   // v11.94, HIS NOTE: he could not tell this was a death   // v22.xx (R53): an objective row in caps
       // AMMUNITION COMES BACK OFF THE THINGS THAT MADE YOU SPEND IT, v1.68.
       // Measured over 40 raids on v1.67: the player fires 202 rounds a raid and 40
@@ -33922,9 +33972,9 @@ if(e.state==='possum'){
         var mdrop=[e.kind==='sentry'?pick(['servo','board','optic','cell']):pick(['scrap','wire','cell','ammobox'])];
         if(e.kind==='sentry'&&rr()<(CFG.machAmmo===undefined?1:CFG.machAmmo)) mdrop.push('ammobox');
         setLoot(c2,mdrop.concat(e.kind==='raider'?[]:hardBonus(e)));   // v28.xx (cw-hardloot): and a better roll on top
-        c2.time=.8; G.containers.push(c2);
+        c2.time=.8; G.containers.push(c2); wornKillRoll(c2,e);   /* v37.xx (cw-m3dsrc): bigger machines better odds, his answer 68 */
       } else if(e.kind==='snitch'){
-        var c3=setLoot(mkContainer(e.x,e.y,'botwreck'),[pick(['board','optic','comp'])]); c3.time=.7; c3.bot='snitch';
+        var c3=setLoot(mkContainer(e.x,e.y,'botwreck'),[pick(['board','optic','comp'])]); c3.time=.7; c3.bot='snitch'; wornKillRoll(c3,e);   /* v37.xx (cw-m3dsrc) */
         G.containers.push(c3);
       }
       try{ vaultKillDrop(e); }catch(_vkd){}   // v28.xx (cw-vaultdrops): a small chance of a vault gun off any kill
@@ -58434,7 +58484,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.61: a death or a quit that ends the pillager empties the worn slots after the hall copies them; the stash pieces are not touched. The KIA card lists each worn piece in its rarity colour marked lost, the count says n worn pieces and the money gone includes them at their price (the hall value lost too). A piece carried in the raid bag never takes a safe pocket. An extract gives each worn piece one pip, up to 3, with one line per piece that gained (name pip n, at most 4 then +n). The end card tile row no longer drops lost rows that end its list. The free walk back, a sim raid, the demo and the player 2 window take nothing and add no pip Check 37.61 fails on v37.60',
+  now:'v37.62: a machine wreck may hold a worn piece, more often and rarer on a bigger machine; a dead pillager body holds what he wore (0 to 2 pieces, more on a tough or elite one; he looks and fights the same); every box in a keycard room holds a piece of sound or better; all on their own dice from the raid seed and the spawn, so seed 4242 and the raid streams never move and no new wreck or body appears; one table, WORN_SRC, holds every rate Check 37.62 fails on v37.61',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
