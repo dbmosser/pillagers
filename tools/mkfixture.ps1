@@ -8725,7 +8725,7 @@ window.__REGRESS=[
          if(i===0){ need(R.need===0,'ONE: scrounger i needs '+R.need+', not 0'); continue; }
          need(R.need>RANKS[i-1].need,'ONE: '+R.n+' needs no more than the rank before');
          if(i>1) need(R.need-RANKS[i-1].need>RANKS[i-1].need-RANKS[i-2].need,'ONE: the step to '+R.n+' is not more than the step before');
-         need(R.rw&&((R.rw.k==='cash'&&R.rw.v>0)||(R.rw.k==='kit'&&Array.isArray(R.rw.v)&&R.rw.v.length>0&&R.rw.v.every(function(q){ return !!ITEMS[q]; })&&typeof R.rw.l==='string'&&R.rw.l)),'ONE: '+R.n+' has no real reward '+JSON.stringify(R.rw));
+         need(R.rw&&((R.rw.k==='cash'&&R.rw.v>0)||(R.rw.k==='gear'&&typeof WORN_KINDS==='object'&&!!WORN_KINDS[R.rw.g]&&R.rw.r>=0&&R.rw.r<=3)||(R.rw.k==='kit'&&Array.isArray(R.rw.v)&&R.rw.v.length>0&&R.rw.v.every(function(q){ return !!ITEMS[q]; })&&typeof R.rw.l==='string'&&R.rw.l)),'ONE: '+R.n+' has no real reward '+JSON.stringify(R.rw));
        }
        if(bad.length) return bad.join('; ');
        __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
@@ -47302,7 +47302,7 @@ class Audio {
        }
        rows=rowFor(ITEMS[ex].name); b=rows?rows.querySelector('button'):null;
        if(!b||b.disabled) bad.push('FOUR: the in-stock '+ex+' cannot be bought');
-       cells=document.querySelectorAll('#shopgrid .vcell'); sold=document.querySelectorAll('#shopgrid .vcell.sold');
+       cells=document.querySelectorAll('#shopgrid .vcell:not(.wg)'); sold=document.querySelectorAll('#shopgrid .vcell.sold');
        if(cells.length!==SHOP.length) bad.push('FOUR: '+cells.length+' cells for '+SHOP.length+' items');
        if(sold.length!==2) bad.push('FOUR: '+sold.length+' sold-out cells, not 2');
        for(i=0;i<sold.length;i++) if(sold[i].textContent.indexOf('SOLD OUT')<0){ bad.push('FOUR: a sold-out cell does not say SOLD OUT'); break; }
