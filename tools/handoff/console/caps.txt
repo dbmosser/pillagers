@@ -59,3 +59,5 @@ CLI_COMPACT=400000
 FINAL_BURN_MIN_H=2
 FINAL_BURN_RATE=2
 GATE_REMOTE=1
+# 11-08 owner rule 4.9: an even daily share replaces the PLAN_TARGET line (console-lane.sh, day-share.txt)
+DAY_SHARE=1

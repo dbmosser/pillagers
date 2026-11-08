@@ -185,6 +185,20 @@ if [ $ENGINE = cli ]; then
   # with chats and lanes together; 2 is the lanes alone, a guess to be corrected from plan-usage-log.txt). Burn runs start on ESC_MODEL.
   fbs=$(awk -v m="$(cap PLAN_WEEK_MAX 100)" -v w="$wk" -v r="$(cap FINAL_BURN_RATE 2)" -v h="$(cap FINAL_BURN_MIN_H 2)" 'BEGIN{x=(m-w)/r; if(x<h)x=h; printf "%d", x*3600}')
   FINAL=0; [ "$nw" -ge $((WR - fbs)) ] && { pace=0; FINAL=1; }
+  # 11-08, owner rule 4.9 (addendum in C:/claudecode/FNP new 11082026/RULES.md; his "the HTML chats share the same weekly limit and follow
+  # the same pacing"): with DAY_SHARE=1 the even line is off and each day gets an even share. At the day's first reading after local
+  # midnight the limit is week used + (100 - week used) / days left to the reset; under it the helpers run freely, at it they rest until
+  # midnight. day-share.txt holds DATE START LIMIT. The week figure is plan-usage.txt, written by PILLAGERS-HTML NEW CEO from the app's
+  # usage card (get_usage), never from transcripts or command lines (rule 1.4).
+  if [ "$(cap DAY_SHARE 0)" = 1 ]; then
+    DS="$C/day-share.txt"; td=$(date +%F); dd=""; d0=""; dl=""; read dd d0 dl _ < "$DS" 2>/dev/null
+    if [ "$dd" != "$td" ] || [ -z "$dl" ]; then
+      md=$(date -d "$td 00:00" +%s); dl=$(awk -v w="$wk" -v r="$WR" -v m="$md" 'BEGIN{d=(r-m)/86400; if(d<1)d=1; printf "%.1f", w+(100-w)/d}')
+      echo "$td $wk $dl" > "$DS.$L.tmp" && mv -f "$DS.$L.tmp" "$DS"; fi
+    pace=0
+    if awk -v w="$wk" -v l="$dl" 'BEGIN{exit !(w>=l)}'; then
+      echo "$(date '+%m-%d %H:%M') resting: today's share is used (week $wk%, today's limit $dl%); helpers start again after midnight" > "$C/status-$L.txt"; exit 0; fi
+  fi
   if [ "$wk" -ge "$(cap PLAN_WEEK_MAX 100)" ]; then
     echo "$(date '+%m-%d %H:%M') resting: the week is at $wk% (helpers stop at $(cap PLAN_WEEK_MAX 100)% so the chat keeps room)" > "$C/status-$L.txt"; exit 0; fi
   if { [ "$pace" != 0 ] && awk -v w="$wk" -v l="$line" -v b="$boost" 'BEGIN{exit !(w+b>=l)}'; } || [ "$ses" -ge "$(cap PLAN_SESSION_MAX 75)" ]; then
