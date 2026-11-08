@@ -225,3 +225,4 @@
 11-07 17:32 v37.56 cw-cx-eliteelements on his pc after 51s (8802 serves 37.56) week 98%
 11-08 02:28 v37.57 cw-cx-breakguns on his pc after 50s (8802 serves 37.57) week 98%
 11-08 02:50 v37.58 cw-cx-patrolroutes on his pc after 36s (8802 serves 37.58) week 98%
+11-08 06:05 v37.59 cw-cx-juggernaut on his pc after 51s (8802 serves 37.59) week 13%

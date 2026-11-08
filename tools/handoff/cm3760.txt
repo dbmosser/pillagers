@@ -1,0 +1,7 @@
+v37.60: season zero m3: gear from the seller, wirt, contracts, ranks and the kit
+
+the shop counter has 4 gear pieces a day after its stock, scrap to rare, the same all day, at about twice the sale price, with power, traits and better or worse shown before buying; Wirt can roll a piece of any rarity, 12 in 112 rolls, same price, the other prizes in proportion; about one contract in three names a piece (more on hard and elite), shown as gear: rare gloves, paid at the claim; sacker i, sacker iv, reaver ii, reaver v, marauder iii, warlord i and warlord iv pay a gear crate; the privileged kit wears a sound armor piece at birth (into the gear when armor is already worn), price unchanged; never in the demo
+
+Check 37.60. Fails on v37.59.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

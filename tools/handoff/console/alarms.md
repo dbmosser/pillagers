@@ -871,3 +871,5 @@ LINKED REVIEW NEEDED: synced. Confirm host patrol motion received through existi
 2026-11-08 o-h14-182-juggernaut-boss: LINKED REVIEW NEEDED: synced. Review boss2 body/late-join delivery, hoard delivery, 1000 base SP including shared credit, and takeover preserving original lair, last position and health share. Need actual body-comparison and hoard pictures from both windows at 1080p and 4K. Supplied camera recipes stage authority and mirror representations locally; they do not establish a live link. If the lane camera only runs 1080p, the 4K captures need the coordinator.
 
 11-08 05:55 v37.58 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-08 06:16 v37.59 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-08 06:50 v37.59 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log

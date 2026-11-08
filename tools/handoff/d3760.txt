@@ -1,0 +1,5 @@
+## v37.60 - SEASON ZERO M3: GEAR FROM THE SELLER, WIRT, CONTRACTS, RANKS AND THE KIT
+
+Co-op hunt while he was away. his rulings of 11-01: the seller stocks gear up to rare (65); Wirt, no i like it just add worn gear (45); contracts pay in gear and items to sell (34); a reward at every rank including gear crates; the privileged kit gets a sound armor piece once gear exists (open question 2 default) Watch: the shop counter has 4 gear pieces a day after its stock, scrap to rare, the same all day, at about twice the sale price, with power, traits and better or worse shown before buying; Wirt can roll a piece of any rarity, 12 in 112 rolls, same price, the other prizes in proportion; about one contract in three names a piece (more on hard and elite), shown as gear: rare gloves, paid at the claim; sacker i, sacker iv, reaver ii, reaver v, marauder iii, warlord i and warlord iv pay a gear crate; the privileged kit wears a sound armor piece at birth (into the gear when armor is already worn), price unchanged; never in the demo
+
+MEASURED. Check 37.60 passes, and fails on v37.59.

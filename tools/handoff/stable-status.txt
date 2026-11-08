@@ -1,10 +1,10 @@
 Latest stable: v36.55 (2026-10-29 22:13)
-Checked: 2026-11-08 05:43
+Checked: 2026-11-08 06:45
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1108-0308  v37.58  failing 64, new 5  robots 83 min/4 problems  -> 5 check(s) newly failing, e.g. v37.19 cw-m1xpoff, his order of 11-01 (lets get rid of the c | v35.45 his order 2026-10-28 (sp and money never intermingled
+  corpus-1108-0308  v37.58  failing 64, new 5  robots 93 min/4 problems  -> 5 check(s) newly failing, e.g. v37.19 cw-m1xpoff, his order of 11-01 (lets get rid of the c | v35.45 his order 2026-10-28 (sp and money never intermingled
   corpus-1108-0033  v37.56  failing 64, new 5  robots 129 min/8 problems  -> 5 check(s) newly failing, e.g. v37.19 cw-m1xpoff, his order of 11-01 (lets get rid of the c | v35.45 his order 2026-10-28 (sp and money never intermingled
   corpus-1107-1542  v37.53  failing 65, new 5  robots 93 min/8 problems  -> 5 check(s) newly failing, e.g. v36.98 the seal opens in two thirds of the time, and the fir | v35.45 his order 2026-10-28 (sp and money never intermingled
   corpus-1107-1258  v37.49  failing 60, new 2  robots 42 min/5 problems  -> 2 check(s) newly failing, e.g. v35.45 his order 2026-10-28 (sp and money never intermingled | v18.34 the belt keys are rounded tiles in the raid: with the
