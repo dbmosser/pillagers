@@ -1,0 +1,26 @@
+id=preflight-cw-m3dsrc-d43aba3f9f18
+kind=preflight
+key=cw-m3dsrc
+tag=pfb
+v=37.61
+new=3761
+base=e3891c4ebb436ec8ff698e4e026e457d172c136f
+host=DESKTOP-82BKOP4
+draft_sha=15747c1f8c052ab3a13dcd508355c10480a00e20ced0b37b1bf483e55bbc3682
+p_sha=59cfe2f6dce5ca9cf9488c334a2614d79ed29c4222da7e41a3c75d6b3e576ac3
+f_sha=bbf1013e2b9ca03b4c76399a2c56c0c78008f9c396d997672b2aa07b3b9aa6af
+game_sha=d5c9deb2c0f3c6c7646c5dcbbb3ea90f7acf8953db2d26020e3f4140a0762723
+fix_sha=79103d2b38cb6a9c9fc61d2738ce0f3550852063099163062db3a817e8e30998
+started=1794139656
+ended=1794139685
+result=FAIL
+infra=0
+reason=the new check does not pass twice on the drafted build
+--- stages
+ppfb -> OK, 9 edits applied plus DEVNOW
+fpfb -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.61 parse check
+dry fxdrypfb check 37.61: THREE crawler: the kill left [], its roll is []; THREE bulwark: the kill left 1 containers with drops on, 2 off; THREE bulwark: the normal loot differs: [["cell","core"],["gun_rocket"]] / [["cell","wg_gloves_0_16_2253600740","core"]]; THREE bulwark: the kill moved a stream with drops on: 2335519100, / THREE crawler: the kill left [], its roll is []; FOUR: the pillager left 2 / 1 bodies; FOUR pillager: the kill left 1 containers with drops on, 2 off; FOUR pillager: the normal loot differs: [["wire","decoy","smoke","board","medkit","optic","servo","gun_shotgun","gun_rifle"],["gun_lance"]] / [["wire
+--- end
+done=1
