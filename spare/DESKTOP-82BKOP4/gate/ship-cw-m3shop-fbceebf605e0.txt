@@ -1,0 +1,30 @@
+id=ship-cw-m3shop-fbceebf605e0
+kind=ship
+key=cw-m3shop
+tag=60
+v=37.60
+new=3760
+base=4cfc10259458c72ffa31fa1aa45f8113e427a1d7
+host=DESKTOP-82BKOP4
+draft_sha=459525db16b42728834b4d4d227c5d72e75db0be1cb67d0ce899c4fceca7a75c
+p_sha=e046653461488e56b9f77cc1e89700c08125711ae8a2a7201534c805f5f213f4
+f_sha=8ebf37573a8037a528ebca73633e0284b74e166efc94280092fcfbadce4abf53
+game_sha=5f10d8891f262a55ebd30a9d6a0ee85fcaa3a3027f5d79b29b0e86be47bbf3ee
+fix_sha=85f52d676278c4f85b14d08b80f953b7f1cfe82dd8bcaf1fb64cb37f616937f6
+started=1794138608
+ended=1794138812
+result=PASS
+infra=0
+reason=
+--- stages
+p60 -> OK, 31 edits applied plus DEVNOW
+f60 -> OK, 1 edits applied
+parse: PASS v37.60 parse check
+dry fxdry60 check 37.60: PASS / PASS
+control fxctl60 check 37.60: no gear from the seller, Wirt, contracts, ranks or the kit in this build / no gear from the seller, Wirt, contracts, ranks or the kit in this build
+recent: 0 new failures in the newest 80 checks
+stamp-verat: VER_AT 2026-11-08 06:52
+fixture.html check 37.60: PASS / PASS
+verifySafe: {"pass":true,"ents":{"0":85,"1":374},"containers":{"0":165,"1":593},"fail":[]}
+--- end
+done=1
