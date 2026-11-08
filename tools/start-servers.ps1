@@ -4,7 +4,11 @@
 # Run this at the START of every session. The servers do not survive a machine
 # restart or a session ending, and the first Daniel knows about it is that his
 # play link does not work.
-param([string]$Root = 'C:\claudecode\dark raiders')
+#
+# -PlayOnly (11-08, owner's rule 1.3: "Restarting it with dark raiders\tools\start-servers.ps1 is allowed"): only the 8802 play link and
+# the 8799 report collector, nothing for tests. The main PC's sign-in task "Pillagers 8802 at sign-in" (tools\play8802-start.vbs) runs
+# it with -Root C:\claudecode\pillagers-party, the copy 8802 serves there.
+param([string]$Root = 'C:\claudecode\dark raiders', [switch]$PlayOnly)
 
 $serve     = Join-Path $Root 'tools\serve.ps1'
 $collector = Join-Path $Root 'tools\collector.ps1'
@@ -36,6 +40,17 @@ function Start-Bg([string]$Script, [string[]]$ScriptArgs) {
 # 8802: the project folder. THIS IS DANIEL'S PLAY LINK.
 if (Test-Port 8802 'dark_raiders.html') { "8802 play        already up" }
 else { Start-Bg $serve @('-Root', $Root, '-Port', '8802'); "8802 play        starting" }
+
+if ($PlayOnly) {
+  if (Test-Port 8799 '') { "8799 collector   already up" }
+  else { Start-Bg $collector @('-Root', $Root, '-Port', '8799'); "8799 collector   starting" }
+  $ok = $false
+  for ($i = 0; $i -lt 20 -and -not $ok; $i++) { Start-Sleep -Seconds 3; $ok = Test-Port 8802 'dark_raiders.html' }
+  "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') root $Root"
+  "8802 play        " + $(if ($ok) { 'OK  http://localhost:8802/dark_raiders.html' } else { 'DOWN' })
+  "8799 collector   " + $(if (Test-Port 8799 '') { 'OK' } else { 'DOWN' })
+  exit $(if ($ok) { 0 } else { 1 })
+}
 
 # 8800: the tools folder, for the test fixture. Separate origin on purpose, so
 # test writes land in their own localStorage and never touch his real profile.
