@@ -7824,3 +7824,5 @@
 2026-11-08 16:08:35 FUZZ ABORT reason=gate job, not a game failure
 2026-11-08 17:57:48 FUZZ START seed=469340480 minutes=60 raidsec=300 port=9331 srv=8806 build=37.65 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
 2026-11-08 17:57:56 FUZZ ABORT reason=gate job, not a game failure
+2026-11-08 17:58:53 FUZZ START seed=1114691214 minutes=60 raidsec=300 port=9331 srv=8806 build=37.65 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-08 18:01:08 FUZZ ABORT reason=gate job, not a game failure
