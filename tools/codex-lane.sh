@@ -87,14 +87,16 @@ fnp_hold(){ local mode="${1:-code}"; HOLDWHY=""; [ "$ON_MAIN" = 1 ] || return 1;
     ''|*[!0-9]*) HOLDWHY="could not read the Fortnite editor's state"; return 0;;
   esac
   [ "$age" -lt 10 ] && { HOLDWHY="the Fortnite editor was just reopened"; return 0; }
-  # CLAUDE.md: one helper at a time while the editor is open
-  local n; n=$(machine_helpers_running); [ "${n:-1}" -gt 0 ] && { HOLDWHY="a Claude helper is already running beside the Fortnite editor"; return 0; }
+  # 11-08 (owner 08:08 item 6: "Make the reason for each hold visible. Choose concurrency that improves completed, tested work while keeping
+  # both PCs responsive"): the stand-in "one helper at a time while the editor is open" hold is replaced by measured memory below. With the
+  # editor open a Codex step starts only with CX_BESIDE_MIN_GB free (RULES 1.6 / CLAUDE.md 4 GB floor plus a 3 GB margin; codex exec and git
+  # stay well under 1 GB here, Chrome stages run on the JTPC), checked again before each job (the loop below).
   if [ "$mode" = gate ]; then
     gate_remote || { machine_editor_open && { HOLDWHY="tests would run on this PC and memory is short with the Fortnite editor open (14 GB rule)"; return 0; }; }
   else
     if [ "$(machine_epic_count '^UnrealEditor')" -gt 0 ] 2>/dev/null; then
-      local g need; need="${CX_CODE_MIN_GB:-$(cap CX_CODE_MIN_GB 3)}"; g=$(freegb); g=${g:-0}
-      [ "$g" -lt "$need" ] && { HOLDWHY="only $g GB free with the Fortnite editor open, the Codex step needs $need"; return 0; }
+      local g need; need="${CX_CODE_MIN_GB:-$(cap CX_BESIDE_MIN_GB 7)}"; g=$(freegb); g=${g:-0}
+      [ "$g" -lt "$need" ] && { HOLDWHY="only $g GB free with the Fortnite editor open; a Codex step starts at $need (4 GB floor plus 3 GB margin)"; return 0; }
     fi
   fi
   return 1; }
