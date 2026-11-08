@@ -1,0 +1,26 @@
+id=preflight-cw-cx-hudmoveall-f09b3a899f18
+kind=preflight
+key=cw-cx-hudmoveall
+tag=pfo
+v=37.66
+new=3766
+base=1bd7aa575d81008d2de848666b56ef03c982fd94
+host=DESKTOP-82BKOP4
+draft_sha=ffa8d0d539ed411ea80cd57b2c8cec4605bfca3c22e498ab4f6746fe5109b974
+p_sha=2de1bcc578ff83d5a879be0fba73fa7d83b1f6626bccb8128d12ce5782b08240
+f_sha=9790e194743d687554372bb360586de970eb7423896952dac69c3245eff65c57
+game_sha=6a625d7adb280efb7887937945685d438274d4f0635e1ab5db661976b9946506
+fix_sha=1676c2054e9df478f8baf2d58a33a32b65c6841de192fc540f0d1278e5b248d3
+started=1794171827
+ended=1794171854
+result=FAIL
+infra=0
+reason=the new check does not pass twice on the drafted build
+--- stages
+ppfo -> OK, 29 edits applied plus DEVNOW
+fpfo -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.66 parse check
+dry fxdrypfo check 37.66: legend draw path has no handle / legend draw path has no handle
+--- end
+done=1
