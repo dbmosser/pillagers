@@ -1,0 +1,14 @@
+id=shots-0304812da8fa
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=fd9c3bee8558476ee4ee1962d5b27f8f71d1a4d3
+screens=m3g-give,m3g-lines
+res=1080,4k
+nolint=0
+lintopts=
+from=JUL26
+submitted=1794149494
+expires=1794156095
