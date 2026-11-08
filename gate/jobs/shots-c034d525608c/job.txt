@@ -1,0 +1,14 @@
+id=shots-c034d525608c
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=e3891c4ebb436ec8ff698e4e026e457d172c136f
+screens=s1-seller,s2-wirt,s3-contract,s4-rankup,s5-kit
+res=1080,4k
+nolint=0
+lintopts=
+from=JUL26
+submitted=1794138975
+expires=1794145575
