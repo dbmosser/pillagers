@@ -6190,6 +6190,17 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'37.63',what:'the what is new card is stamped with this build or later and still shows the three short lowercase real notes',
+   run:function(){
+     if(typeof WHATSNEW==='undefined'||typeof WHATSNEW_VER==='undefined'||typeof VER==='undefined'||typeof wnList!=='function') return 'SKIP: this build has no what is new card';
+     if(parseFloat(WHATSNEW_VER)>37.63+0.001) return 'SKIP: the card has moved on, a later card check covers it';
+     var bad=[], d=parseFloat(VER)-parseFloat(WHATSNEW_VER), lines=wnList(), i;
+     if(!(parseFloat(WHATSNEW_VER)>=37.63-0.001)) bad.push('the card is stamped v'+WHATSNEW_VER+', before v37.63');
+     if(!(d<=0.15+1e-9)) bad.push('the card is stamped v'+WHATSNEW_VER+', '+d.toFixed(2)+' behind v'+VER);
+     if(lines.length!==3) bad.push('the card shows '+lines.length+' notes, not three');
+     for(i=0;i<lines.length;i++){ if(String(lines[i])!==String(lines[i]).toLowerCase()||String(lines[i]).length>48) bad.push('note '+i+' is not short lowercase text'); }
+     if(/\balpha\b|polish pass/i.test(WHATSNEW.join('|'))) bad.push('the news has filler copy');
+     return bad.length?bad.join('; '):null; }},
   {v:'37.62',what:'cw-m3dsrc, his rulings of 11-01 (season zero m3, answers 46, 57, 68): worn gear from machine wrecks, hostile pillagers and keycard rooms: over 800 seeds each machine kind drops at its row in WORN_SRC, a bigger machine more often and rarer than a crawler; staged kills of every machine kind and a pillager in a live __deploy raid put exactly the rolled pieces into the wreck or body the kill already leaves, with the normal loot, the container count, RNGS, FXS and the enemy stats the same with drops on and off, and the same seed and spawn giving the same piece; a pillager wears 0 to 2, more on a tough or elite one; a keycard room box always holds a piece a rarity step up and keeps the rest of its loot, and a plain box rolls the same piece it did; G.sim, the arcade, the demo, the switch, a hire and a linked window roll nothing; an old save reloads with nothing lost',
    run:function(){
      if(!(window.__runPrep&&window.__deploy&&window.__endRaid&&window.__state&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile&&window.__topClear)) return 'SKIP: this fixture cannot stage';
