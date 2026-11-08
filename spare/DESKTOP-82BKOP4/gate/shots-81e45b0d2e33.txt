@@ -1,0 +1,32 @@
+id=shots-81e45b0d2e33
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=655d7c8271feb1ad48e146c1aff91219a1f1e251
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1794136858
+ended=1794137863
+result=PASS
+infra=0
+reason=
+--- stages
+== 1080 : window 1956x1185, viewport 1920x1080
+  182-host-bulwarks                      NOT STAGED 122.5s    | the fixture did not load
+  182-host-hoard                         NOT STAGED 122.3s    | the fixture did not load
+  182-peer-bulwarks                      NOT STAGED 122.4s    | the fixture did not load
+  182-peer-hoard                         NOT STAGED 122.4s    | the fixture did not load
+== 4k : window 3876x2265, viewport 3840x2160
+  182-host-bulwarks                      NOT STAGED 122.3s    | the fixture did not load
+  182-host-hoard                         NOT STAGED 122.4s    | the fixture did not load
+  182-peer-bulwarks                      NOT STAGED 122.4s    | the fixture did not load
+  182-peer-hoard                         NOT STAGED 122.5s    | the fixture did not load
+report: C:\PillagersSpare\gate\work\shots-81e45b0d2e33\shots\report.json
+--- end
+done=1
