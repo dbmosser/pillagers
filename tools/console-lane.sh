@@ -193,7 +193,7 @@ if [ $ENGINE = cli ]; then
   if [ "$(cap DAY_SHARE 0)" = 1 ]; then
     DS="$C/day-share.txt"; td=$(date +%F); dd=""; d0=""; dl=""; read dd d0 dl _ < "$DS" 2>/dev/null
     if [ "$dd" != "$td" ] || [ -z "$dl" ]; then
-      md=$(date -d "$td 00:00" +%s); dl=$(awk -v w="$wk" -v r="$WR" -v m="$md" 'BEGIN{d=(r-m)/86400; if(d<1)d=1; printf "%.1f", w+(100-w)/d}')
+      md=$(date -d "$td 00:00" +%s); dl=$(awk -v w="$wk" -v r="$WR" -v m="$md" -v k="$(cap DAY_RESERVE 0)" 'BEGIN{d=(r-m)/86400; if(d<1)d=1; printf "%.1f", w+(100-w)/d-k}')   # 11-08 08:13 his "should account for the fact that I will be messaging you": DAY_RESERVE points kept for his direction
       echo "$td $wk $dl" > "$DS.$L.tmp" && mv -f "$DS.$L.tmp" "$DS"; fi
     pace=0; line="$dl"   # the status lines then read "week X% of the Y% line" with Y = today's limit
     if awk -v w="$wk" -v l="$dl" 'BEGIN{exit !(w>=l)}'; then

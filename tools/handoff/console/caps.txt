@@ -63,3 +63,5 @@ GATE_REMOTE=1
 DAY_SHARE=1
 # 11-08 owner 08:08 item 6: Codex lane o beside the Fortnite editor starts at this many GB free (4 floor + 3 margin), replacing one-helper-at-a-time
 CX_BESIDE_MIN_GB=7
+# 11-08 08:13 owner: the pace includes all chats and his further direction; support chats and helpers stop DAY_RESERVE points under the day's share
+DAY_RESERVE=2
