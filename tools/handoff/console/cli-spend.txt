@@ -2369,3 +2369,14 @@
 2026-11-08 0.2052 critic-manual
 2026-11-08 5.101993599999998 00p-m3d-raid-sources
 2026-11-08 5.874448000000003 00p-m3c-death-pips
+2026-11-08 0.0000 o-h14-182-juggernaut-boss
+2026-11-08 0.1963 critic-manual
+2026-11-08 8.586267000000003 00p-m3g-coop
+2026-11-08 0.0000 o-h14-182-juggernaut-boss
+2026-11-08 0.0000 o-h15-186i-every-hud-panel-movable
+2026-11-08 0.0000 o-h15-186i-every-hud-panel-movable
+2026-11-08 0.0000 o-h15-186i-every-hud-panel-movable
+2026-11-08 0.0000 o-h15-186i-every-hud-panel-movable
+2026-11-08 0.0000 o-h15-186i-every-hud-panel-movable
+2026-11-08 0.0000 o-h16-192-debris-scatters
+2026-11-08 0.0000 o-h16-192-debris-scatters

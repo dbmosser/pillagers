@@ -885,3 +885,5 @@ LINKED REVIEW NEEDED: synced. Confirm host patrol motion received through existi
 2026-11-08 o-h15-186i-every-hud-panel-movable: coordinator action required before shipping. Check 34.88 in tools/mkfixture.ps1 requires fixed minimap behavior (tab-only hit box, map clicks fire, folded strip cannot drag), conflicting with the every-panel-movable order. Per the task, stopped without editing the fixture. Exact backward-compatible assertion replacements are in this run's task notes. The prepared mk-cw-cx-hudmoveall.ps1 is unfinished and unqueued; resume this task after retargeting. LOCAL: no linked review.
 
 2026-11-08 o-h15-186i-every-hud-panel-movable: 13:36 coordinator: check 34.88 retargeted as these notes asked (commit 839c17dc2, fixture rebuilt, JS ok); the cw-hudmoveall build can go on, no fixture edit needed from lane o.
+2026-11-08 | o-h15-186i-every-hud-panel-movable | Preflight cw-cx-hudmoveall returned only spare-PC busy messages (job preflight-cw-cx-hudmoveall-f09b3a899f18), without a code-check failure. Local anchors and syntax revalidated. Retry/join the pending remote job; no fixture change requested.
+

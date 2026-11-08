@@ -6078,5 +6078,37 @@
   "pic": "tools/handoff/console/notes/shots/00p-m3c-after/m3c-extract-card-1080.jpg",
   "task": "manual",
   "when": "2026-11-08T12:12"
+ },
+ "m3g-row": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "two explicit owner directives are violated outright (controls list is fully expanded instead of folded to one line, and the backpack card is a small floating box instead of the ordered near-full-screen card), so the HUD still reads as stacked boxes competing for attention rather than a directed AAA layout.",
+  "findings": [
+   "P0 image 2, backpack/give modal: resize the backpack/give window to the same ~90% viewport card used by shop, codex, trophies and settings",
+   "P0 image 1, bottom-left controls panel: default to a single collapsed line (e.g. 'f1 controls') bottom-left; expand to the full list only while F1 is held/toggled",
+   "P1 image 2, area behind the modal: apply --scrim rgba(6,7,8,.80) as a full-screen layer behind the card, consistent with the other windows",
+   "P1 image 1, 'run info' dropdown top-right: recolor the run info box to --ui-line-hi / --tx-2; keep teal exclusively on the extract timer/countdown",
+   "P1 image 1, overall HUD: pick one hero element at fs-hero 56px (e.g. extract timer) and drop the others to fs-body/--tx-2 weight"
+  ],
+  "pic": "tools/handoff/console/notes/shots/00p-m3g-after/m3g-row-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-08T14:55"
+ },
+ "m3g-give": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "two explicit owner directives are violated outright (controls list is fully expanded instead of folded to one line, and the backpack card is a small floating box instead of the ordered near-full-screen card), so the HUD still reads as stacked boxes competing for attention rather than a directed AAA layout.",
+  "findings": [
+   "P0 image 2, backpack/give modal: resize the backpack/give window to the same ~90% viewport card used by shop, codex, trophies and settings",
+   "P0 image 1, bottom-left controls panel: default to a single collapsed line (e.g. 'f1 controls') bottom-left; expand to the full list only while F1 is held/toggled",
+   "P1 image 2, area behind the modal: apply --scrim rgba(6,7,8,.80) as a full-screen layer behind the card, consistent with the other windows",
+   "P1 image 1, 'run info' dropdown top-right: recolor the run info box to --ui-line-hi / --tx-2; keep teal exclusively on the extract timer/countdown",
+   "P1 image 1, overall HUD: pick one hero element at fs-hero 56px (e.g. extract timer) and drop the others to fs-body/--tx-2 weight"
+  ],
+  "pic": "tools/handoff/console/notes/shots/00p-m3g-after/m3g-give-1080.jpg",
+  "task": "manual",
+  "when": "2026-11-08T14:55"
  }
 }

@@ -61,3 +61,38 @@ Watch: whether grabbing a panel ever fires the gun or opens something under it.
 
 
 11-08 13:36 coordinator: check 34.88 retargeted as these notes asked (commit 839c17dc2, fixture rebuilt, JS ok); the cw-hudmoveall build can go on, no fixture edit needed from lane o.
+
+--- codex run 2026-11-08 15:18 ---
+2026-11-08: Continued after coordinator commit 839c17dc2 cleared the minimap fixture blocker. Queued cw-cx-hudmoveall. No tracked game or fixture file edited.
+
+LOCAL: no linked review. This changes own-window HUD coordinates, pointer handling and saved layouts; no packet or shared game state changes.
+
+Added offsets and drawn hit boxes for the clock/weather, score, extraction pill, edge extraction arrow, belt handle, air strike meter, teammate strip, left feed, danger banner and power chips. The existing gun/gear handle stays. The minimap now drags while preserving its fold chevron and resize priority. Settings has one reset hud layout button for every offset, size and fold state. Existing obstacle readers receive the moved rectangles. New grabs take the click before belt items and the trigger.
+
+Layouts have a separate storage record per save key, career/arcade mode and player role. This preserves arcade layouts even when saveProfile refuses arcade writes and keeps the two roles independent. Legacy player 1 profile offsets are imported when no separate record exists. Drag, resize, fold and clamp saves use the layout writer.
+
+Replaced the unfinished synthetic-rectangle check with actual rendered HUD staging. It draws every requested panel, drags its actual handle with mouse events, verifies its rendered rectangle changes, reloads layout storage, checks the restored rendered rectangle and resets it. It also tests a clock placed on a belt cell, player-role isolation and the Settings reset button. Transient plates stage through their real alert/feed/power/air/team data and draw paths. It restores both role storage records and the original network fields in finally.
+
+Local validation: mk prints written against v37.65; all 28 anchors match exactly once, including in sequential application; the patched game inline JavaScript and new regression check parse with Node; mk script is ASCII. The minimap rename anchor was widened to avoid matching the new public wrapper during sequential patching. Browser regression checks cannot run in this sandbox and remain the lane gate.
+
+Camera handoff: camera-recipes.json contains the requested scenes 21,33,34,50. Each moves the clock and extraction readout 82 screen pixels down. Scenes 21/34 use player 1; 33/50 use player 2 layout storage. Recipe scripts parse. Lane must photograph, run the critic and return the pictures, gate result and ON HIS PC line. No additional fixture retarget identified in this run.
+
+Watch: whether grabbing a panel ever fires the gun or opens something under it.
+
+--- codex run 2026-11-08 15:44 ---
+2026-11-08 retry: The returned preflight log contains only remote scheduling messages ending in waiting for the spare pc: someone is using it. It contains no lint, regression, parse or draft failure to correct. Revalidated the unchanged cw-cx-hudmoveall draft against refreshed v37.65: mk prints written, all 28 sequential anchors are unique, patched inline JavaScript and new check parse, mk is ASCII. keys.txt still queues cw-cx-hudmoveall and the four moved-panel camera recipes remain ready. Please retry preflight; the remote gate should rejoin the same pending job for an unchanged draft and base. No game or fixture file edited. LOCAL: no linked review. Awaiting actual gate result, pictures/critic and ON HIS PC confirmation.
+
+
+--- codex run 2026-11-08 16:05 ---
+2026-11-08: Fixed the new check after the remote dry run failed twice with legend draw path has no handle. The test staged G.legendOn=0, whose drawLegend branch intentionally renders only LEGHINT and deletes HUDBOX.legend. The existing draggable legend panel is the compact list (G.legendOn=1). paint(id) now explicitly opens the compact list for the legend test, leaves it folded for other panel tests, and marks the one-time clock/extraction autofolds complete so they cannot close it during staging. The test still uses the real drawHUD path, real handle and mouse events, and checks movement, persistence and reset. No game behavior change was needed for this failure.
+
+Rebuilt the draft against v37.65: written; 28 unique sequential edits; patched inline JavaScript and updated check parse; mk ASCII. The changed check creates a new preflight draft hash. cw-cx-hudmoveall remains in keys.txt and all four moved-panel camera recipes remain ready. No game or fixture file edited.
+
+LOCAL: no linked review. Still needs passing remote preflight, ship, pictures/critic and ON HIS PC confirmation.
+
+--- codex run 2026-11-08 16:07 ---
+2026-11-08: Fixed the preflight dry-check TypeError (Cannot set properties of null, setting onclick). The reset test rendered renderSettingsInner into a detached div, but that existing function wires set_tune, set_text and other buttons through document.getElementById. Those ids cannot be found in a detached element. The check now selects the main Settings page and calls renderSettings(), which mounts and wires the real #setlist. It verifies #set_hudreset has an onclick handler before clicking, then checks every offset is reset, reset persistence and the other role layout. The prior Settings subpage is restored and Settings rerendered in finally. No game behavior changed for this test setup fix.
+
+Rebuilt against v37.65: written; all 28 anchors unique through sequential patching; patched game and new check JavaScript parse; mk ASCII. Updated draft/check is ready for another preflight. keys.txt retains cw-cx-hudmoveall and the four moved-panel camera recipes remain ready. No game or fixture file edited.
+
+LOCAL: no linked review. Remote preflight, ship, pictures/critic and ON HIS PC confirmation remain.

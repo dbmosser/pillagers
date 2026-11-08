@@ -1,0 +1,7 @@
+v37.66: loose floor debris
+
+Light floor clutter reacts to movement and combat. LOCAL: no linked review. Each window animates its own cosmetic scraps from existing body and effect copies; no packets or shared gameplay fields change.
+
+Check 37.66. Fails on v37.65.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

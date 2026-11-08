@@ -6191,6 +6191,66 @@ window.__REGRESS=[
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
      finally{ say2=_s2; __topClear(); __cleanProfile(); }
      return bad.length?bad.join('; '):null; }},
+  {v:'37.66',what:'capped loose floor papers, boxes and bolts react to sprint, shots and blasts, settle permanently, and fit a 0.3 ms 4K frame budget',
+   run:function(){
+     if(typeof floorBitState!=='function') return 'no reactive floor debris';
+     var g,s,b,oldFog=fowLive,oldBypass=GFX.bypass,cv,c,i,j,k,t,best=1e9,x,y,oldX,oldY,drawn;
+     try{
+       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();
+       __deploy({kit:['gun_rifle'],safe:null,mapIx:0,seed:4242}); g=__state();
+       if(!g||!g.player||g.over) return 'SKIP: no raid';
+       s=floorBitState();
+       if(!s.list.length||s.list.length>240) return 'bad debris cap or no debris placed';
+       for(i=0;i<3;i++) if(!s.list.some(function(q){return q.k===i;})) return 'missing paper, box or bolt';
+       x=g.player.x; y=g.player.y; b={x:x+18,y:y,vx:0,vy:0,a:0,k:0}; s.list=[b];
+       fowLive=function(){return true;}; GFX.bypass=0;
+       wallImpactFx({},x,y,1,0); if(!(b.vx>0)) return 'nearby wall hit did not scatter outward';
+       b.vx=b.vy=0; s.frame=-1;
+       gfxShot(g.player,g.player.wep,0,true); if(!(b.vx>0)) return 'local shot did not scatter';
+       b.vx=b.vy=0; s.frame=-1;
+       gfxShotFx(x,y,0,'#fff',1); if(!(b.vx>0)) return 'teammate shot copy did not scatter';
+       b.vx=b.vy=0; s.frame=-1;
+       gfxBlastScar(x,y,1,true); if(b.vx) return 'roof blast scattered floor';
+       gfxBlastScar(x,y,1,false); if(!(b.vx>0)) return 'blast did not scatter';
+       b.vx=b.vy=0; s.frame=-1; s.track.p={x:x-24,y:y}; g.sprinting=true; s.sample=0;
+       floorBitStep(.08); if(!(b.vx>0)) return 'sprinting body did not scatter';
+       g.sprinting=false; s.track={};
+       for(i=0;i<120;i++){ g.frameN=(g.frameN||0)+1; floorBitStep(.1); }
+       if(b.vx||b.vy||!(b.x>x+18)) return 'debris did not move and settle';
+       oldX=b.x; oldY=b.y; for(i=0;i<120;i++) floorBitStep(.1);
+       if(s.list[0]!==b||b.x!==oldX||b.y!==oldY) return 'landed debris disappeared or drifted';
+       s.frame=-1; for(i=0;i<30;i++) floorBitKick(x,y,500,100);
+       if(s.kicks!==12) return 'unbounded impulse workload';
+       oldX=b.vx; oldY=b.vy;
+       if(floorBitKick(x,y,500,100)!==0||b.vx!==oldX||b.vy!==oldY) return 'exhausted impulse budget still moved debris';
+       g.frameN=(g.frameN||0)+1;
+       if(floorBitKick(x,y,500,100)!==1||s.kicks!==1) return 'next frame did not reopen impulse budget';
+       cv=document.createElement('canvas'); cv.width=3840; cv.height=2160; c=cv.getContext('2d');
+       c.setTransform(2,0,0,2,-2*(x-960),-2*(y-540));
+       if(floorBitDraw(c,x-960,y-540,1920,1080)!==1) return 'landed scrap was not drawn';
+       g.floorBits=null; s=floorBitState(); g.sim=true;
+       if(floorBitKick(x,y,100,100)!==0||floorBitDraw({ },0,0,1920,1080)!==0) return 'sim got debris';
+       g.sim=false;
+       floorBitAtlas();
+       x=WORLD_W/2; y=WORLD_H/2; c.setTransform(1,0,0,1,1920-x,1080-y);
+       // v28.xx (cw-cx-floorbits): time real update plus clipped sprite submission on a 4K target, with every piece moving.
+       for(j=0;j<5;j++){
+         t=performance.now();
+         for(i=0;i<60;i++){
+           for(k=0;k<s.list.length;k++){s.list[k].vx=40;s.list[k].vy=20;}
+           floorBitStep(.016); drawn=floorBitDraw(c,x-1920,y-1080,3840,2160);
+         }
+         best=Math.min(best,(performance.now()-t)/60);
+       }
+       if(!(drawn>0)) return '4K timing view had no debris';
+       s.benchMs=best; if(best>=.3) return '4K debris frame cost '+best.toFixed(3)+' ms (budget <0.3)';
+       return null;
+     }finally{
+       fowLive=oldFog; GFX.bypass=oldBypass; if(g) g.sim=false;
+       if(cv){cv.width=1;cv.height=1;}
+       try{__endRaid('abandon');}catch(_e){} __topClear();
+     }
+   }},
   {v:'37.65',what:'cw-m3coop, his rulings of 11-01 (season zero m3, answer 75, plan worn gear), through the two window net harness (one page plays the host and the partner in turn and carries every word by hand): the raid state word carries his summed gear and what he wears and the host cleans it (only gear stats, numbers held to cap and floor, a bad word or an older word without it is nothing) and passes it on; an enemy on the host sees a partner wearing hard to spot 0.1 from exactly 0.9 as far, and as before with none; the host sends a blow on the partner raw and his own window takes exactly 0.9 of it with tough 0.1; the host runs his search 1.25 times as fast with search 0.2 and his window predicts the same; a piece handed over with T in the backpack lands in the partner bag as the identical piece rebuilt from its key and leaves the giver exactly once, a line on each side, and back the other way; a lost offer or yes leaves it with the giver, a lost hand-over is sent again and taken once; out of reach, a downed partner, a downed giver and a piece not in the bag refuse; the partner row lists his worn kinds in rarity colour; an extract banks it into the holder P.gear only; an old save reloads twice with nothing lost',
    run:function(){
      if(!(window.__runPrep&&window.__deploy&&window.__endRaid&&window.__state&&window.__resetCfg&&window.__pinDefaults&&window.__cleanProfile&&window.__topClear)) return 'SKIP: this fixture cannot stage';

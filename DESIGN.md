@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.66 - LOOSE FLOOR DEBRIS
+
+Co-op hunt while he was away. His pick 79: papers, small boxes and bolts scatter from sprinting bodies, nearby shots and blasts and stay for the raid. Watch: sprint past a loot site, fire beside its litter, then blast it; scraps should slide outward and stay put without blocking movement or making noise.
+
+MEASURED. Check 37.66 passes, and fails on v37.65.
 ## v37.65 - SEASON ZERO M3: TWO PLAYER GEAR
 
 Co-op hunt while he was away. his rulings of 11-01 (season zero m3, answer 75): hand gear to your partner in a raid, the partner sees what you wear, each player keeps their own gear and pillager. Before this a partner gear counted only in his own window, so on the host his hard to spot and search gear did nothing, and nothing could be handed over Watch: in a two player raid your gear counts for you on the host too: enemies see you from less far with hard to spot, and your search runs at your own speed on the host boxes (damage, speed and the rest already ran in your own window). The teammate row lists what your partner wears, each kind in its rarity colour. With the backpack open, T (Y on a pad) hands a piece from your bag to a partner within revive reach who is not down: it leaves your bag and lands in theirs with a line on each side; a lost word leaves it with you and it is never doubled. Worn pieces stay worn. Solo, the demo and a raid with nothing worn play as before

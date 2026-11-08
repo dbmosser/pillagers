@@ -721,3 +721,12 @@
 2026-11-08 05:39 o-h13-178-patrol-routes 47s ok PARTIAL in=193960 out=1535 run=3
 2026-11-08 05:50 o-h14-182-juggernaut-boss 405s ok PARTIAL in=1413503 out=15651 run=1
 2026-11-08 05:56 o-h14-182-juggernaut-boss 244s ok PARTIAL in=3825469 out=23397 run=2
+2026-11-08 08:16 o-h14-182-juggernaut-boss 97s ok PARTIAL in=385317 out=3207 run=3
+2026-11-08 12:17 o-h14-182-juggernaut-boss 61s ok PARTIAL in=224673 out=1836 run=4
+2026-11-08 12:25 o-h15-186i-every-hud-panel-movable 412s ok PARTIAL in=2183021 out=13866 run=1
+2026-11-08 15:18 o-h15-186i-every-hud-panel-movable 429s ok PARTIAL in=2272273 out=13037 run=2
+2026-11-08 15:44 o-h15-186i-every-hud-panel-movable 27s ok PARTIAL in=2584131 out=13876 run=3
+2026-11-08 16:05 o-h15-186i-every-hud-panel-movable 63s ok PARTIAL in=3272883 out=15853 run=4
+2026-11-08 16:07 o-h15-186i-every-hud-panel-movable 61s ok PARTIAL in=4029509 out=17927 run=5
+2026-11-08 17:49 o-h16-192-debris-scatters 430s ok PARTIAL in=1066369 out=15451 run=1
+2026-11-08 18:00 o-h16-192-debris-scatters 62s ok PARTIAL in=1433839 out=17390 run=2
