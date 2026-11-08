@@ -1,0 +1,28 @@
+id=preflight-cw-cx-hudmoveall-138fc924f02d
+kind=preflight
+key=cw-cx-hudmoveall
+tag=pfo
+v=37.66
+new=3766
+base=1bd7aa575d81008d2de848666b56ef03c982fd94
+host=DESKTOP-82BKOP4
+draft_sha=de7f4278dd95b65de48005d23ddd6d8efe84e831d96177ac67dd43615f4b4785
+p_sha=2de1bcc578ff83d5a879be0fba73fa7d83b1f6626bccb8128d12ce5782b08240
+f_sha=2a091d8ff2f8c455dcd8b74c217698ebae47f4ffe9d267d0c3703bcc14565802
+game_sha=6a625d7adb280efb7887937945685d438274d4f0635e1ab5db661976b9946506
+fix_sha=ee6132960e82698ccba474626fc0294c7dc1239bf468a92d09cebdde6af10a27
+started=1794178458
+ended=1794178639
+result=PASS
+infra=0
+reason=
+--- stages
+ppfo -> OK, 29 edits applied plus DEVNOW
+fpfo -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.66 parse check
+dry fxdrypfo check 37.66: PASS / PASS
+control fxctlpfo check 37.66: fixed HUD elements have no drag or reset / fixed HUD elements have no drag or reset
+recent: 0 new failures in the newest 80 checks
+--- end
+done=1
