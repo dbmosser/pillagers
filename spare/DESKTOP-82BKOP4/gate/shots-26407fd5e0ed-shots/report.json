@@ -1,0 +1,6 @@
+{"generated":"2026-11-08T09:41:15","url":"http://localhost:8823/fixture.html","recipes":"C:\\PillagersSpare\\gate\\work\\shots-26407fd5e0ed\\recipes.json","seconds":1000,"screens":[
+{"name":"182-host-bulwarks","screen":"juggernaut beside a plain bulwark, smooth look","1080":{"staged":false,"note":"the fixture did not load","viewport":"","shot":"","lint":""},"4k":{"staged":false,"note":"the fixture did not load","viewport":"","shot":"","lint":""}},
+{"name":"182-host-hoard","screen":"juggernaut hoard with normal raid HUD","1080":{"staged":false,"note":"the fixture did not load","viewport":"","shot":"","lint":""},"4k":{"staged":false,"note":"the fixture did not load","viewport":"","shot":"","lint":""}},
+{"name":"182-peer-bulwarks","screen":"juggernaut beside a plain bulwark, smooth look","1080":{"staged":false,"note":"the fixture did not load","viewport":"","shot":"","lint":""},"4k":{"staged":false,"note":"the fixture did not load","viewport":"","shot":"","lint":""}},
+{"name":"182-peer-hoard","screen":"juggernaut hoard with normal raid HUD","1080":{"staged":false,"note":"the fixture did not load","viewport":"","shot":"","lint":""},"4k":{"staged":false,"note":"the fixture did not load","viewport":"","shot":"","lint":""}}
+]}
