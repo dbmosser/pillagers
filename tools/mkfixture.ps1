@@ -20295,7 +20295,7 @@ class Audio {
      finally{ down(); say=oSay; P.runs=r0; try{ if(hud0===undefined) delete P.hud; else P.hud=JSON.parse(hud0); _legBase=null; _legAnchorY=null; __runPrep(); __topClear(); }catch(_c){} }
      return bad.length?bad.join('; '):null;
    }},
-  {v:'34.88',what:'cw-mmfold, his note of 2026-10-25 ("make it where it is minimizable"): with the minimap on, a click on its chevron folds it to a slim strip named minimap with a closed chevron, the run info panel moves up under the strip, a second click on the same spot opens it at full size, a press on it never drags it, the fold leaves the Settings MINIMAP row alone, the click box is the fold tab that is drawn and a press on the map beside it still fires, run info dragged over the tab keeps its own click, with the minimap folded from the raid start the map is still baked so the first unfold never bakes mid raid, and with the minimap off or the map open nothing of it is drawn or takes a click; in the career raid at the window size and at 4K, the player 2 seat and the demo',
+  {v:'34.88',what:'(11-08 retarget for cw-hudmoveall, his order that every hud element be movable: once hudMoveGrab exists the minimap moves like every hud panel, so its hit box is the drawn map, a press beside the fold tab grabs the map and a press on the folded strip grabs it without moving; the fixed fold tab rules below hold on builds before it) cw-mmfold, his note of 2026-10-25 ("make it where it is minimizable"): with the minimap on, a click on its chevron folds it to a slim strip named minimap with a closed chevron, the run info panel moves up under the strip, a second click on the same spot opens it at full size, a press on it never drags it, the fold leaves the Settings MINIMAP row alone, the click box is the fold tab that is drawn and a press on the map beside it still fires, run info dragged over the tab keeps its own click, with the minimap folded from the raid start the map is still baked so the first unfold never bakes mid raid, and with the minimap off or the map open nothing of it is drawn or takes a click; in the career raid at the window size and at 4K, the player 2 seat and the demo',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)||typeof drawMinimap!=='function'||typeof MMAP!=='object'||!MMAP||typeof hudHit!=='function'||typeof hudChev!=='function'||typeof inRect!=='function'||typeof cv==='undefined'||!cv||typeof hcv==='undefined'||!hcv||typeof resize!=='function'||!window.__forceSize||typeof mouse==='undefined') return 'SKIP: no raid HUD with a minimap here';
      var bad=[], g=null, P0=P, kHud=JSON.stringify((P&&P.hud)||null), kS=CFG.mmSz, kM=CFG.minimap, kNet={on:NET.on,role:NET.role,seat:NET.seat,same:NET.same}, PR=CanvasRenderingContext2D.prototype, oft=PR.fillText, ofr=PR.fillRect, ochev=hudChev, txt=[], chev=[], rects=[], rec=0, km={x:mouse.x,y:mouse.y}, dz=(typeof DPRH==='number'&&DPRH>0)?DPRH:1, ksz=null;
@@ -20332,11 +20332,13 @@ class Audio {
        if(!chevIn(tg,true)) bad.push(tag+': no open chevron is drawn on the minimap corner');
        hh=hudHit(q.x,q.y); if(!hh||hh.id!=='mmap'||hh.part!=='glyph') bad.push(tag+': over the chevron the pointer is not the hand ('+(hh?hh.id+' '+hh.part:'nothing')+')');
        // the click box is the fold tab that is drawn, no taller and no wider, and a press on the map just under it or just left of it is a shot
-       if(Math.abs(HUDBOX.mmap.x-tg.x)>1||Math.abs(HUDBOX.mmap.y-tg.y)>1||Math.abs(HUDBOX.mmap.h-tg.h)>1||!drawnAs(HUDBOX.mmap)) bad.push(tag+': the click box of the open fold ('+[HUDBOX.mmap.x,HUDBOX.mmap.y,HUDBOX.mmap.w,HUDBOX.mmap.h].map(Math.round).join(',')+') is not the tab that is drawn');
-       [{x:q.x,y:Math.round(HUDBOX.mmap.y+HUDBOX.mmap.h)+3,s:'under'},{x:Math.round(HUDBOX.mmap.x)-3,y:q.y,s:'left of'}].forEach(function(q3){
-         var fired=press(q3,1);
+       if(typeof hudMoveGrab==='function'){
+         if(Math.abs(HUDBOX.mmap.x-b0.x)>1||Math.abs(HUDBOX.mmap.y-b0.y)>1||Math.abs(HUDBOX.mmap.w-b0.w)>1||Math.abs(HUDBOX.mmap.h-b0.h)>1) bad.push(tag+': the movable minimap hit box does not match the drawn map');
+       }else if(Math.abs(HUDBOX.mmap.x-tg.x)>1||Math.abs(HUDBOX.mmap.y-tg.y)>1||Math.abs(HUDBOX.mmap.h-tg.h)>1||!drawnAs(HUDBOX.mmap)) bad.push(tag+': the click box of the open fold ('+[HUDBOX.mmap.x,HUDBOX.mmap.y,HUDBOX.mmap.w,HUDBOX.mmap.h].map(Math.round).join(',')+') is not the tab that is drawn');
+       [{x:q.x,y:Math.round(tg.y+tg.h)+3,s:'under'},{x:Math.round(tg.x)-3,y:q.y,s:'left of'}].forEach(function(q3){
+         var movable=typeof hudMoveGrab==='function', dragged=movable?press(q3,0):null, fired=movable?false:press(q3,1);
          if(P.hud&&P.hud.mmap&&P.hud.mmap.c){ bad.push(tag+': a press on the map just '+q3.s+' the fold tab folded the minimap'); P.hud.mmap.c=false; }
-         else if(!fired) bad.push(tag+': a press on the map just '+q3.s+' the fold tab did not fire');
+         else if(movable?dragged!=='mmap':!fired) bad.push(tag+': a press beside the fold tab did not '+(movable?'grab the map':'fire'));
        });
        // ONE: the click on the chevron folds it
        if(press(q)) bad.push(tag+': the click on the chevron started a drag');
@@ -20353,8 +20355,14 @@ class Audio {
          if(CFG.mmSz!==1||JSON.stringify(P.gameOpts||null)!==go0) bad.push(tag+': the fold changed the Settings minimap row');
          // TWO: a press on the strip never drags it
          q2={x:Math.round(b1.x+12),y:Math.round(b1.y+b1.h/2)};
-         hh=hudHit(q2.x,q2.y); if(hh&&hh.part==='bar') bad.push(tag+': over the strip the pointer is the move cross');
-         if(press(q2)||P.hud.mmap.dx||P.hud.mmap.dy) bad.push(tag+': a press on the strip started a drag');
+         hh=hudHit(q2.x,q2.y);
+         if(typeof hudMoveGrab==='function'){
+           if(!hh||hh.id!=='mmap'||hh.part!=='bar') bad.push(tag+': folded minimap has no move pointer');
+           if(press(q2)!=='mmap'||P.hud.mmap.dx||P.hud.mmap.dy) bad.push(tag+': pressing the folded minimap did not grab it without moving');
+         }else{
+           if(hh&&hh.part==='bar') bad.push(tag+': over the strip the pointer is the move cross');
+           if(press(q2)||P.hud.mmap.dx||P.hud.mmap.dy) bad.push(tag+': a press on the strip started a drag');
+         }
        }
        // THREE: the second click on the same spot opens it
        press(q);
