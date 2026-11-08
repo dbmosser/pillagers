@@ -7763,3 +7763,5 @@
 2026-11-08 09:48:30 FUZZ ABORT reason=gate job, not a game failure
 2026-11-08 09:50:21 FUZZ START seed=1996076753 minutes=60 raidsec=300 port=9331 srv=8806 build=37.59 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
 2026-11-08 09:52:01 FUZZ ABORT reason=gate job, not a game failure
+2026-11-08 09:53:58 FUZZ START seed=169040009 minutes=60 raidsec=300 port=9331 srv=8806 build=37.59 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-08 09:59:07 raid 1 demo2p raidSeed=1156638908 map=0 god=0 sec=303 end=clock-end problems=0 newUnique=0 totalUnique=0 totalProblems=0 events=5918 score=0 ents=54 travelPx=24634 fires=84 menuPct=16 heapMB=70 p2=link_3s_join_6s_pad_own gfx=21815/9.25/27.25/1621/1 gfx2=7252/35.75/66.75/6433/1 work=22438/6.25/17.75/31.25 work2=7528/11.75/27.75/43.75 pics=344/74.1mb/wall:48,veg:9,shad:226,icon:25,g.pix:0,g.pixmachines:0,g.muz:3,g.gun:6,g.lightspr:21,g.gfxE:3,pix.actors:0,pix.scene:0,big:3 pics2=283/17.6mb/wall:111,veg:29,shad:86,icon:28,g.pix:0,g.pixmachines:0,g.muz:3,g.gun:2,g.lightspr:18,g.gfxE:3,pix.actors:0,pix.scene:0,big:3 build=37.59
