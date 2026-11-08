@@ -1,0 +1,56 @@
+id=shots-b0471d61b7bc
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=021128416b38e97627dbec792a98ec4dee565f38
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1794123068
+ended=1794123129
+result=PASS
+infra=0
+reason=
+--- stages
+== 1080 : window 1956x1185, viewport 1920x1080
+  breakguns-p1-kb                        NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:287
+    at <anonymous>:1:1185
+    at <anonymous>:1:1261
+  breakguns-p1-pad                       NOT STAGED   4.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:287
+    at <anonymous>:1:1092
+    at <anonymous>:1:1168
+  breakguns-p2-kb                        NOT STAGED   4.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:287
+    at <anonymous>:1:1185
+    at <anonymous>:1:1261
+  breakguns-p2-pad                       NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:287
+    at <anonymous>:1:1092
+    at <anonymous>:1:1168
+== 4k : window 3876x2265, viewport 3840x2160
+  breakguns-p1-kb                        NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:287
+    at <anonymous>:1:1185
+    at <anonymous>:1:1261
+  breakguns-p1-pad                       NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:287
+    at <anonymous>:1:1092
+    at <anonymous>:1:1168
+  breakguns-p2-kb                        NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:287
+    at <anonymous>:1:1185
+    at <anonymous>:1:1261
+  breakguns-p2-pad                       NOT STAGED   4.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:287
+    at <anonymous>:1:1092
+    at <anonymous>:1:1168
+report: C:\PillagersSpare\gate\work\shots-b0471d61b7bc\shots\report.json
+--- end
+done=1
