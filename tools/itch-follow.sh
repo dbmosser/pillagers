@@ -15,6 +15,9 @@ mkdir "$LK" 2>/dev/null || exit 0
 trap 'rmdir "$LK" 2>/dev/null' EXIT
 trap 'exit 0' TERM INT
 end=$(( $(date +%s) + 3300 )); seen=; retry=0; lagv=; lagt=0; told=
+# 11-08 (PILLAGERS-HTML NEW CEO, owner 08:08 "target zero refresh-only AI wakeups"): the version already reported survives a restart of this
+# script, so a stuck itch adds one alarm line per new version, not one per hour (each line woke the hourly digest chat)
+TF="$N/itch-told.txt"; [ -z "$told" ] && told=$(tr -dc '0-9.' < "$TF" 2>/dev/null)
 while [ "$(date +%s)" -lt "$end" ]; do
   touch "$LK"
   h=$(git rev-parse -q HEAD 2>/dev/null)
@@ -28,7 +31,7 @@ while [ "$(date +%s)" -lt "$end" ]; do
         retry=$(( $(date +%s) + 300 ))
         [ "$lagv" = "$ver" ] || { lagv=$ver; lagt=$(date +%s); }
         if [ "$told" != "$ver" ] && [ $(( $(date +%s) - lagt )) -ge 600 ]; then
-          told=$ver; echo "$(date '+%m-%d %H:%M') v$ver not on itch after 10 min (itch has v${have:-?}); see the itch: lines in tools/handoff/nightly/nightly.log" >> "$AL"
+          told=$ver; echo "$ver" > "$TF"; echo "$(date '+%m-%d %H:%M') v$ver not on itch after 10 min (itch has v${have:-?}); see the itch: lines in tools/handoff/nightly/nightly.log" >> "$AL"
         fi
       fi
     fi
