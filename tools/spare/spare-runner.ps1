@@ -816,6 +816,7 @@ function Watch([int]$sec){
     # 15-minute task allows, and it started a second runner beside the first, which nothing ends (02:35). Spare PC only: IDLE MODE stays as it was.
     if(-not $Idle){ [IO.File]::WriteAllText($Hb,[string](Epoch),$Enc) }
     if((AwaySec) -lt 30){ if($Idle){ if($fullRun -or (-not $script:lightRun) -or -not (LightOK)){ Stop-Work $(if($script:playWhy){ 'he is playing ('+$script:playWhy+')' }else{ 'he is back at the PC' }); return } }else{ Stop-Work ('someone is at the PC: '+$script:awayWhy) -Refund; return } }
+    if(-not $Idle){ if(($k % 6) -eq 0){ Cap-Tests; $fh=FnpHold; if($fh){ Stop-Work ('paused: the PC is free for FnP tests ('+$fh+')') -Refund; return } } }   # 11-08 (Cap-Tests, FnpHold)
     if(-not $Idle){ Gate-Tick; if($script:gateAgain){ $script:gateAgain=$false; return } }   # 11-02: a job is done, so a round goes before the next job (a new full run, the robot, a new runner)
     if($Idle -and ($k % 6) -eq 0){
       if((FreeGB) -lt 4){ $lo++ }else{ $lo=0 }
@@ -1313,6 +1314,46 @@ function Gate-Note([string]$why){
   $cs='idle'; if(GetS 'pause_why'){ $cs=GetS 'pause_why' } elseif((Running 'corpq\.sh|corpus-slices\.sh') -gt 0){ $cs='running '+(Split-Path (GetS 'corpus_file') -Leaf) }
   Write-Status $cs (Running 'fuzz\.ps1'); Publish $why
 }
+# 11-08 (owner item 4: "take the HTML runner off 100% CPU and agree on when the JT PC is free for FnP tests", agreed by PILLAGERS-HTML NEW CEO
+# with FNP NEW JT PC CORRESPONDENT). SPARE PC only, IDLE MODE unchanged.
+# CPU: the robot (9331) and the full run (9344, corpq.sh) run below normal on all but one logical processor, so one stays free and HTML tests
+# never hold the PC at 100%. Cap-Tests sets it again every 30 s on each test part and its Chrome (new children take it from their parent).
+# Gate jobs (9347, the ship checks) are left as they are.
+# FnP window: FnpHold pauses all HTML test work (the same pause as someone at the PC) while the Fortnite editor or game runs here, for 30
+# minutes after it was last seen, and while tools/handoff/spare/fnp-hold.txt on GitHub master has a line until=EPOCH (Unix seconds) still
+# to come. PILLAGERS-HTML NEW CEO writes that file at least 10 minutes before a planned FnP test and removes it after.
+$script:capMask=[long]0; $script:fnpT=[long]0; $script:fnpUntil=[long]0
+function Cap-Tests(){
+  if($Idle){ return }
+  try{
+    if($script:capMask -eq 0){ $nc=[Environment]::ProcessorCount; if($nc -lt 2 -or $nc -gt 62){ $script:capMask=-1 }else{ $script:capMask=([long]1 -shl ($nc-1))-1 } }
+    if($script:capMask -lt 0){ return }
+    foreach($p in @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue)){
+      $c=[string]$p.CommandLine; $n=[string]$p.Name; if(-not $c){ continue }
+      if(($n -eq 'chrome.exe' -and $c -match '(remote-debugging-port=|pillagers-cdp)(9331|9344)\b') -or ($n -eq 'powershell.exe' -and $c -match '(fuzz|cdp)\.ps1.*-Port\s+"?(9331|9344)\b') -or (($n -eq 'bash.exe' -or $n -eq 'sh.exe') -and $c -match 'corpq\.sh|corpus-slices\.sh')){
+        $g=$null
+        try{ $g=[Diagnostics.Process]::GetProcessById([int]$p.ProcessId)
+             if([long]$g.ProcessorAffinity -ne $script:capMask){ $g.ProcessorAffinity=[IntPtr]$script:capMask }
+             if($g.PriorityClass -ne [Diagnostics.ProcessPriorityClass]::BelowNormal -and $g.PriorityClass -ne [Diagnostics.ProcessPriorityClass]::Idle){ $g.PriorityClass=[Diagnostics.ProcessPriorityClass]::BelowNormal } }catch{} finally{ if($g){ $g.Dispose() } }
+      }
+    }
+  }catch{}
+}
+function FnpHold(){
+  if($Idle){ return '' }
+  try{
+    $eg=EpicGame
+    if($eg){ PutS 'fnp_seen' ([string](Epoch)); return ('fortnite is running: '+$eg) }
+    $fs=[long]('0'+(GetS 'fnp_seen')); if($fs -gt 0 -and ((Epoch)-$fs) -lt 1800){ return 'fortnite closed under 30 minutes ago' }
+    if(((Epoch)-$script:fnpT) -ge 60){
+      $script:fnpT=Epoch; $script:fnpUntil=0
+      $t=G -C $R show 'origin/master:tools/handoff/spare/fnp-hold.txt'
+      if($script:gx -eq 0 -and ([string]($t -join "`n")) -match 'until=(\d{9,11})'){ $script:fnpUntil=[long]$Matches[1] }
+    }
+    if($script:fnpUntil -gt (Epoch)){ return ('fnp test window until '+([DateTimeOffset]::FromUnixTimeSeconds($script:fnpUntil).LocalDateTime.ToString('HH:mm'))) }
+  }catch{}
+  return ''
+}
 # the full run's scripts and browser: below normal while a job runs, normal after
 function Gate-Yield([bool]$on){
   $cl=$(if($on){ [Diagnostics.ProcessPriorityClass]::BelowNormal }else{ [Diagnostics.ProcessPriorityClass]::Normal })
@@ -1479,10 +1520,10 @@ while($true){
     # the VM when the pause begins and every PublishMin minutes (a failed push is tried again at the next note, not every look), and at
     # those notes a new runner from GitHub is still taken (not while a full run is still there: the checkout would swap its files), so a
     # fix from the VM reaches a spare PC that is paused for hours; the new copy goes on from when someone was last there (Save-Hold)
-    $away=AwaySec
-    if($away -lt 900){
-      $pw='paused: someone is using the PC'
-      Stop-Work ($pw+', '+$script:awayWhy) -Refund
+    $away=AwaySec; $fh=FnpHold   # 11-08: an FnP test window pauses like someone at the PC (FnpHold)
+    if($away -lt 900 -or $fh){
+      $pw=$(if($fh -and $away -ge 900){ 'paused: the PC is free for FnP tests ('+$fh+')' }else{ 'paused: someone is using the PC' })
+      Stop-Work ($pw+', '+$(if($fh -and $away -ge 900){ $fh }else{ $script:awayWhy })) -Refund
       Gate-Tick -Paused
       $chg=((GetS 'pause_why') -ne $pw)
       if($chg){ PutS 'pause_why' $pw; PutS 'pause_t' ([string](Epoch)); Say ($pw+' ('+$script:awayWhy+')') }
