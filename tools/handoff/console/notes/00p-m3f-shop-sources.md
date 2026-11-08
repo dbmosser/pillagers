@@ -7,4 +7,6 @@ Design:
 - Contracts: c.wg {k,r} from wornConRoll at genContract (std 30%, hard 45%, elite 60%), Math.random seeded wornRand, no rr. Claim adds the piece. Board line "gear: rare gloves".
 - Ranks: gear rows at 10 13 16 19 22 25 28 ({k:'gear',g,r}). rankPay pays via wornGift.
 - Kit: priv items ['medkit'], wg {k:'armor',r:1}; birthBorn gives it when the kit is paid (c>0), seed from the generation; worn on armor if empty else P.gear.
-Fixture retargets needed: v37.21 m1ranks ONE (every reward cash or kit) accepts gear; shop FOUR (cells === SHOP.length) counts .vcell:not(.wg).
+SHIPPED v37.60 cw-m3shop (e3891c4eb), ON HIS PC 58 s after. First preflight failed lint: a // comment in the middle of the one-line rankRwTxt hid its closing brace; /* */ fixed it. Fixture retarget commit 4cfc10259.
+Pictures: notes/shots/00p-m3f-after via notes/00p-m3f-shop-recipes.json (made by S\mk-cw-m3shopshots.ps1).
+Fixture retargets (done): v37.21 m1ranks ONE (every reward cash or kit) accepts gear; shop FOUR (cells === SHOP.length) counts .vcell:not(.wg).

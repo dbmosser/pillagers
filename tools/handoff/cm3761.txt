@@ -1,0 +1,7 @@
+v37.61: season zero m3: a death takes what you wore, an extract earns pips
+
+a death or a quit that ends the pillager empties the worn slots after the hall copies them; the stash pieces are not touched. The KIA card lists each worn piece in its rarity colour marked lost, the count says n worn pieces and the money gone includes them at their price (the hall value lost too). A piece carried in the raid bag never takes a safe pocket. An extract gives each worn piece one pip, up to 3, with one line per piece that gained (name pip n, at most 4 then +n). The end card tile row no longer drops lost rows that end its list. The free walk back, a sim raid, the demo and the player 2 window take nothing and add no pip
+
+Check 37.61. Fails on v37.60.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
