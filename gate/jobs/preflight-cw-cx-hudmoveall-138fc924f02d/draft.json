@@ -1,0 +1,120 @@
+{
+    "title":  "EVERY RAID HUD PANEL MOVES",
+    "why":  "His order (10-28): ideally every single Hud element would be grabbable/ movable. Watch: whether grabbing a panel ever fires the gun or opens something under it.",
+    "now":  "Drag the raid readouts, extraction, belt handle, air strike, teammates, feed, danger and power chips. The gun keeps its existing handle. Settings resets the whole layout; both windows keep separate saved layouts.",
+    "edits":  [
+                  {
+                      "anchor":  "var HUDBOX={},HUDDRAG=null,HUDRESIZE=null;",
+                      "replacement":  "var HUDBOX={},HUDDRAG=null,HUDRESIZE=null;\n// v28.xx (cw-cx-hudmoveall), HIS ORDER (10-28): \"ideally every single Hud element would be grabbable/ movable\".\n// Offsets stay in screen pixels. Each window saves its own role, including the arcade sandbox.\nvar HUDLAYOUT={p:null,key:\u0027\u0027,g:null};\nfunction hudLayoutKey(){\n  var arcade=typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE\u0026\u0026ARCADE.on;\n  var second=(typeof NET===\u0027object\u0027\u0026\u0026NET\u0026\u0026(NET.same===\u0027p2\u0027||NET.seat===1))||(arcade\u0026\u0026ARCADE.role===\u0027p2\u0027);\n  return SKEY+\u0027:hudlayout:\u0027+(arcade?\u0027arcade:\u0027:\u0027career:\u0027)+(second?\u0027p2\u0027:\u0027p1\u0027);\n}\nfunction hudLayoutLoad(){\n  var key=hudLayoutKey(), raw, data;\n  if(HUDLAYOUT.p===P\u0026\u0026HUDLAYOUT.key===key) return;\n  try{ raw=localStorage.getItem(key); data=raw?JSON.parse(raw):null;\n    if(data\u0026\u0026typeof data===\u0027object\u0027\u0026\u0026!Array.isArray(data)) P.hud=data;\n    else P.hud=(!HUDLAYOUT.key\u0026\u0026key.slice(-2)===\u0027p1\u0027)?JSON.parse(JSON.stringify(P.hud||{})):{};\n  }catch(_hl){ P.hud=P.hud||{}; }\n  HUDLAYOUT.p=P; HUDLAYOUT.key=key;\n}\nfunction hudLayoutSave(){\n  try{ localStorage.setItem(hudLayoutKey(),JSON.stringify(P.hud||{})); }catch(_hs){}\n  saveProfile();\n}\nfunction hudLayoutReset(){\n  hudLayoutLoad(); P.hud={}; HUDDRAG=null; HUDRESIZE=null;\n  HUDBOX={}; _legAnchorY=null; _legBase=null;\n  hudLayoutSave();\n}\nfunction hudMoveFrame(){\n  hudLayoutLoad();\n  if(HUDLAYOUT.g!==G){ HUDBOX={}; HUDLAYOUT.g=G; }\n  for(var k in HUDBOX) if(HUDBOX[k]\u0026\u0026HUDBOX[k].move) delete HUDBOX[k];\n}\nfunction hudMoveBox(id,b,tg){\n  if(!b||!(b.w\u003e0\u0026\u0026b.h\u003e0)) return b;\n  var o=hudOff(id);\n  b.x+=o.dx; b.y+=o.dy;\n  if(tg){ tg.x+=o.dx; tg.y+=o.dy; }\n  HUDBOX[id]={x:b.x,y:b.y,w:b.w,h:b.h,tg:tg||null,move:1};\n  return b;\n}\nfunction hudMoveStart(id){ var o=hudOff(id); ctx.save(); ctx.translate(o.dx,o.dy); }\nfunction hudMoveEnd(id,b,tg){ ctx.restore(); return hudMoveBox(id,b,tg); }\nfunction hudMoveHit(mx,my){\n  var names=Object.keys(HUDBOX), i, k, b;\n  for(i=names.length-1;i\u003e=0;i--){ k=names[i]; b=HUDBOX[k];\n    if(b\u0026\u0026b.move\u0026\u0026inRect(b,mx,my)\u0026\u0026!inRect(b.tg,mx,my)\u0026\u0026!(HUDZ[k]!==undefined\u0026\u0026!hudOff(k).c\u0026\u0026hudOnGrip(b,mx,my))) return k;\n  }\n  return null;\n}\nfunction hudMoveGrab(mx,my){\n  var id=hudMoveHit(mx,my), o;\n  if(!id) return false;\n  o=hudOff(id); HUDDRAG={id:id,mx:mx,my:my,dx:o.dx,dy:o.dy}; mouse.down=false;\n  return true;\n}\nfunction drawMinimap(){\n  var tg, result;\n  hudMoveStart(\u0027mmap\u0027);\n  try{ result=drawMinimapBase(); }finally{\n    tg=HUDBOX.mmap\u0026\u0026HUDBOX.mmap.tg;\n    hudMoveEnd(\u0027mmap\u0027,MMAP.box,tg);\n  }\n  return result;\n}"
+                  },
+                  {
+                      "anchor":  "  if(HUDDRAG){ HUDDRAG=null; try{ saveProfile(); }catch(_e2){} }",
+                      "replacement":  "  if(HUDDRAG){ HUDDRAG=null; try{ hudLayoutSave(); }catch(_e2){} }"
+                  },
+                  {
+                      "anchor":  "  if(HUDRESIZE){ HUDRESIZE=null; try{ saveProfile(); }catch(_e3){} }",
+                      "replacement":  "  if(HUDRESIZE){ HUDRESIZE=null; try{ hudLayoutSave(); }catch(_e3){} }"
+                  },
+                  {
+                      "anchor":  "  if(e.button===0\u0026\u0026G\u0026\u0026!G.over\u0026\u0026G.trade) return;",
+                      "replacement":  "  if(e.button===0\u0026\u0026G\u0026\u0026!G.over\u0026\u0026G.trade) return;\n  // v28.xx (cw-cx-hudmoveall): panel grabs precede belt items and the trigger.\n  if(e.button===0\u0026\u0026state===\u0027raid\u0027\u0026\u0026G\u0026\u0026!G.over\u0026\u0026!G.paused\u0026\u0026!G.bagOpen\u0026\u0026!G.mapOpen\u0026\u0026!G.forgeUI\u0026\u0026!G.wheel\u0026\u0026hudMoveGrab(mouse.x,mouse.y)) return;"
+                  },
+                  {
+                      "anchor":  "function hudHit(mx,my){",
+                      "replacement":  "function hudHit(mx,my){\n  var moving=hudMoveHit(mx,my); if(moving) return {id:moving,part:\u0027bar\u0027};"
+                  },
+                  {
+                      "anchor":  "  var h=(HB.tg\u0026\u0026HB.tg.h)?HB.tg.h:14;",
+                      "replacement":  "  if(HB.move) return HB; // v28.xx (cw-cx-hudmoveall): the same handle is used by hit testing and the screen clamp.\n  var h=(HB.tg\u0026\u0026HB.tg.h)?HB.tg.h:14;"
+                  },
+                  {
+                      "anchor":  "  hudClampAll();",
+                      "replacement":  "  hudLayoutLoad(); hudClampAll(); hudMoveFrame();"
+                  },
+                  {
+                      "anchor":  "function drawMinimap(){\n  var p=G\u0026\u0026G.player",
+                      "replacement":  "function drawMinimapBase(){\n  var p=G\u0026\u0026G.player"
+                  },
+                  {
+                      "anchor":  "          saveProfile(); blip(\u0027pick\u0027);",
+                      "replacement":  "          hudLayoutSave(); blip(\u0027pick\u0027);"
+                  },
+                  {
+                      "anchor":  "if(!G||!G.sim){ try{ saveProfile(); }catch(_hc){} }",
+                      "replacement":  "if(!G||!G.sim){ try{ hudLayoutSave(); }catch(_hc){} }"
+                  },
+                  {
+                      "anchor":  "  if((G.arcade||G.career)\u0026\u0026!_tpDn) arcadeScoreHud(_tpM,_tpz);",
+                      "replacement":  "  if((G.arcade||G.career)\u0026\u0026!_tpDn){\n    hudMoveStart(\u0027score\u0027);\n    try{ arcadeScoreHud(_tpM,_tpz); }finally{ hudMoveEnd(\u0027score\u0027,SCOREBOX.g===G?SCOREBOX:null); }\n    if(SCOREBOX.g===G\u0026\u0026SCOREBOX.y\u003c_tpH\u0026\u0026SCOREBOX.y+SCOREBOX.h\u003e0) RAIL.scR=SCOREBOX.x+SCOREBOX.w;\n    else RAIL.scR=_tpIn;\n  }"
+                  },
+                  {
+                      "anchor":  "  if(!(G.arcade||G.career)||!_noClk){",
+                      "replacement":  "  hudMoveStart(\u0027clock\u0027);\n  if(!(G.arcade||G.career)||!_noClk){"
+                  },
+                  {
+                      "anchor":  "  // HIS NOTE, 2026-08-26: \"can you make it point to the NEAREST extraction instead,",
+                      "replacement":  "  // v28.xx (cw-cx-hudmoveall): weather travels with the clock; keep the clock obstacle in screen pixels.\n  hudMoveEnd(\u0027clock\u0027,CLOCKBOX.g===G?{x:CLOCKBOX.x,y:CLOCKBOX.y,w:RAIL.skR-CLOCKBOX.x,h:CLOCKBOX.h}:null);\n  if(CLOCKBOX.g===G){ CLOCKBOX.x+=hudOff(\u0027clock\u0027).dx; CLOCKBOX.y+=hudOff(\u0027clock\u0027).dy;\n    if(CLOCKBOX.y\u003c_tpH\u0026\u0026CLOCKBOX.y+CLOCKBOX.h\u003e0){ RAIL.clL=CLOCKBOX.x; RAIL.clR=CLOCKBOX.x+CLOCKBOX.w; }\n    else { RAIL.clL=W/2; RAIL.clR=W/2; }\n  }\n  // HIS NOTE, 2026-08-26: \"can you make it point to the NEAREST extraction instead,"
+                  },
+                  {
+                      "anchor":  "  if(_tgt){\n    var za=",
+                      "replacement":  "  if(_tgt){\n    hudMoveStart(\u0027extract\u0027);\n    var za="
+                  },
+                  {
+                      "anchor":  "  ctx.textAlign=\u0027center\u0027; ctx.font=railF(TYPE.label);",
+                      "replacement":  "  if(_tgt) hudMoveEnd(\u0027extract\u0027,{x:_cdX,y:_cdY,w:_cdW,h:_cdH});\n  ctx.textAlign=\u0027center\u0027; ctx.font=railF(TYPE.label);"
+                  },
+                  {
+                      "anchor":  "for(k in HUDBOX){ B=HUDBOX[k]; if(B\u0026\u0026B.w\u003e0\u0026\u0026B.h\u003e0) L.push(B); }",
+                      "replacement":  "for(k in HUDBOX){ B=HUDBOX[k]; if(k!==\u0027extarrow\u0027\u0026\u0026B\u0026\u0026B.w\u003e0\u0026\u0026B.h\u003e0) L.push(B); }"
+                  },
+                  {
+                      "anchor":  "    cx=Math.round(cx); cy=Math.round(cy);",
+                      "replacement":  "    var _eam=hudMoveBox(\u0027extarrow\u0027,{x:Math.round(cx)-bw/2-ar*2,y:Math.round(cy)-bh/2-ar*2,w:bw+ar*4,h:bh+ar*4});\n    cx=_eam.x+bw/2+ar*2; cy=_eam.y+bh/2+ar*2;"
+                  },
+                  {
+                      "anchor":  "    var _gSel=null, _gTs=[], _gti;",
+                      "replacement":  "    if(!G.hubFloor){\n      var _beltMove=hudMoveBox(\u0027belt\u0027,{x:hx,y:hy-LH(12),w:tw2,h:LH(10)});\n      hx=_beltMove.x; hy=_beltMove.y+LH(12);\n      ctx.save(); ctx.fillStyle=HUDC.dim; ctx.globalAlpha=0.55;\n      ctx.fillRect(hx+tw2/2-LH(18),hy-LH(8),LH(36),Math.max(2,LH(2))); ctx.restore();\n    }\n    var _gSel=null, _gTs=[], _gti;"
+                  },
+                  {
+                      "anchor":  "R0=airPlateAt(bw,bh,z); x=R0.x; y=R0.y;",
+                      "replacement":  "R0=airPlateAt(bw,bh,z); R0=hudMoveBox(\u0027air\u0027,{x:R0.x,y:R0.y,w:bw,h:bh}); x=R0.x; y=R0.y;"
+                  },
+                  {
+                      "anchor":  "x0=Math.round(W/2-tot/2); y0=Math.round(miny-24*z); EDGEBOX.chips={x:x0,y:y0,w:tot,h:Math.round(24*z)};",
+                      "replacement":  "x0=Math.round(W/2-tot/2); y0=Math.round(miny-24*z); EDGEBOX.chips=hudMoveBox(\u0027chips\u0027,{x:x0,y:y0,w:tot,h:Math.round(24*z)}); x0=EDGEBOX.chips.x; y0=EDGEBOX.chips.y;"
+                  },
+                  {
+                      "anchor":  "  R=feedRect(); FEEDBOX.x=R.x;",
+                      "replacement":  "  R=feedRect(); R.x+=hudOff(\u0027feed\u0027).dx; R.y+=hudOff(\u0027feed\u0027).dy; FEEDBOX.x=R.x;"
+                  },
+                  {
+                      "anchor":  "  } finally { ctx.restore(); ctx.globalAlpha=oa; }\n  return n;\n}\nfunction msgTick",
+                      "replacement":  "  } finally { ctx.restore(); ctx.globalAlpha=oa; }\n  if(n\u003e0){ var _fb=null, _fr, _fi;\n    for(_fi=0;_fi\u003cFEEDBOX.rows.length;_fi++){ _fr=FEEDBOX.rows[_fi];\n      if(!_fb) _fb={x:_fr.x,y:_fr.y,w:_fr.w,h:_fr.h};\n      else { var _fx=Math.min(_fb.x,_fr.x), _fy=Math.min(_fb.y,_fr.y); _fb.w=Math.max(_fb.x+_fb.w,_fr.x+_fr.w)-_fx; _fb.h=Math.max(_fb.y+_fb.h,_fr.y+_fr.h)-_fy; _fb.x=_fx; _fb.y=_fy; }\n    }\n    if(_fb){ HUDBOX.feed={x:_fb.x,y:_fb.y,w:_fb.w,h:_fb.h,move:1}; }\n  }\n  return n;\n}\nfunction msgTick"
+                  },
+                  {
+                      "anchor":  "  ax=dn?W/2:RAIL.clL-gap; tx0=dn?ax-tw*k/2:ax-tw*k; bw=tw*k;",
+                      "replacement":  "  ax=dn?W/2:RAIL.clL-gap; tx0=dn?ax-tw*k/2:ax-tw*k; bw=tw*k;\n  var _am=hudMoveBox(\u0027danger\u0027,{x:tx0,y:y0,w:bw,h:hh});\n  ax+=hudOff(\u0027danger\u0027).dx; tx0=_am.x; y0=_am.y; mid=y0+hh/2;"
+                  },
+                  {
+                      "anchor":  "  NETTEAMBOX.n=0;\n  if(typeof G===\u0027undefined\u0027",
+                      "replacement":  "  var _teamOff=hudOff(\u0027team\u0027); _tt+=_teamOff.dy;\n  NETTEAMBOX.n=0;\n  if(typeof G===\u0027undefined\u0027"
+                  },
+                  {
+                      "anchor":  "NETTEAMBOX={n:n,x:hudIns(),y:_tt,w:Math.round(158*_thr),h:Math.round(n*_tst*_thr)};",
+                      "replacement":  "NETTEAMBOX={n:n,x:hudIns()+_teamOff.dx,y:_tt,w:Math.round(158*_thr),h:Math.round(n*_tst*_thr)}; HUDBOX.team={x:NETTEAMBOX.x,y:_tt,w:NETTEAMBOX.w,h:NETTEAMBOX.h,move:1};"
+                  },
+                  {
+                      "anchor":  "    x=hudIns()/_thr+4; var _hfMate=",
+                      "replacement":  "    x=(hudIns()+_teamOff.dx)/_thr+4; var _hfMate="
+                  },
+                  {
+                      "anchor":  "function setSecMove(host){",
+                      "replacement":  "function setSecMove(host){\n  var resetHud=host.querySelector(\u0027#set_hudreset\u0027);\n  if(resetHud) resetHud.onclick=function(){ hudLayoutReset(); blip(\u0027pick\u0027); };"
+                  },
+                  {
+                      "anchor":  "  _SEC[\u0027THE RAID\u0027]=diffRowHtml()",
+                      "replacement":  "  // v28.xx (cw-cx-hudmoveall): one reset for every raid HUD offset, size and folded state.\n  _SEC.DISPLAY=(_SEC.DISPLAY||\u0027\u0027)+\u0027\u003cdiv class=\"row\"\u003e\u003cdiv style=\"flex:1\"\u003e\u003cb\u003ehud layout\u003c/b\u003e\u003c/div\u003e\u003cbutton id=\"set_hudreset\"\u003ereset hud layout\u003c/button\u003e\u003c/div\u003e\u0027;\n  _SEC[\u0027THE RAID\u0027]=diffRowHtml()"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027every raid HUD panel drags, saves per window role and resets without firing\u0027,run:function(){\n    if(typeof hudMoveGrab!==\u0027function\u0027||typeof hudLayoutReset!==\u0027function\u0027) return \u0027fixed HUD elements have no drag or reset\u0027;\n    var g, oldP, oldHUD, oldLayout, oldArc, oldWN, oldStale, oldSub, net0={}, stores={}, k, staged=false;\n    var ids=[\u0027body\u0027,\u0027cond\u0027,\u0027gear\u0027,\u0027legend\u0027,\u0027mmap\u0027,\u0027raiders\u0027,\u0027clock\u0027,\u0027score\u0027,\u0027extract\u0027,\u0027extarrow\u0027,\u0027belt\u0027,\u0027air\u0027,\u0027team\u0027,\u0027feed\u0027,\u0027danger\u0027,\u0027chips\u0027];\n    function frame(){ __frame(0); drawHUD(); }\n    function paint(id){\n      // The folded f1 hint has no panel handle. Exercise the existing compact panel while it is open.\n      g.legendOn=id===\u0027legend\u0027?1:0; g.legendAutoDone=true; g.legendExtDone=true;\n      frame(); if(id===\u0027extarrow\u0027) extEdgeArrow({za:true,z:g.zones[0],d:500,sx:W+500,sy:H/2});\n    }\n    function copyBox(b){ return b\u0026\u0026{x:b.x,y:b.y,w:b.w,h:b.h,tg:b.tg,move:b.move}; }\n    function move(x,y){ var r=cv.getBoundingClientRect(); cv.dispatchEvent(new MouseEvent(\u0027mousemove\u0027,{clientX:r.left+x,clientY:r.top+y,bubbles:true})); }\n    try{\n      __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n      __deploy({kit:[\u0027gun_carbine\u0027,\u0027bandage\u0027,\u0027frag\u0027],safe:null,mapIx:0,seed:4242});\n      g=__state(); if(!g||!g.player||g.over) return \u0027no staged raid\u0027;\n      oldP=P; oldHUD=P.hud; oldLayout=HUDLAYOUT; oldArc=ARCADE.on; oldWN=WNSEEN; oldStale=SAVE_STALE; oldSub=SETSUB;\n      for(k in NET) net0[k]=NET[k]; staged=true;\n      ARCADE.on=false; NET.seat=0; NET.same=false; SAVE_STALE=false; WNSEEN=1;\n      for(var seat=0;seat\u003c2;seat++){ NET.seat=seat; k=hudLayoutKey(); stores[k]=localStorage.getItem(k); localStorage.removeItem(k); } NET.seat=0;\n      HUDLAYOUT={p:null,key:\u0027\u0027,g:null};\n      g.mapFirst=false; g.mapOpen=false; g.bagOpen=false; g.paused=false; pauseOpen=false; g.trade=null; g.wheel=null;\n      hudLayoutReset(); keys={}; mouse.down=false;\n      // Exercise actual draw paths, with active meter, chips, alert, feed and teammate.\n      g.career=true; g.sim=false; g.raidLen=600; g.timeLeft=500; g.t=10; g.legendOn=0; CFG.mmSz=1;\n      NET.on=true; NET.upSeed=g.seed\u003e\u003e\u003e0; NET.roster=[{seat:0,name:\u0027one\u0027},{seat:1,name:\u0027two\u0027}];\n      NET.up=[{seat:1,n:1,age:0,sd:g.seed\u003e\u003e\u003e0,x:g.player.x+100,y:g.player.y,hp:80,mh:100}];\n      airS().m=10; pwrS().act[PWR_KINDS[0].k]=30;\n      feedAdd(\u0027layout check\u0027,\u0027info\u0027,{}); feedS().t=2;\n      alertShow(\u0027location revealed\u0027,\u0027warn\u0027,{},g.t-1);\n      var i,id,b,after,bar,dx,dy,mag=g.player.ammo,key=hudLayoutKey(), saved, offsets={}, baseline={};\n      for(i=0;i\u003cids.length;i++){\n        id=ids[i];\n        hudLayoutReset(); paint(id); paint(id); b=copyBox(HUDBOX[id]);\n        if(!b) return id+\u0027 draw path has no handle\u0027;\n        baseline[id]=b; bar=hudBar(b); dx=b.x\u003eW/2?-24:24; dy=b.y\u003eH/2?-18:18;\n        offsets[id]={dx:dx,dy:dy};\n        // Keep the real drawn rectangle, isolating only input priority for this panel.\n        HUDBOX={}; HUDBOX[id]=b;\n        move(bar.x+Math.min(35,bar.w/3),bar.y+Math.min(5,bar.h/2)); cv.dispatchEvent(new MouseEvent(\u0027mousedown\u0027,{button:0,bubbles:true,cancelable:true}));\n        if(!HUDDRAG||HUDDRAG.id!==id||mouse.down||g.drag) return id+\u0027 grab fired or opened an item\u0027;\n        move(mouse.x+dx,mouse.y+dy); window.dispatchEvent(new MouseEvent(\u0027mouseup\u0027,{button:0,bubbles:true}));\n        if(hudOff(id).dx!==dx||hudOff(id).dy!==dy||HUDDRAG||g.player.ammo!==mag) return id+\u0027 drag or release failed\u0027;\n        saved=JSON.parse(localStorage.getItem(key)||\u0027{}\u0027); if(!saved[id]||saved[id].dx!==dx||saved[id].dy!==dy) return id+\u0027 was not saved\u0027;\n        paint(id); after=HUDBOX[id];\n        if(!after||Math.abs(after.x-b.x-dx)\u003e1||Math.abs(after.y-b.y-dy)\u003e1) return id+\u0027 drawn position did not follow the drag\u0027;\n        P.hud={}; HUDLAYOUT.p=null; hudLayoutLoad(); paint(id); after=HUDBOX[id];\n        if(!after||Math.abs(after.x-b.x-dx)\u003e1||Math.abs(after.y-b.y-dy)\u003e1) return id+\u0027 drawn position lost on reload\u0027;\n        hudLayoutReset(); paint(id); after=HUDBOX[id];\n        if(!after||Math.abs(after.x-b.x)\u003e1||Math.abs(after.y-b.y)\u003e1) return id+\u0027 drawn position did not reset\u0027;\n      }\n      hudLayoutReset(); frame();\n      var cell=g.hotCells\u0026\u0026g.hotCells[0], cb=HUDBOX.clock;\n      if(!cell||!cb) return \u0027no belt overlap staging\u0027;\n      P.hud.clock={dx:cell.x-cb.x,dy:cell.y-cb.y}; frame(); cb=HUDBOX.clock;\n      move(cell.x+5,cell.y+5); cv.dispatchEvent(new MouseEvent(\u0027mousedown\u0027,{button:0,bubbles:true,cancelable:true}));\n      if(!HUDDRAG||HUDDRAG.id!==\u0027clock\u0027||g.drag||mouse.down) return \u0027clock grab opened the belt underneath\u0027;\n      window.dispatchEvent(new MouseEvent(\u0027mouseup\u0027,{button:0,bubbles:true}));\n      P.hud=offsets; hudLayoutSave();\n      P.hud={}; HUDLAYOUT.p=null; hudLayoutLoad();\n      for(i=0;i\u003cids.length;i++) if(hudOff(ids[i]).dx!==offsets[ids[i]].dx||hudOff(ids[i]).dy!==offsets[ids[i]].dy) return ids[i]+\u0027 lost on reload\u0027;\n      NET.seat=1; HUDLAYOUT.p=null; hudLayoutLoad(); P.hud={clock:{dx:81,dy:42}}; hudLayoutSave();\n      NET.seat=0; HUDLAYOUT.p=null; hudLayoutLoad(); if(hudOff(\u0027clock\u0027).dx!==offsets.clock.dx) return \u0027player 2 replaced player 1 layout\u0027;\n      // v28.xx (cw-cx-hudmoveall): Settings wires ids through document, so exercise its real mounted list.\n      SETSUB=\u0027\u0027; renderSettings(); var reset=document.querySelector(\u0027#setlist #set_hudreset\u0027);\n      if(!reset||typeof reset.onclick!==\u0027function\u0027) return \u0027settings has no wired reset hud layout\u0027; reset.click();\n      for(i=0;i\u003cids.length;i++) if(hudOff(ids[i]).dx||hudOff(ids[i]).dy) return ids[i]+\u0027 did not reset\u0027;\n      HUDLAYOUT.p=null; hudLayoutLoad(); if(Object.keys(P.hud).length) return \u0027reset did not persist\u0027;\n      NET.seat=1; HUDLAYOUT.p=null; hudLayoutLoad(); if(hudOff(\u0027clock\u0027).dx!==81) return \u0027reset changed other window\u0027;\n      return null;\n    }finally{\n      HUDDRAG=null; HUDRESIZE=null; mouse.down=false;\n      try{__endRaid(\u0027abandon\u0027);}catch(_e){} __topClear();\n      if(staged){\n        P=oldP; P.hud=oldHUD; HUDLAYOUT=oldLayout; ARCADE.on=oldArc; WNSEEN=oldWN; SAVE_STALE=oldStale; SETSUB=oldSub;\n        for(k in NET) if(!Object.prototype.hasOwnProperty.call(net0,k)) delete NET[k];\n        for(k in net0) NET[k]=net0[k];\n        for(k in stores){ if(stores[k]===null) localStorage.removeItem(k); else localStorage.setItem(k,stores[k]); }\n        try{ renderSettings(); }catch(_setRestore){}\n      }\n    }\n  }},"
+}
