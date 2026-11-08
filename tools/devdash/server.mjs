@@ -2,6 +2,8 @@
 // separate windows app that shows everything that's happening at any given time related to developing the game?").
 // Reads only status files, logs and git; never a key. Serves http://127.0.0.1:8820 (localhost only). Opened as its own window by
 // the desktop shortcut (tools/devdash/open.vbs starts this server if it is not running, then opens Chrome in app mode).
+// 11-08 (PILLAGERS-HTML NEW CEO, owner addendum 1.4 and D12): HTML only. The FnP panels, the chat-transcript readers (context size, who used
+// the week) and the Codex session-file reader are switched off below; nothing here reads FnP files, the overlord inbox or any transcript.
 // 11-03 (OVERLORD, overnight): reworked into two separate projects on one page, FNP (Fortnite Pillagers, first priority) and HTML GAME
 // (back seat), plus what they share. FNP facts come from files and logs (the editor watcher's watch.log, the editor's own log, the test
 // scripts' sess*.out, the lead dev's verse-notes.md); the curated lines (what is proven, what needs his hands) are tools/devdash/status-notes.txt.
@@ -363,6 +365,7 @@ function actionOf(tu) {
 }
 const tailCache = new Map();   // sessionId -> { path, m, size, action, actionAt, contextK }
 function chatTail(sid) {
+  return {};   // 11-08: transcripts are not read (addendum 1.4)
   const p = findJsonl(sid); if (!p) return {};
   const st = statSync(p); let c = tailCache.get(sid);
   if (c && c.m === st.mtimeMs && c.size === st.size) return c;
@@ -463,7 +466,7 @@ async function whoScan() {
     whoOut = { hours: WHO_H, top, total: Math.round(all / 1000), at: now, partial };
   } catch {} finally { whoBusy = false; }
 }
-setTimeout(whoScan, 8000); setInterval(whoScan, 120e3);
+// 11-08: whoScan read every chat transcript; off (addendum 1.4)
 
 // E: the JTPC's own report (the JTPC writes status.json and serves it on 8917); a get every 60 s, last good copy kept
 const JT_HOST = '192.168.1.246', JT_PORT = 8917;
@@ -505,6 +508,7 @@ const jtpcOut = () => ({ ...jt });
 // F: Codex. Reads the lane line, the review lines in the inbox, the run list and the plan figures the Codex program itself writes in its newest session file (never auth.json)
 let planC = { key: '', v: null };
 function codexPlan() {
+  return null;   // 11-08: Codex session files are transcripts; not read (addendum 1.4)
   const base = HOMEDIR + '/.codex/sessions'; let file = null, mtime = 0;
   const desc = d => { try { return readdirSync(d).filter(n => /^\d+$/.test(n)).sort().reverse(); } catch { return []; } };
   outer: for (const y of desc(base).slice(0, 2)) for (const mo of desc(base + '/' + y).slice(0, 2)) for (const dd of desc(base + '/' + y + '/' + mo).slice(0, 3)) {
@@ -525,7 +529,7 @@ function codexOut() {
   const now = Date.now(), h6 = now - 6 * 3600e3, h24 = now - 24 * 3600e3;
   const status = rd(C + '/status-o.txt').trim().split(/\r?\n/)[0] || '', lane = status.replace(/^(?:\d\d-\d\d\s+)?(?:\d\d:\d\d\s+)?/, '').trim().slice(0, 140);
   const reviews = [];
-  for (const l of inboxLines()) { const x = /^(\d\d-\d\d \d\d:\d\d) CODEX CORRESPONDENT: (.*)/.exec(l); if (!x) continue; const t = textMs(x[1]); if (!t) continue;
+  for (const l of []) { const x = /^(\d\d-\d\d \d\d:\d\d) CODEX CORRESPONDENT: (.*)/.exec(l); if (!x) continue; const t = textMs(x[1]); if (!t) continue;
     const first = (/^(.+?[.!?])(?:\s|$)/.exec(x[2].replace(/\S*\.md\b/g, '').replace(/\s+/g, ' ').trim()) || [0, x[2]])[1];
     reviews.push({ at: x[1] + (t > now + 120e3 ? ' (wrong time)' : ''), atMs: t, text: first.slice(0, 200), severity: sev(x[2]), rev: /\breview/i.test(x[2]) }); }
   // 11-07 audit: only lines that name a review count as FnP reviews (research and draft lines were counted as clean reviews); a time ahead of now is the writer's mistake and is marked
@@ -568,7 +572,7 @@ function data0() {
     queue: tasks.filter(f => lane(f) === l).map(f => f.replace(/\.md$/, '')) })).map(x => ({ ...x, old: !x.busy && !x.queue.length && (textAgeS(x.status) ?? ageS(C + '/status-' + x.lane + '.txt') ?? 1e9) > 2 * 86400 }));   // 11-03: the status line's own date first (D, E and F files get touched, their news is from 10-18 and 10-19)
   const lockOwner = existsSync(S + '/shipq.lock') ? rd(S + '/shipq.owner').trim() : '';
   const g = gitInfo(), hb = ageS(N + '/runner.heartbeat');
-  const fn = safe(fnpNow);
+  const fn = null;   // 11-08: FnP panel off (D12); fnpNow() read the overlord inbox and pillagers-fortnite
   const titles = {}; (tail(S + "/shipq.log", 80).join(" ") + " " + lockOwner).replace(/cw-[A-Za-z0-9_-]+/g, k => { if (!titles[k]) { try { titles[k] = JSON.parse(rd(R + "/tools/handoff/drafts/draft-" + k + ".json").replace(/^﻿/, "")).title || ""; } catch {} } return k; });
   const st = kv(R + '/tools/handoff/stable.txt'), itch = rd(N + '/itch-ver.txt').trim(), v = ver();
   // 10-27: the version his main PC serves on 8802 (tools/handoff/onhispc.sh) and the version on itch (the runner's itch step)
@@ -584,7 +588,7 @@ function data0() {
     blocked: existsSync(C + '/blocked') ? readdirSync(C + '/blocked').filter(f => f.endsWith('.md')).map(f => ({ job: f.slice(0, -3), on: rd(C + '/blocked/' + f.slice(0, -3) + '.on').trim() })) : [],
     questions: tail(C + '/for-you.md', 12), plan: safe(plan, { wk: null }), ai: ai(), spareInfo: safe(spareInfo, {}),
     shipq: tail(S + '/shipq.log', 80).filter(l => !/waiting for the spare pc|the spare pc is running|is with the spare pc|joining job|^\d\d:\d\d (shots|(cw-)?gate(pass|fail)):/i.test(l)).slice(-6),   /* 11-02: the check now runs on the spare PC; its progress lines are not results */
-    commits: g.commits, curated: safe(curated), fnp: safe(fnp), fnpNow: fn,
+    commits: g.commits, curated: safe(curated), fnp: null, fnpNow: fn,
     chats: safe(chatsOut, []), vm: safe(vmOut), mem: safe(memOut), scripts: safe(() => ({ jobs: scriptsInfo.jobs, watchers: scriptsInfo.watchers, t: scriptsInfo.t })), jtpc: safe(jtpcOut), codex: safe(codexOut), open: safe(() => openOut(fn)), who: safe(() => whoOut), cpuNow: cpu };
 }
 let dataC = { t: 0, v: null };

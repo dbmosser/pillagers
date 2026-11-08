@@ -76,14 +76,14 @@ ramwait(){ local floor g i; floor=$(cap RAM_FLOOR_GB 6); floor=$(machine_floor "
     say "waiting for RAM: $g GB free, need $floor (${name:-codex})"; sleep 60; done; return 1; }
 # 11-03 (Codex Correspondent, OVERLORD's order): FnP first on JUL26. No Codex run while a walk or game is on, while the editor is being reopened, or with the editor open and
 # memory short (machine_editor_open: 14 GB, our own estimate, the same hold as the Claude helpers). Process names only: never read the editor's command line. No answer means hold.
-EDITOR_HOLD_FILE=/c/claudecode/pillagers-fortnite/tools/fnp-scripts/editor-stay-closed.txt
+# 11-08: EDITOR_HOLD_FILE (pillagers-fortnite) retired; the holds below only protect memory and a running Fortnite client on this PC.
 # 11-07 (OVERLORD order): fnp_hold [code|gate]. "code" (default) is the Codex step: codex exec is light, so with the editor open it needs only CX_CODE_MIN_GB (3) free, not 14.
 # "gate" is the test step (preflight/ship): the 14 GB editor rule stays for tests on this PC; with GATE_REMOTE on, the Chrome stages run on the JTPC, so only the walk/editor/helper holds apply.
 fnp_hold(){ local mode="${1:-code}"; HOLDWHY=""; [ "$ON_MAIN" = 1 ] || return 1; [ -n "$CX_FREEGB" ] && return 1
   machine_fortnite_playing && { HOLDWHY="a Fortnite walk or game is on"; return 0; }
   local age; age=$(powershell -NoProfile -Command "\$p=@(Get-Process -ErrorAction SilentlyContinue | Where-Object { \$_.ProcessName -match '^UnrealEditor' } | Sort-Object StartTime -Descending); if(\$p.Count){ [int]((Get-Date)-\$p[0].StartTime).TotalMinutes } else { 'closed' }" 2>/dev/null | tr -d '\r ')
   case "$age" in
-    closed) [ -f "$EDITOR_HOLD_FILE" ] && return 1; HOLDWHY="the Fortnite editor is closed and due to be reopened"; return 0;;
+    closed) return 1;;   # 11-08 (PILLAGERS-HTML NEW CEO): editor closed means no hold. The old "due to be reopened" hold read pillagers-fortnite (retired FnP root, D12)
     ''|*[!0-9]*) HOLDWHY="could not read the Fortnite editor's state"; return 0;;
   esac
   [ "$age" -lt 10 ] && { HOLDWHY="the Fortnite editor was just reopened"; return 0; }

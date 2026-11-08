@@ -84,6 +84,6 @@ xroom=1; [ -n "$xw" ] && awk -v w="$xw" 'BEGIN{exit !(w+0>=90)}' && xroom=0
 fl=$(timeout 120 py -3 tools/handoff/flipscan.py 5 2>/dev/null | grep "^LOOK"); [ -n "$fl" ] && flag "possible bad-memory damage in a recent build: $(echo "$fl" | head -2 | cut -c1-220)"
 # 11-02: ramwatch.py lives in the CEO chat's background, so a reboot stops it; its log goes quiet (each round or sit-out writes a line, once an hour)
 rw="$LOCALAPPDATA/PillagersRamwatch/ramwatch.log"; [ -f "$rw" ] && [ $(( $(date +%s) - $(stat -c %Y "$rw") )) -gt 5400 ] && flag "the hourly memory check has stopped (no round in 90 min): restart tools/handoff/ramwatch.py from the CEO chat"
-ew="$LOCALAPPDATA/PillagersEditorWatch/watch.log"; [ -f "$ew" ] && [ $(( $(date +%s) - $(stat -c %Y "$ew") )) -gt 1800 ] && flag "the check that reopens the Fortnite editor has stopped (quiet 30 min): restart pillagers-fortnite/tools/fnp-scripts/editorwatch.py from the CEO chat"
+# 11-08 (PILLAGERS-HTML NEW CEO, D12): the FnP editor-watch check is gone from the HTML check-in; FnP watches its own editor.
 say "newest build: $(grep -m1 "^var VER='" dark_raiders.html | sed "s/var VER='\([0-9.]*\)'.*/v\1/"), last commit $(git log -1 --format='%cr')"
 [ $look = 1 ] && echo "VERDICT: LOOK (lines above)" || echo "VERDICT: ALL CLEAR"
