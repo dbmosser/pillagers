@@ -1,0 +1,28 @@
+id=shots-0304812da8fa
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=fd9c3bee8558476ee4ee1962d5b27f8f71d1a4d3
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1794149524
+ended=1794149604
+result=PASS
+infra=0
+reason=
+--- stages
+== 1080 : window 1956x1185, viewport 1920x1080
+  m3g-give                               staged      13.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  m3g-lines                              staged      14.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 4k : window 3876x2265, viewport 3840x2160
+  m3g-give                               staged      13.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  m3g-lines                              staged      14.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+report: C:\PillagersSpare\gate\work\shots-0304812da8fa\shots\report.json
+--- end
+done=1
