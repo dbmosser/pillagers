@@ -1,0 +1,15 @@
+id=preflight-cw-m3shop-31bc778de493
+kind=preflight
+key=cw-m3shop
+tag=pfc
+v=37.60
+new=3760
+base=4cfc10259458c72ffa31fa1aa45f8113e427a1d7
+draft_sha=cd180bf6b637eea9366424737e45eeaf69928c063dab4f2a79adafdfc6926ead
+p_sha=c41abc88ec6b79d8414bf8d978a83c0c4f549442ae5b44181aaa4a60d58822c2
+f_sha=8ebf37573a8037a528ebca73633e0284b74e166efc94280092fcfbadce4abf53
+game_sha=9180f0f0630b46f8344bf9f5aa36c6ac1240bc4cbb0905cfb5b86b9c357bb503
+fix_sha=85f52d676278c4f85b14d08b80f953b7f1cfe82dd8bcaf1fb64cb37f616937f6
+from=JUL26
+submitted=1794136678
+expires=1794143278
