@@ -1,6 +1,6 @@
 host=DESKTOP-82BKOP4
-seen=2026-11-08 06:00
-epoch=1794135646
+seen=2026-11-08 06:04
+epoch=1794135851
 game=fb4003e1 v37.58
 test_run=idle
 robots=0
@@ -10,7 +10,6 @@ runner=37AAA590
 mode=full
 ram_total_gb=32
 cpu_threads=4
-cpu_pct=31
+cpu_pct=7
 cpu=Intel(R) Core(TM) i5-7600K CPU @ 3.80GHz
 gate_cap=1
-gate=running ship-cw-cx-juggernaut-4b3ada91759c
