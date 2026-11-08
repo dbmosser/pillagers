@@ -1,0 +1,7 @@
+v37.65: season zero m3: two player gear
+
+in a two player raid your gear counts for you on the host too: enemies see you from less far with hard to spot, and your search runs at your own speed on the host boxes (damage, speed and the rest already ran in your own window). The teammate row lists what your partner wears, each kind in its rarity colour. With the backpack open, T (Y on a pad) hands a piece from your bag to a partner within revive reach who is not down: it leaves your bag and lands in theirs with a line on each side; a lost word leaves it with you and it is never doubled. Worn pieces stay worn. Solo, the demo and a raid with nothing worn play as before
+
+Check 37.65. Fails on v37.64.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

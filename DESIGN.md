@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.65 - SEASON ZERO M3: TWO PLAYER GEAR
+
+Co-op hunt while he was away. his rulings of 11-01 (season zero m3, answer 75): hand gear to your partner in a raid, the partner sees what you wear, each player keeps their own gear and pillager. Before this a partner gear counted only in his own window, so on the host his hard to spot and search gear did nothing, and nothing could be handed over Watch: in a two player raid your gear counts for you on the host too: enemies see you from less far with hard to spot, and your search runs at your own speed on the host boxes (damage, speed and the rest already ran in your own window). The teammate row lists what your partner wears, each kind in its rarity colour. With the backpack open, T (Y on a pad) hands a piece from your bag to a partner within revive reach who is not down: it leaves your bag and lands in theirs with a line on each side; a lost word leaves it with you and it is never doubled. Worn pieces stay worn. Solo, the demo and a raid with nothing worn play as before
+
+MEASURED. Check 37.65 passes, and fails on v37.64.
 ## v37.64 - EXTRACT CARD: ROOM UNDER THE PIP LINES
 
 Co-op hunt while he was away. the 1080 picture of v37.61 showed the last pip line 9px over the stats divider of the extract card Watch: the pip lines of the worn pieces are one block with 16px under it, so the last line no longer crowds the stats row. Words and colours are unchanged
