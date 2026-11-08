@@ -1,0 +1,26 @@
+id=preflight-cw-cx-hudmoveall-5955976818ed
+kind=preflight
+key=cw-cx-hudmoveall
+tag=pfo
+v=37.66
+new=3766
+base=1bd7aa575d81008d2de848666b56ef03c982fd94
+host=DESKTOP-82BKOP4
+draft_sha=6b111febb39acb5853956e525c102084268724e5d59c76dd67d7a4272a57edb7
+p_sha=2de1bcc578ff83d5a879be0fba73fa7d83b1f6626bccb8128d12ce5782b08240
+f_sha=8f5b25026e4c8b0279fb585cbb70bbdf56321ba213828de0056c026d78e5efc1
+game_sha=6a625d7adb280efb7887937945685d438274d4f0635e1ab5db661976b9946506
+fix_sha=7705129f32e1bde16994cb591d33c6abadf07914f518a14cdb6bdd6b32a5f04c
+started=1794171955
+ended=1794171982
+result=FAIL
+infra=0
+reason=the new check does not pass twice on the drafted build
+--- stages
+ppfo -> OK, 29 edits applied plus DEVNOW
+fpfo -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.66 parse check
+dry fxdrypfo check 37.66: threw TypeError: Cannot set properties of null (setting 'onclick') / threw TypeError: Cannot set properties of null (setting 'onclick')
+--- end
+done=1
