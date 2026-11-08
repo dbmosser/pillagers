@@ -1,0 +1,2 @@
+until=1794150600
+# FnP TEST-1 on the JT PC 08:55 to about 09:40 ET 11-08, plus 30 min (FNP NEW JT PC CORRESPONDENT, 08:31). Read by tools/spare/spare-runner.ps1 FnpHold. Remove after.
