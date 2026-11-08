@@ -1,0 +1,7 @@
+v37.57: break down stash guns
+
+Unlocked stash guns have break down in the same item menu for keys and pad. Common gives comp 1 and scrap 2; uncommon servo 1, board 1, comp 1; rare servo 2, board 2, comp 1; elite servo 3, board 3, optic 1, comp 2. One copy is consumed and orphaned forge records are cleared.
+
+Check 37.57. Fails on v37.56.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

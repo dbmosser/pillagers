@@ -1,0 +1,5 @@
+## v37.57 - BREAK DOWN STASH GUNS
+
+Co-op hunt while he was away. His g-40 answer: Yes, break it down. Spare stash guns can become parts without money or XP. Watch: cheap parts could make bench guns and armour easy to craft; watch his stash for servo and board hoards.
+
+MEASURED. Check 37.57 passes, and fails on v37.56.

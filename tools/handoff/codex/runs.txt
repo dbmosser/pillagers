@@ -708,3 +708,11 @@
 2026-11-07 16:47 o-h10-169-out-player-watches-and-pings 162s ok PARTIAL in=5106550 out=33524 run=2
 2026-11-07 17:10 o-h10-169-out-player-watches-and-pings 57s ok DONE in=5643787 out=35545 run=3
 2026-11-07 17:18 o-h11-174-elite-element-guns 446s ok PARTIAL in=2587096 out=16839 run=1
+2026-11-07 17:37 o-h11-174-elite-element-guns 34s ok PARTIAL in=2929142 out=17734 run=2
+2026-11-07 17:46 o-h11-174-elite-element-guns 149s ok PARTIAL in=4117962 out=23232 run=3
+2026-11-07 17:53 o-h11-174-elite-element-guns 134s ok PARTIAL in=5386897 out=28107 run=4
+2026-11-07 17:57 o-h12-175-break-down-guns 214s ok PARTIAL in=734759 out=8411 run=1
+2026-11-07 18:02 o-h12-175-break-down-guns 76s ok PARTIAL in=1192755 out=11046 run=2
+2026-11-07 18:59 o-h12-175-break-down-guns 87s ok PARTIAL in=246091 out=2328 run=3
+2026-11-07 19:51 o-h12-175-break-down-guns 84s ok PARTIAL in=343817 out=2364 run=4
+2026-11-08 02:18 o-h12-175-break-down-guns 47s ok PARTIAL in=161013 out=1495 run=5

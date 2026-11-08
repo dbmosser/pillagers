@@ -2346,3 +2346,15 @@
 2026-11-07 0.1257 critic-o-h10-169-out-player-watches-and-pings
 2026-11-07 0.0000 o-h10-169-out-player-watches-and-pings
 2026-11-07 0.0000 o-h11-174-elite-element-guns
+2026-11-07 0.0000 o-h11-174-elite-element-guns
+2026-11-07 0.1345 critic-o-h11-174-elite-element-guns
+2026-11-07 0.1389 critic-o-h11-174-elite-element-guns
+2026-11-07 0.0000 o-h11-174-elite-element-guns
+2026-11-07 0.1660 critic-o-h11-174-elite-element-guns
+2026-11-07 0.1265 critic-o-h11-174-elite-element-guns
+2026-11-07 0.0000 o-h11-174-elite-element-guns
+2026-11-07 0.0000 o-h12-175-break-down-guns
+2026-11-07 0.0000 o-h12-175-break-down-guns
+2026-11-07 0.0000 o-h12-175-break-down-guns
+2026-11-07 0.0000 o-h12-175-break-down-guns
+2026-11-08 0.0000 o-h12-175-break-down-guns

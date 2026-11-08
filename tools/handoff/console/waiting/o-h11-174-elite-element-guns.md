@@ -11,3 +11,10 @@ Rules: the seed 4242 fingerprint (ents 85/374, containers 165/593) must hold unl
 TASK DONE when it shipped; TASK PARTIAL with what is left.
 
 HIS PRIORITY 10-27 (priorities page): LOW
+
+Lane note 2026-11-07 17:53: shipped cw-cx-eliteelements and parked: only lane-side steps are left. Codex's last words:
+v37.56 is shipped and confirmed on his PC. Pictures show the forged elite and recovered shock MK III.
+
+Critic scores remain 2. Its requested exit-arrow removal conflicts with check 35.50; documented for the coordinator without editing the fixture.
+
+TASK PARTIAL: coordinator must resolve the HUD/check conflict and complete real linked-window verification.

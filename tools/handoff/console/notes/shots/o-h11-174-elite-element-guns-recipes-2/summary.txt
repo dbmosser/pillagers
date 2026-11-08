@@ -1,0 +1,6 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  174-element-elite-fight                staged       7.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | naturally selected lmg shock
+  174-body-gun-card                      staged       7.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | body searched: gun_magnum shock
+== 4k : window 3876x2265, viewport 3840x2160
+  174-element-elite-fight                staged       6.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | naturally selected lmg shock
+  174-body-gun-card                      staged       6.0s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | body searched: gun_magnum shock

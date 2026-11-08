@@ -5950,5 +5950,37 @@
   "pic": "tools/handoff/console/notes/shots/o-h10-169-out-player-watches-and-pings-recipes-2/169-partner-watcher-ping-1080.jpg",
   "task": "o-h10-169-out-player-watches-and-pings",
   "when": "2026-11-07T22:09"
+ },
+ "74-body-gun-card": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "the backpack/tooltip cards now share a top edge, but the extract timer still leaks a second instance behind the tooltip and the rarity/stat colors still fight for attention, so the screen reads no cleaner overall.",
+  "findings": [
+   "P0 right edge, y≈485, partially hidden behind the magnum mk iii tooltip (\"...152m ▶\"): raise the modal scrim/z-index above the HUD layer (or hide the extract/run-info HUD while any centred card is open) so no HUD text can render behind a modal; the timer must exist in exactly one DOM/draw position.",
+   "P1 magnum mk iii tooltip, top-right corner, \"elite\" label: set the elite tag's color to #a866e0 exactly, matching --r-elite; keep it off the amber/red/green set reserved for warn/danger/ok.",
+   "P1 magnum mk iii tooltip, stat rows (dmg +72, rate -358, mag -17, range -4, handling +15): per the guide, draw delta numbers in --tx-1 with only a small +/- glyph colored --ok/--danger, not the whole number; reserve saturated color for the glyph alone.",
+   "P2 tooltip footer legend: \"arrows move  v drop one  drag to hotbar  enter equip  shift+enter to back\": split into discrete chip/key tokens (e.g. boxed key glyphs) with a fixed --sp-1 gap between each, or drop to the two or three actions actually available in this context.",
+   "P2 whole screen: apply --acc to the \"enter equip\" hint or an explicit equip button so the single primary action is identifiable at a glance, per the 'boldness in one place' rule."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h11-174-elite-element-guns-recipes-3/174-body-gun-card-1080.jpg",
+  "task": "o-h11-174-elite-element-guns",
+  "when": "2026-11-07T22:50"
+ },
+ "74-element-elite-fight": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "the controls strip and squad panel were fixed as asked, but the headline P0 (duplicate extract readout) is still shipping unresolved alongside a new top-bar clipping artifact.",
+  "findings": [
+   "P0 top-right 'extract 152m ▶' teal banner vs bottom-right 'c 152m ▶' badge: delete the bottom-right 'c 152m ▶' badge entirely; the top-right teal banner is the only extract readout.",
+   "P1 top centre, '15:00' clock: make the clock chip the same height as the 44px top ribbon and center it inside with no protruding edges, or give the whole ribbon that height.",
+   "P1 bottom-centre quickslot bar, slots 4,5,7,8,9,0: give every slot the same --ui-panel chip at the same size regardless of whether it's filled; empty slots show the chip with just the number, no icon.",
+   "P2 top-right, 'the long dock cache' label under 'run info': put 'the long dock cache' in the same --ui-panel chip style as 'run info', 16px gap between them.",
+   "P2 bottom-left status row (mask icon circle, leaf icon circle, 'concealed' tag, 'in cover' tag): use one pill shape and one fill rule (--ui-panel bg, --tx-2 idle / --acc active) for all run-state tags in this row."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h11-174-elite-element-guns-recipes-3/174-element-elite-fight-1080.jpg",
+  "task": "o-h11-174-elite-element-guns",
+  "when": "2026-11-07T22:50"
  }
 }

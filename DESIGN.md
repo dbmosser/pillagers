@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.57 - BREAK DOWN STASH GUNS
+
+Co-op hunt while he was away. His g-40 answer: Yes, break it down. Spare stash guns can become parts without money or XP. Watch: cheap parts could make bench guns and armour easy to craft; watch his stash for servo and board hoards.
+
+MEASURED. Check 37.57 passes, and fails on v37.56.
 ## v37.56 - RARE ELEMENT GUNS ON ELITE PILLAGERS
 
 Co-op hunt while he was away. His g-36 answer: Yes, a rare element gun. A quarter of elite pillagers now carry a takeable MK III element gun, selected without a new random draw. Watch: element guns from pillagers may make the forge MK III feel less special, and a MK III elite hits harder; watch how often you find one.

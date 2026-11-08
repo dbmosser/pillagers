@@ -4024,8 +4024,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.56';
-var VER_AT='2026-11-07 17:31';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.57';
+var VER_AT='2026-11-08 02:27';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -58230,7 +58230,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.56: The held gun, body loot and party container words preserve the element. Enemy rounds stay plain and warning red. Check 37.56 fails on v37.55',
+  now:'v37.57: Unlocked stash guns have break down in the same item menu for keys and pad. Common gives comp 1 and scrap 2; uncommon servo 1, board 1, comp 1; rare servo 2, board 2, comp 1; elite servo 3, board 3, optic 1, comp 2. One copy is consumed and orphaned forge records are cleared. Check 37.57 fails on v37.56',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -59606,6 +59606,15 @@ function itemMenuRows(key,ctx,count){
     // v24.xx (sellall), HIS ANSWER 24 (2026-10-12): "right click and choose sell". A stack sells whole from the same menu: Sell all N
     // under Sell one, priced on the row, same pay (credits and XP at the plain price). N is the stack the cell shows, so copies packed
     // in the backpack stay packed. Stash screen only, as Sell one.
+    // v28.xx (cw-cx-breakguns), his g-40 answer: "Yes, break it down". One stash gun, parts only, through the same keys/pad menu as selling.
+    var _breakParts={common:{comp:1,scrap:2},uncommon:{servo:1,board:1,comp:1},rare:{servo:2,board:2,comp:1},elite:{servo:3,board:3,optic:1,comp:2}}[it.r];
+    if(ctx==='stash'&&held>0&&_hbS&&_hbS.classList.contains('on')&&!stashLocked(key)&&it.use==='gun'&&_breakParts) rows.push({label:'break down',hint:Object.keys(_breakParts).map(function(k){ return k+' '+_breakParts[k]; }).join(', '),act:function(){
+      if(!_hbS.classList.contains('on')||stashLocked(key)) return;
+      var ix=P.stash.indexOf(key); if(ix<0) return;
+      P.stash.splice(ix,1); clearKeysFor(key);
+      Object.keys(_breakParts).forEach(function(k){ for(var i=0;i<_breakParts[k];i++) P.stash.push(k); });
+      forgeSweep(); saveProfile(); refreshInv();
+    }});
     var _sn=Math.min(count||1,held);
     if(ctx==='stash'&&_sn>1&&_hbS&&_hbS.classList.contains('on')&&!stashLocked(key)) rows.push({label:'Sell all '+_sn,hint:'$'+(sellPriceOf(key)*_sn).toLocaleString(),act:function(){
       var got=stashSell(key,_sn);   // v37.xx (cw-m1sell): takes the copies, pays today's price in $ only, lists the sale for buy back

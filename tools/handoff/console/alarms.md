@@ -831,3 +831,30 @@ o-h09-162 coordinator blocker: strict spawn-loot check fails map 1 spawn 3 (8650
 11-07 16:46 v37.54 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
 11-07 17:12 v37.55 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
 2026-11-07 o-h11-174-elite-element-guns: LINKED REVIEW NEEDED: synced. cw-cx-eliteelements adds forge metadata to cont.fw and loot.fw, and held-gun ent.fk/fe. After ship, verify an element elite and body loot in both real linked windows, one forged copy across partial searches and host takeover, with a picture from each. The supplied custom camera recipes are solo staging only.
+11-07 17:42 v37.56 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+2026-11-07 o-h11-174-elite-element-guns: coordinator handoff after ship v37.56 / ON HIS PC. Both round-3 scenes stage at 1080p and 4k, but critic gives 2 due shared HUD findings. Its P0 asks to delete the c 152m edge arrow; check 35.50 explicitly requires that arrow and its position. Exact conditional assertion replacement is in task run-4 notes. Task prohibits fixture edits, so stopped without changing code or tests. Existing LINKED REVIEW NEEDED remains: cont.fw / loot.fw ownership and ent.fk/fe in real host/peer windows, with pictures from both. Solo camera evidence is complete at recipes-3; linked evidence and shared-HUD resolution need the coordinator.
+11-07 18:37 v37.56 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-07 19:34 v37.56 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+2026-11-07 o-h12-175-break-down-guns: Remote preflight has produced no result across repeated task runs. Latest log is tools/handoff/codex/log/o-h12-175-break-down-guns-cw-cx-breakguns.preflight.txt (18:27), job preflight-cw-cx-breakguns-578af2104cfa; it ends waiting for spare pickup. Current revised script already fixes the earlier gun_smg hint test failure. Coordinator/lane must resume this preflight and return a terminal result, then ship cw-cx-breakguns and run its four camera recipes. No additional implementation work or fixture retarget is pending. Do not report it shipped without ON HIS PC.
+
+11-07 20:30 v37.56 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-07 21:26 v37.56 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-07 22:02 00p-m3c-death-pips (lane a): $0 run ended on the plan usage limit or run budget; not counted as a try, job kept in tasks/, lane a rests 30 min (00p-m3c-death-pips-1107-2202.json)
+11-07 22:04 00p-m3d-raid-sources (lane b): $0 run ended on the plan usage limit or run budget; not counted as a try, job kept in tasks/, lane b rests 30 min (00p-m3d-raid-sources-1107-2202.json)
+11-07 22:07 00p-m3c-death-pips (lane c): $0 run ended on the plan usage limit or run budget; not counted as a try, job kept in tasks/, lane c rests 30 min (00p-m3c-death-pips-1107-2207.json)
+11-07 22:22 v37.56 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-07 22:32 00p-m3c-death-pips (lane a): $0 run ended on the plan usage limit or run budget; not counted as a try, job kept in tasks/, lane a rests 30 min (00p-m3c-death-pips-1107-2232.json)
+11-07 22:37 00p-m3c-death-pips (lane b): $0 run ended on the plan usage limit or run budget; not counted as a try, job kept in tasks/, lane b rests 30 min (00p-m3c-death-pips-1107-2237.json)
+11-07 22:40 00p-m3d-raid-sources (lane c): $0 run ended on the plan usage limit or run budget; not counted as a try, job kept in tasks/, lane c rests 30 min (00p-m3d-raid-sources-1107-2237.json)
+11-07 23:03 00p-m3c-death-pips (lane a): $0 run ended on the plan usage limit or run budget; not counted as a try, job kept in tasks/, lane a rests 30 min (00p-m3c-death-pips-1107-2303.json)
+11-07 23:08 00p-m3c-death-pips (lane b): $0 run ended on the plan usage limit or run budget; not counted as a try, job kept in tasks/, lane b rests 30 min (00p-m3c-death-pips-1107-2308.json)
+11-07 23:13 00p-m3c-death-pips (lane c): $0 run ended on the plan usage limit or run budget; not counted as a try, job kept in tasks/, lane c rests 30 min (00p-m3c-death-pips-1107-2313.json)
+11-07 23:18 v37.56 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-07 23:33 00p-m3c-death-pips (lane a): $0 run ended on the plan usage limit or run budget; not counted as a try, job kept in tasks/, lane a rests 30 min (00p-m3c-death-pips-1107-2333.json)
+11-07 23:38 00p-m3c-death-pips (lane b): $0 run ended on the plan usage limit or run budget; not counted as a try, job kept in tasks/, lane b rests 30 min (00p-m3c-death-pips-1107-2338.json)
+11-07 23:44 00p-m3c-death-pips (lane c): $0 run ended on the plan usage limit or run budget; not counted as a try, job kept in tasks/, lane c rests 30 min (00p-m3c-death-pips-1107-2343.json)
+11-08 00:14 v37.56 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-08 01:10 v37.56 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-08 02:06 v37.56 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+2026-11-08 o-h12-175-break-down-guns: Remote preflight stalled. tools/handoff/codex/log/o-h12-175-break-down-guns-cw-cx-breakguns.preflight.txt (11-07 20:16) joins preflight-cw-cx-breakguns-578af2104cfa and ends with no report from the spare pc for 132 minutes. No gate failure to fix in the mk script. Coordinator: restore spare gate reporting and resume the existing job, then ship cw-cx-breakguns and photograph the four supplied role/input recipes. Do not count REMOTE or waiting lines as a pass.
+
