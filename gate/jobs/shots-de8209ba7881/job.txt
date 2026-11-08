@@ -1,0 +1,14 @@
+id=shots-de8209ba7881
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=2f2de62d70575705e64bcc4ce110c8646d25a890
+screens=m3g-row,m3g-give,m3g-lines
+res=1080,4k
+nolint=0
+lintopts=
+from=JUL26
+submitted=1794144531
+expires=1794151132
