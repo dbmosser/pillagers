@@ -747,3 +747,5 @@
 
 2026-11-08 | o-h13-178-patrol-routes | raid world, smooth look | three machines follow four fixed stops, pause two seconds and resume after interruption; no marker or text | camera: patrol-routes-smooth, lane picture paths pending.
 
+2026-11-08 | o-h14-182-juggernaut-boss | raid: juggernaut body and hoard | Adds named boss bulwark at 1.3 times ordinary bulwark art scale; adds juggernaut hoard and the juggernaut destroyed objective callout. Before: unavailable for new boss. After: pending lane camera 182-host-bulwarks, 182-host-hoard, 182-peer-bulwarks, 182-peer-hoard.
+

@@ -11,3 +11,8 @@ Rules: the seed 4242 fingerprint (ents 85/374, containers 165/593) must hold unl
 TASK DONE when it shipped; TASK PARTIAL with what is left.
 
 HIS PRIORITY 10-27 (priorities page): LOW
+
+Lane note 2026-11-08 05:39: shipped cw-cx-patrolroutes and parked: only lane-side steps are left. Codex's last words:
+Shipped v37.58, confirmed ON HIS PC. Regression and fingerprint checks passed. Both camera rounds failed to load the fixture; coordinator handoff recorded.
+
+TASK PARTIAL: coordinator must restore camera loading, obtain critic review, and verify patrols in both linked windows.

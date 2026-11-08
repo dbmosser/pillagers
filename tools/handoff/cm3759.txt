@@ -1,0 +1,7 @@
+v37.59: the juggernaut
+
+A larger bulwark boss roams the far half, pays 1000 base sp and leaves a juggernaut hoard. Its name, size and health survive party mirroring and takeover.
+
+Check 37.59. Fails on v37.58.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

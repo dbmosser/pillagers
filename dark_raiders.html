@@ -4024,8 +4024,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.58';
-var VER_AT='2026-11-08 02:49';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.59';
+var VER_AT='2026-11-08 06:04';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -17165,7 +17165,70 @@ function bossTick(force){   // v17.69: force, for a teammate taking the raid ove
      cone:1.15,hitT:0,seenYou:false,lairX:L.x,lairY:L.y};
   G.ents.push(e); G.bossDone=1; G.bossRef=e;
   return e;
-}function mkWarden(x,y){
+}
+// v28.xx (cw-cx-juggernaut), his g-52: "Yes, a machine boss too". Only the raid authority builds it; all new draws borrow the effects stream.
+var BOSS2_NAME='the juggernaut';
+function bossTick2(force,known){
+  if(typeof G==='undefined'||!G||G.over||G.boss2Done||!G.map||!(G.arcade||G.career)||(G.t||0)<4) return null;
+  if(!force&&NET&&NET.on&&NET.role==='join') return null;
+  if(CFG.boss===0){ G.boss2Done=1; return null; }
+  var L=bossLair(), best=null, bd=1800, map=G.map, e=null;
+  fxBorrow(function(){
+    var pts=(map.spawns||[]).slice(), j, k, p, d, ok, w, near;
+    var gr=(G.wgrid&&G.wgrid.walls===map.walls)?G.wgrid:((map._fsGrid&&map._fsGrid.walls===map.walls)?map._fsGrid:(map._fsGrid=buildWallGrid(map.walls,WORLD_W,WORLD_H)));
+    for(j=0;j<40;j++) pts.push(freeSpot(map,50));
+    for(j=0;j<pts.length;j++){
+      p=pts[j]; d=dist(p,L); if(d<bd||p.x<70||p.y<70||p.x>WORLD_W-70||p.y>WORLD_H-70) continue;
+      ok=true; near=wallsNear(gr,p.x,p.y,50);
+      for(k=0;k<near.length;k++){ w=near[k]; if(p.x>w.x-50&&p.x<w.x+w.w+50&&p.y>w.y-50&&p.y<w.y+w.h+50){ ok=false; break; } }
+      if(!ok) continue;
+      for(k=0;k<(map.spawns||[]).length;k++) if(dist(p,map.spawns[k])<900){ ok=false; break; }
+      for(k=0;ok&&k<(G.zones||[]).length;k++) if(dist(p,G.zones[k])<900) ok=false;
+      if(ok){ best={x:p.x,y:p.y}; bd=d; }
+    }
+    if(known) best={x:typeof known.lairX==='number'?known.lairX:known.x,y:typeof known.lairY==='number'?known.lairY:known.y};
+    if(best) e=mkBulwark(best.x,best.y);
+  });
+  G.boss2Done=1;
+  if(!e) return null;
+  e.elite=0; e.affix=null; e.shieldHp=0; e.spd=52; e.boss2=1; e.name=BOSS2_NAME; e.r=31;
+  e.hp=e.maxhp=Math.round(3000*CFG.eHp); e.dmg=22; e.rng=420;
+  e.lairX=best.x; e.lairY=best.y; G.ents.push(e); G.boss2Ref=e;
+  return e;
+}
+// v28.xx (cw-cx-juggernaut): the bulwark uses the generic machine AI, not the warden branch. Its own leash keeps the same big-shot/open cycle.
+function juggernautTick(e,p,sees,dt){
+  var lx=e.lairX, ly=e.lairY, d=dist(e,p), target;
+  if(sees){ e.seenYou=true; e.state='chase'; e.alert=4; e.tx=p.x; e.ty=p.y; }
+  if(e.seenYou){
+    if(Math.hypot(e.tx-lx,e.ty-ly)>1600||(!sees&&dist(e,{x:e.tx,y:e.ty})<70)){ e.tx=lx; e.ty=ly; }
+    target={x:e.tx,y:e.ty};
+    if(!sees||Math.hypot(p.x-lx,p.y-ly)>1600){ if(dist(e,target)>40) navSeek(e,target.x,target.y,e.spd,dt); }
+    else if(d>e.rng*.72) navSeek(e,target.x,target.y,e.spd,dt);
+    else if(d<e.rng*.35&&Math.hypot(e.x-lx,e.y-ly)<1550) moveToward(e,e.x-(p.x-e.x),e.y-(p.y-e.y),e.spd*.6,dt);
+  }else{
+    if(e.cd<=0) fxBorrow(function(){
+      var s=freeSpot(G.map,50), a=Math.atan2(s.y-ly,s.x-lx), reach=Math.min(1600,dist(s,{x:lx,y:ly}),Math.max(0,rayHitG(lx,ly,Math.cos(a),Math.sin(a),1660)-60));
+      e.tx=lx+Math.cos(a)*reach; e.ty=ly+Math.sin(a)*reach; e.cd=rnd(6,10);
+    });
+    if(Math.hypot(e.tx-lx,e.ty-ly)>1600){ e.tx=lx; e.ty=ly; }
+    moveToward(e,e.tx,e.ty,e.spd*.6,dt);
+  }
+  if(Math.hypot(e.x-lx,e.y-ly)>1600) navSeek(e,lx,ly,e.spd,dt);
+  var want=Math.atan2((sees?p.y:e.ty)-e.y,(sees?p.x:e.tx)-e.x);
+  e.face+=clamp(angDiff(want,e.face),-2.5*dt,2.5*dt);
+  if(e.cd>0) e.cd-=dt;
+  if(e.windup!==undefined&&e.windup!==null){
+    e.windup-=dt;
+    if(e.windup<=0){
+      e.windup=null;
+      if(sees&&d<e.rng*1.15&&!p.downed){ fireWeapon(e,{dmg:e.dmg*(e.bigW?2.5:1),spread:.10,rng:e.rng,noise:340,tint:'#ff9a6a'},p.x+rnd(-16,16),p.y+rnd(-16,16),false); e.shotN=(e.shotN||0)+1; if(e.bigW) e.openT=BULWARK_OPEN; }
+      e.bigW=0; e.cd=rnd(0,.35);
+    }
+  }else if(e.cd<=0&&sees&&d<e.rng&&!p.downed){ e.bigW=((e.shotN||0)+1)%BULWARK_SHOT_N===0?1:0; e.windup=e.bigW?.7:.4; if(!G.sim) sfx('charge',e.x,e.y); }
+  collide(e,G.map.walls);
+}
+function mkWarden(x,y){
   var _whp=Math.round((CFG.wardenHp===undefined?900:CFG.wardenHp)*CFG.eHp);
   return {kind:'warden',x:x,y:y,r:30,hp:_whp,maxhp:_whp,
     name:mkName('WARDEN',['X','Z','Q']),
@@ -33354,7 +33417,7 @@ function elemHold(e,dt){
 const GLINT_T=0.5;
 function longshotGlintBot(e){ return !!(e&&e.kind==='raider'&&e.elite&&!e.merc&&!e.friendlyPC&&e.wep&&gunBase(e.wep.id)==='sniper'); }
 function updateEnts(dt){
-  try{ bossTick(); }catch(_bt){}   // v17.45: his pick 21, THE OVERSEER comes up two seconds in
+  try{ bossTick(); bossTick2(); }catch(_bt){}   // v17.45: his pick 21, THE OVERSEER comes up two seconds in
   if(NET.on&&netEntsPeer()){ netEntsEase(dt); return; }   // v15.80: a linked window up top runs no pillager or machine of its own: the host does, and this slides each body to where the host put it
 if(G.prints){
     for(var _pi=G.prints.length-1;_pi>=0;_pi--){
@@ -33661,6 +33724,11 @@ if(e.state==='possum'){
         var rec3=idRec(e.ident);
         rec3.deaths++; if(G.mercId&&P.mercOut&&typeof P.mercOut==='object') P.mercOut.dead=1; saveProfile();   // v17.21, co-op hunt 2026-09-28: the save says he died, so a page-away still bills him
         say(String(e.name).toUpperCase()+' IS DEAD','obj',{sub:'Death benefit $'+MERC_DEATH.toLocaleString()+' owed.'});   // v22.xx (R53): an objective row in caps   // v23.xx (tr9fixm): a short detail, never an explaining sentence
+      }
+      // v28.xx (cw-cx-juggernaut): the normal bulwark wreck still drops below; the boss also leaves its hoard.
+      if(e.boss2){
+        fxBorrow(function(){ var c=setLoot(mkContainer(e.x+40,e.y+10,'cache'),['reactor','titan','coil',vaultGunPick()]); c.cache=1; c.time=3.0; c.tag='juggernaut hoard'; G.containers.push(c); });
+        say('the juggernaut destroyed','obj');
       }
       if(e.kind==='warden'){
         var cw=setLoot(mkContainer(e.x,e.y,'cache'),['wcore',pick(['reactor','codex','bloom']),pick(['titan','core','coil'])]);
@@ -34239,6 +34307,7 @@ if(sees&&p.downed&&e.kind!=='raider') sees=false;
       e.moving=false;
       continue;
     }
+    if(e.boss2){ juggernautTick(e,p,sees,dt); continue; } // v28.xx (cw-cx-juggernaut): authority only, after death and status handling.
     if(e.kind==='warden'){
       // THE GHOST RUN DIES HERE, v5.36, corrected v5.47. One acquisition, by
       // anything, for any length of time, and the clean run is over for the rest
@@ -40461,7 +40530,7 @@ function alertTopShift(e){
 }
 // v28.xx (cw-machbig), HIS ORDER (2026-10-20 evening): "enemies need to be like 33% larger". The machines (sentry, crawler, warden, choir, snitch, listener, howler, bulwark) are DRAWN FIG_MACH times bigger around the foot point and a round hits them at FIG_MACH times the body radius; walking, doors and the nav grid keep the old radius, so nothing sticks in a doorway. Pillager bots, the peddler and the survivor keep their size. FIG_MACH is the one number to change.
 var FIG_MACH=1.33, MACH_KIND={sentry:1,crawler:1,warden:1,choir:1,snitch:1,listener:1,howler:1,bulwark:1};
-var BULWARK_BIG=1.5; /* v28.xx (cw-smoothlook), HIS NOTES (2026-10-25): "Player too big vs the bulwark which is too small" and "Bulwark still too small". The bulwark is drawn, plated and hit 1.5 times the other machines (about 2x its old art); it still walks, fits doors and routes on the old radius, so it never sticks in a doorway. A bigger target is the balance cost. */ function machMul(e){ return (e&&MACH_KIND[e.kind]===1)?(e.kind==='bulwark'?FIG_MACH*BULWARK_BIG:FIG_MACH):1; }
+var BULWARK_BIG=1.5; /* v28.xx (cw-smoothlook), HIS NOTES (2026-10-25): "Player too big vs the bulwark which is too small" and "Bulwark still too small". The bulwark is drawn, plated and hit 1.5 times the other machines (about 2x its old art); it still walks, fits doors and routes on the old radius, so it never sticks in a doorway. A bigger target is the balance cost. */ function machMul(e){ return (e&&MACH_KIND[e.kind]===1)?(e.kind==='bulwark'?FIG_MACH*BULWARK_BIG*(e.boss2?1.3:1):FIG_MACH):1; }
 function machScaleBegin(e){ var m=machMul(e); if(m===1) return 0; wc.save(); wc.translate(e.x,e.y); wc.scale(m,m); wc.translate(-e.x,-e.y); return 1; }
 function machScaleEnd(n){ if(n) wc.restore(); }
 function spriteTop(e){ return spriteTop0(e)*machMul(e); }   // the name plate, alert mark and health pip ride the taller body
@@ -58236,7 +58305,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.58: Three ordinary outdoor machines walk four fixed stops, wait two seconds, and resume at the nearest stop after combat. Check 37.58 fails on v37.57',
+  now:'v37.59: A larger bulwark boss roams the far half, pays 1000 base sp and leaves a juggernaut hoard. Its name, size and health survive party mirroring and takeover. Check 37.59 fails on v37.58',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -65615,7 +65684,7 @@ function netAutoFire(p){
 var NET_PING_T=10, NET_PING_SNAP=70;   // v16.46: 10 s, the length Fortnite gives a ping
 // v17.57: what a ping calls the body under it: a pillager or THE OVERSEER by name (a linked window knows the boss by its name
 // only), any other body by its kind. The ping said WARDEN on the boss.
-function netPingName(hit){ return ((hit.kind==='raider'||hit.boss||hit.name===BOSS_NAME)&&hit.name)?netClean(hit.name,24):kindWord(hit.kind); }   /* v22.xx (R49): CRIER, PILLBOX, SURVIVOR, THE PEDDLER, never the internal kind */ // v28.xx (cw-cx-outwatch), his 2.25 b: "Their partner's view, live, with a small line saying they are waiting"; g-54: "Yes, pings only".
+function netPingName(hit){ return ((hit.kind==='raider'||hit.boss||hit.boss2||hit.name===BOSS_NAME)&&hit.name)?netClean(hit.name,24):kindWord(hit.kind); }   /* v22.xx (R49): CRIER, PILLBOX, SURVIVOR, THE PEDDLER, never the internal kind */ // v28.xx (cw-cx-outwatch), his 2.25 b: "Their partner's view, live, with a small line saying they are waiting"; g-54: "Yes, pings only".
 function netWatchOn(){
   return !!(typeof NET==='object'&&NET&&NET.on&&typeof G!=='undefined'&&G&&!G.sim&&!G.hubFloor&&G.player&&
     ((NET.role==='host'&&NET.specG===G)||(G.arcade&&!G.over&&G.player.specOut&&(G.arcX||(typeof ARCADE==='object'&&ARCADE&&ARCADE.xOut==='h')))));
@@ -66536,6 +66605,7 @@ function netEntGunWord(e){ var m=netEntNewWord(e); delete m.idn; delete m.lx; de
 function netEntNewWord(e){
   // v28.61 (cloud-raid-p2reach), CLOUD HUNT 2026-10-15: sr, its sight reach, so the copy draws the scan cone and the laser as far as the host does
   var m={t:'ent',op:'new',id:e.nid,k:e.kind,x:Math.round(e.x),y:Math.round(e.y),n:netClean(e.name,24),r:e.r,mh:e.maxhp,hp:Math.ceil(clamp(e.hp/(e.maxhp||1),0,1)*20),el:e.elite?1:0,ho:e.hostile?1:0,af:e.affix?String(e.affix):'',sr:Math.round(+e.rng||0)};
+  if(e.boss2){ m.lx=e.lairX; m.ly=e.lairY; } // v28.xx (cw-cx-juggernaut): keep the original far lair for takeover.
   if(e.kind==='raider'){ m.fk=(e.wep&&e.wep.fk===2)?2:0; m.fe=(m.fk&&ELEM[e.wep.el])?e.wep.el:''; m.c=netClean(e.coat,12); m.cr=e.crew|0; m.idn=netClean(e.ident,24); m.w=(e.wep&&e.wep.id)?String(e.wep.id):''; m.rg=netClean(e.rig,8); m.mc=e.merc?1:0; if(typeof e.lx==='number'){ m.lx=e.lx; m.ly=e.ly; } }   // v20.13: his birthplace, which his look is hashed from
   return m;
 }
@@ -66586,7 +66656,9 @@ function netEntFill(e,m){
   if(typeof m.sr==='number'&&m.sr>0&&m.sr<3000) e.rng=m.sr;   // v28.61 (cloud-raid-p2reach): the host sight reach (a copy started at 100)
   if(typeof m.mh==='number'&&m.mh>0){ e.maxhp=m.mh; if(typeof m.hp==='number') e.hp=Math.round(clamp(m.hp,0,20)/20*e.maxhp); }
   e.elite=m.el?1:0; e.hostile=!!m.ho; e.affix=(typeof m.af==='string'&&AFFIX[m.af])?m.af:null;   // v26.xx (ai25)
+  e.boss2=(e.kind==='bulwark'&&e.name===BOSS2_NAME)?1:0; // v28.xx (cw-cx-juggernaut): late bodies keep the larger art and identity.
   e.boss=(e.kind==='warden'&&e.name===BOSS_NAME)?1:0;   // v28.60 (cloud-raid-p2boss), CLOUD HUNT 2026-10-15: the copy of THE OVERSEER is the boss: his rounds met a plain Warden front and he never saw the laser
+  if(e.boss2&&typeof m.lx==='number'&&typeof m.ly==='number'){ e.lairX=m.lx; e.lairY=m.ly; }
   if(e.kind==='raider'){
     if(typeof m.c==='string'&&(/^#[0-9a-fA-F]{3,8}$/).test(m.c)) e.coat=m.c;
     if(typeof m.cr==='number') e.crew=m.cr|0;
@@ -67087,7 +67159,7 @@ function netKillTake(peer,m){
     var seen=G.sharedSpSeen||(G.sharedSpSeen={});
     if(seen[m.id]) return 'ignored';
     seen[m.id]=1;
-    sharedMachineScore({kind:k,elite:!!m.el,affix:!!m.af,boss:!!m.boss,x:m.x,y:m.y});
+    sharedMachineScore({kind:k,elite:!!m.el,affix:!!m.af,boss:!!m.boss,boss2:!!m.boss2,x:m.x,y:m.y});
     return 'shared';
   }
   if(T.kills&&T.kills[k]!==undefined) T.kills[k]++;
@@ -67699,7 +67771,7 @@ function netHostGone(why){
   // stops being shared (upSeed 0, so the frame loop runs updateEnts and the solo loot path), bodies known only from host words
   // (no AI numbers of their own) are let go, THE OVERSEER among them is made again at the health it had, and a search held
   // through the host is dropped. The run card never says abandoned for a host that left.
-  var _i, _e, _boss=null, _b, _k;
+  var _i, _e, _boss=null, _boss2=null, _b, _k;
   NET.upSeed=0; NET.upFp=null; NET.upWord=null; NET.hostSeed=0; NET.srch=null; NET.holds={}; NET.srchOwn=-1;
   if(G.searching){ G.searching=null; G.searchT=0; }
   for(_i=0;_i<G.containers.length;_i++) netBoxMine(G.containers[_i]);   // v20.30 (H21, H22): every box holds what the host last said it held
@@ -67711,11 +67783,11 @@ function netHostGone(why){
   if(NET.entMap) for(_k in NET.entMap){
     if(!Object.prototype.hasOwnProperty.call(NET.entMap,_k)) continue;
     _e=NET.entMap[_k]; if(!_e||_e.nIn) continue;
-    if(_e.net){ if(_e.name===BOSS_NAME&&!_boss) _boss=_e; continue; }
+    if(_e.net){ if(_e.name===BOSS_NAME&&!_boss) _boss=_e; if(_e.name===BOSS2_NAME&&!_boss2) _boss2=_e; continue; }
     if(!(_e.hp<=0)){ _e.nIn=1; G.ents.push(_e); }
   }
   if(G.flow&&G.flow.ev&&G.flow.ev.live) for(_i=0;_i<G.flow.ev.live.length;_i++){ _e=G.flow.ev.live[_i]; if(_e&&_e.d&&!_e.d.over&&((_e.id==='convoy'&&_e.d.car&&_e.d.car.net)||(_e.id==='bounty'&&_e.d.e&&_e.d.e.net)||(_e.id==='rampage'&&_e.d.b&&_e.d.b.net))) _e.d.over=1; }   // v28.44 (cloud-cloud-coop-takeover-no-free-event), CLOUD HUNT 2026-10-15: a live convoy, bounty or rampage whose body came only in host words ends here quietly, since that body is let go just below
-  for(_i=G.ents.length-1;_i>=0;_i--){ _e=G.ents[_i]; if(_e&&_e.net){ if(_e.name===BOSS_NAME) _boss=_e; G.ents.splice(_i,1); } }
+  for(_i=G.ents.length-1;_i>=0;_i--){ _e=G.ents[_i]; if(_e&&_e.net){ if(_e.name===BOSS_NAME) _boss=_e; if(_e.name===BOSS2_NAME) _boss2=_e; G.ents.splice(_i,1); } }
   try{ if(G.flow&&G.flow.gold&&G.flow.gold.ref&&G.flow.gold.ref.net&&!G.flow.gold.dead) G.flow.gold.ref=null; }catch(_gr){}   // v28.64 (cloud-raid-takeover), CLOUD HUNT 2026-10-15: a golden mirror let go here, on the map or not, was not killed, so it drops no hoard
   // v21.69, from the whole-game bug hunt of 2026-10-08 (K1): A PILLAGER LAST SEEN AT A BOX LOOKS FOR A REAL ONE. To draw the crouch,
   // this window gave a pillager the host showed crouched at a box himself as the box (and a man reviving a friend himself as the
@@ -67724,6 +67796,9 @@ function netHostGone(why){
   for(_i=0;_i<G.ents.length;_i++){ _e=G.ents[_i]; if(!_e) continue; if(_e.goal===_e){ _e.goal=null; _e.lootT=0; } if(_e.reviving===_e) _e.reviving=null; }
   if(_boss){ G.bossDone=0; _b=bossTick(true); if(_b&&_boss.maxhp>0&&_boss.hp>0) _b.hp=Math.max(1,Math.round(_b.maxhp*Math.min(1,_boss.hp/_boss.maxhp))); }
   else if((G.t||0)>=2) G.bossDone=1;
+  // v28.xx (cw-cx-juggernaut): a dead or absent boss stays gone; a surviving mirror resumes its health share and last position.
+  if(_boss2&&_boss2.hp>0){ G.boss2Done=0; _b=bossTick2(true,_boss2); if(_b){ _b.hp=Math.max(1,Math.round(_b.maxhp*Math.min(1,_boss2.hp/(_boss2.maxhp||1)))); _b.x=_boss2.x; _b.y=_boss2.y; } }
+  else if((G.t||0)>=4) G.boss2Done=1;
   if(G.flow&&G.flow.goals) for(_i=0;_i<G.flow.goals.length;_i++){ _e=G.flow.goals[_i]; if(_e&&!_e.done) _e.off=Math.max(0,(_e.v|0)-goalProg(_e.id,G.flow)); }   // v28.43 (cloud-coop-takeover-goals-kept), CLOUD HUNT 2026-10-15: the party goal progress the host sent is kept as an offset over this window's own count
   G.netLeft='';
   NET.status=(why==='out')?'host out \u00b7 you are running the raid':'host lost \u00b7 you are running the raid';
@@ -70867,7 +70942,7 @@ function diffMul(){
 }
 // v28.xx (cw-cx-condition-sp): demo conditions multiply earned SP; career applies them at settlement to keep cash unchanged.
 function spMul(n){ var m=diffMul()*((G&&G.arcade)?raidConditionMul():1); return (n>0&&m>1)?Math.round(n*m):n; }
-function arcadeKillPts(k,el,boss){ var n=boss?ARCADE_BOSSPTS:(ARCADE_KILLPTS[k]|0); return spMul(el?n*(el>1?el:2):n); }   // v26.xx (ai25): an affixed elite passes 3, a plain elite 2. v35.xx (cw-diffmul): with the settings multiplier in
+function arcadeKillPts(k,el,boss,boss2){ var n=boss2?ARCADE_BOSSPTS/2:boss?ARCADE_BOSSPTS:(ARCADE_KILLPTS[k]|0); return spMul(el?n*(el>1?el:2):n); }   // v26.xx (ai25): an affixed elite passes 3, a plain elite 2. v35.xx (cw-diffmul): with the settings multiplier in
 // v23.31, HIS ORDER (2026-10-11), build 10 of 20 (arcade10): EASIER FOR NEWCOMERS. Every kill this window credits to its own player
 // refunds half a magazine of the gun in his hands into his reserve, and every 3rd kill of the run adds a Bandage to the backpack
 // while he carries fewer than 5 heals (the pickup stack shows it as KILL BONUS). The drop already gives 6 magazines and full
@@ -70979,7 +71054,7 @@ function sharedMachineScore(e){
   if(!G||G.sim||G.over||!e||!ELEM_MACH[e.kind]||!G.player||G.player.specOut) return 0;
   var st=G.arcade&&ARCADE.on?ARCADE:(G.career?G.cs:null), n;
   if(!st) return 0;
-  n=arcadeKillPts(e.kind,e.affix&&e.elite?3:e.elite,e.boss);
+  n=arcadeKillPts(e.kind,e.affix&&e.elite?3:e.elite,e.boss,e.boss2);
   if(!(n>0)) return 0;
   if(G.hotZone&&Number.isFinite(e.x)&&Number.isFinite(e.y)&&Math.hypot(e.x-G.hotZone.x,e.y-G.hotZone.y)<=G.hotZone.r) n=Math.round(n*HOT_KILLX);
   if(G.arcade){ if(arcadeRushOn()) n=Math.round(n*1.05); ARCADE.mine=(ARCADE.mine|0)+n; arcadeScSend(); }
@@ -70996,7 +71071,7 @@ function sharedMachineDeath(e){
   for(k=0;k<seats.length;k++){
     s=seats[k]; if(s===killer) continue;
     if(s===0) sharedMachineScore(e);
-    else { q=netPeerOfSeat(s); if(q) netSend(q,{t:'kill',share:1,seat:s,id:e.nid,k:e.kind,el:e.elite?1:0,af:e.affix?1:0,boss:!!e.boss,x:e.x,y:e.y}); }
+    else { q=netPeerOfSeat(s); if(q) netSend(q,{t:'kill',share:1,seat:s,id:e.nid,k:e.kind,el:e.elite?1:0,af:e.affix?1:0,boss:!!e.boss,boss2:!!e.boss2,x:e.x,y:e.y}); }
   }
 }
 function arcadeBmDamage(e,n,seat){
@@ -71105,8 +71180,8 @@ function scoreBonus(n,x,y,txt){
 }
 // v28.xx (cw-cx-hotkill): his 10-28 decision replaces the proposed 1.5 with 1.05.
 var HOT_KILLX=1.05;
-function scoreKill(st,k,el,boss,x,y){
-  var n=arcadeKillPts(k,el,boss);
+function scoreKill(st,k,el,boss,x,y,boss2){
+  var n=arcadeKillPts(k,el,boss,boss2);
   if(!(n>0)||!st) return 0;
   // v28.xx (cw-cx-nokillstreak), HIS WORDS (2026-10-28): "beast mode replaces all that".
   // v28.xx (cw-cx-hotkill): his 10-28 decision, "should just be 1.05", in either window.
@@ -71118,7 +71193,7 @@ function scoreKill(st,k,el,boss,x,y){
 function careerKill(k,el,boss,x,y,ke){
   if(!G||!G.career||!G.cs||G.sim||G.over) return 0;
   try{ flowKill(k,el,boss); }catch(_fk2){}   // v26.xx (flow3): the run goals count what died
-  var n=scoreKill(G.cs,k,el,boss,x,y);
+  var n=scoreKill(G.cs,k,el,boss,x,y,ke&&ke.boss2);
   if(!(n>0)) return 0;
   G.cs.s=(G.cs.s|0)+n; G.cs.k=(G.cs.k|0)+1; csTally('kill',n);
   try{ styleKill(k,el,boss,x,y,ke); }catch(_sk2){}   // v26.xx (party1): the same style bonuses in a CAREER raid
@@ -71128,7 +71203,7 @@ function careerKill(k,el,boss,x,y,ke){
 function arcadeKill(k,el,boss,x,y,ke){
   if(!ARCADE.on||!G||!G.arcade||G.sim||G.over) return 0;
   try{ flowKill(k,el,boss); }catch(_fk1){}   // v26.xx (flow3): the run goals count what died
-  var n=arcadeKillPts(k,el,boss);
+  var n=arcadeKillPts(k,el,boss,ke&&ke.boss2);
   if(!(n>0)) return 0;
   // v28.xx (cw-cx-nokillstreak), HIS WORDS (2026-10-28): "beast mode replaces all that".
   // v28.xx (cw-cx-hotkill): his 10-28 decision, "should just be 1.05", in either window.

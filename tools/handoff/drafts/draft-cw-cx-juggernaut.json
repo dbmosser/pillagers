@@ -1,0 +1,88 @@
+{
+    "title":  "THE JUGGERNAUT",
+    "why":  "His g-52: Yes, a machine boss too. Watch: a second boss can crowd the map and cost frames; watch whether players find it and whether it reads as different from the Overseer.",
+    "now":  "A larger bulwark boss roams the far half, pays 1000 base sp and leaves a juggernaut hoard. Its name, size and health survive party mirroring and takeover.",
+    "edits":  [
+                  {
+                      "anchor":  "}function mkWarden(x,y){",
+                      "replacement":  "}\n// v28.xx (cw-cx-juggernaut), his g-52: \"Yes, a machine boss too\". Only the raid authority builds it; all new draws borrow the effects stream.\nvar BOSS2_NAME=\u0027the juggernaut\u0027;\nfunction bossTick2(force,known){\n  if(typeof G===\u0027undefined\u0027||!G||G.over||G.boss2Done||!G.map||!(G.arcade||G.career)||(G.t||0)\u003c4) return null;\n  if(!force\u0026\u0026NET\u0026\u0026NET.on\u0026\u0026NET.role===\u0027join\u0027) return null;\n  if(CFG.boss===0){ G.boss2Done=1; return null; }\n  var L=bossLair(), best=null, bd=1800, map=G.map, e=null;\n  fxBorrow(function(){\n    var pts=(map.spawns||[]).slice(), j, k, p, d, ok, w, near;\n    var gr=(G.wgrid\u0026\u0026G.wgrid.walls===map.walls)?G.wgrid:((map._fsGrid\u0026\u0026map._fsGrid.walls===map.walls)?map._fsGrid:(map._fsGrid=buildWallGrid(map.walls,WORLD_W,WORLD_H)));\n    for(j=0;j\u003c40;j++) pts.push(freeSpot(map,50));\n    for(j=0;j\u003cpts.length;j++){\n      p=pts[j]; d=dist(p,L); if(d\u003cbd||p.x\u003c70||p.y\u003c70||p.x\u003eWORLD_W-70||p.y\u003eWORLD_H-70) continue;\n      ok=true; near=wallsNear(gr,p.x,p.y,50);\n      for(k=0;k\u003cnear.length;k++){ w=near[k]; if(p.x\u003ew.x-50\u0026\u0026p.x\u003cw.x+w.w+50\u0026\u0026p.y\u003ew.y-50\u0026\u0026p.y\u003cw.y+w.h+50){ ok=false; break; } }\n      if(!ok) continue;\n      for(k=0;k\u003c(map.spawns||[]).length;k++) if(dist(p,map.spawns[k])\u003c900){ ok=false; break; }\n      for(k=0;ok\u0026\u0026k\u003c(G.zones||[]).length;k++) if(dist(p,G.zones[k])\u003c900) ok=false;\n      if(ok){ best={x:p.x,y:p.y}; bd=d; }\n    }\n    if(known) best={x:typeof known.lairX===\u0027number\u0027?known.lairX:known.x,y:typeof known.lairY===\u0027number\u0027?known.lairY:known.y};\n    if(best) e=mkBulwark(best.x,best.y);\n  });\n  G.boss2Done=1;\n  if(!e) return null;\n  e.elite=0; e.affix=null; e.shieldHp=0; e.spd=52; e.boss2=1; e.name=BOSS2_NAME; e.r=31;\n  e.hp=e.maxhp=Math.round(3000*CFG.eHp); e.dmg=22; e.rng=420;\n  e.lairX=best.x; e.lairY=best.y; G.ents.push(e); G.boss2Ref=e;\n  return e;\n}\n// v28.xx (cw-cx-juggernaut): the bulwark uses the generic machine AI, not the warden branch. Its own leash keeps the same big-shot/open cycle.\nfunction juggernautTick(e,p,sees,dt){\n  var lx=e.lairX, ly=e.lairY, d=dist(e,p), target;\n  if(sees){ e.seenYou=true; e.state=\u0027chase\u0027; e.alert=4; e.tx=p.x; e.ty=p.y; }\n  if(e.seenYou){\n    if(Math.hypot(e.tx-lx,e.ty-ly)\u003e1600||(!sees\u0026\u0026dist(e,{x:e.tx,y:e.ty})\u003c70)){ e.tx=lx; e.ty=ly; }\n    target={x:e.tx,y:e.ty};\n    if(!sees||Math.hypot(p.x-lx,p.y-ly)\u003e1600){ if(dist(e,target)\u003e40) navSeek(e,target.x,target.y,e.spd,dt); }\n    else if(d\u003ee.rng*.72) navSeek(e,target.x,target.y,e.spd,dt);\n    else if(d\u003ce.rng*.35\u0026\u0026Math.hypot(e.x-lx,e.y-ly)\u003c1550) moveToward(e,e.x-(p.x-e.x),e.y-(p.y-e.y),e.spd*.6,dt);\n  }else{\n    if(e.cd\u003c=0) fxBorrow(function(){\n      var s=freeSpot(G.map,50), a=Math.atan2(s.y-ly,s.x-lx), reach=Math.min(1600,dist(s,{x:lx,y:ly}),Math.max(0,rayHitG(lx,ly,Math.cos(a),Math.sin(a),1660)-60));\n      e.tx=lx+Math.cos(a)*reach; e.ty=ly+Math.sin(a)*reach; e.cd=rnd(6,10);\n    });\n    if(Math.hypot(e.tx-lx,e.ty-ly)\u003e1600){ e.tx=lx; e.ty=ly; }\n    moveToward(e,e.tx,e.ty,e.spd*.6,dt);\n  }\n  if(Math.hypot(e.x-lx,e.y-ly)\u003e1600) navSeek(e,lx,ly,e.spd,dt);\n  var want=Math.atan2((sees?p.y:e.ty)-e.y,(sees?p.x:e.tx)-e.x);\n  e.face+=clamp(angDiff(want,e.face),-2.5*dt,2.5*dt);\n  if(e.cd\u003e0) e.cd-=dt;\n  if(e.windup!==undefined\u0026\u0026e.windup!==null){\n    e.windup-=dt;\n    if(e.windup\u003c=0){\n      e.windup=null;\n      if(sees\u0026\u0026d\u003ce.rng*1.15\u0026\u0026!p.downed){ fireWeapon(e,{dmg:e.dmg*(e.bigW?2.5:1),spread:.10,rng:e.rng,noise:340,tint:\u0027#ff9a6a\u0027},p.x+rnd(-16,16),p.y+rnd(-16,16),false); e.shotN=(e.shotN||0)+1; if(e.bigW) e.openT=BULWARK_OPEN; }\n      e.bigW=0; e.cd=rnd(0,.35);\n    }\n  }else if(e.cd\u003c=0\u0026\u0026sees\u0026\u0026d\u003ce.rng\u0026\u0026!p.downed){ e.bigW=((e.shotN||0)+1)%BULWARK_SHOT_N===0?1:0; e.windup=e.bigW?.7:.4; if(!G.sim) sfx(\u0027charge\u0027,e.x,e.y); }\n  collide(e,G.map.walls);\n}\nfunction mkWarden(x,y){"
+                  },
+                  {
+                      "anchor":  "  try{ bossTick(); }catch(_bt){}",
+                      "replacement":  "  try{ bossTick(); bossTick2(); }catch(_bt){}"
+                  },
+                  {
+                      "anchor":  "    if(e.kind===\u0027warden\u0027){\n      // THE GHOST RUN DIES HERE",
+                      "replacement":  "    if(e.boss2){ juggernautTick(e,p,sees,dt); continue; } // v28.xx (cw-cx-juggernaut): authority only, after death and status handling.\n    if(e.kind===\u0027warden\u0027){\n      // THE GHOST RUN DIES HERE"
+                  },
+                  {
+                      "anchor":  "      if(e.kind===\u0027warden\u0027){\n        var cw=setLoot",
+                      "replacement":  "      // v28.xx (cw-cx-juggernaut): the normal bulwark wreck still drops below; the boss also leaves its hoard.\n      if(e.boss2){\n        fxBorrow(function(){ var c=setLoot(mkContainer(e.x+40,e.y+10,\u0027cache\u0027),[\u0027reactor\u0027,\u0027titan\u0027,\u0027coil\u0027,vaultGunPick()]); c.cache=1; c.time=3.0; c.tag=\u0027juggernaut hoard\u0027; G.containers.push(c); });\n        say(\u0027the juggernaut destroyed\u0027,\u0027obj\u0027);\n      }\n      if(e.kind===\u0027warden\u0027){\n        var cw=setLoot"
+                  },
+                  {
+                      "anchor":  "e.kind===\u0027bulwark\u0027?FIG_MACH*BULWARK_BIG:FIG_MACH",
+                      "replacement":  "e.kind===\u0027bulwark\u0027?FIG_MACH*BULWARK_BIG*(e.boss2?1.3:1):FIG_MACH"
+                  },
+                  {
+                      "anchor":  "  e.boss=(e.kind===\u0027warden\u0027\u0026\u0026e.name===BOSS_NAME)?1:0;",
+                      "replacement":  "  e.boss2=(e.kind===\u0027bulwark\u0027\u0026\u0026e.name===BOSS2_NAME)?1:0; // v28.xx (cw-cx-juggernaut): late bodies keep the larger art and identity.\n  e.boss=(e.kind===\u0027warden\u0027\u0026\u0026e.name===BOSS_NAME)?1:0;"
+                  },
+                  {
+                      "anchor":  "hit.kind===\u0027raider\u0027||hit.boss||hit.name===BOSS_NAME",
+                      "replacement":  "hit.kind===\u0027raider\u0027||hit.boss||hit.boss2||hit.name===BOSS_NAME"
+                  },
+                  {
+                      "anchor":  "  if(e.kind===\u0027raider\u0027){ m.fk=",
+                      "replacement":  "  if(e.boss2){ m.lx=e.lairX; m.ly=e.lairY; } // v28.xx (cw-cx-juggernaut): keep the original far lair for takeover.\n  if(e.kind===\u0027raider\u0027){ m.fk="
+                  },
+                  {
+                      "anchor":  "  if(e.kind===\u0027raider\u0027){\n    if(typeof m.c===\u0027string\u0027",
+                      "replacement":  "  if(e.boss2\u0026\u0026typeof m.lx===\u0027number\u0027\u0026\u0026typeof m.ly===\u0027number\u0027){ e.lairX=m.lx; e.lairY=m.ly; }\n  if(e.kind===\u0027raider\u0027){\n    if(typeof m.c===\u0027string\u0027"
+                  },
+                  {
+                      "anchor":  "var _i, _e, _boss=null, _b, _k;",
+                      "replacement":  "var _i, _e, _boss=null, _boss2=null, _b, _k;"
+                  },
+                  {
+                      "anchor":  "if(_e.net){ if(_e.name===BOSS_NAME\u0026\u0026!_boss) _boss=_e; continue; }",
+                      "replacement":  "if(_e.net){ if(_e.name===BOSS_NAME\u0026\u0026!_boss) _boss=_e; if(_e.name===BOSS2_NAME\u0026\u0026!_boss2) _boss2=_e; continue; }"
+                  },
+                  {
+                      "anchor":  "if(_e.name===BOSS_NAME) _boss=_e; G.ents.splice(_i,1);",
+                      "replacement":  "if(_e.name===BOSS_NAME) _boss=_e; if(_e.name===BOSS2_NAME) _boss2=_e; G.ents.splice(_i,1);"
+                  },
+                  {
+                      "anchor":  "  else if((G.t||0)\u003e=2) G.bossDone=1;",
+                      "replacement":  "  else if((G.t||0)\u003e=2) G.bossDone=1;\n  // v28.xx (cw-cx-juggernaut): a dead or absent boss stays gone; a surviving mirror resumes its health share and last position.\n  if(_boss2\u0026\u0026_boss2.hp\u003e0){ G.boss2Done=0; _b=bossTick2(true,_boss2); if(_b){ _b.hp=Math.max(1,Math.round(_b.maxhp*Math.min(1,_boss2.hp/(_boss2.maxhp||1)))); _b.x=_boss2.x; _b.y=_boss2.y; } }\n  else if((G.t||0)\u003e=4) G.boss2Done=1;"
+                  },
+                  {
+                      "anchor":  "function arcadeKillPts(k,el,boss){ var n=boss?ARCADE_BOSSPTS:",
+                      "replacement":  "function arcadeKillPts(k,el,boss,boss2){ var n=boss2?ARCADE_BOSSPTS/2:boss?ARCADE_BOSSPTS:"
+                  },
+                  {
+                      "anchor":  "n=arcadeKillPts(e.kind,e.affix\u0026\u0026e.elite?3:e.elite,e.boss);",
+                      "replacement":  "n=arcadeKillPts(e.kind,e.affix\u0026\u0026e.elite?3:e.elite,e.boss,e.boss2);"
+                  },
+                  {
+                      "anchor":  "function scoreKill(st,k,el,boss,x,y){\n  var n=arcadeKillPts(k,el,boss);",
+                      "replacement":  "function scoreKill(st,k,el,boss,x,y,boss2){\n  var n=arcadeKillPts(k,el,boss,boss2);"
+                  },
+                  {
+                      "anchor":  "var n=scoreKill(G.cs,k,el,boss,x,y);",
+                      "replacement":  "var n=scoreKill(G.cs,k,el,boss,x,y,ke\u0026\u0026ke.boss2);"
+                  },
+                  {
+                      "anchor":  "function arcadeKill(k,el,boss,x,y,ke){\n  if(!ARCADE.on||!G||!G.arcade||G.sim||G.over) return 0;\n  try{ flowKill(k,el,boss); }catch(_fk1){}   // v26.xx (flow3): the run goals count what died\n  var n=arcadeKillPts(k,el,boss);",
+                      "replacement":  "function arcadeKill(k,el,boss,x,y,ke){\n  if(!ARCADE.on||!G||!G.arcade||G.sim||G.over) return 0;\n  try{ flowKill(k,el,boss); }catch(_fk1){}   // v26.xx (flow3): the run goals count what died\n  var n=arcadeKillPts(k,el,boss,ke\u0026\u0026ke.boss2);"
+                  },
+                  {
+                      "anchor":  "affix:!!m.af,boss:!!m.boss,x:m.x,y:m.y",
+                      "replacement":  "affix:!!m.af,boss:!!m.boss,boss2:!!m.boss2,x:m.x,y:m.y"
+                  },
+                  {
+                      "anchor":  "af:e.affix?1:0,boss:!!e.boss,x:e.x,y:e.y",
+                      "replacement":  "af:e.affix?1:0,boss:!!e.boss,boss2:!!e.boss2,x:e.x,y:e.y"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027juggernaut spawns once far from the Overseer, mirrors, pays boss SP and drops its hoard\u0027,run:function(){\n    var oldCareer=CAREER_ON,oldFX=FXS,g,e,L,mirror,seed,body;\n    function need(ok,msg){ if(!ok) throw Error(msg); }\n    try{\n      __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n      CAREER_ON=1; __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();\n      g.t=5; g.player.iv=9999;\n      need(g.career\u0026\u0026!g.over\u0026\u0026!g.boss2Done\u0026\u0026CFG.boss!==0\u0026\u0026!(NET.on\u0026\u0026NET.role===\u0027join\u0027),\u0027invalid career authority staging\u0027);\n      // v28.xx (cw-cx-juggernaut): pin the independent effects stream too. The first freeSpot proposal is (122.78,3290.29), in the far southwest strip.\n      FXS=24241;\n      need(typeof bossTick2===\u0027function\u0027,\u0027no second boss spawner\u0027); seed=RNGS; bossTick2(); need(seed===RNGS,\u0027spawn changed seeded stream\u0027); __ents(0);\n      body=g.ents.filter(function(a){return a.boss2;}); need(body.length===1,\u0027expected one juggernaut, got \u0027+body.length); e=body[0]; L=bossLair();\n      need(dist(e,L)\u003e=1800,\u0027too near Overseer\u0027); need(e.kind===\u0027bulwark\u0027\u0026\u0026!e.boss\u0026\u0026!e.elite\u0026\u0026e.r===31,\u0027wrong body\u0027);\n      need(e.maxhp===Math.round(3000*CFG.eHp)\u0026\u0026e.dmg===22\u0026\u0026e.rng===420,\u0027wrong stats\u0027);\n      g.zones.forEach(function(z){need(dist(e,z)\u003e=900,\u0027too near ring\u0027);}); g.map.spawns.forEach(function(s){need(dist(e,s)\u003e=900,\u0027too near spawn\u0027);});\n      seed=RNGS; bossTick2(); need(RNGS===seed\u0026\u0026g.ents.filter(function(a){return a.boss2;}).length===1,\u0027repeat spawn or seeded draw\u0027);\n      mirror=netEntMake(99999,\u0027bulwark\u0027,e.x,e.y); netEntFill(mirror,netEntNewWord(e));\n      need(mirror.boss2\u0026\u0026!mirror.boss\u0026\u0026mirror.r===31\u0026\u0026netPingName(mirror)===BOSS2_NAME\u0026\u0026mirror.lairX===e.lairX\u0026\u0026mirror.lairY===e.lairY,\u0027peer identity or lair\u0027);\n      need(Math.abs(machMul(e)/machMul({kind:\u0027bulwark\u0027})-1.3)\u003c.001,\u0027body size\u0027);\n      need(arcadeKillPts(\u0027bulwark\u0027,0,0,1)===spMul(ARCADE_BOSSPTS/2),\u0027boss score\u0027);\n      e.hp=0; __ents(0); var c=g.containers.filter(function(a){return a.tag===\u0027juggernaut hoard\u0027;});\n      need(c.length===1\u0026\u0026c[0].time===3,\u0027missing hoard\u0027); need(c[0].loot.length===4,\u0027wrong hoard loot\u0027);\n      __ents(0); need(g.containers.filter(function(a){return a.tag===\u0027juggernaut hoard\u0027;}).length===1,\u0027duplicate hoard\u0027);\n      return null;\n    }finally{ FXS=oldFX; CAREER_ON=oldCareer; try{__endRaid(\u0027abandon\u0027);}catch(_e){} __topClear(); }\n  }},"
+}

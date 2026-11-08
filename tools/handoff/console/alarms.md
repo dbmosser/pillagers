@@ -861,3 +861,13 @@ o-h09-162 coordinator blocker: strict spawn-loot check fails map 1 spawn 3 (8650
 11-08 02:37 v37.57 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
 2026-11-08 o-h13-178-patrol-routes: LINKED REVIEW NEEDED: synced. Existing netEntRow position/state packets carry host patrol motion. Please observe all three patrollers in both windows after shipment; no new packet fields.
 
+11-08 03:03 v37.58 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-08 04:00 v37.58 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-08 04:57 v37.58 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+2026-11-08 o-h13-178-patrol-routes: v37.58 shipped and ON HIS PC; check 37.58 passes and fingerprint holds. Camera round 1 could not load fixture.html at 1080 or 4k; see codex/log/o-h13-178-patrol-routes-recipes-1.camera.txt. Retry recipe handed over. If load failure repeats, coordinator must restore spare camera fixture loading before a visual review is possible.
+LINKED REVIEW NEEDED: synced. Confirm host patrol motion received through existing netEntRow packets in both actual linked windows, with a picture from each. No new packet fields.
+
+2026-11-08 o-h13-178-patrol-routes: Camera round 2 repeated the round 1 fixture-load failure at both resolutions; tools/handoff/console/notes/shots/o-h13-178-patrol-routes-recipes-2/report.json has staged:false and no images (122.7 s at 1080, 122.4 s at 4k). Both camera rounds are exhausted. Coordinator: restore spare fixture loading and obtain the smooth career raid camera/critic result. The implementation is already shipped and ON HIS PC v37.58; do not reship it. LINKED REVIEW NEEDED: synced, existing netEntRow position/state packets; confirm patrol motion in both actual linked windows with a picture from each. This job needs these external review results before it can close.
+2026-11-08 o-h14-182-juggernaut-boss: LINKED REVIEW NEEDED: synced. Review boss2 body/late-join delivery, hoard delivery, 1000 base SP including shared credit, and takeover preserving original lair, last position and health share. Need actual body-comparison and hoard pictures from both windows at 1080p and 4K. Supplied camera recipes stage authority and mirror representations locally; they do not establish a live link. If the lane camera only runs 1080p, the 4K captures need the coordinator.
+
+11-08 05:55 v37.58 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log

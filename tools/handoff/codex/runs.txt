@@ -717,3 +717,7 @@
 2026-11-07 19:51 o-h12-175-break-down-guns 84s ok PARTIAL in=343817 out=2364 run=4
 2026-11-08 02:18 o-h12-175-break-down-guns 47s ok PARTIAL in=161013 out=1495 run=5
 2026-11-08 02:38 o-h13-178-patrol-routes 350s ok PARTIAL in=1015557 out=13661 run=1
+2026-11-08 04:58 o-h13-178-patrol-routes 91s ok PARTIAL in=401452 out=2671 run=2
+2026-11-08 05:39 o-h13-178-patrol-routes 47s ok PARTIAL in=193960 out=1535 run=3
+2026-11-08 05:50 o-h14-182-juggernaut-boss 405s ok PARTIAL in=1413503 out=15651 run=1
+2026-11-08 05:56 o-h14-182-juggernaut-boss 244s ok PARTIAL in=3825469 out=23397 run=2

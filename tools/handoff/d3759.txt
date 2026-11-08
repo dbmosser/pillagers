@@ -1,0 +1,5 @@
+## v37.59 - THE JUGGERNAUT
+
+Co-op hunt while he was away. His g-52: Yes, a machine boss too. Watch: a second boss can crowd the map and cost frames; watch whether players find it and whether it reads as different from the Overseer.
+
+MEASURED. Check 37.59 passes, and fails on v37.58.

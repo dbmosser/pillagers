@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.59 - THE JUGGERNAUT
+
+Co-op hunt while he was away. His g-52: Yes, a machine boss too. Watch: a second boss can crowd the map and cost frames; watch whether players find it and whether it reads as different from the Overseer.
+
+MEASURED. Check 37.59 passes, and fails on v37.58.
 ## v37.58 - THREE LANDMARK PATROLS
 
 Co-op hunt while he was away. His g-46 answer: Yes, a few patrols. Watch: patrols must read as a pattern you can learn and time; watch for a patroller hugging a wall on one leg.
