@@ -1,0 +1,7 @@
+v37.64: extract card: room under the pip lines
+
+the pip lines of the worn pieces are one block with 16px under it, so the last line no longer crowds the stats row. Words and colours are unchanged
+
+Check 37.64. Fails on v37.63.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

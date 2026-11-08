@@ -4024,8 +4024,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.63';
-var VER_AT='2026-11-08 07:33';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.64';
+var VER_AT='2026-11-08 07:39';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -7187,8 +7187,11 @@ function wornLostLine(pc){ return iconImgHTML('wg_'+pc.k+'_'+pc.r+'_1_0',32,1)+'
 function wornPipGain(lines){
   var L=wornOwnList(), up=[], i, pc;
   for(i=0;i<L.length;i++){ pc=L[i]; if((pc.pip|0)<3){ pc.pip=(pc.pip|0)+1; up.push(pc); } }
-  for(i=0;i<up.length&&i<4;i++) lines.push('<span style="color:'+WORN_RARS[up[i].r].c+'">'+escHtml(wornName(up[i]))+' pip '+up[i].pip+'</span>');
-  if(up.length>4) lines.push('<span style="color:var(--ash)">+'+(up.length-4)+'</span>');
+  // v37.xx (cw-m3pipgap): one block with 16px under it; the last pip line sat 9px over the stats divider on the extract card (1080 picture of v37.61)
+  var h=[];
+  for(i=0;i<up.length&&i<4;i++) h.push('<span style="color:'+WORN_RARS[up[i].r].c+'">'+escHtml(wornName(up[i]))+' pip '+up[i].pip+'</span>');
+  if(up.length>4) h.push('<span style="color:var(--ash)">+'+(up.length-4)+'</span>');
+  if(h.length) lines.push('<div class="ocpips" style="margin:0 0 16px">'+h.join('<br>')+'</div>');
   return up.length;
 }
 function pilRaidEnd(how,sec,lost){
@@ -58484,7 +58487,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.63: The what is new stamp keeps up with the build; the three notes are unchanged. Check 37.63 fails on v37.62',
+  now:'v37.64: the pip lines of the worn pieces are one block with 16px under it, so the last line no longer crowds the stats row. Words and colours are unchanged Check 37.64 fails on v37.63',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

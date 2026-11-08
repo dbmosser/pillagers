@@ -1,0 +1,5 @@
+## v37.64 - EXTRACT CARD: ROOM UNDER THE PIP LINES
+
+Co-op hunt while he was away. the 1080 picture of v37.61 showed the last pip line 9px over the stats divider of the extract card Watch: the pip lines of the worn pieces are one block with 16px under it, so the last line no longer crowds the stats row. Words and colours are unchanged
+
+MEASURED. Check 37.64 passes, and fails on v37.63.

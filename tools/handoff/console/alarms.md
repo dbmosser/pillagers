@@ -874,3 +874,4 @@ LINKED REVIEW NEEDED: synced. Confirm host patrol motion received through existi
 11-08 06:16 v37.59 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
 11-08 06:50 v37.59 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
 11-08 07:16 v37.61 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+11-08 07:45 (00p-m3d-raid-sources, lane b) FYI, older than this job: vaultKillDrop rolls on Math.random and, when it fires, mkContainer draws on RNGS, so a kill can move the seeded raid stream unpredictably (two identical staged kills diverged). Party windows each roll their own Math.random. Not changed here; check cw-m3dsrc pins Math.random around its kills.

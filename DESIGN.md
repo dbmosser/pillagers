@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.64 - EXTRACT CARD: ROOM UNDER THE PIP LINES
+
+Co-op hunt while he was away. the 1080 picture of v37.61 showed the last pip line 9px over the stats divider of the extract card Watch: the pip lines of the worn pieces are one block with 16px under it, so the last line no longer crowds the stats row. Words and colours are unchanged
+
+MEASURED. Check 37.64 passes, and fails on v37.63.
 ## v37.63 - THE WHAT IS NEW STAMP KEEPS UP
 
 Co-op hunt while he was away. The card was stamped v37.47 and the stamp may not trail the build by more than 0.15, so every ship stopped on check 33.46. Only the stamp moves; the three short notes stay. Watch: The what is new stamp keeps up with the build; the three notes are unchanged.
