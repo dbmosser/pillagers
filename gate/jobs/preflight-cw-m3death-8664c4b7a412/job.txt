@@ -1,0 +1,15 @@
+id=preflight-cw-m3death-8664c4b7a412
+kind=preflight
+key=cw-m3death
+tag=pfa
+v=37.60
+new=3760
+base=4cfc10259458c72ffa31fa1aa45f8113e427a1d7
+draft_sha=f8654a795561de37d6a58f2b7e9e6278d3501a6ca484ed1b72dac8779f28ea37
+p_sha=bce31e29ac5ae68c2a3141a34dfd00c963cd82406899f9b5fac21130955338ed
+f_sha=cdaf09cfeefa8b8c826b36027efb6066b6dbf7ec341b644481de8bb37d3de2ff
+game_sha=9f44fb89cd028c077cbf862c68bfaaa7656cd9ae7b1b8a2ec9c02bd0ffcdbb33
+fix_sha=e9337331d79f4f55f9fc152991eaa7785c21d74f9642e26a6de985503305384c
+from=JUL26
+submitted=1794138280
+expires=1794144880
