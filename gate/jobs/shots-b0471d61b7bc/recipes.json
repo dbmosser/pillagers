@@ -1,0 +1,38 @@
+{
+    "about":  "Break down stash gun menu, smooth look, both player roles and input prompts at 1080p",
+    "prelude":  "window.__uis={wait:function(ms){return new Promise(function(r){setTimeout(r,ms);});},on:function(s){var e=document.querySelector(s);return !!(e\u0026\u0026e.getBoundingClientRect().width\u0026\u0026e.getBoundingClientRect().height);}};",
+    "screens":  [
+                    {
+                        "name":  "breakguns-p1-kb",
+                        "screen":  "stash gun item menu, player 1 kb",
+                        "before":  "staged by recipe",
+                        "query":  "",
+                        "expect":  "U.on(\u0027.imenu\u0027) \u0026\u0026 /break down/.test(document.querySelector(\u0027.imenu\u0027).textContent)",
+                        "js":  "__runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile(); var q=__P(); q.stash=[\u0027gun_rifle\u0027,\u0027servo\u0027,\u0027board\u0027,\u0027comp\u0027]; q.kit=[]; q.freeKit=0; q.stashTab=\u0027all\u0027; q.stashChip=\u0027\u0027; q.stashSort=\u0027type\u0027; q.keep={}; q.junk={}; q.weapons=[\u0027pistol\u0027]; q.equipped=\u0027pistol\u0027; __gx(\"CFG.xfPix=0; NET.on=false; NET.role=\u0027host\u0027; NET.seat=0;\"); document.getElementById(\u0027title\u0027).classList.remove(\u0027on\u0027); __hubEnter(); __station(\u0027term\u0027,\u0027KeyE\u0027); await U.wait(900); __gx(\"padOn=function(){return false;}; PAD.on=false; INDEV.dev=\u0027kb\u0027; padBodyCls(); refreshInv();\"); await U.wait(100); __gx(\"var cell=document.querySelector(\u0027#stashgrid .cell.c-elite\u0027); var b=cell.getBoundingClientRect(); cell.dispatchEvent(new MouseEvent(\u0027contextmenu\u0027,{bubbles:true,cancelable:true,clientX:b.left+b.width/2,clientY:b.top+b.height/2}));\"); await U.wait(150); return document.querySelector(\u0027.imenu\u0027).textContent;"
+                    },
+                    {
+                        "name":  "breakguns-p1-pad",
+                        "screen":  "stash gun item menu, player 1 pad",
+                        "before":  "staged by recipe",
+                        "query":  "",
+                        "expect":  "U.on(\u0027.imenu\u0027) \u0026\u0026 /break down/.test(document.querySelector(\u0027.imenu\u0027).textContent)",
+                        "js":  "__runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile(); var q=__P(); q.stash=[\u0027gun_rifle\u0027,\u0027servo\u0027,\u0027board\u0027,\u0027comp\u0027]; q.kit=[]; q.freeKit=0; q.stashTab=\u0027all\u0027; q.stashChip=\u0027\u0027; q.stashSort=\u0027type\u0027; q.keep={}; q.junk={}; q.weapons=[\u0027pistol\u0027]; q.equipped=\u0027pistol\u0027; __gx(\"CFG.xfPix=0; NET.on=false; NET.role=\u0027host\u0027; NET.seat=0;\"); document.getElementById(\u0027title\u0027).classList.remove(\u0027on\u0027); __hubEnter(); __station(\u0027term\u0027,\u0027KeyE\u0027); await U.wait(900); __gx(\"padOn=function(){return true;}; PAD.on=true; INDEV.dev=\u0027pad\u0027; padBodyCls(); refreshInv();\"); await U.wait(100); __gx(\"var cell=document.querySelector(\u0027#stashgrid .cell.c-elite\u0027); padSetFocus(cell); PAD.yMenuWas=false; padMenu(function(n){return n===3;});\"); await U.wait(150); return document.querySelector(\u0027.imenu\u0027).textContent;"
+                    },
+                    {
+                        "name":  "breakguns-p2-kb",
+                        "screen":  "stash gun item menu, player 2 kb",
+                        "before":  "staged by recipe",
+                        "query":  "",
+                        "expect":  "U.on(\u0027.imenu\u0027) \u0026\u0026 /break down/.test(document.querySelector(\u0027.imenu\u0027).textContent)",
+                        "js":  "__runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile(); var q=__P(); q.stash=[\u0027gun_rifle\u0027,\u0027servo\u0027,\u0027board\u0027,\u0027comp\u0027]; q.kit=[]; q.freeKit=0; q.stashTab=\u0027all\u0027; q.stashChip=\u0027\u0027; q.stashSort=\u0027type\u0027; q.keep={}; q.junk={}; q.weapons=[\u0027pistol\u0027]; q.equipped=\u0027pistol\u0027; __gx(\"CFG.xfPix=0; NET.on=false; NET.role=\u0027join\u0027; NET.seat=1;\"); document.getElementById(\u0027title\u0027).classList.remove(\u0027on\u0027); __hubEnter(); __station(\u0027term\u0027,\u0027KeyE\u0027); await U.wait(900); __gx(\"padOn=function(){return false;}; PAD.on=false; INDEV.dev=\u0027kb\u0027; padBodyCls(); refreshInv();\"); await U.wait(100); __gx(\"var cell=document.querySelector(\u0027#stashgrid .cell.c-elite\u0027); var b=cell.getBoundingClientRect(); cell.dispatchEvent(new MouseEvent(\u0027contextmenu\u0027,{bubbles:true,cancelable:true,clientX:b.left+b.width/2,clientY:b.top+b.height/2}));\"); await U.wait(150); return document.querySelector(\u0027.imenu\u0027).textContent;"
+                    },
+                    {
+                        "name":  "breakguns-p2-pad",
+                        "screen":  "stash gun item menu, player 2 pad",
+                        "before":  "staged by recipe",
+                        "query":  "",
+                        "expect":  "U.on(\u0027.imenu\u0027) \u0026\u0026 /break down/.test(document.querySelector(\u0027.imenu\u0027).textContent)",
+                        "js":  "__runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile(); var q=__P(); q.stash=[\u0027gun_rifle\u0027,\u0027servo\u0027,\u0027board\u0027,\u0027comp\u0027]; q.kit=[]; q.freeKit=0; q.stashTab=\u0027all\u0027; q.stashChip=\u0027\u0027; q.stashSort=\u0027type\u0027; q.keep={}; q.junk={}; q.weapons=[\u0027pistol\u0027]; q.equipped=\u0027pistol\u0027; __gx(\"CFG.xfPix=0; NET.on=false; NET.role=\u0027join\u0027; NET.seat=1;\"); document.getElementById(\u0027title\u0027).classList.remove(\u0027on\u0027); __hubEnter(); __station(\u0027term\u0027,\u0027KeyE\u0027); await U.wait(900); __gx(\"padOn=function(){return true;}; PAD.on=true; INDEV.dev=\u0027pad\u0027; padBodyCls(); refreshInv();\"); await U.wait(100); __gx(\"var cell=document.querySelector(\u0027#stashgrid .cell.c-elite\u0027); padSetFocus(cell); PAD.yMenuWas=false; padMenu(function(n){return n===3;});\"); await U.wait(150); return document.querySelector(\u0027.imenu\u0027).textContent;"
+                    }
+                ]
+}
