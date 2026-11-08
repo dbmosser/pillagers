@@ -1,0 +1,14 @@
+id=shots-1ce6fdfb1f9f
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=e99efdec02c8a31c58d3a8f8cf70cfc05ca6fcf4
+screens=patrol-routes-smooth
+res=1080,4k
+nolint=0
+lintopts=
+from=JUL26
+submitted=1794131943
+expires=1794138543
