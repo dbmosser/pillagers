@@ -1,2 +1,2 @@
-until=1794150600
-# FnP TEST-1 on the JT PC 08:55 to about 09:40 ET 11-08, plus 30 min (FNP NEW JT PC CORRESPONDENT, 08:31). Read by tools/spare/spare-runner.ps1 FnpHold. Remove after.
+until=1794157200
+# FnP TEST-1 and the two-player checks on the JT PC, 11-08. Released when FNP NEW LEAD DEV sends "FNP JT DONE" (PILLAGERS-HTML NEW CEO removes this file); 12:00 ET is only a safety end. Fortnite running there pauses HTML tests by itself. Hold H02 in the FnP holds.json.

@@ -1319,8 +1319,8 @@ function Gate-Note([string]$why){
 # CPU: the robot (9331) and the full run (9344, corpq.sh) run below normal on all but one logical processor, so one stays free and HTML tests
 # never hold the PC at 100%. Cap-Tests sets it again every 30 s on each test part and its Chrome (new children take it from their parent).
 # Gate jobs (9347, the ship checks) are left as they are.
-# FnP window: FnpHold pauses all HTML test work (the same pause as someone at the PC) while the Fortnite editor or game runs here, for 30
-# minutes after it was last seen, and while tools/handoff/spare/fnp-hold.txt on GitHub master has a line until=EPOCH (Unix seconds) still
+# FnP window: FnpHold pauses all HTML test work (the same pause as someone at the PC) while the Fortnite editor or game runs here (no
+# extra time after it closes, 11-08 08:55), and while tools/handoff/spare/fnp-hold.txt on GitHub master has a line until=EPOCH (Unix seconds) still
 # to come. PILLAGERS-HTML NEW CEO writes that file at least 10 minutes before a planned FnP test and removes it after.
 $script:capMask=[long]0; $script:fnpT=[long]0; $script:fnpUntil=[long]0
 function Cap-Tests(){
@@ -1344,7 +1344,9 @@ function FnpHold(){
   try{
     $eg=EpicGame
     if($eg){ PutS 'fnp_seen' ([string](Epoch)); return ('fortnite is running: '+$eg) }
-    $fs=[long]('0'+(GetS 'fnp_seen')); if($fs -gt 0 -and ((Epoch)-$fs) -lt 1800){ return 'fortnite closed under 30 minutes ago' }
+    # 11-08 08:55 (owner's waiting instruction, RULES 4.9(h): holds release as soon as the real conflict ends): no extra time after Fortnite
+    # closes, since no measured conflict needs one; FNP_AFTER_SEC in the environment can bring a delay back
+    $fa=[long]('0'+$env:FNP_AFTER_SEC); $fs=[long]('0'+(GetS 'fnp_seen')); if($fa -gt 0 -and $fs -gt 0 -and ((Epoch)-$fs) -lt $fa){ return 'fortnite closed under '+[int]($fa/60)+' minutes ago' }
     if(((Epoch)-$script:fnpT) -ge 60){
       $script:fnpT=Epoch; $script:fnpUntil=0
       $t=G -C $R show 'origin/master:tools/handoff/spare/fnp-hold.txt'
