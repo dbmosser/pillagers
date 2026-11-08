@@ -1,0 +1,26 @@
+id=preflight-cw-cx-juggernaut-b0b99b47fab1
+kind=preflight
+key=cw-cx-juggernaut
+tag=pfo
+v=37.59
+new=3759
+base=e99efdec02c8a31c58d3a8f8cf70cfc05ca6fcf4
+host=DESKTOP-82BKOP4
+draft_sha=d8a031dae14d54e36a2ae14beb9caed86777ef70fece5f07a3e36938e0958390
+p_sha=0713dc8b91dff1d522fd0d1007fd45b4401f8ea9b5e00a63576d40733648e499
+f_sha=ed326e9ba8ad3c3cc619084286473de0eed2c83acf26389b2249c68be0b5636f
+game_sha=425af2a53822e4feb333b4aca7365f9a48a6111c8725bc1ae8f276807e6e7b4e
+fix_sha=d4a0acacf6c116a51e3c9abf6746ececa2d3eff6128e42439b6f91be4c5fac0b
+started=1794135078
+ended=1794135104
+result=FAIL
+infra=0
+reason=the new check does not pass twice on the drafted build
+--- stages
+ppfo -> OK, 21 edits applied plus DEVNOW
+fpfo -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.59 parse check
+dry fxdrypfo check 37.59: threw Error: expected one juggernaut, got 0 / threw Error: expected one juggernaut, got 0
+--- end
+done=1
