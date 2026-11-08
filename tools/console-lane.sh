@@ -195,7 +195,7 @@ if [ $ENGINE = cli ]; then
     if [ "$dd" != "$td" ] || [ -z "$dl" ]; then
       md=$(date -d "$td 00:00" +%s); dl=$(awk -v w="$wk" -v r="$WR" -v m="$md" 'BEGIN{d=(r-m)/86400; if(d<1)d=1; printf "%.1f", w+(100-w)/d}')
       echo "$td $wk $dl" > "$DS.$L.tmp" && mv -f "$DS.$L.tmp" "$DS"; fi
-    pace=0
+    pace=0; line="$dl"   # the status lines then read "week X% of the Y% line" with Y = today's limit
     if awk -v w="$wk" -v l="$dl" 'BEGIN{exit !(w>=l)}'; then
       echo "$(date '+%m-%d %H:%M') resting: today's share is used (week $wk%, today's limit $dl%); helpers start again after midnight" > "$C/status-$L.txt"; exit 0; fi
   fi
