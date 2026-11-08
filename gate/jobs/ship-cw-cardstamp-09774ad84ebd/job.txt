@@ -1,0 +1,15 @@
+id=ship-cw-cardstamp-09774ad84ebd
+kind=ship
+key=cw-cardstamp
+tag=63
+v=37.63
+new=3763
+base=2f12753467ea8e0cce6f72e4dab209f37e83eaf6
+draft_sha=f66f0f918f0f0e50479b6dbcca5c831f40eea6fe7e877ae29f2dbcf65abf99fc
+p_sha=6211800103226cedab69d19b4793125a204e41dc56780cb16e07c0a614126e11
+f_sha=58e6b996656fd6ecdb5c1060a677ecf0b28a1471311bcc6df571176fce2ce118
+game_sha=fa4bac55d3287e7775ae6ab8ba0d557aea0a1896fe4f6dde086cd0f5aeffc9b5
+fix_sha=e78486d1f9fdb81671b5d891c4d183938d5324281be25af85b991f94a68ec7a4
+from=JUL26
+submitted=1794140952
+expires=1794147552
