@@ -1,0 +1,30 @@
+id=ship-cw-cx-endseat-e489b12a0c72
+kind=ship
+key=cw-cx-endseat
+tag=67
+v=37.67
+new=3767
+base=614e3bd5f99e5c0f8a8e991b997a9a596748b83a
+host=DESKTOP-82BKOP4
+draft_sha=c451c482140d4c07967a7dcf501346770ce827cb1ea99d7afafa799e16b738c8
+p_sha=ff4547b0876cd43088c354786a1c67d2077a7c728c91559aaa812bef20ecda92
+f_sha=f9f9fac143b7d2376fbeb044e84b530d0526508846eea707d7ddba171703ff0b
+game_sha=0f6c3f7eb4e7f8b386f7b9a58813e48c632f6496dfce38bb38b566264fbae2ad
+fix_sha=876334ffcb54059f10dcfa5d07cccb80e0ee21f13978b94e16b2df687866d6d9
+started=1794187634
+ended=1794187833
+result=PASS
+infra=0
+reason=
+--- stages
+p67 -> OK, 6 edits applied plus DEVNOW
+f67 -> OK, 1 edits applied
+parse: PASS v37.67 parse check
+dry fxdry67 check 37.67: PASS / PASS
+control fxctl67 check 37.67: host end run ended the shared raid / host end run ended the shared raid
+recent: 0 new failures in the newest 80 checks
+stamp-verat: VER_AT 2026-11-08 20:29
+fixture.html check 37.67: PASS / PASS
+verifySafe: {"pass":true,"ents":{"0":85,"1":374},"containers":{"0":165,"1":593},"fail":[]}
+--- end
+done=1
