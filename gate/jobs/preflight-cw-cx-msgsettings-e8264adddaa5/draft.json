@@ -1,0 +1,108 @@
+{
+    "title":  "MESSAGE SOUNDS AND CONTROLS",
+    "why":  "His review 10-28: five short message sound families and saved message controls. Watch: compare danger, extraction, teammate, goal and failed-action cues at 200 percent text in each window.",
+    "now":  "Messages have distinct sounds, kind switches, up to 10x time, 200 percent text and plate opacity. Pickups, money and sp keep their rules.",
+    "edits":  [
+                  {
+                      "anchor":  "function msgKind(k){ return (typeof k===\u0027string\u0027\u0026\u0026MSGK.hasOwnProperty(k))?k:\u0027info\u0027; }",
+                      "replacement":  "function msgKind(k){ return (typeof k===\u0027string\u0027\u0026\u0026MSGK.hasOwnProperty(k))?k:\u0027info\u0027; }\n// v28.xx (cw-cx-msgsettings): his review 10-28, five local message families; pickups, money and sp keep their own rules.\nfunction msgTimeK(){ var n=+CFG.msgTime; return n\u003e=1\u0026\u0026n\u003c=10?n:1; }\nfunction msgScaleK(){ var n=+CFG.msgScale; return n\u003e=1\u0026\u0026n\u003c=2?n:1; }\nfunction msgEnabled(c){ return !c||CFG[\u0027msgOn\u0027+c]!==0; }\nfunction msgFamily(m,k,o){ if(k===\u0027pick\u0027||k===\u0027log\u0027) return \u0027\u0027; var c=msgReach(m,k,o); return /^[abcde]$/.test(c)?c:\u0027\u0027; }\nfunction msgFont(f){ return f.replace(/([\\d.]+)px/,function(_,n){ return (+n*msgScaleK()).toFixed(1)+\u0027px\u0027; }); }\nfunction msgPlate(x,y,w,h,accent,fill){\n  var n=+CFG.msgOpacity; if(!(n\u003e=0\u0026\u0026n\u003c=1)) n=0.88;\n  hudPlate(x,y,w,h,accent,String(fill||HUDC.plate).replace(/,[\\d.]+\\)$/,\u0027,\u0027+n+\u0027)\u0027));\n}\nvar MSGSND={\n  a:[[0,196,147,0.12,\u0027sawtooth\u0027,0.035],[0.15,147,110,0.14,\u0027sawtooth\u0027,0.035]],\n  b:[[0,659,659,0.07,\u0027triangle\u0027,0.03],[0.08,880,880,0.13,\u0027triangle\u0027,0.03]],\n  c:[[0,440,440,0.06,\u0027sine\u0027,0.04],[0.09,440,440,0.08,\u0027sine\u0027,0.04]],\n  d:[[0,523,659,0.08,\u0027triangle\u0027,0.03],[0.09,784,1047,0.12,\u0027triangle\u0027,0.03]],\n  e:[[0,220,110,0.12,\u0027square\u0027,0.022]]\n};\nfunction msgSound(c,k,m,o){\n  if(!G||G.sim||G.hubFloor||!MSGSND[c]||!msgEnabled(c)) return false;\n  if(typeof NET===\u0027object\u0027\u0026\u0026NET\u0026\u0026NET.specTick) return false;\n  var now=statusNow(), seen=G.msgSoundAt||(G.msgSoundAt={}), n=MSGSND[c], v=1;\n  if(seen[c]!==undefined\u0026\u0026now-seen[c]\u003c1.5) return false;\n  if(c===\u0027b\u0027\u0026\u0026!extAlertSoundOn(m,k,o)) return false;\n  seen[c]=now;\n  if(c===\u0027a\u0027){ v=volOf(\u0027volAlarm\u0027); if(k===\u0027crit\u0027) padRumble(0.35,140); }\n  if(!(v\u003e0)) return false;\n  if(v\u003c1) n=n.map(function(q){ var z=q.slice(); z[5]*=v; return z; });\n  return styTone(n);\n}\n"
+                  },
+                  {
+                      "anchor":  "function alertSting(k){",
+                      "replacement":  "function alertSting(k,mc,m,o){\n  if(mc) return msgSound(mc,k,m,o);   // v28.xx (cw-cx-msgsettings): keep the existing alert sound entry point."
+                  },
+                  {
+                      "anchor":  "  try{ if(extAlertSoundOn(m,k,o)) alertSting(k); }catch(_asg){}   // v28.xx (cw-cx-extractquiet): delayed extract/siege callouts obey the audio windows too.",
+                      "replacement":  "  var mc=msgFamily(m,k,o); if(!msgEnabled(mc)) return;\n  try{ if(extAlertSoundOn(m,k,o)) alertSting(k,mc,m,o); }catch(_asg){}   // v28.xx (cw-cx-msgsettings): one sound when the lane shows it, never on refresh."
+                  },
+                  {
+                      "anchor":  "function alertSay(m,k,o){\n  var now=",
+                      "replacement":  "function alertSay(m,k,o){\n  if(!msgEnabled(msgFamily(m,k,o))) return;\n  var now="
+                  },
+                  {
+                      "anchor":  "return (a\u0026\u0026a.T\u003e0\u0026\u0026a.m)?a:null;",
+                      "replacement":  "return (a\u0026\u0026a.T\u003e0\u0026\u0026a.m\u0026\u0026msgEnabled(msgFamily(a.m,a.k,null)))?a:null;"
+                  },
+                  {
+                      "anchor":  "if(a\u0026\u0026a.T\u003e0){ a.T-=dt;",
+                      "replacement":  "if(a\u0026\u0026a.T\u003e0){ a.T-=dt/msgTimeK();"
+                  },
+                  {
+                      "anchor":  "hf=railF(TYPE.title,1.15); lf=railF(TYPE.head,1.28);",
+                      "replacement":  "hf=msgFont(railF(TYPE.title,1.15)); lf=msgFont(railF(TYPE.head,1.28));"
+                  },
+                  {
+                      "anchor":  "dn=!!(G.player\u0026\u0026G.player.downed), oa=",
+                      "replacement":  "dn=!!(G.player\u0026\u0026G.player.downed)||msgScaleK()\u003e1, oa="
+                  },
+                  {
+                      "anchor":  "hh=dn?Math.round(42*z):RAIL.h,",
+                      "replacement":  "hh=dn?Math.round(Math.max(42*z,L.hp*1.5)):RAIL.h,"
+                  },
+                  {
+                      "anchor":  "  if(dn){ ctx.fillStyle=HUDC.dangerPlate; ctx.fillRect(Math.round(tx0-gm),y0,Math.round(bw+gm*2),hh); RAIL.b=y0+hh; }",
+                      "replacement":  "  msgPlate(Math.round(tx0-gm),y0,Math.round(bw+gm*2),hh,null,alertDanger(a.k)?HUDC.dangerPlate:HUDC.plate);\n  if(dn) RAIL.b=y0+hh;"
+                  },
+                  {
+                      "anchor":  "var age=(G.fd?G.fd.t:0)-ln.at;",
+                      "replacement":  "var age=((G.fd?G.fd.t:0)-ln.at)/(ln.mc?msgTimeK():1);"
+                  },
+                  {
+                      "anchor":  "  F=feedS(); now=F.t; key=(o\u0026\u0026o.key)||\u0027\u0027; n=",
+                      "replacement":  "  if(o\u0026\u0026o.mc\u0026\u0026!msgEnabled(o.mc)) return null;\n  F=feedS(); now=F.t; key=(o\u0026\u0026o.key)||\u0027\u0027; n="
+                  },
+                  {
+                      "anchor":  "  F.lines.push(ln);",
+                      "replacement":  "  ln.mc=(o\u0026\u0026o.mc)||\u0027\u0027;\n  F.lines.push(ln);\n  if(ln.mc) msgSound(ln.mc,ln.mc===\u0027b\u0027?\u0027ext\u0027:\u0027\u0027,txt,null);"
+                  },
+                  {
+                      "anchor":  "  fk=feedKindOf(s,k,o); col=feedCol(fk); gl=undefined;",
+                      "replacement":  "  var mc=msgFamily(m,k,o); if(!msgEnabled(mc)) return null;\n  fk=feedKindOf(s,k,o); col=feedCol(fk); gl=undefined;"
+                  },
+                  {
+                      "anchor":  "col:col,cap:cap||\u0027\u0027,still:(o\u0026\u0026o.still)||null",
+                      "replacement":  "col:col,cap:cap||\u0027\u0027,mc:mc,still:(o\u0026\u0026o.still)||null"
+                  },
+                  {
+                      "anchor":  "      ln=F.lines[i]; al=feedAlpha(ln);",
+                      "replacement":  "      ln=F.lines[i]; if(!msgEnabled(ln.mc)) continue;\n      fL=ln.mc?msgFont(feedFont()):feedFont(); R.fp=msgPx(fL); R.rh=Math.round(R.fp*1.38); gs=Math.round(R.fp*0.95); ctx.font=fL;\n      al=feedAlpha(ln);"
+                  },
+                  {
+                      "anchor":  "      yt=y-R.rh; x=R.x+",
+                      "replacement":  "      yt=y-R.rh; if(yt\u003cMath.max(RAIL.b||0,LH(60)*rs)) break; x=R.x+"
+                  },
+                  {
+                      "anchor":  "      hudPlate(x,yt,w,R.rh,ln.col,HUDC.plate);",
+                      "replacement":  "      if(ln.mc) msgPlate(x,yt,w,R.rh,ln.col,HUDC.plate); else hudPlate(x,yt,w,R.rh,ln.col,HUDC.plate);"
+                  },
+                  {
+                      "anchor":  "function ansSay(m,o){\n",
+                      "replacement":  "function ansSay(m,o){\n  if(!msgEnabled(\u0027e\u0027)) return null;\n"
+                  },
+                  {
+                      "anchor":  "now-A.at\u003cANSLIFE)",
+                      "replacement":  "now-A.at\u003cANSLIFE*msgTimeK())"
+                  },
+                  {
+                      "anchor":  "  G.ans={m:s,sub:(o\u0026\u0026o.sub)?String(o.sub):\u0027\u0027,at:now};",
+                      "replacement":  "  G.ans={m:s,sub:(o\u0026\u0026o.sub)?String(o.sub):\u0027\u0027,at:now};\n  msgSound(\u0027e\u0027,\u0027info\u0027,m,o);"
+                  },
+                  {
+                      "anchor":  "(A\u0026\u0026statusNow()-A.at\u003cANSLIFE)?A:null",
+                      "replacement":  "(A\u0026\u0026msgEnabled(\u0027e\u0027)\u0026\u0026statusNow()-A.at\u003cANSLIFE*msgTimeK())?A:null"
+                  },
+                  {
+                      "anchor":  "  k=statusNow()-A.at; al=",
+                      "replacement":  "  f=msgFont(f); px=msgPx(f);\n  k=(statusNow()-A.at)/msgTimeK(); al="
+                  },
+                  {
+                      "anchor":  "    hudPlate(Math.round(x-bw/2),Math.round(y-bh/2),bw,bh,null,HUDC.plate);",
+                      "replacement":  "    msgPlate(Math.round(x-bw/2),Math.round(y-bh/2),bw,bh,null,HUDC.plate);"
+                  },
+                  {
+                      "anchor":  "var GAMEOPTS=[",
+                      "replacement":  "var GAMEOPTS=[\n// v28.xx (cw-cx-msgsettings): his review 10-28, local message controls, all kinds on by default.\n  {k:\u0027msgTime\u0027,label:\u0027message time\u0027,sec:\u0027ACCESSIBILITY\u0027,hint:\u0027message time\u0027,opts:[{n:\u00271x\u0027,cfg:{msgTime:1}},{n:\u00272x\u0027,cfg:{msgTime:2}},{n:\u00274x\u0027,cfg:{msgTime:4}},{n:\u00276x\u0027,cfg:{msgTime:6}},{n:\u00278x\u0027,cfg:{msgTime:8}},{n:\u002710x\u0027,cfg:{msgTime:10}}],def:0},\n  {k:\u0027msgScale\u0027,label:\u0027message text size\u0027,sec:\u0027ACCESSIBILITY\u0027,hint:\u0027message text size\u0027,opts:[{n:\u0027100%\u0027,cfg:{msgScale:1}},{n:\u0027125%\u0027,cfg:{msgScale:1.25}},{n:\u0027150%\u0027,cfg:{msgScale:1.5}},{n:\u0027175%\u0027,cfg:{msgScale:1.75}},{n:\u0027200%\u0027,cfg:{msgScale:2}}],def:0},\n  {k:\u0027msgOpacity\u0027,label:\u0027message plate opacity\u0027,sec:\u0027ACCESSIBILITY\u0027,hint:\u0027message plate opacity\u0027,opts:[{n:\u00270%\u0027,cfg:{msgOpacity:0}},{n:\u002725%\u0027,cfg:{msgOpacity:0.25}},{n:\u002750%\u0027,cfg:{msgOpacity:0.5}},{n:\u002775%\u0027,cfg:{msgOpacity:0.75}},{n:\u002788%\u0027,cfg:{msgOpacity:0.88}},{n:\u0027100%\u0027,cfg:{msgOpacity:1}}],def:4},\n  {k:\u0027msgOna\u0027,label:\u0027danger messages\u0027,sec:\u0027ACCESSIBILITY\u0027,hint:\u0027danger messages\u0027,opts:[{n:\u0027on\u0027,cfg:{msgOna:1}},{n:\u0027off\u0027,cfg:{msgOna:0}}],def:0},\n  {k:\u0027msgOnb\u0027,label:\u0027extraction messages\u0027,sec:\u0027ACCESSIBILITY\u0027,hint:\u0027extraction messages\u0027,opts:[{n:\u0027on\u0027,cfg:{msgOnb:1}},{n:\u0027off\u0027,cfg:{msgOnb:0}}],def:0},\n  {k:\u0027msgOnc\u0027,label:\u0027teammate messages\u0027,sec:\u0027ACCESSIBILITY\u0027,hint:\u0027teammate messages\u0027,opts:[{n:\u0027on\u0027,cfg:{msgOnc:1}},{n:\u0027off\u0027,cfg:{msgOnc:0}}],def:0},\n  {k:\u0027msgOnd\u0027,label:\u0027goal done messages\u0027,sec:\u0027ACCESSIBILITY\u0027,hint:\u0027goal done messages\u0027,opts:[{n:\u0027on\u0027,cfg:{msgOnd:1}},{n:\u0027off\u0027,cfg:{msgOnd:0}}],def:0},\n  {k:\u0027msgOne\u0027,label:\u0027did not work messages\u0027,sec:\u0027ACCESSIBILITY\u0027,hint:\u0027did not work messages\u0027,opts:[{n:\u0027on\u0027,cfg:{msgOne:1}},{n:\u0027off\u0027,cfg:{msgOne:0}}],def:0},"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027five local message sounds, per-kind cooldown, critical-only rumble and profile message controls; pickups untouched\u0027,\n   run:function(){\n     if(typeof msgSound!==\u0027function\u0027||typeof msgScaleK!==\u0027function\u0027) return \u0027missing message controls\u0027;\n     var oldTone=styTone, oldRumble=padRumble, oldNow=statusNow, oldPlate=hudPlate, oldGO=P.gameOpts, oldTuned=P.tuned,\n       role=NET.role, on=NET.on, seat=NET.seat, spec=NET.specTick, bad=[], sounds=[], buzz=[], t=100, g, i, j, ln, r, a;\n     function ok(v,m){ if(!v) bad.push(m); }\n     try{\n       __runPrep(); __topClear(); __resetCfg(); __pinDefaults(0); __cleanProfile();\n       __deploy({kit:[],safe:null,mapIx:0,seed:4242}); g=__state();\n       if(!g||!g.player||g.over) return \u0027no raid for message checks\u0027;\n       g.mapOpen=false; g.bagOpen=false; g.paused=false; g.hubFloor=false; g.sim=false;\n       styTone=function(n){ sounds.push(JSON.stringify(n)); return true; };\n       padRumble=function(s,ms){ buzz.push([s,ms]); return \u0027own\u0027; };\n       statusNow=function(){ return t; }; NET.specTick=0;\n       P.gameOpts={}; P.tuned={}; applyGameOpts();\n       var opts=[[\u0027msgTime\u0027,5,10],[\u0027msgScale\u0027,4,2],[\u0027msgOpacity\u0027,5,1]];\n       for(i=0;i\u003copts.length;i++){ P.gameOpts[opts[i][0]]=opts[i][1]; applyGameOpts(); ok(CFG[opts[i][0]]===opts[i][2],opts[i][0]+\u0027 profile choice\u0027); }\n       ok(msgFont(\u0027600 20px sans-serif\u0027)===\u0027600 40.0px sans-serif\u0027,\u0027200 percent text\u0027);\n       var fill=\u0027\u0027; hudPlate=function(x,y,w,h,c,f){ fill=f; }; msgPlate(0,0,100,30,null,HUDC.plate);\n       ok(fill===\u0027rgba(17,19,21,1)\u0027,\u0027opaque message plate\u0027); CFG.msgOpacity=0; msgPlate(0,0,100,30,null,HUDC.plate);\n       ok(fill===\u0027rgba(17,19,21,0)\u0027,\u0027transparent message plate\u0027); hudPlate=oldPlate; CFG.msgOpacity=1;\n       for(j=0;j\u003c2;j++){\n         NET.on=true; NET.role=j?\u0027join\u0027:\u0027host\u0027; NET.seat=j; sounds=[]; buzz=[]; g.msgSoundAt={};\n         for(i=0;i\u003c5;i++){ var c=\u0027abcde\u0027[i]; msgSound(c,i===0?\u0027crit\u0027:\u0027\u0027,\u0027EXTRACTION CALLED\u0027,null); msgSound(c,i===0?\u0027crit\u0027:\u0027\u0027,\u0027EXTRACTION CALLED\u0027,null); }\n         ok(sounds.length===5,\u0027one sound per family in role \u0027+j); ok(buzz.length===1,\u0027only critical danger rumbles\u0027);\n         ok(new Set(sounds).size===5,\u0027families have distinct sounds\u0027);\n         t+=2; msgSound(\u0027a\u0027,\u0027warn\u0027,\u0027DANGER\u0027,null); ok(buzz.length===1,\u0027warning has no rumble\u0027);\n         t+=2; g.msgSoundAt={}; sounds=[];\n         g.alert=null; g.alertSeen={}; g.alertQ=[];\n         alertSay(\u0027DANGER\u0027,\u0027crit\u0027,{key:\u0027settings-test\u0027}); alertSay(\u0027DANGER\u0027,\u0027crit\u0027,{key:\u0027settings-test\u0027});\n         ok(sounds.length===1,\u0027alert refresh has no second sound\u0027);\n         a=g.alert; r=a.T; alertTick(1); ok(Math.abs(a.T-(r-0.1))\u003c0.001,\u002710x alert time\u0027);\n         g.fd=null; g.player.combatT=99; sounds=[]; g.msgSoundAt={};\n         ln=feedSay(\u0027GOAL DONE\u0027,\u0027obj\u0027,{reach:\u0027d\u0027},\u0027d\u0027);\n         ok(ln\u0026\u0026ln.mc===\u0027d\u0027\u0026\u0026sounds.length===1,\u0027goal sounds on display\u0027);\n         if(ln){ g.fd.t=ln.at+10; ok(feedAlpha(ln)===1,\u002710x goal time\u0027); }\n         t+=2; g.ans=null; g.ansSeen={}; ansSay(\u0027NO AMMO\u0027); t+=3; ok(!!ansUp(),\u002710x answer time\u0027);\n         for(i=0;i\u003c5;i++) P.gameOpts[\u0027msgOn\u0027+\u0027abcde\u0027[i]]=1;\n         applyGameOpts();\n         for(i=0;i\u003c5;i++){ var c2=\u0027abcde\u0027[i]; ok(CFG[\u0027msgOn\u0027+c2]===0,\u0027saved kind off \u0027+c2); g.msgSoundAt={}; sounds=[]; msgSound(c2,\u0027crit\u0027,\u0027EXTRACTION CALLED\u0027,null); ok(!sounds.length,\u0027disabled \u0027+c2+\u0027 silent\u0027); }\n         g.alert=null; alertSay(\u0027DANGER\u0027,\u0027crit\u0027); ok(!g.alert,\u0027danger off\u0027);\n         ok(!feedSay(\u0027GOAL DONE\u0027,\u0027obj\u0027,{reach:\u0027d\u0027},\u0027d\u0027),\u0027goal off\u0027);\n         ok(!feedSay(\u0027TEAMMATE OUT\u0027,\u0027ally\u0027,{reach:\u0027c\u0027},\u0027c\u0027),\u0027teammate off\u0027);\n         alertSay(\u0027EXTRACTION CALLED\u0027,\u0027ext\u0027); ok(!g.alert,\u0027extraction off\u0027);\n         ok(!ansUp(),\u0027answer off\u0027);\n         g.fd=null; ln=feedAdd(\u0027+$10\u0027,\u0027money\u0027); ok(ln\u0026\u0026!ln.mc,\u0027money bypasses message controls\u0027);\n         if(ln){ g.fd.t=ln.at+10; ok(feedAlpha(ln)===0,\u0027money time unchanged\u0027); }\n         ok(msgFamily(\u0027+$10\u0027,\u0027pick\u0027,null)===\u0027\u0027,\u0027pickup excluded\u0027);\n         for(i=0;i\u003c5;i++) P.gameOpts[\u0027msgOn\u0027+\u0027abcde\u0027[i]]=0;\n         applyGameOpts();\n       }\n       return bad.length?bad.join(\u0027; \u0027):null;\n     } finally {\n       styTone=oldTone; padRumble=oldRumble; statusNow=oldNow; hudPlate=oldPlate; NET.role=role; NET.on=on; NET.seat=seat; NET.specTick=spec;\n       try{ __endRaid(\u0027abandon\u0027); }catch(e){} __topClear(); __resetCfg(); __cleanProfile(); P.gameOpts=oldGO; P.tuned=oldTuned; applyGameOpts();\n     }\n   }},"
+}

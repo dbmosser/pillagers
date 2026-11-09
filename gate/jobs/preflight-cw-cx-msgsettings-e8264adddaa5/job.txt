@@ -1,0 +1,15 @@
+id=preflight-cw-cx-msgsettings-e8264adddaa5
+kind=preflight
+key=cw-cx-msgsettings
+tag=pfo
+v=37.68
+new=3768
+base=2cfc3aba058628cad935a52a2a698639088fdaa9
+draft_sha=abf7dd6eb7c3f5b2e9a31e9273029ed831d3ae2a23166ae6c7331649ed231c0c
+p_sha=bc3343667240b321bdf4d2ab1616497ca36dfdc7bfb6d912dc4502592ed65b1d
+f_sha=a95b15732f02ebf42946f1c3537e72becc0a2a41d1506600e8bf08161136988f
+game_sha=d5b645f3968bf7c5fc6205f13fee621b7bd6f2d12d966629a4b53c47c799b9a2
+fix_sha=aa7b28d450fe213f6f84f1403a0a35b780af8a2a7c9f24d2be8c7c57194304e2
+from=JUL26
+submitted=1794191874
+expires=1794198474
