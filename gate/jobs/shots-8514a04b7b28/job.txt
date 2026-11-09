@@ -1,0 +1,14 @@
+id=shots-8514a04b7b28
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=2cfc3aba058628cad935a52a2a698639088fdaa9
+screens=endseat-host-out,endseat-p2-out
+res=1080,4k
+nolint=0
+lintopts=
+from=JUL26
+submitted=1794189920
+expires=1794196520
