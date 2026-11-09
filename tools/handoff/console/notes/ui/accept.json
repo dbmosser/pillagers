@@ -6110,5 +6110,37 @@
   "pic": "tools/handoff/console/notes/shots/00p-m3g-after/m3g-give-1080.jpg",
   "task": "manual",
   "when": "2026-11-08T14:55"
+ },
+ "floorbits-host": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "functional raid hud with correct lowercase and dollar/score discipline, but it breaks the documented controls-panel placement rule and lets three bold elements fight for the hero spot.",
+  "findings": [
+   "P0 left-mid screen, controls/keybind legend panel: collapse this panel to a single row (e.g. \"controls  f1\") docked at bottom-left above the hp bar, matching the mid-bottom-left spec; only expand on f1 press",
+   "P0 extract timer (top right, teal, ~32-40px), ammo readout \"12/24\" (bottom right, ~56px), hp \"100\" (bottom left, ~40-48px): demote hp and extract-timer to --fs-title(32px)/--fs-body(20px) tx-1 weight, keep only the ammo count at --fs-hero(56px) since it's the player's immediate combat read, or vice-versa if extract countdown is meant to lead",
+   "P1 gear section of controls legend (\"b / i backpack\") vs. bottom-right ammo panel (\"b / i backpack\"): drop the hint from the ammo panel and leave it only in the controls legend, or vice versa",
+   "P1 \"current pillagers\" panel and \"run info\" panel vs. the controls legend panel: apply --ui-panel fill, --ui-line-hi border and --rad:4px uniformly to all three panels",
+   "P2 bottom hotbar, slots labelled 4 through 0: give every hotbar slot the same bordered tile treatment as 1-3, dimmed/empty state for unused slots instead of a bare number"
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h16-192-debris-scatters-recipes-2/floorbits-host-1080.jpg",
+  "task": "o-h16-192-debris-scatters",
+  "when": "2026-11-09T00:19"
+ },
+ "floorbits-join": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "the controls card sits fully open by default instead of folded to one line, and objective markers borrow the extract/rarity colors out of spec, so the eye lands on reference chrome instead of raid state.",
+  "findings": [
+   "P0 bottom-left controls card (move/gear/fight/raid keys): default to a single collapsed row reading 'f1 controls', expand only while f1 is held or toggled; the 'fl' full-list row inside the card confirms this expanded state exists elsewhere, so gate it behind that key instead of showing it by default",
+   "P1 map labels 'the seal 0%' (cyan) and 'the forge' (gold): draw both objective name labels in --tx-1 with a small neutral icon per objective type; keep teal exclusively on the top-right extract timer so it stays the only thing on screen that color means 'extraction'",
+   "P1 overall frame, first-glance read: once folded per the P0 fix, the only two strong-contrast elements left should be the hp fill and the extract countdown — confirm nothing else reads above --tx-2 brightness",
+   "P2 left edge, 'current pillagers' panel stacked above the controls card: align both panels to the same left inset (--sp-2, 16px) and give them matching panel/border treatment so they read as one quiet column per the Halo Reach 'calm column' reference",
+   "P2 'the seal  0%' label: normalize to a single space with the percent in --fs-label (16px), same weight as 'the forge'"
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h16-192-debris-scatters-recipes-2/floorbits-join-1080.jpg",
+  "task": "o-h16-192-debris-scatters",
+  "when": "2026-11-09T00:20"
  }
 }

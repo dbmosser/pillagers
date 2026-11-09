@@ -10,3 +10,10 @@ Do: add light floor debris (papers, small boxes, bolts) that scatters away from 
 
 Rules: the seed 4242 fingerprint (ents 85/374, containers 165/593) must hold unless this brief says otherwise; the check must FAIL on the build before; both windows where it applies; smooth look first (default since v34.81); player text all lower case; never change the storage key. Say in DESIGN.md what he should watch for in a playtest.
 TASK DONE when shipped and his main PC reports the build (spare/JUL26/status.txt party=VER); TASK PARTIAL with what is left.
+
+Lane note 2026-11-08 19:56: shipped cw-cx-floorbits and parked: only lane-side steps are left. Codex's last words:
+Debris is shipped in v37.66 and confirmed on your PC. Both role pictures succeeded. Critic scores remain 2/5 for existing raid HUD issues; coordinator handoff recorded.
+
+LOCAL: no linked review.
+
+TASK PARTIAL: coordinator resolution of raid HUD art findings remains

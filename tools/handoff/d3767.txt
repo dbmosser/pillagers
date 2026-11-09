@@ -1,0 +1,5 @@
+## v37.67 - end run leaves only your seat
+
+Co-op hunt while he was away. His answer 2.23 a: in a two player raid end run takes out only the player who pressed it. Watch: try both exit orders and one exit followed by the other player extracting; the remaining window should keep playing until both are out.
+
+MEASURED. Check 37.67 passes, and fails on v37.66.

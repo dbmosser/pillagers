@@ -1,0 +1,7 @@
+v37.67: end run leaves only your seat
+
+End run keeps the world running for the other seat. Both exits settle the run with the existing early-end score penalty.
+
+Check 37.67. Fails on v37.66.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -232,3 +232,4 @@
 11-08 07:34 v37.63 cw-cardstamp on his pc after 34s (8802 serves 37.63) week 16%
 11-08 07:40 v37.64 cw-m3pipgap on his pc after 33s (8802 serves 37.64) week 16%
 11-08 08:17 v37.65 cw-m3coop on his pc after 34s (8802 serves 37.65) week 18%
+11-08 18:11 v37.66 cw-cx-floorbits on his pc after 73s (8802 serves 37.66) week 26%

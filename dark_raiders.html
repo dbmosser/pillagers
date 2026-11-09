@@ -4024,8 +4024,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.66';
-var VER_AT='2026-11-08 18:10';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.67';
+var VER_AT='2026-11-08 20:31';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -58594,7 +58594,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.66: Light floor clutter reacts to movement and combat. LOCAL: no linked review. Each window animates its own cosmetic scraps from existing body and effect copies; no packets or shared gameplay fields change. Check 37.66 fails on v37.65',
+  now:'v37.67: End run keeps the world running for the other seat. Both exits settle the run with the existing early-end score penalty. Check 37.67 fails on v37.66',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -68925,7 +68925,7 @@ function arcadeDeploy(o){
   if(o.cond) P.cond=o.cond;
   if(o.seed!==undefined) pendSeed=(o.seed>>>0);
   else { var _ps=arcadePartySeed(); if(_ps) pendSeed=_ps; }   // v26.xx (party6): the party seed, unless a seed was passed
-  ARCADE.deaths=0; ARCADE.holdT=0; ARCADE.xOut=0;   // v23.22 (arcade3); v28.xx (cw-bothout): who has extracted
+  ARCADE.menuMate=0; ARCADE.deaths=0; ARCADE.holdT=0; ARCADE.xOut=0;   // v23.22 (arcade3); v28.xx (cw-bothout): who has extracted
   ARCADE.waveT=0; ARCADE.waveN=0;   // v23.37 (arcade14): the wave clock and count start again
   ARCADE.streak=null;   // v23.38 (arcade15): the kill streak starts again
   ARCADE.bm=arcadeBmNew(); ARCADE.mateBm=null;   // v23.xx (his answer 20): the best moments start again
@@ -69063,6 +69063,8 @@ function arcadeRedropSpot(p,g,minR){
 // doubles its own figures as it takes it; a player 2 that extracts tells the host (arcx with its score), stands out of the fight, and
 // the host doubles and ends the run. arcadeExtracted below (the old bonus and re-drop) is no longer reached from a raid.
 function arcadeX2(){
+  // v28.xx (cw-cx-endseat): an early exit keeps the existing menu penalty; it is not a team extraction.
+  if(G.arcMenuOut||ARCADE.menuMate){ G.arcEnd='menu'; return true; }
   ARCADE.mine=Math.max(0,ARCADE.mine|0)*2; ARCADE.mate=Math.max(0,ARCADE.mate|0)*2;
   ARCADE.x2=1; G.arcEnd='extract';
   return true;
@@ -72565,7 +72567,15 @@ function arcadeOnMsg(m){
       arcadeX2();
       return 'arcx';
     }
-    if(m.t==='arcleft'){ ARCADE.mateAt=0; if(arcadeBenched()) arcadeRunEnd('idle'); return 'arcleft'; }   // v23.39 (arcade16): player 2 idled out; nobody left playing ends the run
+    // v28.xx (cw-cx-endseat): the peer leaves only its own seat. Reject stale and repeated exits.
+    if(m.t==='arcquit'){
+      if(!G||!G.arcade||G.over||G.arcEnd||!ARCADE.run||String(m.run||'')!==ARCADE.run.id||ARCADE.menuMate||ARCADE.xOut==='p') return 'ignored';
+      ARCADE.menuMate=1; ARCADE.xOut='p';
+      ARCADE.mate=Math.max(0,Math.round(+m.s||0)); ARCADE.mateK=Math.max(0,m.k|0);
+      if(arcadeBenched()) arcadeRunEnd('menu');
+      return 'arcquit';
+    }
+    if(m.t==='arcleft'){ ARCADE.mateAt=0; if(arcadeBenched()) arcadeRunEnd(G&&G.arcMenuOut?'menu':'idle'); return 'arcleft'; }   // v23.39 (arcade16): player 2 idled out; nobody left playing ends the run
     return 'ignored';
   }
   return 'off';
@@ -73113,6 +73123,26 @@ function arcadeIdleTick(now){
   n=Math.max(1,Math.ceil((ARCADE_IDLE.out-w)/1000));
   if(ARCADE.idleSaid!==n){ ARCADE.idleSaid=n; try{ say((end?'RUN ENDS IN ':'OUT IN ')+n,'warn',{sub:'PRESS ANY '+(padOn()?'BUTTON':'KEY'),key:'arcidle'}); }catch(_s2){} }   // v30.xx (cw-glyphs2): key or button by the last device used
   return 'warn';
+}
+// v28.xx (cw-cx-endseat), his answer 2.23 a: end run takes out only the player who pressed it.
+function arcadeMenuOut(){
+  if(!ARCADE.on||!G||!G.arcade||G.over||!G.player) return false;
+  if(G.arcMenuOut||G.arcX) return true;
+  if(ARCADE.solo||G.netWasJoin) return arcadeRunEnd('menu');
+  if(ARCADE.role==='host'&&(ARCADE.xOut==='p'||!arcadeMateLive())) return arcadeRunEnd('menu');
+  var i, z;
+  G.arcMenuOut=1; G.arcX=1;
+  // v28.xx (cw-cx-endseat): release only this seat's boarding progress, keeping the partner's ship and clock.
+  for(i=0;i<(G.zones||[]).length;i++){ z=G.zones[i]; if(z){ z.pullT=null; z.boardT=0; z.pullFloor=0; } }
+  G.player.specOut=1; G.player.vx=0; G.player.vy=0; keys={}; mouse.down=false;
+  if(ARCADE.role==='p2'){
+    netSamePost({t:'arcquit',pair:NET.pair,run:String((ARCADE.run&&ARCADE.run.id)||''),s:Math.max(0,ARCADE.mine|0),k:Math.max(0,ARCADE.kills|0)});
+  } else {
+    ARCADE.xOut='h';
+    try{ arcadeScSend(); }catch(_ms){}
+  }
+  try{ attStop(); }catch(_ma){}
+  return true;
 }
 // The run end, from idle or END RUN. Player 2 that is not the run authority goes out instead.
 function arcadeRunEnd(why){
@@ -74753,7 +74783,7 @@ document.getElementById('arcendbtn').onclick=function(){
   var now=Date.now();
   if(!(ARC_END_ARM>0&&now-ARC_END_ARM<3000)){ ARC_END_ARM=now; this.textContent='END RUN? PRESS AGAIN'; setTimeout(function(){ if(ARC_END_ARM===now) arcEndDisarm(); },3000); return; }
   arcEndDisarm();
-  togglePauseBox(false); try{ arcadeRunEnd('menu'); }catch(_are){}
+  togglePauseBox(false); try{ arcadeMenuOut(); }catch(_are){}
 };   // v23.39 (arcade16)
 function gameOptRaidNow(rs0){
   var el, nl;

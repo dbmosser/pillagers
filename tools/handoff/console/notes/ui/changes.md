@@ -758,3 +758,5 @@
 
 2026-11-08 | o-h16-192-debris-scatters | raid floor, host/join | adds capped papers, small boxes and bolts that scatter from sprinting bodies, nearby hits/shots and floor blasts, then stay where they land; cached smooth sprites, no collision or sound | before: HEAD v37.65, no loose litter; custom recipe has no before pictures | after: lane camera-recipes floorbits-host / floorbits-join (paths pending)
 
+2026-11-08 | o-h17-193-end-run-per-player | arcade pause / out seats | confirmed end run removes only the pressing seat, existing spectator view until both out | before: lane pending | after: camera-recipes endseat-host-out, endseat-p2-out
+

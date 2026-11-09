@@ -1,1 +1,1 @@
-11-08 18:04 gate: shipping cw-cx-floorbits (o-h16-192-debris-scatters, codex)
+11-08 20:26 gate: shipping cw-cx-endseat (o-h17-193-end-run-per-player, codex)

@@ -730,3 +730,6 @@
 2026-11-08 16:07 o-h15-186i-every-hud-panel-movable 61s ok PARTIAL in=4029509 out=17927 run=5
 2026-11-08 17:49 o-h16-192-debris-scatters 430s ok PARTIAL in=1066369 out=15451 run=1
 2026-11-08 18:00 o-h16-192-debris-scatters 62s ok PARTIAL in=1433839 out=17390 run=2
+2026-11-08 19:15 o-h16-192-debris-scatters 76s ok PARTIAL in=305327 out=2728 run=3
+2026-11-08 19:56 o-h16-192-debris-scatters 82s ok PARTIAL in=350618 out=2808 run=4
+2026-11-08 20:22 o-h17-193-end-run-per-player 235s ok PARTIAL in=697529 out=8783 run=1

@@ -2380,3 +2380,8 @@
 2026-11-08 0.0000 o-h15-186i-every-hud-panel-movable
 2026-11-08 0.0000 o-h16-192-debris-scatters
 2026-11-08 0.0000 o-h16-192-debris-scatters
+2026-11-08 0.0000 o-h16-192-debris-scatters
+2026-11-08 0.2810 critic-o-h16-192-debris-scatters
+2026-11-08 0.1188 critic-o-h16-192-debris-scatters
+2026-11-08 0.0000 o-h16-192-debris-scatters
+2026-11-08 0.0000 o-h17-193-end-run-per-player
