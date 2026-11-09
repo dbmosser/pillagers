@@ -1,0 +1,20 @@
+{
+  "about": "Local cosmetic debris on both role paths. Real raid clutter at a reachable loot site; host settled, join moving. Network disabled for isolated role cameras.",
+  "prelude": "window.__uis={prep:async function(){try{__pinDPR(1);}catch(e){}},raid:function(){var g=__state();return !!(g&&g.player&&!g.over);}};",
+  "screens": [
+    {
+      "name": "floorbits-host",
+      "screen": "loose floor debris, host view",
+      "query": "",
+      "expect": "U.raid() && window.__floorBitCamera === 'host'",
+      "js": "document.getElementById('title').classList.remove('on'); __topClear(); __deploy({kit:['gun_rifle','frag'],safe:null,mapIx:0,seed:4242}); await new Promise(function(r){setTimeout(r,9500);}); return __gx(\"(function(){\\nvar s=floorBitState(),p=G.player,b=null,i,j,n,best=-1;\\nfor(i=0;i<s.list.length;i++){\\n var q=s.list[i]; if(!spotFree(G.map,q.x,q.y+85,24)) continue;\\n n=0; for(j=0;j<s.list.length;j++) if(Math.abs(s.list[j].x-q.x)<240&&Math.abs(s.list[j].y-q.y)<150) n++;\\n if(n>best){best=n;b=q;}\\n}\\nif(!b) return 'SKIP: no debris site';\\np.x=b.x;p.y=b.y+85;p.iv=9999;p.vx=p.vy=0;p.face=-1.57;\\nG.camX=p.x-W/(2*ZOOM()); G.camY=p.y-H/ZOOM()*.54;\\nG.rise=null;G.bagOpen=G.mapOpen=G.paused=false;NET.on=false;NET.role='host';\\nfor(i=0;i<G.ents.length;i++){G.ents[i].stopT=999;G.ents[i].stopImm=999;G.ents[i].alert=0;}\\nfloorBitKick(b.x-35,b.y+20,145,280);\\nfor(i=0;i<180;i++){G.frameN=(G.frameN||0)+1;floorBitStep(.016);}\\nwindow.__floorBitCamera='host'; __frame(.016);\\nreturn s.list.length+' scraps; nearby '+best;\\n})()\");"
+    },
+    {
+      "name": "floorbits-join",
+      "screen": "loose floor debris, join view",
+      "query": "",
+      "expect": "U.raid() && window.__floorBitCamera === 'join'",
+      "js": "document.getElementById('title').classList.remove('on'); __topClear(); __deploy({kit:['gun_rifle','frag'],safe:null,mapIx:0,seed:4242}); await new Promise(function(r){setTimeout(r,9500);}); return __gx(\"(function(){\\nvar s=floorBitState(),p=G.player,b=null,i,j,n,best=-1;\\nfor(i=0;i<s.list.length;i++){\\n var q=s.list[i]; if(!spotFree(G.map,q.x,q.y+85,24)) continue;\\n n=0; for(j=0;j<s.list.length;j++) if(Math.abs(s.list[j].x-q.x)<240&&Math.abs(s.list[j].y-q.y)<150) n++;\\n if(n>best){best=n;b=q;}\\n}\\nif(!b) return 'SKIP: no debris site';\\np.x=b.x;p.y=b.y+85;p.iv=9999;p.vx=p.vy=0;p.face=-1.57;\\nG.camX=p.x-W/(2*ZOOM()); G.camY=p.y-H/ZOOM()*.54;\\nG.rise=null;G.bagOpen=G.mapOpen=G.paused=false;NET.on=false;NET.role='join';\\nfor(i=0;i<G.ents.length;i++){G.ents[i].stopT=999;G.ents[i].stopImm=999;G.ents[i].alert=0;}\\nfloorBitKick(b.x-35,b.y+20,145,280);\\nfor(i=0;i<8;i++){G.frameN=(G.frameN||0)+1;floorBitStep(.016);}\\nwindow.__floorBitCamera='join'; __frame(.016);\\nreturn s.list.length+' scraps; nearby '+best;\\n})()\");"
+    }
+  ]
+}
