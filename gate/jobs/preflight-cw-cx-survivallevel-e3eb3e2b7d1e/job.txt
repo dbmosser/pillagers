@@ -1,0 +1,15 @@
+id=preflight-cw-cx-survivallevel-e3eb3e2b7d1e
+kind=preflight
+key=cw-cx-survivallevel
+tag=pfp
+v=37.68
+new=3768
+base=ddbe05a6b7d8c1a4f6a03a5ad3b01f778e8afe8e
+draft_sha=6e1b67659f0097af1c579936ede7c3c385b0d0417cecfbdb6e71060db734d39a
+p_sha=9b44a9c99ae25c414100995d7c4426a0847aadbf058af4a6ceee6a94fb445fd2
+f_sha=dfa9998a4106ba225451a8654f5de2c6c4ff1eaca1dda5c8cdd3082cb63d9dc7
+game_sha=ab88ddfcbbe5315df2e9e16605952fbddcee79e52013370e4eeb914054a19710
+fix_sha=93f6df8e2af808986746f4ac69c50d7f31d901f64ac8232892f4c4fe0afb6da6
+from=JUL26
+submitted=1794410070
+expires=1794416670
