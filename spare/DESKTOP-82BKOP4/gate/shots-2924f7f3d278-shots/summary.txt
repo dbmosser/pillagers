@@ -1,0 +1,5 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  breakguns-p1-kb                        staged      33.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | auto rifle (field)equipequip as your gunput on key12345678910lock (keep)never soldtag as junk$2,348 eachsell one$2,348break downservo 3, board 3, optic 1, comp 2
+  breakguns-p1-pad                       staged      58.8s  total   2: clip 0 off 0 small 0 contrast 2 font 0 overlap 0 focus 0  | auto rifle (field)equipequip as your gunput on key12345678910lock (keep)never soldtag as junk$2,348 eachsell one$2,348break downservo 3, board 3, optic 1, comp 2
+  breakguns-p2-kb                        staged      21.7s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | auto rifle (field)equipequip as your gunput on key12345678910lock (keep)never soldtag as junk$2,348 eachsell one$2,348break downservo 3, board 3, optic 1, comp 2
+  breakguns-p2-pad                       NOT STAGED  10.2s    | ERROR The operation has timed out.
