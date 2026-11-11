@@ -1,0 +1,14 @@
+id=shots-cb497be31289
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=016b55766cb44dd1ade30daa31d1d7feaff6c5a8
+screens=hc-title-off,hc-title-on,hc-p2-save-tag,hc-kia-fallen,hc-saves-after-death,hc-graveyard-ranked
+res=1080,4k
+nolint=0
+lintopts=
+from=JUL26
+submitted=1794441188
+expires=1794447789
