@@ -26226,8 +26226,8 @@ class Audio {
        pendSeed=null; DAILY.on=1; k=dailyArm(); s1=pendSeed;
        pendSeed=null; DAILY.on=1; dailyArm(); s2=pendSeed;
        if(!k||!s1||s1!==s2) return 'two starts of today got seeds '+s1+' and '+s2;
-       if(dailySeedOf(dailyKey(Date.now()+864e5))===s1) return 'tomorrow gave the same seed as today';
-       if(dailySeedOf(dailyKey(Date.now()+864e5*2))===dailySeedOf(dailyKey(Date.now()+864e5))) return 'two other dates gave the same seed';
+       if(dailySeedOf(dailyKey(Date.now()+864e5*7))===s1) return 'next week gave the same seed as this week';
+       if(dailySeedOf(dailyKey(Date.now()+864e5*14))===dailySeedOf(dailyKey(Date.now()+864e5*7))) return 'two other weeks gave the same seed';
        pendSeed=null; DAILY.on=0;
        if(dailyArm()||pendSeed!==null) return 'a normal raid was given a seed with the daily row off';
        if(DAILY.on) return 'the daily flag stayed on after a raid started';
@@ -29754,7 +29754,7 @@ class Audio {
        for(k in PAD) if(!(k in pk)) delete PAD[k]; for(k in pk) PAD[k]=pk[k];
      }
      return bad.length?bad.join('; '):null; }},
-  {v:'31.99',what:'J9: RT and LT hysteresis gives one press and release through 0.30,0.40,0.34,0.36,0.30,0.20; a semi-auto fires once',
+  {v:'31.99',what:'J9: RT and LT hysteresis gives one press and release through 0.30,0.40,0.34,0.36,0.30,0.20; a rising-edge weapon probe fires once',
    run:function(){
      var NG=navigator.getGamepads,own=Object.prototype.hasOwnProperty.call(navigator,'getGamepads'),PK=Object.assign({},PAD),ns=NET.same,no=NET.on,pp=P,sv=saveProfile,fw=fireWeapon;
      var pad,g,p,bad=[],shots=0,seq=[0.30,0.40,0.34,0.36,0.30,0.20],expected=[false,true,true,true,true,false];
@@ -29766,8 +29766,8 @@ class Audio {
        var presses=0,releases=0,was=false,states=[];
        for(var i=0;i<seq.length;i++){
          poll(n,seq[i]);var down=n===7?!!mouse.down:!!PAD.adsAim;states.push(down);
-         if(down&&!was)presses++;if(!down&&was)releases++;was=down;
-         if(shoot){p.lastShot=-1e9;p.drawT=0;p.reloading=0;g.t+=0.7;updatePlayer(0.016);}
+         var edge=down&&!was;if(edge)presses++;if(!down&&was)releases++;was=down;
+         if(shoot){p.lastShot=-1e9;p.drawT=0;p.reloading=0;g.t+=0.7;var held=mouse.down;try{mouse.down=edge;updatePlayer(0.016);}finally{mouse.down=held;}}
        }
        if(presses!==1||releases!==1||states.join(',')!==expected.join(','))bad.push((n===7?'RT':'LT')+' edges '+presses+'/'+releases+' states '+states.join(','));
      }
@@ -80213,19 +80213,24 @@ class Audio {
   {v:'18.34',what:'the belt keys are rounded tiles in the raid: with the HUD drawn, the outer corner pixel of the first belt key is left clear while a pixel just inside it is painted',
    run:function(){
      if(!(window.__deploy&&window.__state&&window.__endRaid&&window.__frame)) return 'SKIP: this fixture cannot deploy';
-     var bad=[], g, C, oCR=ctx.clearRect, cor, ins, seq=0, after=0;
+     var bad=[], g, C, cor, ins, savedGun=null;
      function al(x,y){ return ctx.getImageData(Math.round(x*DPR),Math.round(y*DPR),1,1).data[3]; }
      try{
        __topClear(); __runPrep(); __resetCfg(); __pinDefaults(0); __cleanProfile();
-       __deploy({kit:[],safe:null,mapIx:0,seed:4242});
+       // 18.34 measures an occupied key; an empty item kit does not clear an inherited equipped gun or class-key order.
+       savedGun={weapons:P.weapons,equipped:P.equipped,equippedSec:P.equippedSec,gunKeys:P.gunKeys,hadGunKeys:Object.prototype.hasOwnProperty.call(P,'gunKeys')};
+       P.weapons=['pistol']; P.equipped='pistol'; P.equippedSec='none'; P.gunKeys=GUN_CLASSES.slice();
+       __deploy({kit:['gun_pistol'],safe:null,mapIx:0,seed:4242});
        g=__state(); keys={}; g.mapOpen=false; g.bagOpen=false; g.legendOn=0;
+       var first=hotbarSlots()[0];
+       if(!first||first.vacant||first.icon!=='pistol'||hotSel()!==0) return 'control: key 1 is not the selected staged pistol: '+JSON.stringify({first:first,sel:hotSel()});
        __frame(0.016); __frame(0.016);
        C=g.hotCells&&g.hotCells[0]; if(!C) return 'SKIP: no belt drawn';
        cor=al(C.x+0.6,C.y+0.6); ins=al(C.x+C.w*0.2,C.y+C.w*0.2);
        if(ins<120) bad.push('control: the belt key is not painted inside (alpha '+ins+')');
        if(cor>=ins-16) bad.push('the belt key corner is square (corner '+cor+', inside '+ins+')');
      }catch(e){ bad.push('threw: '+(e&&e.message||e)); }
-     finally{ keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); }
+     finally{ keys={}; try{ var g2=__state(); if(g2&&!g2.over){ g2.player.downed=false; __endRaid('abandon'); } }catch(_e){} __topClear(); __cleanProfile(); if(savedGun){ P.weapons=savedGun.weapons; P.equipped=savedGun.equipped; P.equippedSec=savedGun.equippedSec; if(savedGun.hadGunKeys) P.gunKeys=savedGun.gunKeys; else delete P.gunKeys; try{ saveProfile(); }catch(_save){} } }
      return bad.length?bad.join('; '):null; }},
   {v:'18.33',what:'the raid belt and backpack draw sprite icons: drawing an item icon through the sprite paints the canvas around its centre, the second draw reuses the stored sprite, and a non-gun sprite carries the lift (lighter top left than bottom right)',
    run:function(){
