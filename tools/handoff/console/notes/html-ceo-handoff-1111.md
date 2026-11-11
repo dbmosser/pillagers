@@ -20,6 +20,8 @@
 - **Claude helper ceiling lifted this week:** caps.txt has the line from 72% at 11-11 13:45Z to 99% at the reset, and PLAN_WEEK_MAX=99. Keep Claude turns efficient and size tests to the change.
 - **JT PC runner (e9b1d6462):** with Fortnite running there (FnP's automated client tests), only real device keys and mouse, pads, or another sign-in count as someone using the PC. Injected input and the client's full screen, sound and graphics card do not. Fortnite running is no longer a hold, so HTML tests go on beside it at below-normal priority, gate jobs included (Cap-Tests). An explicit fnp-hold.txt still holds. The main PC's own Fortnite pause is unchanged.
 
+- **Restart wake (11-11):** fnp-startup-wake-2 messages this chat after every PC restart: "PC restarted: check 8802, the Pillagers runner and Codex lanes, restart your digest watcher". The target id is in `C:\claudecode\FNP new 11082026\statusestart-wake-targets.json`, key html_ceo. A successor chat updates that key to its own session id.
+
 ## Your recurring duties
 1. **Hourly digest, 06:00 to 23:00, and the daily part (a) at midnight** (RULES 4.8): `C:\claudecode\html-digest.md`. The scheduled task "Pillagers HTML digest check" writes `C:\claudecode\html-digest\html-wake.txt` when a watched file changed (config: `C:\claudecode\html-digest\digest_html.json`). It also appends "HH:00 no change." lines by itself. Keep a background watcher running:
    `W=/c/claudecode/html-digest/html-wake.txt; while [ ! -s "$W" ]; do sleep 60; done; echo "HTML WAKE:"; cat "$W"`
