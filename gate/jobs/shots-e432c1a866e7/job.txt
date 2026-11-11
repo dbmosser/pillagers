@@ -1,0 +1,14 @@
+id=shots-e432c1a866e7
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=989467d5ee57ec9e21918e9c5fa8ba5521bff509
+screens=breakguns-p1-kb,breakguns-p1-pad,breakguns-p2-kb,breakguns-p2-pad
+res=1080,4k
+nolint=0
+lintopts=
+from=JUL26
+submitted=1794432662
+expires=1794439263
