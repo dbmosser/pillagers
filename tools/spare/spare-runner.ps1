@@ -117,7 +117,7 @@ $script:padT=$(if($Idle){ Get-Date }else{ (Get-Date).AddDays(-1) }); $script:wor
 $script:conT=(Get-Date).AddDays(-1); $script:conOn=$false; $script:gpuT=(Get-Date).AddDays(-1); $script:gpuChk=(Get-Date).AddDays(-1)
 $script:gpuOn=$false; $script:gpuLast=''; $script:gpuPrev=@{}; $script:gpuPrevT=(Get-Date).AddDays(-1); $script:awayWhy=''; $script:pubTry=[long]0
 $PassCapSec=7200; $script:pasT=(Get-Date).AddDays(-1); $script:pasWhy=''; $script:holdE=[long]0; $script:holdH=[long]0; $script:humanAgo=0.0
-$script:capSaid=$false; $script:noIn=$false; $script:noPres=$false; $script:noSnd=$false; $script:sndSaid=$false; $script:sndCache=@{}
+$script:fnpRun=$false; $script:capSaid=$false; $script:noIn=$false; $script:noPres=$false; $script:noSnd=$false; $script:sndSaid=$false; $script:sndCache=@{}
 try{ Add-Type -Namespace PillagersIdle -Name Input -ErrorAction Stop -MemberDefinition @'
 [StructLayout(LayoutKind.Sequential)] public struct LII { public uint cbSize; public uint dwTime; }
 [DllImport("user32.dll")] static extern bool GetLastInputInfo(ref LII p);
@@ -237,6 +237,9 @@ static bool on = false, first = true, pend = false, one = false, haveFg = false,
 static uint seen, person, pend0, fgT, polled, focus, ig1, ig2, count, bursts, fgPid, lone0, win0, lones, pairs, pairMs, keyT, mouseT, mousePrev, keys, reps, strays, first0, why, whyAt;
 static uint[] mr = new uint[MouseN]; static int nm = 0, mc = 0, rawState = 0;   // the last mouse reports at least MouseGapMs apart, oldest at mr[nm] once there are MouseN
 static IntPtr fg;
+// 11-11 (owner M203: the JT PC keeps testing while FnP tests run): while Fortnite runs here and key and mouse reports are on, a move of the input time
+// with no key or mouse report from a device near it is a program (FnP's test client, injected input, Fortnite's own idle nudge), never a person.
+static bool fnp = false;
 static uint[] last5 = new uint[5]; static int n5 = 0;   // the last five moves not counted, oldest at last5[n5 % 5] once there are five
 static uint Now(){ return (uint)Environment.TickCount; }
 static bool Stamp(out uint t){ LII p = new LII(); p.cbSize = 8; bool ok = GetLastInputInfo(ref p); t = p.dwTime; return ok; }
@@ -270,6 +273,7 @@ public static void Look(uint now, uint stamp, IntPtr f, uint fpid){ lock (K) {
   if (one && haveFg && Dist(fgT, pend0) <= NearMs) {
     pend = false; haveFg = false;
     win0 = seen; haveWin = true;
+    if (fnp && rawState == 1 && !key && !mouse) return;
     if (wasLone && unchecked(seen - lone0) <= (uint)LoneMs) { pairs++; pairMs = unchecked(seen - lone0); wasLone = false; person = seen; return; }
     if (key) return;
     if (mouse) { person = seen; why = 2; whyAt = seen; return; }   // a click that changed the window
@@ -280,6 +284,7 @@ public static void Look(uint now, uint stamp, IntPtr f, uint fpid){ lock (K) {
     bool win = haveFg && Gap(fgT, pend0) >= -NearMs;
     pend = false; haveFg = false;
     bool pair = haveLone && unchecked(seen - lone0) <= (uint)LoneMs, release = haveWin && unchecked(seen - win0) <= (uint)ReleaseMs;
+    if (fnp && rawState == 1 && !key && !mouse) return;
     bool counted = key || (mouse && person == mouseT);   // Report has already said so
     if (mouse && !counted && !win && !release && (!pair || wasStray)) { lone0 = seen; haveLone = true; wasLone = unchecked(mouseT - mousePrev) >= 40 && unchecked(mouseT - mousePrev) <= (uint)NearMs; wasStray = true; strays++; return; }
     if (one && pair && wasLone && !key && !mouse) { pairs++; pairMs = unchecked(seen - lone0); }
@@ -310,6 +315,7 @@ static void Run(){ try { RawOpen(); } catch { rawState = -1; } while (true) {
   try { uint st; if (Stamp(out st)) { IntPtr f = GetForegroundWindow(); uint p = 0; GetWindowThreadProcessId(f, out p); Look(Now(), st, f, p); } } catch { }
   System.Threading.Thread.Sleep(100);
 } }
+public static void SetFnp(bool v){ lock (K) { fnp = v; } }
 public static void Start(){ lock (K) { if (on) return; on = true; } System.Threading.Thread t = new System.Threading.Thread(Run); t.IsBackground = true; t.Priority = System.Threading.ThreadPriority.Highest; t.Start(); }
 public static double PersonIdleSec(){ uint st; bool ok = Stamp(out st); lock (K) {
   uint now = Now();   // after the input time and inside the lock, so it cannot be older than what they say
@@ -483,6 +489,10 @@ function AwaySec(){
   }
   if($o){ $script:conT=$now }
   if($o -ne $script:conOn){ $script:conOn=$o; Say $(if($o){ 'another Windows account is in use at the screen' }else{ 'no other Windows account in use at the screen now' }) }
+  # 11-11 (owner M203 "YOU SHOULD STILL BE TESTING ON THE JT PC"): while Fortnite runs here (FnP's automated client tests), only a real key or mouse
+  # (a device report), a pad, another account or a sign-in counts; Fortnite's full screen, sound and graphics card are not someone at the PC.
+  $fr=[bool](EpicGame); if($fr -ne $script:fnpRun){ $script:fnpRun=$fr; Say $(if($fr){ 'fortnite is running (FnP tests): only real keys, mouse, pads or another sign-in count as someone here; HTML tests go on at below normal' }else{ 'fortnite closed: the usual presence checks again' }) }
+  if(-not $script:noFocus){ try{ [PillagersSpare.FocusWatch]::SetFnp($fr) }catch{} }
   $a=[PillagersIdle.Input]::IdleSec(); $w='keyboard or mouse'
   # 11-02: a move of the input time that only came with a change of the window in front, or that came alone, is not a key or the mouse (see FocusWatch above); it still restarts the passive signs' 2 hours, and a stray mouse report or two does not even do that
   $fo=[double]1e9
@@ -500,7 +510,7 @@ function AwaySec(){
   $s=($now-$script:conT).TotalSeconds; if($s -lt $a){ $a=$s; $w='another account at the screen' }
   if($script:holdH -gt 0){ $s=[double]($e-$script:holdH); if($s -lt $a){ $a=$s; $w='someone used the PC before this runner restarted' } }
   $script:humanAgo=$a
-  if([Math]::Min($a,$fo) -lt $PassCapSec){
+  if(-not $script:fnpRun -and [Math]::Min($a,$fo) -lt $PassCapSec){
     $script:capSaid=$false
     $mine=$true; if(-not $script:noPres){ try{ $mine=[PillagersSpare.Presence]::MineAtScreen($MySid) }catch{} }
     if($mine){
@@ -512,7 +522,7 @@ function AwaySec(){
       $s=($now-$script:pasT).TotalSeconds; if($s -lt $a){ $a=$s; $w=$script:pasWhy }
       $s=((Get-Date)-$script:gpuT).TotalSeconds; if($s -lt $a){ $a=$s; $w='a game on the graphics card: '+$script:gpuLast }
     }
-  } elseif(-not $script:capSaid){
+  } elseif(-not $script:fnpRun -and -not $script:capSaid){
     # the cap is what lets testing go on: say so once (a passive sign seen under 15 minutes ago would still hold it without the cap)
     $p=[Math]::Min(($now-$script:pasT).TotalSeconds,($now-$script:gpuT).TotalSeconds)
     if($p -lt 900){ $script:capSaid=$true; Say ('nobody has used the keyboard, mouse or a pad for '+[int]($a/60)+' minutes, so '+$(if(($now-$script:pasT).TotalSeconds -le ($now-$script:gpuT).TotalSeconds){ $script:pasWhy }else{ 'a game on the graphics card' })+' no longer counts as someone at the PC (that ends 2 hours after the last use)') }
@@ -1328,9 +1338,10 @@ function Cap-Tests(){
   try{
     if($script:capMask -eq 0){ $nc=[Environment]::ProcessorCount; if($nc -lt 2 -or $nc -gt 62){ $script:capMask=-1 }else{ $script:capMask=([long]1 -shl ($nc-1))-1 } }
     if($script:capMask -lt 0){ return }
+    $cp=$(if($script:fnpRun){ '9331|9344|9347|9348' }else{ '9331|9344' })   # 11-11 (owner M203): beside FnP's Fortnite tests the gate jobs yield too
     foreach($p in @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue)){
       $c=[string]$p.CommandLine; $n=[string]$p.Name; if(-not $c){ continue }
-      if(($n -eq 'chrome.exe' -and $c -match '(remote-debugging-port=|pillagers-cdp)(9331|9344)\b') -or ($n -eq 'powershell.exe' -and $c -match '(fuzz|cdp)\.ps1.*-Port\s+"?(9331|9344)\b') -or (($n -eq 'bash.exe' -or $n -eq 'sh.exe') -and $c -match 'corpq\.sh|corpus-slices\.sh')){
+      if(($n -eq 'chrome.exe' -and $c -match ('(remote-debugging-port=|pillagers-cdp)('+$cp+')\b')) -or ($n -eq 'powershell.exe' -and $c -match ('(fuzz|cdp)\.ps1.*-Port\s+"?('+$cp+')\b')) -or ($script:fnpRun -and $c -match 'gate-job\.ps1') -or (($n -eq 'bash.exe' -or $n -eq 'sh.exe') -and $c -match 'corpq\.sh|corpus-slices\.sh')){
         $g=$null
         try{ $g=[Diagnostics.Process]::GetProcessById([int]$p.ProcessId)
              if([long]$g.ProcessorAffinity -ne $script:capMask){ $g.ProcessorAffinity=[IntPtr]$script:capMask }
@@ -1343,7 +1354,7 @@ function FnpHold(){
   if($Idle){ return '' }
   try{
     $eg=EpicGame
-    if($eg){ PutS 'fnp_seen' ([string](Epoch)); return ('fortnite is running: '+$eg) }
+    if($eg){ PutS 'fnp_seen' ([string](Epoch)) }   # 11-11 (owner M203): no longer a hold; tests run below normal beside it (Cap-Tests)
     # 11-08 08:55 (owner's waiting instruction, RULES 4.9(h): holds release as soon as the real conflict ends): no extra time after Fortnite
     # closes, since no measured conflict needs one; FNP_AFTER_SEC in the environment can bring a delay back
     $fa=[long]('0'+$env:FNP_AFTER_SEC); $fs=[long]('0'+(GetS 'fnp_seen')); if($fa -gt 0 -and $fs -gt 0 -and ((Epoch)-$fs) -lt $fa){ return 'fortnite closed under '+[int]($fa/60)+' minutes ago' }
