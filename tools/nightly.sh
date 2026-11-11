@@ -203,6 +203,13 @@ $gm"; fi
     # 10-27: tracked helper files kept vanishing from the folder this morning (cause not found yet); with console-lane.sh gone no lane
     #        starts, with caps.txt gone every lane rests at $0.00, with devdash/server.mjs gone the dashboard dies at its next restart.
     #        Put the committed copy back and say so in the log.
+    # 11-11 (HTML CEO): the ship scripts in S (shipq.sh, shipone.sh, lock.sh and the rest) vanished from the scratchpad on 11-11 while the
+    #      mk-*.ps1 drafts stayed, so every ship failed ("cannot open shipq.sh") until the coordinator noticed. Put back any missing file from
+    #      the committed backup (tools/handoff/shipkit), never over an existing one, and say so in the log and alarms.
+    if [ -d "$R/tools/handoff/shipkit" ]; then mkdir -p "$S" 2>/dev/null; sk=""
+      for kf in "$R"/tools/handoff/shipkit/*.sh "$R"/tools/handoff/shipkit/*.mjs; do [ -f "$kf" ] || continue; kb=$(basename "$kf"); [ -e "$S/$kb" ] && continue; cp "$kf" "$S/$kb" 2>/dev/null && sk="$sk $kb"; done
+      if [ -n "$sk" ]; then echo "$(date +%H:%M) ship scripts were missing from S; put back from tools/handoff/shipkit:$sk" >> "$LOG"; echo "$(date +%F) runner: ship scripts were missing from the ship folder and were put back from tools/handoff/shipkit:$sk" >> "$R/tools/handoff/console/alarms.md"; fi
+    fi
     for kf in tools/console-lane.sh tools/handoff/console/caps.txt tools/devdash/server.mjs; do
       if [ ! -f "$R/$kf" ] && git -C "$R" show "HEAD:$kf" > "$R/$kf.tmp" 2>/dev/null && [ -s "$R/$kf.tmp" ]; then
         mv -f "$R/$kf.tmp" "$R/$kf"; echo "$(date +%H:%M) $kf was missing; put back from git" >> "$LOG"
