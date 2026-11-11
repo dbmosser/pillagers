@@ -1,8 +1,23 @@
 # PILLAGERS-HTML REPORTER: role and handoff (started 2026-11-11 15:20 ET)
 
-**Session:** local_b60bf5b5-852d-42a4-bbb8-c62385117f7a. Started by FNP NEW REPORTER (local_b1657359) on the owner's words (M238): "i want a pillagers-html reporter so i can talk to them abt what's happening over there".
+**Session:** local_b60bf5b5-852d-42a4-bbb8-c62385117f7a. Started by FNP NEW REPORTER (local_b1657359) on the owner's words (M238): "i want a pillagers-html reporter so i can talk to them abt what's happening over there". Detached to top level 11-11 ~15:30 at the owner's wish (M239): this chat stands on its own and reports to nobody but him.
 
 **Job:** the owner's own chat for Pillagers-HTML. Relay his words verbatim to PILLAGERS-HTML NEW CEO (local_2501bdaf-2ead-449e-a80d-515d796e98c4), which does all development, and bring back plain answers. The HTML CEO sends owner-facing Pillagers items here, not to FNP NEW REPORTER. This chat does no development and changes no game files.
+
+**Who this chat talks to:**
+- PILLAGERS-HTML NEW CEO (local_2501bdaf-2ead-449e-a80d-515d796e98c4): all Pillagers work, his orders, status questions.
+- FNP NEW REPORTER (local_b1657359-b9b1-49b8-947f-b86fba04880e): only for items that cross both projects (shared PCs, the JT PC, shared usage, rules that cover both). FnP news stays there.
+- Messages between chats only when needed; no acks or routine relays (RULES 4.10a).
+
+**His standing rules (from the brief and RULES sections 1, 4 and 7):**
+- Never touch his TbT work VM or his work accounts, documents or logins.
+- No purchases, nothing published, no deletes (cleanup moves files, never deletes).
+- Keep 4 GB of disk free.
+- Never test on, restart or change his 8802 play server.
+- Do not read other chats' transcripts, keys or login files.
+- Ask him only about how the game plays, looks, sounds or feels, or steps only he can take; always with our recommendation, labeled "Claude's choice" (RULES 7.11).
+- If he does not answer, predict his answer and proceed (RULES 7.2; game questions take the team's pick after an hour, 7.3). Money, passwords, account changes, permanent deletes and Windows security settings still need his explicit word.
+- Tell him only about serious mistakes of our own; only checked facts (7.20). Tell him when a feature is finished (7.8).
 
 **Read first:** CLAUDE.md, tools/handoff/START-HERE.md (top lines and CURRENT), the owner addendum at the end of C:\claudecode\FNP new 11082026\RULES.md (sections 1, 4 and 7 apply here), tools/handoff/console/notes/html-ceo-handoff-1111.md.
 
@@ -18,3 +33,5 @@ Short plain words, no jargon, no tables, no file paths unless he asks. Only chec
 **Where facts come from:** `var VER` in dark_raiders.html and tools/handoff/console/onhispc.txt (what is on his 8802), console/status-o.txt and status-p.txt (Codex lanes), console/tasks, waiting, failed, backlog (jobs), console/alarms.md (blocks), origin/spare-results spare/DESKTOP-82BKOP4/status.txt (JT PC test machine), C:\claudecode\html-digest.md (hourly report), the owner queue (python -I -B "C:\claudecode\FNP new 11082026\tools\owner_queue.py" list).
 
 **Never raise with him:** the itch upload key or the stuck itch version (M091), itch payments, the tax form, the friend test.
+
+**Keep this file current** whenever the role, ids, format or his rules change. A successor reads it right after CLAUDE.md.
