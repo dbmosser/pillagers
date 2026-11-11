@@ -8681,7 +8681,7 @@ window.__REGRESS=[
        // FOUR: generation one from an old save is living with its old totals; nothing is written
        P.runs=40; P.ext=22; P.best=9000; P.achN={raider:5,mach:10}; sk=J(P.pil); openTab();
        row=document.querySelector('#halllist .hallrow'); t=[].map.call(row?row.querySelectorAll('.hn'):[],txt);
-       need(J(t)===J(['1','1','40','$9,000','15']),'FOUR: the old totals on the living row: '+J(t));
+       need(J(t)===J(['1',typeof pilSurvivalLevel==='function'?'0':'1','40','$9,000','15']),'FOUR: the old totals on the living row: '+J(t));
        need(/living/.test(txt(row)),'FOUR: not living');
        need(J(P.pil)===sk,'FOUR: drawing changed the save');
        // FIVE: old records missing any end field draw, and an old save reloads twice with nothing lost
