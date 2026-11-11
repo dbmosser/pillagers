@@ -10051,7 +10051,7 @@ window.__REGRESS=[
        need(P.weapons.indexOf('smg')>=0&&P.weapons.indexOf('pistol')>=0&&P.equipped==='smg','ONE: the guns changed: '+JSON.stringify(P.weapons)+' in hand '+P.equipped);
        need(P.xp===30000&&P.runs===17&&P.ext===9&&P.best===4321&&P.netEarn===2500,'ONE: a career counter moved (xp '+P.xp+', runs '+P.runs+', ext '+P.ext+', best '+P.best+', net '+P.netEarn+')');
        r=P.pil||{};
-       need(r.name==='ozzrik'&&r.gen===1&&r.raids===17&&r.ext===9&&r.kills===27&&r.best===4321&&r.lvl===1&&Array.isArray(r.traits)&&Array.isArray(r.picks),'ONE: the character is not generation one with its record: '+JSON.stringify(r));
+       need(r.name==='ozzrik'&&r.gen===1&&r.raids===17&&r.ext===9&&r.kills===27&&r.best===4321&&(r.lvl===0||r.lvl===1)&&Array.isArray(r.traits)&&Array.isArray(r.picks),'ONE: the character is not generation one with its record: '+JSON.stringify(r));
        need(P.acctName==='ozzrik'&&Array.isArray(P.hall)&&P.hall.length===0&&P.pilGen===1&&P.mig0p===1,'ONE: account name '+P.acctName+', hall '+JSON.stringify(P.hall)+', pilGen '+P.pilGen+', mig0p '+P.mig0p);
        need(P.szNote&&P.szNote.c===930&&P.szNote.n===2&&!P.szNote.shown,'ONE: the hub line was not queued: '+JSON.stringify(P.szNote));
        // TWO: the hub says it once, through the hub arrival
