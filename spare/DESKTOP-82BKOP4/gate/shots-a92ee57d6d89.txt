@@ -1,0 +1,28 @@
+id=shots-a92ee57d6d89
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=dd2fe1b0f3adc71337c7378aa5eccdc032029437
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1794412091
+ended=1794412174
+result=PASS
+infra=0
+reason=
+--- stages
+== 1080 : window 1956x1185, viewport 1920x1080
+  162-origin-geometry-39041              staged      13.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"seed":39041,"map":1,"spawn":3,"authored":{"x":8650,"y":5350},"actualPlayer":{"x":4500,"y":2300},"originFree20":false,"originReachable":false,"originShut":false,"opaqueContainingWalls":[{"x":8640.714097358994,"y":5325.416338197757,"w":16,"h":151.11961811687797,"ib":78}],"touchingSegments":[],"nearb
+  162-origin-geometry-61261              staged      12.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"seed":61261,"map":1,"spawn":3,"authored":{"x":8650,"y":5350},"actualPlayer":{"x":350,"y":3400},"originFree20":false,"originReachable":false,"originShut":false,"opaqueContainingWalls":[{"x":8641.731963533572,"y":5335.540885754973,"w":13.906245647576725,"h":16,"ib":78},{"x":8641.731963533572,"y":533
+== 4k : window 3876x2265, viewport 3840x2160
+  162-origin-geometry-39041              staged      12.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"seed":39041,"map":1,"spawn":3,"authored":{"x":8650,"y":5350},"actualPlayer":{"x":4500,"y":2300},"originFree20":false,"originReachable":false,"originShut":false,"opaqueContainingWalls":[{"x":8640.714097358994,"y":5325.416338197757,"w":16,"h":151.11961811687797,"ib":78}],"touchingSegments":[],"nearb
+  162-origin-geometry-61261              staged      12.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | {"seed":61261,"map":1,"spawn":3,"authored":{"x":8650,"y":5350},"actualPlayer":{"x":350,"y":3400},"originFree20":false,"originReachable":false,"originShut":false,"opaqueContainingWalls":[{"x":8641.731963533572,"y":5335.540885754973,"w":13.906245647576725,"h":16,"ib":78},{"x":8641.731963533572,"y":533
+report: C:\PillagersSpare\gate\work\shots-a92ee57d6d89\shots\report.json
+--- end
+done=1
