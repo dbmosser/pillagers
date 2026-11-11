@@ -1,0 +1,17 @@
+
+--- codex run 2026-11-09 19:59 ---
+2026-11-09: Read progression README, m5 milestone header and prerequisite m05a notes. Prerequisite o-m05a-the-tree-screen-at-the-mainframe is in failed/, not tasks/, waiting/ or blocked/. Its notes confirm it has NOT shipped: three mockups exist, but owner selection under rule 53 and verification of its m04d prerequisite remain outstanding. The current game has no account skill tree, purchase/save schema or skill reader to extend. raidWornMods currently combines worn gear and living-pillager traits only. Implementing m5b now would invent a second schema before m5a defines the canonical one, so no game patch or ship key was prepared.
+Coordinator: resolve m05a status and complete its approved implementation and ON HIS PC gate before restarting m05b. Keep this task parked until prerequisite evidence changes. Once m05a ships, reuse its exact skill identifiers/save schema, add effects through the shared reader, and prepare old-save reload and behavior checks plus required pictures. No tests or gate ran; nothing is claimed shipped.
+C:/Codex/FNP new 11082026/RULES.md is absent on this machine. No PC settings, services, VM, play port or files outside the workspace were changed.
+
+--- codex run 2026-11-09 19:59 ---
+2026-11-09 continuation after refresh: verified master is still v37.67, m05a remains in failed/, and its latest notes still require the existing owner mockup selection and prerequisite resolution. No account skill purchase/save schema is present in the game. No new implementation can extend m05a yet. Existing coordinator handoff remains applicable; park m05b until m05a ships. No duplicate question or alarm, game change, test or ship claim.
+
+--- codex run 2026-11-09 20:00 ---
+2026-11-09 continuation: prerequisite m05a remains in failed/ and its latest notes still require owner layout selection and m04d completion verification. Current workspace remains v37.67 (2cfc3aba0). No account skill tree/save schema is available to extend; implementing effects now would create a competing schema. Existing coordinator handoff remains sufficient. No duplicate question or alarm, patch, key, test or ship claim. Park m05b until m05a implementation and ON HIS PC evidence are recorded. The required FnP RULES.md path is still absent; no system or external files were changed.
+
+--- codex run 2026-11-09 20:00 ---
+2026-11-09 recheck after Continue: unchanged master 2cfc3aba0, m05a still in failed/, latest m05a notes still show no implementation or owner layout choice. No canonical account skill schema exists to extend. No patch, key, tests or ship claim. Coordinator must complete m05a before m05b can proceed. Please park this dependent job until prerequisite evidence changes rather than automatically retrying unchanged inputs.
+
+--- codex run 2026-11-09 20:01 ---
+2026-11-09 continuation: prerequisite o-m05a remains in failed/. Its latest notes still report no owner-selected layout and no implementation; current master is 2cfc3aba0 (v37.67). The m5 header requires m5b to extend the account skills through raidWornMods, but no account skill schema has shipped. No patch, key, fixture edit, test or ship claim. Existing coordinator handoff remains sufficient: resolve m05a prerequisite and layout choice, ship its canonical account skill schema, then resume m05b. Park this job until that evidence changes. Required FnP RULES.md remains absent on this machine. No external files or system settings were changed.

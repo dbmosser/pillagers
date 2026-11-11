@@ -6142,5 +6142,37 @@
   "pic": "tools/handoff/console/notes/shots/o-h16-192-debris-scatters-recipes-2/floorbits-join-1080.jpg",
   "task": "o-h16-192-debris-scatters",
   "when": "2026-11-09T00:20"
+ },
+ "62-origin-geometry-39041": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "a crosshair in a firefight should win the eye but instead a leaderboard wall of text and a cluttered goals panel do, with an off-palette pink username and a typo breaking the quiet, consistent dark-panel system the guide asks for.",
+  "findings": [
+   "P0 left side, 'current pillagers' panel: fold this to a single line ('33 pillagers · $120') like the mandated mid-bottom-left raid controls, expand only on a key hold.",
+   "P0 scoreboard rows 'afk_in_the_bushes' and 'lootgoblin_prime': recolor both to --tx-1 (#efe9dc); if a status needs marking, use an existing token, not a new hue.",
+   "P1 goals panel, line under '8pm rainy': compress to a stat line at --fs-label, e.g. 'sight -10% · noise -40%', no verbs.",
+   "P1 goals panel header: correct spelling before ship; spellcheck all persistent HUD strings.",
+   "P1 whole frame: scoreboard, minimap, goals, weapon panel, HP bar, F1 hint: collapse scoreboard and goals to one-line folded states by default (expand on key), standardize all remaining panels to --ui-panel fill + --rad radius so only the goals/alert gets a moment of emphasis."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h09-162-loot-in-sight-at-every-spawn-recipes-4/162-origin-geometry-39041-1080.jpg",
+  "task": "o-h09-162-loot-in-sight-at-every-spawn",
+  "when": "2026-11-11T15:50"
+ },
+ "62-origin-geometry-61261": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "a cluttered raid hud with five competing panels and an off-palette magenta name undermines the quiet-hud direction and splits focus away from the crosshair.",
+  "findings": [
+   "P0 top-left, current pillagers / value at risk panel: collapse to a minimized single line (e.g. 'rank 4/33 · $120') that expands on a key press, matching the folded-by-default pattern already mandated for the raid controls list",
+   "P0 leaderboard row, 'lootlordlucas': remove the magenta tint; use --tx-1 for all names like the other 7 rows, reserve --acc lime only for the player's own row if a highlight is needed",
+   "P1 top-right, goals panel under the minimap: show only the next 1-2 active objectives at --fs-label size; move the full list to a pause-accessible panel",
+   "P1 left-middle, 'contract item nearby · gold glow marks the box': cut to 'contract item nearby' and drop the mechanic explanation; let the glow itself teach",
+   "P2 whole screen: pick one hero element (ammo or extract timer) and quiet every other box to tx-2/line-only treatment; fold or auto-hide panels not relevant to the immediate moment"
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h09-162-loot-in-sight-at-every-spawn-recipes-4/162-origin-geometry-61261-1080.jpg",
+  "task": "o-h09-162-loot-in-sight-at-every-spawn",
+  "when": "2026-11-11T15:51"
  }
 }

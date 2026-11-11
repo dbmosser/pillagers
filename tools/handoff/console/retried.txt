@@ -60,3 +60,7 @@ o-m04b-picks-on-the-raid-end-screen
 o-m04c-badges-and-changes
 o-m04d-two-player-and-the-one-screen
 o-p4a-survival-level
+o-h12-175-break-down-guns
+o-h18-198-alert-sounds-and-message-settings
+o-m06a-gear-drawn-on-the-pillager
+o-m09a-the-weekly-challenge-raid-from-the-lift

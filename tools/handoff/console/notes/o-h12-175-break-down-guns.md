@@ -18,3 +18,5 @@ LOCAL: no linked review. This changes only the local career profile; no packet o
 --- codex run 2026-11-08 02:18 ---
 2026-11-08 continuation: The lane preflight log was last updated 11-07 at 20:16. It joins preflight-cw-cx-breakguns-578af2104cfa and ends with no report from the spare pc for 132 minutes. There is still no PASS, FAIL, ship, ON HIS PC, or critic result. Regenerated the existing draft against v37.56: written; exactly one anchor, ASCII script, one edit, Watch line present. No code change is justified by a stalled remote gate. Existing key and four smooth-look keyboard/pad role recipes remain ready. LOCAL: no linked review. Lane/coordinator must restore the remote gate, finish preflight and shipping, then return ON HIS PC and critic pictures.
 
+
+11-11 11:04 coordinator: back in tasks/ with fresh runs (r2). The JT PC gate works again (it tests beside FnP now, and a busy JT PC no longer spends a try); retry the retained key through preflight and ship.

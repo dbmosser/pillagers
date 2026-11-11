@@ -45,3 +45,34 @@ LOCAL: no linked review. All implementation and camera artifacts are handed over
 Revalidated against refreshed master v37.48: mk prints written; all 21 anchors match once; eight helper names are unique; mk is ASCII; candidate and browser regression pass node syntax checks. Isolated helper regression passes creation guards, exact deletion and backup rejection again. cw-cx-hardcore remains in keys.txt; the six-scene camera recipe remains ready. No tracked game or fixture changes.
 
 LOCAL: no linked review. Lane/coordinator must obtain a completed spare-PC preflight result, then ship with ON HIS PC confirmation and capture 1080p/4k pictures for critic review. This run does not claim a preflight pass or shipment.
+
+--- codex run 2026-11-10 20:02 ---
+2026-11-10 - Continued from the earlier runs against refreshed HEAD 2cfc3aba0, v37.67. No completed preflight, shipment, ON HIS PC line or camera review has been supplied. The existing production change still applies without edits: mk prints written, all 21 anchors match once, eight helper names are unique and the script is ASCII. Regenerated the draft for the current base. Full candidate JavaScript, browser regression and camera builder pass node syntax checks. No tracked game or fixture edits.
+
+Extended the isolated helper harness to execute hcCapture itself. PASS: death-only capture, career/simulation/demo guards, slot 1 exclusion, stash-only score, living pillager name and level, cosmetic build, elapsed clock and days alive. Existing helper checks still pass one-shot creation, role/slot guards, exact backup deletion, unrelated-key preservation, asynchronous second-copy callback, repeated close and archived identity rejection. These offline checks supplement the browser gate; they do not replace it.
+
+cw-cx-hardcore remains in keys.txt. Six existing smooth-look camera scenes remain ready for the lane at 1080p and 4k, including player 2 and the ranked graveyard. LOCAL: no linked review. Remaining lane work: complete spare-PC preflight, ship with ON HIS PC confirmation, then photograph and obtain the graveyard critic result. No build is claimed shipped.
+
+The requested external addendum path C:/Codex/FNP new 11082026/RULES.md is absent in this environment. No external project, play server, VM, system setting or network was touched.
+
+--- codex run 2026-11-10 20:28 ---
+2026-11-10 - Preflight job preflight-cw-cx-hardcore-3372d504b141 returned only spare-PC occupancy messages. It supplied no parse, lint, regression or fingerprint result. No speculative production or check edit was made for a test-machine availability failure.
+
+Regenerated the draft against v37.67: written, 21 unique anchors, eight unique helpers, ASCII mk script. Candidate and check pass node syntax checks. Offline helper regressions pass creation guards, exact deletion, backup identity guards and death snapshot behavior. cw-cx-hardcore remains queued in keys.txt; camera recipes remain ready. No tracked game or fixture edits. LOCAL: no linked review.
+
+Remaining lane work: obtain a completed spare-PC preflight result, ship with ON HIS PC confirmation, then camera and critic review. No gate pass or shipment is claimed.
+
+--- codex run 2026-11-10 20:54 ---
+2026-11-10 - The retry rejoined preflight-cw-cx-hardcore-3372d504b141 and again returned only spare-PC occupancy messages. Investigated tools/handoff/gate-remote.sh read-only. Lines 94-104 check for a completed done=1 result first; "someone is using it" is selected from the runner paused status when this job is not reported running. Lines 155-164 deliberately rejoin an unexpired matching job; altering the game draft merely to change its hash would create another queued job without resolving availability. No code/check failure was supplied.
+
+No further production edits or repeated local tests were warranted: the unchanged v37.67 draft already passed the available local checks last run. Existing mk, key and camera recipes remain ready. Coordinator must obtain an actual completed remote gate report before this task can be assessed further. No gate bypass, local browser, network, fixture edit or system change was attempted. LOCAL: no linked review.
+
+--- codex run 2026-11-11 00:53 ---
+2026-11-11 - Read the cached refs/gate-remote/spare-results status without changing the gate or runner. spare/DESKTOP-82BKOP4/status.txt reports seen=2026-11-11 00:49, game=2cfc3aba v37.67, test_run=paused: someone is using the PC, robots=0, ram_free_gb=17.8, gate_cap=1, push_ok=1. epoch=1794376182 and paused_since=1794277174 put the pause at about 27.5 hours at that report. The cached ref contains no spare/DESKTOP-82BKOP4/gate/preflight-cw-cx-hardcore-3372d504b141.txt result file. This is stronger evidence that the supplied output is a runner availability block, not an assertion failure. The cached report is not claimed to be live status.
+
+No production/check change is justified by these messages. Existing mk, keys.txt and six camera recipes remain ready. HEAD is still 2cfc3aba0 v37.67. No tracked game/fixture, test-machine settings or server changed. LOCAL: no linked review. Coordinator needs to resolve the prolonged pause and return a completed gate report, then ship and photograph if it passes.
+
+--- codex run 2026-11-11 01:19 ---
+2026-11-11 - Another retry of preflight-cw-cx-hardcore-3372d504b141 returned only the same paused-worker messages. No new test evidence or changed source was supplied. No repeated validation or speculative mk/check edit was made. The prepared key cw-cx-hardcore remains in keys.txt. The prior run documented the cached 27.5-hour runner pause and absent job result. This run adds no new ship or camera work; coordinator action on remote worker availability is required before another coding retry is useful. No gate pass, shipment or visual acceptance is claimed. LOCAL: no linked review.
+
+11-11 11:04 coordinator: back in tasks/ with fresh runs (r3). The JT PC gate works again (it tests beside FnP now, and a busy JT PC no longer spends a try); retry the retained key through preflight and ship.

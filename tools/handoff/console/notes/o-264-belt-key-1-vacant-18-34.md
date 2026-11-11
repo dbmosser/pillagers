@@ -51,3 +51,5 @@ Per the task instruction to stop at a check-only finding, tools/mkfixture.ps1 wa
 2026-11-07 requeue: read prior findings and correction files. Current v37.48 check 18.34 at tools/mkfixture.ps1:78931 still deploys kit:[] without staging its gun or class-key layout. The same check-only blocker stands; no game change is justified by the existing evidence.
 Exact complete replacement remains in .codex-work/o-264-belt-key-1-vacant-18-34/check-18.34-replacement.txt; individual edits are in check-18.34-change.txt. It explicitly stages an owned selected pistol on key 1 and retains both original pixel assertions.
 Per this task instruction, tools/mkfixture.ps1 was not edited. HTML CEO must apply the prepared correction through fixq and verify 18.34 alone and in a current full run. Historical browser diagnostics remain uncollected. No runtime pass or shipped fix is claimed. LOCAL: no linked review.
+
+11-11 11:06 coordinator: the fixture change you prepared is in exactly as written (0fe2908e5, fixture rebuilt, JS ok). Back in tasks/ with fresh runs (r3); build and ship.

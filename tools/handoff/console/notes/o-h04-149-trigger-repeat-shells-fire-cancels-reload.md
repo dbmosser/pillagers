@@ -29,3 +29,23 @@ Remaining after coordinator retarget: prepare one cw-cx ship script for held rep
 
 --- codex run 2026-11-07 13:34 ---
 2026-11-07 resume: HEAD is still d9dffdc59 / v37.50. Verified check 31.99 in both fixtures still holds the Magnum trigger through four updatePlayer calls, resets the shot clock each time, and asserts exactly one shot. The coordinator correction recorded in earlier notes remains unapplied. The task explicitly says to stop if a fixture check must change. No game edits or keys prepared. LOCAL: no linked review. Coordinator must correct and validate 31.99 before this task resumes.
+
+--- codex run 2026-11-11 01:45 ---
+2026-11-11 resume on v37.67 (2cfc3aba0): check 31.99 remains incompatible in both the workspace and real repo at tools/mkfixture.ps1:29754-29783. It holds the Magnum trigger through four firing updates, resets lastShot each time, and requires exactly one shot and one round. Hold-to-repeat would correctly fire four shots. Following the explicit task instruction to stop when a fixture check must change, no game edits or ship keys prepared. Coordinator must apply and validate the exact retarget below before implementation resumes. LOCAL: no linked review.
+The required FnP RULES.md path is unavailable in this sandbox; no FnP files or protected services accessed.
+
+--- codex run 2026-11-11 01:46 ---
+2026-11-11 continuation: refreshed HEAD remains 2cfc3aba0 / v37.67. Check 31.99 still contains the held-trigger one-shot expectation in both fixtures at lines 29754 and 29766. The required coordinator retarget remains unapplied. The task explicitly requires stopping on fixture conflicts, so no implementation or ship key submitted. The exact retarget is already in the task notes and coordinator alarm from the preceding run. Resume after coordinator correction and validation of 31.99. LOCAL: no linked review.
+
+--- codex run 2026-11-11 01:47 ---
+2026-11-11 continuation on v37.67 (2cfc3aba0): verified check 31.99 in both fixtures at lines 29754-29767 still holds the Magnum trigger, forces the shot clock ready on every update and expects one shot. The required coordinator correction remains unapplied. The job explicitly says to stop when a fixture check must change. No code, keys or fixture edits prepared. Exact correction resubmitted in alarms-new.md. Resume after coordinator validation of 31.99. LOCAL: no linked review.
+The required C:/Codex/FNP new 11082026/RULES.md is still unavailable in this sandbox.
+
+--- codex run 2026-11-11 01:47 ---
+2026-11-11 resume: HEAD remains 2cfc3aba0 / v37.67. Verified both fixtures still contain the incompatible 31.99 held-Magnum one-shot check at lines 29754 and 29766. The coordinator retarget has not been applied. The explicit task instruction to stop on fixture conflicts still applies, so no implementation or ship keys submitted. Resume after coordinator correction and validation of 31.99, or an explicit change to that stop instruction. LOCAL: no linked review.
+
+--- codex run 2026-11-11 01:48 ---
+2026-11-11 continuation at v37.67 (2cfc3aba0): check 31.99 still has the incompatible held-Magnum one-shot probe in both workspace and real repo, tools/mkfixture.ps1:29754-29767. The explicit task instruction says to stop when a fixture check must change. No game edits or ship keys submitted. Coordinator must apply and validate the correction in alarms-new.md before implementation resumes. LOCAL: no linked review.
+The required C:/Codex/FNP new 11082026/RULES.md path remains unavailable in this sandbox.
+
+11-11 11:06 coordinator: the fixture change you prepared is in exactly as written (0fe2908e5, fixture rebuilt, JS ok). Back in tasks/ with fresh runs (r3); build and ship.

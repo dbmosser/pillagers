@@ -760,3 +760,14 @@
 
 2026-11-08 | o-h17-193-end-run-per-player | arcade pause / out seats | confirmed end run removes only the pressing seat, existing spectator view until both out | before: lane pending | after: camera-recipes endseat-host-out, endseat-p2-out
 
+2026-11-08 | o-h18-198-alert-sounds-and-message-settings | accessibility settings, alert/feed/answer | adds saved message time, size, plate opacity and five kind switches; message-only font/plate rendering; 200 percent alerts use a line under the rail | before: lane standard capture if available; after: camera-recipes.json message-settings, messages-host-200, messages-join-200 (paths pending lane)
+2026-11-09 | o-m04a-level-bar | career raid | six-pixel survival track above vitals, level count, name and level over heads; demo unchanged | before: lane pending | after: lane pending (1080p and 4K)
+
+2026-11-09 | o-m06a-gear-drawn-on-the-pillager | raid, body previews, fashion | six worn slots now control appearance in both looks, with three variants per rarity; owned body options retained and depot apparel/purchases frozen | before: v37.67, no recipe photos | after: lane camera output, m6a-pixel-slot-atlas, m6a-smooth-slot-atlas, m6a-pixel-raid-worn, m6a-smooth-raid-worn, m6a-frozen-fashion, 1080p and 4K pending
+
+2026-11-10 | o-m08a-only-a-level-20-pillager-can-prestige-an | existing hall and prestige confirm | adds level 20 prestige, three-place roster, star and safe heir switching | before: recipe states unavailable | after: lane camera m8a-prestige-ready, m8a-prestige-full, m8a-prestige-active, 1080p and 4K pending.
+
+2026-11-11 | o-h05-150-revive-bandage-pause-alert-medal | revive bars and save medal, both roles, smooth | pending ship: bandage halves base hold; tier-two save medal adds 150 sp on confirmed risky pick-up | before: unavailable for custom recipes; after: lane camera paths pending
+
+2026-11-11 | o-p4a-survival-level | career raid HUD and peer head labels | pillager survival level label, level number and 6px lime bar below health; health stack raised 42 local pixels; level n callout; peer head name plus level | before: new part, no recipe before image | after: pending lane camera-recipes.json s1-survival-host,s2-survival-join,s3-survival-level-up,s4-survival-cap at 1080p and 4K; s5 demo proves no new bar
+
