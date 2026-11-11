@@ -1,10 +1,10 @@
 Latest stable: v36.95 (2026-11-08 11:00)
-Checked: 2026-11-11 17:38
+Checked: 2026-11-11 18:41
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
-  corpus-1111-0904  v37.67  failing 66, new 7  robots 308 min/37 problems  -> 7 check(s) newly failing, e.g. v37.66 capped loose floor papers, boxes and bolts react to s | v37.58 three outdoor machines follow four fixed reachable st
+  corpus-1111-0904  v37.67  failing 66, new 7  robots 315 min/39 problems  -> 7 check(s) newly failing, e.g. v37.66 capped loose floor papers, boxes and bolts react to s | v37.58 three outdoor machines follow four fixed reachable st
   corpus-1108-1813  v37.66  failing 67, new 7  robots 125 min/0 problems  -> 7 check(s) newly failing, e.g. v8.84 I in the Undercroft opens neither the terminal nor the | v37.66 capped loose floor papers, boxes and bolts react to s
   corpus-1108-1045  v37.65  failing 66, new 6  robots 154 min/0 problems  -> 6 check(s) newly failing, e.g. v37.58 three outdoor machines follow four fixed reachable st | v37.19 cw-m1xpoff, his order of 11-01 (lets get rid of the c
   corpus-1108-0637  v37.59  failing 64, new 4  robots 68 min/0 problems  -> 4 check(s) newly failing, e.g. v37.19 cw-m1xpoff, his order of 11-01 (lets get rid of the c | v35.45 his order 2026-10-28 (sp and money never intermingled

@@ -1115,3 +1115,4 @@ Then use the lane normal maker-copy step for .codex-work/o-h05-150-revive-bandag
 
 2026-11-11 o-h12-175-break-down-guns: Preflight-cw-cx-breakgunmenu-8803ace17e30 reported REGRESS 37.66 debris timing 0.362ms against <0.3ms, along with a real wanted-spacing regression now corrected to 24px. No debris implementation, draw loop, timing threshold or fixture was edited. The timing check starts with __topClear and uses an isolated 4K canvas. Retry the revised draft through the normal gate. If 37.66 repeats, compare the base and draft on the spare under the same conditions before assigning a cause; retain the existing budget. New menu regression now uses a cloned profile and restores it after staging.
 
+11-11 18:39 v37.68 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log

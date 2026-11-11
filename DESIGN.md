@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.69 - READABLE STASH BREAK DOWN MENU
+
+Co-op hunt while he was away. The break down camera review found tiny text, uneven key rows and an action menu covering stash items and pad stats. The stash now uses the menu type and spacing from the style guide. Watch: cheap parts could make bench guns and armour easy to craft; watch his stash for servo and board hoards.
+
+MEASURED. Check 37.69 passes, and fails on v37.68.
 ## v37.68 - OPTIONAL HARDCORE SAVES AND GRAVEYARD
 
 Co-op hunt while he was away. His 10-25 order: an optional hardcore save ends for good on death and joins a leaderboard ranked by stash value. Watch: a hardcore death removes that save for good; check the graveyard reads as a leaderboard with stash value as its score, and a normal save or slot 1 is never touched.

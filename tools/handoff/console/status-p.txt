@@ -1,1 +1,1 @@
-11-11 18:18 gate: shipping cw-cx-breakgunmenu (o-h12-175-break-down-guns, codex)
+11-11 18:42 waiting: only 6 GB free with the Fortnite editor open; a Codex step starts at 7 (4 GB floor plus 3 GB margin)

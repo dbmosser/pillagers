@@ -1,0 +1,7 @@
+v37.69: readable stash break down menu
+
+Stash actions use 20px painted labels and 16px hints at 1080p, a five by two key grid, and placement clear of occupied stash tiles and the stat card when space allows. Rarity stays in the 3px foot bar, quantities are neutral, wanted prices use a reserved sub-row, and gear, armory and trophy shortcuts sit together with the tabs. The repeated bag value is hidden.
+
+Check 37.69. Fails on v37.68.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
