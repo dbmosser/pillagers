@@ -1,0 +1,53 @@
+id=shots-dba2866d6bdd
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=4123d76da4b7084e0f51db46904888942c984560
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1794440469
+ended=1794440741
+result=PASS
+infra=0
+reason=
+--- stages
+== 1080 : window 1956x1185, viewport 1920x1080
+  hc-title-off                           NOT STAGED   5.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:3359
+    at <anonymous>:1:3410
+    at <anonymous>:1:3486
+  hc-title-on  try 1: The operation has timed out.
+  hc-title-on  try 2: The operation has timed out.
+  hc-title-on                            NOT STAGED  10.0s    | ERROR The operation has timed out.
+  hc-p2-save-tag                         NOT STAGED  19.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:3359
+    at <anonymous>:1:3410
+    at <anonymous>:1:3486
+  hc-kia-fallen                          NOT STAGED  21.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:3359
+    at <anonymous>:1:3403
+    at <anonymous>:1:3479
+  hc-saves-after-death                   NOT STAGED  22.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:3359
+    at <anonymous>:1:3405
+    at <anonymous>:1:3481
+  hc-graveyard-ranked                    NOT STAGED  26.8s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: Cannot read properties of undefined (reading 'prep')
+    at <anonymous>:1:3359
+    at <anonymous>:1:3406
+    at <anonymous>:1:3482
+report: C:\PillagersSpare\gate\work\shots-dba2866d6bdd\shots\report.json
+Chrome did not start on 9348
+At C:\claudecode\dark raiders\tools\uishots.ps1:142 char:3
++   throw "Chrome did not start on $Port"
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Chrome did not start on 9348:String) [], RuntimeException
+    + FullyQualifiedErrorId : Chrome did not start on 9348
+
+--- end
+done=1
