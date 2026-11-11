@@ -1,0 +1,30 @@
+id=shots-cb497be31289
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=016b55766cb44dd1ade30daa31d1d7feaff6c5a8
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1794441220
+ended=1794441298
+result=PASS
+infra=0
+reason=
+--- stages
+report: C:\PillagersSpare\gate\work\shots-cb497be31289\shots\report.json
+Invoke-RestMethod : The operation has timed out.
+At C:\claudecode\dark raiders\tools\uishots.ps1:147 char:6
++   $t=Invoke-RestMethod -Method Put -Uri ("http://127.0.0.1:$Port/json ...
++      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], WebExc
+   eption
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+
+--- end
+done=1
