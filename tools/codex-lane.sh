@@ -410,11 +410,8 @@ ship_key(){
       say "gate: preflight browser $PFPORT will not answer ($name); the job waits, no run spent"; return 2; fi
     # 11-11 (HTML CEO): o-h05 and o-h15 spent runs on a JT PC that someone was using: the 25 min timeout cut the remote preflight while it only
     # waited, with no PREFLIGHT FAIL line (or one that says the spare pc gave no answer). That is the spare pc's state, not Codex's draft: wait, spend no run.
-    pfl=$(printf '%s
-' "$pf" | grep '^PREFLIGHT FAIL' | tail -1)
-    if printf '%s
-' "$pf" | grep -qiE 'waiting for the spare pc|is with the spare pc' && { [ -z "$pfl" ] || printf '%s
-' "$pfl" | grep -qi 'no answer from the spare pc'; }; then
+    pfl=$(printf '%s\n' "$pf" | grep '^PREFLIGHT FAIL' | tail -1)
+    if printf '%s\n' "$pf" | grep -qiE 'waiting for the spare pc|is with the spare pc' && { [ -z "$pfl" ] || printf '%s\n' "$pfl" | grep -qi 'no answer from the spare pc'; }; then
       say "gate: the spare pc is in use or busy ($k, $name); the job waits, no run spent"; return 2; fi
     appendfb "PREFLIGHT FAILED for $k. Fix .codex-work/$name/mk-$k.ps1 (or its check) and finish again. The gate said:
 $(printf '%s\n' "$pf" | tail -8)"; return 1
