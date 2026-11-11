@@ -59,3 +59,4 @@ o-m04a-level-bar
 o-m04b-picks-on-the-raid-end-screen
 o-m04c-badges-and-changes
 o-m04d-two-player-and-the-one-screen
+o-p4a-survival-level

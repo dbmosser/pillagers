@@ -9,3 +9,8 @@ Do (m4b): on the raid-end screen, one set of three cards per level gained in tha
 Check: a raid that gains 2 levels offers 2 sets of 3, a kept pick changes its stat by the stated amount through raidWornMods, the per-stat ceiling holds with picks plus gear, a death drops unspent picks, a reload keeps kept picks.
 Rules: the seed 4242 fingerprint (ents 85/374, containers 165/593) must hold; the new check must FAIL on the build before; an old save loads and plays (reload check in the new check); both windows (host and join) where the screen exists; all player text lower case, $ for money, SP for score, no explaining sentences; the party demo stays as it is (no bar, no picks in the demo). Pictures at 1080p and 4K of every new screen part.
 TASK DONE when it shipped and is ON HIS PC; TASK PARTIAL with what is left.
+
+Lane note 2026-11-11 10:46: NEEDS COORDINATOR, parked by lane p. Codex's last words:
+The prerequisite remains unshipped in `failed/`. Its coordinator fixture correction and ship must finish before pick-card work can proceed.
+
+TASK PARTIAL: waiting for o-p4a-survival-level to ship.
