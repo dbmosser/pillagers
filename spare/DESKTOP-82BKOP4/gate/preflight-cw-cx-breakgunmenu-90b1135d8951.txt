@@ -1,0 +1,28 @@
+id=preflight-cw-cx-breakgunmenu-90b1135d8951
+kind=preflight
+key=cw-cx-breakgunmenu
+tag=pfp
+v=37.68
+new=3768
+base=989467d5ee57ec9e21918e9c5fa8ba5521bff509
+host=DESKTOP-82BKOP4
+draft_sha=a1f14564f7073e03eb9468df6f3368e191721a80b2045d1f7dedbe602d2af31f
+p_sha=9ceb952d52baea958c3bb5195620f3e920266954ff6ec85ba32e66f280872f5c
+f_sha=7873c8993bb88a8c1f08962ece55a1bd6ab3aba06a124d66f61fa62e405de703
+game_sha=833f4523c0ed09e31f1a497ba916a7409e2ed020f657b2d7bfc3155f37075196
+fix_sha=e1c8f45af2efa9c323ad38401c5aff7ea6a6eb2763b8fcc418069d3023758134
+started=1794438671
+ended=1794439037
+result=PASS
+infra=0
+reason=
+--- stages
+ppfp -> OK, 8 edits applied plus DEVNOW
+fpfp -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.68 parse check
+dry fxdrypfp check 37.68: PASS / PASS
+control fxctlpfp check 37.68: no stash menu placement / no stash menu placement
+recent: 0 new failures in the newest 80 checks
+--- end
+done=1
