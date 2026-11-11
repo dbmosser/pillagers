@@ -50,3 +50,8 @@ o-262-esc-eaten-gamblemodal-and-edit-box
 o-263-ghost-through-roof-9-27
 o-264-belt-key-1-vacant-18-34
 o-00y-2p-online-party-critical
+o-h01-177-hardcore-save
+o-h04-149-trigger-repeat-shells-fire-cancels-reload
+o-h05-150-revive-bandage-pause-alert-medal
+o-h09-162-loot-in-sight-at-every-spawn
+o-h15-186i-every-hud-panel-movable

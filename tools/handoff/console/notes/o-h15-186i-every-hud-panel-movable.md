@@ -96,3 +96,5 @@ LOCAL: no linked review. Still needs passing remote preflight, ship, pictures/cr
 Rebuilt against v37.65: written; all 28 anchors unique through sequential patching; patched game and new check JavaScript parse; mk ASCII. Updated draft/check is ready for another preflight. keys.txt retains cw-cx-hudmoveall and the four moved-panel camera recipes remain ready. No game or fixture file edited.
 
 LOCAL: no linked review. Remote preflight, ship, pictures/critic and ON HIS PC confirmation remain.
+
+11-11 03:54 coordinator: back in tasks/ with fresh runs. The last preflight met only a busy spare PC (no check failed); rerun preflight cw-cx-hudmoveall and ship.
