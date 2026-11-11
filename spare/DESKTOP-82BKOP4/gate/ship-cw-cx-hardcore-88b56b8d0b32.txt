@@ -1,0 +1,30 @@
+id=ship-cw-cx-hardcore-88b56b8d0b32
+kind=ship
+key=cw-cx-hardcore
+tag=68
+v=37.68
+new=3768
+base=989467d5ee57ec9e21918e9c5fa8ba5521bff509
+host=DESKTOP-82BKOP4
+draft_sha=e94c9898af0faf80438a42fd710cdbd487fabf3ee4c2a9836bbee337177b429f
+p_sha=ddeee969ba071f411ce765868f50f1407723ec4a5ae9c62190140d7d6d0b57b9
+f_sha=c78b2c76a9afc0ec8cada1283d4200293230094aba04ec46f7f822ec3f99123e
+game_sha=afdc10b57bc2d2b34289bc7ec9c330beee783f7d8914d3be3c0c78cc6748a0f9
+fix_sha=b4134cf7389f0baf9e03e5b2306cf9a712dc39c6bc4c0b8c8cd5e030f60f4fde
+started=1794439077
+ended=1794439554
+result=PASS
+infra=0
+reason=
+--- stages
+p68 -> OK, 22 edits applied plus DEVNOW
+f68 -> OK, 1 edits applied
+parse: PASS v37.68 parse check
+dry fxdry68 check 37.68: PASS / PASS
+control fxctl68 check 37.68: no hardcore creation or graveyard / no hardcore creation or graveyard
+recent: 0 new failures in the newest 80 checks
+stamp-verat: VER_AT 2026-11-11 18:23
+fixture.html check 37.68: PASS / PASS
+verifySafe: {"pass":true,"ents":{"0":85,"1":374},"containers":{"0":165,"1":593},"fail":[]}
+--- end
+done=1
