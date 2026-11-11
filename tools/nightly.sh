@@ -233,6 +233,20 @@ $gm"; fi
       (powershell -NoProfile -ExecutionPolicy Bypass -File "$R/tools/fuzz.ps1" -Minutes 120 -IgnoreFlag -Port 9332 -MinFreeGB "$rf" $fxarg $szarg > /dev/null 2>&1; echo "$(date +%H:%M) fuzz2 done" >> "$LOG") &
     fi
   fi
+  # (5c) 11-11 (HTML CEO): a running FortniteClient on this PC is usually the FnP lead's test client, so the gaming hold above (ram=0) kept
+  #      the Codex lane from starting from 05:41 to 08:00 with nothing of his in front. Lane o guards itself on exactly this case
+  #      (tools/codex-lane.sh: his real input under 3 minutes ago with Fortnite running, a two-player check running, 7 GB free), so when
+  #      Fortnite is the only hold, start it here too. A pad, a real game, or Pillagers in front with keys in use still hold it.
+  if [ "$ON_MAIN" = 1 ] && [ "${isg:-0}" = 1 ] && [ -f "$R/tools/codex-lane.sh" ]; then
+    fw=$(printf '%s\n' "$gm" | sed -n 's/^what=//p' | head -1 | tr -d '\r')
+    fy=$(sed -n 's/^why=//p' "$(cygpath -u "${LOCALAPPDATA:-C:/Users/User1/AppData/Local}")/PillagersBridge/share/playing.txt" 2>/dev/null | head -1 | tr -d '\r')
+    case "$fw" in pillagers*)
+      if [ "$fy" = 'the fortnite editor or game' ] && [ "$(running 'codex-lane\.sh')" = "0" ]; then
+        (bash "$R/tools/codex-lane.sh" > /dev/null 2>&1) &
+        [ "$(get cx_fn_start)" = "$(date +%F-%H)" ] || { put cx_fn_start "$(date +%F-%H)"; echo "$(date +%H:%M) Fortnite running (no pad or game of his in front): the Codex lane starts and guards itself" >> "$LOG"; }
+      fi;;
+    esac
+  fi
   # (7) 2026-10-17: once a day after 03:00, the half-price code review of the day's game commits (tools/review-nightly.sh)
   if [ "$(get review_day)" != "$(date +%F)" ] && [ "$(date +%H)" -ge 3 ]; then put review_day "$(date +%F)"; (bash "$R/tools/review-nightly.sh" > /dev/null 2>&1) & fi
   # (8) 2026-10-18, his "my play window always loads the latest stable build": once an hour tools/stable.sh checks whether a newer version is
