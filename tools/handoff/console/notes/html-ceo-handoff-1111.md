@@ -46,6 +46,7 @@
 - itch: still v37.39. Do not raise it with him (M091).
 
 ## Things that bit me (do not repeat them)
+- pillagers-watchdog came back on after a reboot (it ran 11-11 07:07). After any restart, run list_scheduled_tasks and set it to enabled:false again (owner M195). Owner M197: he reads only the Reporter, so this chat writes no recaps, one terse status line per turn.
 - The Bash tool collapses `\\` and turns `\n` inside heredoc Python into real newlines. Write Windows paths, JSON and escape sequences with the Write or Edit tool, or use chr(92) in Python.
 - A running bash script keeps its functions in memory. Editing codex-lane.sh does not reach a lane process that is already looping, so stop it (lock pid in tools/handoff/console/lane-o.lock/pid plus its preflight children) or wait for it to end. Always write .new, run `bash -n`, then mv.
 - A scheduled task's description saying "paused" means nothing: set enabled=false and verify it (the pillagers-watchdog mistake of 11-08).
