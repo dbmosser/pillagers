@@ -7966,3 +7966,6 @@
 2026-11-11 16:25:46 raid 13 demo2 raidSeed=535478306 map=0 god=0 sec=92 end=clock-end problems=0 newUnique=0 totalUnique=5 totalProblems=7 events=17 score=0 ents=51 travelPx=0 fires=0 menuPct=0 heapMB=58 p2= gfx=697/49.25/100/600/0.75 work=1024/13.25/37.75/92.25 pics=449/23.3mb/wall:77,veg:22,shad:278,icon:32,g.pix:0,g.pixmachines:0,g.muz:4,g.gun:5,g.lightspr:25,g.gfxE:3,pix.actors:0,pix.scene:0,big:3 build=37.67
 2026-11-11 16:25:53 FUZZ END raids=13 problems=7 unique=5 reason=time minutes=59.6
 2026-11-11 16:28:18 FUZZ ABORT reason=gate job, not a game failure
+2026-11-11 16:30:27 FUZZ START seed=5654722 minutes=60 raidsec=300 port=9331 srv=8806 build=37.67 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-11 16:30:54 raid 1 demo2p raidSeed=1382432457 map=0 god=1 sec=25 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.67
+2026-11-11 16:31:35 FUZZ ABORT reason=gate job, not a game failure
