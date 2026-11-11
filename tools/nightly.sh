@@ -216,9 +216,12 @@ $gm"; fi
     done
     # (5b) 10-20 00:20: the Codex lane (tools/codex-lane.sh, lane o) had no starter in the VM; it ran only when started by hand and sat
     #      idle from 23:04 on 10-19. It guards itself (the STOP files, its rest after a usage limit, its lock, the sign-in check).
-    if [ -f "$R/tools/codex-lane.sh" ] && [ "$(running 'codex-lane\.sh')" = "0" ]; then
-      (bash "$R/tools/codex-lane.sh" > /dev/null 2>&1) &
-    fi
+    #      11-11 (owner M202): one starter per Codex lane in caps-codex.txt CX_LANES (o p); each lane holds its own lock.
+    for cxl in $(grep -m1 '^CX_LANES=' "$R/tools/handoff/codex/caps-codex.txt" 2>/dev/null | cut -d= -f2- | tr -dc 'o-r '); do
+      if [ -f "$R/tools/codex-lane.sh" ] && [ "$(running "codex-lane\.sh --lane=$cxl")" = "0" ] && ! { [ "$cxl" = o ] && [ "$(running 'codex-lane\.sh *$')" != "0" ]; }; then
+        (bash "$R/tools/codex-lane.sh" --lane=$cxl > /dev/null 2>&1) &
+      fi
+    done
     # (6) 10-17: a second fuzzer on its own Chrome (9332) with its own seeds, beside the first (9331)
     f2=$(running 'fuzz\.ps1.*9332')
     if [ "$atq" = 0 ] && [ "$spl" = 0 ] && [ -f "$R/tools/fuzz.ps1" ] && [ "$f2" = "0" ] && [ "$ram" -ge $((rf+2)) ]; then
@@ -241,9 +244,13 @@ $gm"; fi
     fw=$(printf '%s\n' "$gm" | sed -n 's/^what=//p' | head -1 | tr -d '\r')
     fy=$(sed -n 's/^why=//p' "$(cygpath -u "${LOCALAPPDATA:-C:/Users/User1/AppData/Local}")/PillagersBridge/share/playing.txt" 2>/dev/null | head -1 | tr -d '\r')
     case "$fw" in pillagers*)
-      if [ "$fy" = 'the fortnite editor or game' ] && [ "$(running 'codex-lane\.sh')" = "0" ]; then
-        (bash "$R/tools/codex-lane.sh" > /dev/null 2>&1) &
-        [ "$(get cx_fn_start)" = "$(date +%F-%H)" ] || { put cx_fn_start "$(date +%F-%H)"; echo "$(date +%H:%M) Fortnite running (no pad or game of his in front): the Codex lane starts and guards itself" >> "$LOG"; }
+      if [ "$fy" = 'the fortnite editor or game' ]; then
+        for cxl in $(grep -m1 '^CX_LANES=' "$R/tools/handoff/codex/caps-codex.txt" 2>/dev/null | cut -d= -f2- | tr -dc 'o-r '); do
+          [ "$(running "codex-lane\.sh --lane=$cxl")" = "0" ] || continue
+          { [ "$cxl" = o ] && [ "$(running 'codex-lane\.sh *$')" != "0" ]; } && continue
+          (bash "$R/tools/codex-lane.sh" --lane=$cxl > /dev/null 2>&1) &
+        done
+        [ "$(get cx_fn_start)" = "$(date +%F-%H)" ] || { put cx_fn_start "$(date +%F-%H)"; echo "$(date +%H:%M) Fortnite running (no pad or game of his in front): the Codex lanes start and guard themselves" >> "$LOG"; }
       fi;;
     esac
   fi

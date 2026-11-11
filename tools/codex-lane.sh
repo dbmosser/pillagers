@@ -39,6 +39,9 @@
 MODE=run; JOBARG=""; L=o
 for a in "$@"; do case "$a" in
   --dry) MODE=dry;; --check) MODE=check;; --setup) MODE=setup;; -h|--help) MODE=help;;
+  # 11-11 (owner M202 "full speed" for Codex): --lane=p (or q, r) runs a second Codex lane beside o: its own lock, status, worktree and
+  # preflight Chrome; it takes the same o-*.md jobs (busy jobs are skipped through the lane-*.lock/task files, as between the Claude lanes).
+  --lane=[o-r]) L=${a#--lane=};;
   --*) echo "unknown flag $a (try --help)"; exit 2;; *) JOBARG=${a%.md};; esac; done
 if [ "$MODE" = help ]; then sed -n '2,8p' "$0" | cut -c3-; exit 0; fi
 
@@ -46,7 +49,8 @@ if [ "$MODE" = help ]; then sed -n '2,8p' "$0" | cut -c3-; exit 0; fi
 SELF="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
 R=${CX_R:-/c/claudecode/dark raiders}; C=${CX_C:-$R/tools/handoff/console}; X=${CX_X:-$R/tools/handoff/codex}
 [ -f "$R/tools/handoff/machine.sh" ] && . "$R/tools/handoff/machine.sh"   # 11-02: machine_floor on JUL26
-W=${CX_W:-/c/claudecode/pillagers-codex}
+W=${CX_W:-/c/claudecode/pillagers-codex}; [ -z "$CX_W" ] && [ "$L" != o ] && W="/c/claudecode/pillagers-codex-$L"
+JP=o   # every Codex lane takes o-*.md jobs
 cd "$R" || exit 1
 S=${CX_S:-C:/Users/User1/AppData/Local/Temp/claude/C--Users-User1-Desktop-dark-raiders/8a09e991-b4f4-4b23-b10f-ded92e837fc3/scratchpad}
 WW=$(cygpath -m "$W"); RW=$(cygpath -m "$R")
@@ -57,7 +61,7 @@ say(){ [ "$MODE" = run ] && echo "$(date '+%m-%d %H:%M') $*" > "$C/status-$L.txt
 log(){ echo "$(date '+%F %T') $*" >> "$X/log/lane.log"; }
 rd(){ LC_ALL=C tr -d '\000\r' < "$1" | LC_ALL=C sed '1s/^\xef\xbb\xbf//; 1s/^\xff\xfe//'; }   # Codex on Windows may write UTF-16 or BOM files
 MODEL=$(cap CODEX_MODEL gpt-6.1-sol); EFFORT=$(cap CODEX_EFFORT high); CAM=$(cap CAMERA_PORT 9364)
-PFN=$(cap PREFLIGHT_CHROME_N 9); PFPORT=$((9350+PFN))
+PFN=$(cap PREFLIGHT_CHROME_N 9); case "$L" in p) PFN=$((PFN+1));; q) PFN=$((PFN+2));; r) PFN=$((PFN+3));; esac; PFPORT=$((9350+PFN))
 # 10-21: the smaller of free RAM and free virtual memory (Windows ran out of virtual memory at 02:19 with 4 GB of RAM free)
 freegb(){ if [ -n "$CX_FREEGB" ]; then echo "$CX_FREEGB"; return; fi; powershell -NoProfile -Command "\$o=Get-CimInstance Win32_OperatingSystem; [int]([Math]::Min(\$o.FreePhysicalMemory,\$o.FreeVirtualMemory)/1MB)" 2>/dev/null | tr -dc '0-9'; }
 # 10-28 09:47: this lane sat at "waiting for RAM: 0 GB free, need 3" while a test Chrome left by an ended preflight (9358, 2.9 GB, two game
@@ -159,10 +163,10 @@ wt_refresh(){ local head gd
   return 0; }
 gamever(){ grep -m1 "^var VER='" "$W/dark_raiders.html" 2>/dev/null | sed "s/var VER='\([0-9]*\.[0-9]*\)'.*/\1/"; }
 # the preflight for lane o is preflight.sh with one extra case line, made fresh each time so it follows any change to the gate
-mkpre(){ local src="$R/tools/handoff/preflight.sh" dst="$X/work/preflight-o.sh"
+mkpre(){ local src="$R/tools/handoff/preflight.sh" dst="$X/work/preflight-$L.sh"
   [ -f "$src" ] || return 1
-  sed -e "s/^case \"\$L\" in a) n=1;;/case \"\$L\" in o) n=$PFN;; a) n=1;;/" "$src" > "$dst"
-  grep -q "o) n=$PFN;;" "$dst"; }
+  sed -e "s/^case \"\$L\" in a) n=1;;/case \"\$L\" in $L) n=$PFN;; a) n=1;;/" "$src" > "$dst"
+  grep -q "$L) n=$PFN;;" "$dst"; }
 
 if [ "$MODE" = setup ]; then wt_setup; exit $?; fi
 find_codex || { echo "codex is not installed (npm i -g @openai/codex)"; [ "$MODE" = run ] && say "needs you: codex is not installed"; exit 1; }
@@ -230,7 +234,11 @@ if [ "$MODE" = run ]; then
 fi
 
 # ---------------------------------------------------------------- pick a job: o-*.md first, else any free job (console-lane.sh's free()/busy/retry)
-busy=""; free(){ while read -r f; do [ -n "$f" ] || continue; printf '%s\n' "$busy" | grep -qxF "$(basename "$f")" || { echo "$f"; return; }; done; }
+# 11-11: a job keeps the Codex lane that started it (its drafts and Codex thread live in that lane's worktree): work/NAME/lane.txt, or for
+# jobs begun before lanes had owners, a .codex-work/NAME folder in lane o's worktree.
+owner_of(){ [ -f "$X/work/$1/lane.txt" ] && { tr -dc 'a-z' < "$X/work/$1/lane.txt"; return; }; [ -d "/c/claudecode/pillagers-codex/.codex-work/$1" ] && echo o; }
+busy=""; free(){ local ow; while read -r f; do [ -n "$f" ] || continue; printf '%s\n' "$busy" | grep -qxF "$(basename "$f")" && continue
+  ow=$(owner_of "$(basename "$f" .md)"); [ -n "$ow" ] && [ "$ow" != "$L" ] && continue; echo "$f"; return; done; }
 retry(){ ls "$C/failed/"*.md 2>/dev/null | sort | while read -r f; do n=$(basename "$f" .md)
   grep -qxF "$n" "$C/retried.txt" 2>/dev/null && continue; echo "$n" >> "$C/retried.txt"
   # 10-20: runs are counted in spend.txt AND cli-spend.txt (the plan runs), so rename in both; renaming spend.txt alone gave a retried job 1 run, not 5
@@ -244,8 +252,8 @@ t=""
 if [ -n "$JOBARG" ]; then [ -f "$C/tasks/$JOBARG.md" ] && t="$C/tasks/$JOBARG.md"
 else
   # 11-07 standing refill (owner: keep growing, never an empty lane while the backlog has jobs): with no o-* job in tasks/, the next o-*.md in console/backlog/ (sorted: m4a, m4b, ... m9b) moves to tasks/.
-  if ! ls "$C/tasks/$L-"*.md >/dev/null 2>&1 && [ "$MODE" = run ]; then nb=$(ls "$C/backlog/$L-"*.md 2>/dev/null | sort | head -1); [ -n "$nb" ] && mv "$nb" "$C/tasks/" 2>/dev/null && log "refill: $(basename "$nb") from backlog to tasks"; fi
-  t=$(ls "$C/tasks/$L-"*.md 2>/dev/null | sort | free)
+  if ! ls "$C/tasks/$JP-"*.md 2>/dev/null | free | grep -q . && [ "$MODE" = run ]; then nb=$(ls "$C/backlog/$JP-"*.md 2>/dev/null | sort | head -1); [ -n "$nb" ] && mv "$nb" "$C/tasks/" 2>/dev/null && log "refill: $(basename "$nb") from backlog to tasks"; fi
+  t=$(ls "$C/tasks/$JP-"*.md 2>/dev/null | sort | free)
   # 2026-10-19: only o-* jobs for now. Taking any free job let Codex grab Claude lanes' UI jobs (12, 14) and burn their runs, and jobs that
   # rewrite mkfixture checks need a Claude lane (Codex cannot edit the shared tree). Set CX_ANY=1 (env or caps-codex.txt) to allow any free job again.
   [ -z "$t" ] && [ "${CX_ANY:-$(cap CX_ANY 0)}" = 1 ] && t=$(ls "$C/tasks/"*.md 2>/dev/null | sort | free)
@@ -258,6 +266,7 @@ name=$(basename "$t" .md)
 # ---------------------------------------------------------------- work folders, prompt, command
 WD="$W/.codex-work/$name"      # Codex's own output folder (inside its workspace)
 LS="$X/work/$name"             # the lane's private state for this job (shipped keys etc.): Codex cannot touch it
+[ "$MODE" = run ] && { mkdir -p "$LS"; [ -s "$LS/lane.txt" ] || echo "$L" > "$LS/lane.txt"; }
 sub(){ sed -e "s|@JOB@|$name|g" -e "s|@W@|$WW|g" -e "s|@MAIN@|$RW|g" -e "s|@S@|$S|g" "$1"; }
 prompt_fresh(){  # $1 = lane message (may be empty)
   echo "Your task id is $name. Your lane is o. You run in Codex (codex exec) in a sandbox, not in Claude Code: the CODEX ADDENDUM after the rules says which tools and steps differ and tells you where to put your files. Game version at the start of this run: v$(gamever)."
@@ -284,7 +293,7 @@ if [ "$MODE" = dry ]; then
   echo "job it would take: $name   (list: $C/tasks, $(ls "$C/tasks/"*.md 2>/dev/null | wc -l) waiting; busy elsewhere: $(printf '%s' "$busy" | grep -c .))"
   echo "workspace (private git worktree): $WW   exists: $([ -e "$W/.git" ] && echo yes || echo NO, run: bash tools/codex-lane.sh --setup)   at: $(git -C "$W" rev-parse --short HEAD 2>/dev/null)  master: $(git -C "$R" rev-parse --short master 2>/dev/null)  game: v$(gamever)"
   echo "codex output folder: $WW/.codex-work/$name   lane state: $LS   logs: $X/log/$name-STAMP.jsonl and .last.txt   runs: $X/runs.txt"
-  echo "ship gate: preflight $X/work/preflight-o.sh (from tools/handoff/preflight.sh, Chrome $PFPORT), then bash $S/shipq.sh KEY; camera port $CAM"
+  echo "ship gate: preflight $X/work/preflight-$L.sh (from tools/handoff/preflight.sh, Chrome $PFPORT), then bash $S/shipq.sh KEY; camera port $CAM"
   echo "status file: $C/status-$L.txt   lock: $LK   STOP files: $C/STOP $X/STOP ($([ -f "$C/STOP" ] && echo present || echo absent) / $([ -f "$X/STOP" ] && echo present || echo absent))"
   echo "model: $MODEL  effort: $EFFORT  max runs per job: $(cap MAXRUNS 5)  one run cut after $(cap RUN_MIN 45) min"
   echo "prompt: $(wc -c < "$pf") bytes ($(wc -l < "$pf") lines) on stdin, saved to $pf   (the command line itself is short; Windows allows ~32 KB)"
@@ -393,7 +402,7 @@ ship_key(){
   ramwait || { say "waiting for RAM before the gate ($name)"; return 2; }
   say "gate: preflight $k ($name, codex)"
   for i in 1 2 3 4; do
-    pf=$(cd "$R" && timeout $(( $(cap PREFLIGHT_MIN 25) * 60 )) bash "$X/work/preflight-o.sh" o "$k" 2>&1 | tail -12 | cut -c1-700); echo "$pf" > "$X/log/$name-$k.preflight.txt"
+    pf=$(cd "$R" && timeout $(( $(cap PREFLIGHT_MIN 25) * 60 )) bash "$X/work/preflight-$L.sh" $L "$k" 2>&1 | tail -12 | cut -c1-700); echo "$pf" > "$X/log/$name-$k.preflight.txt"
     printf '%s\n' "$pf" | grep -q '^PREFLIGHT PASS' && break
     # 2026-10-19: a stale what is new card is nobody's job, so waiting for "another worker" slept two hours. Ship the refresh, retry.
     if printf '%s\n' "$pf" | grep -qiE 'stamped v[0-9.]+, .*behind'; then
