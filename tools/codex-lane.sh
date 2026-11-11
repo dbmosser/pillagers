@@ -252,7 +252,7 @@ t=""
 if [ -n "$JOBARG" ]; then [ -f "$C/tasks/$JOBARG.md" ] && t="$C/tasks/$JOBARG.md"
 else
   # 11-07 standing refill (owner: keep growing, never an empty lane while the backlog has jobs): with no o-* job in tasks/, the next o-*.md in console/backlog/ (sorted: m4a, m4b, ... m9b) moves to tasks/.
-  if ! ls "$C/tasks/$JP-"*.md 2>/dev/null | free | grep -q . && [ "$MODE" = run ]; then nb=$(ls "$C/backlog/$JP-"*.md 2>/dev/null | sort | head -1); [ -n "$nb" ] && mv "$nb" "$C/tasks/" 2>/dev/null && log "refill: $(basename "$nb") from backlog to tasks"; fi
+  if ! ls "$C/tasks/$JP-"*.md 2>/dev/null | free | grep -q . && [ "$MODE" = run ]; then nb=$(ls "$C/backlog/$JP-"*.md 2>/dev/null | sort | while read -r bf; do wn=$(grep -m1 -o '^WAIT ON [a-z0-9-]*' "$bf" 2>/dev/null | cut -c9-); held=0; if [ -n "$wn" ]; then for wd in tasks waiting failed blocked in-session; do [ -f "$C/$wd/$wn.md" ] && held=1; done; fi; [ $held = 1 ] && continue; echo "$bf"; break; done); [ -n "$nb" ] && mv "$nb" "$C/tasks/" 2>/dev/null && log "refill: $(basename "$nb") from backlog to tasks"; fi
   t=$(ls "$C/tasks/$JP-"*.md 2>/dev/null | sort | free)
   # 2026-10-19: only o-* jobs for now. Taking any free job let Codex grab Claude lanes' UI jobs (12, 14) and burn their runs, and jobs that
   # rewrite mkfixture checks need a Claude lane (Codex cannot edit the shared tree). Set CX_ANY=1 (env or caps-codex.txt) to allow any free job again.
