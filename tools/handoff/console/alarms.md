@@ -891,3 +891,205 @@ LINKED REVIEW NEEDED: synced. Confirm host patrol motion received through existi
 2026-11-08 o-h16-192-debris-scatters: COORDINATOR HANDOFF. Debris shipped v37.66, ON HIS PC confirmed; both role cameras now stage at 1080p/4K. Round 2 critic scores are host 2/5 and join 2/5, below the raid target 4. Remaining P0/P1 findings concern the existing raid HUD, not debris: collapse/reposition the controls legend; resolve competing HP/ammo/extract emphasis; remove duplicate backpack hint; unify controls/current pillagers/run-info panels; review cyan/gold objective labels. Full findings are in notes/ui/accept.json entries floorbits-host and floorbits-join. Photos/report: notes/shots/o-h16-192-debris-scatters-recipes-2/. Two configured camera rounds are consumed. Please assign the broader HUD findings to their owning work and arrange any further art review; this low-priority debris task has no remaining game change. No fixture retarget needed. LOCAL: no linked review.
 o-h17-193-end-run-per-player: LINKED REVIEW NEEDED: synced. Review new arcquit and existing arcend/arcx in two linked windows. Per-role recipes are synthetic local camera staging, not linked proof. External required C:/Codex/FNP new 11082026/RULES.md is absent in sandbox.
 
+11-08 21:14 v37.67 not on itch after 10 min (itch has v37.39); see the itch: lines in tools/handoff/nightly/nightly.log
+o-h17-193-end-run-per-player: coordinator verification handoff. v37.67 shipped and ON HIS PC; gate and fingerprint passed. Both allowed camera rounds failed because someone was using the spare PC (latest shots-8514a04b7b28); both output folders are empty. Please resume the two existing role recipes when the spare PC is available, obtain critic results, and complete the previously requested synced linked-window review for arcquit/arcend/arcx/xOut. No code change is pending; do not retry implementation to solve PC availability.
+2026-11-08 o-h18-198-alert-sounds-and-message-settings: Required PC-protection addendum cannot be read: C:/Codex/FNP new 11082026/RULES.md does not exist in this environment. No PC settings, services, ports or VM were touched.
+2026-11-08 o-h18-198-alert-sounds-and-message-settings: required owner addendum C:/Codex/FNP new 11082026/RULES.md is absent in this sandbox. Used the supplied PC protection rules; no server, VM, settings, cleanup or other-chat actions performed.
+
+2026-11-08 o-h18-198-alert-sounds-and-message-settings: preflight output reports only someone using the spare PC, no check failure. Please retry the same cw-cx-msgsettings draft to rejoin preflight-cw-cx-msgsettings-e8264adddaa5. No fixture retarget or code change is indicated by this output.
+
+2026-11-08 o-h18-198-alert-sounds-and-message-settings: repeated infrastructure blocker, not a reported check failure. Both replies contain only joining preflight-cw-cx-msgsettings-e8264adddaa5 and spare busy waits. gate-remote.sh maps this message to test_run=paused*; no executed gate diagnostic was supplied. Please defer repeated Codex repair runs until spare is idle, then retry existing key and capture complete result including final REMOTE/FAIL/PASS. Do not change idle protection, test limits or run tests on main PC. Script and key remain ready unchanged.
+
+2026-11-09 o-h18-198-alert-sounds-and-message-settings: prior task notes record repeated spare-PC busy waits for preflight-cw-cx-msgsettings-e8264adddaa5; this run supplied no completed gate result. cw-cx-msgsettings is revalidated and ready in keys.txt. Lane must retry/join preflight, then ship and collect camera/critic and ON HIS PC evidence. No test or ship success claimed. Also, the AGENTS.md external owner addendum path C:/Codex/FNP new 11082026/RULES.md does not exist in this environment; no PC, server, VM or cleanup action taken.
+o-m04a-level-bar: camera recipes need explicit -Res 1080,4k; task requires both resolutions. Linked review needed for display-only pl on existing state packets. Neither pictures nor real linked windows are available in the sandbox.
+
+o-m04a-level-bar: preflight returned only repeated spare PC occupancy waits, not a test failure. Please retry cw-cx-levelbar on the spare PC when available; the same draft/base should join existing job preflight-cw-cx-levelbar-89897c753e98. Refreshed-master anchors and JavaScript syntax pass. Do not mark the build tested or shipped until the remote gate returns its actual result.
+
+o-m04a-level-bar coordinator: repeated preflight returns only show JTPC occupancy for the same pending job preflight-cw-cx-levelbar-89897c753e98. No code-test result exists in the supplied output. Please obtain the real result once JTPC is available, without another edit run for occupancy alone. Keep cw-cx-levelbar and the draft unchanged; never override the occupied-PC protection or move tests to the main PC. Shipping, 1080p/4K pictures, critic and linked metadata verification remain outstanding.
+
+2026-11-09 o-m04a-level-bar: fifth Codex run still has no executed preflight result. Latest task preflight file (02:57:39) only joins preflight-cw-cx-levelbar-89897c753e98 and waits because someone is using JTPC; shipped.txt is empty. Draft and key unchanged. Please resume the pending spare job when available and return its actual result, instead of treating occupancy-only output as a code failure and launching another repair run. Gate, ON HIS PC, 1080p/4K critic pictures and linked pl metadata review remain required. Do not interrupt the user on JTPC or run tests on the main PC.
+2026-11-09 o-m04b-picks-on-the-raid-end-screen: prerequisite o-m04a-level-bar was moved to failed while still unshipped after spare-PC occupancy waits. Keep m4b dependent on m4a rather than treating failed as completed. Resume m4a validation through the lane when JTPC is available, then release m4b.
+
+o-m04b prerequisite still missing after refresh: o-m04a-level-bar is in failed, not shipped, and master remains v37.67. Requeue m4a for its existing remote validation and shipping before requeueing m4b. This sandbox cannot perform the pending remote gate or ship. No m4b code has shipped.
+
+2026-11-09 o-m04b-picks-on-the-raid-end-screen: dependency scheduling handoff. m4a is in failed with its draft unshipped because JTPC returned only occupancy waits, not a code failure. Please resume the existing cw-cx-levelbar lane job when JTPC is available and obtain executed gate results, ON HIS PC, required pictures/review and playtest. Requeue m4b only against that completed prerequisite. Repeated m4b sandbox runs cannot resolve spare-PC occupancy or ship m4a; no new m4b draft is safe on v37.67. Do not interrupt the occupied spare or test on the main PC.
+2026-11-09 o-m04b-picks-on-the-raid-end-screen: Prerequisite m4a remains unshipped in failed; shipped.txt is empty and master remains v37.67. Please park m4b until m4a has executed gate results, ON HIS PC, required reviews and owner playtest. Resume m4a through its existing artifacts; repeated m4b edit runs cannot clear this dependency.
+
+2026-11-09 o-m04c-badges-and-changes: dependency scheduler handoff. m4b is in failed and unshipped; its notes confirm m4a also remains unshipped after JTPC occupancy waits. Failed dependencies must not release later milestones. Resume m4a through its existing remote validation and ship artifacts when JTPC is available, complete required review/playtest and m4b, then requeue m4c. Park m4c until those prerequisites are complete. Do not interrupt occupied JTPC, override protection or test on the main PC.
+
+2026-11-09 o-m04c-badges-and-changes: prerequisite m4b remains in failed, following unshipped m4a. Resume existing m4a artifacts through the spare-PC gate, complete m4b, then requeue m4c on that build. Repeated m4c edit runs cannot resolve the dependency; park until its state changes.
+
+2026-11-09 o-m04c-badges-and-changes: repeated refresh leaves master at 2cfc3aba0 v37.67. Both o-m04a-level-bar and o-m04b-picks-on-the-raid-end-screen remain in console/failed, and their progression/pick implementation is absent. Please park m4c until m4a and m4b ship and meet their required review, then requeue it against that build. Resuming this job on the same base cannot advance it; m4c must use the prerequisite pick system, not create a second one. Existing m4a lane artifacts need remote validation/shipping by the coordinator. LOCAL: no linked review for this unchanged run.
+
+2026-11-09 o-m04d-two-player-and-the-one-screen: Please park until prerequisites change. m4a, m4b and m4c are all in console/failed; latest m4c notes confirm the earlier builds remain unshipped. Resume m4a remote validation/shipping, then m4b and m4c, and obtain required playtest before releasing m4d. This sandbox cannot resolve remote gate occupancy. No code or shipping artifacts submitted.
+
+2026-11-09 o-m04d-two-player-and-the-one-screen: park this task until the prerequisite state changes. m4a-level-bar, m4b-picks-on-the-raid-end-screen and m4c-badges-and-changes remain in console/failed at v37.67. Coordinator action: resume existing m4a validation/shipping artifacts, finish m4b and m4c, obtain required playtests, then requeue m4d. Re-running m4d against unchanged prerequisites cannot produce a valid draft. No new key or camera work is pending for lane o.
+
+2026-11-09 o-m04d-two-player-and-the-one-screen: unchanged-refresh retry cannot advance this task. Please park it until m4a, m4b and m4c have shipped and the required playtests are complete. All three are still in console/failed. No pending key or camera action exists for this task.
+
+2026-11-09 o-m04d-two-player-and-the-one-screen: Coordinator dependency handoff. m4a, m4b and m4c remain in console/failed on v37.67. Resume their existing artifacts and complete their gate, ON HIS PC and required playtest steps before requeueing m4d. This job has no independent implementation against the missing level and pick systems. Repeated unchanged refreshes cannot resolve the dependency.
+
+2026-11-09 o-m05a coordinator handoff: three static HTML mockups are ready in C:/claudecode/pillagers-codex/.codex-work/o-m05a-the-tree-screen-at-the-mainframe/mockup-{a,b,c}.html. Present them for required rule 53 selection before implementation; no ship key yet. Prerequisite o-m04d is in failed/, so its gate/on-PC completion also needs checking before progression code is built. FNP RULES.md at the mandated path is absent.
+2026-11-09 o-m05a coordinator handoff: implementation is blocked by mandatory rule 53 owner layout choice, already requested in questions.md line 154. Present the three mockup HTML files in C:/claudecode/pillagers-codex/.codex-work/o-m05a-the-tree-screen-at-the-mainframe/ and record A/B/C. Also verify or resolve prerequisite o-m04d-two-player-and-the-one-screen, currently in failed/. Please park this job until those inputs change; generic continuation cannot authorize a layout. No ship key is pending. LOCAL: no linked review.
+2026-11-09 o-m05b-effects-on-the-account-for-every-pillage: prerequisite m05a is failed and unshipped, awaiting the existing owner mockup selection under rule 53. Current game has no account skill schema. Please park m05b, resolve m05a and its m04d prerequisite, then resume m05b after m05a reaches ON HIS PC. No duplicate owner question or invented account schema was added.
+2026-11-09 o-m05b dependency scheduling: repeated Continue runs receive unchanged v37.67 while prerequisite o-m05a-the-tree-screen-at-the-mainframe is in failed/ and unshipped. Park m05b until m05a has its canonical account skill schema and ON HIS PC evidence. Coordinator action is required to resolve m05a; no m05b ship key can safely precede it.
+2026-11-09 o-m05c-respec-costs-answer-89-bought-skills-add: prerequisite m05b is in failed/ and unshipped because m05a has no approved/implemented account skill system yet. Park m05c until coordinator resolves m05a and m05b and records ON HIS PC evidence. Existing m05a mockups require owner selection under rule 53. No independent m05c patch can safely extend an absent canonical skill/save schema.
+
+o-m06a-gear-drawn-on-the-pillager: remote preflight job preflight-cw-cx-wornbody-562ff51948ba returned no spare-PC report for 162 to 181 minutes. No game check result was returned. Coordinator: check the existing spare-PC runner/job and retry preflight for cw-cx-wornbody when it reports. The unchanged draft regenerates successfully on v37.67 and its 32 anchors and JavaScript syntax pass local static verification. Browser testing remains on the spare PC.
+
+o-m06a-gear-drawn-on-the-pillager, repeated infrastructure failure: retry joined preflight-cw-cx-wornbody-562ff51948ba, reported no result after 187 to 192 minutes, then repeatedly said someone is using the spare PC. No failed assertion or other draft defect was returned. Coordinator: defer repeated worker retries until the spare PC is available and check the existing job/runner can report. Keep cw-cx-wornbody and its camera recipes pending; do not interrupt the spare-PC user or move tests onto the main PC.
+
+o-m06a-gear-drawn-on-the-pillager, run 5: preflight-cw-cx-wornbody-562ff51948ba-r2 again returned only "someone is using" the spare PC, with no check report. The current draft has no reported code failure to repair. Coordinator: park further worker retries until the spare-PC user is finished and the runner can report, then retry cw-cx-wornbody. Do not interrupt that user or move testing to the main PC. Existing mk script, key and camera recipes remain ready; gate, ON HIS PC and picture review are outstanding.
+2026-11-10 o-m06b: prerequisite o-m06a-gear-drawn-on-the-pillager is unshipped in failed/. Its notes identify spare-PC runner availability as the blocker for cw-cx-wornbody. Please resume that existing draft through its gate and pictures, then requeue m06b against the shipped renderer. No testing bypass or new renderer was attempted.
+
+2026-11-10 o-m06b: dependency still unavailable. o-m06a-gear-drawn-on-the-pillager is in failed/ with its cw-cx-wornbody renderer unshipped; canonical game remains v37.67. Its latest notes require spare-PC runner availability before retrying the existing preflight. Coordinator: keep m06b parked until m06a has passed the gate, reached ON HIS PC, and supplied the renderer. Do not rerun this dependent job unchanged. No request to bypass remote tests or interrupt the spare-PC user.
+
+2026-11-10 o-m06c-hats-over-hair-by-pair: prerequisite m06b is failed and unshipped; its prerequisite m06a renderer is also unshipped after spare-PC availability timeouts. Resume these in order and requeue m06c only after their ON HIS PC confirmations. Current v37.67 lacks the required renderer; no new ship key prepared. LOCAL: no linked review.
+
+2026-11-10 o-m06c-hats-over-hair-by-pair: coordinator action required. m06b is in failed/ and its required m06a renderer remains unshipped; workspace is still v37.67 (2cfc3aba0). Resume the prerequisite jobs and obtain their gate/ON HIS PC results, then requeue m06c. Park this dependent task until the shipped renderer is available. No mk script or key is ready to ship. LOCAL: no linked review.
+
+2026-11-10 o-m06d-the-body: prerequisite o-m06c-hats-over-hair-by-pair is in failed/, with m06a and m06b also unshipped. Coordinator: resume the prerequisite chain and obtain ON HIS PC confirmations before requeueing m06d. Refreshing unchanged v37.67 supplies no new implementation base. No ship keys submitted. LOCAL: no linked review.
+
+2026-11-10 o-m06d-the-body: prerequisite chain remains unshipped in failed/ (o-m06a-gear-drawn-on-the-pillager, o-m06b-dyes-bought-with-kept-on-the-piece-and-l, o-m06c-hats-over-hair-by-pair). Restore and ship those jobs in order, then requeue m06d against their shipped renderer. Park m06d until the prerequisite status changes; unchanged v37.67 supplies no implementation base. No ship keys supplied.
+
+2026-11-10 o-m06d-the-body: prerequisite chain m06a -> m06b -> m06c remains in failed/ on unchanged v37.67. Please recover and ship those builds in order, then requeue m06d after m06c is ON HIS PC and playtested. Refreshing unchanged master cannot advance this ordered task. LOCAL: no linked review.
+
+2026-11-10 o-m06e-the-partner-sees-your-gear-and-dyes-over: prerequisite chain m06a through m06d is in failed/ and unshipped on v37.67. Please resume and ship that chain before requeueing m06e. Its netLook implementation needs the gear, dye and body interfaces from those builds; no keys supplied this run.
+
+2026-11-10 o-m06e-the-partner-sees-your-gear-and-dyes-over: coordinator handoff remains unresolved. All m06a through m06d prerequisites are in failed/ and master remains v37.67 (2cfc3aba0). Restore and ship the prerequisite chain, then requeue m06e against its actual appearance interfaces. Re-running m06e on unchanged master cannot complete this ordered build. No ship artifacts supplied. LINKED REVIEW NEEDED: synced, netLook/lk.
+
+2026-11-10 o-m06e continuation: unchanged master refresh retriggered this dependent job while all m06a through m06d builds remain in failed/. Please restore the prerequisite chain and park m06e until those builds ship and are playtested. No code can target their missing appearance interfaces yet.
+
+2026-11-10 o-m06e-the-partner-sees-your-gear-and-dyes-over: coordinator handoff remains blocked by m06a through m06d in failed/. Resume those ordered builds and requeue m06e after their interfaces ship and required playtesting is recorded. No ship keys supplied. Park this job until prerequisite state changes rather than requeueing on unchanged v37.67.
+
+2026-11-10 o-m07a-rule-breaking-relics: prerequisite m06e and its m06a through m06d chain are in failed/ and unshipped on v37.67 (2cfc3aba0), per their task notes. Please recover and ship that ordered chain, then requeue m7a after m6e is ON HIS PC and playtested. Park m7a until prerequisite state changes. No ship keys supplied.
+
+2026-11-10 o-m07a continuation: master refresh retriggered this job on unchanged v37.67 while m06a through m06e remain failed and unshipped. Recover the prerequisite chain and park m7a until m06e is ON HIS PC and playtested. No ship keys supplied.
+
+2026-11-10 o-m07a-rule-breaking-relics: coordinator recovery required. m06e remains in failed/ and its notes report m06a through m06d unshipped. Please recover the ordered m6 chain, then requeue m7a after m06e is ON HIS PC and playtested. Park m7a until that state changes; repeated unchanged-master runs cannot satisfy the prerequisite. No ship keys supplied.
+
+2026-11-10 o-m07a-rule-breaking-relics: repeated unchanged-master retries cannot resolve the failed m6 prerequisite chain. m06e remains in failed/ and its notes confirm m06a through m06d have not shipped. Please recover those prerequisites and park m7a until m06e is ON HIS PC and playtested, as the ordered-build rule requires. No ship artifacts supplied.
+
+2026-11-10 o-m07b-forge-overclocks: prerequisite o-m07a-rule-breaking-relics is in failed/ and has not shipped. Its notes report the m6 chain also unshipped. Recover that chain and m7a; requeue m7b only after m7a is ON HIS PC and playtested. Park on unchanged master to avoid repeated dependency-only runs.
+
+2026-11-10 o-m07b-forge-overclocks: coordinator action needed. The lane repeatedly requeues m7b on unchanged master 2cfc3aba0 (v37.67), while prerequisite o-m07a-rule-breaking-relics remains in failed/ with no shipment or playtest evidence. Please park m7b until the m6 chain and m7a are recovered, shipped and playtested as the task requires. Refreshing unchanged master does not clear the dependency. No code or fixture changes supplied.
+
+2026-11-10 o-m07b-forge-overclocks: coordinator recovery required. Prerequisite m7a is in failed/ with no ship or playtest evidence; its notes report the m6 chain unshipped. Keep m7b parked until m7a is ON HIS PC and playtested. No keys supplied. Do not rerun on unchanged v37.67 master.
+
+2026-11-10 | o-m08a-only-a-level-20-pillager-can-prestige-an | repeated remote preflight availability blockage | cw-cx-prestige job preflight-cw-cx-prestige-3fd35e6c50b8 has returned only someone-is-using-it messages across the initial attempt and two retries. No code failure or completed gate result was supplied. Coordinator: check spare test availability or queue status using the normal remote workflow, then retry the existing key. Do not test on the main PC or touch 8802 or the TbT VM. Draft, check and recipes remain ready; no fixture change is requested.
+
+2026-11-10 o-m08a-only-a-level-20-pillager-can-prestige-an: repeated retries of preflight-cw-cx-prestige-3fd35e6c50b8 still return only someone using the spare PC. No test failure is available to fix. Coordinator: check remote queue availability when JTPC is free and obtain the actual preflight result. Existing cw-cx-prestige and camera recipes remain ready; preserve the same draft. Do not stop or restart owner services, 8802 or the TbT VM.
+2026-11-10 m9a: stopped as explicitly required by task. Fixture 33.18 lines 26226-26227 require different daily seeds and conflict with weekly conversion. Exact compatible 7-day/14-day replacement is in task notes. Coordinator must correct/review the fixture before m9a resumes. m8a is also unshipped in failed/ after spare-PC availability failures. No game edits or ship keys.
+
+2026-11-10 m9a continuation: check 33.18 is still unchanged on refreshed v37.67. Task-specific stop still applies. Coordinator must apply/review the exact 7-day/14-day assertion correction in prior task notes before resuming; repeated unchanged runs cannot unblock this task.
+
+2026-11-10 o-m09a-the-weekly-challenge-raid-from-the-lift: coordinator action required before retry. Run 3 is still stopped by the explicit task instruction to stop when an existing fixture check must change. Fixture 33.18 remains incompatible with converting dailyKey to a weekly cadence. Do not repeat this job unchanged.
+In tools/mkfixture.ps1, exact minimum compatibility change (coordinator only):
+OLD:
+       if(dailySeedOf(dailyKey(Date.now()+864e5))===s1) return 'tomorrow gave the same seed as today';
+       if(dailySeedOf(dailyKey(Date.now()+864e5*2))===dailySeedOf(dailyKey(Date.now()+864e5))) return 'two other dates gave the same seed';
+NEW:
+       if(dailySeedOf(dailyKey(Date.now()+864e5*7))===s1) return 'next week gave the same seed as this week';
+       if(dailySeedOf(dailyKey(Date.now()+864e5*14))===dailySeedOf(dailyKey(Date.now()+864e5*7))) return 'two other weeks gave the same seed';
+Review remaining dailyRecord/startRaid assertions in 33.18 for compatibility as well. No fixture-retarget.json was created because it is disabled and this task prohibits fixture edits.
+2026-11-10 o-m09a-the-weekly-challenge-raid-from-the-lift: unchanged coordinator blocker confirmed again on 2cfc3aba0. Fixture 33.18 lines 26226-26227 still require consecutive-day seed changes. Exact replacement with +7 and +14 day comparisons is in task notes. Task explicitly requires stopping for fixture changes and fixture-retarget is disabled. Please park until the fixture correction/review is committed or an explicit revised task instruction permits proceeding. No mk script or ship key exists.
+2026-11-10 o-m09a-the-weekly-challenge-raid-from-the-lift: coordinator action required before implementation. Fixture 33.18 remains incompatible with weekly seeds. Task says: "Codex: never change tools/mkfixture.ps1; if a check must change, put the finding and exact change in your notes and stop." No fixture changes or game drafts made. Park until corrected.
+Exact minimum compatibility correction in tools/mkfixture.ps1:
+OLD:
+       if(dailySeedOf(dailyKey(Date.now()+864e5))===s1) return 'tomorrow gave the same seed as today';
+       if(dailySeedOf(dailyKey(Date.now()+864e5*2))===dailySeedOf(dailyKey(Date.now()+864e5))) return 'two other dates gave the same seed';
+NEW:
+       if(dailySeedOf(dailyKey(Date.now()+864e5*7))===s1) return 'next week gave the same seed as this week';
+       if(dailySeedOf(dailyKey(Date.now()+864e5*14))===dailySeedOf(dailyKey(Date.now()+864e5*7))) return 'two other weeks gave the same seed';
+Also review the remaining 33.18 dailyRecord/startRaid assertions against the eventual weekly implementation. The eventual new check must prove one seed within a fixed UTC week and a changed seed across its boundary.
+2026-11-10 o-m09b-the-weekly-hub-law: prerequisite m9a is failed, not shipped. Its fixture 33.18 consecutive-day seed assertions still block weekly cadence; exact minimum compatible changes are recorded in this tasks notes and m9a notes. Coordinator: correct/review 33.18 through the authorized fixture workflow, resume m9a, and release m9b after m9a is ON HIS PC and playtested as the milestone rules require. Park m9b until that external change; automatic retries on unchanged v37.67 cannot satisfy the prerequisite. No implementation or ship artifacts produced.
+2026-11-10 o-m09b-the-weekly-hub-law: prerequisite m9a remains failed and unshipped on v37.67. Please park m9b until m9a is on his PC and playtested. Coordinator action remains the fixture 33.18 correction already specified in both task notes: change its +1/+2 day seed comparisons to +7/+14 day comparisons, review the remaining daily assertions, then resume m9a. No fixture edits are authorized here. Unchanged automatic retries cannot resolve this dependency.
+
+2026-11-10 o-m09b-the-weekly-hub-law: prerequisite m9a remains unfinished in failed/ on unchanged v37.67. Please resolve its recorded fixture 33.18 blocker, complete m9a through ship/playtest, then release m9b. Park m9b until then to avoid unchanged retries. No implementation or ship artifacts prepared.
+2026-11-10 o-h01-177-hardcore-save: preflight-cw-cx-hardcore-3372d504b141 returned only repeated "someone is using it" messages. Earlier runs also lacked a completed spare-PC report. Coordinator handoff: restore an available remote test window and retry cw-cx-hardcore, or return the actual gate diagnostic if one exists. Draft generation, candidate/check syntax and isolated helper regressions pass at v37.67. No local browser or ship was attempted; no code change addresses the supplied occupancy condition.
+2026-11-10 o-h01-177-hardcore-save repeated availability blocker: the lane rejoined preflight-cw-cx-hardcore-3372d504b141 and again received only "someone is using it". Read-only inspection of tools/handoff/gate-remote.sh: this message comes from paused runner status, and matching unexpired jobs intentionally rejoin. No completed game diagnostic exists in the supplied output. Please resolve spare-PC availability or allow this queued job to complete, then return its done=1 stage report. Changing the hardcore draft cannot fix an occupied test machine; do not create new draft hashes just to evade the queue. Keep this job pending for coordinator action instead of repeatedly requesting speculative game fixes.
+2026-11-11 o-h01-177-hardcore-save diagnostic update: cached refs/gate-remote/spare-results:spare/DESKTOP-82BKOP4/status.txt at seen=2026-11-11 00:49 reports paused: someone is using the PC, robots=0, ram_free_gb=17.8, gate_cap=1 and push_ok=1. Its epoch minus paused_since is 99008 seconds, about 27.5 hours paused. The ref has no result file for preflight-cw-cx-hardcore-3372d504b141. Coordinator should investigate the prolonged occupancy pause on the spare PC within owner protection rules. Repeated game-fix retries cannot produce a gate result while its runner stays paused. No code failure has been returned; existing key and camera artifacts are ready.
+2026-11-11 o-h01-177-hardcore-save: retry loop continues to return the identical paused-worker output for preflight-cw-cx-hardcore-3372d504b141, with no stage diagnostic. Please hold automatic coding retries pending a completed remote report or resolution of the previously documented prolonged runner pause. Existing mk, key and camera artifacts are ready; there is no reported game/check failure to repair. Do not bypass the gate or occupancy protection.
+2026-11-11 o-h04-149-trigger-repeat-shells-fire-cancels-reload: coordinator action required. On v37.67, fixture check 31.99 still conflicts with owner-ordered hold-to-repeat. Task explicitly prohibits fixture edits and requires stopping on this conflict. No game change submitted.
+Exact retarget in tools/mkfixture.ps1 check 31.99, function trace:
+Replace:
+         if(down&&!was)presses++;if(!down&&was)releases++;was=down;
+         if(shoot){p.lastShot=-1e9;p.drawT=0;p.reloading=0;g.t+=0.7;updatePlayer(0.016);}
+With:
+         var edge=down&&!was;if(edge)presses++;if(!down&&was)releases++;was=down;
+         if(shoot){p.lastShot=-1e9;p.drawT=0;p.reloading=0;g.t+=0.7;var held=mouse.down;try{mouse.down=edge;updatePlayer(0.016);}finally{mouse.down=held;}}
+Replace what-text suffix "; a semi-auto fires once" with "; a rising-edge weapon probe fires once". Keep shots/ammo assertion 1/1 and all pad hysteresis assertions. Validate 31.99 on the current build, then resume this task. This preserves actual pad polling and pulses only the weapon probe, so it accepts both current and requested trigger behavior.
+LOCAL: no linked review.
+2026-11-11 - o-h04-149-trigger-repeat-shells-fire-cancels-reload: coordinator action required before implementation. Check 31.99 in tools/mkfixture.ps1:29754-29783 conflicts with the authorized hold-to-repeat behavior. Four held firing updates with lastShot reset must fire four times after the change, but this check requires one shot. This task explicitly instructs Codex to stop on fixture conflicts; fixture retarget submission is disabled.
+Exact correction, preserving the complete RT/LT hysteresis assertions:
+Replace:
+         if(down&&!was)presses++;if(!down&&was)releases++;was=down;
+         if(shoot){p.lastShot=-1e9;p.drawT=0;p.reloading=0;g.t+=0.7;updatePlayer(0.016);}
+with:
+         var edge=down&&!was;if(edge)presses++;if(!down&&was)releases++;was=down;
+         if(shoot){p.lastShot=-1e9;p.drawT=0;p.reloading=0;g.t+=0.7;var held=mouse.down;try{mouse.down=edge;updatePlayer(0.016);}finally{mouse.down=held;}}
+In the check 31.99 what text, replace '; a semi-auto fires once' with '; a rising-edge weapon probe fires once'. Keep the one-shot/one-round assertion. Validate 31.99 through the coordinator fixture process, then resume this job. LOCAL: no linked review.
+2026-11-11 - o-h04-149-trigger-repeat-shells-fire-cancels-reload remains blocked by unchanged fixture check 31.99 on v37.67. Coordinator must retarget and validate this check before resuming this job. The task explicitly requires Codex to stop when a check must change, and the Codex lane cannot submit fixture edits.
+Exact correction in tools/mkfixture.ps1, check 31.99:
+Replace:
+         if(down&&!was)presses++;if(!down&&was)releases++;was=down;
+         if(shoot){p.lastShot=-1e9;p.drawT=0;p.reloading=0;g.t+=0.7;updatePlayer(0.016);}
+with:
+         var edge=down&&!was;if(edge)presses++;if(!down&&was)releases++;was=down;
+         if(shoot){p.lastShot=-1e9;p.drawT=0;p.reloading=0;g.t+=0.7;var held=mouse.down;try{mouse.down=edge;updatePlayer(0.016);}finally{mouse.down=held;}}
+Replace its what-text suffix '; a semi-auto fires once' with '; a rising-edge weapon probe fires once'. Preserve all six pad polls, hysteresis assertions and one-shot/one-round assertion. This correction tests a pulse on both builds; the current held probe conflicts with authorized hold-to-repeat. LOCAL: no linked review.
+2026-11-11 o-h04-149-trigger-repeat-shells-fire-cancels-reload: coordinator action required before resume. Check 31.99 in tools/mkfixture.ps1:29754 still holds Magnum RT for four updates, resets lastShot each update and expects one shot. Hold-to-repeat correctly makes four. The task explicitly requires stopping on this fixture conflict; Codex cannot retarget it.
+Exact correction inside trace(), preserving the pad polls and hysteresis assertions:
+OLD:
+         if(down&&!was)presses++;if(!down&&was)releases++;was=down;
+         if(shoot){p.lastShot=-1e9;p.drawT=0;p.reloading=0;g.t+=0.7;updatePlayer(0.016);}
+NEW:
+         var edge=down&&!was;if(edge)presses++;if(!down&&was)releases++;was=down;
+         if(shoot){p.lastShot=-1e9;p.drawT=0;p.reloading=0;g.t+=0.7;var held=mouse.down;try{mouse.down=edge;updatePlayer(0.016);}finally{mouse.down=held;}}
+Change the what suffix from "; a semi-auto fires once" to "; a rising-edge weapon probe fires once". Keep the one-shot/one-round assertion. Run 31.99 on the current build, then resume this task. This probe supports both current and requested trigger rules. LOCAL: no linked review.
+2026-11-11 o-h05-150-revive-bandage-pause-alert-medal: coordinator fixture action still required on v37.67. Check 37.17 NINE, tools/mkfixture.ps1:9924-9926, still tests medic-only netRevNeed while carrying a bandage. Exact compatible empty-bag staging replacement is in this task notes entry 2026-11-07 13:47. Apply that replacement through the authorized fixture process, verify 37.17, and resume this task. Codex is explicitly forbidden by the job from changing the fixture. Retained maker is unshipped; keys and camera execution remain disabled until this fix. No gate rerun is useful before this coordinator action.
+2026-11-11 o-h05-150-revive-bandage-pause-alert-medal remains blocked by unchanged check 37.17 NINE in tools/mkfixture.ps1:9924-9926. Coordinator must isolate the medic gear timing test from carried bandages. Codex is explicitly ordered to stop rather than edit the fixture. Replace exactly:
+       // NINE: the revive hold
+       arm(null); a=netRevNeed(); arm(M); b=netRevNeed();
+       need(near(a,NET_REV_T,0.0001)&&near(b,NET_REV_T*0.75,0.0001),'NINE: the revive hold is '+b+' s with medic gear, '+a+' without');
+With:
+       // NINE: the revive hold, with no bandage so this isolates the medic gear bonus
+       var revBag=g.bag; g.bag=[];
+       try{
+         arm(null); a=netRevNeed(); arm(M); b=netRevNeed();
+         need(near(a,NET_REV_T,0.0001)&&near(b,NET_REV_T*0.75,0.0001),'NINE: the revive hold is '+b+' s with medic gear, '+a+' without');
+       }finally{ g.bag=revBag; }
+Apply through the normal fixture process and verify 37.17, then resume this job. The replacement preserves the old assertion and works before and after the new bandage feature. No fixture-retarget.json is permitted. Do not rerun the disabled camera recipes against the unshipped build.
+2026-11-11 o-h05-150-revive-bandage-pause-alert-medal: coordinator prerequisite still unchanged at v37.67. Task explicitly forbids Codex fixture changes and requires stopping. In tools/mkfixture.ps1 check 37.17, replace this exact block (currently lines 9924-9926):
+       // NINE: the revive hold
+       arm(null); a=netRevNeed(); arm(M); b=netRevNeed();
+       need(near(a,NET_REV_T,0.0001)&&near(b,NET_REV_T*0.75,0.0001),'NINE: the revive hold is '+b+' s with medic gear, '+a+' without');
+With:
+       // NINE: the revive hold, with no bandage so this isolates the medic gear bonus
+       var revBag=g.bag; g.bag=[];
+       try{
+         arm(null); a=netRevNeed(); arm(M); b=netRevNeed();
+         need(near(a,NET_REV_T,0.0001)&&near(b,NET_REV_T*0.75,0.0001),'NINE: the revive hold is '+b+' s with medic gear, '+a+' without');
+       }finally{ g.bag=revBag; }
+Apply through the normal fixture process and verify 37.17 on current and drafted builds. Then resume this task to revalidate retained maker anchors and restore cw-cx-revive-save in keys.txt. Activate pending camera recipes only after shipping. No fixture-retarget.json is supplied; that mechanism is disabled.
+2026-11-11 o-h05-150-revive-bandage-pause-alert-medal remains blocked on coordinator action, not Codex implementation. Check 37.17 NINE at tools/mkfixture.ps1:9924-9926 still tests gear timing while carrying a bandage. Apply the exact empty-bag try/finally staging replacement in this task notes dated 2026-11-07 13:47 through the normal fixture process. The task forbids Codex editing the fixture, and fixture-retarget.json is disabled. Please hold automatic task retries until that prerequisite changes; then resume retained cw-cx-revive-save for anchor revalidation, preflight and ship. Keep pending camera recipes inactive until ship. LINKED REVIEW NEEDED: synced (st.rg).
+2026-11-11 o-h05-150-revive-bandage-pause-alert-medal: coordinator prerequisite still unresolved at HEAD 2cfc3aba0/v37.67. Do not rerun this job until fixture check 37.17 NINE is isolated from carried bandages. Prior preflight failed this older check; requested game behavior is correct. Codex is explicitly forbidden to edit the fixture for this task. No change has shipped; keys and camera recipes remain inactive.
+File: tools/mkfixture.ps1:9924. Replace this exact block through the coordinator fixture process:
+       // NINE: the revive hold
+       arm(null); a=netRevNeed(); arm(M); b=netRevNeed();
+       need(near(a,NET_REV_T,0.0001)&&near(b,NET_REV_T*0.75,0.0001),'NINE: the revive hold is '+b+' s with medic gear, '+a+' without');
+With:
+       // NINE: the revive hold, with no bandage so this isolates the medic gear bonus
+       var revBag=g.bag; g.bag=[];
+       try{
+         arm(null); a=netRevNeed(); arm(M); b=netRevNeed();
+         need(near(a,NET_REV_T,0.0001)&&near(b,NET_REV_T*0.75,0.0001),'NINE: the revive hold is '+b+' s with medic gear, '+a+' without');
+       }finally{ g.bag=revBag; }
+Run check 37.17 on current and drafted builds, then resume the retained cw-cx-revive-save maker after anchor revalidation. Linked review of synced st.rg and valid camera/critic acceptance remain required after shipping.
+2026-11-11 o-h05-150-revive-bandage-pause-alert-medal: lane returned PREFLIGHT FAILED but log only reports spare-PC occupancy for preflight-cw-cx-revive-save-8a9d6fbb1af0. No assertion or terminal result supplied. Please retry/join the same preflight with longest supported timeout and return its final result; retained maker still validates all anchors and syntax. Keep camera work after successful ship.
+2026-11-11 o-h05-150-revive-bandage-pause-alert-medal: confirmed remote infrastructure wait. Cached origin/spare-results status at 06:20 says test_run=paused: someone is using the PC; no result file exists for preflight-cw-cx-revive-save-8a9d6fbb1af0. Please retain/join this job until a terminal result, and avoid repeatedly restarting Codex to repair busy-only output. No check failure has been supplied. Do not bypass occupancy protections or run tests on the main PC. Key remains ready for the lane after spare availability.
+2026-11-11 o-h05-150-revive-bandage-pause-alert-medal: repeated busy-only returns continue. Latest job preflight-cw-cx-revive-save-729f54b22e61 has no cached result; spare status at 06:40 says paused: someone is using the PC. Please handle this as an infrastructure wait and return a terminal gate result before resuming code repair. Maker and key remain ready. Preserve occupancy protections and main-PC test prohibition.
+2026-11-11 o-h05-150-revive-bandage-pause-alert-medal: retained maker passes 15-anchor and syntax validation on v37.67; no draft defect supplied. Cached spare-results status seen 08:32 says test_run=paused: someone is using the PC, with no revive-save terminal result file. Lane/coordinator: resume the existing remote preflight after spare availability, then ship/ON HIS PC and capture the six active recipes only after shipping. Busy-only output needs no further code-repair run. Actual synced st.rg linked review remains required. Do not change spare idle protection or run tests on the main PC.
+2026-11-11 o-p4a-survival-level: coordinator fixture handoff required before implementation. Task explicitly orders Codex to stop if an old check must change. Check v37.14 (cw-p0acct), tools/mkfixture.ps1:10054, requires an old save's living pillager at lvl 1; this task requires level 0. Under the fixture lock, replace unique fragment `r.best===4321&&r.lvl===1&&Array.isArray(r.traits)` with `r.best===4321&&(r.lvl===0||r.lvl===1)&&Array.isArray(r.traits)` and run v37.14. The two accepted values keep the old check valid on both sides of the ship; this job's new check will require exactly 0 and a second reload. Every other assertion stays. No fixture edit, retarget JSON, ship key, or game edit submitted. Resume this task after the fixture commit. Full findings are in its task notes.
+
+2026-11-11 o-p4a-survival-level: 11-11 09:00 coordinator: check 37.14 retargeted exactly as asked (commit 99be97c82, fixture rebuilt, JS ok). Resume the build.
