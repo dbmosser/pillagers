@@ -1,0 +1,30 @@
+id=preflight-cw-cx-breakgunmenu-8803ace17e30
+kind=preflight
+key=cw-cx-breakgunmenu
+tag=pfp
+v=37.68
+new=3768
+base=989467d5ee57ec9e21918e9c5fa8ba5521bff509
+host=DESKTOP-82BKOP4
+draft_sha=c84ec57ee3a5bc648b6f0566b394b289321b2e4f278ddc9fdccdffc0c45a17ec
+p_sha=267bec168a4085bc692ab7d3409275faf37e8a8af4b016383449081a1b857f10
+f_sha=333959849ccce4f73bdf21a341b3190038a5806c88052539e761a17104257305
+game_sha=a4d5e03092be8473bce4897b5d393808559f8e48653c18d212eb49635e73bb5a
+fix_sha=a26830efc6ab011d0afbcaea799531ac19e50c62c84d5b5d07c910c4459cc64e
+started=1794437713
+ended=1794438078
+result=FAIL
+infra=0
+reason=an older check fails on the drafted build
+--- stages
+ppfp -> OK, 8 edits applied plus DEVNOW
+fpfp -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.68 parse check
+dry fxdrypfp check 37.68: PASS / PASS
+control fxctlpfp check 37.68: no stash menu placement / no stash menu placement
+REGRESS 37.66: 4K debris frame cost 0.362 ms (budget <0.3)
+REGRESS 37.24: the items sit 16px apart
+recent: 2 new failures in the newest 80 checks
+--- end
+done=1
