@@ -26,6 +26,8 @@
 
 - **JT PC runner OFF since 11-11 18:22Z (13:22 ET).** The FnP JT chat disabled the scheduled task "Pillagers spare runner" on the owner's words typed there: JT may close what slows Fortnite testing. HTML tests had pushed the JT PC to 82-99% CPU. The conflict with M203 (side by side) is with the owner via the Reporter. Do not re-enable it yourself. Bring it back only on the owner's answer, with schtasks /Change /TN "Pillagers spare runner" /ENABLE, then tools\spare\spare-start.vbs on the JT PC. bfc0e0551 already makes it lighter beside Fortnite: one processor at Idle priority.
 
+- Owner route for HTML (11-11 ~15:3x, owner: "i want a pillagers-html reporter so i can talk to them abt what's happening over there"): owner-facing Pillagers items (decisions, blockers, builds ready, M-items) go to PILLAGERS-HTML REPORTER (local_b60bf5b5-852d-42a4-bbb8-c62385117f7a), not FNP NEW REPORTER. Answer its status requests directly.
+
 ## Your recurring duties
 1. **Hourly digest, 06:00 to 23:00, and the daily part (a) at midnight** (RULES 4.8): `C:\claudecode\html-digest.md`. The scheduled task "Pillagers HTML digest check" writes `C:\claudecode\html-digest\html-wake.txt` when a watched file changed (config: `C:\claudecode\html-digest\digest_html.json`). It also appends "HH:00 no change." lines by itself. Keep a background watcher running:
    `W=/c/claudecode/html-digest/html-wake.txt; while [ ! -s "$W" ]; do sleep 60; done; echo "HTML WAKE:"; cat "$W"`
