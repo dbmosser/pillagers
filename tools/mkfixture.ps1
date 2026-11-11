@@ -9921,9 +9921,12 @@ window.__REGRESS=[
          canSee=oldCS; g.ents=ents0;
          need(a>0&&near(b,a*0.8,0.001),'EIGHT: an enemy sees him from '+b+' with hard to spot gear against '+a);
        }
-       // NINE: the revive hold
-       arm(null); a=netRevNeed(); arm(M); b=netRevNeed();
-       need(near(a,NET_REV_T,0.0001)&&near(b,NET_REV_T*0.75,0.0001),'NINE: the revive hold is '+b+' s with medic gear, '+a+' without');
+       // NINE: the revive hold, with no bandage so this isolates the medic gear bonus (11-11 retarget for cw-cx-revive-save)
+       var revBag=g.bag; g.bag=[];
+       try{
+         arm(null); a=netRevNeed(); arm(M); b=netRevNeed();
+         need(near(a,NET_REV_T,0.0001)&&near(b,NET_REV_T*0.75,0.0001),'NINE: the revive hold is '+b+' s with medic gear, '+a+' without');
+       }finally{ g.bag=revBag; }
        // TEN: with nothing worn every reader is exactly 0
        arm(null); for(i in M) need(wornM(i)===0,'TEN: '+i+' reads '+wornM(i)+' with nothing worn');
      }catch(e2){ bad.push('threw: '+(e2&&e2.message||e2)); }
