@@ -826,6 +826,7 @@ function Watch([int]$sec){
     # 15-minute task allows, and it started a second runner beside the first, which nothing ends (02:35). Spare PC only: IDLE MODE stays as it was.
     if(-not $Idle){ [IO.File]::WriteAllText($Hb,[string](Epoch),$Enc) }
     if((AwaySec) -lt 30){ if($Idle){ if($fullRun -or (-not $script:lightRun) -or -not (LightOK)){ Stop-Work $(if($script:playWhy){ 'he is playing ('+$script:playWhy+')' }else{ 'he is back at the PC' }); return } }else{ Stop-Work ('someone is at the PC: '+$script:awayWhy) -Refund; return } }
+    if(-not $Idle -and $script:fnpRun -and ($k % 6) -ne 0 -and ($k % 2) -eq 0){ Cap-Tests }   # 11-11: beside Fortnite, new test processes are capped within about 10 s
     if(-not $Idle){ if(($k % 6) -eq 0){ Cap-Tests; $fh=FnpHold; if($fh){ Stop-Work ('paused: the PC is free for FnP tests ('+$fh+')') -Refund; return } } }   # 11-08 (Cap-Tests, FnpHold)
     if(-not $Idle){ Gate-Tick; if($script:gateAgain){ $script:gateAgain=$false; return } }   # 11-02: a job is done, so a round goes before the next job (a new full run, the robot, a new runner)
     if($Idle -and ($k % 6) -eq 0){
@@ -1339,13 +1340,17 @@ function Cap-Tests(){
     if($script:capMask -eq 0){ $nc=[Environment]::ProcessorCount; if($nc -lt 2 -or $nc -gt 62){ $script:capMask=-1 }else{ $script:capMask=([long]1 -shl ($nc-1))-1 } }
     if($script:capMask -lt 0){ return }
     $cp=$(if($script:fnpRun){ '9331|9344|9347|9348' }else{ '9331|9344' })   # 11-11 (owner M203): beside FnP's Fortnite tests the gate jobs yield too
+    # 11-11 18:3x: three processors at below normal still took the JT PC to 82-99% and slowed FnP raid walks to minutes a leg (FnP JT chat, 18:22Z),
+    # so beside Fortnite every HTML test part gets ONE processor (the last) at Idle priority: at most a quarter of this 4-thread PC, and only time Fortnite leaves.
+    $mask=$script:capMask; $want=[Diagnostics.ProcessPriorityClass]::BelowNormal
+    if($script:fnpRun){ $mask=[long]1 -shl ([Environment]::ProcessorCount-1); $want=[Diagnostics.ProcessPriorityClass]::Idle }
     foreach($p in @(Get-CimInstance Win32_Process -ErrorAction SilentlyContinue)){
       $c=[string]$p.CommandLine; $n=[string]$p.Name; if(-not $c){ continue }
       if(($n -eq 'chrome.exe' -and $c -match ('(remote-debugging-port=|pillagers-cdp)('+$cp+')\b')) -or ($n -eq 'powershell.exe' -and $c -match ('(fuzz|cdp)\.ps1.*-Port\s+"?('+$cp+')\b')) -or ($script:fnpRun -and $c -match 'gate-job\.ps1') -or (($n -eq 'bash.exe' -or $n -eq 'sh.exe') -and $c -match 'corpq\.sh|corpus-slices\.sh')){
         $g=$null
         try{ $g=[Diagnostics.Process]::GetProcessById([int]$p.ProcessId)
-             if([long]$g.ProcessorAffinity -ne $script:capMask){ $g.ProcessorAffinity=[IntPtr]$script:capMask }
-             if($g.PriorityClass -ne [Diagnostics.ProcessPriorityClass]::BelowNormal -and $g.PriorityClass -ne [Diagnostics.ProcessPriorityClass]::Idle){ $g.PriorityClass=[Diagnostics.ProcessPriorityClass]::BelowNormal } }catch{} finally{ if($g){ $g.Dispose() } }
+             if([long]$g.ProcessorAffinity -ne $mask){ $g.ProcessorAffinity=[IntPtr]$mask }
+             if($g.PriorityClass -ne $want -and $g.PriorityClass -ne [Diagnostics.ProcessPriorityClass]::Idle){ $g.PriorityClass=$want } }catch{} finally{ if($g){ $g.Dispose() } }
       }
     }
   }catch{}
