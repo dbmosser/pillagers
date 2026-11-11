@@ -22,6 +22,8 @@
 
 - **Restart wake (11-11):** fnp-startup-wake-2 messages this chat after every PC restart: "PC restarted: check 8802, the Pillagers runner and Codex lanes, restart your digest watcher". The target id is in `C:\claudecode\FNP new 11082026\status\restart-wake-targets.json`, key html_ceo. A successor chat updates that key to its own session id.
 
+- **11:40 queue state:** 11 o- jobs in tasks/. Lane p: o-264, o-h12, o-h18, o-m06a, o-p4a; lane o: the rest (ownership is in tools/handoff/codex/work/NAME/lane.txt; to move a job, copy its .codex-work folder to the other lane's worktree and change lane.txt). Retargets done 11-11: 37.17, 37.14, 37.34, 31.99, 33.18, 18.34. Still in failed/ and needing more than a retarget: o-262 and o-263 (probes inside a full run), o-00y2 (tool install), o-m05a (needs his pick among 2 or 3 tree-screen mockups; ask through the Reporter with a recommendation), and their followers (m05b/c, m06b-e, m07a/b, m08a, m09b), which wait on earlier builds. The refill now keeps WAIT ON followers in backlog/ until the job they wait on has left tasks/, waiting/, failed/, blocked/ and backlog/.
+
 ## Your recurring duties
 1. **Hourly digest, 06:00 to 23:00, and the daily part (a) at midnight** (RULES 4.8): `C:\claudecode\html-digest.md`. The scheduled task "Pillagers HTML digest check" writes `C:\claudecode\html-digest\html-wake.txt` when a watched file changed (config: `C:\claudecode\html-digest\digest_html.json`). It also appends "HH:00 no change." lines by itself. Keep a background watcher running:
    `W=/c/claudecode/html-digest/html-wake.txt; while [ ! -s "$W" ]; do sleep 60; done; echo "HTML WAKE:"; cat "$W"`
