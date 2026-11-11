@@ -6,3 +6,5 @@ Read tools/handoff/console/notes/progression/README.md and the m4-m10-jobs.md mi
 BUILD m4a: level bar: "Pillager Survival Level" next to health on the HUD (his answer 29). Fills from SP, everything that earns SP (answer 16), into P.pil.lsp; keeps filling through the raid, level after level (answer 17); cap 20 (answer 19); pace 2 or 3 levels a raid early, slowing later, level 20 in about 15 raids that live (answer 20): tune the curve from SP in the run logs, numbers in DESIGN.md. In raids the head shows the pillager name and level only (answer 52). Demo: no bar.
 Check (must FAIL on the current build, PASS on the new): test the thing claimed, old save reload, seed 4242 fingerprint holds. Pictures at 1080p and 4K where the screen changes. Rules: lower case, $; never touch the pickup stack, loot sounds or loot rows.
 TASK DONE when the build is on his PC through the gate and the check passes.
+
+11-11 coordinator: superseded by o-p4a (same m4 build, written 11-11 with the 37.14 retarget done); never retry this file.

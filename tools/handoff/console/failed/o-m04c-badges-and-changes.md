@@ -7,3 +7,5 @@ Read tools/handoff/console/notes/progression/README.md and the m4-m10-jobs.md mi
 BUILD m4c: badges and changes: picks as small badges by the pillager's name (answer 23); change a pick for $ at the Mainframe (answer 21); level 20 gives a capstone pick and a title in the hall (answer 30).
 Check (must FAIL on the current build, PASS on the new): test the thing claimed, old save reload, seed 4242 fingerprint holds. Pictures at 1080p and 4K where the screen changes. Rules: lower case, $; never touch the pickup stack, loot sounds or loot rows.
 TASK DONE when the build is on his PC through the gate and the check passes.
+
+11-11 coordinator: superseded by o-p4c (same m4 build, written 11-11 with the 37.14 retarget done); never retry this file.

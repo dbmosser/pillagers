@@ -7,3 +7,5 @@ Read tools/handoff/console/notes/progression/README.md and the m4-m10-jobs.md mi
 BUILD m4b: picks on the raid-end screen: one set of three cards per level gained, keep one (answers 17, 18: never in raid); a death loses unspent picks. PICKS table about 40 small upgrades for this one pillager ("8% faster reload", "kills heal 2", "a third grenade"), effects on the same reader as gear (raidWornMods adds them), taking a card again strengthens it up to three times, two maxed picks that belong together combine into a stronger one (answer 22). Total near +30% at level 20 with a fixed ceiling per stat (answer 24: "easier, not easy"). Plain card text, lower case.
 Check (must FAIL on the current build, PASS on the new): test the thing claimed, old save reload, seed 4242 fingerprint holds. Pictures at 1080p and 4K where the screen changes. Rules: lower case, $; never touch the pickup stack, loot sounds or loot rows.
 TASK DONE when the build is on his PC through the gate and the check passes.
+
+11-11 coordinator: superseded by o-p4b (same m4 build, written 11-11 with the 37.14 retarget done); never retry this file.
