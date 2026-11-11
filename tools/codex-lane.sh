@@ -695,6 +695,10 @@ $CRITTXT"
       # 2026-10-19 (o-01 and o-04 each spent 3 runs asking the lane for pictures and fixture edits after they shipped): once this job has
       # shipped, a run that ships nothing and drafts no new key means only lane-side steps are left. Park it in waiting/, spend no more runs.
       if [ "$idle" -ge 1 ] && [ -s "$LS/shipped.txt" ] && [ "$keys" = "$prevkeys" ]; then r="parked"; break; fi
+      # 11-11 (HTML CEO): o-m09a, o-m09b, o-h04 and o-h05 each spent all five runs within five minutes, every run saying only that the
+      # coordinator must act first (a fixture retarget or a task change). A run that drafts no new key and ends that way parks the job in
+      # waiting/ with an alarm line; the coordinator moves it back to tasks/ when the change is in. No more runs are spent meanwhile.
+      if [ "$keys" = "$prevkeys" ] && [ ${#SHIPPED_NOW[@]} -eq 0 ] && rd "$LAST" 2>/dev/null | tail -c 3000 | grep -qiE 'coordinator[^.]{0,60}(action|prerequisite|handoff|blocker|required|needed|must)|resume (this|the) (task|job) after'; then r="coordinator"; break; fi
       [ "$idle" -ge 2 ] && { r="partial-idle"; break; }
       appendfb "You ended with ${claim}. Continue with what remains of the task; when everything is shipped end with TASK DONE."
     fi
@@ -712,6 +716,11 @@ case "$r" in
     { echo; echo "Lane note $(date '+%F %H:%M'): shipped $(tr '
 ' ' ' < "$LS/shipped.txt" 2>/dev/null)and parked: only lane-side steps are left. Codex's last words:"; tail -c 700 "$LAST" 2>/dev/null; echo; } >> "$C/waiting/$(basename "$t")"
     echo "$(date '+%m-%d %H:%M') $name: shipped, parked in waiting/ (lane-side steps left), codex" | tee -a "$C/runs.log" > "$C/status-$L.txt";;
+  coordinator)   # 11-11: Codex needs a coordinator change first; parked so no runs are spent until it is made
+    final="needs the coordinator"; mv "$t" "$C/waiting/"
+    { echo; echo "Lane note $(date '+%F %H:%M'): NEEDS COORDINATOR, parked by lane $L. Codex's last words:"; tail -c 900 "$LAST" 2>/dev/null; echo; } >> "$C/waiting/$(basename "$t")"
+    echo "$(date '+%F') $name: NEEDS COORDINATOR (parked in waiting/ by lane $L; move it back to tasks/ after the change; details in the job file's last lane note)" >> "$C/alarms.md"
+    echo "$(date '+%m-%d %H:%M') $name: needs the coordinator, parked in waiting/, codex" | tee -a "$C/runs.log" > "$C/status-$L.txt";;
   blocked)   # 10-19 night: TASK WAITING: the console lanes' release() puts it back in tasks/ once the other task is gone (or after BLOCK_MAX_H)
     final="waiting on $wo"; mkdir -p "$C/blocked"; mv "$t" "$C/blocked/" && touch "$C/blocked/$(basename "$t")" && echo "$wo" > "$C/blocked/$name.on"
     echo "$(date '+%m-%d %H:%M') $name: waiting on $wo, parked in blocked/ (not counted as a try), codex" | tee -a "$C/runs.log" > "$C/status-$L.txt";;
