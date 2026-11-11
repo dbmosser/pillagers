@@ -1,0 +1,28 @@
+id=preflight-cw-cx-revive-save-65a6e406977c
+kind=preflight
+key=cw-cx-revive-save
+tag=pfo
+v=37.68
+new=3768
+base=842c0b6285b2fcc0fa9f8b790c294517f751c5dc
+host=DESKTOP-82BKOP4
+draft_sha=a02cbc1944ba5ad56ee6721e8c82664c44ddc0249e60b9c880e1a191b35f991f
+p_sha=638d38700f8ea0caba879ba429479c78714fba441d1f083bdc2195d30bc9464f
+f_sha=127d6281e22e2b06941f0af540a2ffed793f6422287c828e489128819fce8fcc
+game_sha=81cf2527ff643262e911d0041be3dd3a5e26c1b82253434d38e25bd0072c5b8b
+fix_sha=0c08f7c15b57082cbba2576f1510bba6eae6a22c866e67939745b071076ffa07
+started=1794406426
+ended=1794406847
+result=PASS
+infra=0
+reason=
+--- stages
+ppfo -> OK, 16 edits applied plus DEVNOW
+fpfo -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.68 parse check
+dry fxdrypfo check 37.68: PASS / PASS
+control fxctlpfo check 37.68: threw ReferenceError: sndMateLate is not defined / threw ReferenceError: sndMateLate is not defined
+recent: 0 new failures in the newest 80 checks
+--- end
+done=1
