@@ -1,0 +1,7 @@
+v37.68: optional hardcore saves and graveyard
+
+Choose hardcore only when creating a new save in slots 2 through 8. Death archives the career, removes its backups and returns to the save list. Graveyard ranks stash value at death.
+
+Check 37.68. Fails on v37.67.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

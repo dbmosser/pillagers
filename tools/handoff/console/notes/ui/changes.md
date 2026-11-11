@@ -771,3 +771,6 @@
 
 2026-11-11 | o-p4a-survival-level | career raid HUD and peer head labels | pillager survival level label, level number and 6px lime bar below health; health stack raised 42 local pixels; level n callout; peer head name plus level | before: new part, no recipe before image | after: pending lane camera-recipes.json s1-survival-host,s2-survival-join,s3-survival-level-up,s4-survival-cap at 1080p and 4K; s5 demo proves no new bar
 
+2026-11-11 | o-h12-175-break-down-guns | stash item menu | confirmed v37.57 shipped with break down and the ordered parts hint; corrected only the camera staging helper this run | before: custom menu recipes unavailable | after: recipes-1 failed staging; corrected p1/p2 keyboard/pad picture paths pending the lane camera
+2026-11-11 | o-h12-175-break-down-guns | stash gun item menu, p1/p2 keys and pad | Prepared cw-cx-breakgunmenu: 13px serif menu to 20px painted labels and 16px hints, 48px rows, equal five by two key buttons, menu placement clear of occupied tiles and stat card; stash rarity bar, neutral count badge, stable wanted sub-row, grouped shortcuts and duplicate bag value hidden. Before: tools/handoff/console/notes/shots/o-h12-175-break-down-guns-recipes-2/breakguns-{p1,p2}-{kb,pad}-1080.jpg. After: lane camera pending this ship.
+

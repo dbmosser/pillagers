@@ -3535,16 +3535,41 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
            Said here, where the click is. -->
       <div id="slotnote" style="margin-top:6px;font-size:13px;color:var(--ash);letter-spacing:.06em"></div>
       <div id="fsback" style="display:none;margin-top:6px;font-size:13px;color:var(--amber);letter-spacing:.06em">You were in fullscreen. The reload dropped it, as it always does. GO FULLSCREEN is above.</div>
-      <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center">
         <input id="pnamein" maxlength="16" autocomplete="off" spellcheck="false"
           style="flex:1;background:rgba(0,0,0,.3);border:1px solid var(--steel-hi);border-radius:3px;color:var(--bone);padding:7px 10px;font-size:13px;letter-spacing:.08em"
           placeholder="Name your pillager">
         <button class="deploy ghost" id="pnamesave" style="padding:7px 16px">CHANGE NAME</button>
         <!-- vNN.xx (ui5q1a, his #50): CREATE A NEW SAVE shares the name row, so the saves block is not a web form -->
         <button class="deploy ghost" id="newgame" style="padding:7px 16px">CREATE A NEW SAVE</button>
+        <!-- v34.xx (cw-hardcore), v28.xx (cw-cx-hardcore): his optional hardcore save, chosen only at creation. -->
+        <label id="hcchoice" style="display:inline-flex;align-items:center;gap:8px;font-size:16px">hardcore <button type="button" id="hctoggle" class="ui-toggle" role="switch" aria-label="hardcore" aria-checked="false"></button></label>
+        <button type="button" id="hcgraves" class="deploy ghost" style="display:none" onclick="hcGraveOpen()">graveyard</button>
       </div>
     </div>
   </div>
+</div>
+<!-- v34.xx (cw-hardcore), v28.xx (cw-cx-hardcore): a leaderboard for fallen hardcore careers. -->
+<style>
+#root #hcgrave{inset:5%;padding:24px;background:var(--ui-panel);border:1px solid var(--ui-line-hi);border-radius:var(--rad);z-index:160;box-sizing:border-box}
+#root #hcgrave header{display:flex;align-items:center;justify-content:space-between;gap:24px;margin-bottom:24px}
+#root #hcgrave h3{margin:0;font-size:32px;color:var(--tx-1)}
+#root #hcgrave header p{margin:8px 0 0;color:var(--tx-2);font-size:16px}
+#root #hcgravelist{flex:1;min-height:0;overflow:auto;display:flex;flex-direction:column;gap:16px}
+#root .hcgrave-row{display:grid;grid-template-columns:48px 176px 112px minmax(0,1fr);gap:24px;align-items:center;padding:24px;background:var(--ui-raised);border:1px solid var(--ui-line);border-radius:var(--rad)}
+#root .hcgrave-rank{font-size:32px;color:var(--tx-2)}
+#root .hcgrave-score b{display:block;font-size:40px;line-height:1.1;color:var(--tx-1);font-variant-numeric:tabular-nums}
+#root .hcgrave-score span,#root .hcgrave-stats,#root .hcgrave-end{font-size:16px;line-height:1.6;color:var(--tx-2)}
+#root .hcgrave-row:first-child{border-left:3px solid var(--acc)}
+#root .hcgrave-row:first-child .hcgrave-score b{color:var(--acc)}
+#root .hcgrave-name{font-size:24px;margin:0 0 8px;color:var(--tx-1)}
+#root .hcgrave-row canvas{width:112px;height:112px}
+#root #hcgraveclose{min-width:112px;min-height:48px}
+@media(max-width:900px){#root .hcgrave-row{grid-template-columns:32px 132px 80px minmax(0,1fr);gap:12px;padding:16px}#root .hcgrave-score b{font-size:32px}#root .hcgrave-row canvas{width:80px;height:96px}}
+</style>
+<div class="modal" id="hcgrave" role="dialog" aria-modal="true" aria-labelledby="hcgravetitle">
+  <header><div><h3 id="hcgravetitle">graveyard</h3><p>hardcore careers / stash value at death</p></div><button type="button" id="hcgraveclose" class="deploy ghost" onclick="hcGraveClose()">close <span class="ui-key">esc</span></button></header>
+  <div id="hcgravelist"></div>
 </div>
 <div class="modal" id="cheatmodal">
   <h3>DEV CHEAT BOX</h3>
@@ -4024,8 +4049,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.67';
-var VER_AT='2026-11-08 20:31';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.68';
+var VER_AT='2026-11-11 18:27';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -5727,10 +5752,12 @@ function saveCopyDb(cb){
   catch(e){ fin(null); }
 }
 function saveCopyPut(key,raw,cb){
+  if(hcArchived(key,raw)){if(cb)cb(false);return;} // v28.xx (cw-cx-hardcore): no resurrection from the second store.
   saveCopyDb(function(db){
     if(!db){ SAVE_COPY.state='no copy store'; if(cb) cb(false); return; }
     var done=false;
     function fin(ok){ if(done) return; done=true; try{ db.close(); }catch(_c){} if(ok){ SAVE_COPY.puts++; SAVE_COPY.state='kept'; } else SAVE_COPY.state='copy failed'; if(cb) cb(ok); }
+    if(hcArchived(key,raw)){db.close();if(cb)cb(false);return;} // v28.xx (cw-cx-hardcore): recheck after the asynchronous open.
     try{ var tx=db.transaction('profile','readwrite'); tx.objectStore('profile').put({raw:raw,t:Date.now()},key);
          tx.oncomplete=function(){ fin(true); }; tx.onabort=function(){ fin(false); }; tx.onerror=function(){ fin(false); }; }
     catch(e){ fin(false); }
@@ -5771,7 +5798,7 @@ function saveCopyRestore(badRaw,cb){
     function end(){
       if(ended) return; ended=true;
       try{ db.close(); }catch(_c){}
-      if(found===null) return fin(fb());
+      if(found===null||hcArchived(SKEY,found)) return fin(fb()); // v28.xx (cw-cx-hardcore): a grave written during the read wins.
       if(badRaw!==null){ try{ localStorage.setItem(SKEY+':unreadable',String(badRaw)); }catch(_u){} }
       try{ localStorage.setItem(SKEY,found); }catch(_w){}
       SAVE_COPY.restored=SKEY; SAVE_COPY.state='restored from the copy';
@@ -5783,7 +5810,7 @@ function saveCopyRestore(badRaw,cb){
         var c=q.result, k, v;
         if(!c) return end();
         k=String(c.key); v=c.value&&c.value.raw;
-        if(SAVE_COPY_KEY.test(k)&&saveCopyValid(v)){
+        if(SAVE_COPY_KEY.test(k)&&saveCopyValid(v)&&!hcArchived(k,v)){ // v28.xx (cw-cx-hardcore): archived careers stay gone.
           if(k===SKEY) found=v;
           else { try{ if(localStorage.getItem(k)===null) localStorage.setItem(k,v); }catch(_s){} }
         }
@@ -5808,6 +5835,7 @@ try{
   })();
 }catch(_spa){}
 function storeSet(v){
+  if(HC_REMOVED||hcArchived(SKEY,v)) return; // v28.xx (cw-cx-hardcore): a fallen save cannot be written again.
   if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on) return;   // v23.20 (arcade1): an arcade session never writes his save, by any path
   saveCopyQueue(v);   // v37.xx (cw-savecopy): the second copy, written even if localStorage is full
   try{
@@ -6671,7 +6699,7 @@ function saveStaleShow(){
 try{ window.addEventListener('storage',function(ev){ if(!ev||ev.key!==SKEY||SAVE_STALE) return; SAVE_STALE=true; try{ saveStaleShow(); }catch(e){} }); }catch(_sse){}
 // ESC or ENTER on the card reloads too; nothing else closes it.
 try{ window.addEventListener('keydown',function(ev){ if(!SAVE_STALE||!document.getElementById('stalesave')) return; if(ev.code==='Escape'||ev.code==='Enter'||ev.code==='NumpadEnter'){ ev.preventDefault(); ev.stopPropagation(); try{ location.reload(); }catch(e){} } },true); }catch(_ssk){}
-function saveProfile(){ if(typeof NET==='object'&&NET&&NET.upHold) return;   // v15.79: nothing is written while a party build has the host world dials in; the build is saved once they are out
+function saveProfile(){ if(HC_REMOVED) return; if(typeof NET==='object'&&NET&&NET.upHold) return;   // v15.79: nothing is written while a party build has the host world dials in; the build is saved once they are out
   if(typeof ARCADE==='object'&&ARCADE&&ARCADE.on) return;   // v23.20 (arcade1): the arcade plays on a sandbox copy of the profile; nothing of it is saved
   if(SAVE_STALE) return;   // v17.24: another tab has written this save since this tab read it; writing now would wipe that
   if(typeof CRASH_RESTART!=='undefined'&&CRASH_RESTART) return;   // v28.xx (cw-crashreload): a restart after a repeating fault keeps the last good save
@@ -7615,6 +7643,7 @@ function hotbarProfileTen(p){
   p.hotbarV=10;
 }
 function applyLoadedProfile(r){
+      if(r&&hcArchived(SKEY,r.value)) r=null; // v28.xx (cw-cx-hardcore): reject an archived raw backup.
       // v14.43, title and saves audit finding 3: A SAVE THE LOADER CANNOT READ IS KEPT BEFORE IT IS REPLACED. Stored data that
       // will not parse, or has no numeric credits, is ignored below, and boot then saves the fresh character over that key, so
       // the old data was gone with no message. The raw value is copied aside under its own key first.
@@ -36882,6 +36911,7 @@ function endRaid(how){
   if(G&&G.arcade&&!G.sim&&G.arcEnd) return;
   if(G&&G.arcade&&!G.sim&&how==='dead'&&raidClockOn()&&(G.nuking||G.timeLeft<=0)){ G.arcEnd='burn'; return; }
   if(G&&G.arcade&&!G.sim){ if(how==='dead') return arcadeDied(); if(how==='extract') return arcadeExtractEnd(); if(how==='abandon') return arcadeRaidStop('quit'); }
+  P.hcDeath=hcCapture(how); // v28.xx (cw-cx-hardcore): stash and living look before settlement.
   G.over=how;
   if(!G.sim){ try{ easyCareerNote(how); }catch(_ecn){} }   // v28.xx (cw-easycareer): deaths in a row, for the career easy offer
   if(NET.on&&!G.sim){ try{ netScoreSend(how); }catch(_nss){} }   // v17.39: his pick 5, the score word goes before the out word
@@ -37437,6 +37467,7 @@ var _cdone=contractExtract(G.bag,haul);
     if(how==='dead'){ for(_pli=0;_pli<lostIdx.length;_pli++) _plK.push(G.bag[lostIdx[_pli]]); _plK=_plK.concat(_pilGK); _plV=(haul-savedVal-_dIss*ival('bandage'))+_gunVal+(_wnV||0); }
     else if(how==='abandon'){ _plK=G.bag.slice(); _plV=haul+(_wnQ||0); }   // v37.xx (cw-m3death): and the worn pieces
     _plK.sort(function(a,b){ return ival(b)-ival(a); });
+    if(P.hcDeath){P.hcDeath.runs=P.runs||0;P.hcDeath.extractions=P.ext||0;P.hcDeath.best=P.best||0;for(var _hkk in P.kills)P.hcDeath.kills+=(+P.kills[_hkk]||0);} // v28.xx (cw-cx-hardcore): final career totals, before lineage settlement.
     pilRaidEnd(how,how==='extract'?(_secV||0):0,{v:_plV,k:_plK});
   }catch(_pre){} }
   // v12.87, HIS NOTE 2026-09-11, verbatim: "when a player comes back to the
@@ -37707,6 +37738,7 @@ raidersExtracted:T.raidersExtracted,hp:Math.round(G.player.hp),
   try{ if(!OC_LG){ var _kn2=0; for(var _kk2 in (T.kills||{})) _kn2+=(T.kills[_kk2]||0); lines=ocStatRow(lines,{c:T.containers|0,k:_kn2,acc:acc,sec:_tsec}); } }catch(_sr){}   // v28.xx (cw-endcard-stats): the stats row and the achievement chips
   // v35.45 (cw-spmoney), HIS ORDER (2026-10-28) on the extracted card: "this extracted screen is an absolute mess". The result leads: on an extraction DAMAGE TAKEN
   // comes after the ledger and the lines, where it was the first thing under the title; a KIA card still opens on what killed you.
+  if(P.hcDeath) lines.push('<div class="hcfallen" style="font-size:20px;color:var(--tx-1);margin:12px 0">hardcore \u00b7 fallen for good</div>'); // v28.xx (cw-cx-hardcore)
   document.getElementById('oc_manifest').innerHTML=(how==='extract')?
     (lines.join('<br>')+(DEATH_FEED_HTML||'')):((DEATH_FEED_HTML||'')+lines.join('<br>'));
    try{ netScoreDraw(); }catch(_nsd){}   // v17.39: the PARTY block under the manifest
@@ -58594,7 +58626,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.67: End run keeps the world running for the other seat. Both exits settle the run with the existing early-end score penalty. Check 37.67 fails on v37.66',
+  now:'v37.68: Choose hardcore only when creating a new save in slots 2 through 8. Death archives the career, removes its backups and returns to the save list. Graveyard ranks stash value at death. Check 37.68 fails on v37.67',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -62890,6 +62922,73 @@ function slotPtrKey(){ return (typeof NETP2!=='undefined'&&NETP2)?p2PtrKey():'sa
 // PILLAGER, so the typed name was dropped. The typed name (when it was typed, or is not the open save's own name) is kept beside the
 // save pointer for that reload, and the fresh save takes it as it boots: only the slot it was meant for, only a save with no raids
 // yet, only within two minutes, and only once.
+// v34.xx (cw-hardcore), v28.xx (cw-cx-hardcore), his 10-25 order: "hardcore save = pillager completely dies".
+var HC_KEY='salvagerun:graveyard', HC_REMOVED=false;
+function hcGraves(){
+  try{ var a=JSON.parse(localStorage.getItem(HC_KEY)||'[]'); return Array.isArray(a)?a.filter(function(r){return r&&typeof r==='object';}):[]; }catch(_hcg){ return []; }
+}
+function hcArchived(key,raw){
+  if(!/^salvagerun:profile:[2-8]$/.test(key)) return false;
+  var p; try{p=typeof raw==='string'?JSON.parse(raw):raw;}catch(_hca){return false;}
+  return !!(p&&p.hardcore===1&&p.hcBorn&&hcGraves().some(function(r){return r.slot===key&&r.born===p.hcBorn;}));
+}
+function hcKeep(on,slot){
+  var k='salvagerun:newhardcore:'+slotPtrKey();
+  try{ localStorage.removeItem(k); if(on&&!NETP2&&!NETSLOT&&/^[2-8]$/.test(String(slot))) localStorage.setItem(k,JSON.stringify({s:String(slot),t:Date.now()})); }catch(_hck){}
+}
+function hcTake(){
+  var k='salvagerun:newhardcore:'+slotPtrKey(),o;
+  try{o=JSON.parse(localStorage.getItem(k)||'null');localStorage.removeItem(k);}catch(_hct){return false;}
+  if(!o||NETP2||NETSLOT||String(o.s)!==String(SLOT)||!/^[2-8]$/.test(String(SLOT))||Math.abs(Date.now()-o.t)>120000||(P.runs|0)>0||P.hardcore) return false;
+  P.hardcore=1;P.hcBorn=Date.now();saveProfile();return true;
+}
+function hcCapture(how){
+  if(how!=='dead'||!G||!G.career||G.sim||G.arcade||(ARCADE&&ARCADE.on)||!P||P.hardcore!==1||!/^salvagerun:profile:[2-8]$/.test(SKEY)) return null;
+  var q=pilNow(),look={},s,at=Date.now(),T=G.tel||{};
+  for(s in COSKEY) look[COSKEY[s]]=P[COSKEY[s]];
+  return {slot:SKEY,born:P.hcBorn,at:at,name:String((q&&q.name)||P.pname||'pillager').toLowerCase(),look:look,
+    value:trStash(),level:(q&&q.lvl)||P.xpLevel||1,runs:P.runs||0,extractions:P.ext||0,kills:0,best:P.best||0,
+    days:Math.max(0,Math.floor((at-(+P.hcBorn||at))/86400000)),by:String((T.lastHitName&&T.deathKiller!=='timer')?T.lastHitName:(T.deathKiller||'unknown')).toLowerCase().replace(/raider|pillager bot/g,'pillager'),
+    clock:Math.max(0,Math.floor(runElapsed())),period:isDay()?'day':'night'};
+}
+function hcFinish(done){
+  var r=P&&P.hcDeath, a, keys, i, k;
+  if(!r||P.hardcore!==1||r.slot!==SKEY||!/^salvagerun:profile:[2-8]$/.test(SKEY)) return false;
+  try{
+    a=hcGraves();
+    if(!a.some(function(x){return x.slot===r.slot&&x.born===r.born;})){a.push(r);localStorage.setItem(HC_KEY,JSON.stringify(a));}
+    // v28.xx (cw-cx-hardcore): the grave record rejects an old second copy still in flight when this tab closes.
+    HC_REMOVED=true;
+    keys=[SKEY,SKEY+':prerestore',SKEY+':precrash'];
+    dailySaveKeys(true).forEach(function(d){if(d.indexOf(SKEY+':daily:')===0)keys.push(d);});
+    for(i=0;i<keys.length;i++)localStorage.removeItem(keys[i]);
+    localStorage.setItem('salvagerun:activeSlot','1');
+    if(NETP2)localStorage.setItem(p2PtrKey(),'1');
+    SLOT='1';saveCopyDel(SKEY,done);return true;
+  }catch(_hcf){HC_REMOVED=true;storeWarn();return false;}
+}
+function hcGraveClose(){ document.getElementById('hcgrave').classList.remove('on');var b=document.getElementById('hcgraves');if(b)b.focus(); }
+function hcGraveOpen(){
+  var host=document.getElementById('hcgravelist'),a=hcGraves().map(function(r,i){return {r:r,i:i};});
+  a.sort(function(x,y){return (+y.r.value||0)-(+x.r.value||0)||(+x.r.at||0)-(+y.r.at||0)||x.i-y.i;});
+  host.textContent='';
+  function text(parent,tag,cls,value){var e=document.createElement(tag);e.className=cls;e.textContent=value;parent.appendChild(e);return e;}
+  function money(n){return '$'+Math.max(0,Math.round(+n||0)).toLocaleString();}
+  a.forEach(function(o,i){
+    var r=o.r,row=text(host,'div','hcgrave-row',''),score,detail,cv2,x2,keep={},s,w0=wc,own0=cosOwned;
+    row.setAttribute('data-hc-name',String(r.name||'pillager').toLowerCase());row.setAttribute('data-hc-value',+r.value||0);
+    text(row,'div','hcgrave-rank',String(i+1));score=text(row,'div','hcgrave-score','');text(score,'b','',money(r.value));text(score,'span','','stash at death');
+    cv2=document.createElement('canvas');cv2.width=256;cv2.height=256;cv2.setAttribute('aria-label',String(r.name||'pillager').toLowerCase());row.appendChild(cv2);x2=cv2.getContext('2d');
+    try{for(s in COSKEY){var ck=COSKEY[s];keep[ck]=P[ck];if(r.look&&r.look[ck]!==undefined)P[ck]=r.look[ck];}wc=x2;cosOwned=function(){return true;};cosPreviewPaint(x2,2.1,106);}finally{wc=w0;cosOwned=own0;for(s in keep){if(keep[s]===undefined)delete P[s];else P[s]=keep[s];}}
+    detail=text(row,'div','','');text(detail,'h4','hcgrave-name',String(r.name||'pillager').toLowerCase());
+    text(detail,'div','hcgrave-stats','level '+(+r.level||1)+' / '+(+r.runs||0)+' runs / '+(+r.extractions||0)+' extractions / '+(+r.kills||0)+' kills');
+    text(detail,'div','hcgrave-stats','best haul '+money(r.best)+' / '+(+r.days||0)+' days alive');
+    var sec=Math.max(0,Math.floor(+r.clock||0));
+    text(detail,'div','hcgrave-end','killed by '+String(r.by||'unknown').toLowerCase()+' / '+(r.period==='night'?'night':'day')+' / '+Math.floor(sec/60)+':'+('0'+sec%60).slice(-2)+' in');
+  });
+  document.getElementById('hcgrave').classList.add('on');document.getElementById('hcgraveclose').focus();
+}
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&document.getElementById('hcgrave').classList.contains('on')){e.preventDefault();e.stopImmediatePropagation();hcGraveClose();}},true);
 var NEWNAME_KEY='salvagerun:newname';
 function newNameKeep(v,slot,typed){
   var k=NEWNAME_KEY+':'+slotPtrKey();
@@ -75058,6 +75157,7 @@ document.getElementById('oc_copy').onclick=function(){
 document.getElementById('oc_btn').onclick=function(){
   HAUL_REV=null; try{ ocLbEnd(); }catch(_lbe){}   // v27.62 (cloud-menus-haul-reveal-stops), CLOUD HUNT 2026-10-15: a card closed mid reveal (the party lift, netCardOff) ends the reveal, so no pick sound plays in the Undercroft
   ocCommit();
+  if(P.hcDeath){if(!hcFinish(function(){careerNewReload();}))return;document.getElementById('outcome').classList.remove('on');G=null;keys={};return;} // v28.xx (cw-cx-hardcore): archive only on closing the card; finish deleting the second copy before navigating.
   document.getElementById('outcome').classList.remove('on');
   G=null; keys={};
   showScreen('hub');
@@ -78523,6 +78623,8 @@ loadProfile().then(function(){
   // v11.47: the profile is read; the crash catcher may save from here on, and any
   // crash caught before the read is merged in now and its own key cleared.
   PLOADED=true;
+  if(P.hcDeath&&hcFinish(function(){careerNewReload();}))return; // v28.xx (cw-cx-hardcore): closing the browser on KIA cannot undo a death.
+  hcTake();
   try{ newNameTake(); }catch(_nnt){}   // v30.xx (cw-newsavename): a fresh save takes the name typed before CREATE A NEW SAVE
   try{ kidSync(); }catch(_kb){}   // v27.66 (cloud-menus-kid-sync-launch), CLOUD HUNT 2026-10-15: the kid rows the other window set were pulled only on its storage event and when Settings opened, so a window launched later played stale Kid damage, Kid firing and comes back after death; pulled once here at launch (not in loadProfile, which Restore backup also runs)
   try{
@@ -78603,7 +78705,7 @@ loadProfile().then(function(){
       try{ var v=localStorage.getItem(slotKey(sn)); if(!v) return null;
         var d=JSON.parse(v);
         if(!d||typeof d.credits!=='number') return {name:'UNREADABLE',runs:0,credits:0,xp:0};
-        return {name:((d.mig2n===1&&d.acctName)||d.pname||'PILLAGER'),runs:d.runs||0,credits:d.credits||0,xp:d.xp||0};   // v37.xx (cw-m2retire): the account name
+        return {name:((d.mig2n===1&&d.acctName)||d.pname||'PILLAGER'),runs:d.runs||0,credits:d.credits||0,xp:d.xp||0,hardcore:d.hardcore===1};   // v28.xx (cw-cx-hardcore), v37.xx (cw-m2retire): the account name
       }catch(e){
         // v14.43: a save holding something unreadable is not an empty save. It is listed as UNREADABLE, so CREATE A NEW SAVE
         // does not pick it and write a fresh character over it.
@@ -78632,6 +78734,8 @@ loadProfile().then(function(){
         host.appendChild(_p2l);
         return;
       }
+      var _hc=document.getElementById('hcchoice');if(_hc)_hc.style.display=(_p2w||NETSLOT)?'none':'inline-flex';
+      var _gb=document.getElementById('hcgraves');if(_gb)_gb.style.display=hcGraves().length?'':'none';
       var h='';
       for(var sn=1;sn<=8;sn++){
         var key=String(sn), inf=slotInfo(key);
@@ -78646,7 +78750,7 @@ loadProfile().then(function(){
            '<span style="color:var(--ash);font-size:13px">'+
            // v8.56, audit: "1 runs" on the first screen of the game, on the slot
            // of anyone who has played exactly once.
-           (inf?(inf.runs+' raid'+(inf.runs===1?'':'s')+' \u00b7 $'+inf.credits.toLocaleString()):'new')+   // v37.xx (cw-m1xpoff): no xp on a save slot
+           (inf&&inf.hardcore?'<span class="ui-chip danger">hardcore</span> ':'')+(inf?(inf.runs+' raid'+(inf.runs===1?'':'s')+' \u00b7 $'+inf.credits.toLocaleString()):'new')+   // v37.xx (cw-m1xpoff): no xp on a save slot
            ((me||blk)?'':' <button data-del="'+key+'" class="deploy ghost" style="margin-left:8px;padding:2px 8px;font-size:13px">DELETE</button>')+
            '</span></div>';
       }
@@ -78717,13 +78821,16 @@ loadProfile().then(function(){
       subSync();
     };
     var ng=document.getElementById('newgame');
+    var hct=document.getElementById('hctoggle');if(hct)hct.onclick=function(){var on=this.getAttribute('aria-checked')!=='true';this.setAttribute('aria-checked',String(on));this.classList.toggle('on',on);}; // v28.xx (cw-cx-hardcore)
     if(ng) ng.onclick=function(){
-      for(var sn=1;sn<=8;sn++){
+      var hc=!!(hct&&hct.getAttribute('aria-checked')==='true'&&!NETP2&&!NETSLOT);
+      for(var sn=hc?2:1;sn<=8;sn++){
         var key=String(sn);
         if(!slotInfo(key)&&key!==SLOT&&!slotBlocked(key)){
           fsMark();   // v11.02, his note 8
           try{ if(!netSaveLocked()) localStorage.setItem(slotPtrKey(),key); }catch(e){}   // v15.74: a ?netslot copy never moves the save pointer; v15.76: nor the player 2 window
           if(!netSaveLocked()) newNameKeep(pin&&pin.value,key,pin&&pin.__typed);   // v30.xx (cw-newsavename): the typed name goes with the new save
+          hcKeep(hc,key);if(hct){hct.setAttribute('aria-checked','false');hct.classList.remove('on');} // v28.xx (cw-cx-hardcore): one creation only.
           careerNewReload(); return;
         }
       }

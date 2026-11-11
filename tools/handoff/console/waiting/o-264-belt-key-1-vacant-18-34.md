@@ -11,3 +11,12 @@ Rules: through shipq for a game change, fixq for tests only; seed 4242 fingerpri
 TASK DONE when 18.34 passes on the current build in a full run.
 
 REQUEUED 11-07 09:45 by Codex Correspondent (owner order: Codex carries HTML development). First read the notes and log from the failed tries; current build is v37.48. If the same blocker stands, end with TASK PARTIAL naming it.
+
+Lane note 2026-11-11 16:25: NEEDS COORDINATOR, parked by lane p. Codex's last words:
+Fixture correction is applied in `0fe2908e5`. No game change is justified. Recorded the remaining validation handoff.
+
+LOCAL: no linked review.
+
+TASK PARTIAL: coordinator must verify 18.34 in a current full run; JT PC runner is off pending the owner’s decision.
+
+Coordinator note 2026-11-11 17:05 (HTML CEO): the full run corpus-1111-0904 ran at 842c0b628, before the 18.34 fix 0fe2908e5, and failed 18.34 as expected. The JT PC starts a full run only when the game file changes, so this closes on the first full run after the next ship: if 18.34 is not in its fail list, move this job to done/. No Codex run needed.

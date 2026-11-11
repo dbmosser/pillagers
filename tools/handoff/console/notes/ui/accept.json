@@ -6174,5 +6174,69 @@
   "pic": "tools/handoff/console/notes/shots/o-h09-162-loot-in-sight-at-every-spawn-recipes-4/162-origin-geometry-61261-1080.jpg",
   "task": "o-h09-162-loot-in-sight-at-every-spawn",
   "when": "2026-11-11T15:51"
+ },
+ "p1-kb": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "functional vendor grid but a floating tooltip blots out a neighboring item and the lime accent is scattered across four unrelated elements instead of pointing at one thing.",
+  "findings": [
+   "P0 item context menu over slot 2: anchor the popup to the right of the grid (or below the row) so it never overlaps an adjacent tile; min 8px gap from any sibling tile",
+   "P1 accent usage across header, tabs, search, badge, cta: strip lime from the tab underline and the qty badge (use --tx-2/--ui-line-hi instead), keep the search border neutral until focused, leave --acc solely on 'take'",
+   "P1 context menu, 'put on key' row: lay out as a fixed 5x2 grid (or size tiles to fill the row evenly) so both rows end flush",
+   "P2 backpack panel and stash grid void: collapse backpack to actual capacity rows or add a dim 'empty' placeholder treatment, and cap the stash grid height to its content plus one row of margin",
+   "P2 valuables row icon swatches (sealed codex, copper wire, meridian black box): recolor chips using the rarity scale or drop the colored fill entirely and use --ui-raised with a neutral icon"
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h12-175-break-down-guns-recipes-2/breakguns-p1-kb-1080.jpg",
+  "task": "o-h12-175-break-down-guns",
+  "when": "2026-11-11T21:35"
+ },
+ "p1-pad": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "the stat panel is a solid diablo-style layout until its own context menu lands directly on top of the numbers it's supposed to explain.",
+  "findings": [
+   "P0 item detail panel, auto rifle (field) popup: anchor the action menu to the right of the stat card or below it with an 8px gap, never overlapping the card's bounding box; if space-constrained, shrink the thumbnail column instead of the stat text",
+   "P1 top strip of the stash list: 'wanted +50%, sealed codex $3,550, copper wire $69, meridian black box $2,424, 5 held': move this into its own labeled sub-row with a single muted (--tx-2) treatment for the icons and reserve color only for the one most urgent tag (e.g. wanted), max 1 colored chip per row",
+   "P1 backpack panel header, right side, next to 'keys' tab: replace with a concrete labeled value, e.g. 'value: $0', or remove it if it duplicates the stash/bag totals already shown top-right",
+   "P2 backpack column: tab says 'backpack', section header directly below also says 'backpack': drop the second 'backpack' heading, or replace it with the slot count (e.g. '0/12 used')",
+   "P2 hotbar, slot 1 (bottom left): inset the slot thumbnail by --sp-1 (8px) from the badge corner so the number never touches the art"
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h12-175-break-down-guns-recipes-2/breakguns-p1-pad-1080.jpg",
+  "task": "o-h12-175-break-down-guns",
+  "when": "2026-11-11T21:36"
+ },
+ "p2-kb": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "functional inventory tooling that reads as a spreadsheet with icons, undercut by a context menu that clips a neighboring item and a rarity treatment that contradicts the guide's own rule.",
+  "findings": [
+   "P0 context menu over item grid, tile 2 (gear icon): anchor the menu to the right edge of the clicked tile with an 8px gap (--sp-1) and a small pointer/caret; never let it cover a sibling tile — reflow it left if it would clip.",
+   "P0 item tile borders (purple on rifle, green on tiles 3-4): replace the full-tile border glow with a 3px rarity bar along one edge (e.g. bottom) of each tile, using the r-uncommon/r-rare/r-elite tokens; drop the glow/shadow.",
+   "P1 whole screen, left inventory pane vs right backpack/hotbar pane: undefined",
+   "P1 top utility row: 'sort: type / search / gear 0/9 / armory 2/10 / trophies 0/8': move gear/armory/trophies counts onto their own tab labels (e.g. 'gear 0/9') consistent with the 'all 5 / guns 2 / parts 3' tabs underneath, and drop the duplicate row.",
+   "P1 context menu body: equip / equip as your gun / put on key 1-10 / lock / tag as junk / sell one / break down: group into equip / bind-to-key / dispose sections with an --ui-line divider between each, and keep the number-key grid on one row or drop it to a single 'bind to key' action that opens the picker, matching the --sp-1 grid spacing."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h12-175-break-down-guns-recipes-2/breakguns-p2-kb-1080.jpg",
+  "task": "o-h12-175-break-down-guns",
+  "when": "2026-11-11T21:37"
+ },
+ "p2-pad": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "a floating context menu blots out the item's own stats while half the screen sits empty, so the one thing the player opened this panel to read is the thing they can't see.",
+  "findings": [
+   "undefined undefined: undefined",
+   "undefined undefined: undefined",
+   "undefined undefined: undefined",
+   "undefined undefined: undefined",
+   "undefined undefined: undefined"
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h12-175-break-down-guns-recipes-2/breakguns-p2-pad-1080.jpg",
+  "task": "o-h12-175-break-down-guns",
+  "when": "2026-11-11T21:38"
  }
 }

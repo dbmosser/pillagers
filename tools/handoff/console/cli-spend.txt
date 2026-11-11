@@ -2515,3 +2515,14 @@
 2026-11-11 0.1488 critic-o-h09-162-loot-in-sight-at-every-spawn
 2026-11-11 0.0000 o-p4c-pick-badges
 2026-11-11 0.1454 critic-o-h09-162-loot-in-sight-at-every-spawn
+2026-11-11 0.0000 o-h01-177-hardcore-save
+2026-11-11 0.0000 o-264-belt-key-1-vacant-18-34
+2026-11-11 0.0000 o-h12-175-break-down-guns
+2026-11-11 0.1584 critic-o-h12-175-break-down-guns
+2026-11-11 0.1202 critic-o-h12-175-break-down-guns
+2026-11-11 0.1129 critic-o-h12-175-break-down-guns
+2026-11-11 0.1415 critic-o-h12-175-break-down-guns
+2026-11-11 0.0000 o-h01-177-hardcore-save
+2026-11-11 0.0000 o-h12-175-break-down-guns
+2026-11-11 0.0000 o-h01-177-hardcore-save
+2026-11-11 0.0000 o-h12-175-break-down-guns

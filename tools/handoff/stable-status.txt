@@ -1,22 +1,23 @@
 Latest stable: v36.95 (2026-11-08 11:00)
-Checked: 2026-11-08 20:29
+Checked: 2026-11-11 17:38
 Play address: http://localhost:8802/stable.html
 Result: no change
 
 Newest test runs, newest first:
+  corpus-1111-0904  v37.67  failing 66, new 7  robots 308 min/37 problems  -> 7 check(s) newly failing, e.g. v37.66 capped loose floor papers, boxes and bolts react to s | v37.58 three outdoor machines follow four fixed reachable st
+  corpus-1108-1813  v37.66  failing 67, new 7  robots 125 min/0 problems  -> 7 check(s) newly failing, e.g. v8.84 I in the Undercroft opens neither the terminal nor the | v37.66 capped loose floor papers, boxes and bolts react to s
   corpus-1108-1045  v37.65  failing 66, new 6  robots 154 min/0 problems  -> 6 check(s) newly failing, e.g. v37.58 three outdoor machines follow four fixed reachable st | v37.19 cw-m1xpoff, his order of 11-01 (lets get rid of the c
   corpus-1108-0637  v37.59  failing 64, new 4  robots 68 min/0 problems  -> 4 check(s) newly failing, e.g. v37.19 cw-m1xpoff, his order of 11-01 (lets get rid of the c | v35.45 his order 2026-10-28 (sp and money never intermingled
   corpus-1108-0308  v37.58  failing 64, new 5  robots 93 min/4 problems  -> 5 check(s) newly failing, e.g. v37.19 cw-m1xpoff, his order of 11-01 (lets get rid of the c | v35.45 his order 2026-10-28 (sp and money never intermingled
-  corpus-1108-0033  v37.56  failing 64, new 5  robots 129 min/8 problems  -> 5 check(s) newly failing, e.g. v37.19 cw-m1xpoff, his order of 11-01 (lets get rid of the c | v35.45 his order 2026-10-28 (sp and money never intermingled
-  corpus-1107-1542  v37.53  failing 65, new 5  robots 93 min/8 problems  -> 5 check(s) newly failing, e.g. v36.98 the seal opens in two thirds of the time, and the fir | v35.45 his order 2026-10-28 (sp and money never intermingled
-  corpus-1107-1258  v37.49  failing 60, new 2  robots 42 min/5 problems  -> 2 check(s) newly failing, e.g. v35.45 his order 2026-10-28 (sp and money never intermingled | v18.34 the belt keys are rounded tiles in the raid: with the
-  corpus-1103-0510  v37.48  failing 62, new 2  robots 3676 min/51 problems  -> 2 check(s) newly failing, e.g. v35.45 his order 2026-10-28 (sp and money never intermingled | v18.34 the belt keys are rounded tiles in the raid: with the
-  corpus-1102-2152  v37.40  failing 74, new 9  robots 18 min/4 problems  -> 9 check(s) newly failing, e.g. v8.84 I in the Undercroft opens neither the terminal nor the | v8.95 I in the Undercroft opens the raid backpack itself, no
+  corpus-1108-0033  v37.56  failing 64, new 6  robots 129 min/8 problems  -> 6 check(s) newly failing, e.g. v9.27 standing behind a container roof draws you through it  | v37.19 cw-m1xpoff, his order of 11-01 (lets get rid of the c
+  corpus-1107-1542  v37.53  failing 65, new 6  robots 93 min/8 problems  -> 6 check(s) newly failing, e.g. v9.27 standing behind a container roof draws you through it  | v36.98 the seal opens in two thirds of the time, and the fir
+  corpus-1107-1258  v37.49  failing 60, new 3  robots 42 min/5 problems  -> 3 check(s) newly failing, e.g. v9.27 standing behind a container roof draws you through it  | v35.45 his order 2026-10-28 (sp and money never intermingled
 
 Checks that are newly red and still red (they block until fixed, or until listed in tools/handoff/stable-known-red.txt):
   v18.34 the belt keys are rounded tiles in the raid: with the HUD drawn, the oute
   v35.45 his order 2026-10-28 (sp and money never intermingled): the CAREER extrac
-  v37.19 cw-m1xpoff, his order of 11-01 (lets get rid of the concept of xp altoget
   v12.55 an imported ghost carries his engagement range and his damage with the gu
   v37.58 three outdoor machines follow four fixed reachable stops in order, pause,
-  v10.28 the tuning console opens from a Settings row, and the Settings rows read
+  v37.66 capped loose floor papers, boxes and bolts react to sprint, shots and bla
+  v25.68 his order (the scavenging noise less repetitive): 20 s of searching never
+  v20.69 ESC or TAB in the stash search box clears the words first and then closes

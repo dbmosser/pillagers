@@ -1,0 +1,136 @@
+{
+    "title":  "WORN GEAR ON THE PILLAGER",
+    "why":  "Answers 76, 77 and 78: gear looks belong to the piece being worn. Six visible slots now use three variants per rarity, with jewelry hidden and the fashion depot frozen. Watch: check hats, gloves and backpacks while moving, crouching and rolling in both looks.",
+    "now":  "Headgear, armor, pants, boots, gloves and backpacks show the worn pieces. Owned body choices stay. LOCAL: no linked review.",
+    "edits":  [
+                  {
+                      "anchor":  "function drawOpBody(x,y,face,ph,coat,pk,muzzle,mode,iv,st){",
+                      "replacement":  "// v28.xx (cw-cx-wornbody): answers 76, 77 and 78. Equipment owns its six visible slots; body choices stay saved. Render dice never touch the raid.\nvar WORN_DRAW=null;\nvar WORN_BODY_SLOTS=[\u0027head\u0027,\u0027armor\u0027,\u0027pants\u0027,\u0027boots\u0027,\u0027gloves\u0027,\u0027pack\u0027];\nvar WORN_BODY_COL=[[\u0027#8a7157\u0027,\u0027#716b53\u0027,\u0027#775c51\u0027],[\u0027#6e8059\u0027,\u0027#607c7a\u0027,\u0027#82764f\u0027],[\u0027#627b96\u0027,\u0027#686e99\u0027,\u0027#537e8c\u0027],[\u0027#9b8060\u0027,\u0027#85729c\u0027,\u0027#9b6863\u0027]];\nvar WORN_BODY_RAM={};\nvar WORN_BODY_IDS={head:[\u0027cap\u0027,\u0027tachelm\u0027,\u0027boonie\u0027],armor:[\u0027vestplate\u0027,\u0027vestutil\u0027,\u0027vestheavy\u0027],boots:[\u0027bootblack\u0027,\u0027bootgaiter\u0027,\u0027bootshin\u0027],gloves:[\u0027glovetan\u0027,\u0027glovegrey\u0027,\u0027gloveblack\u0027],pack:[\u0027packroll\u0027,\u0027packradio\u0027,\u0027packframe\u0027]};\nfunction wornBodyLook(st){\n  if(!st||!st.hero||(typeof G!==\u0027undefined\u0027\u0026\u0026G\u0026\u0026G.sim)||(typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE\u0026\u0026ARCADE.on)) return null;\n  var out={g:{},ids:{hat:\u0027none\u0027,outfit:\u0027outnone\u0027,fit:\u0027slate\u0027,scheme:\u0027schslate\u0027,vest:\u0027vestplate\u0027,boots:\u0027bootblack\u0027,gloves:\u0027barehands\u0027,pack:\u0027packbrown\u0027,pads:\u0027padsnone\u0027,patch:\u0027patchnone\u0027},key:\u0027worn\u0027},s,pc,i,r,v,col;\n  for(i=0;i\u003cWORN_BODY_SLOTS.length;i++){\n    s=WORN_BODY_SLOTS[i]; pc=P\u0026\u0026P.worn\u0026\u0026P.worn[s];\n    if(!pc||pc.k!==s||!(pc.r\u003e=0\u0026\u0026pc.r\u003c=3)||pc.r%1) continue;\n    r=pc.r|0; v=Math.abs(pc.pw|0)%3; col=WORN_BODY_COL[r][v];\n    out.g[s]={r:r,v:v,col:col,ram:WORN_BODY_RAM[col]||(WORN_BODY_RAM[col]=pixRamp(col))};\n    out.key+=\u0027|\u0027+s+\u0027:\u0027+r+\u0027:\u0027+v;\n    if(WORN_BODY_IDS[s]) out.ids[s===\u0027head\u0027?\u0027hat\u0027:(s===\u0027armor\u0027?\u0027vest\u0027:s)]=WORN_BODY_IDS[s][v];\n  }\n  return out;\n}\nfunction wornBodyChoice(kind){ return WORN_DRAW\u0026\u0026Object.prototype.hasOwnProperty.call(WORN_DRAW.ids,kind)?WORN_DRAW.ids[kind]:null; }\nfunction wornBodyAllowed(kind){ return [\u0027build\u0027,\u0027skin\u0027,\u0027eyes\u0027,\u0027face\u0027,\u0027tattoo\u0027,\u0027hair\u0027,\u0027cut\u0027,\u0027beard\u0027].indexOf(kind)\u003e=0; }\nfunction wornBodyRamp(base){\n  if(!WORN_DRAW) return base;\n  var c={},k,g=WORN_DRAW.g;\n  for(k in base)c[k]=base[k];\n  if(g.armor){c.coat=g.armor.ram;c.gear=g.armor.ram;}\n  if(g.pants)c.trs=g.pants.ram;\n  if(g.pack)c.pack=g.pack.ram;\n  return c;\n}\nfunction wornPxPack(p){\n  var a=WORN_DRAW.g.pack;if(!a)return;\n  var v=a.v,R=a.ram;\n  p.put(pxRR(pxM(),v===2?1:3,v===0?25:21,10,40,1),R);\n  p.put(pxRect(pxM(),4,26,9,28),R);\n  if(v===0){p.put(pxRR(pxM(),1,22,11,26,1),R);p.put(pxRect(pxM(),4,32,9,34),R);}\n  if(v===1){p.put(pxRect(pxM(),4,13,4,21),R);p.P(4,12,R[0]);p.P(6,31,R[0]);p.P(8,31,R[0]);}\n  if(v===2){p.put(pxRect(pxM(),1,19,2,42),R);p.put(pxRect(pxM(),1,40,10,42),R);}\n  p.P(6,29,WORN_RARS[a.r].c);\n}\nfunction wornPxArmor(p){\n  var a=WORN_DRAW.g.armor;if(!a)return;\n  var v=a.v,R=a.ram;\n  p.put(pxRR(pxM(),11,23,24,34,1),R);\n  p.put(pxRect(pxM(),13,24,22,25),R);\n  if(v===1){p.put(pxRR(pxM(),10,29,15,34,1),R);p.put(pxRR(pxM(),20,29,25,34,1),R);}\n  if(v===2){p.put(pxRR(pxM(),7,21,11,26,1),R);p.put(pxRR(pxM(),24,21,28,26,1),R);}\n  if(a.r\u003e0)p.put(pxRect(pxM(),15,21,20,22),R);\n  p.P(17,26,WORN_RARS[a.r].c);p.P(18,26,WORN_RARS[a.r].c);\n}\nfunction wornPxHead(p){\n  var a=WORN_DRAW.g.head;if(!a)return;\n  var v=a.v,R=a.ram;\n  p.put(pxRR(pxM(),10,2,25,7,2),R);\n  if(v===0)p.put(pxRect(pxM(),9,7,27,8),R);\n  if(v===1){p.put(pxRR(pxM(),8,4,11,11,1),R);p.put(pxRR(pxM(),24,4,27,11,1),R);}\n  if(v===2)p.put(pxRR(pxM(),6,6,29,8,1),R);\n  p.P(17,4,WORN_RARS[a.r].c);p.P(18,4,WORN_RARS[a.r].c);\n}\nfunction wornPxLeg(p,cx,su,sl,bt,toe){\n  var a=WORN_DRAW\u0026\u0026WORN_DRAW.g.pants,b=WORN_DRAW\u0026\u0026WORN_DRAW.g.boots,R,v;\n  if(a){R=a.ram;v=a.v;\n    if(v===0)p.put(pxRect(pxM(),cx-2+su,41,cx+2+su,43),R);\n    if(v===1)p.put(pxRR(pxM(),cx-3+su,41,cx+3+su,44,1),R);\n    if(v===2)p.put(pxRR(pxM(),cx-2+su,44,cx+2+su,47,1),R);\n    p.P(cx+su,42,WORN_RARS[a.r].c);\n  }\n  if(b){R=b.ram;v=b.v;\n    if(v\u003e0)p.put(pxRR(pxM(),cx-2+sl,bt-(v===1?3:5),cx+2+sl,bt,1),R);\n    p.P(cx+sl+(toe\u003e0?2:-2),bt+1,WORN_RARS[b.r].c);\n    if(v===2)p.P(cx+sl,bt-3,R[0]);\n  }\n}\nfunction wornPxRoll(o){\n  var s=pixCanvas(64,64),lg=pxBuildLegs({clothes:o.clothes,bot:0,mir:o.mir,kind:\u0027c\u0027,fr:0}),up=pxBuildUpper({head:o.head,skin:o.skin,clothes:o.clothes,bot:0,mir:o.mir,pup:0,arms:1,band:o.band||\u0027\u0027});\n  s.x.imageSmoothingEnabled=false;s.x.translate(32,39);s.x.rotate((o.fr|0)*Math.PI/2);s.x.scale(.55,.55);\n  s.x.drawImage(lg.c,-lg.ax,-lg.ay+24);s.x.drawImage(up.c,-up.ax,-up.ay+24);pixHarden(s,128);\n  return pixSprite(pixRing(s.c,PIX_INK).c,33,64,PIX_ACT);\n}\nfunction drawOpBody(x,y,face,ph,coat,pk,muzzle,mode,iv,st){\n  var prev=WORN_DRAW;WORN_DRAW=wornBodyLook(st);\n  if(WORN_DRAW\u0026\u0026st){var body={};for(var q in st)body[q]=st[q];body.bulk=0;st=body;}\n  try{return drawOpBodyWorn(x,y,face,ph,coat,pk,muzzle,mode,iv,st);}finally{WORN_DRAW=prev;}\n}\nfunction drawOpBodyWorn(x,y,face,ph,coat,pk,muzzle,mode,iv,st){"
+                  },
+                  {
+                      "anchor":  "function cosWorn(kind){",
+                      "replacement":  "function cosWorn(kind){\n  var gearChoice=wornBodyChoice(kind);if(gearChoice!==null)return gearChoice; // v28.xx (cw-cx-wornbody): scoped to this body render only"
+                  },
+                  {
+                      "anchor":  "  var _SCH=schemeOf(st);",
+                      "replacement":  "  var _SCH=schemeOf(st);if(WORN_DRAW)_SCH=null; // v28.xx (cw-cx-wornbody)"
+                  },
+                  {
+                      "anchor":  "  var OUTF=outfitOf(st);   // v10.54: an outfit overrules the racks below",
+                      "replacement":  "  var OUTF=outfitOf(st);if(WORN_DRAW)OUTF=null; // v28.xx (cw-cx-wornbody): no wardrobe over gear"
+                  },
+                  {
+                      "anchor":  "  var cc=iv\u003e0?\u0027#2a6a5e\u0027:(OUTF?OUTF.coat:(_SCH?_SCH.p:(st.hero?((FITCOL[cosWorn(\u0027fit\u0027)]||FITCOL.slate)[1]):coat))),cLo=darkHex(cc,.42),cHi=litHex(cc,.20,true);",
+                      "replacement":  "  var cc=iv\u003e0?\u0027#2a6a5e\u0027:(OUTF?OUTF.coat:(_SCH?_SCH.p:(st.hero?((FITCOL[cosWorn(\u0027fit\u0027)]||FITCOL.slate)[1]):coat))),cLo=darkHex(cc,.42),cHi=litHex(cc,.20,true);\n  if(WORN_DRAW\u0026\u0026WORN_DRAW.g.armor\u0026\u0026iv\u003c=0){cc=WORN_DRAW.g.armor.col;cLo=darkHex(cc,.42);cHi=litHex(cc,.20,true);coat=cc;} // v28.xx (cw-cx-wornbody)"
+                  },
+                  {
+                      "anchor":  "  var _BT=OUTF?OUTF.boots:(BOOTCOL[_BTID]||BOOTCOL.bootblack);   // v10.54",
+                      "replacement":  "  var _BT=OUTF?OUTF.boots:(BOOTCOL[_BTID]||BOOTCOL.bootblack);   // v10.54\n  if(WORN_DRAW\u0026\u0026WORN_DRAW.g.boots)_BT=[WORN_DRAW.g.boots.ram[2],WORN_DRAW.g.boots.col]; // v28.xx (cw-cx-wornbody)"
+                  },
+                  {
+                      "anchor":  "  var _TRS=OUTF?(OUTF.trs||(OUTF.skin||(st.hero?(SKINCOL[cosWorn(\u0027skin\u0027)]||SKINCOL.fair):(SKINCOL[st.skin]||\u0027#f2d2a8\u0027)))):(_SCH?_SCH.trs:darkHex(cc,.50));",
+                      "replacement":  "  var _TRS=OUTF?(OUTF.trs||(OUTF.skin||(st.hero?(SKINCOL[cosWorn(\u0027skin\u0027)]||SKINCOL.fair):(SKINCOL[st.skin]||\u0027#f2d2a8\u0027)))):(_SCH?_SCH.trs:darkHex(cc,.50));\n  if(WORN_DRAW\u0026\u0026WORN_DRAW.g.pants)_TRS=WORN_DRAW.g.pants.col; // v28.xx (cw-cx-wornbody)"
+                  },
+                  {
+                      "anchor":  "  if(!(OUTF\u0026\u0026OUTF.nopack)){",
+                      "replacement":  "  if(!(OUTF\u0026\u0026OUTF.nopack)\u0026\u0026(!WORN_DRAW||WORN_DRAW.g.pack)){ // v28.xx (cw-cx-wornbody): no worn pack, no pack look"
+                  },
+                  {
+                      "anchor":  "  var _PKC=PACKCOL[_PKID]||PACKCOL.packbrown;   // v10.34",
+                      "replacement":  "  var _PKC=WORN_DRAW\u0026\u0026WORN_DRAW.g.pack?WORN_DRAW.g.pack.col:(PACKCOL[_PKID]||PACKCOL.packbrown); // v28.xx (cw-cx-wornbody)"
+                  },
+                  {
+                      "anchor":  "  wc.restore();   // v33.xx (cw-headbody), job 68, his a01 D: the scaled head ends with the hair, face and hats; the suit body paint, caps and pads below draw at body scale (pads at their own FIG_VEST, his a05 B)",
+                      "replacement":  "  // v28.xx (cw-cx-wornbody): the hat crown carries its piece palette and a small rarity tab, without hiding the eyes.\n  if(WORN_DRAW\u0026\u0026WORN_DRAW.g.head){var hg=WORN_DRAW.g.head;wc.fillStyle=hg.col;rrF(hx2-6,ty-39.5,12,2.8,1);wc.fillStyle=WORN_RARS[hg.r].c;wc.fillRect(hx2-1,ty-38.7,2,1);}\n  wc.restore();   // v33.xx (cw-headbody), job 68, his a01 D: the scaled head ends with the hair, face and hats; the suit body paint, caps and pads below draw at body scale (pads at their own FIG_VEST, his a05 B)"
+                  },
+                  {
+                      "anchor":  "function handColour(st){",
+                      "replacement":  "function handColour(st){\n  if(st\u0026\u0026st.hero\u0026\u0026WORN_DRAW\u0026\u0026WORN_DRAW.g.gloves)return WORN_DRAW.g.gloves.col; // v28.xx (cw-cx-wornbody)"
+                  },
+                  {
+                      "anchor":  "  oid=hero?P.cosOutfit:st.outfit; // v28.xx (cw-cx-pixsets): read saved picks without the old rack ownership filter",
+                      "replacement":  "  oid=WORN_DRAW?\u0027outnone\u0027:(hero?P.cosOutfit:st.outfit); // v28.xx (cw-cx-wornbody)"
+                  },
+                  {
+                      "anchor":  "  r=pixLook(lk);",
+                      "replacement":  "  if(WORN_DRAW){lk.hat=\u0027none\u0027;lk.outfit=\u0027outnone\u0027;lk.scheme=\u0027schsand\u0027;lk.fit=\u0027slate\u0027;} // v28.xx (cw-cx-wornbody)\n  r=pixLook(lk);"
+                  },
+                  {
+                      "anchor":  "function pxUpper(o){\n  var fam=\u0027u|\u0027+o.head+\u0027|\u0027+o.skin+\u0027|\u0027+o.clothes+\u0027|\u0027+o.bot+\u0027|\u0027+o.mir;",
+                      "replacement":  "function pxUpper(o){\n  var fam=\u0027u|\u0027+o.head+\u0027|\u0027+o.skin+\u0027|\u0027+o.clothes+\u0027|\u0027+o.bot+\u0027|\u0027+o.mir;\n  if(WORN_DRAW)fam+=\u0027|\u0027+WORN_DRAW.key; // v28.xx (cw-cx-wornbody)"
+                  },
+                  {
+                      "anchor":  "function pxLegs(o){\n  var fam=\u0027g|\u0027+o.clothes+\u0027|\u0027+o.bot+\u0027|\u0027+o.mir+\u0027|\u0027+o.kind;",
+                      "replacement":  "function pxLegs(o){\n  var fam=\u0027g|\u0027+o.clothes+\u0027|\u0027+o.bot+\u0027|\u0027+o.mir+\u0027|\u0027+o.kind;\n  if(WORN_DRAW)fam+=\u0027|\u0027+WORN_DRAW.key; // v28.xx (cw-cx-wornbody)"
+                  },
+                  {
+                      "anchor":  "function pxRoll(o){\n  var fam=\u0027r|\u0027+o.head+\u0027|\u0027+o.skin+\u0027|\u0027+o.clothes+\u0027|\u0027+o.bot+\u0027|\u0027+o.mir+\u0027|\u0027+(o.band||\u0027\u0027); // v28.xx (cw-cx-pixsets): separate seat bands",
+                      "replacement":  "function pxRoll(o){\n  var fam=\u0027r|\u0027+o.head+\u0027|\u0027+o.skin+\u0027|\u0027+o.clothes+\u0027|\u0027+o.bot+\u0027|\u0027+o.mir+\u0027|\u0027+(o.band||\u0027\u0027); // v28.xx (cw-cx-pixsets): separate seat bands\n  if(WORN_DRAW)fam+=\u0027|\u0027+WORN_DRAW.key; // v28.xx (cw-cx-wornbody)"
+                  },
+                  {
+                      "anchor":  "function pxBuildRoll(o){",
+                      "replacement":  "function pxBuildRoll(o){\n  if(WORN_DRAW)return wornPxRoll(o); // v28.xx (cw-cx-wornbody): roll the actual worn body"
+                  },
+                  {
+                      "anchor":  "  var p=pxPaint(o.mir), W=PXB.W, C=o.bot?(o.bot===2?PXB_GOLD:PXB_REDS):(PXB_RAMP[o.clothes]||PXB_RAMP.scav), sk=(o.bot===2)?PXB_GOLD.skin:(PIXRAMPS.skins[o.skin]||PIXRAMPS.skins.fair), hr=(o.bot===2)?PXB_GOLD.hair:PXB_HAIR, E=PXB_EYE, bot=!!o.bot, dxp=o.mir?-o.pup:o.pup, cl=o.clothes, m, y, x, skull, op, belt, mk, ml;",
+                      "replacement":  "  var p=pxPaint(o.mir), W=PXB.W, C=o.bot?(o.bot===2?PXB_GOLD:PXB_REDS):(PXB_RAMP[o.clothes]||PXB_RAMP.scav), sk=(o.bot===2)?PXB_GOLD.skin:(PIXRAMPS.skins[o.skin]||PIXRAMPS.skins.fair), hr=(o.bot===2)?PXB_GOLD.hair:PXB_HAIR, E=PXB_EYE, bot=!!o.bot, dxp=o.mir?-o.pup:o.pup, cl=o.clothes, m, y, x, skull, op, belt, mk, ml;\n  C=wornBodyRamp(C); // v28.xx (cw-cx-wornbody)"
+                  },
+                  {
+                      "anchor":  "  if(cl===\u0027recon\u0027){\n    p.put(pxRR(pxM(),4,15,10,42,2),C.pack);",
+                      "replacement":  "  if(WORN_DRAW){wornPxPack(p);} // v28.xx (cw-cx-wornbody)\n  else if(cl===\u0027recon\u0027){\n    p.put(pxRR(pxM(),4,15,10,42,2),C.pack);"
+                  },
+                  {
+                      "anchor":  "    p.put(pxRR(pxM(),8,35,10,38,1.2),sk); p.put(pxRR(pxM(),25,35,27,38,1.2),sk);",
+                      "replacement":  "    var hands=WORN_DRAW\u0026\u0026WORN_DRAW.g.gloves?WORN_DRAW.g.gloves.ram:sk; // v28.xx (cw-cx-wornbody)\n    p.put(pxRR(pxM(),8,35,10,38,1.2),hands); p.put(pxRR(pxM(),25,35,27,38,1.2),hands);"
+                  },
+                  {
+                      "anchor":  "  if(o.bulk\u003e0){   // v33.81 (cw-pixgear) SPEC 9.7: the tier is the silhouette; steel, not the coat colour",
+                      "replacement":  "  if(WORN_DRAW){wornPxArmor(p);} // v28.xx (cw-cx-wornbody)\n  else if(o.bulk\u003e0){   // v33.81 (cw-pixgear) SPEC 9.7: the tier is the silhouette; steel, not the coat colour"
+                  },
+                  {
+                      "anchor":  "  eye(12); eye(21);",
+                      "replacement":  "  eye(12); eye(21);\n  if(WORN_DRAW)wornPxHead(p); // v28.xx (cw-cx-wornbody): headgear above hair, eyes stay clear"
+                  },
+                  {
+                      "anchor":  "  var p=pxPaint(o.mir), C=o.bot?(o.bot===2?PXB_GOLD:PXB_REDS):(PXB_RAMP[o.clothes]||PXB_RAMP.scav), B=(o.bot===2)?PXB_GOLD.boot:PXB_BOOT, kind=o.kind, ph, amp=0, sw=0, lA=0, lB=0, k;",
+                      "replacement":  "  var p=pxPaint(o.mir), C=o.bot?(o.bot===2?PXB_GOLD:PXB_REDS):(PXB_RAMP[o.clothes]||PXB_RAMP.scav), B=(o.bot===2)?PXB_GOLD.boot:PXB_BOOT, kind=o.kind, ph, amp=0, sw=0, lA=0, lB=0, k;\n  C=wornBodyRamp(C);if(WORN_DRAW\u0026\u0026WORN_DRAW.g.boots)B=WORN_DRAW.g.boots.ram; // v28.xx (cw-cx-wornbody)"
+                  },
+                  {
+                      "anchor":  "    p.put(pxRR(pxM(),cx+(toe\u003e0?-2:-4)+sl,bt,cx+(toe\u003e0?4:2)+sl,bt+4,1.6),B);",
+                      "replacement":  "    p.put(pxRR(pxM(),cx+(toe\u003e0?-2:-4)+sl,bt,cx+(toe\u003e0?4:2)+sl,bt+4,1.6),B);\n    if(WORN_DRAW)wornPxLeg(p,cx,su,sl,bt,toe); // v28.xx (cw-cx-wornbody): details follow each leg"
+                  },
+                  {
+                      "anchor":  "    p.P(14,50,B[0]); p.P(26,50,B[0]);",
+                      "replacement":  "    p.P(14,50,B[0]); p.P(26,50,B[0]);\n    if(WORN_DRAW){wornPxLeg(p,13,0,-1,49,-1);wornPxLeg(p,22,0,1,49,1);} // v28.xx (cw-cx-wornbody)"
+                  },
+                  {
+                      "anchor":  "gn=pxGun(id,fk,el,rc,step,fl,C.coat[1],sk[1],ext,low?1:0,rq);",
+                      "replacement":  "gn=pxGun(id,fk,el,rc,step,fl,(WORN_DRAW\u0026\u0026WORN_DRAW.g.armor?WORN_DRAW.g.armor.col:C.coat[1]),(WORN_DRAW\u0026\u0026WORN_DRAW.g.gloves?WORN_DRAW.g.gloves.col:sk[1]),ext,low?1:0,rq);"
+                  },
+                  {
+                      "anchor":  "  var fam=\u0027setmelee|\u0027+lk.clothes+\u0027|\u0027+hand+\u0027|\u0027+(crow?1:0),sp=pixFetch(\u0027actors\u0027,fam+\u0027|\u0027+step,function(){",
+                      "replacement":  "  if(WORN_DRAW\u0026\u0026WORN_DRAW.g.gloves)hand=WORN_DRAW.g.gloves.col; // v28.xx (cw-cx-wornbody): gloves stay on during melee\n  var fam=\u0027setmelee|\u0027+lk.clothes+\u0027|\u0027+hand+\u0027|\u0027+(crow?1:0),sp=pixFetch(\u0027actors\u0027,fam+\u0027|\u0027+step,function(){"
+                  },
+                  {
+                      "anchor":  "  PIX_RACKS.forEach(function(rack){",
+                      "replacement":  "  PIX_RACKS.filter(function(r){return r[0]===\u0027head\u0027||r[0]===\u0027skin\u0027;}).forEach(function(rack){ // v28.xx (cw-cx-wornbody): body options only"
+                  },
+                  {
+                      "anchor":  "      var id=t[0],own=rack[0]!==\u0027set\u0027||id===\u0027off\u0027||pixOwned(id),on=r[rack[0]]===(id===\u0027off\u0027?\u0027none\u0027:id),need=\u0027\u0027;",
+                      "replacement":  "      var id=t[0],own=rack[0]!==\u0027set\u0027||id===\u0027off\u0027||pixOwned(id),on=r[rack[0]]===(id===\u0027off\u0027?\u0027none\u0027:id),need=\u0027\u0027;\n      if(rack[0]===\u0027head\u0027\u0026\u0026id===\u0027hood\u0027)return; // v28.xx (cw-cx-wornbody): hats come from worn gear"
+                  },
+                  {
+                      "anchor":  "function pixWear(kind,id,free){",
+                      "replacement":  "function pixWear(kind,id,free){\n  if(!free\u0026\u0026!(kind===\u0027skin\u0027||(kind===\u0027head\u0027\u0026\u0026id!==\u0027hood\u0027)))return false; // v28.xx (cw-cx-wornbody)"
+                  },
+                  {
+                      "anchor":  "  GROUPS.forEach(function(g){",
+                      "replacement":  "  GROUPS.filter(function(g){return wornBodyAllowed(g[0]);}).forEach(function(g){ // v28.xx (cw-cx-wornbody): owned body options stay"
+                  },
+                  {
+                      "anchor":  "      // The buy tiles are the only ones that can be unlocked from here, and\n      // only with credits you already have.\n      if(!cosOwned(c)){\n        var bits=String(c.how).split(\u0027:\u0027);\n        if(bits[0]===\u0027buy\u0027\u0026\u0026P.credits\u003e=+bits[1]){\n          P.credits-=+bits[1];\n          P.cosBought=P.cosBought||{}; P.cosBought[id]=1;\n          try{ sfx(\u0027pickRare\u0027); }catch(e){}   // v14.38: a voice that exists\n        } else { try{ sfx(\u0027clank\u0027); }catch(e){} return; }\n      }\n      if(kind===\u0027set\u0027) setApply(c); else P[COSKEY[kind]||\u0027cosHat\u0027]=id;",
+                      "replacement":  "      // v28.xx (cw-cx-wornbody): the depot is frozen. Only already owned body options may change.\n      if(!wornBodyAllowed(kind)||!cosOwned(c))return;\n      P[COSKEY[kind]]=id;"
+                  }
+              ],
+    "check":  "  {v:\u0027VER\u0027,what:\u0027cw-cx-wornbody: six worn slots draw three variants per rarity in both body renderers, no jewelry or wardrobe overlay; old saves reload unchanged\u0027,run:function(){\n    if(typeof wornBodyLook!==\u0027function\u0027||typeof wornPxHead!==\u0027function\u0027)return \u0027no worn gear body renderer\u0027;\n    var saved=P,oldStore=storeSet,oldSave=saveProfile,oldDraw=WORN_DRAW,oldWC=wc,oldSim,oldArc,arc=typeof ARCADE===\u0027object\u0027\u0026\u0026ARCADE,bad=[],base,snap,k,i,r,v,s,L,empty,seen={},cv,st={hero:1,own:{hp:100},moving:false},g;\n    function need(ok,msg){if(!ok)bad.push(msg);}\n    function sig(){var d=cv.getContext(\u00272d\u0027).getImageData(0,0,180,180).data,h=2166136261;for(var j=0;j\u003cd.length;j++){h^=d[j];h=Math.imul(h,16777619);}return h\u003e\u003e\u003e0;}\n    function body(pixel){cv.getContext(\u00272d\u0027).clearRect(0,0,180,180);wc=cv.getContext(\u00272d\u0027);wc.save();wc.translate(90,150);wc.scale(pixel?2:3,pixel?2:3);if(pixel){var a=pxBuildUpper({head:\u0027short\u0027,skin:\u0027fair\u0027,clothes:\u0027scav\u0027,bot:0,mir:0,pup:0,arms:1}),b=pxBuildLegs({clothes:\u0027scav\u0027,bot:0,mir:0,kind:\u0027s\u0027,fr:0});wc.drawImage(b.c,-b.ax,-b.ay);wc.drawImage(a.c,-a.ax,-a.ay);}else drawOpB(0,0,0,0,\u0027#777777\u0027,0,0,\u0027none\u0027,0,st);wc.restore();return sig();}\n    try{\n      __runPrep();__topClear();__resetCfg();__pinDefaults(0);__cleanProfile();\n      storeSet=function(){};saveProfile=function(){};\n      base=JSON.parse(JSON.stringify(P));base.cfg=JSON.parse(JSON.stringify(CFG));base.cfgv=18;\n      base.credits=12345;base.stash=[\u0027scrap\u0027,\u0027core\u0027];base.weapons=[\u0027pistol\u0027,\u0027smg\u0027];base.equipped=\u0027smg\u0027;\n      // The build before has these same fields; this render-only job adds none.\n      base.gear=[];base.worn={};base.worn.head=wornCleanPc(wornMake(\u0027head\u0027,2,46,9001));base.worn.head.id=\u0027wg9001\u0027;\n      function keep(p){var q={};[\u0027credits\u0027,\u0027stash\u0027,\u0027weapons\u0027,\u0027equipped\u0027,\u0027contracts\u0027,\u0027forged\u0027,\u0027pil\u0027,\u0027hall\u0027,\u0027lifeEarn\u0027,\u0027gear\u0027,\u0027worn\u0027,\u0027cosSkin\u0027,\u0027cosCut\u0027,\u0027cosBought\u0027].forEach(function(n){q[n]=p[n];});return JSON.stringify(q);}\n      var before=keep(base);applyLoadedProfile({value:JSON.stringify(base)});need(keep(P)===before,\u0027old save lost gear, body or account data\u0027);\n      snap=JSON.parse(JSON.stringify(P));applyLoadedProfile({value:JSON.stringify(snap)});need(keep(P)===keep(snap),\u0027second reload moved old save\u0027);\n      __deploy({kit:[\u0027gun_rifle\u0027],safe:null,mapIx:0,seed:4242});g=__state();oldSim=g.sim;oldArc=arc\u0026\u0026arc.on;if(arc)arc.on=false;g.sim=false;\n      need(g.ents.length===85\u0026\u0026g.containers.length===165,\u0027seed 4242 map zero fingerprint moved\u0027);\n      cv=document.createElement(\u0027canvas\u0027);cv.width=cv.height=180;\n      P.worn={};empty=wornBodyLook(st);need(empty\u0026\u0026Object.keys(empty.g).length===0,\u0027empty wear paints gear\u0027);\n      for(i=0;i\u003cWORN_BODY_SLOTS.length;i++){\n        s=WORN_BODY_SLOTS[i];seen={};\n        for(r=0;r\u003c4;r++)for(v=0;v\u003c3;v++){\n          P.worn={};P.worn[s]=wornMake(s,r,45+v,124+r*3+v);L=wornBodyLook(st);WORN_DRAW=L;\n          need(L.g[s]\u0026\u0026L.g[s].r===r\u0026\u0026L.g[s].v===v,\u0027slot or rarity lost: \u0027+s+r+v);\n          k=body(true);need(!seen[\u0027p\u0027+k],\u0027duplicate pixel variant \u0027+s+r+v);seen[\u0027p\u0027+k]=1;\n          k=body(false);need(!seen[\u0027v\u0027+k],\u0027duplicate smooth variant \u0027+s+r+v);seen[\u0027v\u0027+k]=1;\n          P.worn={};need(wornBodyLook(st).key===empty.key,\u0027removed piece still has look\u0027);\n        }\n      }\n      P.worn={amulet:wornMake(\u0027amulet\u0027,3,50,2),ring1:wornMake(\u0027ring\u0027,3,50,3)};need(wornBodyLook(st).key===empty.key,\u0027jewelry visible\u0027);\n      P.cosOutfit=\u0027outskeleton\u0027;P.cosHat=\u0027hood\u0027;WORN_DRAW=empty;L=pxLookOf(st);\n      need(L\u0026\u0026L.clothes!==\u0027skeleton\u0027\u0026\u0026L.head!==\u0027hood\u0027,\u0027saved wardrobe overrides gear/body\u0027);\n      P.worn={};P.gear=[];var pc=wornAdd(P,wornMake(\u0027pack\u0027,2,47,555));\n      need(wornBodyLook(st).key===empty.key,\u0027stashed gear is visible\u0027);\n      wornWear(P,pc.id,\u0027pack\u0027);need(!!wornBodyLook(st).g.pack,\u0027equipping pack does not show it\u0027);\n      wornOff(P,\u0027pack\u0027);need(wornBodyLook(st).key===empty.key,\u0027unequipped pack still visible\u0027);\n      need(wornBodyLook({hero:0})===null,\u0027other pillager borrowed local gear\u0027);g.sim=true;need(wornBodyLook(st)===null,\u0027sim uses saved gear\u0027);g.sim=false;\n      if(arc){arc.on=true;need(wornBodyLook(st)===null,\u0027demo uses career gear\u0027);arc.on=false;}\n      need(!pixWear(\u0027clothes\u0027,\u0027heavy\u0027,false)\u0026\u0026!pixWear(\u0027set\u0027,\u0027skeleton\u0027,false),\u0027fashion clothing still selectable\u0027);\n      WORN_DRAW=null;need(wornBodyChoice(\u0027hat\u0027)===null,\u0027gear context leaked outside render\u0027);\n      return bad.length?bad.join(\u0027; \u0027):null;\n    }finally{\n      wc=oldWC;WORN_DRAW=oldDraw;storeSet=oldStore;saveProfile=oldSave;\n      if(g)g.sim=oldSim;if(arc\u0026\u0026oldArc!==undefined)arc.on=oldArc;\n      try{__endRaid(\u0027abandon\u0027);}catch(e){}P=saved;__topClear();\n    }\n  }},"
+}

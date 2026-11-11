@@ -76,3 +76,26 @@ No production/check change is justified by these messages. Existing mk, keys.txt
 2026-11-11 - Another retry of preflight-cw-cx-hardcore-3372d504b141 returned only the same paused-worker messages. No new test evidence or changed source was supplied. No repeated validation or speculative mk/check edit was made. The prepared key cw-cx-hardcore remains in keys.txt. The prior run documented the cached 27.5-hour runner pause and absent job result. This run adds no new ship or camera work; coordinator action on remote worker availability is required before another coding retry is useful. No gate pass, shipment or visual acceptance is claimed. LOCAL: no linked review.
 
 11-11 11:04 coordinator: back in tasks/ with fresh runs (r3). The JT PC gate works again (it tests beside FnP now, and a busy JT PC no longer spends a try); retry the retained key through preflight and ship.
+
+--- codex run 2026-11-11 16:23 ---
+2026-11-11 - Retrying the retained key on the coordinator instruction that the JT PC gate is working again. Current HEAD is 989467d5e; the game is unchanged from the last v37.67 base. No preflight failure or new code diagnostic was supplied.
+
+Regenerated draft-cw-cx-hardcore.json: written, 21 unique anchors, eight unique hardcore helpers, ASCII mk script. Candidate JavaScript, browser regression and camera builder pass node syntax checks. The isolated helper checks pass death snapshot and career/demo guards, one-shot creation, exact backup deletion, slot 1 preservation, asynchronous deletion callback and archived identity rejection. No tracked game or fixture edits.
+
+cw-cx-hardcore remains in keys.txt for the lane to retry through preflight and ship. The six existing smooth-look camera recipes remain ready for 1080p/4k and graveyard critic review. LOCAL: no linked review. Remaining lane work: completed preflight, ship with ON HIS PC confirmation, then pictures and critic. No gate pass or shipment is claimed.
+
+--- codex run 2026-11-11 17:43 ---
+2026-11-11 - Retained cw-cx-hardcore for lane retry at HEAD 989467d5e, v37.67. No completed preflight, shipment, ON HIS PC or camera result was supplied. The draft regenerated successfully: written, 21 unique edit anchors, eight unique helpers, ASCII mk script. Candidate JavaScript and revised browser check pass syntax checks.
+
+Reviewed crash-key cleanup against current code. Main-window salvagerun:precrash contains shared boot diagnostics, not profile backups; it must not be removed as another save key. The draft still deletes only the fallen slot, its adjacent prerestore/precrash keys, its daily copies and its second copy. Strengthened the browser regression and isolated helper harness to prove that the shared diagnostic key survives. The isolated harness passes exact deletion, unrelated-key and slot 1 preservation, death-only capture, role guards, one-shot creation, asynchronous second-copy deletion and archived identity guards. No production behavior or fixture changed this run.
+
+cw-cx-hardcore remains in keys.txt. Existing six smooth-look camera recipes remain ready for both roles at 1080p/4k. LOCAL: no linked review. Remaining lane work: complete remote preflight, ship with ON HIS PC confirmation, then pictures and graveyard critic. No gate pass or shipment is claimed.
+
+--- codex run 2026-11-11 18:00 ---
+2026-11-11 - Fixed the reported preflight failure from job preflight-cw-cx-hardcore-f74b27a61681. My check measured three bandages as stash before __deploy, but an empty kit leaves kitChosen=0 and buildRaid automatically packs those bandages. The grave correctly recorded the reduced stash. The stale expected value also caused the ranking/tie assertions, and the same autopacking invalidated all three save-preservation controls. No production archive defect was identified behind these failures.
+
+Revised the check to stage scrap, wire and cell ($140 at the pinned defaults), with fists/none equipped so its two owned guns stay home. Seeded out inherited mercenary, rack, array and loadout state. Used the existing 37.61 fixture pattern to clear carried bag contents and unrelated raid rewards after deployment. Added an immediate assertion that all three stash items and both home guns survived deployment, and made grave/control failure messages report the actual mismatched fields. The original fail-before guard, death/removal checks, untouched slot 1 bytes, normal death, hardcore extraction/abandon and ranking/tie assertions remain. Existing fixture checks were not edited and no retarget is needed for this correction.
+
+Regenerated cw-cx-hardcore: written, 21 unique production edit anchors, eight unique helpers, ASCII mk script. Candidate JavaScript, revised browser check and camera builder pass syntax checks. The isolated helper harness passes all save guards and now runs the actual standardKit, trStash and item definitions: old three-bandage staging auto-packs all three; replacement three-salvage staging auto-packs none and remains worth $140. No tracked game or fixture edits.
+
+cw-cx-hardcore remains in keys.txt for a new preflight. Existing six smooth-look camera recipes remain ready at 1080p/4k. LOCAL: no linked review. Lane must obtain a passing browser gate, ship with ON HIS PC confirmation, then pictures and graveyard critic. This run does not claim a browser pass or shipment.

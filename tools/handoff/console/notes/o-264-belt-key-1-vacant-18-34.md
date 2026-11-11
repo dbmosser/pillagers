@@ -53,3 +53,14 @@ Exact complete replacement remains in .codex-work/o-264-belt-key-1-vacant-18-34/
 Per this task instruction, tools/mkfixture.ps1 was not edited. HTML CEO must apply the prepared correction through fixq and verify 18.34 alone and in a current full run. Historical browser diagnostics remain uncollected. No runtime pass or shipped fix is claimed. LOCAL: no linked review.
 
 11-11 11:06 coordinator: the fixture change you prepared is in exactly as written (0fe2908e5, fixture rebuilt, JS ok). Back in tasks/ with fresh runs (r3); build and ship.
+
+--- codex run 2026-11-11 16:25 ---
+2026-11-11 continuation on v37.67: the earlier fixture correction is now applied in commit 0fe2908e5. Current tools/mkfixture.ps1:80213 stages P.weapons=['pistol'], the pistol primary, no secondary, default GUN_CLASSES, and kit:['gun_pistol']. It checks that key 1 holds the selected pistol before drawing, retains both original alpha assertions, and restores the saved gun fields after cleanup. Only the comment and formatting differ from the prepared replacement. Do not apply the old replacement again.
+
+Source review found no remaining game fix justified by this task. The empty item kit did not clear inherited guns or class-key order; vacant unselected slots intentionally have no slab. The scav pistol fallback remains present. No game file or fixture was edited, no ship key or camera request was made, and no runtime/full-run pass is claimed.
+
+Remaining finish line: run 18.34 alone on the corrected current fixture and in a current full corpus; record the full-run result and build. Historical browser diagnostics remain unavailable. The 11-11 HTML CEO handoff (commit 86df100f5) says the JT PC runner was disabled at 18:22Z pending the owner's decision and explicitly says not to re-enable it. This sandbox cannot run Chrome, localhost, remote gates or the corpus. Coordinator/runner action is required; no additional Codex game draft is needed unless validation finds a real defect.
+
+LOCAL: no linked review.
+
+The requested C:/Codex/FNP new 11082026/RULES.md is unavailable at that path in this sandbox. No cross-project files, PC settings, server or scheduled task were changed.
