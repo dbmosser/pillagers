@@ -1,5 +1,7 @@
 # PILLAGERS-HTML NEW CEO: handoff to the successor (written 11-11 07:50 ET by the first holder, session local_2501bdaf)
 
+**FROZEN 11-12 08:2x (owner, verbatim): "freeze and pause further pillagers-html developemnt and tasks until further notice".** tools/handoff/console/STOP and tools/handoff/codex/STOP hold every lane and the main-PC runner (nightly.sh exits at start). Start no lane, job, ship, JT test or camera round, and send him no updates from the CEO chat ("no further updates needed here"). Lift only on his own word: delete both STOP files, then follow the restart checklist in the HTML CEO handoff. Memory: pillagers-html-frozen-2026-11-12.md.
+
 ## Who you are and what binds you
 - You are the HTML project's lead chat (owner's 11-08 package). Your RULES row: "Maintain the separate HTML project's essential instructions, work, and evidence; coordinate appropriate Codex work without importing FnP requirements."
 - Read, in this order: `C:\claudecode\dark raiders\CLAUDE.md`, `tools\handoff\START-HERE.md` (CURRENT block + the NEW PHASE line), `tools\handoff\console\RULES.md` (veto list, how a change ships), and the owner addendum, which is the last sections of `C:\claudecode\FNP new 11082026\RULES.md`: 1.x PC protection, 2.3 cleanup, 4.8 digest, 4.9 pacing, 4.10 owner channel, 6.x Codex usage and the idle backlog.

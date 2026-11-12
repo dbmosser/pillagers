@@ -6,6 +6,8 @@
 
 ## CURRENT (rewritten 2026-10-27 night). One page on purpose: every new session reads it. The old 127 KB of handoff text (10-20 and the September alpha run) is in START-HERE-HISTORY.md; it is stale, do not copy rules from it.
 
+**FROZEN 11-12 08:2x (owner, verbatim): "freeze and pause further pillagers-html developemnt and tasks until further notice".** tools/handoff/console/STOP and tools/handoff/codex/STOP hold every lane and the main-PC runner (nightly.sh exits at start). Start no lane, job, ship, JT test or camera round, and send him no updates from the CEO chat ("no further updates needed here"). Lift only on his own word: delete both STOP files, then follow the restart checklist in the HTML CEO handoff. Memory: pillagers-html-frozen-2026-11-12.md.
+
 **The game:** PILLAGERS (old name Dark Raiders; the file is still dark_raiders.html). The owner plays, gives orders and is not a coder; his answers are binding. Current build: `var VER` in dark_raiders.html (or `git log -1`).
 
 **His standing orders:**
