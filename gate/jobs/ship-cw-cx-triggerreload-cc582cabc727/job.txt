@@ -1,0 +1,15 @@
+id=ship-cw-cx-triggerreload-cc582cabc727
+kind=ship
+key=cw-cx-triggerreload
+tag=71
+v=37.71
+new=3771
+base=b237e3159bd442a5a9dec646d426cd3c820ee34d
+draft_sha=9a7e086bbd31cdd3926974b7b29d7e5b78aac7710018429fca7e651275542b09
+p_sha=9cb2ab6c4e8a2c557ab7c4b91275a4dcba524fa75704f35ca240c2af059fed9c
+f_sha=679dbba2bf998734e52ef807939a8603cd719e3df02862e3c77b88b39a26f3c0
+game_sha=bc927823b683b23cdb9fc65408bac07f35340355f3275fb4d10d722f682c15c4
+fix_sha=0beb63df2bc6884d1d4d4ae8a663661eea2edfb96a49e3f4a38b6f24eac78e60
+from=JUL26
+submitted=1794478747
+expires=1794485347
