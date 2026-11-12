@@ -8223,3 +8223,6 @@
 2026-11-12 15:11:43 FUZZ END raids=6 problems=9 unique=4 reason=ERROR: Unable to connect to the remote server minutes=51.8
 2026-11-12 15:26:24 FUZZ START seed=280383685 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
 2026-11-12 15:28:48 raid 1 demo2p raidSeed=978984121 map=0 god=0 sec=78 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-12 15:33:36 raid 2 demo2p raidSeed=139225939 map=0 god=0 sec=208 end=nostart problems=1 newUnique=1 totalUnique=2 totalProblems=2 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-12 15:40:43 FUZZ 2P ROBOTS OFF: three 2-window starts in a row failed, so the 2-player share runs as demo2 (this window as host alone) for the rest of this run
+2026-11-12 15:40:43 raid 3 demo2p raidSeed=663297718 map=0 god=1 sec=343 end=nostart problems=1 newUnique=0 totalUnique=2 totalProblems=3 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
