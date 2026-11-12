@@ -1,0 +1,15 @@
+id=preflight-cw-cx-breakgunfinish-eef3613286ab
+kind=preflight
+key=cw-cx-breakgunfinish
+tag=pfp
+v=37.70
+new=3770
+base=905ef265a4e965a81abe1b23c2785d398b9ef884
+draft_sha=f17570dfa814f072fff6ccb0c91df2ac8adcf43f714a3e8489294aec24f5281d
+p_sha=4e1267f2a266afb4a27271e6d37d94facbd983dacff3ee58d884e11375bc648b
+f_sha=47fef7e69e4ae909fff186912a10c796c95eb39ee79aaf8ad47949636f762374
+game_sha=3c6f4ec497d67d6ce4af4c905ea2700d6fb77a61d76d7f9afd03e34bface14e9
+fix_sha=18adb75f64e001ba8e9a55d887a38d0f4e578a7fda79cf5fa3f85e40d6549272
+from=JUL26
+submitted=1794475817
+expires=1794482417
