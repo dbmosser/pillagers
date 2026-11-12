@@ -6176,52 +6176,51 @@
   "when": "2026-11-11T15:51"
  },
  "p1-kb": {
-  "score": 2,
-  "pass": false,
+  "score": 3,
+  "pass": true,
   "need": 3,
-  "verdict": "functional vendor grid but a floating tooltip blots out a neighboring item and the lime accent is scattered across four unrelated elements instead of pointing at one thing.",
+  "verdict": "the overlap bug is fixed and the key-bind grid is clean, but the screen still reads unfinished because of a vast dead void under the item row and three separate hot-color pulls competing for the first look.",
   "findings": [
-   "P0 item context menu over slot 2: anchor the popup to the right of the grid (or below the row) so it never overlaps an adjacent tile; min 8px gap from any sibling tile",
-   "P1 accent usage across header, tabs, search, badge, cta: strip lime from the tab underline and the qty badge (use --tx-2/--ui-line-hi instead), keep the search border neutral until focused, leave --acc solely on 'take'",
-   "P1 context menu, 'put on key' row: lay out as a fixed 5x2 grid (or size tiles to fill the row evenly) so both rows end flush",
-   "P2 backpack panel and stash grid void: collapse backpack to actual capacity rows or add a dim 'empty' placeholder treatment, and cap the stash grid height to its content plus one row of margin",
-   "P2 valuables row icon swatches (sealed codex, copper wire, meridian black box): recolor chips using the rarity scale or drop the colored fill entirely and use --ui-raised with a neutral icon"
+   "P1 stash panel, full width below the 5-item row (y~420 to y~900): cap the stash panel's visible height to item-rows-used + 1 row of margin (per prior note, still unresolved), or add a dim empty-slot grid like the backpack panel does so the void reads as 'empty inventory' not 'missing layout'",
+   "P1 whole screen: top-right $ stats, 'wanted +50%' tag, and bottom-right 'take' button: keep only 'take' at full --acc lime weight since it's the primary action of this screen; drop the dollar figures to --tx-1 regular weight (already are) but reduce 'wanted +50%' to --fs-label size so it doesn't compete in size/color with the CTA",
+   "P2 valuables row icon chips: sealed codex (blue), copper wire (green/red), meridian black box (gold): recolor all three chips to --ui-raised fill with a single neutral icon glyph, or map strictly to --r-common/--r-rare/--r-gold if rarity-driven",
+   "P2 context menu rows: equip / equip as your gun / lock / tag as junk / sell one / break down: give 'sell one' and 'break down' (value-destroying actions) --tx-2 treatment and leave only 'equip' at full --tx-1 body weight, or add a 1px --ui-line divider between the equip group and the dispose group",
+   "P2 panel header 'stash' directly under the tab row, duplicating the breadcrumb 'stash / pillager' at the very top: drop the inner 'stash' panel header entirely; '5 held' can sit alone as the row's right-aligned label"
   ],
-  "pic": "tools/handoff/console/notes/shots/o-h12-175-break-down-guns-recipes-2/breakguns-p1-kb-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-h12-175-break-down-guns-recipes-3/breakguns-p1-kb-1080.jpg",
   "task": "o-h12-175-break-down-guns",
-  "when": "2026-11-11T21:35"
+  "when": "2026-11-11T23:53"
  },
  "p1-pad": {
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "the stat panel is a solid diablo-style layout until its own context menu lands directly on top of the numbers it's supposed to explain.",
+  "verdict": "the overlap and color-noise problems from last pass are fixed, but a dead empty action-menu box, an unlabeled icon, and the still-duplicated backpack heading keep this reading amateur.",
   "findings": [
-   "P0 item detail panel, auto rifle (field) popup: anchor the action menu to the right of the stat card or below it with an 8px gap, never overlapping the card's bounding box; if space-constrained, shrink the thumbnail column instead of the stat text",
-   "P1 top strip of the stash list: 'wanted +50%, sealed codex $3,550, copper wire $69, meridian black box $2,424, 5 held': move this into its own labeled sub-row with a single muted (--tx-2) treatment for the icons and reserve color only for the one most urgent tag (e.g. wanted), max 1 colored chip per row",
-   "P1 backpack panel header, right side, next to 'keys' tab: replace with a concrete labeled value, e.g. 'value: $0', or remove it if it duplicates the stash/bag totals already shown top-right",
-   "P2 backpack column: tab says 'backpack', section header directly below also says 'backpack': drop the second 'backpack' heading, or replace it with the slot count (e.g. '0/12 used')",
-   "P2 hotbar, slot 1 (bottom left): inset the slot thumbnail by --sp-1 (8px) from the badge corner so the number never touches the art"
+   "P1 item detail action menu, auto rifle (field) popup, box roughly x128-915 y412-855: shrink the box width to fit the longest row (~400px) or use the freed width for a second info column (e.g. value/weight stats); never leave >30% of a bordered panel empty",
+   "P1 backpack panel, column header directly under the 'backpack' tab: replace the second 'backpack' heading with the slot count, e.g. '0/12 used', as previously requested — don't just append a count next to the old duplicate label",
+   "P2 auto rifle (field) stat card, small thumbnail right of the accuracy/noise rows (~x800-915 y262-405): add a one-word lower-case label under the thumbnail (e.g. 'ammo') or remove it if it's not relevant to this weapon",
+   "P2 hotbar, slot 1, bottom-left of screen: inset the thumbnail by --sp-1 (8px) from the badge corner as previously requested"
   ],
-  "pic": "tools/handoff/console/notes/shots/o-h12-175-break-down-guns-recipes-2/breakguns-p1-pad-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-h12-175-break-down-guns-recipes-3/breakguns-p1-pad-1080.jpg",
   "task": "o-h12-175-break-down-guns",
-  "when": "2026-11-11T21:36"
+  "when": "2026-11-11T23:54"
  },
  "p2-kb": {
-  "score": 2,
-  "pass": false,
+  "score": 3,
+  "pass": true,
   "need": 3,
-  "verdict": "functional inventory tooling that reads as a spreadsheet with icons, undercut by a context menu that clips a neighboring item and a rarity treatment that contradicts the guide's own rule.",
+  "verdict": "the major p0s from last pass are fixed, but a new selection-state ambiguity and a couple of label mismatches keep this short of shippable.",
   "findings": [
-   "P0 context menu over item grid, tile 2 (gear icon): anchor the menu to the right edge of the clicked tile with an 8px gap (--sp-1) and a small pointer/caret; never let it cover a sibling tile — reflow it left if it would clip.",
-   "P0 item tile borders (purple on rifle, green on tiles 3-4): replace the full-tile border glow with a 3px rarity bar along one edge (e.g. bottom) of each tile, using the r-uncommon/r-rare/r-elite tokens; drop the glow/shadow.",
-   "P1 whole screen, left inventory pane vs right backpack/hotbar pane: undefined",
-   "P1 top utility row: 'sort: type / search / gear 0/9 / armory 2/10 / trophies 0/8': move gear/armory/trophies counts onto their own tab labels (e.g. 'gear 0/9') consistent with the 'all 5 / guns 2 / parts 3' tabs underneath, and drop the duplicate row.",
-   "P1 context menu body: equip / equip as your gun / put on key 1-10 / lock / tag as junk / sell one / break down: group into equip / bind-to-key / dispose sections with an --ui-line divider between each, and keep the number-key grid on one row or drop it to a single 'bind to key' action that opens the picker, matching the --sp-1 grid spacing."
+   "P0 item grid, tile 1 (rifle, selected): add a 2px lime (--acc) border or corner tick on the selected tile, kept separate from the existing bottom rarity bar, so selection and rarity never share a color channel.",
+   "P1 context panel, 'put on key' grid, last button: relabel the tenth button '0' to match the hotbar and footer legend.",
+   "P1 top-right stat row ('$1,000  stash $2,830  bag $0'): add a matching inline label (e.g. 'cash $1,000') so all three stats share one pattern.",
+   "P1 top tab bar, 11 tabs in one row ('all 5' through 'trophies 0/8'): insert an --ui-line divider or --sp-2 (16px) gap before 'gear' to split filters from section tabs.",
+   "P2 top-right, 'sort: type' control: add a small caret glyph and an --ui-raised fill so it visually matches the other control beside it."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-h12-175-break-down-guns-recipes-2/breakguns-p2-kb-1080.jpg",
+  "pic": "tools/handoff/console/notes/shots/o-h12-175-break-down-guns-recipes-3/breakguns-p2-kb-1080.jpg",
   "task": "o-h12-175-break-down-guns",
-  "when": "2026-11-11T21:37"
+  "when": "2026-11-11T23:56"
  },
  "p2-pad": {
   "score": 2,
@@ -6238,5 +6237,99 @@
   "pic": "tools/handoff/console/notes/shots/o-h12-175-break-down-guns-recipes-2/breakguns-p2-pad-1080.jpg",
   "task": "o-h12-175-break-down-guns",
   "when": "2026-11-11T21:38"
+ },
+ "hc-graveyard-ranked": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "a leaderboard with duplicate copy-pasted stats on every row and a glowing close button fighting the hero number for attention.",
+  "findings": [
+   "P0 all three rows (grim, morrow, flint): bind each row to its own career record; if real data isn't wired yet, vary the mock values so the bug isn't this visible.",
+   "P1 close/esc button, top right of the card: drop the lime border/glow from the close button; render it as --tx-2 text on --ui-line border like a normal secondary control, and keep --acc only on the #1 row's bar and its $ amount.",
+   "P1 card body below row 3: either size the card to its content (3 rows + header, ~720px tall) or fill the remainder with more rows / a footer legend; don't leave dead space inside a bordered panel.",
+   "P2 top-right currency readout ($1,000 / stash $0 / bag $0): remove it from this screen, or if it must persist, anchor it inside the card header with --sp-2 (16px) gaps and a 1px --ui-line divider between the three groups.",
+   "P2 close control styling vs. the settled window spec: replace with a single small X glyph per the settled spec, or confirm the text+key-chip pattern is the new standard and update the guide — don't let both coexist unverified."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h01-177-hardcore-save-recipes-3/hc-graveyard-ranked-1080.jpg",
+  "task": "o-h01-177-hardcore-save",
+  "when": "2026-11-12T00:15"
+ },
+ "hc-kia-fallen": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "the tokens are used correctly (danger red for kia, lime for the one cta, lowercase, $ for money) but a permadeath screen in a hardcore extraction shooter reads as the exact same flat modal chrome as every other window, with no moment of identity.",
+  "findings": [
+   "P1 whole card: add a one-off death-only treatment: a thin red vignette/edge-glow behind the scrim, or a small kia glyph above the title, used nowhere else, so this screen reads as higher-stakes than a shop window.",
+   "P2 subtitle line 'killed by warden, 152m from extraction · never spotted': break into 3 short label/value chips matching the stat-row's visual language below (e.g. 'warden' · '152m' · 'unseen'), each ≤12 characters, fs-label size.",
+   "P2 primary cta 'log run and return': shorten to 'return' or 'log & return' at most two words, 20px f-cond 600 per token spec.",
+   "P2 card proportions: either grow the card toward the 90% centred-card treatment used for other windows, or intentionally compose the surrounding space (dim killcam frame, subtle parallax) instead of leaving flat black."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h01-177-hardcore-save-recipes-3/hc-kia-fallen-1080.jpg",
+  "task": "o-h01-177-hardcore-save",
+  "when": "2026-11-12T00:16"
+ },
+ "p2-save-tag": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "the save-select screen reads clean and mostly on-brand, but it breaks its own color-semantics rule and carries a stray unstyled caption that undercuts the polish.",
+  "findings": [
+   "P1 grim save row, delete button: recolor the delete button border and text to --danger #e5482f at 1px border, matching the hardcore pill's hue so destructive actions read consistently across the screen.",
+   "P1 'player 2 window' caption under the main CTA: either delete it, or move it to a small 14px --tx-2 tag pinned top-left of the window (e.g. 'p2') so it reads as a window badge, not a loose sentence.",
+   "P2 logo vs. 'enter the undercroft' button: mute the logo to a flatter --tx-1/--ui-raised tone or drop its glow so the lime button is the only saturated focal point.",
+   "P2 grim row right side (hardcore tag · stat text · delete button): apply a fixed 16px (--sp-2) gap between each of the three elements in every save row.",
+   "P2 top-right 'go fullscreen' / 'settings' buttons: give top-bar utility buttons a quieter treatment (e.g. --tx-2 text, no border) so they recede behind in-content actions."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h01-177-hardcore-save-recipes-3/hc-p2-save-tag-1080.jpg",
+  "task": "o-h01-177-hardcore-save",
+  "when": "2026-11-12T00:17"
+ },
+ "hc-saves-after-death": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "clean and orderly, but the oversized off-palette orange logo fights the lime primary button for boldness and the screen has no atmosphere or texture to make it feel like this game.",
+  "findings": [
+   "P1 wordmark 'pillagers' top-center: cap the wordmark at --fs-hero(56px) sizing logic or keep it pure wordmark art with zero saturation competing below it; recolor the type scale supporting elements so only the lime button carries saturated boldness.",
+   "P1 full lower half of the screen, below the saves block: add a quiet environment or faction-art layer behind the menu column (per the ARC Raiders/Destiny refs) so the screen reads as this game's world, not a placeholder.",
+   "P2 hardcore toggle switch, left of 'graveyard': fill the track with --acc or --ok when on and --ui-raised when off, and size the knob to at least 24px so state is legible at distance.",
+   "P2 hardcore + graveyard row vs. the save-management row above it: add a 1px --ui-line divider or extra --sp-2 gap above this row, or fold it under its own small caption like 'saves' has.",
+   "P2 'saves' caption vs. the four mode buttons above it: add a matching small tx-2 caption ('mode') above the four buttons, or drop the 'saves' caption and separate both groups with the same --ui-line divider treatment."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h01-177-hardcore-save-recipes-3/hc-saves-after-death-1080.jpg",
+  "task": "o-h01-177-hardcore-save",
+  "when": "2026-11-12T00:18"
+ },
+ "hc-title-off": {
+  "score": 2,
+  "pass": false,
+  "need": 3,
+  "verdict": "it reads like a placeholder splash screen that forgot the game's own palette, not a shipped aaa title screen.",
+  "findings": [
+   "P0 'pillagers' logotype, upper third: flatten the logotype to --tx-1 (#efe9dc) or a single flat --acc lime fill, remove the gradient, and keep only the '1 player' button carrying the bold accent.",
+   "P1 full background, behind the menu column: drop in a low-opacity (15-25%) background plate or parallax scene at 1920x1080 behind the void layer, consistent with the dark environment panels in the arc-raiders/diablo-iv references.",
+   "P1 bottom-left control legend: wasd / mouse / lmb / e / f1: remove the raid-control row from this screen entirely (reserve it for attract/walk-up screens per the style guide), or replace with a single lowercase 'esc back' hint; lowercase any key label left on screen.",
+   "P2 hardcore toggle, bottom of the saves block: build it as a pill switch: track --ui-raised, thumb --tx-2 when off / --acc when on, radius --rad, 44px minimum hit target.",
+   "P2 'grim' save row, right edge: insert --sp-2 (16px) gaps between the hardcore pill, the stat text, and the delete button."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h01-177-hardcore-save-recipes-3/hc-title-off-1080.jpg",
+  "task": "o-h01-177-hardcore-save",
+  "when": "2026-11-12T00:19"
+ },
+ "hc-title-on": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "the panel and button system is clean and consistently cased, but the orange-gradient logo fights the lime cta for the single bold accent and the bare background gives it no identity as an extraction shooter.",
+  "findings": [
+   "P0 title 'pillagers' wordmark, upper third: drop the gradient; set the wordmark to solid --tx-1 (#efe9dc) or solid --acc, and let the lime '1 player' button be the only saturated/bold element on the screen.",
+   "P1 full background, behind the menu stack: add a low-opacity environment or key-art layer (or subtle parallax) behind the panel stack, per the arc-raiders reference's flat dark panel over atmospheric art, at ~15-20% opacity so it doesn't fight panel contrast.",
+   "P1 'grim' save row, hardcore tag + delete button: keep delete as a quiet --tx-2/--ui-line-hi outline (it's a low-frequency utility action, not the primary one) and reserve the saturated lime only for the actually-selected save row's border, as already done on 'pillager new'.",
+   "P2 top-right 'go fullscreen' / 'settings' buttons: shrink to --fs-label (16px) with --sp-1 padding and --tx-2 text color so they visibly rank below the four mode buttons."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h01-177-hardcore-save-recipes-3/hc-title-on-1080.jpg",
+  "task": "o-h01-177-hardcore-save",
+  "when": "2026-11-12T00:20"
  }
 }

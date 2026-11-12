@@ -49,3 +49,23 @@ The required C:/Codex/FNP new 11082026/RULES.md is still unavailable in this san
 The required C:/Codex/FNP new 11082026/RULES.md path remains unavailable in this sandbox.
 
 11-11 11:06 coordinator: the fixture change you prepared is in exactly as written (0fe2908e5, fixture rebuilt, JS ok). Back in tasks/ with fresh runs (r3); build and ship.
+
+--- codex run 2026-11-11 19:06 ---
+2026-11-11 - prepared cw-cx-triggerreload against v37.69 (016b55766).
+LOCAL: no linked review. This changes local gun input and reload state only; no packet or shared field changes.
+
+The coordinator retarget of check 31.99 is present in both fixtures. It now pulses the weapon probe on each RT rising edge, so the old one-shot assertion no longer blocks held-repeat. No fixture edits or fixture-retarget.json submitted.
+
+Six game edits in the mk script: remove the loaded-magazine fired latch; allow a fresh loaded press to cancel before cooldown or MG spin permits firing; consume blocked/dry pulls during an ongoing reload; load shotgun shells on the existing 10 to 85 percent sound schedule (45 percent for one shell); clear shell clocks on completion/cuts; preserve the pad completed-reload stamp when all shells arrived before the end pump. Existing reloadCancel retains active-chain cancellation and all loaded shells. The bot sim stays one go. No player text, settings or feel values added.
+
+The extra dry-pull latch is necessary: updatePlayer starts an empty-trigger reload before reaching the gun branch. Without consuming that pull, fired stays false and the first shell would cancel an untouched held trigger. The same latch also protects a dry press during a running manual reload.
+
+The new check covers both local roles: held pistol uses at least three real shots in one second; bare hands swing once; held frag cooks once; fresh rifle fire cancels and spends exactly one round without reserve changes; empty/old-held controls; cancellation before cooldown/MG spin; four shotgun shells at 1.2 seconds followed by a fresh six-pellet shot; rifle midpoint stays empty; dry held shotgun does not cancel when its first shell arrives; active reload finishes the rest; one-shell timing and full duration; forged shotgun; loaded-shell retention on roll/swap/down; unchanged bot reload; real RT polling, proper per-role pad assignment, repeat and fresh-fire cancel.
+
+Local verification: the mk script prints written, every anchor matches once, all six edits apply sequentially without overlap, the original and drafted game scripts parse, and the regression check and four camera recipes parse. Every handoff file is ASCII. No browser/game checks were run in the sandbox; lane preflight and ship remain required.
+
+Camera recipes provide four smooth-look snapshots: host and p2 at four shells midway through reload, and each role after a real fresh-pull six-pellet shot with three shells left. Recipes assert the observed state and freeze only the player update after staging. They are local role views, not a linked session. No before image exists for custom recipes under the lane rules. Pictures and critic results remain for the lane.
+
+Watch text is in draft why: Lance empties three rounds in about 0.13 s; Rocket Launcher fires both rockets 0.7 s apart; habitual fire taps can cancel a partial reload; listen for the end pump on a cut shell reload; a one-shell top-up retains its 2.4 s duration.
+
+The referenced C:/Codex/FNP new 11082026/RULES.md is unavailable in this sandbox. Protected services, other chat transcripts, the game file and fixture were not modified.

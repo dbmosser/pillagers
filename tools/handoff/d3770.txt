@@ -1,0 +1,5 @@
+## v37.70 - HARDCORE TITLE SWITCH USES THE SHARED PILL
+
+Co-op hunt while he was away. The title save-row button rule overrode the shared toggle height and radius. Excluding shared toggles restores the existing 40 by 20 pill without changing settings or graveyard. Watch: check hardcore off and on beside its label at 1080p and 4K.
+
+MEASURED. Check 37.70 passes, and fails on v37.69.

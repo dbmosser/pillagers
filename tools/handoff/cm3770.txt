@@ -1,0 +1,7 @@
+v37.70: hardcore title switch uses the shared pill
+
+The hardcore switch keeps the shared pill shape and sliding knob on the title.
+
+Check 37.70. Fails on v37.69.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

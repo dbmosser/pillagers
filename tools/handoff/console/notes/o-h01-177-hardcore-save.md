@@ -99,3 +99,25 @@ Revised the check to stage scrap, wire and cell ($140 at the pinned defaults), w
 Regenerated cw-cx-hardcore: written, 21 unique production edit anchors, eight unique helpers, ASCII mk script. Candidate JavaScript, revised browser check and camera builder pass syntax checks. The isolated helper harness passes all save guards and now runs the actual standardKit, trStash and item definitions: old three-bandage staging auto-packs all three; replacement three-salvage staging auto-packs none and remains worth $140. No tracked game or fixture edits.
 
 cw-cx-hardcore remains in keys.txt for a new preflight. Existing six smooth-look camera recipes remain ready at 1080p/4k. LOCAL: no linked review. Lane must obtain a passing browser gate, ship with ON HIS PC confirmation, then pictures and graveyard critic. This run does not claim a browser pass or shipment.
+
+--- codex run 2026-11-11 18:52 ---
+2026-11-11 - Continued at v37.69. cw-cx-hardcore shipped as commit 4123d76da (v37.68). tools/handoff/d3768.txt reports check 37.68 passes and fails on v37.67. The ship log tools/handoff/console/onhispc.txt line 237 confirms v37.68 reached his PC after 73 seconds. The gameplay change is shipped; visual acceptance remains open.
+
+Reviewed recipe round 1 report and its graveyard image. Every scene is NOT STAGED; the images show the empty game canvas and cannot count as title/KIA/graveyard review. The recipe incorrectly defined window.U, while tools/uishots.ps1 StageOne requires window.__uis and awaits U.prep(). Fixed build-recipes.js to reuse the shared camera prelude core, including prep, DPR pinning and real visibility checks. Regenerated camera-recipes.json. No production game or fixture change this run.
+
+The title-off predicate now also requires a visible creation switch and the slot 5 hardcore tag. The graveyard predicate requires actual row values 42600,18750,9200 in that order. KIA camera staging now uses scrap, wire and cell, matching the corrected shipped regression instead of items that empty-kit deployment auto-packs. Existing six smooth-look scenes still cover toggle off/on, player 2 hidden toggle and tag, KIA, saves after death and ranked graves.
+
+Validation: validate-camera-contract.js executes the real StageOne wrapper with the shared prelude, confirms prep pins DPR, checks the injected helper syntax and all six scene/predicate syntax checks, the player 2 query and ASCII JSON. PASS. Camera builder syntax passes. This validates the camera contract; it does not substitute for actual scene staging or critic review. No tracked files edited. Retained shipped key stays in keys.txt for the lane to skip.
+
+Round 1 also failed to start its 4k Chrome on spare port 9348 after the 1080 captures. The log names Chrome did not start, separate from the recipe defect. The changed recipe is ready for another 1080/4k camera round. Coordinator alarm records the 4k failure if it recurs. Remaining lane work: obtain staged images for all six scenes at both resolutions, review the pictures, and obtain the required graveyard/KIA critic finish lines. No critic acceptance is claimed.
+
+LOCAL: no linked review.
+
+
+--- codex run 2026-11-11 18:56 ---
+2026-11-11 - Camera round 2 failed before recipe staging. Read notes/shots/o-h01-177-hardcore-save-recipes-2/report.json: screens is an empty array, seconds=71; the directory contains only that report and an empty summary, with no pictures. The lane camera log reports Invoke-RestMethod timeout in tools/uishots.ps1 line 147, FreshPage PUT /json/new?about:blank. FreshPage runs before StageOne evaluates the prelude or scene, so this result supplies no new recipe, game or critic finding. REMOTE VERIFIED confirms the base/artifact transport, not visual acceptance.
+
+No production, fixture or recipe edit is justified by a browser tab-creation timeout. The previously corrected six-scene recipe and camera builder remain ready in .codex-work/o-h01-177-hardcore-save/. No repeated local validation was run. Both allowed lane recipe rounds are now spent; coordinator must recover the spare-PC camera and arrange a recovery round at 1080p and 4k, then return staged images and critic results. In particular, do not accept the blank round-1 images or empty round-2 report as graveyard review.
+
+Gameplay remains shipped in v37.68, commit 4123d76da, with the recorded passing/fail-before check and ON HIS PC confirmation. Remaining work is solely staged visual evidence and critic acceptance, including player 2. LOCAL: no linked review.
+

@@ -1903,7 +1903,8 @@
 #root #title #modemenu button.moderow.picked{ background:var(--ui-raised); border-color:var(--acc); color:var(--tx-1); box-shadow:inset 3px 0 0 var(--acc); }
 #root #title #modemenu .modelater button.moderow{ min-height:var(--btn-h-sm); font-size:var(--fs-body) !important; }#root #title #modemenu .modelater span{ right:var(--sp-2); padding:0 var(--sp-1); border:1px solid var(--ui-line); border-radius:var(--rad); font:600 var(--fs-label)/1.5 var(--f-cond); letter-spacing:var(--track); color:var(--tx-2); }
 #root #title #slotpanel > div:first-child{ color:var(--tx-2) !important; }
-#root #title #slotpanel button, #root #title #pnamein{ min-height:var(--btn-h-xs); border-radius:var(--rad) !important; font:600 var(--fs-label)/1 var(--f-cond) !important; }
+/* v28.xx (cw-cx-hardcorepill): title action buttons leave shared toggles their pill size, radius and centred knob. */
+#root #title #slotpanel button:not(.ui-toggle), #root #title #pnamein{ min-height:var(--btn-h-xs); border-radius:var(--rad) !important; font:600 var(--fs-label)/1 var(--f-cond) !important; }
 /* v28.xx (cw-uishared-title2), the critic scored the title 2 of 5 ("template page, cards read as buttons, five amber things, rows off the grid,
    no pad focus"). Cards are flat columns under a 1px rule, not boxes; one amber per zone; every mode row 48px on the 8px grid; a focus cue. */
 #root #title .tcard{ background:transparent; border:0; border-top:1px solid var(--ui-line-hi); border-radius:0; box-shadow:none; padding:var(--sp-2) var(--sp-1) 0 0; }
@@ -4076,8 +4077,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.69';
-var VER_AT='2026-11-11 18:42';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.70';
+var VER_AT='2026-11-12 04:50';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -58653,7 +58654,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.69: Stash actions use 20px painted labels and 16px hints at 1080p, a five by two key grid, and placement clear of occupied stash tiles and the stat card when space allows. Rarity stays in the 3px foot bar, quantities are neutral, wanted prices use a reserved sub-row, and gear, armory and trophy shortcuts sit together with the tabs. The repeated bag value is hidden. Check 37.69 fails on v37.68',
+  now:'v37.70: The hardcore switch keeps the shared pill shape and sliding knob on the title. Check 37.70 fails on v37.69',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows

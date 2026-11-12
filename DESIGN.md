@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.70 - HARDCORE TITLE SWITCH USES THE SHARED PILL
+
+Co-op hunt while he was away. The title save-row button rule overrode the shared toggle height and radius. Excluding shared toggles restores the existing 40 by 20 pill without changing settings or graveyard. Watch: check hardcore off and on beside its label at 1080p and 4K.
+
+MEASURED. Check 37.70 passes, and fails on v37.69.
 ## v37.69 - READABLE STASH BREAK DOWN MENU
 
 Co-op hunt while he was away. The break down camera review found tiny text, uneven key rows and an action menu covering stash items and pad stats. The stash now uses the menu type and spacing from the style guide. Watch: cheap parts could make bench guns and armour easy to craft; watch his stash for servo and board hoards.

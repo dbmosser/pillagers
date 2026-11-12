@@ -868,3 +868,11 @@
 2026-11-11 17:52 o-h12-175-break-down-guns 747s ok PARTIAL in=2199642 out=23709 run=2
 2026-11-11 18:00 o-h01-177-hardcore-save 268s ok PARTIAL in=2654526 out=12053 run=3
 2026-11-11 18:04 o-h12-175-break-down-guns 110s ok PARTIAL in=2793094 out=27054 run=3
+2026-11-11 18:52 o-h01-177-hardcore-save 235s ok PARTIAL in=1088208 out=7299 run=4
+2026-11-11 18:56 o-h01-177-hardcore-save 61s ok PARTIAL in=1355082 out=9090 run=5
+2026-11-11 19:04 o-h12-175-break-down-guns 480s ok PARTIAL in=4864998 out=43972 run=4
+2026-11-11 19:06 o-h04-149-trigger-repeat-shells-fire-cancels-reload 496s ok PARTIAL in=1350664 out=14903 run=1
+2026-11-11 19:41 o-h01b-hardcore-toggle-is-a-pill 339s ok PARTIAL in=1215568 out=11439 run=1
+2026-11-12 03:34 o-h01b-hardcore-toggle-is-a-pill 82s ok PARTIAL in=1616756 out=14691 run=2
+2026-11-12 03:45 o-h12-175-break-down-guns 154s ok PARTIAL in=5793033 out=48342 run=5
+2026-11-12 04:30 o-h12-175-break-down-guns 393s ok PARTIAL in=7809890 out=60383 run=6

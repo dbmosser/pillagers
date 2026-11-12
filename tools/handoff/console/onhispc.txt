@@ -235,3 +235,4 @@
 11-08 18:11 v37.66 cw-cx-floorbits on his pc after 73s (8802 serves 37.66) week 26%
 11-08 20:31 v37.67 cw-cx-endseat on his pc after 34s (8802 serves 37.67) week 26%
 11-11 18:28 v37.68 cw-cx-hardcore on his pc after 73s (8802 serves 37.68) week 72%
+11-11 18:44 v37.69 cw-cx-breakgunmenu on his pc after 91s (8802 serves 37.69 (its GitHub status; the bridge did not answer)) week 72%
