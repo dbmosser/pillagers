@@ -8146,3 +8146,6 @@
 2026-11-12 09:09:12 raid 9 demo2 raidSeed=919547793 map=0 god=1 sec=345 end=hang problems=2 newUnique=0 totalUnique=7 totalProblems=11 events=45 score=0 ents=50 travelPx=180 fires=2 menuPct=0 heapMB=44 p2= gfx=315/41.25/100/272/0.85 work=443/13.75/47.75/100 pics=242/82.9mb/wall:70,veg:24,shad:100,icon:26,g.pix:0,g.pixmachines:0,g.muz:1,g.gun:2,g.lightspr:16,pix.actors:0,pix.scene:0,big:3 build=37.72
 2026-11-12 09:18:39 raid 10 demo2 raidSeed=218579961 map=0 god=0 sec=344 end=hang problems=1 newUnique=0 totalUnique=7 totalProblems=12 events=47 score=0 ents=54 travelPx=234 fires=1 menuPct=0 heapMB=41 p2= gfx=445/93.25/100/412/0.85 work=453/8.75/40.75/100 pics=72/72.1mb/wall:30,veg:5,shad:22,icon:9,g.pix:0,g.pixmachines:0,g.muz:0,g.gun:1,g.lightspr:2,pix.actors:0,pix.scene:0,big:3 build=37.72
 2026-11-12 09:19:14 FUZZ END raids=10 problems=12 unique=7 reason=time minutes=59.5
+2026-11-12 09:21:52 FUZZ ERROR Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." at 127
+2026-11-12 09:22:04 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." minutes=0.8
+2026-11-12 09:28:13 FUZZ START seed=1854101428 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
