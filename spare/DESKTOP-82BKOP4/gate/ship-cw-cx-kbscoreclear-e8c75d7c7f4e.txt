@@ -1,0 +1,23 @@
+id=ship-cw-cx-kbscoreclear-e8c75d7c7f4e
+kind=ship
+key=cw-cx-kbscoreclear
+tag=73
+v=37.73
+new=3773
+base=26de0fdb0b1e82ae9eb52883a85aa7244952cb26
+host=DESKTOP-82BKOP4
+draft_sha=3367fed9a3864344cbb0b67e5530319cf5dc471c93d3b931c22cf9278e9ab013
+p_sha=5d8d89817734058ee951a2aed8c214fabda1f80bde08c68e09bee693157c9645
+f_sha=777c586f9862a67e3e598a283c74fdbda45d730bcce73de3128a627297043d10
+game_sha=a7122f11227e100cdeec9d1aea5a8c7c8cbe0cacc8a51c9edb7a682f01bd43cb
+fix_sha=52b6742629091fad7bd6c6fd6fa3b07873e5702271c324befe8b4feeadb569bb
+started=1794487382
+ended=1794487692
+result=FAIL
+infra=1
+reason=the gate Chrome on 9347 did not start
+--- stages
+p73 -> OK, 2 edits applied plus DEVNOW
+f73 -> OK, 1 edits applied
+--- end
+done=1
