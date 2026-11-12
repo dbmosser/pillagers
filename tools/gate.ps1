@@ -5,10 +5,10 @@
 param([string]$NN,[string]$V,[switch]$Fix,[int]$Port=8806,[int]$Cdp=9333)
 $c=Join-Path $PSScriptRoot 'cdp.ps1'
 function Ev([string]$m,[string]$e,[int]$t=180){ powershell -NoProfile -ExecutionPolicy Bypass -File $c -Port $Cdp -Match $m -Expr $e -TimeoutSec $t }
-function OpenWait([string]$url,[string]$m,[string]$ready){
+function OpenWait([string]$url,[string]$m,[string]$ready,[int]$tries=60){
   (Invoke-RestMethod http://127.0.0.1:$Cdp/json) | Where-Object { $_.url -like "*$m*" -or ($_.url -like "*localhost:$Port/*" -and $_.url -notlike "*$NN.html*") } | ForEach-Object { Invoke-RestMethod ("http://127.0.0.1:$Cdp/json/close/"+$_.id) | Out-Null }
   $t=Invoke-RestMethod -Method Put -Uri ("http://127.0.0.1:$Cdp/json/new?"+$url); Invoke-RestMethod ("http://127.0.0.1:$Cdp/json/activate/"+$t.id) | Out-Null
-  for($i=0;$i -lt 60;$i++){ Start-Sleep -Milliseconds 500; $r=Ev $m $ready 10; if($r -eq 'true'){ return } }
+  for($i=0;$i -lt $tries;$i++){ Start-Sleep -Milliseconds 500; $r=Ev $m $ready 10; if($r -eq 'true'){ return } }
   Write-Output "TIMEOUT loading $url"
 }
 # 2026-10-18: a page left open keeps drawing the title in software (about 1.3 cores per test Chrome), so pages close when the caller
@@ -23,7 +23,11 @@ if($Fix){
   Shut @("$Port/fixture.html")
   exit 0
 }
-OpenWait "http://localhost:$Port/parsecheck.html?f=fxdry$NN.html" "parsecheck" "String(/parse check/.test(document.title))"
+# 11-12 (HTML CEO, from the lane p finding on cw-cx-breakgunfinish): the parser page starts with the title "Dark Raiders parse check",
+# so /parse check/ was already true before the fetch and compile finished, and the gate read that first title and stopped a good build
+# (11-12 05:1x). Wait for the final title only (PASS, FAIL or ERROR, set at tools/parsecheck.html lines 132 and 138), up to 2 minutes
+# since the JT PC runs it on one processor beside Fortnite.
+OpenWait "http://localhost:$Port/parsecheck.html?f=fxdry$NN.html" "parsecheck" "String(/^(PASS|FAIL|ERROR) .*parse check$/.test(document.title))" 240
 $pr=Ev 'parsecheck' 'document.title'
 "parse: " + $pr
 Shut @("parsecheck.html?f=fxdry$NN.html")

@@ -1,5 +1,5 @@
 # h01c-graveyard-hides-the-money-strip : the money strip ($ / stash / bag) shows over the top edge of the graveyard panel opened from the title
-WAIT ON o-h01b-hardcore-toggle-is-a-pill
+WAIT ON o-00a-graveyard-buttons-do-nothing
 Queued 11-11 20:0x by the HTML CEO from the o-h01 recipe pictures (v37.69): tools/handoff/console/notes/shots/o-h01-177-hardcore-save-recipes-3/hc-graveyard-ranked-1080.jpg and ...-recipes-3-4k/hc-graveyard-ranked-4k.jpg. Build at HEAD.
 Codex: never change tools/mkfixture.ps1; if a check must change, put the finding and exact change in your notes and stop. Owner quotes below are binding as written.
 HIS PRIORITY: follows o-h01 (HIGH). A polish fix to a shipped screen.
