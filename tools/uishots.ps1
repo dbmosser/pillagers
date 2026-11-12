@@ -138,7 +138,9 @@ function ChromeStart([int]$w,[int]$h){
   # (no user gesture). -NoPopupBlock, or "popups": true in the recipe file, lets this throwaway camera browser open it.
   if($NoPopupBlock -or ($spec -and $spec.popups)){ $a=$a.Replace(' about:blank',' --disable-popup-blocking about:blank') }
   $script:proc=Start-Process -FilePath $exe -ArgumentList $a -PassThru
-  for($i=0;$i -lt 60;$i++){ try{ Invoke-RestMethod "http://127.0.0.1:$Port/json/version" -TimeoutSec 2 | Out-Null; return }catch{ Start-Sleep -Milliseconds 250 } }
+  # 11-11 (HTML CEO): 15 s was too short on the JT PC beside Fortnite (one processor, Idle priority): the o-h01 4K pass lost every picture to
+  # "Chrome did not start". Wait up to about a minute.
+  for($i=0;$i -lt 240;$i++){ try{ Invoke-RestMethod "http://127.0.0.1:$Port/json/version" -TimeoutSec 2 | Out-Null; return }catch{ Start-Sleep -Milliseconds 250 } }
   throw "Chrome did not start on $Port"
 }
 # a fresh tab on a wiped origin, loaded and booted; returns the viewport string "WxH" (or $null when the fixture never booted)
