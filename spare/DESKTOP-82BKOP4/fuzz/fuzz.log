@@ -8008,3 +8008,5 @@
 2026-11-11 19:52:26 FUZZ ABORT reason=gate job, not a game failure
 2026-11-11 19:56:11 FUZZ ABORT reason=gate job, not a game failure
 2026-11-11 20:07:26 FUZZ ABORT reason=gate job, not a game failure
+2026-11-11 20:34:06 FUZZ ERROR Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." at 127
+2026-11-11 20:34:22 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." minutes=3.9
