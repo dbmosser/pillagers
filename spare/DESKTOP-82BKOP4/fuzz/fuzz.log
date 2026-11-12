@@ -8173,3 +8173,7 @@
 2026-11-12 10:45:52 FUZZ 2P ROBOTS OFF: three 2-window starts in a row failed, so the 2-player share runs as demo2 (this window as host alone) for the rest of this run
 2026-11-12 10:45:52 raid 3 demo2p raidSeed=406786098 map=0 god=0 sec=21 end=nostart problems=1 newUnique=1 totalUnique=3 totalProblems=3 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
 2026-11-12 10:51:11 raid 4 demo1 raidSeed=2138576133 map=0 god=0 sec=234 end=hang problems=1 newUnique=1 totalUnique=4 totalProblems=4 events=28 score=0 ents=52 travelPx=59 fires=0 menuPct=0 heapMB=34 p2= gfx=440/93.75/100/405/0.85 work=517/9.25/48.75/100 pics=127/60.7mb/wall:67,veg:10,shad:35,icon:9,g.pix:0,g.pixmachines:0,g.muz:0,g.gun:1,g.lightspr:2,pix.actors:0,pix.scene:0,big:3 build=37.72
+2026-11-12 10:54:28 FUZZ ERROR Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." at 127
+2026-11-12 10:55:03 FUZZ END raids=4 problems=4 unique=4 reason=ERROR: Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." minutes=16.6
+2026-11-12 11:02:28 FUZZ ERROR The operation has timed out. at 241
+2026-11-12 11:03:20 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: The operation has timed out. minutes=4.4
