@@ -49,3 +49,4 @@
 {"ts":"2026-11-12 12:17:45","build":"37.72","runSeed":443240237,"raidNo":4,"mode":"demo1","raidSeed":1496427426,"raidSec":56,"kind":"stall","msg":"no animation frame for 19040 ms (demo1)","where":"raf=18873 gameloop=19040","last60":["1:mm 962,539"]}
 {"ts":"2026-11-12 12:18:02","build":"37.72","runSeed":443240237,"raidNo":4,"mode":"demo1","raidSeed":1496427426,"raidSec":73,"kind":"hang","msg":"the page stopped answering for 10+ s (demo1)","where":"CDP timeout","last60":["1:mm 962,539","6:md left 964,541"]}
 {"ts":"2026-11-12 12:51:03","kind":"dup-counts","runSeed":443240237,"counts":{"hang|the page stopped answering for #+ s (demo#)":2,"stall|no animation frame for # ms (demo#)":2}}
+{"ts":"2026-11-12 13:03:44","build":"37.72","runSeed":1508793628,"raidNo":1,"mode":"demo2p","raidSeed":1891299013,"raidSec":82,"kind":"start","msg":"demo2p raid did not start: ERR the player 2 window setup: CDP timeout","where":"","last60":[]}

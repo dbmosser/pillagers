@@ -8195,3 +8195,5 @@
 2026-11-12 12:25:29 raid 5 demo2 raidSeed=1077588133 map=0 god=0 sec=338 end=hang problems=2 newUnique=0 totalUnique=5 totalProblems=7 events=101 score=50 ents=54 travelPx=408 fires=1 menuPct=0 heapMB=39 p2= gfx=191/40.75/100/154/1 work=196/11.75/35.75/83.75 pics=144/62.8mb/wall:45,veg:15,shad:64,icon:9,g.pix:0,g.pixmachines:0,g.muz:0,g.gun:1,g.lightspr:7,pix.actors:0,pix.scene:0,big:3 build=37.72
 2026-11-12 12:50:52 FUZZ ERROR the fixture page did not come up in 120 s at 256
 2026-11-12 12:51:03 FUZZ END raids=5 problems=7 unique=5 reason=ERROR: the fixture page did not come up in 120 s minutes=50.3
+2026-11-12 13:01:50 FUZZ START seed=1508793628 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=?
+2026-11-12 13:03:50 raid 1 demo2p raidSeed=1891299013 map=0 god=0 sec=82 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
