@@ -8010,3 +8010,6 @@
 2026-11-11 20:07:26 FUZZ ABORT reason=gate job, not a game failure
 2026-11-11 20:34:06 FUZZ ERROR Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." at 127
 2026-11-11 20:34:22 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." minutes=3.9
+2026-11-11 20:41:30 FUZZ START seed=1336959707 minutes=60 raidsec=300 port=9331 srv=8806 build=37.68 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-11 20:44:32 raid 1 demo2p raidSeed=1533151152 map=0 god=1 sec=119 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.68
+2026-11-11 20:48:54 raid 2 demo2p raidSeed=1758523952 map=0 god=0 sec=176 end=nostart problems=1 newUnique=1 totalUnique=2 totalProblems=2 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.68
