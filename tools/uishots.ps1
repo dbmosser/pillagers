@@ -143,8 +143,15 @@ function ChromeStart([int]$w,[int]$h){
 }
 # a fresh tab on a wiped origin, loaded and booted; returns the viewport string "WxH" (or $null when the fixture never booted)
 function FreshPage([string]$url){
-  $old=@(Tabs)
-  $t=Invoke-RestMethod -Method Put -Uri ("http://127.0.0.1:$Port/json/new?about:blank") -TimeoutSec 10
+  # 11-11 (HTML CEO): beside FnP's Fortnite tests the JT PC runs this Chrome on one processor at Idle priority, and the o-h01 recipe round 2
+  # lost every picture when the first new tab took over 10 s to answer. Wait up to 30 s, three tries, then close every other page (a late
+  # answer to a timed-out try leaves an extra tab).
+  $t=$null
+  for($ti=1;$ti -le 3 -and -not $t;$ti++){
+    try{ $t=Invoke-RestMethod -Method Put -Uri ("http://127.0.0.1:$Port/json/new?about:blank") -TimeoutSec 30 }
+    catch{ if($ti -ge 3){ throw }; Write-Host ('  WARN: a new tab did not answer in 30 s (try '+$ti+' of 3)'); Start-Sleep -Seconds 2 }
+  }
+  $old=@(Tabs | Where-Object { $_.id -ne $t.id })
   foreach($o in $old){ try{ Invoke-RestMethod ("http://127.0.0.1:$Port/json/close/"+$o.id) -TimeoutSec 5 | Out-Null }catch{} }
   $left=@()
   for($i=0;$i -lt 20;$i++){ $left=@(Tabs | Where-Object { $_.id -ne $t.id }); if($left.Count -eq 0){ break }; Start-Sleep -Milliseconds 150 }
