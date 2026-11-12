@@ -6,4 +6,5 @@ Set sh = CreateObject("WScript.Shell")
 Set fso = CreateObject("Scripting.FileSystemObject")
 d = sh.ExpandEnvironmentStrings("%LOCALAPPDATA%") & "\PillagersPlay"
 If Not fso.FolderExists(d) Then fso.CreateFolder(d)
-sh.Run "cmd /c powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""C:\claudecode\dark raiders\tools\start-servers.ps1"" -Root ""C:\claudecode\pillagers-party"" -PlayOnly > """ & d & "\start-8802.log"" 2>&1", 0, False
+' 11-11 (HTML CEO): if Windows PowerShell cannot load (a pending Windows update did that on 11-11), the same script runs under pwsh.
+sh.Run "cmd /c powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""C:\claudecode\dark raiders\tools\start-servers.ps1"" -Root ""C:\claudecode\pillagers-party"" -PlayOnly > """ & d & "\start-8802.log"" 2>&1 || pwsh.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File ""C:\claudecode\dark raiders\tools\start-servers.ps1"" -Root ""C:\claudecode\pillagers-party"" -PlayOnly >> """ & d & "\start-8802.log"" 2>&1", 0, False

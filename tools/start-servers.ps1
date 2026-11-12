@@ -15,6 +15,18 @@ $collector = Join-Path $Root 'tools\collector.ps1'
 $capture   = Join-Path $Root 'tools\capture.ps1'
 $tools     = Join-Path $Root 'tools'
 
+# 11-11 21:3x (HTML CEO): after the 21:02 restart a Windows update was still pending (KB5132688, servicing reboot pending) and
+# Windows PowerShell 5.1 would not load at all ("Loading managed Windows PowerShell failed with error 80070002"), so 8802 never came
+# up. The servers are plain HttpListener scripts that run the same under PowerShell 7, so when powershell.exe cannot run a one-line
+# command, they start with pwsh instead. Nothing changes while powershell.exe works.
+$psHost = 'powershell.exe'
+$psOut = ''
+try { $psOut = (& powershell.exe -NoProfile -Command 'Write-Output ok5' 2>$null | Out-String) } catch { $psOut = '' }
+if ($psOut -notmatch 'ok5') {
+  $pw = Get-Command pwsh -ErrorAction SilentlyContinue
+  if ($pw) { $psHost = $pw.Source; "windows powershell does not load: servers start with $psHost" }
+}
+
 function Test-Port([int]$Port, [string]$Path) {
   try {
     $r = Invoke-WebRequest -Uri "http://localhost:$Port/$Path" -UseBasicParsing -TimeoutSec 2
@@ -34,7 +46,7 @@ function Start-Bg([string]$Script, [string[]]$ScriptArgs) {
   foreach ($a in $ScriptArgs) {
     if ($a -match '^-') { $line += ' ' + $a } else { $line += ' "' + $a + '"' }
   }
-  Start-Process -FilePath 'powershell.exe' -ArgumentList $line -WindowStyle Hidden | Out-Null
+  Start-Process -FilePath $psHost -ArgumentList $line -WindowStyle Hidden | Out-Null
 }
 
 # 8802: the project folder. THIS IS DANIEL'S PLAY LINK.
