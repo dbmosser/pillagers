@@ -8186,3 +8186,8 @@
 2026-11-12 11:37:55 raid 5 demo2 raidSeed=779977459 map=0 god=0 sec=339 end=hang problems=1 newUnique=0 totalUnique=4 totalProblems=5 events=48 score=0 ents=55 travelPx=367 fires=3 menuPct=0 heapMB=38 p2= gfx=484/50.75/100/369/0.9 work=471/9.75/38.25/100 pics=113/62.5mb/wall:33,veg:19,shad:41,icon:9,g.pix:0,g.pixmachines:0,g.muz:2,g.gun:2,g.lightspr:4,pix.actors:0,pix.scene:0,big:3 build=37.72
 2026-11-12 11:59:34 FUZZ ERROR the fixture page did not come up in 120 s at 256
 2026-11-12 12:00:01 FUZZ END raids=5 problems=5 unique=4 reason=ERROR: the fixture page did not come up in 120 s minutes=56
+2026-11-12 12:08:58 FUZZ START seed=443240237 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-12 12:11:00 raid 1 demo2p raidSeed=1722783890 map=0 god=0 sec=70 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-12 12:12:51 raid 2 demo2p raidSeed=897982559 map=0 god=1 sec=47 end=nostart problems=1 newUnique=1 totalUnique=2 totalProblems=2 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-12 12:15:53 FUZZ 2P ROBOTS OFF: three 2-window starts in a row failed, so the 2-player share runs as demo2 (this window as host alone) for the rest of this run
+2026-11-12 12:15:53 raid 3 demo2p raidSeed=703214936 map=0 god=0 sec=128 end=nostart problems=1 newUnique=1 totalUnique=3 totalProblems=3 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
