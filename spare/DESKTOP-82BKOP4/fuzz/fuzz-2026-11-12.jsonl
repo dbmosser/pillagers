@@ -9,3 +9,5 @@
 {"ts":"2026-11-12 02:15:01","build":"37.69","runSeed":126063328,"raidNo":3,"mode":"demo2p","raidSeed":171066436,"raidSec":118,"kind":"start","msg":"demo2p raid did not start: ERR CDP timeout","where":"","last60":[]}
 {"ts":"2026-11-12 02:17:14","build":"37.69","runSeed":126063328,"raidNo":4,"mode":"demo1","raidSeed":1558719223,"raidSec":115,"kind":"hang","msg":"the page stopped answering for 10+ s (demo1)","where":"CDP timeout","last60":["1:mm 962,542","5:kd KeyS","5:kd KeyA","7:mm 959,537"]}
 {"ts":"2026-11-12 02:23:04","kind":"dup-counts","runSeed":126063328,"counts":{"hang|the page stopped answering for #+ s (demo#)":2,"start|demo#p raid did not start: ERR the player # window setup: CDP timeout":2}}
+{"ts":"2026-11-12 02:37:13","build":"37.69","runSeed":1569928625,"raidNo":1,"mode":"demo2p","raidSeed":1924964456,"raidSec":163,"kind":"start","msg":"demo2p raid did not start: ERR CDP timeout","where":"","last60":[]}
+{"ts":"2026-11-12 02:40:00","build":"37.69","runSeed":1569928625,"raidNo":2,"mode":"demo2p","raidSeed":1460049590,"raidSec":46,"kind":"start","msg":"demo2p raid did not start: ERR the player 2 window setup: CDP timeout","where":"","last60":[]}
