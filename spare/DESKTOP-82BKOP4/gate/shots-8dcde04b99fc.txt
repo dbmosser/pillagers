@@ -1,0 +1,36 @@
+id=shots-8dcde04b99fc
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=b1ba5720d9c8fe7dfdb0a5d96ee41f1f8a55f8ba
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1794441858
+ended=1794442362
+result=PASS
+infra=0
+reason=
+--- stages
+== 1080 : window 1956x1185, viewport 1920x1080
+  hc-title-off                           staged       5.9s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-title-on                            staged      14.4s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-p2-save-tag                         staged      87.7s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-kia-fallen                          staged      37.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  hc-saves-after-death                   staged      47.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  hc-graveyard-ranked                    staged     139.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+report: C:\PillagersSpare\gate\work\shots-8dcde04b99fc\shots\report.json
+Chrome did not start on 9348
+At C:\claudecode\dark raiders\tools\uishots.ps1:142 char:3
++   throw "Chrome did not start on $Port"
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Chrome did not start on 9348:String) [], RuntimeException
+    + FullyQualifiedErrorId : Chrome did not start on 9348
+
+--- end
+done=1
