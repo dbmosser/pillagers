@@ -1,0 +1,29 @@
+id=ship-cw-cx-graveclick-307087da0ee1
+kind=ship
+key=cw-cx-graveclick
+tag=73
+v=37.73
+new=3773
+base=1f082d565172e98862ffc8f8f972861176d492f4
+host=DESKTOP-82BKOP4
+draft_sha=649ad5cdfbf2b63d43caea5ead847048bd6825c45d9f9432d28297eb3a90744b
+p_sha=28e16ca0aee9fa8f3470b900c46c6b977c9c869fcb5e73b5b58ed912cb72acfc
+f_sha=2dd77f9474a1cba3c88cd845bc7ea3efc959555332d6b37172808d71e93866e8
+game_sha=fba389b76197efef02aaf6650dc7fdee482b05fd05f03bd8aa0400a33c394049
+fix_sha=79ddaa538bd8547b9753909fca33b23b6871003deace1ffb329da8db24d2d524
+started=1794485259
+ended=1794487307
+result=FAIL
+infra=0
+reason=an older check fails on the drafted build
+--- stages
+p73 -> OK, 4 edits applied plus DEVNOW
+f73 -> OK, 1 edits applied
+parse: PASS v37.73 parse check
+dry fxdry73 check 37.73: PASS / PASS
+control fxctl73 check 37.73: clicking graveyard did not open the panel; graveyard click threw: Uncaught ReferenceError: hcGraveOpen is not defined; click did not render the staged graveyard record; open did not focus close; close click threw: Uncaught ReferenceError: hcGraveClose is not defined; graveyard still has inline handl / clicking graveyard did not open the panel; graveyard click threw: Uncaught ReferenceError: hcGraveOpen is not defined; click did not render the staged graveyard record; open did not focus close; close click threw: Uncaught ReferenceError: hcGraveClose is not defined; graveyard still has inline handl
+REGRESS 37.66: 4K debris frame cost 0.390 ms (budget <0.3)
+REGRESS 37.58: patroller 3 visited undefined of four stops in 120 seconds
+recent: 2 new failures in the newest 80 checks
+--- end
+done=1
