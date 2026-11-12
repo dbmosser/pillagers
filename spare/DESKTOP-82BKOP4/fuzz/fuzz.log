@@ -8066,3 +8066,5 @@
 2026-11-12 00:54:04 FUZZ END raids=4 problems=4 unique=4 reason=ERROR: CDP timeout minutes=25.9
 2026-11-12 01:05:46 FUZZ ERROR The operation has timed out. at 241
 2026-11-12 01:06:18 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: The operation has timed out. minutes=7.5
+2026-11-12 01:31:02 FUZZ ERROR the fixture page did not come up in 120 s at 256
+2026-11-12 01:31:03 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: the fixture page did not come up in 120 s minutes=22
