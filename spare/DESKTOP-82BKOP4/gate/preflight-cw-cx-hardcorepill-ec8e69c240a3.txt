@@ -1,0 +1,26 @@
+id=preflight-cw-cx-hardcorepill-ec8e69c240a3
+kind=preflight
+key=cw-cx-hardcorepill
+tag=pfo
+v=37.70
+new=3770
+base=905ef265a4e965a81abe1b23c2785d398b9ef884
+host=DESKTOP-82BKOP4
+draft_sha=24084c00175ee368a817a873bf8feccb20e742df328cfa11f59f460fa75eb9f8
+p_sha=ad9430b127fcfc4870fddf8a74e3e30dd9e6ab8add76f81bd9b5baeee9663457
+f_sha=6500084fc2b9edae647af2468f7e4096ad1fa7e880113bd6bf0abe7ceea5a6ec
+game_sha=d48fab08dad75d39465389f7688aa45580202caf9a4f55b50038266b1471a50e
+fix_sha=8ab681e1fae50c9e5da8a008fde05106d90ca466a91ac213668020e5d28065d4
+started=1794471894
+ended=1794472364
+result=FAIL
+infra=0
+reason=the new check does not pass twice on the drafted build
+--- stages
+ppfo -> OK, 2 edits applied plus DEVNOW
+fpfo -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.70 parse check
+dry fxdrypfo check 37.70: title is 39.9936px by 19.9968px with radius 10px; knob geometry differs; title is 39.9936px by 19.9968px with radius 10px; knob geometry differs / title is 39.9936px by 19.9968px with radius 10px; knob geometry differs; title is 39.9936px by 19.9968px with radius 10px; knob geometry differs
+--- end
+done=1

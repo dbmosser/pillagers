@@ -8093,3 +8093,4 @@
 2026-11-12 03:13:21 raid 6 demo2 raidSeed=1276845441 map=0 god=1 sec=326 end=hang problems=1 newUnique=0 totalUnique=4 totalProblems=8 events=58 score=0 ents=55 travelPx=74 fires=2 menuPct=0 heapMB=39 p2= gfx=773/23.25/100/367/0.75 work=845/5.75/23.25/61.75 pics=174/61.1mb/wall:88,veg:13,shad:48,icon:9,g.pix:0,g.pixmachines:0,g.muz:0,g.gun:1,g.lightspr:12,pix.actors:0,pix.scene:0,big:3 build=37.69
 2026-11-12 03:23:47 raid 7 demo2 raidSeed=156955344 map=0 god=0 sec=326 end=hang problems=1 newUnique=0 totalUnique=4 totalProblems=9 events=126 score=0 ents=57 travelPx=760 fires=1 menuPct=0 heapMB=39 p2= gfx=323/23.25/87.75/146/0.95 work=480/5.25/22.75/50.75 pics=106/62.3mb/wall:52,veg:8,shad:30,icon:9,g.pix:0,g.pixmachines:0,g.muz:1,g.gun:1,g.lightspr:2,pix.actors:0,pix.scene:0,big:3 build=37.69
 2026-11-12 03:24:48 FUZZ ABORT reason=gate job, not a game failure
+2026-11-12 03:33:19 FUZZ ABORT reason=gate job, not a game failure
