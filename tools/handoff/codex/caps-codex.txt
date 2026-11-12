@@ -34,4 +34,5 @@ PIC_ROUNDS=2
 # 10-30 (CEO, his order "try to blow Codex instead"): pace off, reserve 99%, so Codex runs flat out on 2 player fixes.
 # 10-30 (CEO, his "shouldn't we be blowing our codex use"): camera rounds back to 4; held jobs back in tasks/.
 # 11-11 (owner M202 "as many parallel Codex lanes as useful"): the runner starts each lane here (tools/codex-lane.sh --lane=X); o and p share the o-*.md jobs, a job stays with the lane that began it. The JT PC gate is the shared bottleneck, so two lanes, not more.
-CX_LANES=o p
+CX_LANES=
+# 11-11 21:3x HTML CEO: HELD (was "CX_LANES=o p"). Windows PowerShell 5.1 and the GitHub sign-in fail until the pending Windows update KB5132688 finishes at the next restart; every gate would fail. Put back "CX_LANES=o p" once powershell.exe -Command 1 works and git push works.
