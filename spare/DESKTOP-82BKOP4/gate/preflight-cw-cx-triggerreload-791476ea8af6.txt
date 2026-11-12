@@ -1,0 +1,34 @@
+id=preflight-cw-cx-triggerreload-791476ea8af6
+kind=preflight
+key=cw-cx-triggerreload
+tag=pfo
+v=37.70
+new=3770
+base=b1ba5720d9c8fe7dfdb0a5d96ee41f1f8a55f8ba
+host=DESKTOP-82BKOP4
+draft_sha=9a7e086bbd31cdd3926974b7b29d7e5b78aac7710018429fca7e651275542b09
+p_sha=c0c5c91197acfe15af9e5e1f28fd196628719b0ce5ae4ae8a622342deaccb41e
+f_sha=1071a86a3025f7eda70b1f2154c369db76af0983e71c550f35bfedb685827372
+game_sha=f5fb8b332620f9d9428d79e5e8be5c7ad6c769bf6f6210571f36fd0a8151ff03
+fix_sha=a43fc7c4292230398918ddddf431c49fda23612e470392adfe24422d45308e53
+started=1794443720
+ended=1794444712
+result=FAIL
+infra=0
+reason=the new check does not pass twice on the drafted build
+--- stages
+ppfo -> OK, 7 edits applied plus DEVNOW
+fpfo -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.70 parse check
+Invoke-RestMethod : The operation has timed out.
+At C:\claudecode\dark raiders\tools\cdp.ps1:40 char:7
++ $tabs=Invoke-RestMethod -Uri "http://127.0.0.1:$Port/json" -TimeoutSe ...
++       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidOperation: (System.Net.HttpWebRequest:HttpWebRequest) [Invoke-RestMethod], WebExc
+   eption
+    + FullyQualifiedErrorId : WebCmdletWebResponseException,Microsoft.PowerShell.Commands.InvokeRestMethodCommand
+
+dry fxdrypfo check 37.70:
+--- end
+done=1

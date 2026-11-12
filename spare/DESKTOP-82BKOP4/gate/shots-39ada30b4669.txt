@@ -1,0 +1,30 @@
+id=shots-39ada30b4669
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=badf19c05685b7b969ba91d66231d94916094ec2
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1794444752
+ended=1794444931
+result=PASS
+infra=0
+reason=
+--- stages
+== 4k : window 3876x2265, viewport 3840x2160
+  hc-title-off                           staged      33.9s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-title-on                            staged      27.0s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-p2-save-tag                         staged      30.0s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-kia-fallen                          staged      16.1s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  hc-saves-after-death                   staged       8.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  hc-graveyard-ranked  try 1: The operation has timed out.
+  hc-graveyard-ranked                    staged      42.6s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+report: C:\PillagersSpare\gate\work\shots-39ada30b4669\shots\report.json
+--- end
+done=1
