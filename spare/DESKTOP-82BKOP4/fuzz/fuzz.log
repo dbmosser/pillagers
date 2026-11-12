@@ -8221,3 +8221,5 @@
 2026-11-12 15:06:04 raid 6 demo2 raidSeed=2107313648 map=0 god=1 sec=317 end=hang problems=2 newUnique=0 totalUnique=4 totalProblems=9 events=63 score=0 ents=53 travelPx=42 fires=2 menuPct=0 heapMB=39 p2= gfx=294/63.75/100/280/1 work=289/6.75/20.25/100 pics=133/65.1mb/wall:24,veg:26,shad:53,icon:17,g.pix:0,g.pixmachines:0,g.muz:0,g.gun:1,g.lightspr:9,pix.actors:0,pix.scene:0,big:3 build=37.72
 2026-11-12 15:11:15 FUZZ ERROR Unable to connect to the remote server at 241
 2026-11-12 15:11:43 FUZZ END raids=6 problems=9 unique=4 reason=ERROR: Unable to connect to the remote server minutes=51.8
+2026-11-12 15:26:24 FUZZ START seed=280383685 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-12 15:28:48 raid 1 demo2p raidSeed=978984121 map=0 god=0 sec=78 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
