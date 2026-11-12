@@ -1,0 +1,15 @@
+id=preflight-cw-cx-hardcorepill-b4e80460aa50
+kind=preflight
+key=cw-cx-hardcorepill
+tag=pfo
+v=37.70
+new=3770
+base=905ef265a4e965a81abe1b23c2785d398b9ef884
+draft_sha=c1b92dd1ab943db226fea8cda9d4fe6f1ba527907994d40ec65828b6a1cd7738
+p_sha=ad9430b127fcfc4870fddf8a74e3e30dd9e6ab8add76f81bd9b5baeee9663457
+f_sha=9fc299616839b4c26be4308c5c771da69d6d3fde882489ea887681a33992aff4
+game_sha=d48fab08dad75d39465389f7688aa45580202caf9a4f55b50038266b1471a50e
+fix_sha=82a3b8e8c7ce3236ad0405ff86b6bf3a5adc9eca6cbb5229cba38e3051ceace4
+from=JUL26
+submitted=1794472479
+expires=1794479079
