@@ -1,0 +1,28 @@
+id=preflight-cw-cx-breakgunfinish-18f3e22523b5
+kind=preflight
+key=cw-cx-breakgunfinish
+tag=pfp
+v=37.71
+new=3771
+base=b237e3159bd442a5a9dec646d426cd3c820ee34d
+host=DESKTOP-82BKOP4
+draft_sha=f17570dfa814f072fff6ccb0c91df2ac8adcf43f714a3e8489294aec24f5281d
+p_sha=aa38fe3fadd0b63e044d8d26b72e0fad66ea43c62843f8681c0b4cc1b61b2931
+f_sha=61e9df73113bae9f39e3bd844d31230e75d1a9bca6e60b5f68a817b767944b1f
+game_sha=3eb2cafa445c4d5e3ff1eacae84e1dc450d405a8b9a48b79e3e120c5bd79bd91
+fix_sha=5852922799f736f47ec99cc925905fa330080940d1124feed8f295ade8efc156
+started=1794478209
+ended=1794478389
+result=PASS
+infra=0
+reason=
+--- stages
+ppfp -> OK, 9 edits applied plus DEVNOW
+fpfp -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.71 parse check
+dry fxdrypfp check 37.71: PASS / PASS
+control fxctlpfp check 37.71: no stash empty-space treatment / no stash empty-space treatment
+recent: 0 new failures in the newest 80 checks
+--- end
+done=1
