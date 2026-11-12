@@ -36,8 +36,15 @@ if($Start){
   for($i=0;$i -lt 40;$i++){ try{ Invoke-RestMethod "http://127.0.0.1:$Port/json/version" -TimeoutSec 2 | Out-Null; Write-Output "browser up on $Port"; exit 0 }catch{ Start-Sleep -Milliseconds 250 } }
   Write-Output 'browser did not start'; exit 1
 }
-if($Open){ $t=Invoke-RestMethod -Method Put -Uri ("http://127.0.0.1:$Port/json/new?"+$Open) -TimeoutSec 5; Write-Output ('opened '+$t.id+' '+$Open); exit 0 }
-$tabs=Invoke-RestMethod -Uri "http://127.0.0.1:$Port/json" -TimeoutSec 5
+# 11-12 (HTML CEO): the JT PC runs its test Chrome on one processor beside Fortnite, and the /json list there took longer than 5 s
+# (preflight-cw-cx-msgsettings, "Invoke-RestMethod timeout" at this line), which stopped a gate before its parse check. Opening a tab
+# waits up to 30 s (one try: a second PUT could open the tab twice); reading the tab list waits up to 15 s and tries 3 times.
+if($Open){ $t=Invoke-RestMethod -Method Put -Uri ("http://127.0.0.1:$Port/json/new?"+$Open) -TimeoutSec 30; Write-Output ('opened '+$t.id+' '+$Open); exit 0 }
+$tabs=$null; $tabsOk=$false
+for($ti=1;$ti -le 3 -and -not $tabsOk;$ti++){
+  try{ $tabs=Invoke-RestMethod -Uri "http://127.0.0.1:$Port/json" -TimeoutSec 15; $tabsOk=$true }
+  catch{ if($ti -ge 3){ throw }; Start-Sleep -Seconds 2 }
+}
 $t=$tabs | Where-Object { $_.type -eq 'page' -and ($Match -eq '' -or $_.url -like "*$Match*") } | Select-Object -First 1
 if(-not $t){ Write-Output 'NO TARGET'; exit 1 }
 $ws=New-Object System.Net.WebSockets.ClientWebSocket
