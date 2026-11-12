@@ -1,0 +1,56 @@
+id=shots-37b98784ea43
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=459f53b267bb412dcbf0f785b6262e338b95b592
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1794479336
+ended=1794479396
+result=PASS
+infra=0
+reason=
+--- stages
+== 1080 : window 1956x1185, viewport 1920x1080
+  149-host-four-shells                   NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:504
+    at <anonymous>:1:2203
+    at <anonymous>:1:2279
+  149-host-fire-cancel                   NOT STAGED   4.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:504
+    at <anonymous>:1:2203
+    at <anonymous>:1:2279
+  149-p2-four-shells                     NOT STAGED   4.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:504
+    at <anonymous>:1:2199
+    at <anonymous>:1:2275
+  149-p2-fire-cancel                     NOT STAGED   4.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:504
+    at <anonymous>:1:2199
+    at <anonymous>:1:2275
+== 4k : window 3876x2265, viewport 3840x2160
+  149-host-four-shells                   NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:504
+    at <anonymous>:1:2203
+    at <anonymous>:1:2279
+  149-host-fire-cancel                   NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:504
+    at <anonymous>:1:2203
+    at <anonymous>:1:2279
+  149-p2-four-shells                     NOT STAGED   4.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:504
+    at <anonymous>:1:2199
+    at <anonymous>:1:2275
+  149-p2-fire-cancel                     NOT STAGED   4.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0  | EXCEPTION TypeError: U.prep is not a function
+    at <anonymous>:1:504
+    at <anonymous>:1:2199
+    at <anonymous>:1:2275
+report: C:\PillagersSpare\gate\work\shots-37b98784ea43\shots\report.json
+--- end
+done=1
