@@ -47,3 +47,4 @@
 {"ts":"2026-11-11 23:35:30","build":"37.69","runSeed":149682024,"raidNo":1,"mode":"demo2p","raidSeed":306893797,"raidSec":90,"kind":"start","msg":"demo2p raid did not start: ERR the player 2 window setup: CDP timeout","where":"","last60":[]}
 {"ts":"2026-11-11 23:38:14","build":"37.69","runSeed":149682024,"raidNo":2,"mode":"demo2p","raidSeed":810648021,"raidSec":16,"kind":"start","msg":"demo2p raid did not start: ERR The operation has timed out.","where":"","last60":[]}
 {"ts":"2026-11-11 23:41:16","build":"37.69","runSeed":149682024,"raidNo":3,"mode":"demo2p","raidSeed":2006608018,"raidSec":117,"kind":"start","msg":"demo2p raid did not start: ERR CDP timeout","where":"","last60":[]}
+{"ts":"2026-11-12 00:02:58","build":"37.69","runSeed":149682024,"raidNo":7,"mode":"demo2","raidSeed":575140481,"raidSec":209,"kind":"stall","msg":"no animation frame for 8278 ms (demo2)","where":"raf=8255 gameloop=8278","last60":["4:kd KeyS","4:kd KeyA","9:md left 845,793"]}
