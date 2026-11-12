@@ -8081,3 +8081,5 @@
 2026-11-12 02:15:01 raid 3 demo2p raidSeed=171066436 map=0 god=1 sec=118 end=nostart problems=1 newUnique=1 totalUnique=2 totalProblems=3 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.69
 2026-11-12 02:17:14 raid 4 demo1 raidSeed=1558719223 map=0 god=0 sec=115 end=hang problems=1 newUnique=1 totalUnique=3 totalProblems=4 events=9 score=0 ents=46 travelPx=0 fires=0 menuPct=0 heapMB=31 p2= gfx=1035/39.75/100/832/1 work=1238/13.75/58.75/100 pics=236/65.1mb/wall:148,veg:12,shad:51,icon:9,g.pix:0,g.pixmachines:0,g.muz:0,g.gun:1,g.lightspr:12,pix.actors:0,pix.scene:0,big:3 build=37.69
 2026-11-12 02:18:33 raid 5 demo2 raidSeed=226361100 map=0 god=0 sec=44 end=hang problems=1 newUnique=0 totalUnique=3 totalProblems=5 events=1 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.69
+2026-11-12 02:22:28 FUZZ ERROR CDP timeout (send) at 128
+2026-11-12 02:23:04 FUZZ END raids=5 problems=5 unique=3 reason=ERROR: CDP timeout (send) minutes=22.9
