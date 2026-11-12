@@ -8030,3 +8030,5 @@
 2026-11-11 22:37:49 FUZZ 2P ROBOTS OFF: three 2-window starts in a row failed, so the 2-player share runs as demo2 (this window as host alone) for the rest of this run
 2026-11-11 22:37:49 raid 3 demo2p raidSeed=1937232181 map=0 god=0 sec=143 end=nostart problems=1 newUnique=0 totalUnique=2 totalProblems=3 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.69
 2026-11-11 22:45:24 raid 4 demo1 raidSeed=1221443173 map=0 god=1 sec=349 end=hang problems=2 newUnique=2 totalUnique=4 totalProblems=5 events=36 score=75 ents=46 travelPx=0 fires=2 menuPct=0 heapMB=32 p2= gfx=65/79.25/100/65/1 work=75/14.75/60.75/72.75 pics=115/66.3mb/wall:44,veg:12,shad:35,icon:9,g.pix:0,g.pixmachines:0,g.muz:1,g.gun:1,g.lightspr:10,pix.actors:0,pix.scene:0,big:3 build=37.69
+2026-11-11 22:53:03 FUZZ ERROR CDP timeout at 148
+2026-11-11 22:53:21 FUZZ END raids=4 problems=5 unique=4 reason=ERROR: CDP timeout minutes=37.9
