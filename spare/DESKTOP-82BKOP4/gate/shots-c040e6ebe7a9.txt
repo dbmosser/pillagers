@@ -1,0 +1,32 @@
+id=shots-c040e6ebe7a9
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=b237e3159bd442a5a9dec646d426cd3c820ee34d
+host=DESKTOP-82BKOP4
+draft_sha=
+p_sha=
+f_sha=
+game_sha=
+fix_sha=
+started=1794478058
+ended=1794478166
+result=PASS
+infra=0
+reason=
+--- stages
+== 1080 : window 1956x1185, viewport 1920x1080
+  hc-title-off                           staged      16.0s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-title-on                            staged       5.6s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-p2-save-tag                         staged       5.6s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-settings-comparison                 staged       5.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 4k : window 3876x2265, viewport 3840x2160
+  hc-title-off                           staged      14.0s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-title-on                            staged      15.1s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-p2-save-tag                         staged       7.3s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-settings-comparison                 staged       7.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+report: C:\PillagersSpare\gate\work\shots-c040e6ebe7a9\shots\report.json
+--- end
+done=1
