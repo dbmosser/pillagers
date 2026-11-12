@@ -1,0 +1,7 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  hc-title-off                           staged       5.9s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-title-on                            staged      14.4s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-p2-save-tag                         staged      87.7s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-kia-fallen                          staged      37.3s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  hc-saves-after-death                   staged      47.2s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+  hc-graveyard-ranked                    staged     139.4s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
