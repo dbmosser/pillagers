@@ -1,0 +1,10 @@
+== 1080 : window 1956x1185, viewport 1920x1080
+  hc-title-off                           staged      16.0s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-title-on                            staged       5.6s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-p2-save-tag                         staged       5.6s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-settings-comparison                 staged       5.9s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
+== 4k : window 3876x2265, viewport 3840x2160
+  hc-title-off                           staged      14.0s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-title-on                            staged      15.1s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-p2-save-tag                         staged       7.3s  total   1: clip 0 off 0 small 0 contrast 1 font 0 overlap 0 focus 0
+  hc-settings-comparison                 staged       7.5s  total   0: clip 0 off 0 small 0 contrast 0 font 0 overlap 0 focus 0
