@@ -83,3 +83,4 @@
 {"ts":"2026-11-12 18:20:34","build":"37.72","runSeed":1321707623,"raidNo":1,"mode":"demo2p","raidSeed":2014747736,"raidSec":62,"kind":"start","msg":"demo2p raid did not start: ERR CDP timeout","where":"","last60":[]}
 {"ts":"2026-11-12 18:22:53","build":"37.72","runSeed":1321707623,"raidNo":2,"mode":"demo2p","raidSeed":893845356,"raidSec":34,"kind":"start","msg":"demo2p raid did not start: ERR the player 2 window setup: CDP timeout","where":"","last60":[]}
 {"ts":"2026-11-12 18:39:26","kind":"dup-counts","runSeed":1321707623,"counts":{"start|demo#p raid did not start: ERR CDP timeout":2}}
+{"ts":"2026-11-12 18:44:32","build":"37.72","runSeed":385169468,"raidNo":1,"mode":"demo2p","raidSeed":133582991,"raidSec":20,"kind":"start","msg":"demo2p raid did not start: ERR The operation has timed out.","where":"","last60":[]}
