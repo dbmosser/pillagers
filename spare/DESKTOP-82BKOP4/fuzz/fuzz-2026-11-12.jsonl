@@ -1,1 +1,2 @@
 {"ts":"2026-11-12 00:36:15","build":"37.69","runSeed":891647876,"raidNo":1,"mode":"demo2p","raidSeed":1055737638,"raidSec":87,"kind":"start","msg":"demo2p raid did not start: ERR the player 2 window setup: CDP timeout","where":"","last60":[]}
+{"ts":"2026-11-12 00:42:14","build":"37.69","runSeed":891647876,"raidNo":2,"mode":"demo2p","raidSeed":2083828235,"raidSec":294,"kind":"start","msg":"demo2p raid did not start: ERR CDP timeout","where":"","last60":[]}
