@@ -1,0 +1,14 @@
+id=shots-c040e6ebe7a9
+kind=shots
+key=shots
+tag=shots
+v=
+new=
+base=b237e3159bd442a5a9dec646d426cd3c820ee34d
+screens=hc-title-off,hc-title-on,hc-p2-save-tag,hc-settings-comparison
+res=1080,4k
+nolint=0
+lintopts=
+from=JUL26
+submitted=1794477094
+expires=1794483694
