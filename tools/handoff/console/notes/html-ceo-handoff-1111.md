@@ -67,3 +67,7 @@
 - set_status.py fails under `python -I`.
 - Pass `-c core.autocrlf=false` to every git pull or push here. tools/handoff/spare/ is gitignored.
 - Never edit dark_raiders.html by hand. Edit mkfixture.ps1 only through fixq.sh. No HTML tests on the main PC. Never stop, restart or change 8802 except through tools/start-servers.ps1. Never touch the TbT VM. Never read other chats' transcripts or any keys.
+
+## Open at 11-11 21:3x (after the 21:02 restart)
+- Windows update KB5132688 is pending a restart: Windows PowerShell 5.1 does not load (80070002) and git push cannot sign in. 8802 runs under pwsh via start-servers (9c43fe87c). Codex lanes HELD: caps-codex.txt CX_LANES is empty (25c777365). Owner asked to restart (M267 via the HTML Reporter).
+- After the next restart: check `powershell.exe -NoProfile -Command 1` and `git push`; then put `CX_LANES=o p` back in tools/handoff/codex/caps-codex.txt (delete the HELD comment line), commit, push the local commits, and check 8802, the runner and the watchdog as usual.
