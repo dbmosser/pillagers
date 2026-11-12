@@ -40024,6 +40024,11 @@ wobble is his. Not verified: the other four extraction voices. The call is the
 one he named; touchdown, inbound, lastcall and board are untouched, so the family
 may now be led by a sound three times the length of its siblings.
 
+## v37.71 - HELD FIRE AND SHELL RELOADS
+
+Co-op hunt while he was away. His g-15: Yes, hold to repeat; g-12: Yes, shell by shell; g-75: Yes, fire stops it. LOCAL: no linked review. Check 31.99 was retargeted by the coordinator to pulse the weapon probe before this change. Watch: the Lance empties its three rounds in about 0.13 s when held and the Rocket Launcher fires both rockets 0.7 s apart; tapping fire out of habit with rounds left can cancel a reload; listen for the end pump when a shell reload is cut and whether a one-shell top-up still taking 2.4 s feels slow.
+
+MEASURED. Check 37.71 passes, and fails on v37.70.
 ## v37.70 - HARDCORE TITLE SWITCH USES THE SHARED PILL
 
 Co-op hunt while he was away. The title save-row button rule overrode the shared toggle height and radius. Excluding shared toggles restores the existing 40 by 20 pill without changing settings or graveyard. Watch: check hardcore off and on beside its label at 1080p and 4K.

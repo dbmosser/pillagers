@@ -6273,17 +6273,17 @@
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "the save-select screen reads clean and mostly on-brand, but it breaks its own color-semantics rule and carries a stray unstyled caption that undercuts the polish.",
+  "verdict": "the destructive-action fix landed clean, but the two biggest notes from last time — the loose 'player 2 window' sentence and a logo fighting the cta for focus — are still untouched, so the screen reads as fixed-in-one-spot, not fixed.",
   "findings": [
-   "P1 grim save row, delete button: recolor the delete button border and text to --danger #e5482f at 1px border, matching the hardcore pill's hue so destructive actions read consistently across the screen.",
-   "P1 'player 2 window' caption under the main CTA: either delete it, or move it to a small 14px --tx-2 tag pinned top-left of the window (e.g. 'p2') so it reads as a window badge, not a loose sentence.",
-   "P2 logo vs. 'enter the undercroft' button: mute the logo to a flatter --tx-1/--ui-raised tone or drop its glow so the lime button is the only saturated focal point.",
-   "P2 grim row right side (hardcore tag · stat text · delete button): apply a fixed 16px (--sp-2) gap between each of the three elements in every save row.",
-   "P2 top-right 'go fullscreen' / 'settings' buttons: give top-bar utility buttons a quieter treatment (e.g. --tx-2 text, no border) so they recede behind in-content actions."
+   "P1 center, under 'enter the undercroft' button: pin a 14px --tx-2 'p2' tag to the top-left corner of the window card and delete this center caption entirely.",
+   "P1 logo 'pillagers' (orange/amber gradient) vs. the lime 'enter the undercroft' button directly below it: flatten the logo to a single --tx-1 or --ui-raised tone (or drop its gradient/glow) so the lime button is the only saturated focal point on screen, per the style guide's 'boldness in one place' rule.",
+   "P2 top-right, 'go fullscreen' and 'settings' buttons: drop the border and set text to --tx-2 for these two utility buttons so they read as secondary to in-content actions.",
+   "P2 grim save row, right side cluster: apply a uniform 16px (--sp-2) gap between the hardcore pill, the stat text, and the delete button.",
+   "P2 orange gradient on the logotype: if the logo gradient is kept, shift it further from hue 40-44 or desaturate it so it's unambiguously identity, not a status tint."
   ],
-  "pic": "tools/handoff/console/notes/shots/o-h01-177-hardcore-save-recipes-3/hc-p2-save-tag-1080.jpg",
-  "task": "o-h01-177-hardcore-save",
-  "when": "2026-11-12T00:17"
+  "pic": "tools/handoff/console/notes/shots/o-h01b-hardcore-toggle-is-a-pill-recipes-1/hc-p2-save-tag-1080.jpg",
+  "task": "o-h01b-hardcore-toggle-is-a-pill",
+  "when": "2026-11-12T10:10"
  },
  "hc-saves-after-death": {
   "score": 3,
@@ -6305,31 +6305,48 @@
   "score": 2,
   "pass": false,
   "need": 3,
-  "verdict": "it reads like a placeholder splash screen that forgot the game's own palette, not a shipped aaa title screen.",
+  "verdict": "the hardcore toggle got the pill treatment but the three biggest problems from last pass — the gradient arcade logo, the flat void background, and the raid control legend sitting on a non-walk-up screen — are all still there untouched.",
   "findings": [
-   "P0 'pillagers' logotype, upper third: flatten the logotype to --tx-1 (#efe9dc) or a single flat --acc lime fill, remove the gradient, and keep only the '1 player' button carrying the bold accent.",
-   "P1 full background, behind the menu column: drop in a low-opacity (15-25%) background plate or parallax scene at 1920x1080 behind the void layer, consistent with the dark environment panels in the arc-raiders/diablo-iv references.",
-   "P1 bottom-left control legend: wasd / mouse / lmb / e / f1: remove the raid-control row from this screen entirely (reserve it for attract/walk-up screens per the style guide), or replace with a single lowercase 'esc back' hint; lowercase any key label left on screen.",
-   "P2 hardcore toggle, bottom of the saves block: build it as a pill switch: track --ui-raised, thumb --tx-2 when off / --acc when on, radius --rad, 44px minimum hit target.",
-   "P2 'grim' save row, right edge: insert --sp-2 (16px) gaps between the hardcore pill, the stat text, and the delete button."
+   "P0 pillagers logotype, upper third: flatten the logotype fill to --tx-1 (#efe9dc), delete the gradient and shadow, let '1 player' carry the only bold/lime treatment on this screen",
+   "P1 full background, behind the menu column: add a low-opacity (15-25%) environment plate or parallax layer at 1920x1080 behind the void layer, matching the dark raid environments used in loading/extract screens",
+   "P1 bottom-left control legend: wasd / mouse / lmb / e / f1: remove the control legend from this screen; if a hint is needed, show a single lowercase 'esc back' or navigation hint instead",
+   "P2 'grim' save row, delete button: recolor the delete button to --danger (#e5482f) text/border, leaving lime exclusively for selection and the primary CTA",
+   "P2 'hardcore' tag, grim save row: confirm/set the hardcore tag to --danger at reduced opacity fill with --danger text, 3px radius per --rad"
   ],
-  "pic": "tools/handoff/console/notes/shots/o-h01-177-hardcore-save-recipes-3/hc-title-off-1080.jpg",
-  "task": "o-h01-177-hardcore-save",
-  "when": "2026-11-12T00:19"
+  "pic": "tools/handoff/console/notes/shots/o-h01b-hardcore-toggle-is-a-pill-recipes-1/hc-title-off-1080.jpg",
+  "task": "o-h01b-hardcore-toggle-is-a-pill",
+  "when": "2026-11-12T10:12"
  },
  "hc-title-on": {
   "score": 3,
   "pass": true,
   "need": 3,
-  "verdict": "the panel and button system is clean and consistently cased, but the orange-gradient logo fights the lime cta for the single bold accent and the bare background gives it no identity as an extraction shooter.",
+  "verdict": "none of the three previously flagged fixes (title gradient, flat background, loud delete button) were actually applied, so the screen reads the same as last review.",
   "findings": [
-   "P0 title 'pillagers' wordmark, upper third: drop the gradient; set the wordmark to solid --tx-1 (#efe9dc) or solid --acc, and let the lime '1 player' button be the only saturated/bold element on the screen.",
-   "P1 full background, behind the menu stack: add a low-opacity environment or key-art layer (or subtle parallax) behind the panel stack, per the arc-raiders reference's flat dark panel over atmospheric art, at ~15-20% opacity so it doesn't fight panel contrast.",
-   "P1 'grim' save row, hardcore tag + delete button: keep delete as a quiet --tx-2/--ui-line-hi outline (it's a low-frequency utility action, not the primary one) and reserve the saturated lime only for the actually-selected save row's border, as already done on 'pillager new'.",
-   "P2 top-right 'go fullscreen' / 'settings' buttons: shrink to --fs-label (16px) with --sp-1 padding and --tx-2 text color so they visibly rank below the four mode buttons."
+   "P0 title wordmark 'pillagers', upper third: set the wordmark to flat solid --tx-1 (#efe9dc) or flat solid --acc (#e6ff3d), no gradient stop, so only the '1 player' button carries saturated boldness",
+   "P1 full background behind the menu stack: composite a low-opacity (15-20%) environment/key-art layer or subtle parallax behind the panel stack per the arc-raiders flat-panel-over-atmosphere reference",
+   "P1 'grim' save row, delete button: recolor delete to --tx-2 text on a --ui-line-hi 1px border, no lime, reserving --acc for the one selected save row and the one primary action",
+   "P2 top-right 'go fullscreen' / 'settings' buttons: set to --fs-label (16px), --tx-2 color, --sp-1 padding so they visibly rank below the mode list",
+   "P2 'grim' row, hardcore tag pill: recolor the hardcore tag to a quiet --tx-2 outline chip (or --warn amber if it must stand out), leaving --danger exclusively for failure states"
   ],
-  "pic": "tools/handoff/console/notes/shots/o-h01-177-hardcore-save-recipes-3/hc-title-on-1080.jpg",
-  "task": "o-h01-177-hardcore-save",
-  "when": "2026-11-12T00:20"
+  "pic": "tools/handoff/console/notes/shots/o-h01b-hardcore-toggle-is-a-pill-recipes-1/hc-title-on-1080.jpg",
+  "task": "o-h01b-hardcore-toggle-is-a-pill",
+  "when": "2026-11-12T10:13"
+ },
+ "hc-settings-comparison": {
+  "score": 3,
+  "pass": true,
+  "need": 3,
+  "verdict": "a clean, token-consistent settings list undercut by a mostly-empty detail pane, a clipped bottom row, and inconsistent nav weights.",
+  "findings": [
+   "P1 right detail pane (render resolution panel): either remove/collapse the pane when there's nothing more to show, or fill it with real value (current vs default, performance impact) so it occupies no more than ~30% height of actual content.",
+   "P1 bottom of scrollable list, 'crosshair size' row: clip the scroll container only on full 56px row boundaries, or add an 8-12px bottom fade/mask so a row is never cut mid-height.",
+   "P2 left sidebar: the raid / audio / controls / controller / display / accessibility / saves and tools / send play data: set every unselected nav row to the same --fs-body weight 600; reserve bold + the lime left-bar + filled row for the single selected item only.",
+   "P2 detail pane title 'render resolution' vs. list row 'render resolution': drop the repeated title and lead the pane with the caption/explainer line at --fs-body, or replace the title with something non-redundant (e.g. the option's effect on performance).",
+   "P3 scrollbar thumb, right edge of the middle list: widen the thumb to 6px and raise its fill to --ui-line-hi minimum."
+  ],
+  "pic": "tools/handoff/console/notes/shots/o-h01b-hardcore-toggle-is-a-pill-recipes-1/hc-settings-comparison-1080.jpg",
+  "task": "o-h01b-hardcore-toggle-is-a-pill",
+  "when": "2026-11-12T10:11"
  }
 }

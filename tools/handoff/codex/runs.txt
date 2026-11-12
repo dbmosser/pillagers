@@ -876,3 +876,5 @@
 2026-11-12 03:34 o-h01b-hardcore-toggle-is-a-pill 82s ok PARTIAL in=1616756 out=14691 run=2
 2026-11-12 03:45 o-h12-175-break-down-guns 154s ok PARTIAL in=5793033 out=48342 run=5
 2026-11-12 04:30 o-h12-175-break-down-guns 393s ok PARTIAL in=7809890 out=60383 run=6
+2026-11-12 05:14 o-h01b-hardcore-toggle-is-a-pill 86s ok DONE in=2223805 out=16915 run=3
+2026-11-12 05:19 o-h12-175-break-down-guns 276s ok PARTIAL in=10028245 out=67638 run=7

@@ -1,0 +1,7 @@
+v37.71: held fire and shell reloads
+
+Magazine guns repeat at their existing fire rate while held. Shotguns load usable shells at each shell sound and keep their full reload time. A fresh loaded trigger cancels reload before cooldown or MG spin permits firing. Held and dry pulls let the reload finish. Cuts keep loaded shells and lose the active chain. The bot sim stays one go.
+
+Check 37.71. Fails on v37.70.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>

@@ -2543,3 +2543,9 @@
 2026-11-12 0.0000 o-h01b-hardcore-toggle-is-a-pill
 2026-11-12 0.0000 o-h12-175-break-down-guns
 2026-11-12 0.0000 o-h12-175-break-down-guns
+2026-11-12 0.1467 critic-o-h01b-hardcore-toggle-is-a-pill
+2026-11-12 0.1100 critic-o-h01b-hardcore-toggle-is-a-pill
+2026-11-12 0.1081 critic-o-h01b-hardcore-toggle-is-a-pill
+2026-11-12 0.1720 critic-o-h01b-hardcore-toggle-is-a-pill
+2026-11-12 0.0000 o-h01b-hardcore-toggle-is-a-pill
+2026-11-12 0.0000 o-h12-175-break-down-guns

@@ -782,3 +782,5 @@
 
 2026-11-12 | o-h12-175-break-down-guns | stash menu source ring | cw-cx-breakgunfinish correction: selection outline switches immediately instead of transitioning from cream over the existing 100ms tile transition; other tile transition properties retain their timing. Before: tools/handoff/console/notes/shots/o-h12-175-break-down-guns-recipes-3/breakguns-{p1-kb,p1-pad,p2-kb}-1080.jpg. After: final lane pictures pending.
 
+2026-11-12 | o-h01b-hardcore-toggle-is-a-pill | v37.70 title hardcore off/on verified at 1080p and 4K, player 2 switch absent, settings unchanged | before: tools/handoff/console/notes/shots/o-h01-177-hardcore-save-recipes-3/hc-title-off-1080.jpg and hc-title-on-1080.jpg | after: tools/handoff/console/notes/shots/o-h01b-hardcore-toggle-is-a-pill-recipes-1/hc-title-off-1080.jpg, hc-title-on-1080.jpg, hc-title-off-4k.jpg, hc-title-on-4k.jpg; comparison hc-settings-comparison-1080.jpg and hc-settings-comparison-4k.jpg
+

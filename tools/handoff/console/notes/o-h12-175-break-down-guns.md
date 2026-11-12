@@ -79,3 +79,13 @@ Fixed the visible behavior in the same cw-cx-breakgunfinish key: the selected so
 
 Regenerated against v37.69: written, eight unique edits. Node parsed the proposed game script, regression and all four camera recipes. No game or fixture file edited. Watch remains in why; keys.txt still contains only cw-cx-breakgunfinish. LOCAL: no linked review. Lane must rerun preflight, ship with ON HIS PC, then complete the final picture/critic round with p2-pad first.
 
+
+--- codex run 2026-11-12 05:20 ---
+2026-11-12 ship follow-up: cw-cx-breakgunfinish did not ship. The authoritative spare-results receipt for ship-cw-cx-breakgunfinish-fe4e3b9bf4dd contains only "parse: Dark Raiders parse check", the parser page's INITIAL title. It reports no syntax error, FAIL or ERROR result. Found the race in tools/gate.ps1 line 26: its readiness expression matches /parse check/, which is already present in that initial title before the asynchronous fetch/compile finishes. The gate then reads that initial title and stops because it does not start with PASS.
+
+Compared the authoritative preflight and ship receipts. Both use base b237e3159, draft_sha f17570dfa814f072fff6ccb0c91df2ac8adcf43f714a3e8489294aec24f5281d, p_sha aa38fe3fadd0b63e044d8d26b72e0fad66ea43c62843f8681c0b4cc1b61b2931, f_sha 61e9df73113bae9f39e3bd844d31230e75d1a9bca6e60b5f68a817b767944b1f, game_sha 3eb2cafa445c4d5e3ff1eacae84e1dc450d405a8b9a48b79e3e120c5bd79bd91 and fix_sha 5852922799f736f47ec99cc925905fa330080940d1124feed8f295ade8efc156. The identical build passed preflight: parse PASS v37.71; new check PASS / PASS; control failed twice as required; lint PASS; newest 80 checks had zero new failures. This is a gate readiness race, not evidence of a broken game draft.
+
+Prepared a concrete one-line infrastructure fix in .codex-work/o-h12-175-break-down-guns/gate-readiness.patch. It makes OpenWait wait for a terminal PASS, FAIL or ERROR parse-check title. tools/parsecheck.html sets these at lines 132 and 138, so real errors still fail. No game rule or verification threshold is changed. The lane cannot ship gate-tool edits from this sandbox, so the coordinator handoff and exact replacement are in alarms-new.md. Keep the same cw-cx-breakgunfinish key and retry shipping after that correction; no new game edit is justified.
+
+Regenerated the unchanged draft against v37.70: written, eight unique anchors, proposed game/regression/camera syntax valid with Node. keys.txt still contains cw-cx-breakgunfinish; camera still requests p2-pad first. No tracked game, fixture or gate file changed here. LOCAL: no linked review. Remaining work belongs to the coordinator/lane: fix the gate readiness, retry this key until ON HIS PC, then complete final pictures and critic review.
+

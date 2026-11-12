@@ -18,3 +18,13 @@ Updated the regression to accept less than 0.05 CSS px of rounding for the 40x20
 Updated both title camera expectations with the same 0.05 CSS px tolerance, preventing the camera from rejecting a correctly rounded pill. Picture content and recipe screens are unchanged.
 Same cw-cx-hardcorepill key and one-selector game edit. No game or fixture file modified. Local draft generation, unique-anchor validation, JavaScript syntax and rounding-boundary checks pass. Await lane preflight, shipping, seed 4242 fingerprint, ON HIS PC and 1080p/4K pictures with critic.
 
+
+--- codex run 2026-11-12 05:14 ---
+2026-11-12 o-h01b-hardcore-toggle-is-a-pill, shipped review and close.
+LOCAL: no linked review.
+Shipped cw-cx-hardcorepill in b237e3159, v37.70. Lane confirmed ON HIS PC v37.70: his 8802 serves 37.70, 51s after ship. No service or port was accessed by this worker.
+Reviewed all four attached 1080p pictures and opened all four 4K pictures with the image viewer. Both title states show a horizontal rounded pill centred on the hardcore word. Off has the knob left; on has lime fill and the dark knob right. Player 2 has no creation switch at either size. Actual settings controls are unchanged in the comparison pictures.
+All eight camera stages succeeded. Zero clipping, off-screen, small-text, overlap or focus flags. Title and player 2 retain one contrast flag each; settings has zero lint findings. Picture folder: tools/handoff/console/notes/shots/o-h01b-hardcore-toggle-is-a-pill-recipes-1/.
+Recorded critic results honestly: off 2, on 3, player 2 3, settings 3. The critic identified no defect in the repaired switch. Its remaining P0/P1 findings concern existing logo colour, title background, title controls/delete, player 2 caption and settings detail-pane/scroll layout. Handed those to the coordinator in alarms-new.md. These whole-screen scores are not claimed as a critic pass.
+The task-specific finish line is "TASK DONE when shipped and the pictures show the pill". That is met. No unrelated title/settings redesign is included; no further key or camera round is requested. The single game selector edit leaves shared settings styles, graveyard, save keys, simulation, loot and sounds unchanged. No fixture retarget was required.
+

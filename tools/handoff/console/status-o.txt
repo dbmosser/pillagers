@@ -1,1 +1,1 @@
-11-12 04:03 gate: shipping cw-cx-hardcorepill (o-h01b-hardcore-toggle-is-a-pill, codex)
+11-12 05:18 gate: shipping cw-cx-triggerreload (o-h04-149-trigger-repeat-shells-fire-cancels-reload, codex)
