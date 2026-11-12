@@ -1,0 +1,24 @@
+id=preflight-cw-cx-breakgunfinish-a074b47d659f
+kind=preflight
+key=cw-cx-breakgunfinish
+tag=pfp
+v=37.70
+new=3770
+base=b1ba5720d9c8fe7dfdb0a5d96ee41f1f8a55f8ba
+host=DESKTOP-82BKOP4
+draft_sha=5855d2e7c4d435f0442ea2e39f06edb66d7b9c3094511eeffd8f82215739019b
+p_sha=2a3c795e2b30c22e72f3b25b41e559526d54fd33732d307270ca01b329a4f63f
+f_sha=3340f0f6336a320ee7a2e02bf8d36a2b972a6cee429d68f7ca58b8c342604a58
+game_sha=5e1cb1581fa943f9628893ead2eb518693da7405a9964fa2c7bb3814657c094f
+fix_sha=c92a64dd9c4e17047bfff1f10c9aa8515b0588361a7c1053607d0eee6d46b2e3
+started=1794442404
+ended=1794443677
+result=FAIL
+infra=1
+reason=the gate Chrome on 9347 did not start
+--- stages
+ppfp -> OK, 9 edits applied plus DEVNOW
+fpfp -> OK, 1 edits applied
+lint: PASS
+--- end
+done=1
