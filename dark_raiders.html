@@ -598,6 +598,11 @@
   html #root #hub #stashgrid .cell{border-color:var(--ui-line)!important;background:var(--ui-raised)!important;box-shadow:inset 0 -3px 0 var(--bar,transparent)!important;}
   html #root #hub #stashgrid .cell:hover{background:var(--ui-hover)!important;}
   html #root #hub #stashgrid .cell .cnt{color:var(--tx-1)!important;background:var(--ui-panel)!important;}
+  /* v28.xx (cw-cx-breakgunfinish): menu selection has its own ring; empty spaces are decoration, never inventory capacity or controls. */
+  html #root #hub #stashgrid .cell.stash-selected{outline:2px solid var(--acc)!important;outline-offset:2px;transition-property:background-color,border-color,box-shadow,color,opacity,transform;}
+  html #root #hub #stashgrid .stash-space{box-sizing:border-box;height:var(--stash-slot-h);min-width:0;border:1px dashed var(--ui-line);border-radius:var(--rad);background:transparent;opacity:.45;pointer-events:none;}
+  html #root #hub #gearbtn{margin-left:16px!important;padding-left:16px!important;border-left:1px solid var(--ui-line)!important;}
+  #topright .trcash{font-size:16px;font-weight:600;color:var(--tx-2);margin-right:8px;letter-spacing:.04em;}
   /* v28.xx (cw-cx-breakgunmenu): a reserved wanted row keeps the grid height stable, including when the strip is hidden. */
   html #root #hub .stash-title{display:grid;grid-template-columns:1fr auto;grid-template-rows:24px 32px;column-gap:16px;row-gap:8px;align-items:center;}
   html #root #hub .stash-title>em{grid-column:2;grid-row:1;}
@@ -3847,7 +3852,7 @@ body:has(#appearmodal.pixfashion.on) > #uimring{display:none !important}
           <div class="lohead"><span class="lotabs" id="lotabs" role="tablist"><button type="button" data-lt="pack" class="on" aria-selected="true">BACKPACK</button><button type="button" data-lt="keys" aria-selected="false">KEYS</button></span><em>$<span id="kitval">0</span> going up</em></div><!-- v28.xx (cw-stashtabs), HIS PICK 2026-10-28: the loadout column in two tabs, on its title line so they cost no height -->
           <div id="firstkit" class="hint" style="display:none;margin:4px 0 8px;padding:8px 10px;border:1px solid var(--amber);border-radius:4px;color:var(--amber);font-weight:700;letter-spacing:.04em">FIRST RAID: drag a gun and two heals in, then ENTER RAID</div>
           <div class="losec" style="flex:1;border-top:none">
-            <div class="loslab">Backpack<b><span id="kitn">0</span> packed</b></div>
+            <div class="loslab"><b><span id="kitn">0</span> packed</b></div><!-- v28.xx (cw-cx-breakgunfinish): the tab already names the backpack; this row keeps its live count. -->
             <div class="invgrid" id="kitgrid"></div>
           </div>
           <div class="losec">
@@ -4077,8 +4082,8 @@ var cv=document.getElementById('cv');
 var hcv=document.getElementById('hcv');
 
 // ================================================================ config
-var VER='37.71';
-var VER_AT='2026-11-12 05:23';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
+var VER='37.72';
+var VER_AT='2026-11-12 05:28';   // v35.xx (cw-verat), HIS ORDER (2026-10-27): "also put the date and time of the update, in us eastern time". ship.sh stamps it (yyyy-mm-dd hh:mm, Eastern) at every ship; empty in an unshipped copy.
 // WHAT CHANGED SINCE HE LAST PLAYED, v2.76. His last recorded runs were v2.43
 // and thirty builds have landed since; nothing in the game says so, and finding
 // out that heals take time by dying mid-heal is the wrong way to learn it. This
@@ -6703,7 +6708,7 @@ function syncTopRight(){
   if(s==='demo'){ el.innerHTML=''; return; }
   TRV.c=c; TRV.x=x; TRV.sv=sv.toLocaleString(); TRV.bv=bv.toLocaleString();   // v30.xx (cw-trcol): the same figures as text, for the rows the raid HUD draws
   // v37.xx (cw-m1xpoff), his 11-01 order: no xp in the corner readout
-  el.innerHTML='\x24'+c+'<span class="trgap"></span><small class="trl">STASH</small> \x24'+sv.toLocaleString()+' <small class="trl">BAG</small> \x24'+bv.toLocaleString();   // v36.xx (cw-hubpolish), critic on o-00l: "money ($) type varies between stations". The stash and bag values were 16px 600 beside the 24px 800 credits; all three $ values are the one number style now, the words stash and bag stay the quiet label.   // v33.xx (cw-raiddollar): his Q59, the stash and bag values are money   // v28.xx (cw-stashbag): spaces, so the text reads right when copied
+  el.innerHTML='<span class="trcash">cash</span> \x24'+c+'<span class="trgap"></span><small class="trl">STASH</small> \x24'+sv.toLocaleString()+' <small class="trl">BAG</small> \x24'+bv.toLocaleString();   // v36.xx (cw-hubpolish), critic on o-00l: "money ($) type varies between stations". The stash and bag values were 16px 600 beside the 24px 800 credits; all three $ values are the one number style now, the words stash and bag stay the quiet label.   // v33.xx (cw-raiddollar): his Q59, the stash and bag values are money   // v28.xx (cw-stashbag): spaces, so the text reads right when copied
 }
 // v17.24, co-op hunt 2026-09-28: TWO TABS ON ONE SAVE. Each tab reads the save once, at boot, and every save writes its whole
 // profile over the key, so with the game open in two tabs the tab holding the older copy wiped what the other had banked (an
@@ -58669,7 +58674,7 @@ var ROADMAP=[
 // v7.63: parsecheck now FAILS the build when this field does not name the
 // current VER, so it cannot silently rot a third time.
 var DEVNOW={
-  now:'v37.71: Magazine guns repeat at their existing fire rate while held. Shotguns load usable shells at each shell sound and keep their full reload time. A fresh loaded trigger cancels reload before cooldown or MG spin permits firing. Held and dry pulls let the reload finish. Cuts keep loaded shells and lose the active chain. The bot sim stays one go. Check 37.71 fails on v37.70',
+  now:'v37.72: The stash gun menu marks its source with a separate 2px lime ring until closing. Its last key reads 0 and still binds slot nine. Empty spaces have faint noninteractive outlines with no inventory limit. The repeated backpack heading is removed, section shortcuts are separated from filters, and cash has a matching label beside stash and bag values. Check 37.72 fails on v37.71',
   next:'His ruling on the pillager bots: machines at war with them (his Q31) plus the floor rule (his v6.71 note) means most die and few get out; leave it, or soften one of the two'
 };
 // The open roadmap rows in HIS order. P.roadmapOrder holds the row texts; rows
@@ -59857,6 +59862,8 @@ function renderKitCol(){
 // same object offers the same verbs wherever it is shown.
 var IMENU=null;
 function closeItemMenu(){
+  // v28.xx (cw-cx-breakgunfinish): the source ring belongs to this menu, including keyboard opening and closing.
+  if(IMENU&&IMENU.stashSource) IMENU.stashSource.classList.remove('stash-selected');
   if(IMENU&&IMENU.parentNode) IMENU.parentNode.removeChild(IMENU);
   IMENU=null;
 }
@@ -60078,7 +60085,10 @@ function stashMenuPlace(m,x,y,z){
   for(var i=0;i<cells.length;i++){
     var b=cells[i].getBoundingClientRect(); if(!b.width||!b.height||b.bottom<=gr.top||b.top>=gr.bottom) continue;
     blocks.push(b); last=Math.max(last,Math.min(b.bottom,gr.bottom));
-    if(x>=b.left&&x<=b.right&&y>=b.top&&y<=b.bottom) source=b;
+    // v28.xx (cw-cx-breakgunfinish): both devices identify one source, including a click exactly on a shared tile edge.
+    if(!source&&x>=b.left&&x<=b.right&&y>=b.top&&y<=b.bottom){
+      source=b; m.stashSource=cells[i]; cells[i].classList.add('stash-selected');
+    }
   }
   var packed=document.querySelectorAll('#kitgrid .cell:not(.slotempty)'), d=document.getElementById('stashdetail');
   for(var j=0;j<packed.length;j++){ var p=packed[j].getBoundingClientRect(); if(p.width&&p.height) blocks.push(p); }
@@ -60113,7 +60123,8 @@ function openItemMenu(x,y,key,ctx,count){
       for(var sl=0;sl<HOTBAR_N;sl++){    // v8.18: from key 1, not key 3
         (function(slot){
           var b=document.createElement('button');
-          b.textContent=String(slot+1);
+          // v28.xx (cw-cx-breakgunfinish): the stash key label matches Digit0, the hotbar and the footer; its action remains slot nine.
+          b.textContent=m.classList.contains('stash-actions')&&slot===9?'0':String(slot+1);
           if((P.hotAssign||{})[slot]===key) b.className='mine';
           b.onclick=function(){
             closeItemMenu();
@@ -62739,11 +62750,27 @@ function stashSortKeys(a,counts){
   });
   return a;
 }
+// v28.xx (cw-cx-breakgunfinish): a faint, noninteractive empty grid fills unused stash space. It never changes a profile, item count or scroll capacity.
+function stashBlankSlots(){
+  var z=document.getElementById('stashgrid'); if(!z) return;
+  [].forEach.call(z.querySelectorAll('.stash-space'),function(e){ e.remove(); });
+  if(!z.clientWidth||!z.clientHeight) return;
+  var cs=getComputedStyle(z), cols=cs.gridTemplateColumns.trim().split(/\s+/), n=cols.length, w=parseFloat(cols[0]);
+  if(!isFinite(w)||w<=0) return;
+  var cells=[].filter.call(z.querySelectorAll('.cell'),function(e){ return e.offsetHeight>0; }), rh=cells.length?cells[0].offsetHeight:w;
+  var gap=parseFloat(cs.rowGap)||0, h=z.clientHeight-(parseFloat(cs.paddingTop)||0)-(parseFloat(cs.paddingBottom)||0);
+  var empty=z.querySelector('.cellempty'), used=cells.length+(empty&&empty.offsetHeight?n:0), rows=Math.floor((h+gap)/(rh+gap));
+  var count=Math.min(120,Math.max(0,rows*n-used)), f=document.createDocumentFragment();
+  z.style.setProperty('--stash-slot-h',rh+'px');
+  for(var i=0;i<count;i++){ var e=document.createElement('div'); e.className='stash-space'; e.setAttribute('aria-hidden','true'); f.appendChild(e); }
+  z.appendChild(f);
+}
 function stashFilterApply(){
   var z=document.getElementById('stashgrid'), q=String(STASH_Q||'').trim().toLowerCase(), cs, i, t, on, n=0;
   if(!z) return 0;
   cs=z.querySelectorAll('.cell');
   for(i=0;i<cs.length;i++){ t=String(cs[i].title||'').split('\n')[0].toLowerCase(); on=!q||t.indexOf(q)>=0; cs[i].style.display=on?'':'none'; if(on) n++; }
+  stashBlankSlots(); // v28.xx (cw-cx-breakgunfinish): search redraws only decoration around the visible cells.
   return n;
 }function stashTabOf(k){
   var t=ITEMS[k]; if(!t) return 'other';

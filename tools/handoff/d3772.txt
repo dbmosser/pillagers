@@ -1,0 +1,5 @@
+## v37.72 - CLEAR STASH GUN MENU SELECTION
+
+Co-op hunt while he was away. The break down follow-up review found no source selection on keys, a tenth key labelled 10 instead of 0, a repeated backpack heading and empty stash space. Keep menu selection distinct from rarity and make the existing labels agree. Watch: cheap parts could make bench guns and armour easy to craft; watch his stash for servo and board hoards.
+
+MEASURED. Check 37.72 passes, and fails on v37.71.

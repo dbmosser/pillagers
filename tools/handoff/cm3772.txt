@@ -1,0 +1,7 @@
+v37.72: clear stash gun menu selection
+
+The stash gun menu marks its source with a separate 2px lime ring until closing. Its last key reads 0 and still binds slot nine. Empty spaces have faint noninteractive outlines with no inventory limit. The repeated backpack heading is removed, section shortcuts are separated from filters, and cash has a matching label beside stash and bag values.
+
+Check 37.72. Fails on v37.71.
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
