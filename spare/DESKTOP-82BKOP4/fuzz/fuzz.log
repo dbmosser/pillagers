@@ -8179,3 +8179,6 @@
 2026-11-12 11:03:20 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: The operation has timed out. minutes=4.4
 2026-11-12 11:08:45 FUZZ START seed=406453015 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=?
 2026-11-12 11:11:35 raid 1 demo2p raidSeed=1698097751 map=0 god=0 sec=116 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-12 11:18:05 raid 2 demo2p raidSeed=1275470051 map=0 god=0 sec=27 end=nostart problems=1 newUnique=1 totalUnique=2 totalProblems=2 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-12 11:22:38 FUZZ 2P ROBOTS OFF: three 2-window starts in a row failed, so the 2-player share runs as demo2 (this window as host alone) for the rest of this run
+2026-11-12 11:22:38 raid 3 demo2p raidSeed=2032436666 map=0 god=0 sec=115 end=nostart problems=1 newUnique=1 totalUnique=3 totalProblems=3 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
