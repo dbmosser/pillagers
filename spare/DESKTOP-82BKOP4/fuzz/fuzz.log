@@ -8064,3 +8064,5 @@
 2026-11-12 00:51:18 raid 4 demo1 raidSeed=562402098 map=0 god=1 sec=79 end=hang problems=1 newUnique=1 totalUnique=4 totalProblems=4 events=13 score=0 ents=53 travelPx=0 fires=1 menuPct=0 heapMB=37 p2= gfx=1143/30.75/94.25/821/0.75 work=1138/11.25/30.25/53.75 pics=161/60.5mb/wall:91,veg:8,shad:41,icon:9,g.pix:0,g.pixmachines:0,g.muz:1,g.gun:1,g.lightspr:4,g.gfxE:3,pix.actors:0,pix.scene:0,big:3 build=37.69
 2026-11-12 00:53:52 FUZZ ERROR CDP timeout at 150
 2026-11-12 00:54:04 FUZZ END raids=4 problems=4 unique=4 reason=ERROR: CDP timeout minutes=25.9
+2026-11-12 01:05:46 FUZZ ERROR The operation has timed out. at 241
+2026-11-12 01:06:18 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: The operation has timed out. minutes=7.5
