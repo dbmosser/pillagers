@@ -8177,3 +8177,5 @@
 2026-11-12 10:55:03 FUZZ END raids=4 problems=4 unique=4 reason=ERROR: Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." minutes=16.6
 2026-11-12 11:02:28 FUZZ ERROR The operation has timed out. at 241
 2026-11-12 11:03:20 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: The operation has timed out. minutes=4.4
+2026-11-12 11:08:45 FUZZ START seed=406453015 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=?
+2026-11-12 11:11:35 raid 1 demo2p raidSeed=1698097751 map=0 god=0 sec=116 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
