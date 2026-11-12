@@ -1,0 +1,29 @@
+id=preflight-cw-cx-graveclick-4151ee5d8349
+kind=preflight
+key=cw-cx-graveclick
+tag=pfo
+v=37.73
+new=3773
+base=26de0fdb0b1e82ae9eb52883a85aa7244952cb26
+host=DESKTOP-82BKOP4
+draft_sha=649ad5cdfbf2b63d43caea5ead847048bd6825c45d9f9432d28297eb3a90744b
+p_sha=28e16ca0aee9fa8f3470b900c46c6b977c9c869fcb5e73b5b58ed912cb72acfc
+f_sha=2dd77f9474a1cba3c88cd845bc7ea3efc959555332d6b37172808d71e93866e8
+game_sha=fba389b76197efef02aaf6650dc7fdee482b05fd05f03bd8aa0400a33c394049
+fix_sha=79ddaa538bd8547b9753909fca33b23b6871003deace1ffb329da8db24d2d524
+started=1794487734
+ended=1794489569
+result=FAIL
+infra=0
+reason=an older check fails on the drafted build
+--- stages
+ppfo -> OK, 4 edits applied plus DEVNOW
+fpfo -> OK, 1 edits applied
+lint: PASS
+parse: PASS v37.73 parse check
+dry fxdrypfo check 37.73: PASS / PASS
+control fxctlpfo check 37.73: clicking graveyard did not open the panel; graveyard click threw: Uncaught ReferenceError: hcGraveOpen is not defined; click did not render the staged graveyard record; open did not focus close; close click threw: Uncaught ReferenceError: hcGraveClose is not defined; graveyard still has inline handl / clicking graveyard did not open the panel; graveyard click threw: Uncaught ReferenceError: hcGraveOpen is not defined; click did not render the staged graveyard record; open did not focus close; close click threw: Uncaught ReferenceError: hcGraveClose is not defined; graveyard still has inline handl
+REGRESS 37.38: FOUR: the second brakka is brakka iii
+recent: 1 new failures in the newest 80 checks
+--- end
+done=1
