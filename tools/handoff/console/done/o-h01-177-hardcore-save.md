@@ -19,3 +19,12 @@ Rules: the seed 4242 fingerprint (ents 85/374, containers 165/593) must hold unl
 TASK DONE when it shipped; TASK PARTIAL with what is left.
 
 HIS PRIORITY 10-27 (priorities page): HIGH
+
+Lane note 2026-11-11 18:56: shipped cw-cx-hardcore and parked: only lane-side steps are left. Codex's last words:
+Hardcore saves shipped in v37.68 and reached your PC. Round 2 timed out before staging and produced no pictures. Logged the coordinator handoff; the corrected recipe remains ready.
+
+TASK PARTIAL: coordinator must recover the spare-PC camera, capture 1080p/4K pictures and complete critic review.
+
+Coordinator note 2026-11-11 20:0x (HTML CEO): camera recovered. Round 3 at 1080p (shots-8dcde04b99fc, base b1ba5720d, v37.69): all six scenes staged, in notes/shots/o-h01-177-hardcore-save-recipes-3. Two camera fixes for the JT PC beside Fortnite: a new tab waits 30 s with three tries (b1ba5720d), Chrome start waits about a minute (badf19c05). 4K pass in notes/shots/o-h01-177-hardcore-save-recipes-3-4k. Critic (log/o-h01-177-hardcore-save-recipes-3.critic.txt): scores 2-3, P0/P1 triaged: title wordmark colour, bare title background (his binding "nothing behind the title", v35.34), raid control legend, delete button colour and the player 2 window caption all predate this job; identical graveyard stats are the recipe staging data; the lime close box is the focus ring of the shared modal; the KIA card uses the shared card by design with his one extra line. None is a defect of this job. My own look found one: the title hardcore switch is a 40 x 40 square, not the shared pill, queued as tasks/o-h01b-hardcore-toggle-is-a-pill.md. The rest reads as asked: tag, fallen line, save gone after death, graveyard ranked by stash value with body and stats, close and esc.
+
+Coordinator close 2026-11-11 20:0x (HTML CEO): 4K pictures in notes/shots/o-h01-177-hardcore-save-recipes-3-4k (shots-39ada30b4669, PASS, all six staged), collected from spare-results after my listener timed out in the JT queue. They match the 1080p set. Follow-ups: tasks/o-h01b-hardcore-toggle-is-a-pill.md (switch shape, at the gate on lane o) and backlog/o-h01c-graveyard-hides-the-money-strip.md (the money strip over the graveyard panel top). TASK DONE: shipped v37.68, on his PC, pictures at 1080p and 4K, critic run and triaged.
