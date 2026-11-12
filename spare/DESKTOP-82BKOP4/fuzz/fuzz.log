@@ -8043,3 +8043,5 @@
 2026-11-11 23:21:20 FUZZ END raids=5 problems=5 unique=3 reason=ERROR: CDP timeout minutes=25.2
 2026-11-11 23:25:02 FUZZ ERROR no static server answers and serve.ps1 on 8811 did not start at 695
 2026-11-11 23:25:23 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: no static server answers and serve.ps1 on 8811 did not start minutes=3.5
+2026-11-11 23:33:18 FUZZ START seed=149682024 minutes=60 raidsec=300 port=9331 srv=8806 build=37.69 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-11 23:35:32 raid 1 demo2p raidSeed=306893797 map=0 god=1 sec=90 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.69
