@@ -8264,3 +8264,7 @@
 2026-11-12 18:55:01 raid 4 demo1 raidSeed=1245793760 map=0 god=1 sec=51 end=hang problems=1 newUnique=1 totalUnique=3 totalProblems=4 events=3 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
 2026-11-12 19:16:24 FUZZ ERROR the fixture page did not come up in 120 s at 256
 2026-11-12 19:16:49 FUZZ END raids=4 problems=4 unique=3 reason=ERROR: the fixture page did not come up in 120 s minutes=36.2
+2026-11-12 19:24:10 FUZZ START seed=191368973 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-12 19:25:35 raid 1 demo2p raidSeed=1227973651 map=0 god=1 sec=40 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-12 19:27:54 raid 2 demo2p raidSeed=697104853 map=0 god=0 sec=63 end=nostart problems=1 newUnique=1 totalUnique=2 totalProblems=2 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-12 19:29:58 raid 3 demo2p raidSeed=1385236958 map=0 god=0 sec=12 end=hang problems=1 newUnique=1 totalUnique=3 totalProblems=3 events=1 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2=link_83s_join_90s_pad_own gfx=none work=none build=37.72
