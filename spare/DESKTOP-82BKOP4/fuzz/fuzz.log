@@ -8294,3 +8294,7 @@
 2026-11-12 21:02:18 raid 7 demo2 raidSeed=45662872 map=0 god=0 sec=325 end=hang problems=2 newUnique=0 totalUnique=5 totalProblems=11 events=188 score=0 ents=51 travelPx=1553 fires=7 menuPct=0 heapMB=38 p2= gfx=221/85.75/100/213/1 work=230/19.75/100/100 pics=264/69.2mb/wall:168,veg:16,shad:53,icon:9,g.pix:0,g.pixmachines:0,g.muz:0,g.gun:1,g.lightspr:14,pix.actors:0,pix.scene:0,big:3 build=37.72
 2026-11-12 21:19:31 FUZZ ERROR the fixture page did not come up in 120 s at 256
 2026-11-12 21:19:34 FUZZ END raids=7 problems=11 unique=5 reason=ERROR: the fixture page did not come up in 120 s minutes=55.9
+2026-11-12 21:27:29 FUZZ ERROR CDP timeout (send) at 128
+2026-11-12 21:27:54 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: CDP timeout (send) minutes=7.5
+2026-11-12 21:32:36 FUZZ START seed=522286723 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-12 21:33:32 raid 1 demo2p raidSeed=185394146 map=0 god=0 sec=56 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
