@@ -1,6 +1,6 @@
 host=DESKTOP-82BKOP4
-seen=2026-11-13 18:31
-epoch=1794612684
+seen=2026-11-13 18:41
+epoch=1794613308
 game=871ef62a v37.72
 test_run=idle
 robots=1
@@ -10,6 +10,6 @@ runner=AC98EA21
 mode=full
 ram_total_gb=32
 cpu_threads=4
-cpu_pct=96
+cpu_pct=51
 cpu=Intel(R) Core(TM) i5-7600K CPU @ 3.80GHz
 gate_cap=1
