@@ -8373,3 +8373,8 @@
 2026-11-13 02:35:03 FUZZ END raids=1 problems=1 unique=1 reason=ERROR: the fixture page did not come up in 120 s minutes=33.1
 2026-11-13 02:39:01 FUZZ ERROR The operation has timed out. at 241
 2026-11-13 02:39:20 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: The operation has timed out. minutes=1.6
+2026-11-13 02:49:00 FUZZ START seed=1766288758 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=?
+2026-11-13 02:50:09 raid 1 demo2p raidSeed=157038181 map=0 god=0 sec=30 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-13 02:52:29 raid 2 demo2p raidSeed=976136382 map=0 god=0 sec=12 end=nostart problems=1 newUnique=0 totalUnique=1 totalProblems=2 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-13 02:56:08 FUZZ 2P ROBOTS OFF: three 2-window starts in a row failed, so the 2-player share runs as demo2 (this window as host alone) for the rest of this run
+2026-11-13 02:56:08 raid 3 demo2p raidSeed=699193828 map=0 god=0 sec=145 end=nostart problems=1 newUnique=1 totalUnique=2 totalProblems=3 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
