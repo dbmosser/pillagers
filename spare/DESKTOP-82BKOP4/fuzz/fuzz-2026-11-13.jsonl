@@ -13,3 +13,5 @@
 {"ts":"2026-11-13 01:39:39","build":"37.72","runSeed":1387878378,"raidNo":1,"mode":"demo2p","raidSeed":878744557,"raidSec":210,"kind":"start","msg":"demo2p raid did not start: ERR CDP timeout","where":"","last60":[]}
 {"ts":"2026-11-13 01:52:56","build":"37.72","runSeed":1387878378,"raidNo":3,"mode":"demo2p","raidSeed":501500090,"raidSec":222,"kind":"start","msg":"demo2p raid did not start: ERR CDP timeout (send)","where":"","last60":[]}
 {"ts":"2026-11-13 01:54:33","build":"37.72","runSeed":1387878378,"raidNo":4,"mode":"demo1","raidSeed":1835358496,"raidSec":31,"kind":"hang","msg":"the page stopped answering for 10+ s (demo1)","where":"CDP timeout","last60":[]}
+{"ts":"2026-11-13 02:00:08","kind":"dup-counts","runSeed":1387878378,"counts":{"start|demo#p raid did not start: ERR CDP timeout":2}}
+{"ts":"2026-11-13 02:06:11","build":"37.72","runSeed":1153505097,"raidNo":1,"mode":"demo2p","raidSeed":956133540,"raidSec":135,"kind":"start","msg":"demo2p raid did not start: ERR CDP timeout (send)","where":"","last60":[]}
