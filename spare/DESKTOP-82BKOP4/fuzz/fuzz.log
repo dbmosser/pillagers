@@ -8344,3 +8344,8 @@
 2026-11-13 00:27:26 raid 5 demo2 raidSeed=588863019 map=0 god=1 sec=91 end=hang problems=1 newUnique=1 totalUnique=4 totalProblems=7 events=101 score=50 ents=47 travelPx=234 fires=6 menuPct=0 heapMB=61 p2= gfx=265/28.75/100/166/1 work=279/9.75/31.25/57.75 pics=228/66.9mb/wall:89,veg:9,shad:87,icon:17,g.pix:0,g.pixmachines:0,g.muz:2,g.gun:2,g.lightspr:15,g.gfxE:3,pix.actors:0,pix.scene:0,big:4 build=37.72
 2026-11-13 00:29:52 FUZZ ERROR Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." at 127
 2026-11-13 00:30:17 FUZZ END raids=5 problems=7 unique=4 reason=ERROR: Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." minutes=22.5
+2026-11-13 00:34:02 FUZZ START seed=1981418442 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-13 00:35:52 raid 1 demo2p raidSeed=1778621664 map=0 god=1 sec=93 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-13 00:38:08 raid 2 demo2p raidSeed=2010936304 map=0 god=1 sec=40 end=nostart problems=1 newUnique=1 totalUnique=2 totalProblems=2 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-13 00:42:02 FUZZ 2P ROBOTS OFF: three 2-window starts in a row failed, so the 2-player share runs as demo2 (this window as host alone) for the rest of this run
+2026-11-13 00:42:02 raid 3 demo2p raidSeed=1797067283 map=0 god=0 sec=183 end=nostart problems=1 newUnique=1 totalUnique=3 totalProblems=3 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
