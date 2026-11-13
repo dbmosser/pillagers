@@ -8359,3 +8359,5 @@
 2026-11-13 01:29:08 raid 11 demo2 raidSeed=299673860 map=0 god=1 sec=99 end=reload problems=1 newUnique=1 totalUnique=6 totalProblems=8 events=6 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
 2026-11-13 01:34:22 FUZZ ERROR The operation has timed out. at 241
 2026-11-13 01:34:42 FUZZ END raids=11 problems=8 unique=6 reason=ERROR: The operation has timed out. minutes=61.4
+2026-11-13 01:36:08 FUZZ START seed=1387878378 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-13 01:39:39 raid 1 demo2p raidSeed=878744557 map=0 god=1 sec=210 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
