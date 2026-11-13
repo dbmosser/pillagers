@@ -8369,3 +8369,5 @@
 2026-11-13 02:00:08 FUZZ END raids=4 problems=4 unique=3 reason=ERROR: The operation has timed out. minutes=24.5
 2026-11-13 02:03:56 FUZZ START seed=1153505097 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
 2026-11-13 02:06:11 raid 1 demo2p raidSeed=956133540 map=0 god=0 sec=135 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-13 02:34:26 FUZZ ERROR the fixture page did not come up in 120 s at 256
+2026-11-13 02:35:03 FUZZ END raids=1 problems=1 unique=1 reason=ERROR: the fixture page did not come up in 120 s minutes=33.1
