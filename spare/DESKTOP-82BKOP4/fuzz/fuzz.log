@@ -8371,3 +8371,5 @@
 2026-11-13 02:06:11 raid 1 demo2p raidSeed=956133540 map=0 god=0 sec=135 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
 2026-11-13 02:34:26 FUZZ ERROR the fixture page did not come up in 120 s at 256
 2026-11-13 02:35:03 FUZZ END raids=1 problems=1 unique=1 reason=ERROR: the fixture page did not come up in 120 s minutes=33.1
+2026-11-13 02:39:01 FUZZ ERROR The operation has timed out. at 241
+2026-11-13 02:39:20 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: The operation has timed out. minutes=1.6
