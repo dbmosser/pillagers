@@ -8333,3 +8333,7 @@
 2026-11-12 23:51:30 FUZZ START seed=619276875 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
 2026-11-12 23:52:04 raid 1 demo2p raidSeed=1542285054 map=0 god=0 sec=33 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
 2026-11-12 23:57:33 raid 2 demo2p raidSeed=827463065 map=0 god=1 sec=148 end=hang problems=1 newUnique=1 totalUnique=2 totalProblems=2 events=7 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2=link_18s_join_100s_pad_fwd gfx=none work=none build=37.72
+2026-11-13 00:04:09 FUZZ ERROR CDP timeout at 148
+2026-11-13 00:04:35 FUZZ END raids=2 problems=2 unique=2 reason=ERROR: CDP timeout minutes=13.6
+2026-11-13 00:09:09 FUZZ START seed=668719914 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-13 00:09:33 raid 1 demo2p raidSeed=1937509011 map=0 god=0 sec=22 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72

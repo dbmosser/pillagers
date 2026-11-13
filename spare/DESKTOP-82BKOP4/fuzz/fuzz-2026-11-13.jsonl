@@ -1,0 +1,1 @@
+{"ts":"2026-11-13 00:09:31","build":"37.72","runSeed":668719914,"raidNo":1,"mode":"demo2p","raidSeed":1937509011,"raidSec":22,"kind":"start","msg":"demo2p raid did not start: ERR the player 2 window setup: Exception calling \"SendAsync\" with \"4\" argument(s): \"The WebSocket is not connected.\"","where":"","last60":[]}
