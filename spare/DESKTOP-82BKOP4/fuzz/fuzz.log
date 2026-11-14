@@ -8851,3 +8851,5 @@
 2026-11-14 17:43:21 raid 12 demo1 raidSeed=1450257407 map=0 god=1 sec=39 end=clock-end problems=0 newUnique=0 totalUnique=5 totalProblems=9 events=732 score=0 ents=46 travelPx=2628 fires=28 menuPct=12 heapMB=47 p2= gfx=840/21.75/56.75/247/1 work=1019/6.75/16.25/44.75 pics=173/27.8mb/wall:83,veg:7,shad:48,icon:20,g.pix:0,g.pixmachines:0,g.muz:2,g.gun:2,g.lightspr:5,g.gfxE:3,pix.actors:0,pix.scene:0,big:3 build=37.72
 2026-11-14 17:43:21 FUZZ END raids=12 problems=9 unique=5 reason=time minutes=59.4
 2026-11-14 17:46:32 FUZZ START seed=1707029013 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-14 18:17:35 FUZZ START seed=329818784 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-14 18:21:31 raid 1 demo2p raidSeed=1251813011 map=0 god=1 sec=236 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
