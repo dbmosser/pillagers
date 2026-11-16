@@ -9367,3 +9367,4 @@
 2026-11-16 18:19:50 FUZZ END raids=13 problems=10 unique=5 reason=time minutes=60.9
 2026-11-16 18:21:25 FUZZ START seed=525364980 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
 2026-11-16 18:25:35 raid 1 demo2p raidSeed=1002253509 map=0 god=1 sec=250 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-16 18:30:03 raid 2 demo2p raidSeed=2102718248 map=0 god=1 sec=234 end=nostart problems=1 newUnique=0 totalUnique=1 totalProblems=2 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
