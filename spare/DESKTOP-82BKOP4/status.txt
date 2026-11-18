@@ -1,6 +1,6 @@
 host=DESKTOP-82BKOP4
-seen=2026-11-17 19:36
-epoch=1794962189
+seen=2026-11-17 19:46
+epoch=1794962797
 game=871ef62a v37.72
 test_run=paused: someone is using the PC
 robots=0
