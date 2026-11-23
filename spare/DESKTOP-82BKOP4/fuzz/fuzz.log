@@ -11553,3 +11553,6 @@
 2026-11-23 14:06:20 raid 4 demo1 raidSeed=1853150270 map=0 god=0 sec=383 end=noend problems=1 newUnique=1 totalUnique=3 totalProblems=4 events=40 score=0 ents=47 travelPx=691 fires=3 menuPct=0 heapMB=31 p2= gfx=320/100/100/320/1 work=35/100/100/100 pics=190/68.1mb/wall:69,veg:23,shad:62,icon:9,g.pix:0,g.pixmachines:0,g.muz:1,g.gun:1,g.lightspr:19,g.gfxE:3,pix.actors:0,pix.scene:0,big:3 build=37.72
 2026-11-23 14:07:12 raid 5 demo2 raidSeed=756616512 map=0 god=0 sec=33 end=reload problems=1 newUnique=1 totalUnique=4 totalProblems=5 events=5 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
 2026-11-23 14:08:44 FUZZ ERROR CDP timeout at 148
+2026-11-23 14:09:01 FUZZ END raids=5 problems=5 unique=4 reason=ERROR: CDP timeout minutes=20.8
+2026-11-23 14:17:30 FUZZ ERROR Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." at 127
+2026-11-23 14:18:03 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." minutes=3.8
