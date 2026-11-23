@@ -11556,3 +11556,6 @@
 2026-11-23 14:09:01 FUZZ END raids=5 problems=5 unique=4 reason=ERROR: CDP timeout minutes=20.8
 2026-11-23 14:17:30 FUZZ ERROR Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." at 127
 2026-11-23 14:18:03 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." minutes=3.8
+2026-11-23 14:20:02 FUZZ ERROR Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." at 127
+2026-11-23 14:20:23 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." minutes=1.1
+2026-11-23 14:28:23 FUZZ START seed=696467332 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
