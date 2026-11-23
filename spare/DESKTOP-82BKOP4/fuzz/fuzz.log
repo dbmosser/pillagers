@@ -11631,3 +11631,6 @@
 2026-11-23 18:01:00 FUZZ END raids=2 problems=2 unique=2 reason=ERROR: Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." minutes=4.7
 2026-11-23 18:02:54 FUZZ START seed=908761488 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
 2026-11-23 18:04:06 raid 1 demo2p raidSeed=1326343936 map=0 god=1 sec=71 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-23 18:31:58 FUZZ START seed=532738687 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-23 18:33:43 raid 1 demo2p raidSeed=1423618898 map=0 god=0 sec=69 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-23 18:36:05 raid 2 demo2p raidSeed=1919009983 map=0 god=1 sec=57 end=nostart problems=1 newUnique=0 totalUnique=1 totalProblems=2 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
