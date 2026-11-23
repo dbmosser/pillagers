@@ -11502,3 +11502,8 @@
 2026-11-23 11:00:58 FUZZ 2P ROBOTS OFF: three 2-window starts in a row failed, so the 2-player share runs as demo2 (this window as host alone) for the rest of this run
 2026-11-23 11:00:58 raid 13 demo2p raidSeed=308282132 map=0 god=1 sec=42 end=nostart problems=1 newUnique=0 totalUnique=9 totalProblems=16 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
 2026-11-23 11:01:20 FUZZ END raids=13 problems=16 unique=9 reason=time minutes=59.9
+2026-11-23 11:06:51 FUZZ START seed=1971539514 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-23 11:08:16 raid 1 demo2p raidSeed=1640641967 map=0 god=0 sec=54 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-23 11:10:23 raid 2 demo2p raidSeed=1158317404 map=0 god=1 sec=48 end=nostart problems=1 newUnique=1 totalUnique=2 totalProblems=2 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-23 11:11:47 FUZZ 2P ROBOTS OFF: three 2-window starts in a row failed, so the 2-player share runs as demo2 (this window as host alone) for the rest of this run
+2026-11-23 11:11:47 raid 3 demo2p raidSeed=1730940435 map=0 god=1 sec=80 end=nostart problems=1 newUnique=0 totalUnique=2 totalProblems=3 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
