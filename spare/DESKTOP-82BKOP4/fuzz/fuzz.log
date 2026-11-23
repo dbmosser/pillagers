@@ -11624,3 +11624,10 @@
 2026-11-23 17:51:03 raid 2 demo2p raidSeed=1613521310 map=0 god=1 sec=370 end=hang problems=1 newUnique=1 totalUnique=2 totalProblems=2 events=224 score=0 ents=54 travelPx=512 fires=2 menuPct=27 heapMB=48 p2=link_41s_join_54s_pad_own gfx=548/55.25/100/545/1 gfx2=582/58.25/100/582/1 work=626/7.25/28.25/43.75 work2=697/10.25/34.75/76.75 pics=131/62.4mb/wall:72,veg:6,shad:37,icon:9,g.pix:0,g.pixmachines:0,g.muz:0,g.gun:2,g.lightspr:2,pix.actors:0,pix.scene:0,big:3 pics2=108/61.9mb/wall:36,veg:3,shad:37,icon:20,g.pix:0,g.pixmachines:0,g.muz:2,g.gun:2,g.lightspr:4,pix.actors:0,pix.scene:0,big:4 build=37.72
 2026-11-23 17:53:35 FUZZ ERROR CDP timeout (send) at 128
 2026-11-23 17:53:50 FUZZ END raids=2 problems=2 unique=2 reason=ERROR: CDP timeout (send) minutes=12.8
+2026-11-23 17:57:25 FUZZ START seed=1783392173 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-23 17:57:52 raid 1 demo2p raidSeed=60577816 map=0 god=1 sec=26 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-23 17:59:44 raid 2 demo2p raidSeed=1803709957 map=0 god=0 sec=38 end=hang problems=1 newUnique=1 totalUnique=2 totalProblems=2 events=7 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2=link_6s_join_39s_pad_fwd gfx=none work=none build=37.72
+2026-11-23 18:00:36 FUZZ ERROR Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." at 127
+2026-11-23 18:01:00 FUZZ END raids=2 problems=2 unique=2 reason=ERROR: Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." minutes=4.7
+2026-11-23 18:02:54 FUZZ START seed=908761488 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-23 18:04:06 raid 1 demo2p raidSeed=1326343936 map=0 god=1 sec=71 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
