@@ -11857,3 +11857,5 @@
 2026-11-24 08:13:33 raid 9 demo2p raidSeed=1213282680 map=0 god=1 sec=99 end=hang problems=2 newUnique=2 totalUnique=3 totalProblems=3 events=99 score=100 ents=53 travelPx=982 fires=3 menuPct=0 heapMB=50 p2=link_6s_join_24s_pad_own gfx=225/58.25/100/211/0.85 gfx2=174/64.25/100/174/0.9 work=93/5.75/33.25/98.75 work2=175/12.25/61.25/100 pics=362/81.2mb/wall:16,veg:10,shad:249,icon:42,g.pix:0,g.pixmachines:0,g.muz:5,g.gun:12,g.lightspr:22,g.gfxE:3,pix.actors:0,pix.scene:0,big:3 pics2=128/60.2mb/wall:30,veg:19,shad:46,icon:13,g.pix:0,g.pixmachines:0,g.muz:2,g.gun:2,g.lightspr:12,pix.actors:0,pix.scene:0,big:4 build=37.72
 2026-11-24 08:15:39 FUZZ ERROR The operation has timed out. at 241
 2026-11-24 08:15:55 FUZZ END raids=9 problems=3 unique=3 reason=ERROR: The operation has timed out. minutes=41.4
+2026-11-24 08:34:35 FUZZ ERROR CDP timeout (send) at 128
+2026-11-24 08:35:06 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: CDP timeout (send) minutes=9.7
