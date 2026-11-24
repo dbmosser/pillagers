@@ -11860,3 +11860,6 @@
 2026-11-24 08:34:35 FUZZ ERROR CDP timeout (send) at 128
 2026-11-24 08:35:06 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: CDP timeout (send) minutes=9.7
 2026-11-24 09:34:52 FUZZ START seed=976155885 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-24 10:11:37 raid 1 demo2p raidSeed=1384996329 map=0 god=1 sec=2156 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-24 10:57:04 raid 2 demo2p raidSeed=314448988 map=0 god=1 sec=2541 end=nostart problems=1 newUnique=1 totalUnique=2 totalProblems=2 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-24 10:58:06 FUZZ END raids=2 problems=2 unique=2 reason=time minutes=93
