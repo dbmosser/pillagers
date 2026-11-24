@@ -11785,3 +11785,5 @@
 2026-11-24 03:28:14 FUZZ END raids=2 problems=2 unique=2 reason=ERROR: CDP timeout minutes=11
 2026-11-24 03:35:19 FUZZ ERROR The operation has timed out. at 241
 2026-11-24 03:35:20 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: The operation has timed out. minutes=2.4
+2026-11-24 03:38:29 FUZZ START seed=834654240 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-24 03:45:12 raid 1 demo2p raidSeed=638951826 map=0 god=1 sec=380 end=noend problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=901 score=0 ents=49 travelPx=7926 fires=9 menuPct=9 heapMB=50 p2=link_9s_join_19s_pad_own gfx=468/47.75/100/453/0.75 gfx2=433/49.75/100/433/0.75 work=5938/7.75/34.75/70.75 work2=5473/10.25/40.25/71.25 pics=226/65.4mb/wall:38,veg:27,shad:108,icon:14,g.pix:0,g.pixmachines:0,g.muz:7,g.gun:3,g.lightspr:22,g.gfxE:3,pix.actors:0,pix.scene:0,big:4 pics2=218/64.1mb/wall:27,veg:26,shad:96,icon:32,g.pix:0,g.pixmachines:0,g.muz:4,g.gun:5,g.lightspr:21,g.gfxE:3,pix.actors:0,pix.scene:0,big:4 build=37.72
