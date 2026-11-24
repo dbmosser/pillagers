@@ -11842,3 +11842,6 @@
 2026-11-24 06:57:37 FUZZ START seed=223370703 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
 2026-11-24 06:58:32 raid 1 demo2p raidSeed=905520060 map=0 god=0 sec=55 end=nostart problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
 2026-11-24 07:00:38 raid 2 demo2p raidSeed=1506899958 map=0 god=0 sec=48 end=nostart problems=1 newUnique=1 totalUnique=2 totalProblems=2 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
+2026-11-24 07:04:46 raid 3 demo2p raidSeed=1266064888 map=0 god=0 sec=46 end=hang problems=1 newUnique=1 totalUnique=3 totalProblems=3 events=3 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2=link_78s_join_176s_pad_own gfx=none work=none build=37.72
+2026-11-24 07:15:28 FUZZ ERROR The operation has timed out. at 241
+2026-11-24 07:15:44 FUZZ END raids=3 problems=3 unique=3 reason=ERROR: The operation has timed out. minutes=18.7
