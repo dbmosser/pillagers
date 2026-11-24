@@ -11753,3 +11753,7 @@
 2026-11-24 01:42:48 raid 11 demo2p raidSeed=764917816 map=0 god=1 sec=75 end=nostart problems=1 newUnique=0 totalUnique=7 totalProblems=13 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
 2026-11-24 01:50:33 raid 12 demo1 raidSeed=831904938 map=0 god=1 sec=399 end=hang problems=1 newUnique=1 totalUnique=8 totalProblems=14 events=44 score=50 ents=53 travelPx=509 fires=2 menuPct=0 heapMB=35 p2= gfx=59/100/100/58/1 work=69/82.25/100/100 pics=122/66.3mb/wall:26,veg:28,shad:54,icon:9,g.pix:0,g.pixmachines:0,g.muz:0,g.gun:1,g.lightspr:1,pix.actors:0,pix.scene:0,big:3 build=37.72
 2026-11-24 01:51:05 FUZZ END raids=12 problems=14 unique=8 reason=time minutes=61
+2026-11-24 01:54:59 FUZZ ERROR CDP timeout at 150
+2026-11-24 01:55:26 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: CDP timeout minutes=3.6
+2026-11-24 01:58:16 FUZZ START seed=238256981 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
+2026-11-24 02:01:02 raid 1 demo2p raidSeed=1896061147 map=0 god=1 sec=36 end=hang problems=1 newUnique=1 totalUnique=1 totalProblems=1 events=1 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2=link_85s_join_124s_pad_fwd gfx=none work=none build=37.72
