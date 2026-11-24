@@ -11825,3 +11825,6 @@
 2026-11-24 05:50:15 raid 3 demo2p raidSeed=262420919 map=0 god=0 sec=60 end=nostart problems=1 newUnique=0 totalUnique=2 totalProblems=3 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
 2026-11-24 05:59:12 FUZZ ERROR the fixture page did not come up in 120 s at 256
 2026-11-24 05:59:24 FUZZ END raids=3 problems=3 unique=2 reason=ERROR: the fixture page did not come up in 120 s minutes=31.9
+2026-11-24 06:07:19 FUZZ ERROR CDP timeout at 150
+2026-11-24 06:07:45 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: CDP timeout minutes=3.7
+2026-11-24 06:09:34 FUZZ START seed=1466820926 minutes=60 raidsec=300 port=9331 srv=8806 build=37.72 maps=0 size=1920x1080 gpu=NVIDIA_GeForce_RTX_2080_2d=enabled
