@@ -11680,3 +11680,7 @@
 2026-11-23 21:17:31 raid 3 demo2p raidSeed=1730515798 map=0 god=1 sec=186 end=nostart problems=1 newUnique=0 totalUnique=2 totalProblems=3 events=0 score=0 ents=0 travelPx=0 fires=0 menuPct=0 heapMB=0 p2= gfx=none work=none build=37.72
 2026-11-23 21:20:31 FUZZ ERROR Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." at 127
 2026-11-23 21:20:35 FUZZ END raids=3 problems=3 unique=2 reason=ERROR: Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." minutes=17.6
+2026-11-23 21:25:34 FUZZ ERROR Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." at 127
+2026-11-23 21:25:59 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." minutes=2.5
+2026-11-23 21:31:13 FUZZ ERROR Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." at 127
+2026-11-23 21:31:33 FUZZ END raids=0 problems=0 unique=0 reason=ERROR: Exception calling "SendAsync" with "4" argument(s): "The WebSocket is not connected." minutes=2.8
